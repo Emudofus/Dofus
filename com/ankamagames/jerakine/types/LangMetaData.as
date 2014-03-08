@@ -1,79 +1,76 @@
 package com.ankamagames.jerakine.types
 {
    import com.ankamagames.jerakine.utils.files.FileUtils;
-
-
+   
    public class LangMetaData extends Object
    {
-         
-
+      
       public function LangMetaData() {
-         this.clearFile=new Array();
+         this.clearFile = new Array();
          super();
       }
-
-      public static function fromXml(sXml:String, sUrlProvider:String, checkFunction:Function) : LangMetaData {
-         var file:XML = null;
-         var xml:XML = new XML(sXml);
-         var metaData:LangMetaData = new LangMetaData();
-         var bHaveVersionData:Boolean = false;
-         if(xml..filesActions..clearOnlyNotUpToDate.toString()=="true")
+      
+      public static function fromXml(param1:String, param2:String, param3:Function) : LangMetaData {
+         var _loc7_:XML = null;
+         var _loc4_:XML = new XML(param1);
+         var _loc5_:LangMetaData = new LangMetaData();
+         var _loc6_:* = false;
+         if(_loc4_..filesActions..clearOnlyNotUpToDate.toString() == "true")
          {
-            metaData.clearOnlyNotUpToDate=true;
+            _loc5_.clearOnlyNotUpToDate = true;
          }
-         if(xml..filesActions..clearOnlyNotUpToDate.toString()=="false")
+         if(_loc4_..filesActions..clearOnlyNotUpToDate.toString() == "false")
          {
-            metaData.clearOnlyNotUpToDate=false;
+            _loc5_.clearOnlyNotUpToDate = false;
          }
-         if(xml..filesActions..loadAllFile.toString()=="true")
+         if(_loc4_..filesActions..loadAllFile.toString() == "true")
          {
-            metaData.loadAllFile=true;
+            _loc5_.loadAllFile = true;
          }
-         if(xml..filesActions..loadAllFile.toString()=="false")
+         if(_loc4_..filesActions..loadAllFile.toString() == "false")
          {
-            metaData.loadAllFile=false;
+            _loc5_.loadAllFile = false;
          }
-         if(xml..filesActions..clearAllFile.toString()=="true")
+         if(_loc4_..filesActions..clearAllFile.toString() == "true")
          {
-            metaData.clearAllFile=true;
+            _loc5_.clearAllFile = true;
          }
-         if(xml..filesActions..clearAllFile.toString()=="false")
+         if(_loc4_..filesActions..clearAllFile.toString() == "false")
          {
-            metaData.clearAllFile=false;
+            _loc5_.clearAllFile = false;
          }
-         for each (file in xml..filesVersions..file)
+         for each (_loc7_ in _loc4_..filesVersions..file)
          {
-            bHaveVersionData=true;
-            if((metaData.clearAllFile)||(!metaData.clearOnlyNotUpToDate)||(!checkFunction(FileUtils.getFileStartName(sUrlProvider)+"."+file..@name,file.toString())))
+            _loc6_ = true;
+            if((_loc5_.clearAllFile) || !_loc5_.clearOnlyNotUpToDate || !param3(FileUtils.getFileStartName(param2) + "." + _loc7_..@name,_loc7_.toString()))
             {
-               metaData.addFile(file..@name,file.toString());
+               _loc5_.addFile(_loc7_..@name,_loc7_.toString());
             }
          }
-         if(!bHaveVersionData)
+         if(!_loc6_)
          {
-            metaData.loadAllFile=true;
+            _loc5_.loadAllFile = true;
          }
-         return metaData;
+         return _loc5_;
       }
-
+      
       private var _nFileCount:uint = 0;
-
+      
       public var loadAllFile:Boolean = false;
-
+      
       public var clearAllFile:Boolean = false;
-
+      
       public var clearOnlyNotUpToDate:Boolean = true;
-
+      
       public var clearFile:Array;
-
-      public function addFile(sFilename:String, sVersion:String) : void {
+      
+      public function addFile(param1:String, param2:String) : void {
          this._nFileCount++;
-         this.clearFile[sFilename]=sVersion;
+         this.clearFile[param1] = param2;
       }
-
+      
       public function get clearFileCount() : uint {
          return this._nFileCount;
       }
    }
-
 }

@@ -12,241 +12,240 @@ package flashx.textLayout.compose
    import flashx.textLayout.formats.BlockProgression;
    import flashx.textLayout.formats.Direction;
    import flashx.textLayout.utils.Twips;
-
+   
    use namespace tlf_internal;
-
+   
    public class ComposeState extends BaseCompose
    {
-         
-
+      
       public function ComposeState() {
          super();
       }
-
+      
       private static var _sharedComposeState:ComposeState;
-
+      
       tlf_internal  static function getComposeState() : ComposeState {
-         var rslt:ComposeState = _sharedComposeState;
-         if(rslt)
+         var _loc1_:ComposeState = _sharedComposeState;
+         if(_loc1_)
          {
-            _sharedComposeState=null;
-            return rslt;
+            _sharedComposeState = null;
+            return _loc1_;
          }
          return new ComposeState();
       }
-
-      tlf_internal  static function releaseComposeState(state:ComposeState) : void {
-         state.releaseAnyReferences();
-         _sharedComposeState=state;
+      
+      tlf_internal  static function releaseComposeState(param1:ComposeState) : void {
+         param1.releaseAnyReferences();
+         _sharedComposeState = param1;
       }
-
+      
       protected var _curLineIndex:int;
-
+      
       protected var vjBeginLineIndex:int;
-
+      
       protected var vjDisableThisParcel:Boolean;
-
+      
       protected var _useExistingLine:Boolean;
-
+      
       override protected function createParcelList() : ParcelList {
          return ParcelList.getParcelList();
       }
-
-      override protected function releaseParcelList(list:ParcelList) : void {
-         ParcelList.releaseParcelList(list);
+      
+      override protected function releaseParcelList(param1:ParcelList) : void {
+         ParcelList.releaseParcelList(param1);
       }
-
-      override public function composeTextFlow(textFlow:TextFlow, composeToPosition:int, controllerEndIndex:int) : int {
-         this._curLineIndex=-1;
-         _curLine=null;
-         this.vjBeginLineIndex=0;
-         this.vjDisableThisParcel=false;
-         return super.composeTextFlow(textFlow,composeToPosition,controllerEndIndex);
+      
+      override public function composeTextFlow(param1:TextFlow, param2:int, param3:int) : int {
+         this._curLineIndex = -1;
+         _curLine = null;
+         this.vjBeginLineIndex = 0;
+         this.vjDisableThisParcel = false;
+         return super.composeTextFlow(param1,param2,param3);
       }
-
-      override protected function initializeForComposer(composer:IFlowComposer, composeToPosition:int, controllerStartIndex:int, controllerEndIndex:int) : void {
-         var controllerIndex:* = 0;
-         _startComposePosition=composer.damageAbsoluteStart;
-         if(controllerStartIndex==-1)
+      
+      override protected function initializeForComposer(param1:IFlowComposer, param2:int, param3:int, param4:int) : void {
+         var _loc5_:* = 0;
+         _startComposePosition = param1.damageAbsoluteStart;
+         if(param3 == -1)
          {
-            controllerIndex=composer.findControllerIndexAtPosition(_startComposePosition);
-            if(controllerIndex==-1)
+            _loc5_ = param1.findControllerIndexAtPosition(_startComposePosition);
+            if(_loc5_ == -1)
             {
-               controllerIndex=composer.numControllers-1;
-               while((!(controllerIndex==0))&&(composer.getControllerAt(controllerIndex).textLength==0))
+               _loc5_ = param1.numControllers-1;
+               while(!(_loc5_ == 0) && param1.getControllerAt(_loc5_).textLength == 0)
                {
-                  controllerIndex--;
+                  _loc5_--;
                }
             }
          }
-         _startController=composer.getControllerAt(controllerIndex);
-         if(_startController.computedFormat.verticalAlign!=VerticalAlign.TOP)
+         _startController = param1.getControllerAt(_loc5_);
+         if(_startController.computedFormat.verticalAlign != VerticalAlign.TOP)
          {
-            _startComposePosition=_startController.absoluteStart;
+            _startComposePosition = _startController.absoluteStart;
          }
-         super.initializeForComposer(composer,composeToPosition,controllerIndex,controllerEndIndex);
+         super.initializeForComposer(param1,param2,_loc5_,param4);
       }
-
-      override protected function composeInternal(composeRoot:FlowGroupElement, absStart:int) : void {
-         var lineIndex:* = 0;
-         super.composeInternal(composeRoot,absStart);
+      
+      override protected function composeInternal(param1:FlowGroupElement, param2:int) : void {
+         var _loc3_:* = 0;
+         super.composeInternal(param1,param2);
          if(_curElement)
          {
-            lineIndex=this._curLineIndex;
-            while(lineIndex<_flowComposer.numLines)
+            _loc3_ = this._curLineIndex;
+            while(_loc3_ < _flowComposer.numLines)
             {
-               _flowComposer.getLineAt(lineIndex++).setController(null,-1);
+               _flowComposer.getLineAt(_loc3_++).setController(null,-1);
             }
          }
       }
-
-      override protected function doVerticalAlignment(canVerticalAlign:Boolean, nextParcel:Parcel) : void {
-         var controller:ContainerController = null;
-         var vjtype:String = null;
-         var i:* = 0;
-         var floatInfo:FloatCompositionData = null;
-         var end:* = 0;
-         var beginFloatIndex:* = 0;
-         var endFloatIndex:* = 0;
-         var lines:Array = null;
-         if(((canVerticalAlign)&&(_curParcel))&&(!(this.vjBeginLineIndex==this._curLineIndex))&&(!this.vjDisableThisParcel))
+      
+      override protected function doVerticalAlignment(param1:Boolean, param2:Parcel) : void {
+         var _loc3_:ContainerController = null;
+         var _loc4_:String = null;
+         var _loc5_:* = 0;
+         var _loc6_:FloatCompositionData = null;
+         var _loc7_:* = 0;
+         var _loc8_:* = 0;
+         var _loc9_:* = 0;
+         var _loc10_:Array = null;
+         if(((param1) && (_curParcel)) && (!(this.vjBeginLineIndex == this._curLineIndex)) && !this.vjDisableThisParcel)
          {
-            controller=_curParcel.controller;
-            vjtype=controller.computedFormat.verticalAlign;
-            if(vjtype==VerticalAlign.JUSTIFY)
+            _loc3_ = _curParcel.controller;
+            _loc4_ = _loc3_.computedFormat.verticalAlign;
+            if(_loc4_ == VerticalAlign.JUSTIFY)
             {
-               i=controller.numFloats-1;
-               while((i>=0)&&(canVerticalAlign))
+               _loc5_ = _loc3_.numFloats-1;
+               while(_loc5_ >= 0 && (param1))
                {
-                  floatInfo=controller.getFloatAt(i);
-                  if(floatInfo.floatType!=Float.NONE)
+                  _loc6_ = _loc3_.getFloatAt(_loc5_);
+                  if(_loc6_.floatType != Float.NONE)
                   {
-                     canVerticalAlign=false;
+                     param1 = false;
                   }
-                  i--;
+                  _loc5_--;
                }
             }
-            if((canVerticalAlign)&&(!(vjtype==VerticalAlign.TOP)))
+            if((param1) && !(_loc4_ == VerticalAlign.TOP))
             {
-               end=_flowComposer.findLineIndexAtPosition(_curElementStart+_curElementOffset);
-               if(this.vjBeginLineIndex<end)
+               _loc7_ = _flowComposer.findLineIndexAtPosition(_curElementStart + _curElementOffset);
+               if(this.vjBeginLineIndex < _loc7_)
                {
-                  beginFloatIndex=0;
-                  endFloatIndex=0;
-                  lines=(_flowComposer as StandardFlowComposer).lines;
-                  if(controller.numFloats>0)
+                  _loc8_ = 0;
+                  _loc9_ = 0;
+                  _loc10_ = (_flowComposer as StandardFlowComposer).lines;
+                  if(_loc3_.numFloats > 0)
                   {
-                     beginFloatIndex=controller.findFloatIndexAtOrAfter(lines[this.vjBeginLineIndex].absoluteStart);
-                     endFloatIndex=controller.findFloatIndexAfter(_curElementStart+_curElementOffset);
+                     _loc8_ = _loc3_.findFloatIndexAtOrAfter(_loc10_[this.vjBeginLineIndex].absoluteStart);
+                     _loc9_ = _loc3_.findFloatIndexAfter(_curElementStart + _curElementOffset);
                   }
-                  this.applyVerticalAlignmentToColumn(controller,vjtype,lines,this.vjBeginLineIndex,end-this.vjBeginLineIndex,beginFloatIndex,endFloatIndex);
+                  this.applyVerticalAlignmentToColumn(_loc3_,_loc4_,_loc10_,this.vjBeginLineIndex,_loc7_ - this.vjBeginLineIndex,_loc8_,_loc9_);
                }
             }
          }
-         this.vjDisableThisParcel=false;
-         this.vjBeginLineIndex=this._curLineIndex;
+         this.vjDisableThisParcel = false;
+         this.vjBeginLineIndex = this._curLineIndex;
       }
-
-      override protected function applyVerticalAlignmentToColumn(controller:ContainerController, vjType:String, lines:Array, beginIndex:int, numLines:int, beginFloatIndex:int, endFloatIndex:int) : void {
-         var textLine:TextLine = null;
-         var line:TextFlowLine = null;
-         super.applyVerticalAlignmentToColumn(controller,vjType,lines,beginIndex,numLines,beginFloatIndex,endFloatIndex);
-         for each (textLine in controller.composedLines)
+      
+      override protected function applyVerticalAlignmentToColumn(param1:ContainerController, param2:String, param3:Array, param4:int, param5:int, param6:int, param7:int) : void {
+         var _loc8_:TextLine = null;
+         var _loc9_:TextFlowLine = null;
+         super.applyVerticalAlignmentToColumn(param1,param2,param3,param4,param5,param6,param7);
+         for each (_loc8_ in param1.composedLines)
          {
-            line=textLine.userData as TextFlowLine;
-            line.createShape(_blockProgression,textLine);
+            _loc9_ = _loc8_.userData as TextFlowLine;
+            _loc9_.createShape(_blockProgression,_loc8_);
          }
       }
-
-      override protected function finalParcelAdjustment(controller:ContainerController) : void {
-         var edgeAdjust:* = NaN;
-         var curPara:ParagraphElement = null;
-         var curParaFormat:ITextLayoutFormat = null;
-         var curParaDirection:String = null;
-         var lineIndex:* = 0;
-         var line:TextFlowLine = null;
-         var numberLine:TextLine = null;
-         var numberLineStart:* = NaN;
-         var minX:Number = TextLine.MAX_LINE_WIDTH;
-         var minY:Number = TextLine.MAX_LINE_WIDTH;
-         var maxX:Number = -TextLine.MAX_LINE_WIDTH;
-         var verticalText:Boolean = _blockProgression==BlockProgression.RL;
+      
+      override protected function finalParcelAdjustment(param1:ContainerController) : void {
+         var _loc6_:* = NaN;
+         var _loc7_:ParagraphElement = null;
+         var _loc8_:ITextLayoutFormat = null;
+         var _loc9_:String = null;
+         var _loc10_:* = 0;
+         var _loc11_:TextFlowLine = null;
+         var _loc12_:TextLine = null;
+         var _loc13_:* = NaN;
+         var _loc2_:Number = TextLine.MAX_LINE_WIDTH;
+         var _loc3_:Number = TextLine.MAX_LINE_WIDTH;
+         var _loc4_:Number = -TextLine.MAX_LINE_WIDTH;
+         var _loc5_:* = _blockProgression == BlockProgression.RL;
          if(!isNaN(_parcelLogicalTop))
          {
-            if(verticalText)
+            if(_loc5_)
             {
-               maxX=_parcelLogicalTop;
+               _loc4_ = _parcelLogicalTop;
             }
             else
             {
-               minY=_parcelLogicalTop;
+               _loc3_ = _parcelLogicalTop;
             }
          }
          if(!_measuring)
          {
-            if(verticalText)
+            if(_loc5_)
             {
-               minY=_accumulatedMinimumStart;
+               _loc3_ = _accumulatedMinimumStart;
             }
             else
             {
-               minX=_accumulatedMinimumStart;
+               _loc2_ = _accumulatedMinimumStart;
             }
          }
          else
          {
-            lineIndex=_flowComposer.findLineIndexAtPosition(_curParcelStart);
-            while(lineIndex<this._curLineIndex)
+            _loc10_ = _flowComposer.findLineIndexAtPosition(_curParcelStart);
+            while(_loc10_ < this._curLineIndex)
             {
-               line=_flowComposer.getLineAt(lineIndex);
-               if(line.paragraph!=curPara)
+               _loc11_ = _flowComposer.getLineAt(_loc10_);
+               if(_loc11_.paragraph != _loc7_)
                {
-                  curPara=line.paragraph;
-                  curParaFormat=curPara.computedFormat;
-                  curParaDirection=curParaFormat.direction;
-                  if(curParaDirection!=Direction.LTR)
+                  _loc7_ = _loc11_.paragraph;
+                  _loc8_ = _loc7_.computedFormat;
+                  _loc9_ = _loc8_.direction;
+                  if(_loc9_ != Direction.LTR)
                   {
-                     edgeAdjust=curParaFormat.paragraphEndIndent;
+                     _loc6_ = _loc8_.paragraphEndIndent;
                   }
                }
-               if(curParaDirection==Direction.LTR)
+               if(_loc9_ == Direction.LTR)
                {
-                  edgeAdjust=Math.max(line.lineOffset,0);
+                  _loc6_ = Math.max(_loc11_.lineOffset,0);
                }
-               edgeAdjust=verticalText?line.y-edgeAdjust:line.x-edgeAdjust;
-               numberLine=TextFlowLine.findNumberLine(line.getTextLine(true));
-               if(numberLine)
+               _loc6_ = _loc5_?_loc11_.y - _loc6_:_loc11_.x - _loc6_;
+               _loc12_ = TextFlowLine.findNumberLine(_loc11_.getTextLine(true));
+               if(_loc12_)
                {
-                  numberLineStart=verticalText?numberLine.y+line.y:numberLine.x+line.x;
-                  edgeAdjust=Math.min(edgeAdjust,numberLineStart);
+                  _loc13_ = _loc5_?_loc12_.y + _loc11_.y:_loc12_.x + _loc11_.x;
+                  _loc6_ = Math.min(_loc6_,_loc13_);
                }
-               if(verticalText)
+               if(_loc5_)
                {
-                  minY=Math.min(edgeAdjust,minY);
+                  _loc3_ = Math.min(_loc6_,_loc3_);
                }
                else
                {
-                  minX=Math.min(edgeAdjust,minX);
+                  _loc2_ = Math.min(_loc6_,_loc2_);
                }
-               lineIndex++;
+               _loc10_++;
             }
          }
-         if((!(minX==TextLine.MAX_LINE_WIDTH))&&(Math.abs(minX-_parcelLeft)>=1))
+         if(!(_loc2_ == TextLine.MAX_LINE_WIDTH) && Math.abs(_loc2_ - _parcelLeft) >= 1)
          {
-            _parcelLeft=minX;
+            _parcelLeft = _loc2_;
          }
-         if((!(maxX==-TextLine.MAX_LINE_WIDTH))&&(Math.abs(maxX-_parcelRight)>=1))
+         if(!(_loc4_ == -TextLine.MAX_LINE_WIDTH) && Math.abs(_loc4_ - _parcelRight) >= 1)
          {
-            _parcelRight=maxX;
+            _parcelRight = _loc4_;
          }
-         if((!(minY==TextLine.MAX_LINE_WIDTH))&&(Math.abs(minY-_parcelTop)>=1))
+         if(!(_loc3_ == TextLine.MAX_LINE_WIDTH) && Math.abs(_loc3_ - _parcelTop) >= 1)
          {
-            _parcelTop=minY;
+            _parcelTop = _loc3_;
          }
       }
-
-      override protected function endLine(textLine:TextLine) : void {
-         super.endLine(textLine);
+      
+      override protected function endLine(param1:TextLine) : void {
+         super.endLine(param1);
          if(!this._useExistingLine)
          {
             (_flowComposer as StandardFlowComposer).addLine(_curLine,this._curLineIndex);
@@ -254,105 +253,59 @@ package flashx.textLayout.compose
          commitLastLineState(_curLine);
          this._curLineIndex++;
       }
-
-      override protected function composeParagraphElement(elem:ParagraphElement, absStart:int) : Boolean {
-         if(this._curLineIndex<0)
+      
+      override protected function composeParagraphElement(param1:ParagraphElement, param2:int) : Boolean {
+         if(this._curLineIndex < 0)
          {
-            this._curLineIndex=_flowComposer.findLineIndexAtPosition(_curElementStart+_curElementOffset);
+            this._curLineIndex = _flowComposer.findLineIndexAtPosition(_curElementStart + _curElementOffset);
          }
-         return super.composeParagraphElement(elem,absStart);
+         return super.composeParagraphElement(param1,param2);
       }
-
+      
       override protected function composeNextLine() : TextLine {
-         var numberLine:TextLine = null;
-         var textLine:TextLine = null;
-         var peekLine:TextLine = null;
-         var isRTL:* = false;
-         var newDepth:* = NaN;
-         var startCompose:int = _curElementStart+_curElementOffset-_curParaStart;
-         var line:TextFlowLine = this._curLineIndex>_flowComposer.numLines?(_flowComposer as StandardFlowComposer).lines[this._curLineIndex]:null;
-         var useExistingLine:Boolean = (line)&&((!line.isDamaged())||(line.validity==FlowDamageType.GEOMETRY));
-         if((_listItemElement)&&(_listItemElement.getAbsoluteStart()==_curElementStart+_curElementOffset))
+         var _loc4_:TextLine = null;
+         var _loc5_:TextLine = null;
+         var _loc6_:TextLine = null;
+         var _loc7_:* = false;
+         var _loc8_:* = NaN;
+         var _loc1_:int = _curElementStart + _curElementOffset - _curParaStart;
+         var _loc2_:TextFlowLine = this._curLineIndex < _flowComposer.numLines?(_flowComposer as StandardFlowComposer).lines[this._curLineIndex]:null;
+         var _loc3_:Boolean = (_loc2_) && (!_loc2_.isDamaged() || _loc2_.validity == FlowDamageType.GEOMETRY);
+         if((_listItemElement) && _listItemElement.getAbsoluteStart() == _curElementStart + _curElementOffset)
          {
-            if((useExistingLine)&&(!((peekLine=line.peekTextLine())==null)))
+            if((_loc3_) && !((_loc6_ = _loc2_.peekTextLine()) == null))
             {
-               numberLine=TextFlowLine.findNumberLine(peekLine);
+               _loc4_ = TextFlowLine.findNumberLine(_loc6_);
             }
             else
             {
-               isRTL=_curParaElement.computedFormat.direction==Direction.RTL;
-               numberLine=TextFlowLine.createNumberLine(_listItemElement,_curParaElement,_flowComposer.swfContext,isRTL?_parcelList.rightMargin:_parcelList.leftMargin);
+               _loc7_ = _curParaElement.computedFormat.direction == Direction.RTL;
+               _loc4_ = TextFlowLine.createNumberLine(_listItemElement,_curParaElement,_flowComposer.swfContext,_loc7_?_parcelList.rightMargin:_parcelList.leftMargin);
             }
-            pushInsideListItemMargins(numberLine);
+            pushInsideListItemMargins(_loc4_);
          }
-         _parcelList.getLineSlug(_lineSlug,0,1,_textIndent,_curParaFormat.direction==Direction.LTR);
-         if((useExistingLine)&&(!(Twips.to(_lineSlug.width)==line.outerTargetWidthTW)))
+         _parcelList.getLineSlug(_lineSlug,0,1,_textIndent,_curParaFormat.direction == Direction.LTR);
+         if((_loc3_) && !(Twips.to(_lineSlug.width) == _loc2_.outerTargetWidthTW))
          {
-            useExistingLine=false;
+            _loc3_ = false;
          }
-         _curLine=useExistingLine?line:null;
+         _curLine = _loc3_?_loc2_:null;
          loop0:
-         for(;true;if(!textLine)
+         while(true)
          {
-            textLine=_curLine.getTextLine(true);
-            },if(fitLineToParcel(textLine,!useExistingLine,numberLine))
+            while(true)
             {
-               if(_curLine.validity==FlowDamageType.GEOMETRY)
+               if(!_curLine)
                {
-                  _curLine.clearDamage();
-               }
-               this._useExistingLine=useExistingLine;
-               popInsideListItemMargins(numberLine);
-               return textLine;
-               },_curLine=null,if(_parcelList.atEnd())
-               {
-                  popInsideListItemMargins(numberLine);
-                  return null;
-                  })
+                  _loc3_ = false;
+                  _loc5_ = this.createTextLine(_lineSlug.width,!_lineSlug.wrapsKnockOut);
+                  if(!_loc5_)
                   {
-                     while(!_curLine)
+                     _loc8_ = _curParcel.findNextTransition(_lineSlug.depth);
+                     if(_loc8_ < Number.MAX_VALUE)
                      {
-                        useExistingLine=false;
-                        textLine=this.createTextLine(_lineSlug.width,!_lineSlug.wrapsKnockOut);
-                        if(textLine)
-                        {
-                           continue loop0;
-                        }
-                        newDepth=_curParcel.findNextTransition(_lineSlug.depth);
-                        if(newDepth<Number.MAX_VALUE)
-                        {
-                           _parcelList.addTotalDepth(newDepth-_lineSlug.depth);
-                           if(!_parcelList.getLineSlug(_lineSlug,0,1,_textIndent,_curParaFormat.direction==Direction.LTR))
-                           {
-                              return null;
-                           }
-                           continue;
-                        }
-                        advanceToNextParcel();
-                        if(!_parcelList.atEnd())
-                        {
-                           if(_parcelList.getLineSlug(_lineSlug,0,1,_textIndent,_curParaFormat.direction==Direction.LTR))
-                           {
-                              continue;
-                           }
-                        }
-                        popInsideListItemMargins(numberLine);
-                        return null;
-                     }
-                  }
-                  while(!_curLine)
-                  {
-                     useExistingLine=false;
-                     textLine=this.createTextLine(_lineSlug.width,!_lineSlug.wrapsKnockOut);
-                     if(textLine)
-                     {
-                        continue loop0;
-                     }
-                     newDepth=_curParcel.findNextTransition(_lineSlug.depth);
-                     if(newDepth<Number.MAX_VALUE)
-                     {
-                        _parcelList.addTotalDepth(newDepth-_lineSlug.depth);
-                        if(!_parcelList.getLineSlug(_lineSlug,0,1,_textIndent,_curParaFormat.direction==Direction.LTR))
+                        _parcelList.addTotalDepth(_loc8_ - _lineSlug.depth);
+                        if(!_parcelList.getLineSlug(_lineSlug,0,1,_textIndent,_curParaFormat.direction == Direction.LTR))
                         {
                            return null;
                         }
@@ -361,30 +314,56 @@ package flashx.textLayout.compose
                      advanceToNextParcel();
                      if(!_parcelList.atEnd())
                      {
-                        if(_parcelList.getLineSlug(_lineSlug,0,1,_textIndent,_curParaFormat.direction==Direction.LTR))
+                        if(_parcelList.getLineSlug(_lineSlug,0,1,_textIndent,_curParaFormat.direction == Direction.LTR))
                         {
                            continue;
                         }
+                        break;
                      }
-                     popInsideListItemMargins(numberLine);
-                     return null;
+                     break;
+                     break;
                   }
-                  continue loop0;
-      }
-
-      override protected function createTextLine(targetWidth:Number, allowEmergencyBreaks:Boolean) : TextLine {
-         _curLine=new TextFlowLine(null,null);
-         var textLine:TextLine = super.createTextLine(targetWidth,allowEmergencyBreaks);
-         if(textLine)
+               }
+               if(!_loc5_)
+               {
+                  _loc5_ = _curLine.getTextLine(true);
+               }
+               if(fitLineToParcel(_loc5_,!_loc3_,_loc4_))
+               {
+                  break loop0;
+               }
+               _curLine = null;
+               if(_parcelList.atEnd())
+               {
+                  popInsideListItemMargins(_loc4_);
+                  return null;
+               }
+               continue loop0;
+            }
+            popInsideListItemMargins(_loc4_);
+            return null;
+         }
+         if(_curLine.validity == FlowDamageType.GEOMETRY)
          {
-            textLine.doubleClickEnabled=true;
+            _curLine.clearDamage();
+         }
+         this._useExistingLine = _loc3_;
+         popInsideListItemMargins(_loc4_);
+         return _loc5_;
+      }
+      
+      override protected function createTextLine(param1:Number, param2:Boolean) : TextLine {
+         _curLine = new TextFlowLine(null,null);
+         var _loc3_:TextLine = super.createTextLine(param1,param2);
+         if(_loc3_)
+         {
+            _loc3_.doubleClickEnabled = true;
          }
          else
          {
-            _curLine=null;
+            _curLine = null;
          }
-         return textLine;
+         return _loc3_;
       }
    }
-
 }

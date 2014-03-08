@@ -20,191 +20,186 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.console.moduleLogger.TypeMessage;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-
-
+   
    public class ChatApi extends Object implements IApi
    {
-         
-
+      
       public function ChatApi() {
-         this._log=Log.getLogger(getQualifiedClassName(ChatApi));
+         this._log = Log.getLogger(getQualifiedClassName(ChatApi));
          super();
       }
-
-
-
+      
       protected var _log:Logger;
-
+      
       private var _module:UiModule;
-
+      
       private function get chatFrame() : ChatFrame {
          return Kernel.getWorker().getFrame(ChatFrame) as ChatFrame;
       }
-
-      public function set module(value:UiModule) : void {
-         this._module=value;
+      
+      public function set module(param1:UiModule) : void {
+         this._module = param1;
       }
-
+      
       public function destroy() : void {
-         this._module=null;
+         this._module = null;
       }
-
+      
       public function getChannelsId() : Array {
-         var chan:* = undefined;
-         var disallowed:Array = this.chatFrame.disallowedChannels;
-         var list:Array = new Array();
-         for each (chan in ChatChannel.getChannels())
+         var _loc3_:* = undefined;
+         var _loc1_:Array = this.chatFrame.disallowedChannels;
+         var _loc2_:Array = new Array();
+         for each (_loc3_ in ChatChannel.getChannels())
          {
-            if(disallowed.indexOf(chan.id)==-1)
+            if(_loc1_.indexOf(_loc3_.id) == -1)
             {
-               list.push(chan.id);
+               _loc2_.push(_loc3_.id);
             }
          }
-         return list;
+         return _loc2_;
       }
-
+      
       public function getDisallowedChannelsId() : Array {
          return this.chatFrame.disallowedChannels;
       }
-
+      
       public function getChatColors() : Array {
          return this.chatFrame.chatColors;
       }
-
+      
       public function getSmileyMood() : int {
          return this.chatFrame.smileyMood;
       }
-
-      public function getMessagesByChannel(channel:uint) : Array {
-         var list:Array = this.chatFrame.getMessages();
-         return list[channel];
+      
+      public function getMessagesByChannel(param1:uint) : Array {
+         var _loc2_:Array = this.chatFrame.getMessages();
+         return _loc2_[param1];
       }
-
-      public function getParagraphByChannel(channel:uint) : Array {
-         var list:Array = this.chatFrame.getParagraphes();
-         return list[channel];
+      
+      public function getParagraphByChannel(param1:uint) : Array {
+         var _loc2_:Array = this.chatFrame.getParagraphes();
+         return _loc2_[param1];
       }
-
+      
       public function getMessagesStoredMax() : uint {
          return this.chatFrame.maxMessagesStored;
       }
-
-      public function addParagraphToHistory(id:int, p:Object) : void {
-         this.chatFrame.addParagraphToHistory(id,p);
+      
+      public function addParagraphToHistory(param1:int, param2:Object) : void {
+         this.chatFrame.addParagraphToHistory(param1,param2);
       }
-
-      public function removeLinesFromHistory(value:int, channel:int) : void {
-         this.chatFrame.removeLinesFromHistory(value,channel);
+      
+      public function removeLinesFromHistory(param1:int, param2:int) : void {
+         this.chatFrame.removeLinesFromHistory(param1,param2);
       }
-
-      public function setMaxMessagesStored(val:int) : void {
-         this.chatFrame.maxMessagesStored=val;
+      
+      public function setMaxMessagesStored(param1:int) : void {
+         this.chatFrame.maxMessagesStored = param1;
       }
-
+      
       public function getMaxMessagesStored() : int {
          return this.chatFrame.maxMessagesStored;
       }
-
-      public function newBasicChatSentence(id:uint, msg:String, channel:uint=0, time:Number=0, finger:String="") : BasicChatSentence {
-         var bsc:BasicChatSentence = new BasicChatSentence(id,msg,msg,channel,time,finger);
-         return bsc;
+      
+      public function newBasicChatSentence(param1:uint, param2:String, param3:uint=0, param4:Number=0, param5:String="") : BasicChatSentence {
+         var _loc6_:BasicChatSentence = new BasicChatSentence(param1,param2,param2,param3,param4,param5);
+         return _loc6_;
       }
-
-      public function newChatSentenceWithSource(id:uint, msg:String, channel:uint=0, time:Number=0, finger:String="", senderId:uint=0, senderName:String="", objects:Vector.<ItemWrapper>=null) : ChatSentenceWithSource {
-         var csws:ChatSentenceWithSource = new ChatSentenceWithSource(id,msg,msg,channel,time,finger,senderId,senderName,objects);
-         return csws;
+      
+      public function newChatSentenceWithSource(param1:uint, param2:String, param3:uint=0, param4:Number=0, param5:String="", param6:uint=0, param7:String="", param8:Vector.<ItemWrapper>=null) : ChatSentenceWithSource {
+         var _loc9_:ChatSentenceWithSource = new ChatSentenceWithSource(param1,param2,param2,param3,param4,param5,param6,param7,param8);
+         return _loc9_;
       }
-
-      public function newChatSentenceWithRecipient(id:uint, msg:String, channel:uint=0, time:Number=0, finger:String="", senderId:uint=0, senderName:String="", receiverName:String="", receiverId:uint=0, objects:Vector.<ItemWrapper>=null) : ChatSentenceWithRecipient {
-         var cswr:ChatSentenceWithRecipient = new ChatSentenceWithRecipient(id,msg,msg,channel,time,finger,senderId,senderName,receiverName,receiverId,objects);
-         return cswr;
+      
+      public function newChatSentenceWithRecipient(param1:uint, param2:String, param3:uint=0, param4:Number=0, param5:String="", param6:uint=0, param7:String="", param8:String="", param9:uint=0, param10:Vector.<ItemWrapper>=null) : ChatSentenceWithRecipient {
+         var _loc11_:ChatSentenceWithRecipient = new ChatSentenceWithRecipient(param1,param2,param2,param3,param4,param5,param6,param7,param8,param9,param10);
+         return _loc11_;
       }
-
-      public function getTypeOfChatSentence(msg:Object) : String {
-         if(msg is ChatSentenceWithRecipient)
+      
+      public function getTypeOfChatSentence(param1:Object) : String {
+         if(param1 is ChatSentenceWithRecipient)
          {
             return "recipientSentence";
          }
-         if(msg is ChatSentenceWithSource)
+         if(param1 is ChatSentenceWithSource)
          {
             return "sourceSentence";
          }
-         if(msg is ChatInformationSentence)
+         if(param1 is ChatInformationSentence)
          {
             return "informationSentence";
          }
          return "basicSentence";
       }
-
-      public function searchChannel(chan:String) : int {
-         var i:* = undefined;
-         var channels:Array = ChatChannel.getChannels();
-         for (i in channels)
+      
+      public function searchChannel(param1:String) : int {
+         var _loc3_:* = undefined;
+         var _loc2_:Array = ChatChannel.getChannels();
+         for (_loc3_ in _loc2_)
          {
-            if(chan==channels[i].shortcut)
+            if(param1 == _loc2_[_loc3_].shortcut)
             {
-               return channels[i].id;
+               return _loc2_[_loc3_].id;
             }
          }
          return -1;
       }
-
-      public function getHistoryByIndex(name:String, index:uint) : String {
+      
+      public function getHistoryByIndex(param1:String, param2:uint) : String {
          return "";
       }
-
+      
       public function getRedChannelId() : uint {
          return this.chatFrame.getRedId();
       }
-
-      public function getStaticHyperlink(string:String) : String {
-         return HyperlinkFactory.decode(string,false);
+      
+      public function getStaticHyperlink(param1:String) : String {
+         return HyperlinkFactory.decode(param1,false);
       }
-
-      public function newChatItem(item:ItemWrapper) : String {
-         return HyperlinkItemManager.newChatItem(item);
+      
+      public function newChatItem(param1:ItemWrapper) : String {
+         return HyperlinkItemManager.newChatItem(param1);
       }
-
-      public function addAutocompletionNameEntry(name:String, priority:int) : void {
-         ChatAutocompleteNameManager.getInstance().addEntry(name,priority);
+      
+      public function addAutocompletionNameEntry(param1:String, param2:int) : void {
+         ChatAutocompleteNameManager.getInstance().addEntry(param1,param2);
       }
-
-      public function getAutocompletion(subString:String, count:int) : String {
-         return ChatAutocompleteNameManager.getInstance().autocomplete(subString,count);
+      
+      public function getAutocompletion(param1:String, param2:int) : String {
+         return ChatAutocompleteNameManager.getInstance().autocomplete(param1,param2);
       }
-
-      public function changeCssHandler(val:String) : void {
-         HtmlManager.changeCssHandler(val);
+      
+      public function changeCssHandler(param1:String) : void {
+         HtmlManager.changeCssHandler(param1);
       }
-
-      public function logChat(text:String) : void {
-         ModuleLogger.log(text,TypeMessage.LOG_CHAT);
+      
+      public function logChat(param1:String) : void {
+         ModuleLogger.log(param1,TypeMessage.LOG_CHAT);
       }
-
-      public function addHtmlLink(pText:String, pHref:String) : String {
-         return HtmlManager.addLink(pText,pHref);
+      
+      public function addHtmlLink(param1:String, param2:String) : String {
+         return HtmlManager.addLink(param1,param2);
       }
-
-      public function addSpan(pText:String, pStyle:Object) : void {
-         HtmlManager.addTag(pText,HtmlManager.SPAN,pStyle);
+      
+      public function addSpan(param1:String, param2:Object) : void {
+         HtmlManager.addTag(param1,HtmlManager.SPAN,param2);
       }
-
-      public function escapeChatString(inStr:String) : String {
-         var pattern:RegExp = new RegExp("&","g");
-         var inStr:String = inStr.replace(pattern,"&amp;");
-         pattern=new RegExp("{","g");
-         inStr=inStr.replace(pattern,"&#123;");
-         pattern=new RegExp("}","g");
-         inStr=inStr.replace(pattern,"&#125;");
-         return inStr;
+      
+      public function escapeChatString(param1:String) : String {
+         var _loc2_:RegExp = new RegExp("&","g");
+         var param1:String = param1.replace(_loc2_,"&amp;");
+         _loc2_ = new RegExp("{","g");
+         param1 = param1.replace(_loc2_,"&#123;");
+         _loc2_ = new RegExp("}","g");
+         param1 = param1.replace(_loc2_,"&#125;");
+         return param1;
       }
-
-      public function unEscapeChatString(inStr:String) : String {
-         var inStr:String = inStr.split("&amp;#123;").join("&#123;");
-         inStr=inStr.split("&amp;#125;").join("&#125;");
-         inStr=inStr.split("&amp;amp;").join("&amp;");
-         return inStr;
+      
+      public function unEscapeChatString(param1:String) : String {
+         var param1:String = param1.split("&amp;#123;").join("&#123;");
+         param1 = param1.split("&amp;#125;").join("&#125;");
+         param1 = param1.split("&amp;amp;").join("&amp;");
+         return param1;
       }
    }
-
 }

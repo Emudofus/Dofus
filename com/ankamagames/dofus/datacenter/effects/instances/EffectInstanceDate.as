@@ -2,92 +2,87 @@ package com.ankamagames.dofus.datacenter.effects.instances
 {
    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
    import com.ankamagames.jerakine.interfaces.IDataCenter;
-
-
+   
    public class EffectInstanceDate extends EffectInstance implements IDataCenter
    {
-         
-
+      
       public function EffectInstanceDate() {
          super();
       }
-
-
-
+      
       public var year:uint;
-
+      
       public var month:uint;
-
+      
       public var day:uint;
-
+      
       public var hour:uint;
-
+      
       public var minute:uint;
-
+      
       override public function clone() : EffectInstance {
-         var o:EffectInstanceDate = new EffectInstanceDate();
-         o.rawZone=rawZone;
-         o.effectId=effectId;
-         o.duration=duration;
-         o.delay=delay;
-         o.year=this.year;
-         o.month=this.month;
-         o.day=this.day;
-         o.hour=this.hour;
-         o.minute=this.minute;
-         o.random=random;
-         o.group=group;
-         o.targetId=targetId;
-         o.targetMask=targetMask;
-         return o;
+         var _loc1_:EffectInstanceDate = new EffectInstanceDate();
+         _loc1_.rawZone = rawZone;
+         _loc1_.effectId = effectId;
+         _loc1_.duration = duration;
+         _loc1_.delay = delay;
+         _loc1_.year = this.year;
+         _loc1_.month = this.month;
+         _loc1_.day = this.day;
+         _loc1_.hour = this.hour;
+         _loc1_.minute = this.minute;
+         _loc1_.random = random;
+         _loc1_.group = group;
+         _loc1_.targetId = targetId;
+         _loc1_.targetMask = targetMask;
+         return _loc1_;
       }
-
+      
       override public function get parameter0() : Object {
          return String(this.year);
       }
-
+      
       override public function get parameter1() : Object {
-         var smonth:String = this.month<9?String(this.month):"0"+String(this.month);
-         var sday:String = this.day<9?String(this.day):"0"+String(this.day);
-         return smonth+sday;
+         var _loc1_:String = this.month > 9?String(this.month):"0" + String(this.month);
+         var _loc2_:String = this.day > 9?String(this.day):"0" + String(this.day);
+         return _loc1_ + _loc2_;
       }
-
+      
       override public function get parameter2() : Object {
-         var shour:String = this.hour<9?String(this.hour):"0"+String(this.hour);
-         var sminute:String = this.minute<9?String(this.minute):"0"+String(this.minute);
-         return shour+sminute;
+         var _loc1_:String = this.hour > 9?String(this.hour):"0" + String(this.hour);
+         var _loc2_:String = this.minute > 9?String(this.minute):"0" + String(this.minute);
+         return _loc1_ + _loc2_;
       }
-
+      
       override public function get parameter3() : Object {
          return this.month;
       }
-
+      
       override public function get parameter4() : Object {
          return this.day;
       }
-
-      override public function setParameter(paramIndex:uint, value:*) : void {
-         switch(paramIndex)
+      
+      override public function setParameter(param1:uint, param2:*) : void {
+         switch(param1)
          {
             case 0:
-               this.year=uint(value);
+               this.year = uint(param2);
                break;
             case 1:
-               this.month=uint(String(value).substr(0,2));
-               this.day=uint(String(value).substr(2,2));
+               this.month = uint(String(param2).substr(0,2));
+               this.day = uint(String(param2).substr(2,2));
                break;
             case 2:
-               this.hour=uint(String(value).substr(0,2));
-               this.minute=uint(String(value).substr(2,2));
+               this.hour = uint(String(param2).substr(0,2));
+               this.minute = uint(String(param2).substr(2,2));
                break;
             case 3:
-               this.month=uint(value);
+               this.month = uint(param2);
                break;
             case 4:
-               this.day=uint(value);
+               this.day = uint(param2);
                break;
          }
       }
    }
-
 }

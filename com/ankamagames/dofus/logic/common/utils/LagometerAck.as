@@ -7,70 +7,66 @@ package com.ankamagames.dofus.logic.common.utils
    import flash.utils.getTimer;
    import com.ankamagames.dofus.network.messages.game.basic.BasicAckMessage;
    import com.ankamagames.dofus.datacenter.misc.OptionalFeature;
-
-
+   
    public class LagometerAck extends Lagometer
    {
-         
-
+      
       public function LagometerAck() {
-         this._msgTimeStack=new Vector.<uint>();
+         this._msgTimeStack = new Vector.<uint>();
          super();
-         this._optionId=OptionalFeature.getOptionalFeatureByKeyword("net.ack").id;
+         this._optionId = OptionalFeature.getOptionalFeatureByKeyword("net.ack").id;
       }
-
-
-
+      
       private var _msgTimeStack:Vector.<uint>;
-
+      
       private var _active:Boolean = false;
-
+      
       private var _optionId:uint;
-
+      
       override public function stop() : void {
          if(_timer.running)
          {
             _timer.stop();
          }
-         this._msgTimeStack.length=0;
+         this._msgTimeStack.length = 0;
       }
-
-      override public function ping(msg:INetworkMessage=null) : void {
-         var f:MiscFrame = null;
+      
+      override public function ping(param1:INetworkMessage=null) : void {
+         var _loc2_:MiscFrame = null;
          if(!this._active)
          {
-            f=Kernel.getWorker().getFrame(MiscFrame) as MiscFrame;
-            if((f)&&(f.isOptionalFeatureActive(this._optionId)))
+            _loc2_ = Kernel.getWorker().getFrame(MiscFrame) as MiscFrame;
+            if((_loc2_) && (_loc2_.isOptionalFeatureActive(this._optionId)))
             {
-               this._active=true;
+               this._active = true;
             }
          }
          if(!this._active)
          {
-            super.ping(msg);
+            super.ping(param1);
             return;
          }
          if(!this._msgTimeStack.length)
          {
-            _timer.delay=SHOW_LAG_DELAY;
+            _timer.delay = SHOW_LAG_DELAY;
             _timer.start();
          }
          this._msgTimeStack.push(getTimer());
       }
-
-      override public function pong(msg:INetworkMessage=null) : void {
-         var latency:uint = 0;
+      
+      override public function pong(param1:INetworkMessage=null) : void {
+         var _loc2_:uint = 0;
          if(!this._active)
          {
-            super.pong(msg);
+            super.pong(param1);
             return;
          }
-         if(msg is BasicAckMessage)
+         if(param1 is BasicAckMessage)
          {
-            latency=getTimer()-this._msgTimeStack.shift();
-            if(latency>SHOW_LAG_DELAY)
+            _loc2_ = getTimer() - this._msgTimeStack.shift();
+            if(_loc2_ > SHOW_LAG_DELAY)
             {
-               _log.debug(latency+" ms de latence (basé sur ACK)");
+               _log.debug(_loc2_ + " ms de latence (basÃ© sur ACK)");
                startLag();
                if(_timer.running)
                {
@@ -82,7 +78,7 @@ package com.ankamagames.dofus.logic.common.utils
                stopLag();
                if(this._msgTimeStack.length)
                {
-                  _timer.delay=Math.max(0,SHOW_LAG_DELAY-getTimer()-this._msgTimeStack[0]);
+                  _timer.delay = Math.max(0,SHOW_LAG_DELAY - (getTimer() - this._msgTimeStack[0]));
                   _timer.start();
                }
                else
@@ -93,5 +89,4 @@ package com.ankamagames.dofus.logic.common.utils
          }
       }
    }
-
 }

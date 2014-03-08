@@ -3,26 +3,22 @@ package com.ankamagames.dofus.console.chat
    import com.ankamagames.jerakine.console.ConsoleInstructionHandler;
    import com.ankamagames.jerakine.console.ConsoleHandler;
    import com.ankamagames.jerakine.data.I18n;
-
-
+   
    public class MessagingInstructionHandler extends Object implements ConsoleInstructionHandler
    {
-         
-
+      
       public function MessagingInstructionHandler() {
          super();
       }
-
-
-
-      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
-         if(!0)
+      
+      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
+         if(0)
          {
          }
       }
-
-      public function getHelp(cmd:String) : String {
-         switch(cmd)
+      
+      public function getHelp(param1:String) : String {
+         switch(param1)
          {
             case "w":
                return I18n.getUiText("ui.chat.console.help.whisper");
@@ -37,7 +33,7 @@ package com.ankamagames.dofus.console.chat
             case "p":
                return I18n.getUiText("ui.chat.console.help.groupmessage");
             case "a":
-               return I18n.getUiText("ui.chat.console.help.alignmessage");
+               return I18n.getUiText("ui.chat.console.help.alliancemessage");
             case "r":
                return I18n.getUiText("ui.chat.console.help.aroundguildmessage");
             case "b":
@@ -45,13 +41,12 @@ package com.ankamagames.dofus.console.chat
             case "m":
                return I18n.getUiText("ui.chat.console.help.meetmessage");
             default:
-               return I18n.getUiText("ui.chat.console.noHelp",[cmd]);
+               return I18n.getUiText("ui.chat.console.noHelp",[param1]);
          }
       }
-
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      
+      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
          return [];
       }
    }
-
 }

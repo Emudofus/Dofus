@@ -5,76 +5,74 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class GameActionFightNoSpellCastMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function GameActionFightNoSpellCastMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6132;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var spellLevelId:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 6132;
       }
-
-      public function initGameActionFightNoSpellCastMessage(spellLevelId:uint=0) : GameActionFightNoSpellCastMessage {
-         this.spellLevelId=spellLevelId;
-         this._isInitialized=true;
+      
+      public function initGameActionFightNoSpellCastMessage(param1:uint=0) : GameActionFightNoSpellCastMessage {
+         this.spellLevelId = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.spellLevelId=0;
-         this._isInitialized=false;
+         this.spellLevelId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_GameActionFightNoSpellCastMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_GameActionFightNoSpellCastMessage(param1);
       }
-
-      public function serializeAs_GameActionFightNoSpellCastMessage(output:IDataOutput) : void {
-         if(this.spellLevelId<0)
+      
+      public function serializeAs_GameActionFightNoSpellCastMessage(param1:IDataOutput) : void {
+         if(this.spellLevelId < 0)
          {
-            throw new Error("Forbidden value ("+this.spellLevelId+") on element spellLevelId.");
+            throw new Error("Forbidden value (" + this.spellLevelId + ") on element spellLevelId.");
          }
          else
          {
-            output.writeInt(this.spellLevelId);
+            param1.writeInt(this.spellLevelId);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_GameActionFightNoSpellCastMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_GameActionFightNoSpellCastMessage(param1);
       }
-
-      public function deserializeAs_GameActionFightNoSpellCastMessage(input:IDataInput) : void {
-         this.spellLevelId=input.readInt();
-         if(this.spellLevelId<0)
+      
+      public function deserializeAs_GameActionFightNoSpellCastMessage(param1:IDataInput) : void {
+         this.spellLevelId = param1.readInt();
+         if(this.spellLevelId < 0)
          {
-            throw new Error("Forbidden value ("+this.spellLevelId+") on element of GameActionFightNoSpellCastMessage.spellLevelId.");
+            throw new Error("Forbidden value (" + this.spellLevelId + ") on element of GameActionFightNoSpellCastMessage.spellLevelId.");
          }
          else
          {
@@ -82,5 +80,4 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          }
       }
    }
-
 }

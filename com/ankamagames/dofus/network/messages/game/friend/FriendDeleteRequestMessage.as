@@ -5,76 +5,74 @@ package com.ankamagames.dofus.network.messages.game.friend
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class FriendDeleteRequestMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function FriendDeleteRequestMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 5603;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var accountId:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 5603;
       }
-
-      public function initFriendDeleteRequestMessage(accountId:uint=0) : FriendDeleteRequestMessage {
-         this.accountId=accountId;
-         this._isInitialized=true;
+      
+      public function initFriendDeleteRequestMessage(param1:uint=0) : FriendDeleteRequestMessage {
+         this.accountId = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.accountId=0;
-         this._isInitialized=false;
+         this.accountId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_FriendDeleteRequestMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_FriendDeleteRequestMessage(param1);
       }
-
-      public function serializeAs_FriendDeleteRequestMessage(output:IDataOutput) : void {
-         if(this.accountId<0)
+      
+      public function serializeAs_FriendDeleteRequestMessage(param1:IDataOutput) : void {
+         if(this.accountId < 0)
          {
-            throw new Error("Forbidden value ("+this.accountId+") on element accountId.");
+            throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
          }
          else
          {
-            output.writeInt(this.accountId);
+            param1.writeInt(this.accountId);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_FriendDeleteRequestMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_FriendDeleteRequestMessage(param1);
       }
-
-      public function deserializeAs_FriendDeleteRequestMessage(input:IDataInput) : void {
-         this.accountId=input.readInt();
-         if(this.accountId<0)
+      
+      public function deserializeAs_FriendDeleteRequestMessage(param1:IDataInput) : void {
+         this.accountId = param1.readInt();
+         if(this.accountId < 0)
          {
-            throw new Error("Forbidden value ("+this.accountId+") on element of FriendDeleteRequestMessage.accountId.");
+            throw new Error("Forbidden value (" + this.accountId + ") on element of FriendDeleteRequestMessage.accountId.");
          }
          else
          {
@@ -82,5 +80,4 @@ package com.ankamagames.dofus.network.messages.game.friend
          }
       }
    }
-
 }

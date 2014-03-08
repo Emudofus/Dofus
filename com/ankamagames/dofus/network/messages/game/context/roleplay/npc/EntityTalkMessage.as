@@ -6,109 +6,106 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class EntityTalkMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function EntityTalkMessage() {
-         this.parameters=new Vector.<String>();
+         this.parameters = new Vector.<String>();
          super();
       }
-
+      
       public static const protocolId:uint = 6110;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var entityId:int = 0;
-
+      
       public var textId:uint = 0;
-
+      
       public var parameters:Vector.<String>;
-
+      
       override public function getMessageId() : uint {
          return 6110;
       }
-
-      public function initEntityTalkMessage(entityId:int=0, textId:uint=0, parameters:Vector.<String>=null) : EntityTalkMessage {
-         this.entityId=entityId;
-         this.textId=textId;
-         this.parameters=parameters;
-         this._isInitialized=true;
+      
+      public function initEntityTalkMessage(param1:int=0, param2:uint=0, param3:Vector.<String>=null) : EntityTalkMessage {
+         this.entityId = param1;
+         this.textId = param2;
+         this.parameters = param3;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.entityId=0;
-         this.textId=0;
-         this.parameters=new Vector.<String>();
-         this._isInitialized=false;
+         this.entityId = 0;
+         this.textId = 0;
+         this.parameters = new Vector.<String>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_EntityTalkMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_EntityTalkMessage(param1);
       }
-
-      public function serializeAs_EntityTalkMessage(output:IDataOutput) : void {
-         output.writeInt(this.entityId);
-         if(this.textId<0)
+      
+      public function serializeAs_EntityTalkMessage(param1:IDataOutput) : void {
+         param1.writeInt(this.entityId);
+         if(this.textId < 0)
          {
-            throw new Error("Forbidden value ("+this.textId+") on element textId.");
+            throw new Error("Forbidden value (" + this.textId + ") on element textId.");
          }
          else
          {
-            output.writeShort(this.textId);
-            output.writeShort(this.parameters.length);
-            _i3=0;
-            while(_i3<this.parameters.length)
+            param1.writeShort(this.textId);
+            param1.writeShort(this.parameters.length);
+            _loc2_ = 0;
+            while(_loc2_ < this.parameters.length)
             {
-               output.writeUTF(this.parameters[_i3]);
-               _i3++;
+               param1.writeUTF(this.parameters[_loc2_]);
+               _loc2_++;
             }
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_EntityTalkMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_EntityTalkMessage(param1);
       }
-
-      public function deserializeAs_EntityTalkMessage(input:IDataInput) : void {
-         var _val3:String = null;
-         this.entityId=input.readInt();
-         this.textId=input.readShort();
-         if(this.textId<0)
+      
+      public function deserializeAs_EntityTalkMessage(param1:IDataInput) : void {
+         var _loc4_:String = null;
+         this.entityId = param1.readInt();
+         this.textId = param1.readShort();
+         if(this.textId < 0)
          {
-            throw new Error("Forbidden value ("+this.textId+") on element of EntityTalkMessage.textId.");
+            throw new Error("Forbidden value (" + this.textId + ") on element of EntityTalkMessage.textId.");
          }
          else
          {
-            _parametersLen=input.readUnsignedShort();
-            _i3=0;
-            while(_i3<_parametersLen)
+            _loc2_ = param1.readUnsignedShort();
+            _loc3_ = 0;
+            while(_loc3_ < _loc2_)
             {
-               _val3=input.readUTF();
-               this.parameters.push(_val3);
-               _i3++;
+               _loc4_ = param1.readUTF();
+               this.parameters.push(_loc4_);
+               _loc3_++;
             }
             return;
          }
       }
    }
-
 }

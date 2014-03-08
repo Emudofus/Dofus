@@ -5,95 +5,93 @@ package com.ankamagames.dofus.network.messages.game.character.stats
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class UpdateLifePointsMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function UpdateLifePointsMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 5658;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var lifePoints:uint = 0;
-
+      
       public var maxLifePoints:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 5658;
       }
-
-      public function initUpdateLifePointsMessage(lifePoints:uint=0, maxLifePoints:uint=0) : UpdateLifePointsMessage {
-         this.lifePoints=lifePoints;
-         this.maxLifePoints=maxLifePoints;
-         this._isInitialized=true;
+      
+      public function initUpdateLifePointsMessage(param1:uint=0, param2:uint=0) : UpdateLifePointsMessage {
+         this.lifePoints = param1;
+         this.maxLifePoints = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.lifePoints=0;
-         this.maxLifePoints=0;
-         this._isInitialized=false;
+         this.lifePoints = 0;
+         this.maxLifePoints = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_UpdateLifePointsMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_UpdateLifePointsMessage(param1);
       }
-
-      public function serializeAs_UpdateLifePointsMessage(output:IDataOutput) : void {
-         if(this.lifePoints<0)
+      
+      public function serializeAs_UpdateLifePointsMessage(param1:IDataOutput) : void {
+         if(this.lifePoints < 0)
          {
-            throw new Error("Forbidden value ("+this.lifePoints+") on element lifePoints.");
+            throw new Error("Forbidden value (" + this.lifePoints + ") on element lifePoints.");
          }
          else
          {
-            output.writeInt(this.lifePoints);
-            if(this.maxLifePoints<0)
+            param1.writeInt(this.lifePoints);
+            if(this.maxLifePoints < 0)
             {
-               throw new Error("Forbidden value ("+this.maxLifePoints+") on element maxLifePoints.");
+               throw new Error("Forbidden value (" + this.maxLifePoints + ") on element maxLifePoints.");
             }
             else
             {
-               output.writeInt(this.maxLifePoints);
+               param1.writeInt(this.maxLifePoints);
                return;
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_UpdateLifePointsMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_UpdateLifePointsMessage(param1);
       }
-
-      public function deserializeAs_UpdateLifePointsMessage(input:IDataInput) : void {
-         this.lifePoints=input.readInt();
-         if(this.lifePoints<0)
+      
+      public function deserializeAs_UpdateLifePointsMessage(param1:IDataInput) : void {
+         this.lifePoints = param1.readInt();
+         if(this.lifePoints < 0)
          {
-            throw new Error("Forbidden value ("+this.lifePoints+") on element of UpdateLifePointsMessage.lifePoints.");
+            throw new Error("Forbidden value (" + this.lifePoints + ") on element of UpdateLifePointsMessage.lifePoints.");
          }
          else
          {
-            this.maxLifePoints=input.readInt();
-            if(this.maxLifePoints<0)
+            this.maxLifePoints = param1.readInt();
+            if(this.maxLifePoints < 0)
             {
-               throw new Error("Forbidden value ("+this.maxLifePoints+") on element of UpdateLifePointsMessage.maxLifePoints.");
+               throw new Error("Forbidden value (" + this.maxLifePoints + ") on element of UpdateLifePointsMessage.maxLifePoints.");
             }
             else
             {
@@ -102,5 +100,4 @@ package com.ankamagames.dofus.network.messages.game.character.stats
          }
       }
    }
-
 }

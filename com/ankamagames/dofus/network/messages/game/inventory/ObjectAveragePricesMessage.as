@@ -6,134 +6,131 @@ package com.ankamagames.dofus.network.messages.game.inventory
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ObjectAveragePricesMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ObjectAveragePricesMessage() {
-         this.ids=new Vector.<uint>();
-         this.avgPrices=new Vector.<uint>();
+         this.ids = new Vector.<uint>();
+         this.avgPrices = new Vector.<uint>();
          super();
       }
-
+      
       public static const protocolId:uint = 6335;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var ids:Vector.<uint>;
-
+      
       public var avgPrices:Vector.<uint>;
-
+      
       override public function getMessageId() : uint {
          return 6335;
       }
-
-      public function initObjectAveragePricesMessage(ids:Vector.<uint>=null, avgPrices:Vector.<uint>=null) : ObjectAveragePricesMessage {
-         this.ids=ids;
-         this.avgPrices=avgPrices;
-         this._isInitialized=true;
+      
+      public function initObjectAveragePricesMessage(param1:Vector.<uint>=null, param2:Vector.<uint>=null) : ObjectAveragePricesMessage {
+         this.ids = param1;
+         this.avgPrices = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.ids=new Vector.<uint>();
-         this.avgPrices=new Vector.<uint>();
-         this._isInitialized=false;
+         this.ids = new Vector.<uint>();
+         this.avgPrices = new Vector.<uint>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ObjectAveragePricesMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ObjectAveragePricesMessage(param1);
       }
-
-      public function serializeAs_ObjectAveragePricesMessage(output:IDataOutput) : void {
-         output.writeShort(this.ids.length);
-         var _i1:uint = 0;
-         while(_i1<this.ids.length)
+      
+      public function serializeAs_ObjectAveragePricesMessage(param1:IDataOutput) : void {
+         param1.writeShort(this.ids.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.ids.length)
          {
-            if(this.ids[_i1]<0)
+            if(this.ids[_loc2_] < 0)
             {
-               throw new Error("Forbidden value ("+this.ids[_i1]+") on element 1 (starting at 1) of ids.");
+               throw new Error("Forbidden value (" + this.ids[_loc2_] + ") on element 1 (starting at 1) of ids.");
             }
             else
             {
-               output.writeShort(this.ids[_i1]);
-               _i1++;
+               param1.writeShort(this.ids[_loc2_]);
+               _loc2_++;
                continue;
             }
          }
-         output.writeShort(this.avgPrices.length);
-         var _i2:uint = 0;
-         while(_i2<this.avgPrices.length)
+         param1.writeShort(this.avgPrices.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.avgPrices.length)
          {
-            if(this.avgPrices[_i2]<0)
+            if(this.avgPrices[_loc3_] < 0)
             {
-               throw new Error("Forbidden value ("+this.avgPrices[_i2]+") on element 2 (starting at 1) of avgPrices.");
+               throw new Error("Forbidden value (" + this.avgPrices[_loc3_] + ") on element 2 (starting at 1) of avgPrices.");
             }
             else
             {
-               output.writeInt(this.avgPrices[_i2]);
-               _i2++;
+               param1.writeInt(this.avgPrices[_loc3_]);
+               _loc3_++;
                continue;
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ObjectAveragePricesMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ObjectAveragePricesMessage(param1);
       }
-
-      public function deserializeAs_ObjectAveragePricesMessage(input:IDataInput) : void {
-         var _val1:uint = 0;
-         var _val2:uint = 0;
-         var _idsLen:uint = input.readUnsignedShort();
-         var _i1:uint = 0;
-         while(_i1<_idsLen)
+      
+      public function deserializeAs_ObjectAveragePricesMessage(param1:IDataInput) : void {
+         var _loc6_:uint = 0;
+         var _loc7_:uint = 0;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            _val1=input.readShort();
-            if(_val1<0)
+            _loc6_ = param1.readShort();
+            if(_loc6_ < 0)
             {
-               throw new Error("Forbidden value ("+_val1+") on elements of ids.");
+               throw new Error("Forbidden value (" + _loc6_ + ") on elements of ids.");
             }
             else
             {
-               this.ids.push(_val1);
-               _i1++;
+               this.ids.push(_loc6_);
+               _loc3_++;
                continue;
             }
          }
-         var _avgPricesLen:uint = input.readUnsignedShort();
-         var _i2:uint = 0;
-         while(_i2<_avgPricesLen)
+         var _loc4_:uint = param1.readUnsignedShort();
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc4_)
          {
-            _val2=input.readInt();
-            if(_val2<0)
+            _loc7_ = param1.readInt();
+            if(_loc7_ < 0)
             {
-               throw new Error("Forbidden value ("+_val2+") on elements of avgPrices.");
+               throw new Error("Forbidden value (" + _loc7_ + ") on elements of avgPrices.");
             }
             else
             {
-               this.avgPrices.push(_val2);
-               _i2++;
+               this.avgPrices.push(_loc7_);
+               _loc5_++;
                continue;
             }
          }
       }
    }
-
 }

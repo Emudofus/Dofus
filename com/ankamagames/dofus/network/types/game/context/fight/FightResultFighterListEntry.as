@@ -3,58 +3,55 @@ package com.ankamagames.dofus.network.types.game.context.fight
    import com.ankamagames.jerakine.network.INetworkType;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
-
-
+   
    public class FightResultFighterListEntry extends FightResultListEntry implements INetworkType
    {
-         
-
+      
       public function FightResultFighterListEntry() {
          super();
       }
-
+      
       public static const protocolId:uint = 189;
-
+      
       public var id:int = 0;
-
+      
       public var alive:Boolean = false;
-
+      
       override public function getTypeId() : uint {
          return 189;
       }
-
-      public function initFightResultFighterListEntry(outcome:uint=0, rewards:FightLoot=null, id:int=0, alive:Boolean=false) : FightResultFighterListEntry {
-         super.initFightResultListEntry(outcome,rewards);
-         this.id=id;
-         this.alive=alive;
+      
+      public function initFightResultFighterListEntry(param1:uint=0, param2:FightLoot=null, param3:int=0, param4:Boolean=false) : FightResultFighterListEntry {
+         super.initFightResultListEntry(param1,param2);
+         this.id = param3;
+         this.alive = param4;
          return this;
       }
-
+      
       override public function reset() : void {
          super.reset();
-         this.id=0;
-         this.alive=false;
+         this.id = 0;
+         this.alive = false;
       }
-
-      override public function serialize(output:IDataOutput) : void {
-         this.serializeAs_FightResultFighterListEntry(output);
+      
+      override public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_FightResultFighterListEntry(param1);
       }
-
-      public function serializeAs_FightResultFighterListEntry(output:IDataOutput) : void {
-         super.serializeAs_FightResultListEntry(output);
-         output.writeInt(this.id);
-         output.writeBoolean(this.alive);
+      
+      public function serializeAs_FightResultFighterListEntry(param1:IDataOutput) : void {
+         super.serializeAs_FightResultListEntry(param1);
+         param1.writeInt(this.id);
+         param1.writeBoolean(this.alive);
       }
-
-      override public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_FightResultFighterListEntry(input);
+      
+      override public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_FightResultFighterListEntry(param1);
       }
-
-      public function deserializeAs_FightResultFighterListEntry(input:IDataInput) : void {
-         super.deserialize(input);
-         this.id=input.readInt();
-         this.alive=input.readBoolean();
+      
+      public function deserializeAs_FightResultFighterListEntry(param1:IDataInput) : void {
+         super.deserialize(param1);
+         this.id = param1.readInt();
+         this.alive = param1.readBoolean();
       }
    }
-
 }

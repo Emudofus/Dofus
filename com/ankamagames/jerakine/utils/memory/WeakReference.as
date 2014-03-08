@@ -1,35 +1,29 @@
 package com.ankamagames.jerakine.utils.memory
 {
    import flash.utils.Dictionary;
-
-
+   
    public class WeakReference extends Object
    {
-         
-
-      public function WeakReference(obj:*) {
+      
+      public function WeakReference(param1:*) {
          super();
-         this.dictionary=new Dictionary(true);
-         this.dictionary[obj]=null;
+         this.dictionary = new Dictionary(true);
+         this.dictionary[param1] = null;
       }
-
-
-
+      
       private var dictionary:Dictionary;
-
+      
       public function get object() : * {
-         var n:* = undefined;
-         if(!(this.dictionary hasNext _loc2_))
+         var _loc1_:* = undefined;
+         for (_loc1_ in this.dictionary)
          {
-            return null;
+            return _loc1_;
          }
-         n=nextName(_loc2_,_loc3_);
-         return n;
+         return null;
       }
-
+      
       public function destroy() : void {
-         this.dictionary=null;
+         this.dictionary = null;
       }
    }
-
 }

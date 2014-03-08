@@ -10,64 +10,60 @@ package com.ankamagames.berilia.components
    import flash.events.IOErrorEvent;
    import flash.events.MouseEvent;
    import flash.events.ProgressEvent;
-
-
+   
    public class SwfApplication extends GraphicContainer implements UIComponent
    {
-         
-
+      
       public function SwfApplication() {
          super();
-         mouseEnabled=true;
+         mouseEnabled = true;
       }
-
-
-
+      
       private var _ldr:Loader;
-
+      
       private var _uri:Uri;
-
+      
       private var _app:DisplayObject;
-
-      public function set uri(v:Uri) : void {
-         if((!getUi())||(!getUi().uiModule.trusted))
+      
+      public function set uri(param1:Uri) : void {
+         if(!getUi() || !getUi().uiModule.trusted)
          {
             return;
          }
-         this._uri=v;
+         this._uri = param1;
          this.initLoader();
-         this._ldr.load(new URLRequest(v.normalizedUri));
+         this._ldr.load(new URLRequest(param1.normalizedUri));
       }
-
+      
       public function get uri() : Uri {
          return this._uri;
       }
-
+      
       public var loadedHandler:Function;
-
+      
       public var loadErrorHandler:Function;
-
+      
       public var loadProgressHandler:Function;
-
-      override public function set width(nW:Number) : void {
-         super.width=nW;
+      
+      override public function set width(param1:Number) : void {
+         super.width = param1;
          if(this._app)
          {
-            this._app.width=nW;
+            this._app.width = param1;
          }
       }
-
-      override public function set height(nH:Number) : void {
-         super.height=nH;
+      
+      override public function set height(param1:Number) : void {
+         super.height = param1;
          if(this._app)
          {
-            this._app.height=nH;
+            this._app.height = param1;
          }
       }
-
+      
       override public function remove() : void {
          this.clearLoader();
-         if((this._ldr)&&(this._ldr.contentLoaderInfo))
+         if((this._ldr) && (this._ldr.contentLoaderInfo))
          {
             this._ldr.contentLoaderInfo.removeEventListener(Event.INIT,this.onInit);
             this._ldr.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR,this.onError);
@@ -76,13 +72,15 @@ package com.ankamagames.berilia.components
          {
             this._app.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMouse);
          }
-         this._ldr=null;
-         this.loadedHandler=null;
-         this.loadErrorHandler=null;
+         this._ldr = null;
+         this.loadedHandler = null;
+         this.loadErrorHandler = null;
       }
-
-      public function bindApi(propertyName:String, value:*) : Boolean {
-         if((!getUi())||(!getUi().uiModule.trusted))
+      
+      public function bindApi(param1:String, param2:*) : Boolean {
+         var propertyName:String = param1;
+         var value:* = param2;
+         if(!getUi() || !getUi().uiModule.trusted)
          {
             return false;
          }
@@ -92,7 +90,7 @@ package com.ankamagames.berilia.components
          }
          try
          {
-            this._app[propertyName]=value;
+            this._app[propertyName] = value;
          }
          catch(e:Error)
          {
@@ -100,11 +98,11 @@ package com.ankamagames.berilia.components
          }
          return true;
       }
-
+      
       private function initLoader() : void {
          if(!this._ldr)
          {
-            this._ldr=new Loader();
+            this._ldr = new Loader();
             this._ldr.contentLoaderInfo.addEventListener(Event.INIT,this.onInit);
             this._ldr.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,this.onProgress);
             this._ldr.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,this.onError);
@@ -114,7 +112,7 @@ package com.ankamagames.berilia.components
             this.clearLoader();
          }
       }
-
+      
       private function clearLoader() : void {
          if(this._ldr)
          {
@@ -125,37 +123,36 @@ package com.ankamagames.berilia.components
             removeChildAt(0);
          }
       }
-
-      private function onInit(e:Event) : void {
-         this._app=this._ldr.content;
-         this._app.width=width;
-         this._app.height=height;
+      
+      private function onInit(param1:Event) : void {
+         this._app = this._ldr.content;
+         this._app.width = width;
+         this._app.height = height;
          addChild(this._app);
          this._app.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMouse);
-         if(this.loadedHandler!=null)
+         if(this.loadedHandler != null)
          {
             this.loadedHandler(this);
          }
       }
-
-      private function onMouseMouse(e:MouseEvent) : void {
-         stage.dispatchEvent(e);
+      
+      private function onMouseMouse(param1:MouseEvent) : void {
+         stage.dispatchEvent(param1);
       }
-
-      private function onProgress(e:ProgressEvent) : void {
-         if(this.loadProgressHandler!=null)
+      
+      private function onProgress(param1:ProgressEvent) : void {
+         if(this.loadProgressHandler != null)
          {
-            this.loadProgressHandler(this,e);
+            this.loadProgressHandler(this,param1);
          }
       }
-
-      private function onError(e:Event) : void {
+      
+      private function onError(param1:Event) : void {
          this.clearLoader();
-         if(this.loadErrorHandler!=null)
+         if(this.loadErrorHandler != null)
          {
-            this.loadErrorHandler(this,e);
+            this.loadErrorHandler(this,param1);
          }
       }
    }
-
 }

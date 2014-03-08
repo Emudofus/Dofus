@@ -4,112 +4,108 @@ package com.ankamagames.jerakine.logger.targets
    import com.ankamagames.jerakine.logger.LogEvent;
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.LogTargetFilter;
-
-
+   
    public class AbstractTarget extends Object implements LoggingTarget
    {
-         
-
+      
       public function AbstractTarget() {
-         this._loggers=new Array();
-         this._filters=new Array();
+         this._loggers = new Array();
+         this._filters = new Array();
          super();
       }
-
+      
       private static const FILTERS_FORBIDDEN_CHARS:String = "[]~$^&/(){}<>+=`!#%?,:;\'\"@";
-
+      
       private var _loggers:Array;
-
+      
       private var _filters:Array;
-
-      public function set filters(value:Array) : void {
-         if(!this.checkIsFiltersValid(value))
+      
+      public function set filters(param1:Array) : void {
+         if(!this.checkIsFiltersValid(param1))
          {
-            throw new InvalidFilterError("These characters are invalid on a filter : "+FILTERS_FORBIDDEN_CHARS);
+            throw new InvalidFilterError("These characters are invalid on a filter : " + FILTERS_FORBIDDEN_CHARS);
          }
          else
          {
-            this._filters=value;
+            this._filters = param1;
             return;
          }
       }
-
+      
       public function get filters() : Array {
          return this._filters;
       }
-
-      public function logEvent(event:LogEvent) : void {
-         
+      
+      public function logEvent(param1:LogEvent) : void {
       }
-
-      public function addLogger(logger:Logger) : void {
-         this._loggers.push(logger);
+      
+      public function addLogger(param1:Logger) : void {
+         this._loggers.push(param1);
       }
-
-      public function removeLogger(logger:Logger) : void {
-         var index:int = this._loggers.indexOf(logger);
-         if(index>-1)
+      
+      public function removeLogger(param1:Logger) : void {
+         var _loc2_:int = this._loggers.indexOf(param1);
+         if(_loc2_ > -1)
          {
-            this._loggers.splice(index,1);
+            this._loggers.splice(_loc2_,1);
          }
       }
-
-      private function checkIsFiltersValid(filters:Array) : Boolean {
-         var filter:LogTargetFilter = null;
-         for each (filter in filters)
+      
+      private function checkIsFiltersValid(param1:Array) : Boolean {
+         var _loc2_:LogTargetFilter = null;
+         for each (_loc2_ in param1)
          {
-            if(!this.checkIsFilterValid(filter.target))
+            if(!this.checkIsFilterValid(_loc2_.target))
             {
                return false;
             }
          }
          return true;
       }
-
-      private function checkIsFilterValid(filter:String) : Boolean {
-         var i:int = 0;
-         while(i<FILTERS_FORBIDDEN_CHARS.length)
+      
+      private function checkIsFilterValid(param1:String) : Boolean {
+         var _loc2_:* = 0;
+         while(_loc2_ < FILTERS_FORBIDDEN_CHARS.length)
          {
-            if(filter.indexOf(FILTERS_FORBIDDEN_CHARS.charAt(i))>-1)
+            if(param1.indexOf(FILTERS_FORBIDDEN_CHARS.charAt(_loc2_)) > -1)
             {
                return false;
             }
-            i++;
+            _loc2_++;
          }
          return true;
       }
-
-      public function onLog(e:LogEvent) : void {
-         var filter:LogTargetFilter = null;
-         var reg:RegExp = null;
-         var testResult:* = false;
-         var passing:Boolean = false;
-         if(this._filters.length>0)
+      
+      public function onLog(param1:LogEvent) : void {
+         var _loc3_:LogTargetFilter = null;
+         var _loc4_:RegExp = null;
+         var _loc5_:* = false;
+         var _loc2_:* = false;
+         if(this._filters.length > 0)
          {
-            for each (filter in this._filters)
+            for each (_loc3_ in this._filters)
             {
-               reg=new RegExp(filter.target.replace("*",".*"),"i");
-               testResult=reg.test(e.category);
-               if((e.category==filter.target)&&(!filter.allow))
+               _loc4_ = new RegExp(_loc3_.target.replace("*",".*"),"i");
+               _loc5_ = _loc4_.test(param1.category);
+               if(param1.category == _loc3_.target && !_loc3_.allow)
                {
-                  passing=false;
+                  _loc2_ = false;
                   break;
                }
-               if((testResult)&&(filter.allow))
+               if((_loc5_) && (_loc3_.allow))
                {
-                  passing=true;
+                  _loc2_ = true;
                }
             }
          }
          else
          {
-            passing=true;
+            _loc2_ = true;
          }
-         if(passing)
+         if(_loc2_)
          {
-            this.logEvent(e);
+            this.logEvent(param1);
          }
       }
    }
-
 }

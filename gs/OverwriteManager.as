@@ -1,158 +1,152 @@
 package gs
 {
-
-
+   import flash.errors.*;
+   import flash.utils.*;
+   
    public class OverwriteManager extends Object
    {
-         
-
+      
       public function OverwriteManager() {
          super();
       }
-
+      
       public static const version:Number = 1;
-
+      
       public static const NONE:int = 0;
-
+      
       public static const ALL:int = 1;
-
+      
       public static const AUTO:int = 2;
-
+      
       public static const CONCURRENT:int = 3;
-
+      
       public static var mode:int;
-
+      
       public static var enabled:Boolean;
-
-      public static function init($mode:int=2) : int {
-         if(TweenLite.version<9.29)
+      
+      public static function init(param1:int=2) : int {
+         if(TweenLite.version < 9.29)
          {
             trace("TweenLite warning: Your TweenLite class needs to be updated to work with OverwriteManager (or you may need to clear your ASO files). Please download and install the latest version from http://www.tweenlite.com.");
          }
-         TweenLite.overwriteManager=OverwriteManager;
-         mode=$mode;
-         enabled=true;
+         TweenLite.overwriteManager = OverwriteManager;
+         mode = param1;
+         enabled = true;
          return mode;
       }
-
-      public static function manageOverwrites($tween:TweenLite, $targetTweens:Array) : void {
-         var i:* = 0;
-         var tween:TweenLite = null;
-         var v:Object = null;
-         var p:String = null;
-         var vars:Object = $tween.vars;
-         var m:int = vars.overwrite==undefined?mode:int(vars.overwrite);
-         if((m>2)||($targetTweens==null))
+      
+      public static function manageOverwrites(param1:TweenLite, param2:Array) : void {
+         var _loc7_:* = 0;
+         var _loc8_:TweenLite = null;
+         var _loc9_:Object = null;
+         var _loc10_:String = null;
+         var _loc3_:Object = param1.vars;
+         var _loc4_:int = _loc3_.overwrite == undefined?mode:int(_loc3_.overwrite);
+         if(_loc4_ < 2 || param2 == null)
          {
             return;
          }
-         var startTime:Number = $tween.startTime;
-         var a:Array = [];
-         i=$targetTweens.length-1;
-         while(i>-1)
+         var _loc5_:Number = param1.startTime;
+         var _loc6_:Array = [];
+         _loc7_ = param2.length-1;
+         while(_loc7_ > -1)
          {
-            tween=$targetTweens[i];
-            if((!(tween==$tween))&&(tween.startTime<=startTime)&&(tween.startTime+tween.duration*1000/tween.combinedTimeScale<startTime))
+            _loc8_ = param2[_loc7_];
+            if(!(_loc8_ == param1) && _loc8_.startTime <= _loc5_ && _loc8_.startTime + _loc8_.duration * 1000 / _loc8_.combinedTimeScale > _loc5_)
             {
-               a[a.length]=tween;
+               _loc6_[_loc6_.length] = _loc8_;
             }
-            i--;
+            _loc7_--;
          }
-         if(a.length==0)
+         if(_loc6_.length == 0)
          {
             return;
          }
-         if(m==AUTO)
+         if(_loc4_ == AUTO)
          {
-            if(vars.isTV==true)
+            if(_loc3_.isTV == true)
             {
-               vars=vars.exposedProps;
+               _loc3_ = _loc3_.exposedProps;
             }
-            v={};
-            for (p in vars)
+            _loc9_ = {};
+            for (_loc10_ in _loc3_)
             {
-               if((p=="ease")||(p=="delay")||(p=="overwrite")||(p=="onComplete")||(p=="onCompleteParams")||(p=="runBackwards")||(p=="persist")||(p=="onUpdate")||(p=="onUpdateParams")||(p=="timeScale")||(p=="onStart")||(p=="onStartParams")||(p=="renderOnStart")||(p=="proxiedEase")||(p=="easeParams")||(p=="onCompleteAll")||(p=="onCompleteAllParams")||(p=="yoyo")||(p=="loop")||(p=="onCompleteListener")||(p=="onStartListener")||(p=="onUpdateListener"))
+               if(!(_loc10_ == "ease" || _loc10_ == "delay" || _loc10_ == "overwrite" || _loc10_ == "onComplete" || _loc10_ == "onCompleteParams" || _loc10_ == "runBackwards" || _loc10_ == "persist" || _loc10_ == "onUpdate" || _loc10_ == "onUpdateParams" || _loc10_ == "timeScale" || _loc10_ == "onStart" || _loc10_ == "onStartParams" || _loc10_ == "renderOnStart" || _loc10_ == "proxiedEase" || _loc10_ == "easeParams" || _loc10_ == "onCompleteAll" || _loc10_ == "onCompleteAllParams" || _loc10_ == "yoyo" || _loc10_ == "loop" || _loc10_ == "onCompleteListener" || _loc10_ == "onStartListener" || _loc10_ == "onUpdateListener"))
                {
-               }
-               else
-               {
-                  v[p]=1;
-                  if(p=="shortRotate")
+                  _loc9_[_loc10_] = 1;
+                  if(_loc10_ == "shortRotate")
                   {
-                     v.rotation=1;
+                     _loc9_.rotation = 1;
                   }
                   else
                   {
-                     if(p=="removeTint")
+                     if(_loc10_ == "removeTint")
                      {
-                        v.tint=1;
+                        _loc9_.tint = 1;
                      }
                      else
                      {
-                        if(p=="autoAlpha")
+                        if(_loc10_ == "autoAlpha")
                         {
-                           v.alpha=1;
-                           v.visible=1;
+                           _loc9_.alpha = 1;
+                           _loc9_.visible = 1;
                         }
                      }
                   }
                }
             }
-            i=a.length-1;
-            while(i>-1)
+            _loc7_ = _loc6_.length-1;
+            while(_loc7_ > -1)
             {
-               a[i].killVars(v);
-               i--;
+               _loc6_[_loc7_].killVars(_loc9_);
+               _loc7_--;
             }
          }
          else
          {
-            i=a.length-1;
-            while(i>-1)
+            _loc7_ = _loc6_.length-1;
+            while(_loc7_ > -1)
             {
-               a[i].enabled=false;
-               i--;
+               _loc6_[_loc7_].enabled = false;
+               _loc7_--;
             }
          }
       }
-
-      public static function killVars($killVars:Object, $vars:Object, $tweens:Array, $subTweens:Array, $filters:Array) : void {
-         var i:* = 0;
-         var p:String = null;
-         i=$subTweens.length-1;
-         while(i>-1)
+      
+      public static function killVars(param1:Object, param2:Object, param3:Array, param4:Array, param5:Array) : void {
+         var _loc6_:* = 0;
+         var _loc7_:String = null;
+         _loc6_ = param4.length-1;
+         while(_loc6_ > -1)
          {
-            if($killVars[$subTweens[i].name]!=undefined)
+            if(param1[param4[_loc6_].name] != undefined)
             {
-               $subTweens.splice(i,1);
+               param4.splice(_loc6_,1);
             }
-            i--;
+            _loc6_--;
          }
-         i=$tweens.length-1;
-         while(i>-1)
+         _loc6_ = param3.length-1;
+         while(_loc6_ > -1)
          {
-            if($killVars[$tweens[i][4]]!=undefined)
+            if(param1[param3[_loc6_][4]] != undefined)
             {
-               $tweens.splice(i,1);
+               param3.splice(_loc6_,1);
             }
-            i--;
+            _loc6_--;
          }
-         i=$filters.length-1;
-         while(i>-1)
+         _loc6_ = param5.length-1;
+         while(_loc6_ > -1)
          {
-            if($killVars[$filters[i].name]!=undefined)
+            if(param1[param5[_loc6_].name] != undefined)
             {
-               $filters.splice(i,1);
+               param5.splice(_loc6_,1);
             }
-            i--;
+            _loc6_--;
          }
-         for (p in $killVars)
+         for (_loc7_ in param1)
          {
-            delete $vars[[p]];
+            delete param2[[_loc7_]];
          }
       }
-
-
    }
-
 }

@@ -5,95 +5,93 @@ package com.ankamagames.dofus.network.messages.game.interactive.meeting
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class TeleportToBuddyCloseMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function TeleportToBuddyCloseMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6303;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var dungeonId:uint = 0;
-
+      
       public var buddyId:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 6303;
       }
-
-      public function initTeleportToBuddyCloseMessage(dungeonId:uint=0, buddyId:uint=0) : TeleportToBuddyCloseMessage {
-         this.dungeonId=dungeonId;
-         this.buddyId=buddyId;
-         this._isInitialized=true;
+      
+      public function initTeleportToBuddyCloseMessage(param1:uint=0, param2:uint=0) : TeleportToBuddyCloseMessage {
+         this.dungeonId = param1;
+         this.buddyId = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.dungeonId=0;
-         this.buddyId=0;
-         this._isInitialized=false;
+         this.dungeonId = 0;
+         this.buddyId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_TeleportToBuddyCloseMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_TeleportToBuddyCloseMessage(param1);
       }
-
-      public function serializeAs_TeleportToBuddyCloseMessage(output:IDataOutput) : void {
-         if(this.dungeonId<0)
+      
+      public function serializeAs_TeleportToBuddyCloseMessage(param1:IDataOutput) : void {
+         if(this.dungeonId < 0)
          {
-            throw new Error("Forbidden value ("+this.dungeonId+") on element dungeonId.");
+            throw new Error("Forbidden value (" + this.dungeonId + ") on element dungeonId.");
          }
          else
          {
-            output.writeShort(this.dungeonId);
-            if(this.buddyId<0)
+            param1.writeShort(this.dungeonId);
+            if(this.buddyId < 0)
             {
-               throw new Error("Forbidden value ("+this.buddyId+") on element buddyId.");
+               throw new Error("Forbidden value (" + this.buddyId + ") on element buddyId.");
             }
             else
             {
-               output.writeInt(this.buddyId);
+               param1.writeInt(this.buddyId);
                return;
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_TeleportToBuddyCloseMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_TeleportToBuddyCloseMessage(param1);
       }
-
-      public function deserializeAs_TeleportToBuddyCloseMessage(input:IDataInput) : void {
-         this.dungeonId=input.readShort();
-         if(this.dungeonId<0)
+      
+      public function deserializeAs_TeleportToBuddyCloseMessage(param1:IDataInput) : void {
+         this.dungeonId = param1.readShort();
+         if(this.dungeonId < 0)
          {
-            throw new Error("Forbidden value ("+this.dungeonId+") on element of TeleportToBuddyCloseMessage.dungeonId.");
+            throw new Error("Forbidden value (" + this.dungeonId + ") on element of TeleportToBuddyCloseMessage.dungeonId.");
          }
          else
          {
-            this.buddyId=input.readInt();
-            if(this.buddyId<0)
+            this.buddyId = param1.readInt();
+            if(this.buddyId < 0)
             {
-               throw new Error("Forbidden value ("+this.buddyId+") on element of TeleportToBuddyCloseMessage.buddyId.");
+               throw new Error("Forbidden value (" + this.buddyId + ") on element of TeleportToBuddyCloseMessage.buddyId.");
             }
             else
             {
@@ -102,5 +100,4 @@ package com.ankamagames.dofus.network.messages.game.interactive.meeting
          }
       }
    }
-
 }

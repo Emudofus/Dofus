@@ -5,72 +5,69 @@ package com.ankamagames.dofus.network.messages.game.actions.sequence
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class SequenceStartMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function SequenceStartMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 955;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var sequenceType:int = 0;
-
+      
       public var authorId:int = 0;
-
+      
       override public function getMessageId() : uint {
          return 955;
       }
-
-      public function initSequenceStartMessage(sequenceType:int=0, authorId:int=0) : SequenceStartMessage {
-         this.sequenceType=sequenceType;
-         this.authorId=authorId;
-         this._isInitialized=true;
+      
+      public function initSequenceStartMessage(param1:int=0, param2:int=0) : SequenceStartMessage {
+         this.sequenceType = param1;
+         this.authorId = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.sequenceType=0;
-         this.authorId=0;
-         this._isInitialized=false;
+         this.sequenceType = 0;
+         this.authorId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_SequenceStartMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_SequenceStartMessage(param1);
       }
-
-      public function serializeAs_SequenceStartMessage(output:IDataOutput) : void {
-         output.writeByte(this.sequenceType);
-         output.writeInt(this.authorId);
+      
+      public function serializeAs_SequenceStartMessage(param1:IDataOutput) : void {
+         param1.writeByte(this.sequenceType);
+         param1.writeInt(this.authorId);
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_SequenceStartMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_SequenceStartMessage(param1);
       }
-
-      public function deserializeAs_SequenceStartMessage(input:IDataInput) : void {
-         this.sequenceType=input.readByte();
-         this.authorId=input.readInt();
+      
+      public function deserializeAs_SequenceStartMessage(param1:IDataInput) : void {
+         this.sequenceType = param1.readByte();
+         this.authorId = param1.readInt();
       }
    }
-
 }

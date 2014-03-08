@@ -5,76 +5,74 @@ package com.ankamagames.dofus.network.messages.game.achievement
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class AchievementDetailsRequestMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function AchievementDetailsRequestMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6380;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var achievementId:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 6380;
       }
-
-      public function initAchievementDetailsRequestMessage(achievementId:uint=0) : AchievementDetailsRequestMessage {
-         this.achievementId=achievementId;
-         this._isInitialized=true;
+      
+      public function initAchievementDetailsRequestMessage(param1:uint=0) : AchievementDetailsRequestMessage {
+         this.achievementId = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.achievementId=0;
-         this._isInitialized=false;
+         this.achievementId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_AchievementDetailsRequestMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_AchievementDetailsRequestMessage(param1);
       }
-
-      public function serializeAs_AchievementDetailsRequestMessage(output:IDataOutput) : void {
-         if(this.achievementId<0)
+      
+      public function serializeAs_AchievementDetailsRequestMessage(param1:IDataOutput) : void {
+         if(this.achievementId < 0)
          {
-            throw new Error("Forbidden value ("+this.achievementId+") on element achievementId.");
+            throw new Error("Forbidden value (" + this.achievementId + ") on element achievementId.");
          }
          else
          {
-            output.writeShort(this.achievementId);
+            param1.writeShort(this.achievementId);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_AchievementDetailsRequestMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_AchievementDetailsRequestMessage(param1);
       }
-
-      public function deserializeAs_AchievementDetailsRequestMessage(input:IDataInput) : void {
-         this.achievementId=input.readShort();
-         if(this.achievementId<0)
+      
+      public function deserializeAs_AchievementDetailsRequestMessage(param1:IDataInput) : void {
+         this.achievementId = param1.readShort();
+         if(this.achievementId < 0)
          {
-            throw new Error("Forbidden value ("+this.achievementId+") on element of AchievementDetailsRequestMessage.achievementId.");
+            throw new Error("Forbidden value (" + this.achievementId + ") on element of AchievementDetailsRequestMessage.achievementId.");
          }
          else
          {
@@ -82,5 +80,4 @@ package com.ankamagames.dofus.network.messages.game.achievement
          }
       }
    }
-
 }

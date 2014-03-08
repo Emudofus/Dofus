@@ -5,310 +5,347 @@ package com.ankamagames.dofus.datacenter.items.criterion
    import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.jerakine.utils.misc.StringUtils;
-
-
+   
    public class GroupItemCriterion extends Object implements IItemCriterion, IDataCenter
    {
-         
-
-      public function GroupItemCriterion(pCriterion:String) {
+      
+      public function GroupItemCriterion(param1:String) {
          super();
-         this._criterionTextForm=pCriterion;
-         this._cleanCriterionTextForm=this._criterionTextForm;
-         if(!pCriterion)
+         this._criterionTextForm = param1;
+         this._cleanCriterionTextForm = this._criterionTextForm;
+         if(!param1)
          {
             return;
          }
-         this._cleanCriterionTextForm=StringUtils.replace(this._cleanCriterionTextForm," ","");
-         var delimitedArray:Vector.<String> = StringUtils.getDelimitedText(this._cleanCriterionTextForm,"(",")",true);
-         if((delimitedArray.length<0)&&(delimitedArray[0]==this._cleanCriterionTextForm))
+         this._cleanCriterionTextForm = StringUtils.replace(this._cleanCriterionTextForm," ","");
+         var _loc2_:Vector.<String> = StringUtils.getDelimitedText(this._cleanCriterionTextForm,"(",")",true);
+         if(_loc2_.length > 0 && _loc2_[0] == this._cleanCriterionTextForm)
          {
-            this._cleanCriterionTextForm=this._cleanCriterionTextForm.slice(1);
-            this._cleanCriterionTextForm=this._cleanCriterionTextForm.slice(0,this._cleanCriterionTextForm.length-1);
+            this._cleanCriterionTextForm = this._cleanCriterionTextForm.slice(1);
+            this._cleanCriterionTextForm = this._cleanCriterionTextForm.slice(0,this._cleanCriterionTextForm.length-1);
          }
          this.split();
          this.createNewGroups();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GroupItemCriterion));
-
-      public static function create(pCriteria:Vector.<IItemCriterion>, pOperators:Vector.<String>) : GroupItemCriterion {
-         var pair:* = undefined;
-         var tabLength:uint = pCriteria.length+pOperators.length;
-         var textForm:String = "";
-         var criterionIndex:uint = 0;
-         var operatorIndex:uint = 0;
-         var i:uint = 0;
-         while(i<tabLength)
+      
+      public static function create(param1:Vector.<IItemCriterion>, param2:Vector.<String>) : GroupItemCriterion {
+         var _loc9_:* = undefined;
+         var _loc3_:uint = param1.length + param2.length;
+         var _loc4_:* = "";
+         var _loc5_:uint = 0;
+         var _loc6_:uint = 0;
+         var _loc7_:uint = 0;
+         while(_loc7_ < _loc3_)
          {
-            pair=i%2;
-            if(pair==0)
+            _loc9_ = _loc7_ % 2;
+            if(_loc9_ == 0)
             {
-               textForm=textForm+(pCriteria[criterionIndex++] as IItemCriterion).basicText;
+               _loc4_ = _loc4_ + (param1[_loc5_++] as IItemCriterion).basicText;
             }
             else
             {
-               textForm=textForm+pOperators[operatorIndex++];
+               _loc4_ = _loc4_ + param2[_loc6_++];
             }
-            i++;
+            _loc7_++;
          }
-         var group:GroupItemCriterion = new GroupItemCriterion(textForm);
-         return group;
+         var _loc8_:GroupItemCriterion = new GroupItemCriterion(_loc4_);
+         return _loc8_;
       }
-
+      
       private var _criteria:Vector.<IItemCriterion>;
-
+      
       private var _operators:Vector.<String>;
-
+      
       private var _criterionTextForm:String;
-
+      
       private var _cleanCriterionTextForm:String;
-
+      
       private var _malformated:Boolean = false;
-
+      
       private var _singleOperatorType:Boolean = false;
-
+      
       public function get criteria() : Vector.<IItemCriterion> {
          return this._criteria;
       }
-
+      
       public function get inlineCriteria() : Vector.<IItemCriterion> {
-         var criterion:IItemCriterion = null;
-         var criteria:Vector.<IItemCriterion> = new Vector.<IItemCriterion>();
-         for each (criterion in this._criteria)
+         var _loc2_:IItemCriterion = null;
+         var _loc1_:Vector.<IItemCriterion> = new Vector.<IItemCriterion>();
+         for each (_loc2_ in this._criteria)
          {
-            criteria=criteria.concat(criterion.inlineCriteria);
+            _loc1_ = _loc1_.concat(_loc2_.inlineCriteria);
          }
-         return criteria;
+         return _loc1_;
       }
-
+      
       public function get isRespected() : Boolean {
-         var criterion:IItemCriterion = null;
-         if((!this._criteria)||(this._criteria.length==0))
+         var _loc2_:IItemCriterion = null;
+         if(!this._criteria || this._criteria.length == 0)
          {
             return true;
          }
-         if((this._criteria)&&(this._criteria.length==1)&&(this._criteria[0] is ItemCriterion))
+         var _loc1_:PlayedCharacterManager = PlayedCharacterManager.getInstance();
+         if(!_loc1_ || !_loc1_.characteristics)
+         {
+            return true;
+         }
+         if((this._criteria) && (this._criteria.length == 1) && this._criteria[0] is ItemCriterion)
          {
             return (this._criteria[0] as ItemCriterion).isRespected;
          }
-         if(this._operators[0]=="|")
+         if(this._operators[0] == "|")
          {
-            for each (criterion in this._criteria)
+            for each (_loc2_ in this._criteria)
             {
-               if(criterion.isRespected)
+               if(_loc2_.isRespected)
                {
                   return true;
                }
             }
             return false;
          }
-         for each (criterion in this._criteria)
+         for each (_loc2_ in this._criteria)
          {
-            if(!criterion.isRespected)
+            if(!_loc2_.isRespected)
             {
                return false;
             }
          }
          return true;
       }
-
+      
       public function get text() : String {
-         var pair:* = undefined;
-         var textForm:String = "";
-         if(this._criteria==null)
+         var _loc6_:* = undefined;
+         var _loc1_:* = "";
+         if(this._criteria == null)
          {
-            return textForm;
+            return _loc1_;
          }
-         var tabLength:uint = this._criteria.length+this._operators.length;
-         var criterionIndex:uint = 0;
-         var operatorIndex:uint = 0;
-         var i:uint = 0;
-         while(i<tabLength)
+         var _loc2_:uint = this._criteria.length + this._operators.length;
+         var _loc3_:uint = 0;
+         var _loc4_:uint = 0;
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc2_)
          {
-            pair=i%2;
-            if(pair==0)
+            _loc6_ = _loc5_ % 2;
+            if(_loc6_ == 0)
             {
-               textForm=textForm+(this._criteria[criterionIndex++] as IItemCriterion).text+" ";
+               _loc1_ = _loc1_ + (this._criteria[_loc3_++] as IItemCriterion).text + " ";
             }
             else
             {
-               textForm=textForm+this._operators[operatorIndex++]+" ";
+               _loc1_ = _loc1_ + this._operators[_loc4_++] + " ";
             }
-            i++;
+            _loc5_++;
          }
-         return textForm;
+         return _loc1_;
       }
-
+      
       public function get basicText() : String {
          return this._criterionTextForm;
       }
-
+      
       public function clone() : IItemCriterion {
-         var clonedCriterion:IItemCriterion = new GroupItemCriterion(this.basicText);
-         return clonedCriterion;
+         var _loc1_:IItemCriterion = new GroupItemCriterion(this.basicText);
+         return _loc1_;
       }
-
+      
       private function createNewGroups() : void {
-         var crit:IItemCriterion = null;
-         var ope:String = null;
-         var curIndex:* = 0;
-         var exit:* = false;
-         var crits:Vector.<IItemCriterion> = null;
-         var ops:Vector.<String> = null;
-         var group:GroupItemCriterion = null;
-         if((this._malformated)||(!this._criteria)||(this._criteria.length<=2)||(this._singleOperatorType))
+         var _loc3_:IItemCriterion = null;
+         var _loc4_:String = null;
+         var _loc5_:* = 0;
+         var _loc6_:* = false;
+         var _loc7_:Vector.<IItemCriterion> = null;
+         var _loc8_:Vector.<String> = null;
+         var _loc9_:GroupItemCriterion = null;
+         if((this._malformated) || !this._criteria || this._criteria.length <= 2 || (this._singleOperatorType))
          {
             return;
          }
-         var copyCriteria:Vector.<IItemCriterion> = new Vector.<IItemCriterion>();
-         var copyOperators:Vector.<String> = new Vector.<String>();
-         for each (crit in this._criteria)
+         var _loc1_:Vector.<IItemCriterion> = new Vector.<IItemCriterion>();
+         var _loc2_:Vector.<String> = new Vector.<String>();
+         for each (_loc3_ in this._criteria)
          {
-            copyCriteria.push(crit.clone());
+            _loc1_.push(_loc3_.clone());
          }
-         for each (ope in this._operators)
+         for each (_loc4_ in this._operators)
          {
-            copyOperators.push(ope);
+            _loc2_.push(_loc4_);
          }
-         curIndex=0;
-         exit=false;
-         while(!exit)
+         _loc5_ = 0;
+         _loc6_ = false;
+         while(!_loc6_)
          {
-            if(copyCriteria.length<=2)
+            if(_loc1_.length <= 2)
             {
-               exit=true;
+               _loc6_ = true;
             }
             else
             {
-               if(copyOperators[curIndex]=="&")
+               if(_loc2_[_loc5_] == "&")
                {
-                  crits=new Vector.<IItemCriterion>();
-                  crits.push(copyCriteria[curIndex]);
-                  crits.push(copyCriteria[curIndex+1]);
-                  ops=Vector.<String>([copyOperators[curIndex]]);
-                  group=GroupItemCriterion.create(crits,ops);
-                  copyCriteria.splice(curIndex,2,group);
-                  copyOperators.splice(curIndex,1);
-                  curIndex--;
+                  _loc7_ = new Vector.<IItemCriterion>();
+                  _loc7_.push(_loc1_[_loc5_]);
+                  _loc7_.push(_loc1_[_loc5_ + 1]);
+                  _loc8_ = Vector.<String>([_loc2_[_loc5_]]);
+                  _loc9_ = GroupItemCriterion.create(_loc7_,_loc8_);
+                  _loc1_.splice(_loc5_,2,_loc9_);
+                  _loc2_.splice(_loc5_,1);
+                  _loc5_--;
                }
-               curIndex++;
-               if(curIndex>=copyOperators.length)
+               _loc5_++;
+               if(_loc5_ >= _loc2_.length)
                {
-                  exit=true;
+                  _loc6_ = true;
                }
             }
          }
-         this._criteria=copyCriteria;
-         this._operators=copyOperators;
-         this._singleOperatorType=this.checkSingleOperatorType(this._operators);
+         this._criteria = _loc1_;
+         this._operators = _loc2_;
+         this._singleOperatorType = this.checkSingleOperatorType(this._operators);
       }
-
+      
       private function split() : void {
-         var criterion:IItemCriterion = null;
-         var index:* = 0;
-         var op:String = null;
-         var criterion2:IItemCriterion = null;
-         var index2:* = 0;
-         var firstPart:String = null;
-         var secondPart:String = null;
-         var operator:String = null;
+         var _loc8_:IItemCriterion = null;
+         var _loc9_:* = 0;
+         var _loc10_:* = 0;
+         var _loc11_:String = null;
+         var _loc12_:IItemCriterion = null;
+         var _loc13_:* = 0;
+         var _loc14_:* = 0;
+         var _loc15_:String = null;
+         var _loc16_:String = null;
+         var _loc17_:String = null;
          if(!this._cleanCriterionTextForm)
          {
             return;
          }
-         var CRITERION:uint = 0;
-         var OPERATOR:uint = 1;
-         var next:uint = CRITERION;
-         var exit:Boolean = false;
-         var searchingString:String = this._cleanCriterionTextForm;
-         this._criteria=new Vector.<IItemCriterion>();
-         this._operators=new Vector.<String>();
-         var andIndexes:Array = StringUtils.getAllIndexOf("&",searchingString);
-         var orIndexes:Array = StringUtils.getAllIndexOf("|",searchingString);
-         if((andIndexes.length==0)||(orIndexes.length==0))
+         var _loc1_:uint = 0;
+         var _loc2_:uint = 1;
+         var _loc3_:uint = _loc1_;
+         var _loc4_:* = false;
+         var _loc5_:String = this._cleanCriterionTextForm;
+         this._criteria = new Vector.<IItemCriterion>();
+         this._operators = new Vector.<String>();
+         var _loc6_:Array = StringUtils.getAllIndexOf("&",_loc5_);
+         var _loc7_:Array = StringUtils.getAllIndexOf("|",_loc5_);
+         if(_loc6_.length == 0 || _loc7_.length == 0)
          {
-            this._singleOperatorType=true;
-            while(!exit)
+            this._singleOperatorType = true;
+            while(!_loc4_)
             {
-               criterion=this.getFirstCriterion(searchingString);
-               if(!criterion)
+               _loc8_ = this.getFirstCriterion(_loc5_);
+               if(!_loc8_)
                {
-                  exit=true;
+                  _loc9_ = _loc5_.indexOf("&");
+                  if(_loc9_ == -1)
+                  {
+                     _loc9_ = _loc5_.indexOf("|");
+                  }
+                  if(_loc9_ == -1)
+                  {
+                     _loc5_ = "";
+                  }
+                  else
+                  {
+                     _loc5_ = _loc5_.slice(_loc9_ + 1);
+                  }
                }
                else
                {
-                  this._criteria.push(criterion);
-                  index=searchingString.indexOf(criterion.basicText);
-                  op=searchingString.slice(index+criterion.basicText.length,index+1+criterion.basicText.length);
-                  if(op)
+                  this._criteria.push(_loc8_);
+                  _loc10_ = _loc5_.indexOf(_loc8_.basicText);
+                  _loc11_ = _loc5_.slice(_loc10_ + _loc8_.basicText.length,_loc10_ + 1 + _loc8_.basicText.length);
+                  if(_loc11_)
                   {
-                     this._operators.push(op);
+                     this._operators.push(_loc11_);
                   }
-                  searchingString=searchingString.slice(index+1+criterion.basicText.length);
+                  _loc5_ = _loc5_.slice(_loc10_ + 1 + _loc8_.basicText.length);
+               }
+               if(!_loc5_)
+               {
+                  _loc4_ = true;
                }
             }
          }
          else
          {
-            while(!exit)
+            while(!_loc4_)
             {
-               if(!searchingString)
+               if(!_loc5_)
                {
-                  exit=true;
+                  _loc4_ = true;
                }
                else
                {
-                  if(next==CRITERION)
+                  if(_loc3_ == _loc1_)
                   {
-                     criterion2=this.getFirstCriterion(searchingString);
-                     if(!criterion2)
+                     _loc12_ = this.getFirstCriterion(_loc5_);
+                     if(!_loc12_)
                      {
-                        exit=true;
+                        _loc13_ = _loc5_.indexOf("&");
+                        if(_loc13_ == -1)
+                        {
+                           _loc13_ = _loc5_.indexOf("|");
+                        }
+                        if(_loc13_ == -1)
+                        {
+                           _loc5_ = "";
+                        }
+                        else
+                        {
+                           _loc5_ = _loc5_.slice(_loc13_ + 1);
+                        }
                      }
                      else
                      {
-                        this._criteria.push(criterion2);
-                        next=OPERATOR;
-                        index2=searchingString.indexOf(criterion2.basicText);
-                        firstPart=searchingString.slice(0,index2);
-                        secondPart=searchingString.slice(index2+criterion2.basicText.length);
-                        searchingString=firstPart+secondPart;
+                        this._criteria.push(_loc12_);
+                        _loc3_ = _loc2_;
+                        _loc14_ = _loc5_.indexOf(_loc12_.basicText);
+                        _loc15_ = _loc5_.slice(0,_loc14_);
+                        _loc16_ = _loc5_.slice(_loc14_ + _loc12_.basicText.length);
+                        _loc5_ = _loc15_ + _loc16_;
+                     }
+                     if(!_loc5_)
+                     {
+                        _loc4_ = true;
                      }
                   }
                   else
                   {
-                     operator=searchingString.slice(0,1);
-                     if(!operator)
+                     _loc17_ = _loc5_.slice(0,1);
+                     if(!_loc17_)
                      {
-                        exit=true;
+                        _loc4_ = true;
                      }
                      else
                      {
-                        this._operators.push(operator);
-                        next=CRITERION;
-                        searchingString=searchingString.slice(1);
+                        this._operators.push(_loc17_);
+                        _loc3_ = _loc1_;
+                        _loc5_ = _loc5_.slice(1);
                      }
                   }
                }
             }
-            this._singleOperatorType=this.checkSingleOperatorType(this._operators);
+            this._singleOperatorType = this.checkSingleOperatorType(this._operators);
          }
-         if((this._operators.length>=this._criteria.length)&&(this._operators.length<0)&&(this._criteria.length<0))
+         if(this._operators.length >= this._criteria.length && this._operators.length > 0 && this._criteria.length > 0)
          {
-            this._malformated=true;
-            trace("Il y a un soucis avec le nombre d\'opérateurs et de critères :/ "+this._operators.length+" opérateur(s) pour "+this._criteria.length+" cirtère(s)");
+            this._malformated = true;
          }
       }
-
-      private function checkSingleOperatorType(pOperators:Vector.<String>) : Boolean {
-         var op:String = null;
-         if(pOperators.length>0)
+      
+      private function checkSingleOperatorType(param1:Vector.<String>) : Boolean {
+         var _loc2_:String = null;
+         if(param1.length > 0)
          {
-            for each (op in pOperators)
+            for each (_loc2_ in param1)
             {
-               if(op!=pOperators[0])
+               if(_loc2_ != param1[0])
                {
                   return false;
                }
@@ -316,48 +353,47 @@ package com.ankamagames.dofus.datacenter.items.criterion
          }
          return true;
       }
-
-      private function getFirstCriterion(pCriteria:String) : IItemCriterion {
-         var criterion:IItemCriterion = null;
-         var dl:Vector.<String> = null;
-         var ANDindex:* = 0;
-         var ORindex:* = 0;
-         if(!pCriteria)
+      
+      private function getFirstCriterion(param1:String) : IItemCriterion {
+         var _loc2_:IItemCriterion = null;
+         var _loc3_:Vector.<String> = null;
+         var _loc4_:* = 0;
+         var _loc5_:* = 0;
+         if(!param1)
          {
             return null;
          }
-         var pCriteria:String = StringUtils.replace(pCriteria," ","");
-         if(pCriteria.slice(0,1)=="(")
+         var param1:String = StringUtils.replace(param1," ","");
+         if(param1.slice(0,1) == "(")
          {
-            dl=StringUtils.getDelimitedText(pCriteria,"(",")",true);
-            criterion=new GroupItemCriterion(dl[0]);
+            _loc3_ = StringUtils.getDelimitedText(param1,"(",")",true);
+            _loc2_ = new GroupItemCriterion(_loc3_[0]);
          }
          else
          {
-            ANDindex=pCriteria.indexOf("&");
-            ORindex=pCriteria.indexOf("|");
-            if((ANDindex==-1)&&(ORindex==-1))
+            _loc4_ = param1.indexOf("&");
+            _loc5_ = param1.indexOf("|");
+            if(_loc4_ == -1 && _loc5_ == -1)
             {
-               criterion=ItemCriterionFactory.create(pCriteria);
+               _loc2_ = ItemCriterionFactory.create(param1);
             }
             else
             {
-               if(((ANDindex>ORindex)||(ORindex==-1))&&(!(ANDindex==-1)))
+               if((_loc4_ < _loc5_ || _loc5_ == -1) && !(_loc4_ == -1))
                {
-                  criterion=ItemCriterionFactory.create(pCriteria.split("&")[0]);
+                  _loc2_ = ItemCriterionFactory.create(param1.split("&")[0]);
                }
                else
                {
-                  criterion=ItemCriterionFactory.create(pCriteria.split("|")[0]);
+                  _loc2_ = ItemCriterionFactory.create(param1.split("|")[0]);
                }
             }
          }
-         return criterion;
+         return _loc2_;
       }
-
+      
       public function get operators() : Vector.<String> {
          return this._operators;
       }
    }
-
 }

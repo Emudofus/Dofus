@@ -1,18 +1,10 @@
 package com.ankamagames.atouin.data.elements.subtypes
 {
-
-
    public class BoundingBoxGraphicalElementData extends NormalGraphicalElementData
    {
-         
-
-      public function BoundingBoxGraphicalElementData(elementId:int, elementType:int) {
-         super(elementId,elementType);
+      
+      public function BoundingBoxGraphicalElementData(param1:int, param2:int) {
+         super(param1,param2);
       }
-
-
-
-
    }
-
 }

@@ -1,201 +1,200 @@
 package flashx.textLayout.formats
 {
-   import flashx.textLayout.property.Property;
    import flashx.textLayout.tlf_internal;
    import flash.text.engine.TabAlignment;
-
+   import flashx.textLayout.property.*;
+   
    use namespace tlf_internal;
-
+   
    public class TabStopFormat extends Object implements ITabStopFormat
    {
-         
-
-      public function TabStopFormat(initialValues:ITabStopFormat=null) {
+      
+      public function TabStopFormat(param1:ITabStopFormat=null) {
          super();
-         if(initialValues)
+         if(param1)
          {
-            this.apply(initialValues);
+            this.apply(param1);
          }
       }
-
+      
       public static const positionProperty:Property = Property.NewNumberProperty("position",0,false,Vector.<String>([Category.TABSTOP]),0,10000);
-
+      
       public static const alignmentProperty:Property = Property.NewEnumStringProperty("alignment",TabAlignment.START,false,Vector.<String>([Category.TABSTOP]),TabAlignment.START,TabAlignment.CENTER,TabAlignment.END,TabAlignment.DECIMAL);
-
+      
       public static const decimalAlignmentTokenProperty:Property = Property.NewStringProperty("decimalAlignmentToken",null,false,Vector.<String>([Category.TABSTOP]));
-
-      private static var _description:Object = {
-                                                     position:positionProperty,
-                                                     alignment:alignmentProperty,
-                                                     decimalAlignmentToken:decimalAlignmentTokenProperty
-                                                     };
-
+      
+      private static var _description:Object = 
+         {
+            "position":positionProperty,
+            "alignment":alignmentProperty,
+            "decimalAlignmentToken":decimalAlignmentTokenProperty
+         };
+      
       tlf_internal  static function get description() : Object {
          return _description;
       }
-
+      
       private static var _emptyTabStopFormat:ITabStopFormat;
-
+      
       tlf_internal  static function get emptyTabStopFormat() : ITabStopFormat {
-         if(_emptyTabStopFormat==null)
+         if(_emptyTabStopFormat == null)
          {
-            _emptyTabStopFormat=new TabStopFormat();
+            _emptyTabStopFormat = new TabStopFormat();
          }
          return _emptyTabStopFormat;
       }
-
-      public static function isEqual(p1:ITabStopFormat, p2:ITabStopFormat) : Boolean {
-         if(p1==null)
+      
+      public static function isEqual(param1:ITabStopFormat, param2:ITabStopFormat) : Boolean {
+         if(param1 == null)
          {
-            p1=emptyTabStopFormat;
+            param1 = emptyTabStopFormat;
          }
-         if(p2==null)
+         if(param2 == null)
          {
-            p2=emptyTabStopFormat;
+            param2 = emptyTabStopFormat;
          }
-         if(p1==p2)
+         if(param1 == param2)
          {
             return true;
          }
-         if(!positionProperty.equalHelper(p1.position,p2.position))
+         if(!positionProperty.equalHelper(param1.position,param2.position))
          {
             return false;
          }
-         if(!alignmentProperty.equalHelper(p1.alignment,p2.alignment))
+         if(!alignmentProperty.equalHelper(param1.alignment,param2.alignment))
          {
             return false;
          }
-         if(!decimalAlignmentTokenProperty.equalHelper(p1.decimalAlignmentToken,p2.decimalAlignmentToken))
+         if(!decimalAlignmentTokenProperty.equalHelper(param1.decimalAlignmentToken,param2.decimalAlignmentToken))
          {
             return false;
          }
          return true;
       }
-
+      
       private static var _defaults:TabStopFormat;
-
+      
       public static function get defaultFormat() : ITabStopFormat {
-         if(_defaults==null)
+         if(_defaults == null)
          {
-            _defaults=new TabStopFormat();
+            _defaults = new TabStopFormat();
             Property.defaultsAllHelper(_description,_defaults);
          }
          return _defaults;
       }
-
+      
       private var _position;
-
+      
       private var _alignment;
-
+      
       private var _decimalAlignmentToken;
-
-      public function getStyle(styleName:String) : * {
-         return this[styleName];
+      
+      public function getStyle(param1:String) : * {
+         return this[param1];
       }
-
-      public function setStyle(styleName:String, value:*) : void {
-         this[styleName]=value;
+      
+      public function setStyle(param1:String, param2:*) : void {
+         this[param1] = param2;
       }
-
+      
       public function get position() : * {
          return this._position;
       }
-
-      public function set position(newValue:*) : void {
-         this._position=positionProperty.setHelper(this._position,newValue);
+      
+      public function set position(param1:*) : void {
+         this._position = positionProperty.setHelper(this._position,param1);
       }
-
+      
       public function get alignment() : * {
          return this._alignment;
       }
-
-      public function set alignment(newValue:*) : void {
-         this._alignment=alignmentProperty.setHelper(this._alignment,newValue);
+      
+      public function set alignment(param1:*) : void {
+         this._alignment = alignmentProperty.setHelper(this._alignment,param1);
       }
-
+      
       public function get decimalAlignmentToken() : * {
          return this._decimalAlignmentToken;
       }
-
-      public function set decimalAlignmentToken(newValue:*) : void {
-         this._decimalAlignmentToken=decimalAlignmentTokenProperty.setHelper(this._decimalAlignmentToken,newValue);
+      
+      public function set decimalAlignmentToken(param1:*) : void {
+         this._decimalAlignmentToken = decimalAlignmentTokenProperty.setHelper(this._decimalAlignmentToken,param1);
       }
-
-      public function copy(values:ITabStopFormat) : void {
-         if(values==null)
+      
+      public function copy(param1:ITabStopFormat) : void {
+         if(param1 == null)
          {
-            values=emptyTabStopFormat;
+            param1 = emptyTabStopFormat;
          }
-         this.position=values.position;
-         this.alignment=values.alignment;
-         this.decimalAlignmentToken=values.decimalAlignmentToken;
+         this.position = param1.position;
+         this.alignment = param1.alignment;
+         this.decimalAlignmentToken = param1.decimalAlignmentToken;
       }
-
-      public function concat(incoming:ITabStopFormat) : void {
-         this.position=positionProperty.concatHelper(this.position,incoming.position);
-         this.alignment=alignmentProperty.concatHelper(this.alignment,incoming.alignment);
-         this.decimalAlignmentToken=decimalAlignmentTokenProperty.concatHelper(this.decimalAlignmentToken,incoming.decimalAlignmentToken);
+      
+      public function concat(param1:ITabStopFormat) : void {
+         this.position = positionProperty.concatHelper(this.position,param1.position);
+         this.alignment = alignmentProperty.concatHelper(this.alignment,param1.alignment);
+         this.decimalAlignmentToken = decimalAlignmentTokenProperty.concatHelper(this.decimalAlignmentToken,param1.decimalAlignmentToken);
       }
-
-      public function concatInheritOnly(incoming:ITabStopFormat) : void {
-         this.position=positionProperty.concatInheritOnlyHelper(this.position,incoming.position);
-         this.alignment=alignmentProperty.concatInheritOnlyHelper(this.alignment,incoming.alignment);
-         this.decimalAlignmentToken=decimalAlignmentTokenProperty.concatInheritOnlyHelper(this.decimalAlignmentToken,incoming.decimalAlignmentToken);
+      
+      public function concatInheritOnly(param1:ITabStopFormat) : void {
+         this.position = positionProperty.concatInheritOnlyHelper(this.position,param1.position);
+         this.alignment = alignmentProperty.concatInheritOnlyHelper(this.alignment,param1.alignment);
+         this.decimalAlignmentToken = decimalAlignmentTokenProperty.concatInheritOnlyHelper(this.decimalAlignmentToken,param1.decimalAlignmentToken);
       }
-
-      public function apply(incoming:ITabStopFormat) : void {
-         var val:* = undefined;
-         if((val=incoming.position)!==undefined)
+      
+      public function apply(param1:ITabStopFormat) : void {
+         var _loc2_:* = undefined;
+         if((_loc2_ = param1.position) !== undefined)
          {
-            this.position=val;
+            this.position = _loc2_;
          }
-         if((val=incoming.alignment)!==undefined)
+         if((_loc2_ = param1.alignment) !== undefined)
          {
-            this.alignment=val;
+            this.alignment = _loc2_;
          }
-         if((val=incoming.decimalAlignmentToken)!==undefined)
+         if((_loc2_ = param1.decimalAlignmentToken) !== undefined)
          {
-            this.decimalAlignmentToken=val;
+            this.decimalAlignmentToken = _loc2_;
          }
       }
-
-      public function removeMatching(incoming:ITabStopFormat) : void {
-         if(incoming==null)
+      
+      public function removeMatching(param1:ITabStopFormat) : void {
+         if(param1 == null)
          {
             return;
          }
-         if(positionProperty.equalHelper(this.position,incoming.position))
+         if(positionProperty.equalHelper(this.position,param1.position))
          {
-            this.position=undefined;
+            this.position = undefined;
          }
-         if(alignmentProperty.equalHelper(this.alignment,incoming.alignment))
+         if(alignmentProperty.equalHelper(this.alignment,param1.alignment))
          {
-            this.alignment=undefined;
+            this.alignment = undefined;
          }
-         if(decimalAlignmentTokenProperty.equalHelper(this.decimalAlignmentToken,incoming.decimalAlignmentToken))
+         if(decimalAlignmentTokenProperty.equalHelper(this.decimalAlignmentToken,param1.decimalAlignmentToken))
          {
-            this.decimalAlignmentToken=undefined;
+            this.decimalAlignmentToken = undefined;
          }
       }
-
-      public function removeClashing(incoming:ITabStopFormat) : void {
-         if(incoming==null)
+      
+      public function removeClashing(param1:ITabStopFormat) : void {
+         if(param1 == null)
          {
             return;
          }
-         if(!positionProperty.equalHelper(this.position,incoming.position))
+         if(!positionProperty.equalHelper(this.position,param1.position))
          {
-            this.position=undefined;
+            this.position = undefined;
          }
-         if(!alignmentProperty.equalHelper(this.alignment,incoming.alignment))
+         if(!alignmentProperty.equalHelper(this.alignment,param1.alignment))
          {
-            this.alignment=undefined;
+            this.alignment = undefined;
          }
-         if(!decimalAlignmentTokenProperty.equalHelper(this.decimalAlignmentToken,incoming.decimalAlignmentToken))
+         if(!decimalAlignmentTokenProperty.equalHelper(this.decimalAlignmentToken,param1.decimalAlignmentToken))
          {
-            this.decimalAlignmentToken=undefined;
+            this.decimalAlignmentToken = undefined;
          }
       }
    }
-
 }

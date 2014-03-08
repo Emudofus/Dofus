@@ -7,82 +7,79 @@ package com.ankamagames.dofus.network.messages.game.startup
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class StartupActionsListMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function StartupActionsListMessage() {
-         this.actions=new Vector.<StartupActionAddObject>();
+         this.actions = new Vector.<StartupActionAddObject>();
          super();
       }
-
+      
       public static const protocolId:uint = 1301;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var actions:Vector.<StartupActionAddObject>;
-
+      
       override public function getMessageId() : uint {
          return 1301;
       }
-
-      public function initStartupActionsListMessage(actions:Vector.<StartupActionAddObject>=null) : StartupActionsListMessage {
-         this.actions=actions;
-         this._isInitialized=true;
+      
+      public function initStartupActionsListMessage(param1:Vector.<StartupActionAddObject>=null) : StartupActionsListMessage {
+         this.actions = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.actions=new Vector.<StartupActionAddObject>();
-         this._isInitialized=false;
+         this.actions = new Vector.<StartupActionAddObject>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_StartupActionsListMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_StartupActionsListMessage(param1);
       }
-
-      public function serializeAs_StartupActionsListMessage(output:IDataOutput) : void {
-         output.writeShort(this.actions.length);
-         var _i1:uint = 0;
-         while(_i1<this.actions.length)
+      
+      public function serializeAs_StartupActionsListMessage(param1:IDataOutput) : void {
+         param1.writeShort(this.actions.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.actions.length)
          {
-            (this.actions[_i1] as StartupActionAddObject).serializeAs_StartupActionAddObject(output);
-            _i1++;
+            (this.actions[_loc2_] as StartupActionAddObject).serializeAs_StartupActionAddObject(param1);
+            _loc2_++;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_StartupActionsListMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_StartupActionsListMessage(param1);
       }
-
-      public function deserializeAs_StartupActionsListMessage(input:IDataInput) : void {
-         var _item1:StartupActionAddObject = null;
-         var _actionsLen:uint = input.readUnsignedShort();
-         var _i1:uint = 0;
-         while(_i1<_actionsLen)
+      
+      public function deserializeAs_StartupActionsListMessage(param1:IDataInput) : void {
+         var _loc4_:StartupActionAddObject = null;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            _item1=new StartupActionAddObject();
-            _item1.deserialize(input);
-            this.actions.push(_item1);
-            _i1++;
+            _loc4_ = new StartupActionAddObject();
+            _loc4_.deserialize(param1);
+            this.actions.push(_loc4_);
+            _loc3_++;
          }
       }
    }
-
 }

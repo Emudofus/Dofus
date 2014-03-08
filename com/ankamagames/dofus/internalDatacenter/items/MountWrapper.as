@@ -13,52 +13,50 @@ package com.ankamagames.dofus.internalDatacenter.items
    import com.ankamagames.jerakine.utils.system.AirScanner;
    import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
-
-
+   
    public class MountWrapper extends ItemWrapper implements IDataCenter
    {
-         
-
+      
       public function MountWrapper() {
          super();
       }
-
+      
       private static const _log:Logger = Log.getLogger(getQualifiedClassName(MountWrapper));
-
+      
       private static var _mountUtil:Object = new Object();
-
+      
       private static var _uriLoaderContext:LoaderContext;
-
+      
       public static function create() : MountWrapper {
-         var effect:EffectInstance = null;
-         var mountWrapper:MountWrapper = new MountWrapper();
-         _mountUtil=PlayedCharacterManager.getInstance().mount;
+         var _loc2_:EffectInstance = null;
+         var _loc1_:MountWrapper = new MountWrapper();
+         _mountUtil = PlayedCharacterManager.getInstance().mount;
          if(_mountUtil)
          {
-            mountWrapper.mountId=_mountUtil.model;
-            mountWrapper.effects=new Vector.<EffectInstance>();
-            for each (effect in _mountUtil.effectList)
+            _loc1_.mountId = _mountUtil.model;
+            _loc1_.effects = new Vector.<EffectInstance>();
+            for each (_loc2_ in _mountUtil.effectList)
             {
-               mountWrapper.effects.push(effect);
+               _loc1_.effects.push(_loc2_);
             }
-            mountWrapper.level=_mountUtil.level;
+            _loc1_.level = _mountUtil.level;
          }
          else
          {
-            mountWrapper.mountId=0;
-            mountWrapper.effects=new Vector.<EffectInstance>();
-            mountWrapper.level=0;
+            _loc1_.mountId = 0;
+            _loc1_.effects = new Vector.<EffectInstance>();
+            _loc1_.level = 0;
          }
-         mountWrapper.itemSetId=-1;
-         return mountWrapper;
+         _loc1_.itemSetId = -1;
+         return _loc1_;
       }
-
+      
       public var mountId:int;
-
+      
       private var _uri:Uri;
-
+      
       private var _uriPngMode:Uri;
-
+      
       override public function get name() : String {
          if(!_mountUtil)
          {
@@ -66,96 +64,95 @@ package com.ankamagames.dofus.internalDatacenter.items
          }
          return _mountUtil.description;
       }
-
+      
       override public function get description() : String {
          if(!_mountUtil)
          {
             return "";
          }
-         var text:String = I18n.getUiText("ui.mount.description",[_mountUtil.name,_mountUtil.level,_mountUtil.xpRatio]);
-         return text;
+         var _loc1_:String = I18n.getUiText("ui.mount.description",[_mountUtil.name,_mountUtil.level,_mountUtil.xpRatio]);
+         return _loc1_;
       }
-
+      
       override public function get isWeapon() : Boolean {
          return false;
       }
-
+      
       override public function get type() : Object {
-         return {name:I18n.getUiText("ui.common.ride")};
+         return {"name":I18n.getUiText("ui.common.ride")};
       }
-
+      
       override public function get iconUri() : Uri {
          return this.getIconUri(true);
       }
-
+      
       override public function get fullSizeIconUri() : Uri {
          return this.getIconUri(false);
       }
-
+      
       override public function get errorIconUri() : Uri {
          return null;
       }
-
+      
       public function get uri() : Uri {
          return this._uri;
       }
-
-      override public function getIconUri(pngMode:Boolean=true) : Uri {
-         if(pngMode)
+      
+      override public function getIconUri(param1:Boolean=true) : Uri {
+         if(param1)
          {
-            this._uriPngMode=new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/mounts/").concat(this.mountId).concat(".png"));
+            this._uriPngMode = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/mounts/").concat(this.mountId).concat(".png"));
             return this._uriPngMode;
          }
          if(this._uri)
          {
             return this._uri;
          }
-         this._uri=new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/mounts/").concat(this.mountId).concat(".swf"));
+         this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/mounts/").concat(this.mountId).concat(".swf"));
          if(!_uriLoaderContext)
          {
-            _uriLoaderContext=new LoaderContext();
+            _uriLoaderContext = new LoaderContext();
             AirScanner.allowByteCodeExecution(_uriLoaderContext,true);
          }
-         this._uri.loaderContext=_uriLoaderContext;
+         this._uri.loaderContext = _uriLoaderContext;
          return this._uri;
       }
-
+      
       override public function get info1() : String {
          return null;
       }
-
+      
       override public function get timer() : int {
          return 0;
       }
-
+      
       override public function get active() : Boolean {
          return true;
       }
-
-      override public function update(position:uint, objectUID:uint, objectGID:uint, quantity:uint, newEffects:Vector.<ObjectEffect>) : void {
-         var effect:EffectInstance = null;
-         _mountUtil=PlayedCharacterManager.getInstance().mount;
+      
+      override public function update(param1:uint, param2:uint, param3:uint, param4:uint, param5:Vector.<ObjectEffect>) : void {
+         var _loc6_:EffectInstance = null;
+         _mountUtil = PlayedCharacterManager.getInstance().mount;
          if(_mountUtil)
          {
-            this.mountId=_mountUtil.model;
-            effects=new Vector.<EffectInstance>();
-            for each (effect in _mountUtil.effectList)
+            this.mountId = _mountUtil.model;
+            effects = new Vector.<EffectInstance>();
+            for each (_loc6_ in _mountUtil.effectList)
             {
-               effects.push(effect);
+               effects.push(_loc6_);
             }
-            level=_mountUtil.level;
+            level = _mountUtil.level;
          }
          else
          {
-            this.mountId=0;
-            effects=new Vector.<EffectInstance>();
-            level=0;
+            this.mountId = 0;
+            effects = new Vector.<EffectInstance>();
+            level = 0;
          }
       }
-
+      
       override public function toString() : String {
-         return "[MountWrapper#"+this.mountId+"]";
+         return "[MountWrapper#" + this.mountId + "]";
       }
    }
-
 }

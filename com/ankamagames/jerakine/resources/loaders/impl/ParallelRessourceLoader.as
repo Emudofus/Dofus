@@ -9,151 +9,148 @@ package com.ankamagames.jerakine.resources.loaders.impl
    import com.ankamagames.jerakine.resources.protocols.IProtocol;
    import com.ankamagames.jerakine.resources.protocols.ProtocolFactory;
    import com.ankamagames.jerakine.resources.events.ResourceProgressEvent;
-
-
+   
    public class ParallelRessourceLoader extends AbstractRessourceLoader implements IResourceLoader, IResourceObserver
    {
-         
-
-      public function ParallelRessourceLoader(maxParallel:uint) {
+      
+      public function ParallelRessourceLoader(param1:uint) {
          super();
-         this._maxParallel=maxParallel;
-         this._loadDictionnary=new Dictionary(true);
-         MEMORY_LOG[this]=1;
+         this._maxParallel = param1;
+         this._loadDictionnary = new Dictionary(true);
+         MEMORY_LOG[this] = 1;
       }
-
+      
       public static var MEMORY_LOG:Dictionary = new Dictionary(true);
-
+      
       private var _maxParallel:uint;
-
+      
       private var _uris:Array;
-
+      
       private var _currentlyLoading:uint;
-
+      
       private var _loadDictionnary:Dictionary;
-
-      public function load(uris:*, cache:ICache=null, forcedAdapter:Class=null, singleFile:Boolean=false) : void {
-         var newUris:Array = null;
-         var uri:Uri = null;
-         if(uris is Uri)
+      
+      public function load(param1:*, param2:ICache=null, param3:Class=null, param4:Boolean=false) : void {
+         var _loc5_:Array = null;
+         var _loc7_:Uri = null;
+         if(param1 is Uri)
          {
-            newUris=[uris];
+            _loc5_ = [param1];
          }
          else
          {
-            if(uris is Array)
+            if(param1 is Array)
             {
-               newUris=uris;
+               _loc5_ = param1;
             }
             else
             {
                throw new ArgumentError("URIs must be an array or an Uri instance.");
             }
          }
-         var mustStartLoading:Boolean = false;
-         if(this._uris!=null)
+         var _loc6_:* = false;
+         if(this._uris != null)
          {
-            for each (uri in newUris)
+            for each (_loc7_ in _loc5_)
             {
                this._uris.push(
                   {
-                     uri:uri,
-                     forcedAdapter:forcedAdapter,
-                     singleFile:singleFile
-                  }
-               );
+                     "uri":_loc7_,
+                     "forcedAdapter":param3,
+                     "singleFile":param4
+                  });
             }
-            if(this._currentlyLoading==0)
+            if(this._currentlyLoading == 0)
             {
-               mustStartLoading=true;
+               _loc6_ = true;
             }
          }
          else
          {
-            this._uris=new Array();
-            for each (uri in newUris)
+            this._uris = new Array();
+            for each (_loc7_ in _loc5_)
             {
                this._uris.push(
                   {
-                     uri:uri,
-                     forcedAdapter:forcedAdapter,
-                     singleFile:singleFile
-                  }
-               );
+                     "uri":_loc7_,
+                     "forcedAdapter":param3,
+                     "singleFile":param4
+                  });
             }
-            mustStartLoading=true;
+            _loc6_ = true;
          }
-         _cache=cache;
-         _completed=false;
-         _filesTotal=_filesTotal+this._uris.length;
-         if(mustStartLoading)
+         _cache = param2;
+         _completed = false;
+         _filesTotal = _filesTotal + this._uris.length;
+         if(_loc6_)
          {
             this.loadNextUris();
          }
       }
-
-      public function cancel() : void {
-         var p:IProtocol = null;
-         for each (p in this._loadDictionnary)
+      
+      override public function cancel() : void {
+         var _loc1_:IProtocol = null;
+         super.cancel();
+         for each (_loc1_ in this._loadDictionnary)
          {
-            if(p)
+            if(_loc1_)
             {
-               p.free();
-               p.cancel();
+               _loc1_.free();
+               _loc1_.cancel();
+               _loc1_ = null;
             }
          }
-         this._loadDictionnary=new Dictionary();
-         this._currentlyLoading=0;
-         this._uris=[];
+         this._loadDictionnary = new Dictionary(true);
+         this._currentlyLoading = 0;
+         this._uris = [];
       }
-
+      
       private function loadNextUris() : void {
-         var loadData:Object = null;
-         var p:IProtocol = null;
-         if(this._uris.length==0)
+         var _loc3_:Object = null;
+         var _loc4_:IProtocol = null;
+         if(this._uris.length == 0)
          {
-            this._uris=null;
+            this._uris = null;
             return;
          }
-         this._currentlyLoading=Math.min(this._maxParallel,this._uris.length);
-         var starterLoop:uint = this._currentlyLoading;
-         var i:uint = 0;
-         while(i<starterLoop)
+         this._currentlyLoading = Math.min(this._maxParallel,this._uris.length);
+         var _loc1_:uint = this._currentlyLoading;
+         var _loc2_:uint = 0;
+         while(_loc2_ < _loc1_)
          {
-            loadData=this._uris.shift();
-            if(!checkCache(loadData.uri))
+            _loc3_ = this._uris.shift();
+            if(!checkCache(_loc3_.uri))
             {
-               p=ProtocolFactory.getProtocol(loadData.uri);
-               this._loadDictionnary[loadData.uri]=p;
-               p.load(loadData.uri,this,hasEventListener(ResourceProgressEvent.PROGRESS),_cache,loadData.forcedAdapter,loadData.singleFile);
+               _loc4_ = ProtocolFactory.getProtocol(_loc3_.uri);
+               this._loadDictionnary[_loc3_.uri] = _loc4_;
+               _loc4_.load(_loc3_.uri,this,hasEventListener(ResourceProgressEvent.PROGRESS),_cache,_loc3_.forcedAdapter,_loc3_.singleFile);
             }
             else
             {
                this.decrementLoads();
             }
-            i++;
+            _loc2_++;
          }
       }
-
+      
       private function decrementLoads() : void {
          this._currentlyLoading--;
-         if(this._currentlyLoading==0)
+         if(this._currentlyLoading == 0)
          {
             this.loadNextUris();
          }
       }
-
-      override public function onLoaded(uri:Uri, resourceType:uint, resource:*) : void {
-         super.onLoaded(uri,resourceType,resource);
-         delete this._loadDictionnary[[uri]];
+      
+      override public function onLoaded(param1:Uri, param2:uint, param3:*) : void {
+         super.onLoaded(param1,param2,param3);
+         delete this._loadDictionnary[[param1]];
          this.decrementLoads();
       }
-
-      override public function onFailed(uri:Uri, errorMsg:String, errorCode:uint) : void {
-         super.onFailed(uri,errorMsg,errorCode);
-         delete this._loadDictionnary[[uri]];
+      
+      override public function onFailed(param1:Uri, param2:String, param3:uint) : void {
+         super.onFailed(param1,param2,param3);
+         delete this._loadDictionnary[[param1]];
          this.decrementLoads();
       }
    }
-
 }

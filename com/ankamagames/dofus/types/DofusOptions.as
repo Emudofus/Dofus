@@ -5,18 +5,17 @@ package com.ankamagames.dofus.types
    import com.ankamagames.dofus.BuildInfos;
    import com.ankamagames.dofus.network.enums.BuildTypeEnum;
    import com.ankamagames.dofus.externalnotification.enums.ExternalNotificationPositionEnum;
-
-
+   
    public dynamic class DofusOptions extends OptionManager
    {
-         
-
+      
       public function DofusOptions() {
          super("dofus");
          add("optimize",false);
          add("cacheMapEnabled",true);
          add("optimizeMultiAccount",true);
          add("fullScreen",false);
+         add("autoConnectType",true);
          add("showEveryMonsters",false);
          add("turnPicture",true);
          add("mapCoordinates",true);
@@ -39,7 +38,8 @@ package com.ankamagames.dofus.types
          add("legalAgreementEula","fr#0");
          add("legalAgreementTou","fr#0");
          add("legalAgreementModsTou","fr#0");
-         add("allowLog",(!(BuildInfos.BUILD_TYPE==BuildTypeEnum.RELEASE))&&(!AirScanner.isStreamingVersion()));
+         add("allowLog",(!(BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE)) && (!AirScanner.isStreamingVersion()));
+         add("allowDebug",false);
          add("flashQuality",2);
          add("cellSelectionOnly",false);
          add("orderFighters",false);
@@ -48,7 +48,7 @@ package com.ankamagames.dofus.types
          add("showMovementDistance",false);
          add("hideDeadFighters",true);
          add("hideSummonedFighters",false);
-         add("mapFilters",478);
+         add("mapFilters",990);
          add("showLogPvDetails",true);
          add("notificationsAlphaWindows",false);
          add("notificationsMode",1);
@@ -56,11 +56,9 @@ package com.ankamagames.dofus.types
          add("notificationsMaxNumber",5);
          add("notificationsPosition",ExternalNotificationPositionEnum.BOTTOM_RIGHT);
          add("creaturesFightMode",false);
+         add("warnOnGuildItemAgression",true);
+         add("zoomOnMouseWheel",true);
+         add("showPermanentTargetsTooltips",false);
       }
-
-
-
-
    }
-
 }

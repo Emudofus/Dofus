@@ -6,68 +6,65 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class TaxCollectorDialogQuestionBasicMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function TaxCollectorDialogQuestionBasicMessage() {
-         this.guildInfo=new BasicGuildInformations();
+         this.guildInfo = new BasicGuildInformations();
          super();
       }
-
+      
       public static const protocolId:uint = 5619;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var guildInfo:BasicGuildInformations;
-
+      
       override public function getMessageId() : uint {
          return 5619;
       }
-
-      public function initTaxCollectorDialogQuestionBasicMessage(guildInfo:BasicGuildInformations=null) : TaxCollectorDialogQuestionBasicMessage {
-         this.guildInfo=guildInfo;
-         this._isInitialized=true;
+      
+      public function initTaxCollectorDialogQuestionBasicMessage(param1:BasicGuildInformations=null) : TaxCollectorDialogQuestionBasicMessage {
+         this.guildInfo = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.guildInfo=new BasicGuildInformations();
-         this._isInitialized=false;
+         this.guildInfo = new BasicGuildInformations();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_TaxCollectorDialogQuestionBasicMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_TaxCollectorDialogQuestionBasicMessage(param1);
       }
-
-      public function serializeAs_TaxCollectorDialogQuestionBasicMessage(output:IDataOutput) : void {
-         this.guildInfo.serializeAs_BasicGuildInformations(output);
+      
+      public function serializeAs_TaxCollectorDialogQuestionBasicMessage(param1:IDataOutput) : void {
+         this.guildInfo.serializeAs_BasicGuildInformations(param1);
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_TaxCollectorDialogQuestionBasicMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_TaxCollectorDialogQuestionBasicMessage(param1);
       }
-
-      public function deserializeAs_TaxCollectorDialogQuestionBasicMessage(input:IDataInput) : void {
-         this.guildInfo=new BasicGuildInformations();
-         this.guildInfo.deserialize(input);
+      
+      public function deserializeAs_TaxCollectorDialogQuestionBasicMessage(param1:IDataInput) : void {
+         this.guildInfo = new BasicGuildInformations();
+         this.guildInfo.deserialize(param1);
       }
    }
-
 }

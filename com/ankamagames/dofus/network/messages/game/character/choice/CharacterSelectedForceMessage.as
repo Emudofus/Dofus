@@ -5,76 +5,74 @@ package com.ankamagames.dofus.network.messages.game.character.choice
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class CharacterSelectedForceMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function CharacterSelectedForceMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6068;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var id:int = 0;
-
+      
       override public function getMessageId() : uint {
          return 6068;
       }
-
-      public function initCharacterSelectedForceMessage(id:int=0) : CharacterSelectedForceMessage {
-         this.id=id;
-         this._isInitialized=true;
+      
+      public function initCharacterSelectedForceMessage(param1:int=0) : CharacterSelectedForceMessage {
+         this.id = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.id=0;
-         this._isInitialized=false;
+         this.id = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_CharacterSelectedForceMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_CharacterSelectedForceMessage(param1);
       }
-
-      public function serializeAs_CharacterSelectedForceMessage(output:IDataOutput) : void {
-         if((this.id>1)||(this.id<2147483647))
+      
+      public function serializeAs_CharacterSelectedForceMessage(param1:IDataOutput) : void {
+         if(this.id < 1 || this.id > 2147483647)
          {
-            throw new Error("Forbidden value ("+this.id+") on element id.");
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
          }
          else
          {
-            output.writeInt(this.id);
+            param1.writeInt(this.id);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_CharacterSelectedForceMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_CharacterSelectedForceMessage(param1);
       }
-
-      public function deserializeAs_CharacterSelectedForceMessage(input:IDataInput) : void {
-         this.id=input.readInt();
-         if((this.id>1)||(this.id<2147483647))
+      
+      public function deserializeAs_CharacterSelectedForceMessage(param1:IDataInput) : void {
+         this.id = param1.readInt();
+         if(this.id < 1 || this.id > 2147483647)
          {
-            throw new Error("Forbidden value ("+this.id+") on element of CharacterSelectedForceMessage.id.");
+            throw new Error("Forbidden value (" + this.id + ") on element of CharacterSelectedForceMessage.id.");
          }
          else
          {
@@ -82,5 +80,4 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          }
       }
    }
-
 }

@@ -1,18 +1,10 @@
 package com.ankamagames.berilia.utils.errors
 {
-
-
    public class BeriliaError extends Error
    {
-         
-
-      public function BeriliaError(message:String="", id:uint=0) {
-         super(message,id);
+      
+      public function BeriliaError(param1:String="", param2:uint=0) {
+         super(param1,param2);
       }
-
-
-
-
    }
-
 }

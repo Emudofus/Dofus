@@ -5,76 +5,74 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ExchangeSetCraftRecipeMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ExchangeSetCraftRecipeMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6389;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var objectGID:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 6389;
       }
-
-      public function initExchangeSetCraftRecipeMessage(objectGID:uint=0) : ExchangeSetCraftRecipeMessage {
-         this.objectGID=objectGID;
-         this._isInitialized=true;
+      
+      public function initExchangeSetCraftRecipeMessage(param1:uint=0) : ExchangeSetCraftRecipeMessage {
+         this.objectGID = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.objectGID=0;
-         this._isInitialized=false;
+         this.objectGID = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ExchangeSetCraftRecipeMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ExchangeSetCraftRecipeMessage(param1);
       }
-
-      public function serializeAs_ExchangeSetCraftRecipeMessage(output:IDataOutput) : void {
-         if(this.objectGID<0)
+      
+      public function serializeAs_ExchangeSetCraftRecipeMessage(param1:IDataOutput) : void {
+         if(this.objectGID < 0)
          {
-            throw new Error("Forbidden value ("+this.objectGID+") on element objectGID.");
+            throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
          }
          else
          {
-            output.writeShort(this.objectGID);
+            param1.writeShort(this.objectGID);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ExchangeSetCraftRecipeMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ExchangeSetCraftRecipeMessage(param1);
       }
-
-      public function deserializeAs_ExchangeSetCraftRecipeMessage(input:IDataInput) : void {
-         this.objectGID=input.readShort();
-         if(this.objectGID<0)
+      
+      public function deserializeAs_ExchangeSetCraftRecipeMessage(param1:IDataInput) : void {
+         this.objectGID = param1.readShort();
+         if(this.objectGID < 0)
          {
-            throw new Error("Forbidden value ("+this.objectGID+") on element of ExchangeSetCraftRecipeMessage.objectGID.");
+            throw new Error("Forbidden value (" + this.objectGID + ") on element of ExchangeSetCraftRecipeMessage.objectGID.");
          }
          else
          {
@@ -82,5 +80,4 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          }
       }
    }
-
 }

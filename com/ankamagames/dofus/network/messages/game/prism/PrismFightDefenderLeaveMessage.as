@@ -5,101 +5,99 @@ package com.ankamagames.dofus.network.messages.game.prism
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class PrismFightDefenderLeaveMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function PrismFightDefenderLeaveMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 5892;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
+      public var subAreaId:uint = 0;
+      
       public var fightId:Number = 0;
-
+      
       public var fighterToRemoveId:uint = 0;
-
-      public var successor:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 5892;
       }
-
-      public function initPrismFightDefenderLeaveMessage(fightId:Number=0, fighterToRemoveId:uint=0, successor:uint=0) : PrismFightDefenderLeaveMessage {
-         this.fightId=fightId;
-         this.fighterToRemoveId=fighterToRemoveId;
-         this.successor=successor;
-         this._isInitialized=true;
+      
+      public function initPrismFightDefenderLeaveMessage(param1:uint=0, param2:Number=0, param3:uint=0) : PrismFightDefenderLeaveMessage {
+         this.subAreaId = param1;
+         this.fightId = param2;
+         this.fighterToRemoveId = param3;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.fightId=0;
-         this.fighterToRemoveId=0;
-         this.successor=0;
-         this._isInitialized=false;
+         this.subAreaId = 0;
+         this.fightId = 0;
+         this.fighterToRemoveId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_PrismFightDefenderLeaveMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_PrismFightDefenderLeaveMessage(param1);
       }
-
-      public function serializeAs_PrismFightDefenderLeaveMessage(output:IDataOutput) : void {
-         output.writeDouble(this.fightId);
-         if(this.fighterToRemoveId<0)
+      
+      public function serializeAs_PrismFightDefenderLeaveMessage(param1:IDataOutput) : void {
+         if(this.subAreaId < 0)
          {
-            throw new Error("Forbidden value ("+this.fighterToRemoveId+") on element fighterToRemoveId.");
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
          }
          else
          {
-            output.writeInt(this.fighterToRemoveId);
-            if(this.successor<0)
+            param1.writeShort(this.subAreaId);
+            param1.writeDouble(this.fightId);
+            if(this.fighterToRemoveId < 0)
             {
-               throw new Error("Forbidden value ("+this.successor+") on element successor.");
+               throw new Error("Forbidden value (" + this.fighterToRemoveId + ") on element fighterToRemoveId.");
             }
             else
             {
-               output.writeInt(this.successor);
+               param1.writeInt(this.fighterToRemoveId);
                return;
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_PrismFightDefenderLeaveMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_PrismFightDefenderLeaveMessage(param1);
       }
-
-      public function deserializeAs_PrismFightDefenderLeaveMessage(input:IDataInput) : void {
-         this.fightId=input.readDouble();
-         this.fighterToRemoveId=input.readInt();
-         if(this.fighterToRemoveId<0)
+      
+      public function deserializeAs_PrismFightDefenderLeaveMessage(param1:IDataInput) : void {
+         this.subAreaId = param1.readShort();
+         if(this.subAreaId < 0)
          {
-            throw new Error("Forbidden value ("+this.fighterToRemoveId+") on element of PrismFightDefenderLeaveMessage.fighterToRemoveId.");
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element of PrismFightDefenderLeaveMessage.subAreaId.");
          }
          else
          {
-            this.successor=input.readInt();
-            if(this.successor<0)
+            this.fightId = param1.readDouble();
+            this.fighterToRemoveId = param1.readInt();
+            if(this.fighterToRemoveId < 0)
             {
-               throw new Error("Forbidden value ("+this.successor+") on element of PrismFightDefenderLeaveMessage.successor.");
+               throw new Error("Forbidden value (" + this.fighterToRemoveId + ") on element of PrismFightDefenderLeaveMessage.fighterToRemoveId.");
             }
             else
             {
@@ -108,5 +106,4 @@ package com.ankamagames.dofus.network.messages.game.prism
          }
       }
    }
-
 }

@@ -9,51 +9,46 @@ package com.ankamagames.dofus.uiApi
    import flash.profiler.showRedrawRegions;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-
-
+   
    public class TestApi extends Object implements IApi
    {
-         
-
+      
       public function TestApi() {
-         this._log=Log.getLogger(getQualifiedClassName(DataApi));
+         this._log = Log.getLogger(getQualifiedClassName(DataApi));
          super();
       }
-
-
-
+      
       protected var _log:Logger;
-
+      
       private var _module:UiModule;
-
-      public function set module(value:UiModule) : void {
-         this._module=value;
+      
+      public function set module(param1:UiModule) : void {
+         this._module = param1;
       }
-
+      
       public function destroy() : void {
-         this._module=null;
+         this._module = null;
       }
-
-      public function getTestInventory(len:uint) : Vector.<ItemWrapper> {
-         var item:Item = null;
-         var inventory:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
-         var i:uint = 0;
-         while(i<len)
+      
+      public function getTestInventory(param1:uint) : Vector.<ItemWrapper> {
+         var _loc4_:Item = null;
+         var _loc2_:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
+         var _loc3_:uint = 0;
+         while(_loc3_ < param1)
          {
-            item=null;
-            while(!item)
+            _loc4_ = null;
+            while(!_loc4_)
             {
-               item=Item.getItemById(Math.floor(Math.random()*1000));
+               _loc4_ = Item.getItemById(Math.floor(Math.random() * 1000));
             }
-            inventory.push(ItemWrapper.create(63,i,item.id,0,null));
-            i++;
+            _loc2_.push(ItemWrapper.create(63,_loc3_,_loc4_.id,0,null));
+            _loc3_++;
          }
-         return inventory;
+         return _loc2_;
       }
-
-      public function showTrace(active:Boolean=true) : void {
-         showRedrawRegions(active,40349);
+      
+      public function showTrace(param1:Boolean=true) : void {
+         showRedrawRegions(param1,40349);
       }
    }
-
 }

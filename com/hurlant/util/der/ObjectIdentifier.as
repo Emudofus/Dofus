@@ -2,27 +2,27 @@ package com.hurlant.util.der
 {
    import flash.net.registerClassAlias;
    import flash.utils.ByteArray;
-
-
+   
    public class ObjectIdentifier extends Object implements IAsn1Type
    {
+      
       {
          registerClassAlias("com.hurlant.util.der.ObjectIdentifier",ObjectIdentifier);
       }
-
-      public function ObjectIdentifier(type:uint=0, length:uint=0, b:*=null) {
+      
+      public function ObjectIdentifier(param1:uint=0, param2:uint=0, param3:*=null) {
          super();
-         this.type=type;
-         this.len=length;
-         if(b is ByteArray)
+         this.type = param1;
+         this.len = param2;
+         if(param3 is ByteArray)
          {
-            this.parse(b as ByteArray);
+            this.parse(param3 as ByteArray);
          }
          else
          {
-            if(b is String)
+            if(param3 is String)
             {
-               this.generate(b as String);
+               this.generate(param3 as String);
             }
             else
             {
@@ -30,84 +30,82 @@ package com.hurlant.util.der
             }
          }
       }
-
-
-
+      
       private var type:uint;
-
+      
       private var len:uint;
-
+      
       private var oid:Array;
-
-      private function generate(s:String) : void {
-         this.oid=s.split(".");
+      
+      private function generate(param1:String) : void {
+         this.oid = param1.split(".");
       }
-
-      private function parse(b:ByteArray) : void {
-         var last:* = false;
-         var o:uint = b.readUnsignedByte();
-         var a:Array = [];
-         a.push(uint(o/40));
-         a.push(uint(o%40));
-         var v:uint = 0;
-         while(b.bytesAvailable>0)
+      
+      private function parse(param1:ByteArray) : void {
+         var _loc5_:* = false;
+         var _loc2_:uint = param1.readUnsignedByte();
+         var _loc3_:Array = [];
+         _loc3_.push(uint(_loc2_ / 40));
+         _loc3_.push(uint(_loc2_ % 40));
+         var _loc4_:uint = 0;
+         while(param1.bytesAvailable > 0)
          {
-            o=b.readUnsignedByte();
-            last=(o&128)==0;
-            o=o&127;
-            v=v*128+o;
-            if(last)
+            _loc2_ = param1.readUnsignedByte();
+            _loc5_ = (_loc2_ & 128) == 0;
+            _loc2_ = _loc2_ & 127;
+            _loc4_ = _loc4_ * 128 + _loc2_;
+            if(_loc5_)
             {
-               a.push(v);
-               v=0;
+               _loc3_.push(_loc4_);
+               _loc4_ = 0;
             }
          }
-         this.oid=a;
+         this.oid = _loc3_;
       }
-
+      
       public function getLength() : uint {
          return this.len;
       }
-
+      
       public function getType() : uint {
          return this.type;
       }
-
+      
       public function toDER() : ByteArray {
-         var v:* = 0;
-         var tmp:Array = [];
-         tmp[0]=this.oid[0]*40+this.oid[1];
-         var i:int = 2;
-         while(i<this.oid.length)
+         var _loc4_:* = 0;
+         var _loc1_:Array = [];
+         _loc1_[0] = this.oid[0] * 40 + this.oid[1];
+         var _loc2_:* = 2;
+         while(_loc2_ < this.oid.length)
          {
-            v=parseInt(this.oid[i]);
-            if(v<128)
+            _loc4_ = parseInt(this.oid[_loc2_]);
+            if(_loc4_ < 128)
             {
-               tmp.push(v);
+               _loc1_.push(_loc4_);
             }
             else
             {
-               if(v<128*128)
+               if(_loc4_ < 128 * 128)
                {
-                  tmp.push(v>>7|128);
-                  tmp.push(v&127);
+                  _loc1_.push(_loc4_ >> 7 | 128);
+                  _loc1_.push(_loc4_ & 127);
                }
                else
                {
-                  if(v<128*128*128)
+                  if(_loc4_ < 128 * 128 * 128)
                   {
-                     tmp.push(v>>14|128);
-                     tmp.push(v>>7&127|128);
-                     tmp.push(v&127);
+                     _loc1_.push(_loc4_ >> 14 | 128);
+                     _loc1_.push(_loc4_ >> 7 & 127 | 128);
+                     _loc1_.push(_loc4_ & 127);
                   }
                   else
                   {
-                     if(v<128*128*128*128)
+                     if(_loc4_ < 128 * 128 * 128 * 128)
                      {
-                        tmp.push(v>>21|128);
-                        tmp.push(v>>14&127|128);
-                        tmp.push(v>>7&127|128);
-                        tmp.push(v&127);
+                        _loc1_.push(_loc4_ >> 21 | 128);
+                        _loc1_.push(_loc4_ >> 14 & 127 | 128);
+                        _loc1_.push(_loc4_ >> 7 & 127 | 128);
+                        _loc1_.push(_loc4_ & 127);
                      }
                      else
                      {
@@ -116,32 +114,31 @@ package com.hurlant.util.der
                   }
                }
             }
-            i++;
+            _loc2_++;
          }
-         this.len=tmp.length;
-         if(this.type==0)
+         this.len = _loc1_.length;
+         if(this.type == 0)
          {
-            this.type=6;
+            this.type = 6;
          }
-         tmp.unshift(this.len);
-         tmp.unshift(this.type);
-         var b:ByteArray = new ByteArray();
-         i=0;
-         while(i<tmp.length)
+         _loc1_.unshift(this.len);
+         _loc1_.unshift(this.type);
+         var _loc3_:ByteArray = new ByteArray();
+         _loc2_ = 0;
+         while(_loc2_ < _loc1_.length)
          {
-            b[i]=tmp[i];
-            i++;
+            _loc3_[_loc2_] = _loc1_[_loc2_];
+            _loc2_++;
          }
-         return b;
+         return _loc3_;
       }
-
+      
       public function toString() : String {
-         return DER.indent+this.oid.join(".");
+         return DER.indent + this.oid.join(".");
       }
-
+      
       public function dump() : String {
-         return "OID["+this.type+"]["+this.len+"]["+this.toString()+"]";
+         return "OID[" + this.type + "][" + this.len + "][" + this.toString() + "]";
       }
    }
-
 }

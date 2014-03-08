@@ -47,15 +47,13 @@ package com.ankamagames.dofus.logic.common.frames
    import com.ankamagames.dofus.misc.lists.ChatHookList;
    import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
-
-
+   
    public class DebugBotFrame extends Object implements Frame
    {
-         
-
+      
       public function DebugBotFrame() {
-         this._rollOverTimer=new Timer(2000);
-         this._actionTimer=new Timer(5000);
+         this._rollOverTimer = new Timer(2000);
+         this._actionTimer = new Timer(5000);
          super();
          if(_self)
          {
@@ -69,61 +67,60 @@ package com.ankamagames.dofus.logic.common.frames
             return;
          }
       }
-
+      
       private static var _self:DebugBotFrame;
-
+      
       public static function getInstance() : DebugBotFrame {
          if(!_self)
          {
-            _self=new DebugBotFrame();
+            _self = new DebugBotFrame();
          }
          return _self;
       }
-
+      
       private var _frameFightListRequest:Boolean;
-
+      
       private var _fightCount:uint;
-
+      
       private var _mapPos:Array;
-
+      
       private var _enabled:Boolean;
-
+      
       private var _rollOverTimer:Timer;
-
+      
       private var _actionTimer:Timer;
-
+      
       private var _chatTimer:Timer;
-
+      
       private var _inFight:Boolean;
-
+      
       private var _lastElemOver:Sprite;
-
+      
       private var _lastEntityOver:IInteractive;
-
+      
       private var _wait:Boolean;
-
+      
       private var _changeMap:Boolean = true;
-
-      public function enableChatMessagesBot(val:Boolean, time:int=500) : void {
-         if(val)
+      
+      public function enableChatMessagesBot(param1:Boolean, param2:int=500) : void {
+         if(param1)
          {
-            this._changeMap=false;
-            this._chatTimer=new Timer(time);
-            trace("start debug chat mode with a timer of: "+time);
+            this._changeMap = false;
+            this._chatTimer = new Timer(param2);
             this._chatTimer.addEventListener(TimerEvent.TIMER,this.sendChatMessage);
          }
          else
          {
             if(this._chatTimer)
             {
-               this._changeMap=true;
+               this._changeMap = true;
                this._chatTimer.removeEventListener(TimerEvent.TIMER,this.sendChatMessage);
             }
          }
       }
-
+      
       public function pushed() : Boolean {
-         this._enabled=true;
+         this._enabled = true;
          this.fakeActivity();
          this._actionTimer.start();
          this._rollOverTimer.start();
@@ -131,13 +128,13 @@ package com.ankamagames.dofus.logic.common.frames
          {
             this._chatTimer.start();
          }
-         this._mapPos=MapPosition.getMapPositions();
-         var mfcMsg:MapFightCountMessage = new MapFightCountMessage();
-         mfcMsg.initMapFightCountMessage(1);
-         this.process(mfcMsg);
+         this._mapPos = MapPosition.getMapPositions();
+         var _loc1_:MapFightCountMessage = new MapFightCountMessage();
+         _loc1_.initMapFightCountMessage(1);
+         this.process(_loc1_);
          return true;
       }
-
+      
       public function pulled() : Boolean {
          this._rollOverTimer.stop();
          this._actionTimer.stop();
@@ -145,101 +142,98 @@ package com.ankamagames.dofus.logic.common.frames
          {
             this._chatTimer.stop();
          }
-         this._enabled=false;
+         this._enabled = false;
          return true;
       }
-
+      
       public function get priority() : int {
          return Priority.HIGHEST;
       }
-
+      
       public function get fightCount() : uint {
          return this._fightCount;
       }
-
-      public function process(msg:Message) : Boolean {
-         var mfcMsg:MapFightCountMessage = null;
-         var mrflMsg:MapRunningFightListMessage = null;
-         var maxFightId:* = 0;
-         var maxFighter:* = 0;
-         var joinRequestMsg:GameFightJoinRequestMessage = null;
-         var csmsg:ChatServerMessage = null;
-         var requestRunningFightMsg:MapRunningFightListRequestMessage = null;
-         var fightInfos:FightExternalInformations = null;
+      
+      public function process(param1:Message) : Boolean {
+         var _loc2_:MapFightCountMessage = null;
+         var _loc3_:MapRunningFightListMessage = null;
+         var _loc4_:* = 0;
+         var _loc5_:* = 0;
+         var _loc6_:GameFightJoinRequestMessage = null;
+         var _loc7_:ChatServerMessage = null;
+         var _loc8_:MapRunningFightListRequestMessage = null;
+         var _loc9_:FightExternalInformations = null;
          switch(true)
          {
-            case msg is MapFightCountMessage:
-               mfcMsg=msg as MapFightCountMessage;
-               if(mfcMsg.fightCount)
+            case param1 is MapFightCountMessage:
+               _loc2_ = param1 as MapFightCountMessage;
+               if(_loc2_.fightCount)
                {
-                  requestRunningFightMsg=new MapRunningFightListRequestMessage();
-                  requestRunningFightMsg.initMapRunningFightListRequestMessage();
-                  ConnectionsHandler.getConnection().send(requestRunningFightMsg);
-                  this._frameFightListRequest=true;
+                  _loc8_ = new MapRunningFightListRequestMessage();
+                  _loc8_.initMapRunningFightListRequestMessage();
+                  ConnectionsHandler.getConnection().send(_loc8_);
+                  this._frameFightListRequest = true;
                }
                break;
-            case msg is MapRunningFightListMessage:
+            case param1 is MapRunningFightListMessage:
                if(!this._frameFightListRequest)
                {
+                  break;
                }
-               else
+               this._frameFightListRequest = false;
+               _loc3_ = param1 as MapRunningFightListMessage;
+               for each (_loc9_ in _loc3_.fights)
                {
-                  this._frameFightListRequest=false;
-                  mrflMsg=msg as MapRunningFightListMessage;
-                  for each (fightInfos in mrflMsg.fights)
+                  if(_loc9_.fightTeams.length > _loc5_)
                   {
-                     if(fightInfos.fightTeams.length>maxFighter)
-                     {
-                        maxFighter=fightInfos.fightTeams.length;
-                        maxFightId=fightInfos.fightId;
-                     }
+                     _loc5_ = _loc9_.fightTeams.length;
+                     _loc4_ = _loc9_.fightId;
                   }
-                  if((this._wait)||(Math.random()>0.6))
-                  {
-                     return true;
-                  }
-                  joinRequestMsg=new GameFightJoinRequestMessage();
-                  joinRequestMsg.initGameFightJoinRequestMessage(0,maxFightId);
-                  ConnectionsHandler.getConnection().send(joinRequestMsg);
-                  this._actionTimer.reset();
-                  this._actionTimer.start();
+               }
+               if((this._wait) || Math.random() < 0.6)
+               {
                   return true;
                }
-               break;
-            case msg is GameFightJoinMessage:
+               _loc6_ = new GameFightJoinRequestMessage();
+               _loc6_.initGameFightJoinRequestMessage(0,_loc4_);
+               ConnectionsHandler.getConnection().send(_loc6_);
+               this._actionTimer.reset();
+               this._actionTimer.start();
+               return true;
+            case param1 is GameFightJoinMessage:
                this._fightCount++;
-               this._inFight=true;
+               this._inFight = true;
                break;
-            case msg is GameFightEndMessage:
-               this._inFight=false;
+            case param1 is GameFightEndMessage:
+               this._inFight = false;
                break;
-            case msg is MapComplementaryInformationsDataMessage:
-               this._wait=false;
+            case param1 is MapComplementaryInformationsDataMessage:
+               this._wait = false;
                break;
-            case msg is MapsLoadingStartedMessage:
-               this._wait=true;
+            case param1 is MapsLoadingStartedMessage:
+               this._wait = true;
                break;
-            case msg is ChatServerMessage:
-               csmsg=msg as ChatServerMessage;
-               if((csmsg.channel==ChatChannelsMultiEnum.CHANNEL_SALES)||(csmsg.channel==ChatChannelsMultiEnum.CHANNEL_SEEK)&&(Math.random()<0.95))
+            case param1 is ChatServerMessage:
+               _loc7_ = param1 as ChatServerMessage;
+               if(_loc7_.channel == ChatChannelsMultiEnum.CHANNEL_SALES || _loc7_.channel == ChatChannelsMultiEnum.CHANNEL_SEEK && Math.random() > 0.95)
                {
-                  this.join(csmsg.senderName);
+                  this.join(_loc7_.senderName);
                }
                break;
          }
          return false;
       }
-
+      
       private function initRight() : void {
-         var aqcmsg:AdminQuietCommandMessage = new AdminQuietCommandMessage();
-         aqcmsg.initAdminQuietCommandMessage("adminaway");
-         ConnectionsHandler.getConnection().send(aqcmsg);
-         aqcmsg.initAdminQuietCommandMessage("god");
-         ConnectionsHandler.getConnection().send(aqcmsg);
+         var _loc1_:AdminQuietCommandMessage = new AdminQuietCommandMessage();
+         _loc1_.initAdminQuietCommandMessage("adminaway");
+         ConnectionsHandler.getConnection().send(_loc1_);
+         _loc1_.initAdminQuietCommandMessage("god");
+         ConnectionsHandler.getConnection().send(_loc1_);
       }
-
-      private function onAction(e:Event) : void {
-         if(Math.random()<0.9)
+      
+      private function onAction(param1:Event) : void {
+         if(Math.random() < 0.9)
          {
             this.randomWalk();
          }
@@ -248,154 +242,153 @@ package com.ankamagames.dofus.logic.common.frames
             this.randomMove();
          }
       }
-
-      private function join(name:String) : void {
-         if((this._inFight)||(this._wait))
+      
+      private function join(param1:String) : void {
+         if((this._inFight) || (this._wait))
          {
             return;
          }
-         var aqcmsg:AdminQuietCommandMessage = new AdminQuietCommandMessage();
-         aqcmsg.initAdminQuietCommandMessage("join "+name);
-         ConnectionsHandler.getConnection().send(aqcmsg);
+         var _loc2_:AdminQuietCommandMessage = new AdminQuietCommandMessage();
+         _loc2_.initAdminQuietCommandMessage("join " + param1);
+         ConnectionsHandler.getConnection().send(_loc2_);
          this._actionTimer.reset();
          this._actionTimer.start();
       }
-
+      
       private function randomMove() : void {
-         if((this._inFight)||(this._wait)||(!this._changeMap))
+         if((this._inFight) || (this._wait) || !this._changeMap)
          {
             return;
          }
-         var mapPos:MapPosition = this._mapPos[int(Math.random()*this._mapPos.length)];
-         var aqcmsg:AdminQuietCommandMessage = new AdminQuietCommandMessage();
-         aqcmsg.initAdminQuietCommandMessage("moveto "+mapPos.id);
-         ConnectionsHandler.getConnection().send(aqcmsg);
+         var _loc1_:MapPosition = this._mapPos[int(Math.random() * this._mapPos.length)];
+         var _loc2_:AdminQuietCommandMessage = new AdminQuietCommandMessage();
+         _loc2_.initAdminQuietCommandMessage("moveto " + _loc1_.id);
+         ConnectionsHandler.getConnection().send(_loc2_);
          this._actionTimer.reset();
          this._actionTimer.start();
       }
-
+      
       private function fakeActivity() : void {
          if(!this._enabled)
          {
             return;
          }
-         setTimeout(this.fakeActivity,1000*60*5);
-         var bpmgs:BasicPingMessage = new BasicPingMessage();
-         bpmgs.initBasicPingMessage(false);
-         ConnectionsHandler.getConnection().send(bpmgs);
+         setTimeout(this.fakeActivity,1000 * 60 * 5);
+         var _loc1_:BasicPingMessage = new BasicPingMessage();
+         _loc1_.initBasicPingMessage(false);
+         ConnectionsHandler.getConnection().send(_loc1_);
       }
-
+      
       private function randomWalk() : void {
-         var cell:CellReference = null;
-         var mp:MapPoint = null;
-         if((this._inFight)||(this._wait))
+         var _loc2_:CellReference = null;
+         var _loc4_:MapPoint = null;
+         if((this._inFight) || (this._wait))
          {
             return;
          }
-         var avaibleCells:Array = [];
-         for each (cell in MapDisplayManager.getInstance().getDataMapContainer().getCell())
+         var _loc1_:Array = [];
+         for each (_loc2_ in MapDisplayManager.getInstance().getDataMapContainer().getCell())
          {
-            mp=MapPoint.fromCellId(cell.id);
-            if(DataMapProvider.getInstance().pointMov(mp.x,mp.y))
+            _loc4_ = MapPoint.fromCellId(_loc2_.id);
+            if(DataMapProvider.getInstance().pointMov(_loc4_.x,_loc4_.y))
             {
-               avaibleCells.push(mp);
+               _loc1_.push(_loc4_);
             }
          }
-         if(!avaibleCells)
+         if(!_loc1_)
          {
             return;
          }
-         var ccmsg:CellClickMessage = new CellClickMessage();
-         ccmsg.cell=avaibleCells[Math.floor(avaibleCells.length*Math.random())];
-         ccmsg.cellId=ccmsg.cell.cellId;
-         ccmsg.id=MapDisplayManager.getInstance().currentMapPoint.mapId;
-         Kernel.getWorker().process(ccmsg);
+         var _loc3_:CellClickMessage = new CellClickMessage();
+         _loc3_.cell = _loc1_[Math.floor(_loc1_.length * Math.random())];
+         _loc3_.cellId = _loc3_.cell.cellId;
+         _loc3_.id = MapDisplayManager.getInstance().currentMapPoint.mapId;
+         Kernel.getWorker().process(_loc3_);
       }
-
-      private function randomOver(... foo) : void {
-         var e:IEntity = null;
-         var entity:IInteractive = null;
-         var ui:UiRootContainer = null;
-         var emomsg2:EntityMouseOutMessage = null;
-         var elem:GraphicContainer = null;
-         var momsg2:MouseOutMessage = null;
+      
+      private function randomOver(... rest) : void {
+         var _loc3_:IEntity = null;
+         var _loc4_:IInteractive = null;
+         var _loc7_:UiRootContainer = null;
+         var _loc10_:EntityMouseOutMessage = null;
+         var _loc11_:GraphicContainer = null;
+         var _loc12_:MouseOutMessage = null;
          if(this._wait)
          {
             return;
          }
-         var avaibleEntities:Array = [];
-         for each (e in EntitiesManager.getInstance().entities)
+         var _loc2_:Array = [];
+         for each (_loc3_ in EntitiesManager.getInstance().entities)
          {
-            if(e is IInteractive)
+            if(_loc3_ is IInteractive)
             {
-               avaibleEntities.push(e);
+               _loc2_.push(_loc3_);
             }
          }
-         entity=avaibleEntities[Math.floor(avaibleEntities.length*Math.random())];
-         if(!entity)
+         _loc4_ = _loc2_[Math.floor(_loc2_.length * Math.random())];
+         if(!_loc4_)
          {
             return;
          }
          if(this._lastEntityOver)
          {
-            emomsg2=new EntityMouseOutMessage(this._lastEntityOver);
-            Kernel.getWorker().process(emomsg2);
+            _loc10_ = new EntityMouseOutMessage(this._lastEntityOver);
+            Kernel.getWorker().process(_loc10_);
          }
-         this._lastEntityOver=entity;
-         var emomsg:EntityMouseOverMessage = new EntityMouseOverMessage(entity);
-         Kernel.getWorker().process(emomsg);
-         var avaibleElem:Array = [];
-         for each (ui in Berilia.getInstance().uiList)
+         this._lastEntityOver = _loc4_;
+         var _loc5_:EntityMouseOverMessage = new EntityMouseOverMessage(_loc4_);
+         Kernel.getWorker().process(_loc5_);
+         var _loc6_:Array = [];
+         for each (_loc7_ in Berilia.getInstance().uiList)
          {
-            for each (elem in ui.getElements())
+            for each (_loc11_ in _loc7_.getElements())
             {
-               if((elem.mouseChildren)||(elem.mouseEnabled))
+               if((_loc11_.mouseChildren) || (_loc11_.mouseEnabled))
                {
-                  avaibleElem.push(elem);
+                  _loc6_.push(_loc11_);
                }
             }
          }
-         if(!avaibleElem.length)
+         if(!_loc6_.length)
          {
             return;
          }
          if(this._lastElemOver)
          {
-            momsg2=GenericPool.get(MouseOutMessage,this._lastElemOver,new MouseEvent(MouseEvent.MOUSE_OUT));
-            Kernel.getWorker().process(momsg2);
+            _loc12_ = GenericPool.get(MouseOutMessage,this._lastElemOver,new MouseEvent(MouseEvent.MOUSE_OUT));
+            Kernel.getWorker().process(_loc12_);
          }
-         var target:GraphicContainer = avaibleElem[Math.floor(avaibleElem.length*Math.random())];
-         var momsg:MouseOverMessage = GenericPool.get(MouseOverMessage,target,new MouseEvent(MouseEvent.MOUSE_OVER));
-         Kernel.getWorker().process(momsg);
-         this._lastElemOver=target;
+         var _loc8_:GraphicContainer = _loc6_[Math.floor(_loc6_.length * Math.random())];
+         var _loc9_:MouseOverMessage = GenericPool.get(MouseOverMessage,_loc8_,new MouseEvent(MouseEvent.MOUSE_OVER));
+         Kernel.getWorker().process(_loc9_);
+         this._lastElemOver = _loc8_;
       }
-
+      
       private var ttSentence:int = 0;
-
+      
       private var limit:int = 100;
-
-      private function sendChatMessage(pEvt:TimerEvent) : void {
-         var channel:* = 0;
-         var removedSentences:* = 0;
-         var color:uint = Math.random()*16777215;
-         var SENTENCES:Vector.<String> = new Vector.<String>();
-         SENTENCES[0]="Test html: salut <span style=\"color:#"+(Math.random()*16777215).toString(8)+"\">je suis la</span> et la";
-         SENTENCES[1]="i\'m batman";
-         SENTENCES[2]=HtmlManager.addLink("i\'m a link now, awesome !!","");
-         SENTENCES[3]=":( sd :p :) fdg dfg f";
-         SENTENCES[4]="je suis <u>underlineeeeeee</u> et moi <b>BOLD</b>"+"\nEt un retour a la ligne, un !!";
-         SENTENCES[5]="*test de texte italic via la commande*";
-         var sentence:String = SENTENCES[Math.floor(Math.random()*SENTENCES.length)];
+      
+      private function sendChatMessage(param1:TimerEvent) : void {
+         var _loc5_:* = 0;
+         var _loc6_:* = 0;
+         var _loc2_:uint = Math.random() * 16777215;
+         var _loc3_:Vector.<String> = new Vector.<String>();
+         _loc3_[0] = "Test html: salut <span style=\"color:#" + (Math.random() * 16777215).toString(8) + "\">je suis la</span> et la";
+         _loc3_[1] = "i\'m batman";
+         _loc3_[2] = HtmlManager.addLink("i\'m a link now, awesome !!","");
+         _loc3_[3] = ":( sd :p :) fdg dfg f";
+         _loc3_[4] = "je suis <u>underlineeeeeee</u> et moi <b>BOLD</b>" + "\nEt un retour a la ligne, un !!";
+         _loc3_[5] = "*test de texte italic via la commande*";
+         var _loc4_:String = _loc3_[Math.floor(Math.random() * _loc3_.length)];
          this.ttSentence++;
-         KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,sentence,ChatActivableChannelsEnum.CHANNEL_GLOBAL);
-         if(this.ttSentence>this.limit+1)
+         KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,_loc4_,ChatActivableChannelsEnum.CHANNEL_GLOBAL);
+         if(this.ttSentence > this.limit + 1)
          {
             this.ttSentence--;
-            channel=0;
-            removedSentences=1;
-            KernelEventsManager.getInstance().processCallback(ChatHookList.NewMessage,channel,removedSentences);
+            _loc5_ = 0;
+            _loc6_ = 1;
+            KernelEventsManager.getInstance().processCallback(ChatHookList.NewMessage,_loc5_,_loc6_);
          }
       }
    }
-
 }

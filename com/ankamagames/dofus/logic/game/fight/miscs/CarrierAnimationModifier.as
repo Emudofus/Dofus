@@ -4,32 +4,30 @@ package com.ankamagames.dofus.logic.game.fight.miscs
    import com.ankamagames.tiphon.types.AnimationModifierPriority;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    import com.ankamagames.dofus.types.enums.AnimationEnum;
-
-
+   
    public class CarrierAnimationModifier extends Object implements IAnimationModifier
    {
-         
-
+      
       public function CarrierAnimationModifier() {
          super();
       }
-
+      
       private static var _self:CarrierAnimationModifier;
-
+      
       public static function getInstance() : CarrierAnimationModifier {
          if(!_self)
          {
-            _self=new CarrierAnimationModifier();
+            _self = new CarrierAnimationModifier();
          }
          return _self;
       }
-
+      
       public function get priority() : int {
          return AnimationModifierPriority.HIGH;
       }
-
-      public function getModifiedAnimation(animation:String, look:TiphonEntityLook) : String {
-         switch(animation)
+      
+      public function getModifiedAnimation(param1:String, param2:TiphonEntityLook) : String {
+         switch(param1)
          {
             case AnimationEnum.ANIM_STATIQUE:
                return AnimationEnum.ANIM_STATIQUE_CARRYING;
@@ -44,9 +42,8 @@ package com.ankamagames.dofus.logic.game.fight.miscs
             case AnimationEnum.ANIM_TACLE:
                return AnimationEnum.ANIM_TACLE_CARRYING;
             default:
-               return animation;
+               return param1;
          }
       }
    }
-
 }

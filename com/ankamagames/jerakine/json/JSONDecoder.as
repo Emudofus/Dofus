@@ -1,102 +1,142 @@
 package com.ankamagames.jerakine.json
 {
-
-
    public class JSONDecoder extends Object
    {
-         
-
-      public function JSONDecoder(s:String, strict:Boolean) {
+      
+      public function JSONDecoder(param1:String, param2:Boolean) {
          super();
-         this.strict=strict;
-         this.tokenizer=new JSONTokenizer(s,strict);
+         this.strict = param2;
+         this.tokenizer = new JSONTokenizer(param1,param2);
          this.nextToken();
-         this.value=this.parseValue();
-         if((strict)&&(!(this.nextToken()==null)))
+         this.value = this.parseValue();
+         if((param2) && !(this.nextToken() == null))
          {
             this.tokenizer.parseError("Unexpected characters left in input stream");
          }
       }
-
-
-
+      
       private var strict:Boolean;
-
+      
       private var value;
-
+      
       private var tokenizer:JSONTokenizer;
-
+      
       private var token:JSONToken;
-
+      
       public function getValue() : * {
          return this.value;
       }
-
+      
       private function nextToken() : JSONToken {
-         return this.token=this.tokenizer.getNextToken();
+         return this.token = this.tokenizer.getNextToken();
       }
-
+      
       private function parseArray() : Array {
-         var a:Array = new Array();
+         var _loc1_:Array = new Array();
          this.nextToken();
-         if(this.token.type==JSONTokenType.RIGHT_BRACKET)
+         if(this.token.type == JSONTokenType.RIGHT_BRACKET)
          {
-            return a;
+            return _loc1_;
          }
-         if((!this.strict)&&(this.token.type==JSONTokenType.COMMA))
+         if(!this.strict && this.token.type == JSONTokenType.COMMA)
          {
             this.nextToken();
-            if(this.token.type==JSONTokenType.RIGHT_BRACKET)
+            if(this.token.type == JSONTokenType.RIGHT_BRACKET)
             {
-               return a;
+               return _loc1_;
             }
-            this.tokenizer.parseError("Leading commas are not supported.  Expecting \']\' but found "+this.token.value);
+            this.tokenizer.parseError("Leading commas are not supported.  Expecting \']\' but found " + this.token.value);
          }
-         while(a.push(this.parseValue()), this.nextToken(), this.token.type!=JSONTokenType.RIGHT_BRACKET)
+         while(true)
          {
-            if(this.token.type==JSONTokenType.COMMA)
+            _loc1_.push(this.parseValue());
+            this.nextToken();
+            if(this.token.type == JSONTokenType.RIGHT_BRACKET)
+            {
+               break;
+            }
+            if(this.token.type == JSONTokenType.COMMA)
             {
                this.nextToken();
                if(!this.strict)
                {
-                  if(this.token.type==JSONTokenType.RIGHT_BRACKET)
+                  if(this.token.type == JSONTokenType.RIGHT_BRACKET)
                   {
-                     return a;
+                     return _loc1_;
                   }
                }
             }
             else
             {
-               this.tokenizer.parseError("Expecting ] or , but found "+this.token.value);
+               this.tokenizer.parseError("Expecting ] or , but found " + this.token.value);
             }
          }
-         return a;
+         return _loc1_;
       }
-
+      
       private function parseObject() : Object {
-         var key:String = null;
-         var o:Object = new Object();
+         var _loc2_:String = null;
+         var _loc1_:Object = new Object();
          this.nextToken();
-         if(this.token.type==JSONTokenType.RIGHT_BRACE)
+         if(this.token.type == JSONTokenType.RIGHT_BRACE)
          {
-            return o;
+            return _loc1_;
          }
-         if((!this.strict)&&(this.token.type==JSONTokenType.COMMA))
+         if(!this.strict && this.token.type == JSONTokenType.COMMA)
          {
             this.nextToken();
-            if(this.token.type==JSONTokenType.RIGHT_BRACE)
+            if(this.token.type == JSONTokenType.RIGHT_BRACE)
             {
-               return o;
+               return _loc1_;
             }
-            this.tokenizer.parseError("Leading commas are not supported.  Expecting \'}\' but found "+this.token.value);
+            this.tokenizer.parseError("Leading commas are not supported.  Expecting \'}\' but found " + this.token.value);
          }
          while(true)
          {
+            if(this.token.type == JSONTokenType.STRING)
+            {
+               _loc2_ = String(this.token.value);
+               this.nextToken();
+               if(this.token.type == JSONTokenType.COLON)
+               {
+                  this.nextToken();
+                  _loc1_[_loc2_] = this.parseValue();
+                  this.nextToken();
+                  if(this.token.type == JSONTokenType.RIGHT_BRACE)
+                  {
+                     break;
+                  }
+                  if(this.token.type == JSONTokenType.COMMA)
+                  {
+                     this.nextToken();
+                     if(!this.strict)
+                     {
+                        if(this.token.type == JSONTokenType.RIGHT_BRACE)
+                        {
+                           return _loc1_;
+                        }
+                     }
+                  }
+                  else
+                  {
+                     this.tokenizer.parseError("Expecting } or , but found " + this.token.value);
+                  }
+               }
+               else
+               {
+                  this.tokenizer.parseError("Expecting : but found " + this.token.value);
+               }
+            }
+            else
+            {
+               this.tokenizer.parseError("Expecting string but found " + this.token.value);
+            }
          }
+         return _loc1_;
       }
-
+      
       private function parseValue() : Object {
-         if(this.token==null)
+         if(this.token == null)
          {
             this.tokenizer.parseError("Unexpected end of input");
          }
@@ -104,27 +144,24 @@ package com.ankamagames.jerakine.json
          {
             case JSONTokenType.LEFT_BRACE:
                return this.parseObject();
-               break;
             case JSONTokenType.LEFT_BRACKET:
                return this.parseArray();
-               break;
             case JSONTokenType.STRING:
             case JSONTokenType.NUMBER:
             case JSONTokenType.TRUE:
             case JSONTokenType.FALSE:
             case JSONTokenType.NULL:
                return this.token.value;
-               break;
             case JSONTokenType.NAN:
                if(!this.strict)
                {
                   return this.token.value;
                }
-               this.tokenizer.parseError("Unexpected "+this.token.value);
+               this.tokenizer.parseError("Unexpected " + this.token.value);
+            default:
+               this.tokenizer.parseError("Unexpected " + this.token.value);
+               return null;
          }
-         this.tokenizer.parseError("Unexpected "+this.token.value);
-         return null;
       }
    }
-
 }

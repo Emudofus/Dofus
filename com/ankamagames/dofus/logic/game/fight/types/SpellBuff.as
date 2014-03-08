@@ -11,124 +11,122 @@ package com.ankamagames.dofus.logic.game.fight.types
    import com.ankamagames.dofus.network.enums.CharacterSpellModificationTypeEnum;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporarySpellBoostEffect;
-
-
+   
    public class SpellBuff extends BasicBuff
    {
-         
-
-      public function SpellBuff(effect:FightTemporarySpellBoostEffect=null, castingSpell:CastingSpell=null, actionId:int=0) {
-         if(effect)
+      
+      public function SpellBuff(param1:FightTemporarySpellBoostEffect=null, param2:CastingSpell=null, param3:int=0) {
+         if(param1)
          {
-            super(effect,castingSpell,actionId,effect.boostedSpellId,null,effect.delta);
-            this.spellId=effect.boostedSpellId;
-            this.delta=effect.delta;
+            super(param1,param2,param3,param1.boostedSpellId,null,param1.delta);
+            this.spellId = param1.boostedSpellId;
+            this.delta = param1.delta;
          }
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpellBuff));
-
+      
       public var spellId:int;
-
+      
       public var delta:int;
-
+      
       public var modifType:int;
-
+      
       override public function get type() : String {
          return "SpellBuff";
       }
-
+      
       override public function onApplyed() : void {
-         var spellModifExists:* = false;
-         var spellModif:CharacterSpellModification = null;
-         var swsToUpdate:Array = null;
-         var swToUpdate:SpellWrapper = null;
-         var carac:CharacterBaseCharacteristic = null;
-         var modif:CharacterSpellModification = null;
-         if(targetId==CurrentPlayedFighterManager.getInstance().currentFighterId)
+         var _loc1_:* = false;
+         var _loc2_:CharacterSpellModification = null;
+         var _loc3_:Array = null;
+         var _loc4_:SpellWrapper = null;
+         var _loc5_:CharacterBaseCharacteristic = null;
+         var _loc6_:CharacterSpellModification = null;
+         if(targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
          {
-            if(actionId==ActionIdConverter.ACTION_BOOST_SPELL_RANGEABLE)
+            if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_RANGEABLE)
             {
-               this.modifType=CharacterSpellModificationTypeEnum.RANGEABLE;
+               this.modifType = CharacterSpellModificationTypeEnum.RANGEABLE;
             }
             else
             {
-               if(actionId==ActionIdConverter.ACTION_BOOST_SPELL_DMG)
+               if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_DMG)
                {
-                  this.modifType=CharacterSpellModificationTypeEnum.DAMAGE;
+                  this.modifType = CharacterSpellModificationTypeEnum.DAMAGE;
                }
                else
                {
-                  if(actionId==ActionIdConverter.ACTION_BOOST_SPELL_BASE_DMG)
+                  if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_BASE_DMG)
                   {
-                     this.modifType=CharacterSpellModificationTypeEnum.BASE_DAMAGE;
+                     this.modifType = CharacterSpellModificationTypeEnum.BASE_DAMAGE;
                   }
                   else
                   {
-                     if(actionId==ActionIdConverter.ACTION_BOOST_SPELL_HEAL)
+                     if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_HEAL)
                      {
-                        this.modifType=CharacterSpellModificationTypeEnum.HEAL_BONUS;
+                        this.modifType = CharacterSpellModificationTypeEnum.HEAL_BONUS;
                      }
                      else
                      {
-                        if(actionId==ActionIdConverter.ACTION_BOOST_SPELL_AP_COST)
+                        if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_AP_COST)
                         {
-                           this.modifType=CharacterSpellModificationTypeEnum.AP_COST;
+                           this.modifType = CharacterSpellModificationTypeEnum.AP_COST;
                         }
                         else
                         {
-                           if(actionId==ActionIdConverter.ACTION_BOOST_SPELL_CAST_INTVL)
+                           if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_CAST_INTVL)
                            {
-                              this.modifType=CharacterSpellModificationTypeEnum.CAST_INTERVAL;
+                              this.modifType = CharacterSpellModificationTypeEnum.CAST_INTERVAL;
                            }
                            else
                            {
-                              if(actionId==ActionIdConverter.ACTION_BOOST_SPELL_CAST_INTVL_SET)
+                              if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_CAST_INTVL_SET)
                               {
-                                 this.modifType=CharacterSpellModificationTypeEnum.CAST_INTERVAL_SET;
+                                 this.modifType = CharacterSpellModificationTypeEnum.CAST_INTERVAL_SET;
                               }
                               else
                               {
-                                 if(actionId==ActionIdConverter.ACTION_BOOST_SPELL_CC)
+                                 if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_CC)
                                  {
-                                    this.modifType=CharacterSpellModificationTypeEnum.CRITICAL_HIT_BONUS;
+                                    this.modifType = CharacterSpellModificationTypeEnum.CRITICAL_HIT_BONUS;
                                  }
                                  else
                                  {
-                                    if(actionId==ActionIdConverter.ACTION_BOOST_SPELL_CASTOUTLINE)
+                                    if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_CASTOUTLINE)
                                     {
-                                       this.modifType=CharacterSpellModificationTypeEnum.CAST_LINE;
+                                       this.modifType = CharacterSpellModificationTypeEnum.CAST_LINE;
                                     }
                                     else
                                     {
-                                       if(actionId==ActionIdConverter.ACTION_BOOST_SPELL_NOLINEOFSIGHT)
+                                       if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_NOLINEOFSIGHT)
                                        {
-                                          this.modifType=CharacterSpellModificationTypeEnum.LOS;
+                                          this.modifType = CharacterSpellModificationTypeEnum.LOS;
                                        }
                                        else
                                        {
-                                          if(actionId==ActionIdConverter.ACTION_BOOST_SPELL_MAXPERTURN)
+                                          if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_MAXPERTURN)
                                           {
-                                             this.modifType=CharacterSpellModificationTypeEnum.MAX_CAST_PER_TURN;
+                                             this.modifType = CharacterSpellModificationTypeEnum.MAX_CAST_PER_TURN;
                                           }
                                           else
                                           {
-                                             if(actionId==ActionIdConverter.ACTION_BOOST_SPELL_MAXPERTARGET)
+                                             if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_MAXPERTARGET)
                                              {
-                                                this.modifType=CharacterSpellModificationTypeEnum.MAX_CAST_PER_TARGET;
+                                                this.modifType = CharacterSpellModificationTypeEnum.MAX_CAST_PER_TARGET;
                                              }
                                              else
                                              {
-                                                if(actionId==ActionIdConverter.ACTION_BOOST_SPELL_RANGE)
+                                                if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_RANGE)
                                                 {
-                                                   this.modifType=CharacterSpellModificationTypeEnum.RANGE;
+                                                   this.modifType = CharacterSpellModificationTypeEnum.RANGE;
                                                 }
                                                 else
                                                 {
-                                                   if(actionId==ActionIdConverter.ACTION_DEBOOST_SPELL_RANGE)
+                                                   if(actionId == ActionIdConverter.ACTION_DEBOOST_SPELL_RANGE)
                                                    {
-                                                      this.modifType=CharacterSpellModificationTypeEnum.RANGE;
-                                                      this.delta=-this.delta;
+                                                      this.modifType = CharacterSpellModificationTypeEnum.RANGE;
+                                                      this.delta = -this.delta;
                                                    }
                                                 }
                                              }
@@ -143,87 +141,86 @@ package com.ankamagames.dofus.logic.game.fight.types
                   }
                }
             }
-            spellModifExists=false;
-            for each (spellModif in PlayedCharacterManager.getInstance().characteristics.spellModifications)
+            _loc1_ = false;
+            for each (_loc2_ in PlayedCharacterManager.getInstance().characteristics.spellModifications)
             {
-               if(this.spellId==spellModif.spellId)
+               if(this.spellId == _loc2_.spellId)
                {
-                  if(spellModif.modificationType==this.modifType)
+                  if(_loc2_.modificationType == this.modifType)
                   {
-                     spellModifExists=true;
-                     spellModif.value.contextModif=spellModif.value.contextModif+this.delta;
+                     _loc1_ = true;
+                     _loc2_.value.contextModif = _loc2_.value.contextModif + this.delta;
                   }
                }
             }
-            if(!spellModifExists)
+            if(!_loc1_)
             {
-               carac=new CharacterBaseCharacteristic();
-               carac.base=0;
-               carac.alignGiftBonus=0;
-               carac.contextModif=this.delta;
-               carac.objectsAndMountBonus=0;
-               modif=new CharacterSpellModification();
-               modif.modificationType=this.modifType;
-               modif.spellId=this.spellId;
-               modif.value=carac;
-               PlayedCharacterManager.getInstance().characteristics.spellModifications.push(modif);
+               _loc5_ = new CharacterBaseCharacteristic();
+               _loc5_.base = 0;
+               _loc5_.alignGiftBonus = 0;
+               _loc5_.contextModif = this.delta;
+               _loc5_.objectsAndMountBonus = 0;
+               _loc6_ = new CharacterSpellModification();
+               _loc6_.modificationType = this.modifType;
+               _loc6_.spellId = this.spellId;
+               _loc6_.value = _loc5_;
+               PlayedCharacterManager.getInstance().characteristics.spellModifications.push(_loc6_);
             }
-            swsToUpdate=SpellWrapper.getSpellWrappersById(this.spellId,targetId);
-            for each (swToUpdate in swsToUpdate)
+            _loc3_ = SpellWrapper.getSpellWrappersById(this.spellId,targetId);
+            for each (_loc4_ in _loc3_)
             {
-               swToUpdate=SpellWrapper.create(swToUpdate.position,swToUpdate.spellId,swToUpdate.spellLevel,true,targetId);
-               swToUpdate.versionNum++;
+               _loc4_ = SpellWrapper.create(_loc4_.position,_loc4_.spellId,_loc4_.spellLevel,true,targetId);
+               _loc4_.versionNum++;
             }
          }
          super.onApplyed();
       }
-
+      
       override public function onRemoved() : void {
-         var spellModif:CharacterSpellModification = null;
-         var swsToUpdate:Array = null;
-         var swToUpdate:SpellWrapper = null;
+         var _loc1_:CharacterSpellModification = null;
+         var _loc2_:Array = null;
+         var _loc3_:SpellWrapper = null;
          if(!_removed)
          {
-            if(targetId==CurrentPlayedFighterManager.getInstance().currentFighterId)
+            if(targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
             {
-               for each (spellModif in PlayedCharacterManager.getInstance().characteristics.spellModifications)
+               for each (_loc1_ in PlayedCharacterManager.getInstance().characteristics.spellModifications)
                {
-                  if(this.spellId==spellModif.spellId)
+                  if(this.spellId == _loc1_.spellId)
                   {
-                     if(spellModif.modificationType==this.modifType)
+                     if(_loc1_.modificationType == this.modifType)
                      {
-                        spellModif.value.contextModif=spellModif.value.contextModif-this.delta;
+                        _loc1_.value.contextModif = _loc1_.value.contextModif - this.delta;
                      }
                   }
                }
-               swsToUpdate=SpellWrapper.getSpellWrappersById(this.spellId,targetId);
-               for each (swToUpdate in swsToUpdate)
+               _loc2_ = SpellWrapper.getSpellWrappersById(this.spellId,targetId);
+               for each (_loc3_ in _loc2_)
                {
-                  swToUpdate=SpellWrapper.create(swToUpdate.position,swToUpdate.spellId,swToUpdate.spellLevel,true,targetId);
-                  swToUpdate.versionNum++;
+                  _loc3_ = SpellWrapper.create(_loc3_.position,_loc3_.spellId,_loc3_.spellLevel,true,targetId);
+                  _loc3_.versionNum++;
                }
             }
          }
          super.onRemoved();
       }
-
-      override public function clone(id:int=0) : BasicBuff {
-         var sb:SpellBuff = new SpellBuff();
-         sb.spellId=this.spellId;
-         sb.delta=this.delta;
-         sb.id=uid;
-         sb.uid=uid;
-         sb.actionId=actionId;
-         sb.targetId=targetId;
-         sb.castingSpell=castingSpell;
-         sb.duration=duration;
-         sb.dispelable=dispelable;
-         sb.source=source;
-         sb.aliveSource=aliveSource;
-         sb.parentBoostUid=parentBoostUid;
-         sb.initParam(param1,param2,param3);
-         return sb;
+      
+      override public function clone(param1:int=0) : BasicBuff {
+         var _loc2_:SpellBuff = new SpellBuff();
+         _loc2_.spellId = this.spellId;
+         _loc2_.delta = this.delta;
+         _loc2_.id = uid;
+         _loc2_.uid = uid;
+         _loc2_.actionId = actionId;
+         _loc2_.targetId = targetId;
+         _loc2_.castingSpell = castingSpell;
+         _loc2_.duration = duration;
+         _loc2_.dispelable = dispelable;
+         _loc2_.source = source;
+         _loc2_.aliveSource = aliveSource;
+         _loc2_.parentBoostUid = parentBoostUid;
+         _loc2_.initParam(param1,param2,param3);
+         return _loc2_;
       }
    }
-
 }

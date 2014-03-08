@@ -1,12 +1,10 @@
 package com.ankamagames.tubul.types
 {
    import com.ankamagames.jerakine.managers.OptionManager;
-
-
+   
    public dynamic class TubulOptions extends OptionManager
    {
-         
-
+      
       public function TubulOptions() {
          super("tubul");
          add("allowSoundEffects",true);
@@ -21,10 +19,5 @@ package com.ankamagames.tubul.types
          add("playSoundAtTurnStart",true);
          add("infiniteLoopMusics",false);
       }
-
-
-
-
    }
-
 }

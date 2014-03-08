@@ -3,158 +3,129 @@ package com.ankamagames.dofus.network.types.game.context.fight
    import com.ankamagames.jerakine.network.INetworkType;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
-
-
+   
    public class FightResultPvpData extends FightResultAdditionalData implements INetworkType
    {
-         
-
+      
       public function FightResultPvpData() {
          super();
       }
-
+      
       public static const protocolId:uint = 190;
-
+      
       public var grade:uint = 0;
-
+      
       public var minHonorForGrade:uint = 0;
-
+      
       public var maxHonorForGrade:uint = 0;
-
+      
       public var honor:uint = 0;
-
+      
       public var honorDelta:int = 0;
-
-      public var dishonor:uint = 0;
-
-      public var dishonorDelta:int = 0;
-
+      
       override public function getTypeId() : uint {
          return 190;
       }
-
-      public function initFightResultPvpData(grade:uint=0, minHonorForGrade:uint=0, maxHonorForGrade:uint=0, honor:uint=0, honorDelta:int=0, dishonor:uint=0, dishonorDelta:int=0) : FightResultPvpData {
-         this.grade=grade;
-         this.minHonorForGrade=minHonorForGrade;
-         this.maxHonorForGrade=maxHonorForGrade;
-         this.honor=honor;
-         this.honorDelta=honorDelta;
-         this.dishonor=dishonor;
-         this.dishonorDelta=dishonorDelta;
+      
+      public function initFightResultPvpData(param1:uint=0, param2:uint=0, param3:uint=0, param4:uint=0, param5:int=0) : FightResultPvpData {
+         this.grade = param1;
+         this.minHonorForGrade = param2;
+         this.maxHonorForGrade = param3;
+         this.honor = param4;
+         this.honorDelta = param5;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.grade=0;
-         this.minHonorForGrade=0;
-         this.maxHonorForGrade=0;
-         this.honor=0;
-         this.honorDelta=0;
-         this.dishonor=0;
-         this.dishonorDelta=0;
+         this.grade = 0;
+         this.minHonorForGrade = 0;
+         this.maxHonorForGrade = 0;
+         this.honor = 0;
+         this.honorDelta = 0;
       }
-
-      override public function serialize(output:IDataOutput) : void {
-         this.serializeAs_FightResultPvpData(output);
+      
+      override public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_FightResultPvpData(param1);
       }
-
-      public function serializeAs_FightResultPvpData(output:IDataOutput) : void {
-         super.serializeAs_FightResultAdditionalData(output);
-         if((this.grade>0)||(this.grade<255))
+      
+      public function serializeAs_FightResultPvpData(param1:IDataOutput) : void {
+         super.serializeAs_FightResultAdditionalData(param1);
+         if(this.grade < 0 || this.grade > 255)
          {
-            throw new Error("Forbidden value ("+this.grade+") on element grade.");
+            throw new Error("Forbidden value (" + this.grade + ") on element grade.");
          }
          else
          {
-            output.writeByte(this.grade);
-            if((this.minHonorForGrade>0)||(this.minHonorForGrade<20000))
+            param1.writeByte(this.grade);
+            if(this.minHonorForGrade < 0 || this.minHonorForGrade > 20000)
             {
-               throw new Error("Forbidden value ("+this.minHonorForGrade+") on element minHonorForGrade.");
+               throw new Error("Forbidden value (" + this.minHonorForGrade + ") on element minHonorForGrade.");
             }
             else
             {
-               output.writeShort(this.minHonorForGrade);
-               if((this.maxHonorForGrade>0)||(this.maxHonorForGrade<20000))
+               param1.writeShort(this.minHonorForGrade);
+               if(this.maxHonorForGrade < 0 || this.maxHonorForGrade > 20000)
                {
-                  throw new Error("Forbidden value ("+this.maxHonorForGrade+") on element maxHonorForGrade.");
+                  throw new Error("Forbidden value (" + this.maxHonorForGrade + ") on element maxHonorForGrade.");
                }
                else
                {
-                  output.writeShort(this.maxHonorForGrade);
-                  if((this.honor>0)||(this.honor<20000))
+                  param1.writeShort(this.maxHonorForGrade);
+                  if(this.honor < 0 || this.honor > 20000)
                   {
-                     throw new Error("Forbidden value ("+this.honor+") on element honor.");
+                     throw new Error("Forbidden value (" + this.honor + ") on element honor.");
                   }
                   else
                   {
-                     output.writeShort(this.honor);
-                     output.writeShort(this.honorDelta);
-                     if((this.dishonor>0)||(this.dishonor<500))
-                     {
-                        throw new Error("Forbidden value ("+this.dishonor+") on element dishonor.");
-                     }
-                     else
-                     {
-                        output.writeShort(this.dishonor);
-                        output.writeShort(this.dishonorDelta);
-                        return;
-                     }
+                     param1.writeShort(this.honor);
+                     param1.writeShort(this.honorDelta);
+                     return;
                   }
                }
             }
          }
       }
-
-      override public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_FightResultPvpData(input);
+      
+      override public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_FightResultPvpData(param1);
       }
-
-      public function deserializeAs_FightResultPvpData(input:IDataInput) : void {
-         super.deserialize(input);
-         this.grade=input.readUnsignedByte();
-         if((this.grade>0)||(this.grade<255))
+      
+      public function deserializeAs_FightResultPvpData(param1:IDataInput) : void {
+         super.deserialize(param1);
+         this.grade = param1.readUnsignedByte();
+         if(this.grade < 0 || this.grade > 255)
          {
-            throw new Error("Forbidden value ("+this.grade+") on element of FightResultPvpData.grade.");
+            throw new Error("Forbidden value (" + this.grade + ") on element of FightResultPvpData.grade.");
          }
          else
          {
-            this.minHonorForGrade=input.readUnsignedShort();
-            if((this.minHonorForGrade>0)||(this.minHonorForGrade<20000))
+            this.minHonorForGrade = param1.readUnsignedShort();
+            if(this.minHonorForGrade < 0 || this.minHonorForGrade > 20000)
             {
-               throw new Error("Forbidden value ("+this.minHonorForGrade+") on element of FightResultPvpData.minHonorForGrade.");
+               throw new Error("Forbidden value (" + this.minHonorForGrade + ") on element of FightResultPvpData.minHonorForGrade.");
             }
             else
             {
-               this.maxHonorForGrade=input.readUnsignedShort();
-               if((this.maxHonorForGrade>0)||(this.maxHonorForGrade<20000))
+               this.maxHonorForGrade = param1.readUnsignedShort();
+               if(this.maxHonorForGrade < 0 || this.maxHonorForGrade > 20000)
                {
-                  throw new Error("Forbidden value ("+this.maxHonorForGrade+") on element of FightResultPvpData.maxHonorForGrade.");
+                  throw new Error("Forbidden value (" + this.maxHonorForGrade + ") on element of FightResultPvpData.maxHonorForGrade.");
                }
                else
                {
-                  this.honor=input.readUnsignedShort();
-                  if((this.honor>0)||(this.honor<20000))
+                  this.honor = param1.readUnsignedShort();
+                  if(this.honor < 0 || this.honor > 20000)
                   {
-                     throw new Error("Forbidden value ("+this.honor+") on element of FightResultPvpData.honor.");
+                     throw new Error("Forbidden value (" + this.honor + ") on element of FightResultPvpData.honor.");
                   }
                   else
                   {
-                     this.honorDelta=input.readShort();
-                     this.dishonor=input.readUnsignedShort();
-                     if((this.dishonor>0)||(this.dishonor<500))
-                     {
-                        throw new Error("Forbidden value ("+this.dishonor+") on element of FightResultPvpData.dishonor.");
-                     }
-                     else
-                     {
-                        this.dishonorDelta=input.readShort();
-                        return;
-                     }
+                     this.honorDelta = param1.readShort();
+                     return;
                   }
                }
             }
          }
       }
    }
-
 }

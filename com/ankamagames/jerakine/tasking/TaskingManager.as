@@ -7,12 +7,10 @@ package com.ankamagames.jerakine.tasking
    import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
    import flash.events.Event;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
-
-
+   
    public final class TaskingManager extends Object
    {
-         
-
+      
       public function TaskingManager() {
          super();
          if(_self)
@@ -21,62 +19,62 @@ package com.ankamagames.jerakine.tasking
          }
          else
          {
-            this._queue=new Vector.<SplittedTask>();
+            this._queue = new Vector.<SplittedTask>();
             return;
          }
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TaskingManager));
-
+      
       private static var _self:TaskingManager;
-
+      
       public static function getInstance() : TaskingManager {
-         if(_self==null)
+         if(_self == null)
          {
-            _self=new TaskingManager();
+            _self = new TaskingManager();
          }
          return _self;
       }
-
+      
       private var _running:Boolean;
-
+      
       private var _queue:Vector.<SplittedTask>;
-
+      
       public function get running() : Boolean {
          return this._running;
       }
-
+      
       public function get queue() : Vector.<SplittedTask> {
          return this._queue;
       }
-
-      public function addTask(task:SplittedTask) : void {
-         this._queue.push(task);
+      
+      public function addTask(param1:SplittedTask) : void {
+         this._queue.push(param1);
          if(!this._running)
          {
             EnterFrameDispatcher.addEventListener(this.onEnterFrame,"TaskingManager");
-            this._running=true;
+            this._running = true;
          }
       }
-
-      private function onEnterFrame(e:Event) : void {
-         var result:* = false;
-         var task:SplittedTask = this._queue[0] as SplittedTask;
-         var iter:uint = 0;
-         result=task.step();
-         while((++iter>task.stepsPerFrame())&&(!result))
+      
+      private function onEnterFrame(param1:Event) : void {
+         var _loc3_:* = false;
+         var _loc2_:SplittedTask = this._queue[0] as SplittedTask;
+         var _loc4_:uint = 0;
+         do
          {
-         }
-         if(result)
-         {
-            this._queue.shift();
-            if(this._queue.length==0)
+               _loc3_ = _loc2_.step();
+            }while(++_loc4_ < _loc2_.stepsPerFrame() && !_loc3_);
+            
+            if(_loc3_)
             {
-               EnterFrameDispatcher.removeEventListener(this.onEnterFrame);
-               this._running=false;
+               this._queue.shift();
+               if(this._queue.length == 0)
+               {
+                  EnterFrameDispatcher.removeEventListener(this.onEnterFrame);
+                  this._running = false;
+               }
             }
          }
       }
    }
-
-}

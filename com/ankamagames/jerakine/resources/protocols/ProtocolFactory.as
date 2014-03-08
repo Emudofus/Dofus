@@ -2,31 +2,22 @@ package com.ankamagames.jerakine.resources.protocols
 {
    import flash.utils.Dictionary;
    import com.ankamagames.jerakine.types.Uri;
-   import com.ankamagames.jerakine.resources.protocols.impl.HttpProtocol;
-   import com.ankamagames.jerakine.resources.protocols.impl.HttpCacheProtocol;
    import com.ankamagames.jerakine.utils.system.AirScanner;
-   import com.ankamagames.jerakine.resources.protocols.impl.FileProtocol;
-   import com.ankamagames.jerakine.resources.protocols.impl.FileFlashProtocol;
-   import com.ankamagames.jerakine.resources.protocols.impl.ZipProtocol;
-   import com.ankamagames.jerakine.resources.protocols.impl.UpdaterProtocol;
-   import com.ankamagames.jerakine.resources.protocols.impl.PakProtocol2;
-   import com.ankamagames.jerakine.resources.protocols.impl.PakProtocol;
+   import com.ankamagames.jerakine.resources.protocols.impl.*;
    import com.ankamagames.jerakine.resources.ResourceError;
-
-
+   
    public class ProtocolFactory extends Object
    {
-         
-
+      
       public function ProtocolFactory() {
          super();
       }
-
+      
       private static var _customProtocols:Dictionary = new Dictionary();
-
-      public static function getProtocol(uri:Uri) : IProtocol {
-         var cp:* = undefined;
-         switch(uri.protocol)
+      
+      public static function getProtocol(param1:Uri) : IProtocol {
+         var _loc3_:* = undefined;
+         switch(param1.protocol)
          {
             case "http":
             case "https":
@@ -50,35 +41,32 @@ package com.ankamagames.jerakine.resources.protocols
             case "d2pOld":
                return new PakProtocol();
             default:
-               customProtocol=_customProtocols[uri.protocol] as Class;
-               if(customProtocol)
+               _loc2_ = _customProtocols[param1.protocol] as Class;
+               if(_loc2_)
                {
-                  cp=new customProtocol();
-                  if(!(cp is IProtocol))
+                  _loc3_ = new _loc2_();
+                  if(!(_loc3_ is IProtocol))
                   {
-                     throw new ResourceError("Registered custom protocol for extension "+uri.protocol+" isn\'t an IProtocol class.");
+                     throw new ResourceError("Registered custom protocol for extension " + param1.protocol + " isn\'t an IProtocol class.");
                   }
                   else
                   {
-                     return cp;
+                     return _loc3_;
                   }
                }
                else
                {
-                  throw new ArgumentError("Unknown protocol \'"+uri.protocol+"\' in the URI \'"+uri+"\'.");
+                  throw new ArgumentError("Unknown protocol \'" + param1.protocol + "\' in the URI \'" + param1 + "\'.");
                }
          }
       }
-
-      public static function addProtocol(protocolName:String, protocolClass:Class) : void {
-         _customProtocols[protocolName]=protocolClass;
+      
+      public static function addProtocol(param1:String, param2:Class) : void {
+         _customProtocols[param1] = param2;
       }
-
-      public static function removeProtocol(protocolName:String) : void {
-         delete _customProtocols[[protocolName]];
+      
+      public static function removeProtocol(param1:String) : void {
+         delete _customProtocols[[param1]];
       }
-
-
    }
-
 }

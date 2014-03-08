@@ -5,72 +5,69 @@ package com.ankamagames.dofus.network.messages.game.context.mount
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class MountInformationRequestMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function MountInformationRequestMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 5972;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var id:Number = 0;
-
+      
       public var time:Number = 0;
-
+      
       override public function getMessageId() : uint {
          return 5972;
       }
-
-      public function initMountInformationRequestMessage(id:Number=0, time:Number=0) : MountInformationRequestMessage {
-         this.id=id;
-         this.time=time;
-         this._isInitialized=true;
+      
+      public function initMountInformationRequestMessage(param1:Number=0, param2:Number=0) : MountInformationRequestMessage {
+         this.id = param1;
+         this.time = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.id=0;
-         this.time=0;
-         this._isInitialized=false;
+         this.id = 0;
+         this.time = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_MountInformationRequestMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_MountInformationRequestMessage(param1);
       }
-
-      public function serializeAs_MountInformationRequestMessage(output:IDataOutput) : void {
-         output.writeDouble(this.id);
-         output.writeDouble(this.time);
+      
+      public function serializeAs_MountInformationRequestMessage(param1:IDataOutput) : void {
+         param1.writeDouble(this.id);
+         param1.writeDouble(this.time);
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_MountInformationRequestMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_MountInformationRequestMessage(param1);
       }
-
-      public function deserializeAs_MountInformationRequestMessage(input:IDataInput) : void {
-         this.id=input.readDouble();
-         this.time=input.readDouble();
+      
+      public function deserializeAs_MountInformationRequestMessage(param1:IDataInput) : void {
+         this.id = param1.readDouble();
+         this.time = param1.readDouble();
       }
    }
-
 }

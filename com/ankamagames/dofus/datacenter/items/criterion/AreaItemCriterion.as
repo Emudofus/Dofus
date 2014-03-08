@@ -4,18 +4,14 @@ package com.ankamagames.dofus.datacenter.items.criterion
    import com.ankamagames.dofus.datacenter.world.Area;
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
-
-
+   
    public class AreaItemCriterion extends ItemCriterion implements IDataCenter
    {
-         
-
-      public function AreaItemCriterion(pCriterion:String) {
-         super(pCriterion);
+      
+      public function AreaItemCriterion(param1:String) {
+         super(param1);
       }
-
-
-
+      
       override public function get isRespected() : Boolean {
          switch(_operator.text)
          {
@@ -23,41 +19,37 @@ package com.ankamagames.dofus.datacenter.items.criterion
             case ItemCriterionOperator.DIFFERENT:
                return super.isRespected;
             default:
-               trace("Opérateur non conforme : "+_serverCriterionForm);
                return false;
          }
       }
-
+      
       override public function get text() : String {
-         var readableCriterion:String = null;
-         var area:Area = Area.getAreaById(_criterionValue);
-         if(!area)
+         var _loc1_:String = null;
+         var _loc2_:Area = Area.getAreaById(_criterionValue);
+         if(!_loc2_)
          {
             return "error on AreaItemCriterion";
          }
-         var areaName:String = area.name;
+         var _loc3_:String = _loc2_.name;
          switch(_operator.text)
          {
             case ItemCriterionOperator.EQUAL:
-               readableCriterion=I18n.getUiText("ui.tooltip.beInArea",[areaName]);
+               _loc1_ = I18n.getUiText("ui.tooltip.beInArea",[_loc3_]);
                break;
             case ItemCriterionOperator.DIFFERENT:
-               readableCriterion=I18n.getUiText("ui.tooltip.dontBeInArea",[areaName]);
+               _loc1_ = I18n.getUiText("ui.tooltip.dontBeInArea",[_loc3_]);
                break;
-            default:
-               trace("Opérateur non conforme : "+_serverCriterionForm);
          }
-         return readableCriterion;
+         return _loc1_;
       }
-
+      
       override public function clone() : IItemCriterion {
-         var clonedCriterion:AreaItemCriterion = new AreaItemCriterion(this.basicText);
-         return clonedCriterion;
+         var _loc1_:AreaItemCriterion = new AreaItemCriterion(this.basicText);
+         return _loc1_;
       }
-
+      
       override protected function getCriterion() : int {
          return PlayedCharacterManager.getInstance().currentSubArea.area.id;
       }
    }
-
 }

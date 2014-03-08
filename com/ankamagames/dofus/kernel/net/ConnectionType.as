@@ -1,22 +1,18 @@
 package com.ankamagames.dofus.kernel.net
 {
-
-
    public final class ConnectionType extends Object
    {
-         
-
+      
       public function ConnectionType() {
          super();
       }
-
-      public static const DISCONNECTED:uint = 0;
-
-      public static const TO_LOGIN_SERVER:uint = 1;
-
-      public static const TO_GAME_SERVER:uint = 2;
-
-
+      
+      public static const DISCONNECTED:String = "disconnected";
+      
+      public static const TO_LOGIN_SERVER:String = "server_login";
+      
+      public static const TO_GAME_SERVER:String = "server_game";
+      
+      public static const TO_KOLI_SERVER:String = "server_koli";
    }
-
 }

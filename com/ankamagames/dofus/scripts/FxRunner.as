@@ -7,33 +7,32 @@ package com.ankamagames.dofus.scripts
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import com.ankamagames.jerakine.types.positions.MapPoint;
    import com.ankamagames.jerakine.script.ScriptErrorEnum;
-
-
+   
    public class FxRunner extends Object implements IRunner
    {
-         
-
-      public function FxRunner(fxCaster:IEntity, fxTarget:MapPoint) {
+      
+      public function FxRunner(param1:IEntity, param2:MapPoint) {
          super();
-         this._fxCaster=fxCaster;
-         this._fxTarget=fxTarget;
+         this._fxCaster = param1;
+         this._fxTarget = param2;
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FxRunner));
-
+      
       protected var _fxCaster:IEntity;
-
+      
       protected var _fxTarget:MapPoint;
-
+      
       public function get caster() : IEntity {
          return this._fxCaster;
       }
-
+      
       public function get target() : MapPoint {
          return this._fxTarget;
       }
-
-      public function run(script:Class) : uint {
+      
+      public function run(param1:Class) : uint {
+         var script:Class = param1;
          var scriptInstance:* = new script();
          try
          {
@@ -55,5 +54,4 @@ package com.ankamagames.dofus.scripts
          return ScriptErrorEnum.OK;
       }
    }
-
 }

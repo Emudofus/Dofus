@@ -5,334 +5,320 @@ package com.hurlant.crypto.rsa
    import flash.utils.ByteArray;
    import com.hurlant.util.Memory;
    import com.hurlant.crypto.tls.TLSError;
-
-
+   
    public class RSAKey extends Object
    {
-         
-
-      public function RSAKey(N:BigInteger, E:int, D:BigInteger=null, P:BigInteger=null, Q:BigInteger=null, DP:BigInteger=null, DQ:BigInteger=null, C:BigInteger=null) {
+      
+      public function RSAKey(param1:BigInteger, param2:int, param3:BigInteger=null, param4:BigInteger=null, param5:BigInteger=null, param6:BigInteger=null, param7:BigInteger=null, param8:BigInteger=null) {
          super();
-         this.n=N;
-         this.e=E;
-         this.d=D;
-         this.p=P;
-         this.q=Q;
-         this.dmp1=DP;
-         this.dmq1=DQ;
-         this.coeff=C;
-         this.canEncrypt=(!(this.n==null))&&(!(this.e==0));
-         this.canDecrypt=(this.canEncrypt)&&(!(this.d==null));
+         this.n = param1;
+         this.e = param2;
+         this.d = param3;
+         this.p = param4;
+         this.q = param5;
+         this.dmp1 = param6;
+         this.dmq1 = param7;
+         this.coeff = param8;
+         this.canEncrypt = !(this.n == null) && !(this.e == 0);
+         this.canDecrypt = (this.canEncrypt) && !(this.d == null);
       }
-
-      public static function parsePublicKey(N:String, E:String) : RSAKey {
-         return new RSAKey(new BigInteger(N,16,true),parseInt(E,16));
+      
+      public static function parsePublicKey(param1:String, param2:String) : RSAKey {
+         return new RSAKey(new BigInteger(param1,16,true),parseInt(param2,16));
       }
-
-      public static function parsePrivateKey(N:String, E:String, D:String, P:String=null, Q:String=null, DMP1:String=null, DMQ1:String=null, IQMP:String=null) : RSAKey {
-         if(P==null)
+      
+      public static function parsePrivateKey(param1:String, param2:String, param3:String, param4:String=null, param5:String=null, param6:String=null, param7:String=null, param8:String=null) : RSAKey {
+         if(param4 == null)
          {
-            return new RSAKey(new BigInteger(N,16,true),parseInt(E,16),new BigInteger(D,16,true));
+            return new RSAKey(new BigInteger(param1,16,true),parseInt(param2,16),new BigInteger(param3,16,true));
          }
-         return new RSAKey(new BigInteger(N,16,true),parseInt(E,16),new BigInteger(D,16,true),new BigInteger(P,16,true),new BigInteger(Q,16,true),new BigInteger(DMP1,16,true),new BigInteger(DMQ1,16,true),new BigInteger(IQMP,16,true));
+         return new RSAKey(new BigInteger(param1,16,true),parseInt(param2,16),new BigInteger(param3,16,true),new BigInteger(param4,16,true),new BigInteger(param5,16,true),new BigInteger(param6,16,true),new BigInteger(param7,16,true),new BigInteger(param8,16,true));
       }
-
-      public static function generate(B:uint, E:String) : RSAKey {
-         var p1:BigInteger = null;
-         var q1:BigInteger = null;
-         var phi:BigInteger = null;
-         var t:BigInteger = null;
-         var rng:Random = new Random();
-         var qs:uint = B>>1;
-         var key:RSAKey = new RSAKey(null,0,null);
-         key.e=parseInt(E,16);
-         var ee:BigInteger = new BigInteger(E,16,true);
-         while(true)
+      
+      public static function generate(param1:uint, param2:String) : RSAKey {
+         var _loc7_:BigInteger = null;
+         var _loc8_:BigInteger = null;
+         var _loc9_:BigInteger = null;
+         var _loc10_:BigInteger = null;
+         var _loc3_:Random = new Random();
+         var _loc4_:uint = param1 >> 1;
+         var _loc5_:RSAKey = new RSAKey(null,0,null);
+         _loc5_.e = parseInt(param2,16);
+         var _loc6_:BigInteger = new BigInteger(param2,16,true);
+         do
          {
-            key.p=bigRandom(B-qs,rng);
-            while(!((key.p.subtract(BigInteger.ONE).gcd(ee).compareTo(BigInteger.ONE)==0)&&(key.p.isProbablePrime(10))))
-            {
-               key.p=bigRandom(B-qs,rng);
-               continue loop1;
-            }
-            key.q=bigRandom(qs,rng);
-            while(!((key.q.subtract(BigInteger.ONE).gcd(ee).compareTo(BigInteger.ONE)==0)&&(key.q.isProbablePrime(10))))
-            {
-               key.q=bigRandom(qs,rng);
-               continue loop2;
-            }
-            if(key.p.compareTo(key.q)<=0)
-            {
-               t=key.p;
-               key.p=key.q;
-               key.q=t;
-            }
-            p1=key.p.subtract(BigInteger.ONE);
-            q1=key.q.subtract(BigInteger.ONE);
-            phi=p1.multiply(q1);
-            if(phi.gcd(ee).compareTo(BigInteger.ONE)==0)
-            {
-               key.n=key.p.multiply(key.q);
-               key.d=ee.modInverse(phi);
-               key.dmp1=key.d.mod(p1);
-               key.dmq1=key.d.mod(q1);
-               key.coeff=key.q.modInverse(key.p);
-               return key;
-            }
-         }
-         key.p=bigRandom(B-qs,rng);
-         continue loop1;
-      }
-
-      protected static function bigRandom(bits:int, rnd:Random) : BigInteger {
-         if(bits<2)
-         {
-            return BigInteger.nbv(1);
-         }
-         var x:ByteArray = new ByteArray();
-         rnd.nextBytes(x,bits>>3);
-         x.position=0;
-         var b:BigInteger = new BigInteger(x,0,true);
-         b.primify(bits,1);
-         return b;
-      }
-
-      public var e:int;
-
-      public var n:BigInteger;
-
-      public var d:BigInteger;
-
-      public var p:BigInteger;
-
-      public var q:BigInteger;
-
-      public var dmp1:BigInteger;
-
-      public var dmq1:BigInteger;
-
-      public var coeff:BigInteger;
-
-      protected var canDecrypt:Boolean;
-
-      protected var canEncrypt:Boolean;
-
-      public function getBlockSize() : uint {
-         return (this.n.bitLength()+7)/8;
-      }
-
-      public function dispose() : void {
-         this.e=0;
-         this.n.dispose();
-         this.n=null;
-         Memory.gc();
-      }
-
-      public function encrypt(src:ByteArray, dst:ByteArray, length:uint, pad:Function=null) : void {
-         this._encrypt(this.doPublic,src,dst,length,pad,2);
-      }
-
-      public function decrypt(src:ByteArray, dst:ByteArray, length:uint, pad:Function=null) : void {
-         this._decrypt(this.doPrivate2,src,dst,length,pad,2);
-      }
-
-      public function sign(src:ByteArray, dst:ByteArray, length:uint, pad:Function=null) : void {
-         this._encrypt(this.doPrivate2,src,dst,length,pad,1);
-      }
-
-      public function verify(src:ByteArray, dst:ByteArray, length:uint, pad:Function=null) : void {
-         this._decrypt(this.doPublic,src,dst,length,pad,1);
-      }
-
-      private function _encrypt(op:Function, src:ByteArray, dst:ByteArray, length:uint, pad:Function, padType:int) : void {
-         var block:BigInteger = null;
-         var chunk:BigInteger = null;
-         if(pad==null)
-         {
-            pad=this.pkcs1pad;
-         }
-         if(src.position>=src.length)
-         {
-            src.position=0;
-         }
-         var bl:uint = this.getBlockSize();
-         var end:int = src.position+length;
-         while(src.position<end)
-         {
-            block=new BigInteger(pad(src,end,bl,padType),bl,true);
-            chunk=op(block);
-            chunk.toArray(dst);
-         }
-      }
-
-      private function _decrypt(op:Function, src:ByteArray, dst:ByteArray, length:uint, pad:Function, padType:int) : void {
-         var block:BigInteger = null;
-         var chunk:BigInteger = null;
-         var b:ByteArray = null;
-         if(pad==null)
-         {
-            pad=this.pkcs1unpad;
-         }
-         if(src.position>=src.length)
-         {
-            src.position=0;
-         }
-         var bl:uint = this.getBlockSize();
-         var end:int = src.position+length;
-         while(src.position<end)
-         {
-            block=new BigInteger(src,bl,true);
-            chunk=op(block);
-            b=pad(chunk,bl,padType);
-            if(b==null)
-            {
-               throw new TLSError("Decrypt error - padding function returned null!",TLSError.decode_error);
-            }
-            else
-            {
-               dst.writeBytes(b);
-               continue;
-            }
-         }
-      }
-
-      private function pkcs1pad(src:ByteArray, end:int, n:uint, type:uint=2) : ByteArray {
-         var rng:Random = null;
-         var x:* = 0;
-         var out:ByteArray = new ByteArray();
-         var p:uint = src.position;
-         var end:int = Math.min(end,src.length,p+n-11);
-         src.position=end;
-         var i:int = end-1;
-         while((i>=p)&&(n<11))
-         {
-            out[--n]=src[i--];
-         }
-         out[_loc10_]=0;
-         if(type==2)
-         {
-            rng=new Random();
-            x=0;
-            loop1:
-            while(n>2)
-            {
                do
                {
-                  x=rng.nextByte();
-                  if(x!=0)
+                     _loc5_.p = bigRandom(param1 - _loc4_,_loc3_);
+                  }while(!(_loc5_.p.subtract(BigInteger.ONE).gcd(_loc6_).compareTo(BigInteger.ONE) == 0 && (_loc5_.p.isProbablePrime(10))));
+                  
+                  do
                   {
-                     out[--n]=x;
-                     continue loop1;
+                        _loc5_.q = bigRandom(_loc4_,_loc3_);
+                     }while(!(_loc5_.q.subtract(BigInteger.ONE).gcd(_loc6_).compareTo(BigInteger.ONE) == 0 && (_loc5_.q.isProbablePrime(10))));
+                     
+                     if(_loc5_.p.compareTo(_loc5_.q) <= 0)
+                     {
+                        _loc10_ = _loc5_.p;
+                        _loc5_.p = _loc5_.q;
+                        _loc5_.q = _loc10_;
+                     }
+                     _loc7_ = _loc5_.p.subtract(BigInteger.ONE);
+                     _loc8_ = _loc5_.q.subtract(BigInteger.ONE);
+                     _loc9_ = _loc7_.multiply(_loc8_);
+                  }while(_loc9_.gcd(_loc6_).compareTo(BigInteger.ONE) != 0);
+                  
+                  _loc5_.n = _loc5_.p.multiply(_loc5_.q);
+                  _loc5_.d = _loc6_.modInverse(_loc9_);
+                  _loc5_.dmp1 = _loc5_.d.mod(_loc7_);
+                  _loc5_.dmq1 = _loc5_.d.mod(_loc8_);
+                  _loc5_.coeff = _loc5_.q.modInverse(_loc5_.p);
+                  return _loc5_;
+               }
+               
+               protected static function bigRandom(param1:int, param2:Random) : BigInteger {
+                  if(param1 < 2)
+                  {
+                     return BigInteger.nbv(1);
+                  }
+                  var _loc3_:ByteArray = new ByteArray();
+                  param2.nextBytes(_loc3_,param1 >> 3);
+                  _loc3_.position = 0;
+                  var _loc4_:BigInteger = new BigInteger(_loc3_,0,true);
+                  _loc4_.primify(param1,1);
+                  return _loc4_;
+               }
+               
+               public var e:int;
+               
+               public var n:BigInteger;
+               
+               public var d:BigInteger;
+               
+               public var p:BigInteger;
+               
+               public var q:BigInteger;
+               
+               public var dmp1:BigInteger;
+               
+               public var dmq1:BigInteger;
+               
+               public var coeff:BigInteger;
+               
+               protected var canDecrypt:Boolean;
+               
+               protected var canEncrypt:Boolean;
+               
+               public function getBlockSize() : uint {
+                  return (this.n.bitLength() + 7) / 8;
+               }
+               
+               public function dispose() : void {
+                  this.e = 0;
+                  this.n.dispose();
+                  this.n = null;
+                  Memory.gc();
+               }
+               
+               public function encrypt(param1:ByteArray, param2:ByteArray, param3:uint, param4:Function=null) : void {
+                  this._encrypt(this.doPublic,param1,param2,param3,param4,2);
+               }
+               
+               public function decrypt(param1:ByteArray, param2:ByteArray, param3:uint, param4:Function=null) : void {
+                  this._decrypt(this.doPrivate2,param1,param2,param3,param4,2);
+               }
+               
+               public function sign(param1:ByteArray, param2:ByteArray, param3:uint, param4:Function=null) : void {
+                  this._encrypt(this.doPrivate2,param1,param2,param3,param4,1);
+               }
+               
+               public function verify(param1:ByteArray, param2:ByteArray, param3:uint, param4:Function=null) : void {
+                  this._decrypt(this.doPublic,param1,param2,param3,param4,1);
+               }
+               
+               private function _encrypt(param1:Function, param2:ByteArray, param3:ByteArray, param4:uint, param5:Function, param6:int) : void {
+                  var _loc9_:BigInteger = null;
+                  var _loc10_:BigInteger = null;
+                  if(param5 == null)
+                  {
+                     param5 = this.pkcs1pad;
+                  }
+                  if(param2.position >= param2.length)
+                  {
+                     param2.position = 0;
+                  }
+                  var _loc7_:uint = this.getBlockSize();
+                  var _loc8_:int = param2.position + param4;
+                  while(param2.position < _loc8_)
+                  {
+                     _loc9_ = new BigInteger(param5(param2,_loc8_,_loc7_,param6),_loc7_,true);
+                     _loc10_ = param1(_loc9_);
+                     _loc10_.toArray(param3);
                   }
                }
-               while(true);
+               
+               private function _decrypt(param1:Function, param2:ByteArray, param3:ByteArray, param4:uint, param5:Function, param6:int) : void {
+                  var _loc9_:BigInteger = null;
+                  var _loc10_:BigInteger = null;
+                  var _loc11_:ByteArray = null;
+                  if(param5 == null)
+                  {
+                     param5 = this.pkcs1unpad;
+                  }
+                  if(param2.position >= param2.length)
+                  {
+                     param2.position = 0;
+                  }
+                  var _loc7_:uint = this.getBlockSize();
+                  var _loc8_:int = param2.position + param4;
+                  while(param2.position < _loc8_)
+                  {
+                     _loc9_ = new BigInteger(param2,_loc7_,true);
+                     _loc10_ = param1(_loc9_);
+                     _loc11_ = param5(_loc10_,_loc7_,param6);
+                     if(_loc11_ == null)
+                     {
+                        throw new TLSError("Decrypt error - padding function returned null!",TLSError.decode_error);
+                     }
+                     else
+                     {
+                        param3.writeBytes(_loc11_);
+                        continue;
+                     }
+                  }
+               }
+               
+               private function pkcs1pad(param1:ByteArray, param2:int, param3:uint, param4:uint=2) : ByteArray {
+                  var _loc8_:Random = null;
+                  var _loc9_:* = 0;
+                  var _loc5_:ByteArray = new ByteArray();
+                  var _loc6_:uint = param1.position;
+                  var param2:int = Math.min(param2,param1.length,_loc6_ + param3 - 11);
+                  param1.position = param2;
+                  var _loc7_:int = param2-1;
+                  while(_loc7_ >= _loc6_ && param3 > 11)
+                  {
+                     _loc5_[--param3] = param1[_loc7_--];
+                  }
+                  _loc5_[--param3] = 0;
+                  if(param4 == 2)
+                  {
+                     _loc8_ = new Random();
+                     _loc9_ = 0;
+                     while(param3 > 2)
+                     {
+                        do
+                        {
+                              _loc9_ = _loc8_.nextByte();
+                           }while(_loc9_ == 0);
+                           
+                           _loc5_[--param3] = _loc9_;
+                        }
+                     }
+                     else
+                     {
+                        while(param3 > 2)
+                        {
+                           _loc5_[--param3] = 255;
+                        }
+                     }
+                     _loc5_[--param3] = param4;
+                     var _loc12_:* = --param3;
+                     _loc5_[_loc12_] = 0;
+                     return _loc5_;
+                  }
+                  
+                  private function pkcs1unpad(param1:BigInteger, param2:uint, param3:uint=2) : ByteArray {
+                     var _loc4_:ByteArray = param1.toByteArray();
+                     var _loc5_:ByteArray = new ByteArray();
+                     _loc4_.position = 0;
+                     var _loc6_:* = 0;
+                     while(_loc6_ < _loc4_.length && _loc4_[_loc6_] == 0)
+                     {
+                        _loc6_++;
+                     }
+                     if(!(_loc4_.length - _loc6_ == param2-1) || !(_loc4_[_loc6_] == param3))
+                     {
+                        trace("PKCS#1 unpad: i=" + _loc6_ + ", expected b[i]==" + param3 + ", got b[i]=" + _loc4_[_loc6_].toString(16));
+                        return null;
+                     }
+                     _loc6_++;
+                     while(_loc4_[_loc6_] != 0)
+                     {
+                        if(++_loc6_ >= _loc4_.length)
+                        {
+                           trace("PKCS#1 unpad: i=" + _loc6_ + ", b[i-1]!=0 (=" + _loc4_[_loc6_-1].toString(16) + ")");
+                           return null;
+                        }
+                     }
+                     while(++_loc6_ < _loc4_.length)
+                     {
+                        _loc5_.writeByte(_loc4_[_loc6_]);
+                     }
+                     _loc5_.position = 0;
+                     return _loc5_;
+                  }
+                  
+                  public function rawpad(param1:ByteArray, param2:int, param3:uint, param4:uint=0) : ByteArray {
+                     return param1;
+                  }
+                  
+                  public function rawunpad(param1:BigInteger, param2:uint, param3:uint=0) : ByteArray {
+                     return param1.toByteArray();
+                  }
+                  
+                  public function toString() : String {
+                     return "rsa";
+                  }
+                  
+                  public function dump() : String {
+                     var _loc1_:* = "N=" + this.n.toString(16) + "\n" + "E=" + this.e.toString(16) + "\n";
+                     if(this.canDecrypt)
+                     {
+                        _loc1_ = _loc1_ + ("D=" + this.d.toString(16) + "\n");
+                        if(!(this.p == null) && !(this.q == null))
+                        {
+                           _loc1_ = _loc1_ + ("P=" + this.p.toString(16) + "\n");
+                           _loc1_ = _loc1_ + ("Q=" + this.q.toString(16) + "\n");
+                           _loc1_ = _loc1_ + ("DMP1=" + this.dmp1.toString(16) + "\n");
+                           _loc1_ = _loc1_ + ("DMQ1=" + this.dmq1.toString(16) + "\n");
+                           _loc1_ = _loc1_ + ("IQMP=" + this.coeff.toString(16) + "\n");
+                        }
+                     }
+                     return _loc1_;
+                  }
+                  
+                  protected function doPublic(param1:BigInteger) : BigInteger {
+                     return param1.modPowInt(this.e,this.n);
+                  }
+                  
+                  protected function doPrivate2(param1:BigInteger) : BigInteger {
+                     if(this.p == null && this.q == null)
+                     {
+                        return param1.modPow(this.d,this.n);
+                     }
+                     var _loc2_:BigInteger = param1.mod(this.p).modPow(this.dmp1,this.p);
+                     var _loc3_:BigInteger = param1.mod(this.q).modPow(this.dmq1,this.q);
+                     while(_loc2_.compareTo(_loc3_) < 0)
+                     {
+                        _loc2_ = _loc2_.add(this.p);
+                     }
+                     var _loc4_:BigInteger = _loc2_.subtract(_loc3_).multiply(this.coeff).mod(this.p).multiply(this.q).add(_loc3_);
+                     return _loc4_;
+                  }
+                  
+                  protected function doPrivate(param1:BigInteger) : BigInteger {
+                     if(this.p == null || this.q == null)
+                     {
+                        return param1.modPow(this.d,this.n);
+                     }
+                     var _loc2_:BigInteger = param1.mod(this.p).modPow(this.dmp1,this.p);
+                     var _loc3_:BigInteger = param1.mod(this.q).modPow(this.dmq1,this.q);
+                     while(_loc2_.compareTo(_loc3_) < 0)
+                     {
+                        _loc2_ = _loc2_.add(this.p);
+                     }
+                     return _loc2_.subtract(_loc3_).multiply(this.coeff).mod(this.p).multiply(this.q).add(_loc3_);
+                  }
+               }
             }
-         }
-         else
-         {
-            while(n>2)
-            {
-               out[--n]=255;
-            }
-         }
-         out[_loc11_]=type;
-         var _loc12_:* = --n;
-         out[_loc12_]=0;
-         return out;
-      }
-
-      private function pkcs1unpad(src:BigInteger, n:uint, type:uint=2) : ByteArray {
-         var b:ByteArray = src.toByteArray();
-         var out:ByteArray = new ByteArray();
-         b.position=0;
-         var i:int = 0;
-         while((i>b.length)&&(b[i]==0))
-         {
-            i++;
-         }
-         if((!(b.length-i==n-1))||(!(b[i]==type)))
-         {
-            trace("PKCS#1 unpad: i="+i+", expected b[i]=="+type+", got b[i]="+b[i].toString(16));
-            return null;
-         }
-         i++;
-         while(b[i]!=0)
-         {
-            if(++i>=b.length)
-            {
-               trace("PKCS#1 unpad: i="+i+", b[i-1]!=0 (="+b[i-1].toString(16)+")");
-               return null;
-            }
-         }
-         while(++i<b.length)
-         {
-            out.writeByte(b[i]);
-         }
-         out.position=0;
-         return out;
-      }
-
-      public function rawpad(src:ByteArray, end:int, n:uint, type:uint=0) : ByteArray {
-         return src;
-      }
-
-      public function rawunpad(src:BigInteger, n:uint, type:uint=0) : ByteArray {
-         return src.toByteArray();
-      }
-
-      public function toString() : String {
-         return "rsa";
-      }
-
-      public function dump() : String {
-         var s:String = "N="+this.n.toString(16)+"\n"+"E="+this.e.toString(16)+"\n";
-         if(this.canDecrypt)
-         {
-            s=s+("D="+this.d.toString(16)+"\n");
-            if((!(this.p==null))&&(!(this.q==null)))
-            {
-               s=s+("P="+this.p.toString(16)+"\n");
-               s=s+("Q="+this.q.toString(16)+"\n");
-               s=s+("DMP1="+this.dmp1.toString(16)+"\n");
-               s=s+("DMQ1="+this.dmq1.toString(16)+"\n");
-               s=s+("IQMP="+this.coeff.toString(16)+"\n");
-            }
-         }
-         return s;
-      }
-
-      protected function doPublic(x:BigInteger) : BigInteger {
-         return x.modPowInt(this.e,this.n);
-      }
-
-      protected function doPrivate2(x:BigInteger) : BigInteger {
-         if((this.p==null)&&(this.q==null))
-         {
-            return x.modPow(this.d,this.n);
-         }
-         var xp:BigInteger = x.mod(this.p).modPow(this.dmp1,this.p);
-         var xq:BigInteger = x.mod(this.q).modPow(this.dmq1,this.q);
-         while(xp.compareTo(xq)<0)
-         {
-            xp=xp.add(this.p);
-         }
-         var r:BigInteger = xp.subtract(xq).multiply(this.coeff).mod(this.p).multiply(this.q).add(xq);
-         return r;
-      }
-
-      protected function doPrivate(x:BigInteger) : BigInteger {
-         if((this.p==null)||(this.q==null))
-         {
-            return x.modPow(this.d,this.n);
-         }
-         var xp:BigInteger = x.mod(this.p).modPow(this.dmp1,this.p);
-         var xq:BigInteger = x.mod(this.q).modPow(this.dmq1,this.q);
-         while(xp.compareTo(xq)<0)
-         {
-            xp=xp.add(this.p);
-         }
-         return xp.subtract(xq).multiply(this.coeff).mod(this.p).multiply(this.q).add(xq);
-      }
-   }
-
-}

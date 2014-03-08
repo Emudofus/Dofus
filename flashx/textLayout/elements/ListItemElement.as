@@ -2,112 +2,105 @@ package flashx.textLayout.elements
 {
    import flashx.textLayout.tlf_internal;
    import flashx.textLayout.formats.IListMarkerFormat;
-
+   
    use namespace tlf_internal;
-
+   
    public final class ListItemElement extends ContainerFormattedElement
    {
-         
-
+      
       public function ListItemElement() {
          super();
       }
-
-
-
+      
       tlf_internal var _listNumberHint:int = 2.147483647E9;
-
+      
       override protected function get abstract() : Boolean {
          return false;
       }
-
+      
       override tlf_internal function get defaultTypeName() : String {
          return "li";
       }
-
+      
       tlf_internal function computedListMarkerFormat() : IListMarkerFormat {
-         var tf:TextFlow = null;
-         var format:IListMarkerFormat = this.getUserStyleWorker(ListElement.LIST_MARKER_FORMAT_NAME) as IListMarkerFormat;
-         if(format==null)
+         var _loc2_:TextFlow = null;
+         var _loc1_:IListMarkerFormat = this.getUserStyleWorker(ListElement.LIST_MARKER_FORMAT_NAME) as IListMarkerFormat;
+         if(_loc1_ == null)
          {
-            tf=this.getTextFlow();
-            if(tf)
+            _loc2_ = this.getTextFlow();
+            if(_loc2_)
             {
-               format=tf.configuration.defaultListMarkerFormat;
+               _loc1_ = _loc2_.configuration.defaultListMarkerFormat;
             }
          }
-         return format;
+         return _loc1_;
       }
-
+      
       tlf_internal function normalizeNeedsInitialParagraph() : Boolean {
-         var p:FlowGroupElement = this;
-         while(p)
+         var _loc1_:FlowGroupElement = this;
+         while(_loc1_)
          {
-            p=p.getChildAt(0) as FlowGroupElement;
-            if(p is ParagraphElement)
+            _loc1_ = _loc1_.getChildAt(0) as FlowGroupElement;
+            if(_loc1_ is ParagraphElement)
             {
                return false;
             }
-            if(!(p is DivElement))
+            if(!(_loc1_ is DivElement))
             {
                return true;
             }
          }
          return true;
       }
-
-      override tlf_internal function normalizeRange(normalizeStart:uint, normalizeEnd:uint) : void {
-         var p:ParagraphElement = null;
-         super.normalizeRange(normalizeStart,normalizeEnd);
-         this._listNumberHint=int.MAX_VALUE;
+      
+      override tlf_internal function normalizeRange(param1:uint, param2:uint) : void {
+         var _loc3_:ParagraphElement = null;
+         super.normalizeRange(param1,param2);
+         this._listNumberHint = int.MAX_VALUE;
          if(this.normalizeNeedsInitialParagraph())
          {
-            p=new ParagraphElement();
-            p.replaceChildren(0,0,new SpanElement());
-            replaceChildren(0,0,p);
-            p.normalizeRange(0,p.textLength);
+            _loc3_ = new ParagraphElement();
+            _loc3_.replaceChildren(0,0,new SpanElement());
+            replaceChildren(0,0,_loc3_);
+            _loc3_.normalizeRange(0,_loc3_.textLength);
          }
       }
-
-      tlf_internal function getListItemNumber(listMarkerFormat:IListMarkerFormat=null) : int {
-         var counterReset:Object = null;
-         var counterIncrement:Object = null;
-         var idx:* = 0;
-         var sibling:ListItemElement = null;
-         if(this._listNumberHint==int.MAX_VALUE)
+      
+      tlf_internal function getListItemNumber(param1:IListMarkerFormat=null) : int {
+         var _loc2_:Object = null;
+         var _loc3_:Object = null;
+         var _loc4_:* = 0;
+         var _loc5_:ListItemElement = null;
+         if(this._listNumberHint == int.MAX_VALUE)
          {
-            if(listMarkerFormat==null)
+            if(param1 == null)
             {
-               listMarkerFormat=this.computedListMarkerFormat();
+               param1 = this.computedListMarkerFormat();
             }
-            counterReset=listMarkerFormat.counterReset;
-            if((counterReset)&&(counterReset.hasOwnProperty("ordered")))
+            _loc2_ = param1.counterReset;
+            if((_loc2_) && (_loc2_.hasOwnProperty("ordered")))
             {
-               this._listNumberHint=counterReset.ordered;
+               this._listNumberHint = _loc2_.ordered;
             }
             else
             {
-               idx=parent.getChildIndex(this);
-               this._listNumberHint=0;
-               while(idx>0)
+               _loc4_ = parent.getChildIndex(this);
+               this._listNumberHint = 0;
+               while(_loc4_ > 0)
                {
-                  idx--;
-                  sibling=parent.getChildAt(idx) as ListItemElement;
-                  if(sibling)
+                  _loc4_--;
+                  _loc5_ = parent.getChildAt(_loc4_) as ListItemElement;
+                  if(_loc5_)
                   {
-                     this._listNumberHint=sibling.getListItemNumber();
-                  }
-                  else
-                  {
-                     continue;
+                     this._listNumberHint = _loc5_.getListItemNumber();
+                     break;
                   }
                }
             }
-            counterIncrement=listMarkerFormat.counterIncrement;
-            this._listNumberHint=this._listNumberHint+((counterIncrement)&&(counterIncrement.hasOwnProperty("ordered"))?counterIncrement.ordered:1);
+            _loc3_ = param1.counterIncrement;
+            this._listNumberHint = this._listNumberHint + ((_loc3_) && (_loc3_.hasOwnProperty("ordered"))?_loc3_.ordered:1);
          }
          return this._listNumberHint;
       }
    }
-
 }

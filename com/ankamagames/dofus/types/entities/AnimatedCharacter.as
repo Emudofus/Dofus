@@ -1,11 +1,6 @@
 package com.ankamagames.dofus.types.entities
 {
    import com.ankamagames.tiphon.display.TiphonSprite;
-   import com.ankamagames.jerakine.entities.interfaces.IEntity;
-   import com.ankamagames.jerakine.entities.interfaces.IMovable;
-   import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
-   import com.ankamagames.jerakine.entities.interfaces.IAnimated;
-   import com.ankamagames.jerakine.entities.interfaces.IInteractive;
    import com.ankamagames.jerakine.interfaces.IRectangle;
    import com.ankamagames.jerakine.interfaces.IObstacle;
    import com.ankamagames.jerakine.interfaces.ITransparency;
@@ -23,9 +18,11 @@ package com.ankamagames.dofus.types.entities
    import com.ankamagames.jerakine.messages.MessageHandler;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.jerakine.types.enums.InteractionsEnum;
+   import com.ankamagames.dofus.network.enums.SubEntityBindingPointCategoryEnum;
    import com.ankamagames.tiphon.events.TiphonEvent;
    import com.ankamagames.dofus.types.enums.AnimationEnum;
    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
+   import com.ankamagames.jerakine.entities.interfaces.*;
    import com.ankamagames.jerakine.types.positions.MovementPath;
    import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayContextFrame;
@@ -33,7 +30,6 @@ package com.ankamagames.dofus.types.entities
    import com.ankamagames.atouin.entities.behaviours.movements.SlideMovementBehavior;
    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayHumanoidInformations;
-   import com.ankamagames.atouin.entities.behaviours.movements.FantomMovementBehavior;
    import com.ankamagames.atouin.entities.behaviours.movements.WalkingMovementBehavior;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayGroupMonsterInformations;
    import com.ankamagames.atouin.entities.behaviours.movements.MountedMovementBehavior;
@@ -42,13 +38,14 @@ package com.ankamagames.dofus.types.entities
    import com.ankamagames.jerakine.map.IDataMapProvider;
    import com.ankamagames.atouin.Atouin;
    import com.ankamagames.jerakine.pathfinding.Pathfinding;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
    import com.ankamagames.dofus.network.types.game.look.EntityLook;
    import com.ankamagames.dofus.misc.EntityLookAdapter;
-   import com.ankamagames.dofus.network.enums.SubEntityBindingPointCategoryEnum;
    import flash.display.BitmapData;
    import flash.display.Sprite;
    import com.ankamagames.atouin.managers.InteractiveCellManager;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
+   import flash.display.DisplayObject;
    import flash.events.Event;
    import com.ankamagames.dofus.datacenter.sounds.SoundAnimation;
    import com.ankamagames.tiphon.display.TiphonAnimation;
@@ -56,233 +53,273 @@ package com.ankamagames.dofus.types.entities
    import com.ankamagames.tiphon.engine.TiphonEventsManager;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    import com.ankamagames.atouin.entities.behaviours.display.AtouinDisplayBehavior;
-
-
+   
    public class AnimatedCharacter extends TiphonSprite implements IEntity, IMovable, IDisplayable, IAnimated, IInteractive, IRectangle, IObstacle, ITransparency, ICustomUnicNameGetter
    {
-         
-
-      public function AnimatedCharacter(nId:int, look:TiphonEntityLook, followed:AnimatedCharacter=null) {
-         super(look);
-         this._name="entity::"+nId;
-         this._displayBehavior=AtouinDisplayBehavior.getInstance();
-         this._movementBehavior=WalkingMovementBehavior.getInstance();
+      
+      public function AnimatedCharacter(param1:int, param2:TiphonEntityLook, param3:AnimatedCharacter=null) {
+         super(param2);
+         this._name = "entity::" + param1;
+         this._displayBehavior = AtouinDisplayBehavior.getInstance();
+         this._movementBehavior = WalkingMovementBehavior.getInstance();
          addEventListener(TiphonEvent.RENDER_SUCCEED,this.onFirstRender);
          addEventListener(TiphonEvent.RENDER_FAILED,this.onFirstError);
          setAnimationAndDirection(AnimationEnum.ANIM_STATIQUE,DirectionsEnum.DOWN_RIGHT);
-         this.id=nId;
-         name="AnimatedCharacter"+nId;
-         this._followers=new Vector.<IMovable>();
-         this._followed=followed;
+         this.id = param1;
+         name = "AnimatedCharacter" + param1;
+         this._followers = new Vector.<IMovable>();
+         this._followed = param3;
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AnimatedCharacter));
-
+      
       private static const LUMINOSITY_FACTOR:Number = 1.2;
-
+      
       private static const LUMINOSITY_TRANSFORM:ColorTransform = new ColorTransform(LUMINOSITY_FACTOR,LUMINOSITY_FACTOR,LUMINOSITY_FACTOR);
-
+      
       private static const NORMAL_TRANSFORM:ColorTransform = new ColorTransform();
-
+      
       private static const TRANSPARENCY_TRANSFORM:ColorTransform = new ColorTransform(1,1,1,AtouinConstants.OVERLAY_MODE_ALPHA);
-
+      
       private var _id:int;
-
+      
       private var _position:MapPoint;
-
+      
       private var _displayed:Boolean;
-
+      
       private var _followers:Vector.<IMovable>;
-
+      
       private var _followed:AnimatedCharacter;
-
+      
       private var _transparencyAllowed:Boolean = true;
-
+      
       private var _name:String;
-
+      
       private var _canSeeThrough:Boolean = false;
-
+      
       protected var _movementBehavior:IMovementBehavior;
-
+      
       protected var _displayBehavior:IDisplayBehavior;
-
+      
       private var _bmpAlpha:Bitmap;
-
+      
+      private var _auraEntity:TiphonSprite;
+      
+      private var _visibleAura:Boolean = true;
+      
+      public var speedAdjust:Number = 0.0;
+      
       public function get id() : int {
          return this._id;
       }
-
-      public function set id(nValue:int) : void {
-         this._id=nValue;
+      
+      public function set id(param1:int) : void {
+         this._id = param1;
       }
-
+      
       public function get customUnicName() : String {
          return this._name;
       }
-
+      
       public function get position() : MapPoint {
          return this._position;
       }
-
-      public function set position(oValue:MapPoint) : void {
-         this._position=oValue;
+      
+      public function set position(param1:MapPoint) : void {
+         this._position = param1;
       }
-
+      
       public function get movementBehavior() : IMovementBehavior {
          return this._movementBehavior;
       }
-
-      public function set movementBehavior(oValue:IMovementBehavior) : void {
-         this._movementBehavior=oValue;
+      
+      public function set movementBehavior(param1:IMovementBehavior) : void {
+         this._movementBehavior = param1;
       }
-
+      
       public function get followed() : AnimatedCharacter {
          return this._followed;
       }
-
+      
       public function get displayBehaviors() : IDisplayBehavior {
          return this._displayBehavior;
       }
-
-      public function set displayBehaviors(oValue:IDisplayBehavior) : void {
-         this._displayBehavior=oValue;
+      
+      public function set displayBehaviors(param1:IDisplayBehavior) : void {
+         this._displayBehavior = param1;
       }
-
+      
       public function get displayed() : Boolean {
          return this._displayed;
       }
-
+      
       public function get handler() : MessageHandler {
          return Kernel.getWorker();
       }
-
+      
       public function get enabledInteractions() : uint {
-         return InteractionsEnum.CLICK|InteractionsEnum.OUT|InteractionsEnum.OVER;
+         return InteractionsEnum.CLICK | InteractionsEnum.OUT | InteractionsEnum.OVER;
       }
-
+      
       public function get isMoving() : Boolean {
          return this._movementBehavior.isMoving(this);
       }
-
+      
       public function get absoluteBounds() : IRectangle {
          return this._displayBehavior.getAbsoluteBounds(this);
       }
-
+      
       override public function get useHandCursor() : Boolean {
          return true;
       }
-
+      
+      public function get visibleAura() : Boolean {
+         return this._visibleAura;
+      }
+      
+      public function set visibleAura(param1:Boolean) : void {
+         var _loc2_:String = null;
+         if(this._visibleAura == param1)
+         {
+            return;
+         }
+         this._visibleAura = param1;
+         if(param1)
+         {
+            _loc2_ = getAnimation();
+            if((this._auraEntity) && (_loc2_) && !(_loc2_.indexOf("AnimStatique") == -1))
+            {
+               this.addSubEntity(this._auraEntity,SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND,0);
+               this._auraEntity.restartAnimation(0);
+               this._auraEntity = null;
+            }
+         }
+         else
+         {
+            this._auraEntity = getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND,0) as TiphonSprite;
+            if(this._auraEntity)
+            {
+               removeSubEntity(this._auraEntity);
+               super.finalize();
+            }
+         }
+      }
+      
+      public function get hasAura() : Boolean {
+         if(!(this._auraEntity == null) || !(getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND,0) == null))
+         {
+            return true;
+         }
+         return false;
+      }
+      
       public function getIsTransparencyAllowed() : Boolean {
          return this._transparencyAllowed;
       }
-
-      public function set transparencyAllowed(allowed:Boolean) : void {
-         this._transparencyAllowed=allowed;
+      
+      public function set transparencyAllowed(param1:Boolean) : void {
+         this._transparencyAllowed = param1;
       }
-
+      
       public var slideOnNextMove:Boolean;
-
-      private function onFirstError(e:TiphonEvent) : void {
+      
+      private function onFirstError(param1:TiphonEvent) : void {
          removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onFirstRender);
          removeEventListener(TiphonEvent.RENDER_FAILED,this.onFirstError);
-         var dirList:Array = getAvaibleDirection(AnimationEnum.ANIM_STATIQUE);
-         var dir:uint = DirectionsEnum.DOWN_RIGHT;
-         while(dir<DirectionsEnum.DOWN_RIGHT+7)
+         var _loc2_:Array = getAvaibleDirection(AnimationEnum.ANIM_STATIQUE);
+         var _loc3_:uint = DirectionsEnum.DOWN_RIGHT;
+         while(_loc3_ < DirectionsEnum.DOWN_RIGHT + 7)
          {
-            if(dirList[dir%8])
+            if(_loc2_[_loc3_ % 8])
             {
-               setAnimationAndDirection(AnimationEnum.ANIM_STATIQUE,dir%8);
+               setAnimationAndDirection(AnimationEnum.ANIM_STATIQUE,_loc3_ % 8);
             }
-            dir++;
+            _loc3_++;
          }
       }
-
-      private function onFirstRender(e:TiphonEvent) : void {
+      
+      private function onFirstRender(param1:TiphonEvent) : void {
          removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onFirstRender);
          removeEventListener(TiphonEvent.RENDER_FAILED,this.onFirstError);
       }
-
+      
       public function canSeeThrough() : Boolean {
          return this._canSeeThrough;
       }
-
-      public function setCanSeeThrough(value:Boolean) : void {
-         this._canSeeThrough=value;
+      
+      public function setCanSeeThrough(param1:Boolean) : void {
+         this._canSeeThrough = param1;
       }
-
-      public function move(path:MovementPath, callback:Function=null) : void {
-         var follower:IMovable = null;
-         var infos:GameContextActorInformations = null;
-         var isCreatureMode:* = false;
-         var forbidenCellsId:Array = null;
-         var rpContextFrame:RoleplayContextFrame = null;
-         var ies:Vector.<InteractiveElement> = null;
-         var ie:InteractiveElement = null;
-         var iePos:* = 0;
-         var followerPoint:MapPoint = null;
-         var tryCount:uint = 0;
-         var avaibleDirection:Array = null;
-         var avaibleDirectionCount:uint = 0;
-         var b:* = false;
-         if(!path.start.equals(this.position))
+      
+      public function move(param1:MovementPath, param2:Function=null) : void {
+         var _loc6_:IMovable = null;
+         var _loc7_:GameContextActorInformations = null;
+         var _loc8_:* = false;
+         var _loc9_:Array = null;
+         var _loc10_:RoleplayContextFrame = null;
+         var _loc11_:Vector.<InteractiveElement> = null;
+         var _loc12_:InteractiveElement = null;
+         var _loc13_:* = 0;
+         var _loc14_:MapPoint = null;
+         var _loc15_:uint = 0;
+         var _loc16_:Array = null;
+         var _loc17_:uint = 0;
+         var _loc18_:* = false;
+         if(!param1.start.equals(this.position))
          {
-            _log.warn("Unsynchronized position for entity "+this.id+", jumping from "+this.position+" to "+path.start+".");
-            this.jump(path.start);
+            _log.warn("Unsynchronized position for entity " + this.id + ", jumping from " + this.position + " to " + param1.start + ".");
+            this.jump(param1.start);
          }
-         var distance:uint = path.path.length+1;
-         this._movementBehavior=null;
+         var _loc3_:uint = param1.path.length + 1;
+         this._movementBehavior = null;
          if(this.slideOnNextMove)
          {
-            this._movementBehavior=SlideMovementBehavior.getInstance();
-            this.slideOnNextMove=false;
+            this._movementBehavior = SlideMovementBehavior.getInstance();
+            this.slideOnNextMove = false;
          }
          else
          {
             if(Kernel.getWorker().contains(RoleplayEntitiesFrame))
             {
-               infos=(Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).getEntityInfos(this.id);
-               if(infos is GameRolePlayHumanoidInformations)
+               _loc7_ = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).getEntityInfos(this.id);
+               if(_loc7_ is GameRolePlayHumanoidInformations)
                {
-                  if((infos as GameRolePlayHumanoidInformations).humanoidInfo.restrictions.forceSlowWalk)
+                  if((_loc7_ as GameRolePlayHumanoidInformations).humanoidInfo.restrictions.cantRun)
                   {
-                     this._movementBehavior=FantomMovementBehavior.getInstance();
-                  }
-                  if((infos as GameRolePlayHumanoidInformations).humanoidInfo.restrictions.cantRun)
-                  {
-                     this._movementBehavior=WalkingMovementBehavior.getInstance();
+                     this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
                   }
                }
                else
                {
-                  if(infos is GameRolePlayGroupMonsterInformations)
+                  if(_loc7_ is GameRolePlayGroupMonsterInformations)
                   {
-                     this._movementBehavior=WalkingMovementBehavior.getInstance();
+                     this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
                   }
                }
             }
             if(!this._movementBehavior)
             {
-               if(distance>3)
+               if(_loc3_ > 3)
                {
-                  isCreatureMode=false;
+                  _loc8_ = false;
                   if(Kernel.getWorker().contains(RoleplayEntitiesFrame))
                   {
-                     isCreatureMode=(Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).isCreatureMode;
+                     _loc8_ = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).isCreatureMode;
                   }
-                  if((!isCreatureMode)&&(this.isMounted()))
+                  if(!_loc8_ && (this.isMounted()))
                   {
-                     this._movementBehavior=MountedMovementBehavior.getInstance();
+                     this._movementBehavior = MountedMovementBehavior.getInstance();
                   }
                   else
                   {
-                     this._movementBehavior=RunningMovementBehavior.getInstance();
+                     this._movementBehavior = RunningMovementBehavior.getInstance(this.speedAdjust);
                   }
                }
                else
                {
-                  if(distance>0)
+                  if(_loc3_ > 0)
                   {
-                     this._movementBehavior=WalkingMovementBehavior.getInstance();
+                     this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
                   }
                   else
                   {
@@ -291,345 +328,359 @@ package com.ankamagames.dofus.types.entities
                }
             }
          }
-         var followerDirection:int = this.getDirection();
-         var mapData:IDataMapProvider = DataMapProvider.getInstance();
-         if(this._followers.length>0)
+         var _loc4_:int = this.getDirection();
+         var _loc5_:IDataMapProvider = DataMapProvider.getInstance();
+         if(this._followers.length > 0)
          {
-            forbidenCellsId=new Array();
-            rpContextFrame=Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-            if(rpContextFrame!=null)
+            _loc9_ = new Array();
+            _loc10_ = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+            if(_loc10_ != null)
             {
-               ies=rpContextFrame.entitiesFrame.interactiveElements;
-               for each (ie in ies)
+               _loc11_ = _loc10_.entitiesFrame.interactiveElements;
+               for each (_loc12_ in _loc11_)
                {
-                  iePos=Atouin.getInstance().getIdentifiedElementPosition(ie.elementId).cellId;
-                  forbidenCellsId.push(iePos);
+                  _loc13_ = Atouin.getInstance().getIdentifiedElementPosition(_loc12_.elementId).cellId;
+                  _loc9_.push(_loc13_);
                }
             }
          }
-         for each (follower in this._followers)
+         for each (_loc6_ in this._followers)
          {
-            followerPoint=null;
-            tryCount=0;
-            followerPoint=path.end.getNearestFreeCellInDirection(followerDirection,mapData,false,false,forbidenCellsId);
-            followerDirection++;
-            followerDirection=followerDirection%8;
-            while((!followerPoint)&&(++tryCount>8))
+            _loc14_ = null;
+            _loc15_ = 0;
+            do
             {
-            }
-            if(followerPoint)
-            {
-               avaibleDirection=[];
-               if(follower is TiphonSprite)
+                  _loc14_ = param1.end.getNearestFreeCellInDirection(_loc4_,_loc5_,false,false,_loc9_);
+                  _loc4_++;
+                  _loc4_ = _loc4_ % 8;
+               }while(!_loc14_ && ++_loc15_ < 8);
+               
+               if(_loc14_)
                {
-                  avaibleDirection=TiphonSprite(follower).getAvaibleDirection();
-               }
-               avaibleDirectionCount=0;
-               for each (b in avaibleDirection)
-               {
-                  if(b)
+                  _loc16_ = [];
+                  if(_loc6_ is TiphonSprite)
                   {
-                     avaibleDirectionCount++;
+                     _loc16_ = TiphonSprite(_loc6_).getAvaibleDirection();
                   }
+                  _loc17_ = 0;
+                  for each (_loc18_ in _loc16_)
+                  {
+                     if(_loc18_)
+                     {
+                        _loc17_++;
+                     }
+                  }
+                  if((_loc16_[1]) && !_loc16_[3])
+                  {
+                     _loc17_++;
+                  }
+                  if(!_loc16_[1] && (_loc16_[3]))
+                  {
+                     _loc17_++;
+                  }
+                  if((_loc16_[7]) && !_loc16_[5])
+                  {
+                     _loc17_++;
+                  }
+                  if(!_loc16_[7] && (_loc16_[5]))
+                  {
+                     _loc17_++;
+                  }
+                  if(!_loc16_[0] && (_loc16_[4]))
+                  {
+                     _loc17_++;
+                  }
+                  if((_loc16_[0]) && !_loc16_[4])
+                  {
+                     _loc17_++;
+                  }
+                  Pathfinding.findPath(_loc5_,_loc6_.position,_loc14_,!(_loc17_ < 8),true,this.processMove,new Array(_loc6_,_loc14_));
                }
-               if((avaibleDirection[1])&&(!avaibleDirection[3]))
+               else
                {
-                  avaibleDirectionCount++;
+                  _log.warn("Unable to get a proper destination for the follower.");
                }
-               if((!avaibleDirection[1])&&(avaibleDirection[3]))
-               {
-                  avaibleDirectionCount++;
-               }
-               if((avaibleDirection[7])&&(!avaibleDirection[5]))
-               {
-                  avaibleDirectionCount++;
-               }
-               if((!avaibleDirection[7])&&(avaibleDirection[5]))
-               {
-                  avaibleDirectionCount++;
-               }
-               if((!avaibleDirection[0])&&(avaibleDirection[4]))
-               {
-                  avaibleDirectionCount++;
-               }
-               if((avaibleDirection[0])&&(!avaibleDirection[4]))
-               {
-                  avaibleDirectionCount++;
-               }
-               Pathfinding.findPath(mapData,follower.position,followerPoint,!(avaibleDirectionCount>8),true,this.processMove,new Array(follower,followerPoint));
+            }
+            this._movementBehavior.move(this,param1,param2);
+         }
+         
+         private function processMove(param1:MovementPath, param2:Array) : void {
+            var _loc4_:MapPoint = null;
+            var _loc3_:IMovable = param2[0];
+            if((param1) && param1.path.length > 0)
+            {
+               _loc3_.movementBehavior = this._movementBehavior;
+               _loc3_.move(param1);
             }
             else
             {
-               _log.warn("Unable to get a proper destination for the follower.");
+               _loc4_ = param2[1];
+               _log.warn("There was no path from " + _loc3_.position + " to " + _loc4_ + " for a follower. Jumping !");
+               _loc3_.jump(_loc4_);
             }
          }
-         this._movementBehavior.move(this,path,callback);
-      }
-
-      private function processMove(followPath:MovementPath, args:Array) : void {
-         var followerPoint:MapPoint = null;
-         var follower:IMovable = args[0];
-         if((followPath)&&(followPath.path.length<0))
-         {
-            follower.movementBehavior=this._movementBehavior;
-            follower.move(followPath);
-         }
-         else
-         {
-            followerPoint=args[1];
-            _log.warn("There was no path from "+follower.position+" to "+followerPoint+" for a follower. Jumping !");
-            follower.jump(followerPoint);
-         }
-      }
-
-      public function jump(newPosition:MapPoint) : void {
-         var fol:IMovable = null;
-         var mdp:IDataMapProvider = null;
-         var mp:MapPoint = null;
-         this._movementBehavior.jump(this,newPosition);
-         for each (fol in this._followers)
-         {
-            mdp=DataMapProvider.getInstance();
-            mp=this.position.getNearestFreeCell(mdp,false);
-            if(!mp)
+         
+         public function jump(param1:MapPoint) : void {
+            var _loc2_:IMovable = null;
+            var _loc3_:IDataMapProvider = null;
+            var _loc4_:MapPoint = null;
+            this._movementBehavior.jump(this,param1);
+            for each (_loc2_ in this._followers)
             {
-               mp=this.position.getNearestFreeCell(mdp,true);
-               if(!mp)
+               _loc3_ = DataMapProvider.getInstance();
+               _loc4_ = this.position.getNearestFreeCell(_loc3_,false);
+               if(!_loc4_)
+               {
+                  _loc4_ = this.position.getNearestFreeCell(_loc3_,true);
+                  if(!_loc4_)
+                  {
+                     return;
+                  }
+               }
+               _loc2_.jump(_loc4_);
+            }
+         }
+         
+         public function stop(param1:Boolean=false) : void {
+            var _loc2_:IMovable = null;
+            this._movementBehavior.stop(this,param1);
+            for each (_loc2_ in this._followers)
+            {
+               _loc2_.stop(param1);
+            }
+         }
+         
+         public function display(param1:uint=10) : void {
+            this._displayBehavior.display(this,param1);
+            this._displayed = true;
+         }
+         
+         public function remove() : void {
+            var _loc1_:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+            if((_loc1_) && (_loc1_.justSwitchingCreaturesFightMode))
+            {
+               this.dispatchEvent(new TiphonEvent(TiphonEvent.ANIMATION_DESTROY,this));
+            }
+            this.removeAllFollowers();
+            this._displayed = false;
+            this._movementBehavior.stop(this,true);
+            this._displayBehavior.remove(this);
+         }
+         
+         override public function destroy() : void {
+            this._followed = null;
+            this.remove();
+            super.destroy();
+         }
+         
+         public function getRootEntity() : AnimatedCharacter {
+            if(this._followed)
+            {
+               return this._followed.getRootEntity();
+            }
+            return this;
+         }
+         
+         public function removeAllFollowers() : void {
+            var _loc3_:IMovable = null;
+            var _loc4_:IDisplayable = null;
+            var _loc5_:TiphonSprite = null;
+            var _loc1_:int = this._followers.length;
+            var _loc2_:* = 0;
+            while(_loc2_ < _loc1_)
+            {
+               _loc3_ = this._followers[_loc2_];
+               _loc4_ = _loc3_ as IDisplayable;
+               if(_loc4_)
+               {
+                  _loc4_.remove();
+               }
+               _loc5_ = _loc3_ as TiphonSprite;
+               if(_loc5_)
+               {
+                  _loc5_.destroy();
+               }
+               _loc2_++;
+            }
+            this._followers = new Vector.<IMovable>();
+         }
+         
+         public function addFollower(param1:IMovable, param2:Boolean=false) : void {
+            var _loc5_:IDisplayable = null;
+            this._followers.push(param1);
+            var _loc3_:IDataMapProvider = DataMapProvider.getInstance();
+            var _loc4_:MapPoint = this.position.getNearestFreeCell(_loc3_,false);
+            if(!_loc4_)
+            {
+               _loc4_ = this.position.getNearestFreeCell(_loc3_,true);
+               if(!_loc4_)
                {
                   return;
                }
             }
-            fol.jump(mp);
-         }
-      }
-
-      public function stop(forceStop:Boolean=false) : void {
-         var fol:IMovable = null;
-         this._movementBehavior.stop(this,forceStop);
-         for each (fol in this._followers)
-         {
-            fol.stop(forceStop);
-         }
-      }
-
-      public function display(strata:uint=10) : void {
-         this._displayBehavior.display(this,strata);
-         this._displayed=true;
-      }
-
-      public function remove() : void {
-         this.removeAllFollowers();
-         this._displayed=false;
-         this._movementBehavior.stop(this,true);
-         this._displayBehavior.remove(this);
-      }
-
-      override public function destroy() : void {
-         this._followed=null;
-         this.remove();
-         super.destroy();
-      }
-
-      public function getRootEntity() : AnimatedCharacter {
-         if(this._followed)
-         {
-            return this._followed.getRootEntity();
-         }
-         return this;
-      }
-
-      public function removeAllFollowers() : void {
-         var iFollower:IMovable = null;
-         var dfollower:IDisplayable = null;
-         var sprite:TiphonSprite = null;
-         var num:int = this._followers.length;
-         var i:int = 0;
-         while(i<num)
-         {
-            iFollower=this._followers[i];
-            dfollower=iFollower as IDisplayable;
-            if(dfollower)
+            if(param1.position == null)
             {
-               dfollower.remove();
+               param1.position = _loc4_;
             }
-            sprite=iFollower as TiphonSprite;
-            if(sprite)
+            if(param1 is IDisplayable)
             {
-               sprite.destroy();
+               _loc5_ = param1 as IDisplayable;
+               if((this._displayed) && !_loc5_.displayed)
+               {
+                  _loc5_.display();
+               }
+               else
+               {
+                  if(!this._displayed && (_loc5_.displayed))
+                  {
+                     _loc5_.remove();
+                  }
+               }
             }
-            i++;
-         }
-         this._followers=new Vector.<IMovable>();
-      }
-
-      public function addFollower(follower:IMovable, instantSync:Boolean=false) : void {
-         var dfollower:IDisplayable = null;
-         this._followers.push(follower);
-         var mdp:IDataMapProvider = DataMapProvider.getInstance();
-         var mp:MapPoint = this.position.getNearestFreeCell(mdp,false);
-         if(!mp)
-         {
-            mp=this.position.getNearestFreeCell(mdp,true);
-            if(!mp)
+            if(_loc4_.equals(param1.position))
             {
                return;
             }
-         }
-         if(follower.position==null)
-         {
-            follower.position=mp;
-         }
-         if(follower is IDisplayable)
-         {
-            dfollower=follower as IDisplayable;
-            if((this._displayed)&&(!dfollower.displayed))
+            if(param2)
             {
-               dfollower.display();
+               param1.jump(_loc4_);
             }
             else
             {
-               if((!this._displayed)&&(dfollower.displayed))
+               param1.move(Pathfinding.findPath(_loc3_,param1.position,_loc4_,false,false));
+            }
+         }
+         
+         public function followersEqual(param1:Vector.<EntityLook>) : Boolean {
+            var _loc2_:* = 0;
+            if(!param1)
+            {
+               return false;
+            }
+            var _loc3_:int = param1.length;
+            var _loc4_:* = 0;
+            if(this._followers.length != _loc3_)
+            {
+               return false;
+            }
+            _loc2_ = 0;
+            while(_loc2_ < _loc3_)
+            {
+               if((this._followers[_loc2_] as AnimatedCharacter).look.equals(EntityLookAdapter.fromNetwork(param1[_loc2_])))
                {
-                  dfollower.remove();
+                  _loc4_++;
+               }
+               _loc2_++;
+            }
+            if(_loc4_ != _loc3_)
+            {
+               return false;
+            }
+            return true;
+         }
+         
+         public function isMounted() : Boolean {
+            var _loc1_:Array = this.look.getSubEntities(true);
+            if(!_loc1_)
+            {
+               return false;
+            }
+            var _loc2_:Array = _loc1_[SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER];
+            if(!_loc2_ || _loc2_.length == 0)
+            {
+               return false;
+            }
+            return true;
+         }
+         
+         public function highLightCharacterAndFollower(param1:Boolean) : void {
+            var _loc5_:AnimatedCharacter = null;
+            var _loc2_:AnimatedCharacter = this.getRootEntity();
+            var _loc3_:int = _loc2_._followers.length;
+            var _loc4_:* = -1;
+            while(++_loc4_ < _loc3_)
+            {
+               _loc5_ = _loc2_._followers[_loc4_] as AnimatedCharacter;
+               if(_loc5_)
+               {
+                  _loc5_.highLight(param1);
+               }
+            }
+            this.highLight(param1);
+         }
+         
+         public function highLight(param1:Boolean) : void {
+            if(param1)
+            {
+               transform.colorTransform = LUMINOSITY_TRANSFORM;
+            }
+            else
+            {
+               if(Atouin.getInstance().options.transparentOverlayMode)
+               {
+                  transform.colorTransform = TRANSPARENCY_TRANSFORM;
+               }
+               else
+               {
+                  transform.colorTransform = NORMAL_TRANSFORM;
                }
             }
          }
-         if(mp.equals(follower.position))
-         {
-            return;
-         }
-         if(instantSync)
-         {
-            follower.jump(mp);
-         }
-         else
-         {
-            follower.move(Pathfinding.findPath(mdp,follower.position,mp,false,false));
-         }
-      }
-
-      public function followersEqual(pEntityLooks:Vector.<EntityLook>) : Boolean {
-         var i:* = 0;
-         if(!pEntityLooks)
-         {
-            return false;
-         }
-         var nbLooks:int = pEntityLooks.length;
-         var nbEqual:int = 0;
-         if(this._followers.length!=nbLooks)
-         {
-            return false;
-         }
-         i=0;
-         while(i<nbLooks)
-         {
-            if((this._followers[i] as AnimatedCharacter).look.equals(EntityLookAdapter.fromNetwork(pEntityLooks[i])))
+         
+         public function showBitmapAlpha(param1:Number) : void {
+            var _loc2_:BitmapData = null;
+            var _loc3_:Sprite = null;
+            if(this._bmpAlpha == null)
             {
-               nbEqual++;
-            }
-            i++;
-         }
-         if(nbEqual!=nbLooks)
-         {
-            return false;
-         }
-         return true;
-      }
-
-      public function isMounted() : Boolean {
-         var subEntities:Array = this.look.getSubEntities(true);
-         if(!subEntities)
-         {
-            return false;
-         }
-         var mountedEntities:Array = subEntities[SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER];
-         if((!mountedEntities)||(mountedEntities.length==0))
-         {
-            return false;
-         }
-         return true;
-      }
-
-      public function highLightCharacterAndFollower(value:Boolean) : void {
-         var entity:AnimatedCharacter = null;
-         var rootEntity:AnimatedCharacter = this.getRootEntity();
-         var num:int = rootEntity._followers.length;
-         var i:int = -1;
-         while(++i<num)
-         {
-            entity=rootEntity._followers[i] as AnimatedCharacter;
-            if(entity)
-            {
-               entity.highLight(value);
+               _loc2_ = new BitmapData(width,height,true,16711680);
+               _loc2_.draw(this.bitmapData);
+               this._bmpAlpha = new Bitmap(_loc2_);
+               this._bmpAlpha.alpha = param1;
+               _loc3_ = InteractiveCellManager.getInstance().getCell(this.position.cellId);
+               this._bmpAlpha.x = _loc3_.x + _loc3_.width / 2 - this.width / 2;
+               this._bmpAlpha.y = _loc3_.y + _loc3_.height - this.height;
+               this.parent.addChild(this._bmpAlpha);
+               visible = false;
             }
          }
-         this.highLight(value);
-      }
-
-      public function highLight(value:Boolean) : void {
-         if(value)
-         {
-            transform.colorTransform=LUMINOSITY_TRANSFORM;
-         }
-         else
-         {
-            if(Atouin.getInstance().options.transparentOverlayMode)
+         
+         public function hideBitmapAlpha() : void {
+            visible = true;
+            if(!(this._bmpAlpha == null) && (StageShareManager.stage.contains(this._bmpAlpha)))
             {
-               transform.colorTransform=TRANSPARENCY_TRANSFORM;
-            }
-            else
-            {
-               transform.colorTransform=NORMAL_TRANSFORM;
+               this.parent.removeChild(this._bmpAlpha);
+               this._bmpAlpha = null;
             }
          }
-      }
-
-      public function showBitmapAlpha(alphaValue:Number) : void {
-         var bmpdt:BitmapData = null;
-         var newCellSprite:Sprite = null;
-         if(this._bmpAlpha==null)
-         {
-            bmpdt=new BitmapData(width,height,true,16711680);
-            bmpdt.draw(this.bitmapData);
-            this._bmpAlpha=new Bitmap(bmpdt);
-            this._bmpAlpha.alpha=alphaValue;
-            newCellSprite=InteractiveCellManager.getInstance().getCell(this.position.cellId);
-            this._bmpAlpha.x=newCellSprite.x+newCellSprite.width/2-this.width/2;
-            this._bmpAlpha.y=newCellSprite.y+newCellSprite.height-this.height;
-            this.parent.addChild(this._bmpAlpha);
-            visible=false;
-         }
-      }
-
-      public function hideBitmapAlpha() : void {
-         visible=true;
-         if((!(this._bmpAlpha==null))&&(StageShareManager.stage.contains(this._bmpAlpha)))
-         {
-            this.parent.removeChild(this._bmpAlpha);
-            this._bmpAlpha=null;
-         }
-      }
-
-      override protected function onAdded(e:Event) : void {
-         var name:String = null;
-         var vsa:Vector.<SoundAnimation> = null;
-         var sa:SoundAnimation = null;
-         var dataSoundLabel:String = null;
-         super.onAdded(e);
-         var animation:TiphonAnimation = e.target as TiphonAnimation;
-         var soundBones:SoundBones = SoundBones.getSoundBonesById(look.getBone());
-         if(soundBones)
-         {
-            name=getQualifiedClassName(animation);
-            vsa=soundBones.getSoundAnimations(name);
-            animation.spriteHandler.tiphonEventManager.removeEvents(TiphonEventsManager.BALISE_SOUND,name);
-            for each (sa in vsa)
+         
+         override public function addSubEntity(param1:DisplayObject, param2:uint, param3:uint) : void {
+            if(param2 == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND && param3 == 0 && !this._visibleAura)
             {
-               dataSoundLabel=TiphonEventsManager.BALISE_DATASOUND+TiphonEventsManager.BALISE_PARAM_BEGIN+((!(sa.label==null))&&(!(sa.label=="null"))?sa.label:"")+TiphonEventsManager.BALISE_PARAM_END;
-               animation.spriteHandler.tiphonEventManager.addEvent(dataSoundLabel,sa.startFrame,name);
+               this._auraEntity = param1 as TiphonSprite;
+               return;
+            }
+            super.addSubEntity(param1,param2,param3);
+         }
+         
+         override protected function onAdded(param1:Event) : void {
+            var _loc4_:String = null;
+            var _loc5_:Vector.<SoundAnimation> = null;
+            var _loc6_:SoundAnimation = null;
+            var _loc7_:String = null;
+            super.onAdded(param1);
+            var _loc2_:TiphonAnimation = param1.target as TiphonAnimation;
+            var _loc3_:SoundBones = SoundBones.getSoundBonesById(look.getBone());
+            if(_loc3_)
+            {
+               _loc4_ = getQualifiedClassName(_loc2_);
+               _loc5_ = _loc3_.getSoundAnimations(_loc4_);
+               _loc2_.spriteHandler.tiphonEventManager.removeEvents(TiphonEventsManager.BALISE_SOUND,_loc4_);
+               for each (_loc6_ in _loc5_)
+               {
+                  _loc7_ = TiphonEventsManager.BALISE_DATASOUND + TiphonEventsManager.BALISE_PARAM_BEGIN + (!(_loc6_.label == null) && !(_loc6_.label == "null")?_loc6_.label:"") + TiphonEventsManager.BALISE_PARAM_END;
+                  _loc2_.spriteHandler.tiphonEventManager.addEvent(_loc7_,_loc6_.startFrame,_loc4_);
+               }
             }
          }
       }
    }
-
-}

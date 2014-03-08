@@ -4,25 +4,20 @@ package com.ankamagames.atouin.types.sequences
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
    import com.ankamagames.atouin.enums.PlacementStrataEnums;
-
-
+   
    public class AddWorldEntityStep extends AbstractSequencable
    {
-         
-
-      public function AddWorldEntityStep(entity:IEntity) {
+      
+      public function AddWorldEntityStep(param1:IEntity) {
          super();
-         this._entity=entity;
+         this._entity = param1;
       }
-
-
-
+      
       private var _entity:IEntity;
-
+      
       override public function start() : void {
          (this._entity as IDisplayable).display(PlacementStrataEnums.STRATA_PLAYER);
          executeCallbacks();
       }
    }
-
 }

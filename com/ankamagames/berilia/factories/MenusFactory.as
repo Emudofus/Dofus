@@ -3,88 +3,77 @@ package com.ankamagames.berilia.factories
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.berilia.types.data.ContextMenuData;
    import com.ankamagames.berilia.managers.SecureCenter;
-
-
+   
    public class MenusFactory extends Object
    {
-         
-
+      
       public function MenusFactory() {
          super();
       }
-
+      
       private static var _registeredMaker:Array = new Array();
-
+      
       private static var _makerAssoc:Array = new Array();
-
-      public static function registerMaker(makerName:String, maker:Class, scriptClass:Class=null) : void {
-         _registeredMaker[makerName]=new MenuData(maker,scriptClass);
+      
+      public static function registerMaker(param1:String, param2:Class, param3:Class=null) : void {
+         _registeredMaker[param1] = new MenuData(param2,param3);
       }
-
-      public static function registerAssoc(dataClass:*, makerName:String) : void {
-         _makerAssoc[getQualifiedClassName(dataClass)]=makerName;
+      
+      public static function registerAssoc(param1:*, param2:String) : void {
+         _makerAssoc[getQualifiedClassName(param1)] = param2;
       }
-
-      public static function unregister(dataType:Class, maker:Class) : void {
-         if(MenuData(_registeredMaker[getQualifiedClassName(dataType)]).maker===maker)
+      
+      public static function unregister(param1:Class, param2:Class) : void {
+         if(MenuData(_registeredMaker[getQualifiedClassName(param1)]).maker === param2)
          {
-            delete _registeredMaker[[getQualifiedClassName(dataType)]];
+            delete _registeredMaker[[getQualifiedClassName(param1)]];
          }
       }
-
-      public static function create(data:*, makerName:String=null, makerParam:Object=null) : ContextMenuData {
-         var td:MenuData = null;
-         var maker:* = undefined;
-         var tt:Array = null;
-         if(!makerName)
+      
+      public static function create(param1:*, param2:String=null, param3:Object=null) : ContextMenuData {
+         var _loc4_:MenuData = null;
+         var _loc5_:* = undefined;
+         var _loc6_:Array = null;
+         if(!param2)
          {
-            makerName=_makerAssoc[getQualifiedClassName(data)];
+            param2 = _makerAssoc[getQualifiedClassName(param1)];
          }
-         if(makerName)
+         if(param2)
          {
-            td=_registeredMaker[makerName];
+            _loc4_ = _registeredMaker[param2];
          }
-         if(td)
+         if(_loc4_)
          {
-            maker=new td.maker();
-            tt=maker.createMenu(SecureCenter.secure(data),SecureCenter.secure(makerParam));
-            return new ContextMenuData(data,makerName,tt);
+            _loc5_ = new _loc4_.maker();
+            _loc6_ = _loc5_.createMenu(SecureCenter.secure(param1),SecureCenter.secure(param3));
+            return new ContextMenuData(param1,param2,_loc6_);
          }
-         if(makerParam is Array)
+         if(param3 is Array)
          {
-            return new ContextMenuData(data,makerName,makerParam as Array);
+            return new ContextMenuData(param1,param2,param3 as Array);
          }
          return null;
       }
-
-      public static function getMenuMaker(makerName:String) : Object {
-         return _registeredMaker[makerName];
+      
+      public static function getMenuMaker(param1:String) : Object {
+         return _registeredMaker[param1];
       }
-
-      public static function existMakerAssoc(dataClass:*) : Boolean {
-         return _makerAssoc[getQualifiedClassName(dataClass)]?true:false;
+      
+      public static function existMakerAssoc(param1:*) : Boolean {
+         return _makerAssoc[getQualifiedClassName(param1)]?true:false;
       }
-
-
    }
-
 }
-
-
-
-   class MenuData extends Object
-   {
-         
-
-      function MenuData(maker:Class, scriptClass:Class) {
-         super();
-         this.maker=maker;
-         this.scriptClass=scriptClass;
-      }
-
-
-
-      public var maker:Class;
-
-      public var scriptClass:Class;
+class MenuData extends Object
+{
+   
+   function MenuData(param1:Class, param2:Class) {
+      super();
+      this.maker = param1;
+      this.scriptClass = param2;
    }
+   
+   public var maker:Class;
+   
+   public var scriptClass:Class;
+}

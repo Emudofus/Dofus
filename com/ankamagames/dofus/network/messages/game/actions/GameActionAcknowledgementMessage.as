@@ -5,72 +5,69 @@ package com.ankamagames.dofus.network.messages.game.actions
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class GameActionAcknowledgementMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function GameActionAcknowledgementMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 957;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var valid:Boolean = false;
-
+      
       public var actionId:int = 0;
-
+      
       override public function getMessageId() : uint {
          return 957;
       }
-
-      public function initGameActionAcknowledgementMessage(valid:Boolean=false, actionId:int=0) : GameActionAcknowledgementMessage {
-         this.valid=valid;
-         this.actionId=actionId;
-         this._isInitialized=true;
+      
+      public function initGameActionAcknowledgementMessage(param1:Boolean=false, param2:int=0) : GameActionAcknowledgementMessage {
+         this.valid = param1;
+         this.actionId = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.valid=false;
-         this.actionId=0;
-         this._isInitialized=false;
+         this.valid = false;
+         this.actionId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_GameActionAcknowledgementMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_GameActionAcknowledgementMessage(param1);
       }
-
-      public function serializeAs_GameActionAcknowledgementMessage(output:IDataOutput) : void {
-         output.writeBoolean(this.valid);
-         output.writeByte(this.actionId);
+      
+      public function serializeAs_GameActionAcknowledgementMessage(param1:IDataOutput) : void {
+         param1.writeBoolean(this.valid);
+         param1.writeByte(this.actionId);
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_GameActionAcknowledgementMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_GameActionAcknowledgementMessage(param1);
       }
-
-      public function deserializeAs_GameActionAcknowledgementMessage(input:IDataInput) : void {
-         this.valid=input.readBoolean();
-         this.actionId=input.readByte();
+      
+      public function deserializeAs_GameActionAcknowledgementMessage(param1:IDataInput) : void {
+         this.valid = param1.readBoolean();
+         this.actionId = param1.readByte();
       }
    }
-
 }

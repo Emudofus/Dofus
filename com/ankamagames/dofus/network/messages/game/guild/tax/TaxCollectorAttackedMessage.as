@@ -2,115 +2,120 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.BasicGuildInformations;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class TaxCollectorAttackedMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function TaxCollectorAttackedMessage() {
+         this.guild = new BasicGuildInformations();
          super();
       }
-
+      
       public static const protocolId:uint = 5918;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var firstNameId:uint = 0;
-
+      
       public var lastNameId:uint = 0;
-
+      
       public var worldX:int = 0;
-
+      
       public var worldY:int = 0;
-
+      
       public var mapId:int = 0;
-
+      
       public var subAreaId:uint = 0;
-
+      
+      public var guild:BasicGuildInformations;
+      
       override public function getMessageId() : uint {
          return 5918;
       }
-
-      public function initTaxCollectorAttackedMessage(firstNameId:uint=0, lastNameId:uint=0, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0) : TaxCollectorAttackedMessage {
-         this.firstNameId=firstNameId;
-         this.lastNameId=lastNameId;
-         this.worldX=worldX;
-         this.worldY=worldY;
-         this.mapId=mapId;
-         this.subAreaId=subAreaId;
-         this._isInitialized=true;
+      
+      public function initTaxCollectorAttackedMessage(param1:uint=0, param2:uint=0, param3:int=0, param4:int=0, param5:int=0, param6:uint=0, param7:BasicGuildInformations=null) : TaxCollectorAttackedMessage {
+         this.firstNameId = param1;
+         this.lastNameId = param2;
+         this.worldX = param3;
+         this.worldY = param4;
+         this.mapId = param5;
+         this.subAreaId = param6;
+         this.guild = param7;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.firstNameId=0;
-         this.lastNameId=0;
-         this.worldX=0;
-         this.worldY=0;
-         this.mapId=0;
-         this.subAreaId=0;
-         this._isInitialized=false;
+         this.firstNameId = 0;
+         this.lastNameId = 0;
+         this.worldX = 0;
+         this.worldY = 0;
+         this.mapId = 0;
+         this.subAreaId = 0;
+         this.guild = new BasicGuildInformations();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_TaxCollectorAttackedMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_TaxCollectorAttackedMessage(param1);
       }
-
-      public function serializeAs_TaxCollectorAttackedMessage(output:IDataOutput) : void {
-         if(this.firstNameId<0)
+      
+      public function serializeAs_TaxCollectorAttackedMessage(param1:IDataOutput) : void {
+         if(this.firstNameId < 0)
          {
-            throw new Error("Forbidden value ("+this.firstNameId+") on element firstNameId.");
+            throw new Error("Forbidden value (" + this.firstNameId + ") on element firstNameId.");
          }
          else
          {
-            output.writeShort(this.firstNameId);
-            if(this.lastNameId<0)
+            param1.writeShort(this.firstNameId);
+            if(this.lastNameId < 0)
             {
-               throw new Error("Forbidden value ("+this.lastNameId+") on element lastNameId.");
+               throw new Error("Forbidden value (" + this.lastNameId + ") on element lastNameId.");
             }
             else
             {
-               output.writeShort(this.lastNameId);
-               if((this.worldX>-255)||(this.worldX<255))
+               param1.writeShort(this.lastNameId);
+               if(this.worldX < -255 || this.worldX > 255)
                {
-                  throw new Error("Forbidden value ("+this.worldX+") on element worldX.");
+                  throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
                }
                else
                {
-                  output.writeShort(this.worldX);
-                  if((this.worldY>-255)||(this.worldY<255))
+                  param1.writeShort(this.worldX);
+                  if(this.worldY < -255 || this.worldY > 255)
                   {
-                     throw new Error("Forbidden value ("+this.worldY+") on element worldY.");
+                     throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
                   }
                   else
                   {
-                     output.writeShort(this.worldY);
-                     output.writeInt(this.mapId);
-                     if(this.subAreaId<0)
+                     param1.writeShort(this.worldY);
+                     param1.writeInt(this.mapId);
+                     if(this.subAreaId < 0)
                      {
-                        throw new Error("Forbidden value ("+this.subAreaId+") on element subAreaId.");
+                        throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
                      }
                      else
                      {
-                        output.writeShort(this.subAreaId);
+                        param1.writeShort(this.subAreaId);
+                        this.guild.serializeAs_BasicGuildInformations(param1);
                         return;
                      }
                   }
@@ -118,48 +123,50 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_TaxCollectorAttackedMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_TaxCollectorAttackedMessage(param1);
       }
-
-      public function deserializeAs_TaxCollectorAttackedMessage(input:IDataInput) : void {
-         this.firstNameId=input.readShort();
-         if(this.firstNameId<0)
+      
+      public function deserializeAs_TaxCollectorAttackedMessage(param1:IDataInput) : void {
+         this.firstNameId = param1.readShort();
+         if(this.firstNameId < 0)
          {
-            throw new Error("Forbidden value ("+this.firstNameId+") on element of TaxCollectorAttackedMessage.firstNameId.");
+            throw new Error("Forbidden value (" + this.firstNameId + ") on element of TaxCollectorAttackedMessage.firstNameId.");
          }
          else
          {
-            this.lastNameId=input.readShort();
-            if(this.lastNameId<0)
+            this.lastNameId = param1.readShort();
+            if(this.lastNameId < 0)
             {
-               throw new Error("Forbidden value ("+this.lastNameId+") on element of TaxCollectorAttackedMessage.lastNameId.");
+               throw new Error("Forbidden value (" + this.lastNameId + ") on element of TaxCollectorAttackedMessage.lastNameId.");
             }
             else
             {
-               this.worldX=input.readShort();
-               if((this.worldX>-255)||(this.worldX<255))
+               this.worldX = param1.readShort();
+               if(this.worldX < -255 || this.worldX > 255)
                {
-                  throw new Error("Forbidden value ("+this.worldX+") on element of TaxCollectorAttackedMessage.worldX.");
+                  throw new Error("Forbidden value (" + this.worldX + ") on element of TaxCollectorAttackedMessage.worldX.");
                }
                else
                {
-                  this.worldY=input.readShort();
-                  if((this.worldY>-255)||(this.worldY<255))
+                  this.worldY = param1.readShort();
+                  if(this.worldY < -255 || this.worldY > 255)
                   {
-                     throw new Error("Forbidden value ("+this.worldY+") on element of TaxCollectorAttackedMessage.worldY.");
+                     throw new Error("Forbidden value (" + this.worldY + ") on element of TaxCollectorAttackedMessage.worldY.");
                   }
                   else
                   {
-                     this.mapId=input.readInt();
-                     this.subAreaId=input.readShort();
-                     if(this.subAreaId<0)
+                     this.mapId = param1.readInt();
+                     this.subAreaId = param1.readShort();
+                     if(this.subAreaId < 0)
                      {
-                        throw new Error("Forbidden value ("+this.subAreaId+") on element of TaxCollectorAttackedMessage.subAreaId.");
+                        throw new Error("Forbidden value (" + this.subAreaId + ") on element of TaxCollectorAttackedMessage.subAreaId.");
                      }
                      else
                      {
+                        this.guild = new BasicGuildInformations();
+                        this.guild.deserialize(param1);
                         return;
                      }
                   }
@@ -168,5 +175,4 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          }
       }
    }
-
 }

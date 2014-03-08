@@ -11,192 +11,188 @@ package com.ankamagames.dofus.types.sequences
    import com.ankamagames.tiphon.events.TiphonEvent;
    import com.ankamagames.jerakine.enum.AddGfxModeEnum;
    import com.ankamagames.atouin.enums.PlacementStrataEnums;
-
-
+   
    public class AddGfxInLineStep extends AbstractSequencable
    {
-         
-
-      public function AddGfxInLineStep(gfxId:uint, startCell:MapPoint, endCell:MapPoint, yOffset:int, mode:uint=0, scale:Number=0, addOnStartCell:Boolean=false, addOnEndCell:Boolean=false, addedCells:Vector.<uint>=null, useOnlyAddedCells:Boolean=false, showUnder:Boolean=false) {
+      
+      public function AddGfxInLineStep(param1:uint, param2:MapPoint, param3:MapPoint, param4:int, param5:uint=0, param6:Number=0, param7:Boolean=false, param8:Boolean=false, param9:Vector.<uint>=null, param10:Boolean=false, param11:Boolean=false) {
          super();
-         this._gfxId=gfxId;
-         this._startCell=startCell;
-         this._endCell=endCell;
-         this._addOnStartCell=addOnStartCell;
-         this._addOnEndCell=addOnEndCell;
-         this._yOffset=yOffset;
-         this._mode=mode;
-         this._scale=scale;
-         this._addedCells=addedCells;
-         this._useOnlyAddedCells=useOnlyAddedCells;
-         this._showUnder=showUnder;
+         this._gfxId = param1;
+         this._startCell = param2;
+         this._endCell = param3;
+         this._addOnStartCell = param7;
+         this._addOnEndCell = param8;
+         this._yOffset = param4;
+         this._mode = param5;
+         this._scale = param6;
+         this._addedCells = param9;
+         this._useOnlyAddedCells = param10;
+         this._showUnder = param11;
       }
-
-
-
+      
       private var _gfxId:uint;
-
+      
       private var _startCell:MapPoint;
-
+      
       private var _endCell:MapPoint;
-
+      
       private var _addOnStartCell:Boolean;
-
+      
       private var _addOnEndCell:Boolean;
-
+      
       private var _yOffset:int;
-
+      
       private var _mode:uint;
-
+      
       private var _shot:Boolean = false;
-
+      
       private var _scale:Number;
-
+      
       private var _showUnder:Boolean;
-
+      
       private var _useOnlyAddedCells:Boolean;
-
+      
       private var _addedCells:Vector.<uint>;
-
+      
       private var _cells:Array;
-
+      
       override public function start() : void {
-         var cells:Array = null;
-         var cell:Point = null;
-         var i:uint = 0;
-         var add:* = false;
-         var j:uint = 0;
+         var _loc1_:Array = null;
+         var _loc2_:Point = null;
+         var _loc3_:uint = 0;
+         var _loc4_:* = false;
+         var _loc5_:uint = 0;
          if(!this._useOnlyAddedCells)
          {
-            cells=Dofus1Line.getLine(this._startCell.x,this._startCell.y,0,this._endCell.x,this._endCell.y,0);
+            _loc1_ = Dofus1Line.getLine(this._startCell.x,this._startCell.y,0,this._endCell.x,this._endCell.y,0);
          }
          else
          {
-            cells=[];
+            _loc1_ = [];
          }
-         this._cells=new Array();
+         this._cells = new Array();
          if(this._addOnStartCell)
          {
             this._cells.push(this._startCell);
          }
-         i=0;
-         while(i<cells.length)
+         _loc3_ = 0;
+         while(_loc3_ < _loc1_.length)
          {
-            cell=cells[i];
-            if((this._addOnEndCell)&&(i==cells.length-1)||(i>=0)&&(i>cells.length-1))
+            _loc2_ = _loc1_[_loc3_];
+            if((this._addOnEndCell) && _loc3_ == _loc1_.length-1 || _loc3_ >= 0 && _loc3_ < _loc1_.length-1)
             {
-               this._cells.push(MapPoint.fromCoords(cell.x,cell.y));
+               this._cells.push(MapPoint.fromCoords(_loc2_.x,_loc2_.y));
             }
-            i++;
+            _loc3_++;
          }
          if(this._addedCells)
          {
-            i=0;
-            loop0:
-            for(;i<this._addedCells.length;if(add)
+            _loc3_ = 0;
+            while(_loc3_ < this._addedCells.length)
             {
-               this._cells.push(MapPoint.fromCellId(this._addedCells[i]));
-               },i++)
+               _loc4_ = true;
+               _loc5_ = 0;
+               while(_loc5_ < this._cells.length)
                {
-                  add=true;
-                  j=0;
-                  while(j<this._cells.length)
+                  if(this._addedCells[_loc3_] == MapPoint(this._cells[_loc5_]).cellId)
                   {
-                     if(this._addedCells[i]==MapPoint(this._cells[j]).cellId)
-                     {
-                        add=false;
-                        continue loop0;
-                     }
-                     j++;
+                     _loc4_ = false;
+                     break;
                   }
+                  _loc5_++;
                }
+               if(_loc4_)
+               {
+                  this._cells.push(MapPoint.fromCellId(this._addedCells[_loc3_]));
+               }
+               _loc3_++;
             }
-            this.addNextGfx();
+         }
+         this.addNextGfx();
       }
-
+      
       private function addNextGfx() : void {
          if(!this._cells.length)
          {
             executeCallbacks();
             return;
          }
-         var id:int = -10000;
-         while(DofusEntities.getEntity(id))
+         var _loc1_:* = -10000;
+         while(DofusEntities.getEntity(_loc1_))
          {
-            id=-10000+Math.random()*10000;
+            _loc1_ = -10000 + Math.random() * 10000;
          }
-         var entity:Projectile = new Projectile(id,TiphonEntityLook.fromString("{"+this._gfxId+"}"));
-         entity.addEventListener(TiphonEvent.ANIMATION_SHOT,this.shot);
-         entity.addEventListener(TiphonEvent.ANIMATION_END,this.remove);
-         entity.addEventListener(TiphonEvent.RENDER_FAILED,this.remove);
-         entity.position=this._cells.shift();
-         if(!entity.libraryIsAvaible)
+         var _loc2_:Projectile = new Projectile(_loc1_,TiphonEntityLook.fromString("{" + this._gfxId + "}"));
+         _loc2_.addEventListener(TiphonEvent.ANIMATION_SHOT,this.shot);
+         _loc2_.addEventListener(TiphonEvent.ANIMATION_END,this.remove);
+         _loc2_.addEventListener(TiphonEvent.RENDER_FAILED,this.remove);
+         _loc2_.position = this._cells.shift();
+         if(!_loc2_.libraryIsAvaible)
          {
-            entity.addEventListener(TiphonEvent.SPRITE_INIT,this.startDisplay);
-            entity.addEventListener(TiphonEvent.SPRITE_INIT_FAILED,this.remove);
-            entity.init();
+            _loc2_.addEventListener(TiphonEvent.SPRITE_INIT,this.startDisplay);
+            _loc2_.addEventListener(TiphonEvent.SPRITE_INIT_FAILED,this.remove);
+            _loc2_.init();
          }
          else
          {
-            entity.init();
-            this.startDisplay(new TiphonEvent(TiphonEvent.SPRITE_INIT,entity));
+            _loc2_.init();
+            this.startDisplay(new TiphonEvent(TiphonEvent.SPRITE_INIT,_loc2_));
          }
       }
-
-      private function startDisplay(e:TiphonEvent) : void {
-         var p:Projectile = null;
-         var dir:Array = null;
-         var ad:Array = null;
-         var i:uint = 0;
-         p=Projectile(e.sprite);
+      
+      private function startDisplay(param1:TiphonEvent) : void {
+         var _loc2_:Projectile = null;
+         var _loc3_:Array = null;
+         var _loc4_:Array = null;
+         var _loc5_:uint = 0;
+         _loc2_ = Projectile(param1.sprite);
          switch(this._mode)
          {
             case AddGfxModeEnum.NORMAL:
                break;
             case AddGfxModeEnum.RANDOM:
-               dir=p.getAvaibleDirection("FX");
-               ad=new Array();
-               i=0;
-               while(i<8)
+               _loc3_ = _loc2_.getAvaibleDirection("FX");
+               _loc4_ = new Array();
+               _loc5_ = 0;
+               while(_loc5_ < 8)
                {
-                  if(dir[i])
+                  if(_loc3_[_loc5_])
                   {
-                     ad.push(i);
+                     _loc4_.push(_loc5_);
                   }
-                  i++;
+                  _loc5_++;
                }
-               p.setDirection(ad[Math.floor(Math.random()*ad.length)]);
+               _loc2_.setDirection(_loc4_[Math.floor(Math.random() * _loc4_.length)]);
                break;
             case AddGfxModeEnum.ORIENTED:
-               p.setDirection(this._startCell.advancedOrientationTo(this._endCell,true));
+               _loc2_.setDirection(this._startCell.advancedOrientationTo(this._endCell,true));
                break;
          }
-         p.display(this._showUnder?PlacementStrataEnums.STRATA_SPELL_BACKGROUND:PlacementStrataEnums.STRATA_SPELL_FOREGROUND);
-         p.y=p.y+this._yOffset;
-         p.scaleX=p.scaleY=this._scale;
+         _loc2_.display(this._showUnder?PlacementStrataEnums.STRATA_SPELL_BACKGROUND:PlacementStrataEnums.STRATA_SPELL_FOREGROUND);
+         _loc2_.y = _loc2_.y + this._yOffset;
+         _loc2_.scaleX = _loc2_.scaleY = this._scale;
       }
-
-      private function remove(e:TiphonEvent) : void {
-         e.sprite.removeEventListener(TiphonEvent.ANIMATION_END,this.remove);
-         e.sprite.removeEventListener(TiphonEvent.ANIMATION_SHOT,this.shot);
-         e.sprite.removeEventListener(TiphonEvent.RENDER_FAILED,this.remove);
-         e.sprite.removeEventListener(TiphonEvent.SPRITE_INIT,this.startDisplay);
-         e.sprite.removeEventListener(TiphonEvent.SPRITE_INIT_FAILED,this.remove);
-         Projectile(e.sprite).remove();
+      
+      private function remove(param1:TiphonEvent) : void {
+         param1.sprite.removeEventListener(TiphonEvent.ANIMATION_END,this.remove);
+         param1.sprite.removeEventListener(TiphonEvent.ANIMATION_SHOT,this.shot);
+         param1.sprite.removeEventListener(TiphonEvent.RENDER_FAILED,this.remove);
+         param1.sprite.removeEventListener(TiphonEvent.SPRITE_INIT,this.startDisplay);
+         param1.sprite.removeEventListener(TiphonEvent.SPRITE_INIT_FAILED,this.remove);
+         Projectile(param1.sprite).remove();
          if(!this._shot)
          {
             this.shot(null);
          }
       }
-
-      private function shot(e:TiphonEvent) : void {
-         if(e)
+      
+      private function shot(param1:TiphonEvent) : void {
+         if(param1)
          {
-            e.sprite.removeEventListener(TiphonEvent.ANIMATION_SHOT,this.shot);
+            param1.sprite.removeEventListener(TiphonEvent.ANIMATION_SHOT,this.shot);
          }
-         this._shot=true;
+         this._shot = true;
          this.addNextGfx();
       }
    }
-
 }

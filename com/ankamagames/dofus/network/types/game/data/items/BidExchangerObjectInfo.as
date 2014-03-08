@@ -6,132 +6,119 @@ package com.ankamagames.dofus.network.types.game.data.items
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
-
-
+   
    public class BidExchangerObjectInfo extends Object implements INetworkType
    {
-         
-
+      
       public function BidExchangerObjectInfo() {
-         this.effects=new Vector.<ObjectEffect>();
-         this.prices=new Vector.<uint>();
+         this.effects = new Vector.<ObjectEffect>();
+         this.prices = new Vector.<uint>();
          super();
       }
-
+      
       public static const protocolId:uint = 122;
-
+      
       public var objectUID:uint = 0;
-
-      public var powerRate:int = 0;
-
-      public var overMax:Boolean = false;
-
+      
       public var effects:Vector.<ObjectEffect>;
-
+      
       public var prices:Vector.<uint>;
-
+      
       public function getTypeId() : uint {
          return 122;
       }
-
-      public function initBidExchangerObjectInfo(objectUID:uint=0, powerRate:int=0, overMax:Boolean=false, effects:Vector.<ObjectEffect>=null, prices:Vector.<uint>=null) : BidExchangerObjectInfo {
-         this.objectUID=objectUID;
-         this.powerRate=powerRate;
-         this.overMax=overMax;
-         this.effects=effects;
-         this.prices=prices;
+      
+      public function initBidExchangerObjectInfo(param1:uint=0, param2:Vector.<ObjectEffect>=null, param3:Vector.<uint>=null) : BidExchangerObjectInfo {
+         this.objectUID = param1;
+         this.effects = param2;
+         this.prices = param3;
          return this;
       }
-
+      
       public function reset() : void {
-         this.objectUID=0;
-         this.powerRate=0;
-         this.overMax=false;
-         this.effects=new Vector.<ObjectEffect>();
-         this.prices=new Vector.<uint>();
+         this.objectUID = 0;
+         this.effects = new Vector.<ObjectEffect>();
+         this.prices = new Vector.<uint>();
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_BidExchangerObjectInfo(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_BidExchangerObjectInfo(param1);
       }
-
-      public function serializeAs_BidExchangerObjectInfo(output:IDataOutput) : void {
-         if(this.objectUID<0)
+      
+      public function serializeAs_BidExchangerObjectInfo(param1:IDataOutput) : void {
+         if(this.objectUID < 0)
          {
-            throw new Error("Forbidden value ("+this.objectUID+") on element objectUID.");
+            throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
          }
          else
          {
-            output.writeInt(this.objectUID);
-            output.writeShort(this.powerRate);
-            output.writeBoolean(this.overMax);
-            output.writeShort(this.effects.length);
-            _i4=0;
-            while(_i4<this.effects.length)
+            param1.writeInt(this.objectUID);
+            param1.writeShort(this.effects.length);
+            _loc2_ = 0;
+            while(_loc2_ < this.effects.length)
             {
-               output.writeShort((this.effects[_i4] as ObjectEffect).getTypeId());
-               (this.effects[_i4] as ObjectEffect).serialize(output);
-               _i4++;
+               param1.writeShort((this.effects[_loc2_] as ObjectEffect).getTypeId());
+               (this.effects[_loc2_] as ObjectEffect).serialize(param1);
+               _loc2_++;
             }
-            output.writeShort(this.prices.length);
-            _i5=0;
-            while(_i5<this.prices.length)
+            param1.writeShort(this.prices.length);
+            _loc3_ = 0;
+            loop1:
+            while(_loc3_ < this.prices.length)
             {
-               if(this.prices[_i5]<0)
+               if(this.prices[_loc3_] < 0)
                {
-                  throw new Error("Forbidden value ("+this.prices[_i5]+") on element 5 (starting at 1) of prices.");
+                  throw new Error("Forbidden value (" + this.prices[_loc3_] + ") on element 3 (starting at 1) of prices.");
                }
                else
                {
-                  output.writeInt(this.prices[_i5]);
-                  _i5++;
-                  continue;
+                  param1.writeInt(this.prices[_loc3_]);
+                  _loc3_++;
+                  continue loop1;
                }
             }
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_BidExchangerObjectInfo(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_BidExchangerObjectInfo(param1);
       }
-
-      public function deserializeAs_BidExchangerObjectInfo(input:IDataInput) : void {
-         var _id4:uint = 0;
-         var _item4:ObjectEffect = null;
-         var _val5:uint = 0;
-         this.objectUID=input.readInt();
-         if(this.objectUID<0)
+      
+      public function deserializeAs_BidExchangerObjectInfo(param1:IDataInput) : void {
+         var _loc6_:uint = 0;
+         var _loc7_:ObjectEffect = null;
+         var _loc8_:uint = 0;
+         this.objectUID = param1.readInt();
+         if(this.objectUID < 0)
          {
-            throw new Error("Forbidden value ("+this.objectUID+") on element of BidExchangerObjectInfo.objectUID.");
+            throw new Error("Forbidden value (" + this.objectUID + ") on element of BidExchangerObjectInfo.objectUID.");
          }
          else
          {
-            this.powerRate=input.readShort();
-            this.overMax=input.readBoolean();
-            _effectsLen=input.readUnsignedShort();
-            _i4=0;
-            while(_i4<_effectsLen)
+            _loc2_ = param1.readUnsignedShort();
+            _loc3_ = 0;
+            while(_loc3_ < _loc2_)
             {
-               _id4=input.readUnsignedShort();
-               _item4=ProtocolTypeManager.getInstance(ObjectEffect,_id4);
-               _item4.deserialize(input);
-               this.effects.push(_item4);
-               _i4++;
+               _loc6_ = param1.readUnsignedShort();
+               _loc7_ = ProtocolTypeManager.getInstance(ObjectEffect,_loc6_);
+               _loc7_.deserialize(param1);
+               this.effects.push(_loc7_);
+               _loc3_++;
             }
-            _pricesLen=input.readUnsignedShort();
-            _i5=0;
-            while(_i5<_pricesLen)
+            _loc4_ = param1.readUnsignedShort();
+            _loc5_ = 0;
+            while(_loc5_ < _loc4_)
             {
-               _val5=input.readInt();
-               if(_val5<0)
+               _loc8_ = param1.readInt();
+               if(_loc8_ < 0)
                {
-                  throw new Error("Forbidden value ("+_val5+") on elements of prices.");
+                  throw new Error("Forbidden value (" + _loc8_ + ") on elements of prices.");
                }
                else
                {
-                  this.prices.push(_val5);
-                  _i5++;
+                  this.prices.push(_loc8_);
+                  _loc5_++;
                   continue;
                }
             }
@@ -139,5 +126,4 @@ package com.ankamagames.dofus.network.types.game.data.items
          }
       }
    }
-
 }

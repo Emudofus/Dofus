@@ -10,209 +10,219 @@ package com.ankamagames.dofus.internalDatacenter.fight
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightMonsterInformations;
    import com.ankamagames.dofus.datacenter.monsters.Monster;
    import com.ankamagames.dofus.network.types.game.context.fight.FightResultAdditionalData;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightCompanionInformations;
+   import com.ankamagames.dofus.datacenter.monsters.Companion;
    import com.ankamagames.dofus.datacenter.npcs.TaxCollectorFirstname;
    import com.ankamagames.dofus.datacenter.npcs.TaxCollectorName;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterNamedInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.FightResultExperienceData;
    import com.ankamagames.dofus.network.types.game.context.fight.FightResultPvpData;
    import com.ankamagames.dofus.network.types.game.context.fight.FightResultFighterListEntry;
-
-
+   
    public class FightResultEntryWrapper extends Object implements IDataCenter
    {
-         
-
-      public function FightResultEntryWrapper(o:FightResultListEntry, infos:GameFightFighterInformations=null) {
-         var player:FightResultPlayerListEntry = null;
-         var taxCollector:FightResultTaxCollectorListEntry = null;
-         var info:GameFightTaxCollectorInformations = null;
-         var mutant:FightResultMutantListEntry = null;
-         var monsterInfos:GameFightMonsterInformations = null;
-         var monster:Monster = null;
-         var monsterInfos0:GameFightMonsterInformations = null;
-         var monster0:Monster = null;
-         var tcInfos:GameFightTaxCollectorInformations = null;
-         var addInfo:FightResultAdditionalData = null;
+      
+      public function FightResultEntryWrapper(param1:FightResultListEntry, param2:GameFightFighterInformations=null) {
+         var _loc3_:FightResultPlayerListEntry = null;
+         var _loc4_:FightResultTaxCollectorListEntry = null;
+         var _loc5_:GameFightTaxCollectorInformations = null;
+         var _loc6_:FightResultMutantListEntry = null;
+         var _loc7_:GameFightMonsterInformations = null;
+         var _loc8_:Monster = null;
+         var _loc9_:GameFightTaxCollectorInformations = null;
+         var _loc10_:FightResultAdditionalData = null;
+         var _loc11_:GameFightMonsterInformations = null;
+         var _loc12_:Monster = null;
+         var _loc13_:GameFightCompanionInformations = null;
+         var _loc14_:Companion = null;
          super();
-         this._item=o;
-         this.outcome=o.outcome;
-         this.rewards=new FightLootWrapper(o.rewards);
+         this._item = param1;
+         this.outcome = param1.outcome;
+         this.rewards = new FightLootWrapper(param1.rewards);
          switch(true)
          {
-            case o is FightResultPlayerListEntry:
-               player=o as FightResultPlayerListEntry;
-               if(!infos)
+            case param1 is FightResultPlayerListEntry:
+               _loc3_ = param1 as FightResultPlayerListEntry;
+               if(!param2)
                {
+                  break;
+               }
+               if(param2 is GameFightMonsterInformations)
+               {
+                  _loc7_ = param2 as GameFightMonsterInformations;
+                  _loc8_ = Monster.getMonsterById(_loc7_.creatureGenericId);
+                  this.name = _loc8_.name;
+                  this.level = _loc8_.getMonsterGrade(_loc7_.creatureGrade).level;
+                  this.id = _loc8_.id;
+                  this.alive = _loc7_.alive;
+                  this.type = 1;
                }
                else
                {
-                  if(infos is GameFightMonsterInformations)
+                  if(param2 is GameFightTaxCollectorInformations)
                   {
-                     monsterInfos0=infos as GameFightMonsterInformations;
-                     monster0=Monster.getMonsterById(monsterInfos0.creatureGenericId);
-                     this.name=monster0.name;
-                     this.level=monster0.getMonsterGrade(monsterInfos0.creatureGrade).level;
-                     this.id=monster0.id;
-                     this.alive=monsterInfos0.alive;
-                     this.type=1;
+                     _loc9_ = param2 as GameFightTaxCollectorInformations;
+                     this.name = TaxCollectorFirstname.getTaxCollectorFirstnameById(_loc9_.firstNameId).firstname + " " + TaxCollectorName.getTaxCollectorNameById(_loc9_.lastNameId).name;
+                     this.level = _loc9_.level;
+                     this.id = _loc9_.contextualId;
+                     this.alive = _loc9_.alive;
+                     this.type = 2;
                   }
                   else
                   {
-                     if(infos is GameFightTaxCollectorInformations)
+                     this.name = (param2 as GameFightFighterNamedInformations).name;
+                     this.level = _loc3_.level;
+                     this.id = _loc3_.id;
+                     this.alive = _loc3_.alive;
+                     this.type = 0;
+                     if(_loc3_.additional.length == 0)
                      {
-                        tcInfos=infos as GameFightTaxCollectorInformations;
-                        this.name=TaxCollectorFirstname.getTaxCollectorFirstnameById(tcInfos.firstNameId).firstname+" "+TaxCollectorName.getTaxCollectorNameById(tcInfos.lastNameId).name;
-                        this.level=tcInfos.level;
-                        this.id=tcInfos.contextualId;
-                        this.alive=tcInfos.alive;
-                        this.type=2;
+                        break;
                      }
-                     else
+                     for each (_loc10_ in _loc3_.additional)
                      {
-                        this.name=(infos as GameFightFighterNamedInformations).name;
-                        this.level=player.level;
-                        this.id=player.id;
-                        this.alive=player.alive;
-                        this.type=0;
-                        if(player.additional.length==0)
+                        switch(true)
                         {
-                           break;
-                        }
-                        for each (addInfo in player.additional)
-                        {
-                           switch(true)
-                           {
-                              case addInfo is FightResultExperienceData:
-                                 this.rerollXpMultiplicator=(addInfo as FightResultExperienceData).rerollExperienceMul;
-                                 this.experience=(addInfo as FightResultExperienceData).experience;
-                                 this.showExperience=(addInfo as FightResultExperienceData).showExperience;
-                                 this.experienceLevelFloor=(addInfo as FightResultExperienceData).experienceLevelFloor;
-                                 this.showExperienceLevelFloor=(addInfo as FightResultExperienceData).showExperienceLevelFloor;
-                                 this.experienceNextLevelFloor=(addInfo as FightResultExperienceData).experienceNextLevelFloor;
-                                 this.showExperienceNextLevelFloor=(addInfo as FightResultExperienceData).showExperienceNextLevelFloor;
-                                 this.experienceFightDelta=(addInfo as FightResultExperienceData).experienceFightDelta;
-                                 this.showExperienceFightDelta=(addInfo as FightResultExperienceData).showExperienceFightDelta;
-                                 this.experienceForGuild=(addInfo as FightResultExperienceData).experienceForGuild;
-                                 this.showExperienceForGuild=(addInfo as FightResultExperienceData).showExperienceForGuild;
-                                 this.experienceForRide=(addInfo as FightResultExperienceData).experienceForMount;
-                                 this.showExperienceForRide=(addInfo as FightResultExperienceData).showExperienceForMount;
-                                 this.isIncarnationExperience=(addInfo as FightResultExperienceData).isIncarnationExperience;
-                                 this.dishonorDelta=-1;
-                                 this.honorDelta=-1;
-                                 break;
-                              case addInfo is FightResultPvpData:
-                                 this.dishonor=(addInfo as FightResultPvpData).dishonor;
-                                 this.dishonorDelta=(addInfo as FightResultPvpData).dishonorDelta;
-                                 this.grade=(addInfo as FightResultPvpData).grade;
-                                 this.honor=(addInfo as FightResultPvpData).honor;
-                                 this.honorDelta=(addInfo as FightResultPvpData).honorDelta;
-                                 this.maxHonorForGrade=(addInfo as FightResultPvpData).maxHonorForGrade;
-                                 this.minHonorForGrade=(addInfo as FightResultPvpData).minHonorForGrade;
-                                 break;
-                           }
+                           case _loc10_ is FightResultExperienceData:
+                              this.rerollXpMultiplicator = (_loc10_ as FightResultExperienceData).rerollExperienceMul;
+                              this.experience = (_loc10_ as FightResultExperienceData).experience;
+                              this.showExperience = (_loc10_ as FightResultExperienceData).showExperience;
+                              this.experienceLevelFloor = (_loc10_ as FightResultExperienceData).experienceLevelFloor;
+                              this.showExperienceLevelFloor = (_loc10_ as FightResultExperienceData).showExperienceLevelFloor;
+                              this.experienceNextLevelFloor = (_loc10_ as FightResultExperienceData).experienceNextLevelFloor;
+                              this.showExperienceNextLevelFloor = (_loc10_ as FightResultExperienceData).showExperienceNextLevelFloor;
+                              this.experienceFightDelta = (_loc10_ as FightResultExperienceData).experienceFightDelta;
+                              this.showExperienceFightDelta = (_loc10_ as FightResultExperienceData).showExperienceFightDelta;
+                              this.experienceForGuild = (_loc10_ as FightResultExperienceData).experienceForGuild;
+                              this.showExperienceForGuild = (_loc10_ as FightResultExperienceData).showExperienceForGuild;
+                              this.experienceForRide = (_loc10_ as FightResultExperienceData).experienceForMount;
+                              this.showExperienceForRide = (_loc10_ as FightResultExperienceData).showExperienceForMount;
+                              this.isIncarnationExperience = (_loc10_ as FightResultExperienceData).isIncarnationExperience;
+                              this.honorDelta = -1;
+                              continue;
+                           case _loc10_ is FightResultPvpData:
+                              this.grade = (_loc10_ as FightResultPvpData).grade;
+                              this.honor = (_loc10_ as FightResultPvpData).honor;
+                              this.honorDelta = (_loc10_ as FightResultPvpData).honorDelta;
+                              this.maxHonorForGrade = (_loc10_ as FightResultPvpData).maxHonorForGrade;
+                              this.minHonorForGrade = (_loc10_ as FightResultPvpData).minHonorForGrade;
+                              continue;
+                           default:
+                              continue;
                         }
                      }
                   }
                }
                break;
-            case o is FightResultTaxCollectorListEntry:
-               taxCollector=o as FightResultTaxCollectorListEntry;
-               info=infos as GameFightTaxCollectorInformations;
-               if(info)
+            case param1 is FightResultTaxCollectorListEntry:
+               _loc4_ = param1 as FightResultTaxCollectorListEntry;
+               _loc5_ = param2 as GameFightTaxCollectorInformations;
+               if(_loc5_)
                {
-                  this.name=TaxCollectorFirstname.getTaxCollectorFirstnameById(info.firstNameId).firstname+" "+TaxCollectorName.getTaxCollectorNameById(info.lastNameId).name;
+                  this.name = TaxCollectorFirstname.getTaxCollectorFirstnameById(_loc5_.firstNameId).firstname + " " + TaxCollectorName.getTaxCollectorNameById(_loc5_.lastNameId).name;
                }
                else
                {
-                  this.name=taxCollector.guildInfo.guildName;
+                  this.name = _loc4_.guildInfo.guildName;
                }
-               this.level=taxCollector.level;
-               this.experienceForGuild=taxCollector.experienceForGuild;
-               this.id=taxCollector.id;
-               this.alive=taxCollector.alive;
-               this.type=2;
+               this.level = _loc4_.level;
+               this.experienceForGuild = _loc4_.experienceForGuild;
+               this.id = _loc4_.id;
+               this.alive = _loc4_.alive;
+               this.type = 2;
                break;
-            case o is FightResultMutantListEntry:
-               mutant=o as FightResultMutantListEntry;
-               this.name=(infos as GameFightFighterNamedInformations).name;
-               this.level=mutant.level;
-               this.id=mutant.id;
-               this.alive=mutant.alive;
-               this.type=1;
+            case param1 is FightResultMutantListEntry:
+               _loc6_ = param1 as FightResultMutantListEntry;
+               this.name = (param2 as GameFightFighterNamedInformations).name;
+               this.level = _loc6_.level;
+               this.id = _loc6_.id;
+               this.alive = _loc6_.alive;
+               this.type = 1;
                break;
-            case o is FightResultFighterListEntry:
-               monsterInfos=infos as GameFightMonsterInformations;
-               monster=Monster.getMonsterById(monsterInfos.creatureGenericId);
-               this.name=monster.name;
-               this.level=monster.getMonsterGrade(monsterInfos.creatureGrade).level;
-               this.id=monster.id;
-               this.alive=monsterInfos.alive;
-               this.type=1;
+            case param1 is FightResultFighterListEntry:
+               if(param2 is GameFightMonsterInformations)
+               {
+                  _loc11_ = param2 as GameFightMonsterInformations;
+                  _loc12_ = Monster.getMonsterById(_loc11_.creatureGenericId);
+                  this.name = _loc12_.name;
+                  this.level = _loc12_.getMonsterGrade(_loc11_.creatureGrade).level;
+                  this.id = _loc12_.id;
+                  this.alive = _loc11_.alive;
+                  this.type = 1;
+               }
+               else
+               {
+                  if(param2 is GameFightCompanionInformations)
+                  {
+                     _loc13_ = param2 as GameFightCompanionInformations;
+                     _loc14_ = Companion.getCompanionById(_loc13_.companionGenericId);
+                     this.name = _loc14_.name;
+                     this.level = _loc13_.level;
+                     this.id = _loc14_.id;
+                     this.alive = _loc13_.alive;
+                     this.type = 1;
+                  }
+               }
                break;
-            case o is FightResultListEntry:
+            case param1 is FightResultListEntry:
                break;
          }
       }
-
-
-
+      
       private var _item:FightResultListEntry;
-
+      
       public var outcome:int;
-
+      
       public var id:int;
-
+      
       public var name:String;
-
+      
       public var alive:Boolean;
-
+      
       public var rewards:FightLootWrapper;
-
+      
       public var level:int;
-
+      
       public var type:int;
-
+      
+      public var fightInitiator:Boolean;
+      
       public var rerollXpMultiplicator:int;
-
+      
       public var experience:Number;
-
+      
       public var showExperience:Boolean = false;
-
+      
       public var experienceLevelFloor:Number;
-
+      
       public var showExperienceLevelFloor:Boolean = false;
-
+      
       public var experienceNextLevelFloor:Number;
-
+      
       public var showExperienceNextLevelFloor:Boolean = false;
-
+      
       public var experienceFightDelta:Number;
-
+      
       public var showExperienceFightDelta:Boolean = false;
-
+      
       public var experienceForGuild:Number;
-
+      
       public var showExperienceForGuild:Boolean = false;
-
+      
       public var experienceForRide:Number;
-
+      
       public var showExperienceForRide:Boolean = false;
-
-      public var dishonor:uint;
-
-      public var dishonorDelta:int = -1;
-
+      
       public var grade:uint;
-
+      
       public var honor:uint;
-
+      
       public var honorDelta:int = -1;
-
+      
       public var maxHonorForGrade:uint;
-
+      
       public var minHonorForGrade:uint;
-
+      
       public var isIncarnationExperience:Boolean;
    }
-
 }

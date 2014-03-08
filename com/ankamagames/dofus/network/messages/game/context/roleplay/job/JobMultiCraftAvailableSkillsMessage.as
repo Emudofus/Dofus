@@ -5,117 +5,115 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class JobMultiCraftAvailableSkillsMessage extends JobAllowMultiCraftRequestMessage implements INetworkMessage
    {
-         
-
+      
       public function JobMultiCraftAvailableSkillsMessage() {
-         this.skills=new Vector.<uint>();
+         this.skills = new Vector.<uint>();
          super();
       }
-
+      
       public static const protocolId:uint = 5747;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
-         return (super.isInitialized)&&(this._isInitialized);
+         return (super.isInitialized) && (this._isInitialized);
       }
-
+      
       public var playerId:uint = 0;
-
+      
       public var skills:Vector.<uint>;
-
+      
       override public function getMessageId() : uint {
          return 5747;
       }
-
-      public function initJobMultiCraftAvailableSkillsMessage(enabled:Boolean=false, playerId:uint=0, skills:Vector.<uint>=null) : JobMultiCraftAvailableSkillsMessage {
-         super.initJobAllowMultiCraftRequestMessage(enabled);
-         this.playerId=playerId;
-         this.skills=skills;
-         this._isInitialized=true;
+      
+      public function initJobMultiCraftAvailableSkillsMessage(param1:Boolean=false, param2:uint=0, param3:Vector.<uint>=null) : JobMultiCraftAvailableSkillsMessage {
+         super.initJobAllowMultiCraftRequestMessage(param1);
+         this.playerId = param2;
+         this.skills = param3;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
          super.reset();
-         this.playerId=0;
-         this.skills=new Vector.<uint>();
-         this._isInitialized=false;
+         this.playerId = 0;
+         this.skills = new Vector.<uint>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      override public function serialize(output:IDataOutput) : void {
-         this.serializeAs_JobMultiCraftAvailableSkillsMessage(output);
+      
+      override public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_JobMultiCraftAvailableSkillsMessage(param1);
       }
-
-      public function serializeAs_JobMultiCraftAvailableSkillsMessage(output:IDataOutput) : void {
-         super.serializeAs_JobAllowMultiCraftRequestMessage(output);
-         if(this.playerId<0)
+      
+      public function serializeAs_JobMultiCraftAvailableSkillsMessage(param1:IDataOutput) : void {
+         super.serializeAs_JobAllowMultiCraftRequestMessage(param1);
+         if(this.playerId < 0)
          {
-            throw new Error("Forbidden value ("+this.playerId+") on element playerId.");
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
          }
          else
          {
-            output.writeInt(this.playerId);
-            output.writeShort(this.skills.length);
-            _i2=0;
-            while(_i2<this.skills.length)
+            param1.writeInt(this.playerId);
+            param1.writeShort(this.skills.length);
+            _loc2_ = 0;
+            while(_loc2_ < this.skills.length)
             {
-               if(this.skills[_i2]<0)
+               if(this.skills[_loc2_] < 0)
                {
-                  throw new Error("Forbidden value ("+this.skills[_i2]+") on element 2 (starting at 1) of skills.");
+                  throw new Error("Forbidden value (" + this.skills[_loc2_] + ") on element 2 (starting at 1) of skills.");
                }
                else
                {
-                  output.writeShort(this.skills[_i2]);
-                  _i2++;
+                  param1.writeShort(this.skills[_loc2_]);
+                  _loc2_++;
                   continue;
                }
             }
             return;
          }
       }
-
-      override public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_JobMultiCraftAvailableSkillsMessage(input);
+      
+      override public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_JobMultiCraftAvailableSkillsMessage(param1);
       }
-
-      public function deserializeAs_JobMultiCraftAvailableSkillsMessage(input:IDataInput) : void {
-         var _val2:uint = 0;
-         super.deserialize(input);
-         this.playerId=input.readInt();
-         if(this.playerId<0)
+      
+      public function deserializeAs_JobMultiCraftAvailableSkillsMessage(param1:IDataInput) : void {
+         var _loc4_:uint = 0;
+         super.deserialize(param1);
+         this.playerId = param1.readInt();
+         if(this.playerId < 0)
          {
-            throw new Error("Forbidden value ("+this.playerId+") on element of JobMultiCraftAvailableSkillsMessage.playerId.");
+            throw new Error("Forbidden value (" + this.playerId + ") on element of JobMultiCraftAvailableSkillsMessage.playerId.");
          }
          else
          {
-            _skillsLen=input.readUnsignedShort();
-            _i2=0;
-            while(_i2<_skillsLen)
+            _loc2_ = param1.readUnsignedShort();
+            _loc3_ = 0;
+            while(_loc3_ < _loc2_)
             {
-               _val2=input.readShort();
-               if(_val2<0)
+               _loc4_ = param1.readShort();
+               if(_loc4_ < 0)
                {
-                  throw new Error("Forbidden value ("+_val2+") on elements of skills.");
+                  throw new Error("Forbidden value (" + _loc4_ + ") on elements of skills.");
                }
                else
                {
-                  this.skills.push(_val2);
-                  _i2++;
+                  this.skills.push(_loc4_);
+                  _loc3_++;
                   continue;
                }
             }
@@ -123,5 +121,4 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          }
       }
    }
-
 }

@@ -14,265 +14,262 @@ package com.ankamagames.dofus.logic.game.approach.managers
    import com.ankamagames.dofus.misc.lists.HookList;
    import com.ankamagames.dofus.datacenter.misc.Pack;
    import com.ankamagames.dofus.network.messages.updater.parts.DownloadPartMessage;
-
-
+   
    public class PartManager extends Object
    {
-         
-
+      
       public function PartManager() {
-         this._downloadList=new Array();
+         this._downloadList = new Array();
          super();
          DownloadMonitoring.getInstance().initialize();
       }
-
+      
       public static const STATE_WAITING:int = 0;
-
+      
       public static const STATE_DOWNLOADING:int = 1;
-
+      
       public static const STATE_FINISHED:int = 2;
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PartManager));
-
+      
       private static var _singleton:PartManager;
-
+      
       public static function getInstance() : PartManager {
          if(!_singleton)
          {
-            _singleton=new PartManager();
+            _singleton = new PartManager();
          }
          return _singleton;
       }
-
+      
       private var _parts:Dictionary = null;
-
+      
       private var _firstParts:Dictionary = null;
-
+      
       private var _downloadList:Array;
-
+      
       private var _downloadingPart:String = null;
-
+      
       private var _downloadCount:int = 0;
-
+      
       private var _downloadSuccess:int = 0;
-
+      
       private var _state:int = 0;
-
+      
       public function initialize() : void {
-         var gplmsg:GetPartsListMessage = new GetPartsListMessage();
-         gplmsg.initGetPartsListMessage();
-         UpdaterConnexionHandler.getConnection().send(gplmsg);
+         var _loc1_:GetPartsListMessage = new GetPartsListMessage();
+         _loc1_.initGetPartsListMessage();
+         UpdaterConnexionHandler.getConnection().send(_loc1_);
       }
-
-      public function receiveParts(parts:Vector.<ContentPart>) : void {
-         var part:ContentPart = null;
-         var key:String = null;
-         this._parts=new Dictionary();
-         for each (part in parts)
+      
+      public function receiveParts(param1:Vector.<ContentPart>) : void {
+         var _loc2_:ContentPart = null;
+         var _loc3_:String = null;
+         this._parts = new Dictionary();
+         for each (_loc2_ in param1)
          {
-            this.updatePart(part);
+            this.updatePart(_loc2_);
          }
          if(!this._firstParts)
          {
-            this._firstParts=new Dictionary();
-            for (key in this._parts)
+            this._firstParts = new Dictionary();
+            for (_loc3_ in this._parts)
             {
-               this._firstParts[key]=this._parts[key];
+               this._firstParts[_loc3_] = this._parts[_loc3_];
             }
          }
       }
-
-      public function checkAndDownload(partName:String) : void {
-         var part:String = null;
+      
+      public function checkAndDownload(param1:String) : void {
+         var _loc2_:String = null;
          if(!this._parts)
          {
-            _log.warn("checkAndDownload \'"+partName+"\' but can\'t got part list (updater is down ?)");
+            _log.warn("checkAndDownload \'" + param1 + "\' but can\'t got part list (updater is down ?)");
             return;
          }
-         if(!this._parts.hasOwnProperty(partName))
+         if(!this._parts.hasOwnProperty(param1))
          {
-            _log.error("Unknow part id : "+partName);
+            _log.error("Unknow part id : " + param1);
             return;
          }
-         if(this._parts[partName].state==PartStateEnum.PART_NOT_INSTALLED)
+         if(this._parts[param1].state == PartStateEnum.PART_NOT_INSTALLED)
          {
-            for each (part in this._downloadList)
+            for each (_loc2_ in this._downloadList)
             {
-               if(part==partName)
+               if(_loc2_ == param1)
                {
                   return;
                }
             }
             this._downloadCount++;
-            this.download(partName);
+            this.download(param1);
          }
       }
-
-      public function updatePart(part:ContentPart) : void {
-         var isDownloading:* = false;
-         var p:ContentPart = null;
-         var partName:String = null;
+      
+      public function updatePart(param1:ContentPart) : void {
+         var _loc3_:* = false;
+         var _loc4_:ContentPart = null;
+         var _loc5_:String = null;
          if(!this._parts)
          {
-            _log.error("updatePart \'"+part.id+"\' but can\'t got part liste (updater is down ?)");
+            _log.error("updatePart \'" + param1.id + "\' but can\'t got part liste (updater is down ?)");
             return;
          }
-         var oldPart:ContentPart = this._parts[part.id];
-         this._parts[part.id]=part;
-         switch(part.state)
+         var _loc2_:ContentPart = this._parts[param1.id];
+         this._parts[param1.id] = param1;
+         switch(param1.state)
          {
             case PartStateEnum.PART_BEING_UPDATER:
                DownloadMonitoring.getInstance().start();
-               if(part.id!=this._downloadingPart)
+               if(param1.id != this._downloadingPart)
                {
                   if(this._downloadingPart)
                   {
-                     _log.error("On reçoit des informations de téléchargement d\'une partie de contenu "+part.id+", alors qu\'on a pour demande de récupérer "+this._downloadingPart+". Ce téléchargement risque de provoquer un conflit (téléchargements simultanés");
+                     _log.error("On reÃ§oit des informations de tÃ©lÃ©chargement d\'une partie de contenu " + param1.id + ", alors qu\'on a pour demande de rÃ©cupÃ©rer " + this._downloadingPart + ". Ce tÃ©lÃ©chargement risque de provoquer un conflit (tÃ©lÃ©chargements simultanÃ©s");
                   }
                   else
                   {
-                     this._downloadingPart=part.id;
+                     this._downloadingPart = param1.id;
                   }
                }
                break;
             case PartStateEnum.PART_UP_TO_DATE:
-               if(part.id==this._downloadingPart)
+               if(param1.id == this._downloadingPart)
                {
-                  isDownloading=false;
-                  for each (p in this._parts)
+                  _loc3_ = false;
+                  for each (_loc4_ in this._parts)
                   {
-                     if(p.state==PartStateEnum.PART_BEING_UPDATER)
+                     if(_loc4_.state == PartStateEnum.PART_BEING_UPDATER)
                      {
-                        isDownloading=true;
-                        _log.error(p.id+" en cours de téléchargement alors qu\'une autre part vient juste de se terminer...");
-                        throw new Error(p.id+" en cours de téléchargement alors qu\'une autre part vient juste de se terminer...");
+                        _loc3_ = true;
+                        _log.error(_loc4_.id + " en cours de tÃ©lÃ©chargement alors qu\'une autre part vient juste de se terminer...");
+                        throw new Error(_loc4_.id + " en cours de tÃ©lÃ©chargement alors qu\'une autre part vient juste de se terminer...");
                      }
                      else
                      {
                         continue;
                      }
                   }
-                  if(!isDownloading)
+                  if(!_loc3_)
                   {
                      this._downloadSuccess++;
                      _log.info("Updater download is terminated.");
-                     this._downloadingPart=null;
-                     if(this._downloadList.length==0)
+                     this._downloadingPart = null;
+                     if(this._downloadList.length == 0)
                      {
                         DownloadMonitoring.getInstance().stop();
-                        this._state=STATE_FINISHED;
+                        this._state = STATE_FINISHED;
                         KernelEventsManager.getInstance().processCallback(HookList.AllDownloadTerminated);
                      }
                      else
                      {
-                        partName=this._downloadList.pop();
-                        _log.info(partName+" found in download queue");
-                        this.download(partName);
+                        _loc5_ = this._downloadList.pop();
+                        _log.info(_loc5_ + " found in download queue");
+                        this.download(_loc5_);
                      }
                   }
                }
                break;
          }
       }
-
+      
       public function getServerPartList() : Vector.<uint> {
-         var pack:Pack = null;
-         var found:* = false;
-         var part:ContentPart = null;
-         if(this._firstParts==null)
+         var _loc4_:Pack = null;
+         var _loc5_:* = false;
+         var _loc6_:ContentPart = null;
+         if(this._firstParts == null)
          {
             return null;
          }
-         var count:uint = 0;
-         var packs:Array = Pack.getAllPacks();
-         var list:Vector.<uint> = new Vector.<uint>();
-         for each (pack in packs)
+         var _loc1_:uint = 0;
+         var _loc2_:Array = Pack.getAllPacks();
+         var _loc3_:Vector.<uint> = new Vector.<uint>();
+         for each (_loc4_ in _loc2_)
          {
-            if(pack.hasSubAreas)
+            if(_loc4_.hasSubAreas)
             {
-               count++;
-               found=false;
-               for each (part in this._firstParts)
+               _loc1_++;
+               _loc5_ = false;
+               for each (_loc6_ in this._firstParts)
                {
-                  if((part.id==pack.name)&&(part.state==2))
+                  if(_loc6_.id == _loc4_.name && _loc6_.state == 2)
                   {
-                     found=true;
+                     _loc5_ = true;
                      break;
                   }
                }
-               if(found)
+               if(_loc5_)
                {
-                  list.push(pack.id);
+                  _loc3_.push(_loc4_.id);
                }
             }
          }
-         if(list.length==count)
+         if(_loc3_.length == _loc1_)
          {
             return null;
          }
-         return list;
+         return _loc3_;
       }
-
-      public function getPart(partName:String) : ContentPart {
-         var part:ContentPart = null;
-         for each (part in this._parts)
+      
+      public function getPart(param1:String) : ContentPart {
+         var _loc2_:ContentPart = null;
+         for each (_loc2_ in this._parts)
          {
-            if(part.id==partName)
+            if(_loc2_.id == param1)
             {
-               return part;
+               return _loc2_;
             }
          }
          return null;
       }
-
+      
       public function createEmptyPartList() : void {
-         this._parts=new Dictionary();
+         this._parts = new Dictionary();
       }
-
-      public function getDownloadPercent(base:int) : int {
-         var percent:int = 100*this._downloadSuccess/this._downloadCount+base/this._downloadCount;
-         if(percent<0)
+      
+      public function getDownloadPercent(param1:int) : int {
+         var _loc2_:int = 100 * this._downloadSuccess / this._downloadCount + param1 / this._downloadCount;
+         if(_loc2_ < 0)
          {
             return 0;
          }
-         if(percent>100)
+         if(_loc2_ > 100)
          {
             return 100;
          }
-         return percent;
+         return _loc2_;
       }
-
+      
       public function get isDownloading() : Boolean {
-         return this._state==STATE_DOWNLOADING;
+         return this._state == STATE_DOWNLOADING;
       }
-
+      
       public function get isFinished() : Boolean {
-         return this._state==STATE_FINISHED;
+         return this._state == STATE_FINISHED;
       }
-
-      private function download(partName:String) : void {
-         var dpmsg:DownloadPartMessage = null;
-         this._state=STATE_DOWNLOADING;
-         if(this._parts[partName].state==PartStateEnum.PART_NOT_INSTALLED)
+      
+      private function download(param1:String) : void {
+         var _loc2_:DownloadPartMessage = null;
+         this._state = STATE_DOWNLOADING;
+         if(this._parts[param1].state == PartStateEnum.PART_NOT_INSTALLED)
          {
             if(!this._downloadingPart)
             {
-               _log.info("Send download request for "+partName+" to updater");
-               dpmsg=new DownloadPartMessage();
-               dpmsg.initDownloadPartMessage(partName);
-               UpdaterConnexionHandler.getConnection().send(dpmsg);
-               this._downloadingPart=partName;
+               _log.info("Send download request for " + param1 + " to updater");
+               _loc2_ = new DownloadPartMessage();
+               _loc2_.initDownloadPartMessage(param1);
+               UpdaterConnexionHandler.getConnection().send(_loc2_);
+               this._downloadingPart = param1;
             }
             else
             {
-               if(this._downloadList.indexOf(partName)==-1)
+               if(this._downloadList.indexOf(param1) == -1)
                {
-                  _log.info("A download is running. Add "+partName+" to download queue");
-                  this._downloadList.push(partName);
+                  _log.info("A download is running. Add " + param1 + " to download queue");
+                  this._downloadList.push(param1);
                }
             }
          }
       }
    }
-
 }

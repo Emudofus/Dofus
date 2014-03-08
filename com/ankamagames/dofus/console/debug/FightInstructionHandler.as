@@ -3,73 +3,69 @@ package com.ankamagames.dofus.console.debug
    import com.ankamagames.jerakine.console.ConsoleInstructionHandler;
    import com.ankamagames.jerakine.console.ConsoleHandler;
    import com.ankamagames.dofus.datacenter.spells.Spell;
-
-
+   
    public class FightInstructionHandler extends Object implements ConsoleInstructionHandler
    {
-         
-
+      
       public function FightInstructionHandler() {
          super();
       }
-
-
-
-      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
-         var spell:Spell = null;
-         var spell2:Spell = null;
-         switch(cmd)
+      
+      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
+         var _loc4_:Spell = null;
+         var _loc5_:Spell = null;
+         switch(param2)
          {
             case "setspellscript":
-               if((args.length==2)||(args.length==3))
+               if(param3.length == 2 || param3.length == 3)
                {
-                  spell=Spell.getSpellById(parseInt(args[0]));
-                  if(!spell)
+                  _loc4_ = Spell.getSpellById(parseInt(param3[0]));
+                  if(!_loc4_)
                   {
-                     console.output("Spell "+args[0]+" doesn\'t exist");
+                     param1.output("Spell " + param3[0] + " doesn\'t exist");
                   }
                   else
                   {
-                     spell.scriptId=parseInt(args[1]);
-                     if(args.length==3)
+                     _loc4_.scriptId = parseInt(param3[1]);
+                     if(param3.length == 3)
                      {
-                        spell.scriptIdCritical=parseInt(args[2]);
+                        _loc4_.scriptIdCritical = parseInt(param3[2]);
                      }
                   }
                }
                else
                {
-                  console.output("Param count error : #1 Spell id, #2 script id, #3 script id (critical hit)");
+                  param1.output("Param count error : #1 Spell id, #2 script id, #3 script id (critical hit)");
                }
                break;
             case "setspellscriptparam":
-               if((args.length==2)||(args.length==3))
+               if(param3.length == 2 || param3.length == 3)
                {
-                  spell2=Spell.getSpellById(parseInt(args[0]));
-                  if(!spell2)
+                  _loc5_ = Spell.getSpellById(parseInt(param3[0]));
+                  if(!_loc5_)
                   {
-                     console.output("Spell "+args[0]+" doesn\'t exist");
+                     param1.output("Spell " + param3[0] + " doesn\'t exist");
                   }
                   else
                   {
-                     spell2.scriptParams=args[1];
-                     if(args.length==3)
+                     _loc5_.scriptParams = param3[1];
+                     if(param3.length == 3)
                      {
-                        spell2.scriptParamsCritical=args[2];
+                        _loc5_.scriptParamsCritical = param3[2];
                      }
-                     spell2.useParamCache=false;
+                     _loc5_.useParamCache = false;
                   }
                }
                else
                {
-                  console.output("Param count error : #1 Spell id, #2 script string parametters, #3 script string parameters (critical hit)");
+                  param1.output("Param count error : #1 Spell id, #2 script string parametters, #3 script string parameters (critical hit)");
                }
                break;
          }
       }
-
-      public function getHelp(cmd:String) : String {
-         switch(cmd)
+      
+      public function getHelp(param1:String) : String {
+         switch(param1)
          {
             case "setspellscriptparam":
                return "Change script parametters for given spell";
@@ -79,10 +75,9 @@ package com.ankamagames.dofus.console.debug
                return "Unknown command";
          }
       }
-
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      
+      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
          return [];
       }
    }
-
 }

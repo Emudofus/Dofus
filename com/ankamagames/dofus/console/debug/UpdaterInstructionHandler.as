@@ -6,18 +6,16 @@ package com.ankamagames.dofus.console.debug
    import com.ankamagames.dofus.console.debug.frames.UpdaterDebugFrame;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.network.types.updater.ContentPart;
-
-
+   
    public class UpdaterInstructionHandler extends Object implements ConsoleInstructionHandler
    {
-         
-
+      
       public function UpdaterInstructionHandler() {
          super();
       }
-
-      private static function stateToString(state:int) : String {
-         switch(state)
+      
+      private static function stateToString(param1:int) : String {
+         switch(param1)
          {
             case PartStateEnum.PART_BEING_UPDATER:
                return "PART_BEING_UPDATER";
@@ -29,27 +27,27 @@ package com.ankamagames.dofus.console.debug
                return "(unknow state)";
          }
       }
-
+      
       private var _lastConsole:ConsoleHandler;
-
+      
       private var _updaterDebugFrame:UpdaterDebugFrame;
-
+      
       public function get updaterDebugFrame() : UpdaterDebugFrame {
          if(!this._updaterDebugFrame)
          {
-            this._updaterDebugFrame=Kernel.getWorker().getFrame(UpdaterDebugFrame) as UpdaterDebugFrame;
+            this._updaterDebugFrame = Kernel.getWorker().getFrame(UpdaterDebugFrame) as UpdaterDebugFrame;
             if(!this._updaterDebugFrame)
             {
-               this._updaterDebugFrame=new UpdaterDebugFrame();
+               this._updaterDebugFrame = new UpdaterDebugFrame();
                Kernel.getWorker().addFrame(this._updaterDebugFrame);
             }
          }
          return this._updaterDebugFrame;
       }
-
-      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
-         this._lastConsole=console;
-         switch(cmd)
+      
+      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
+         this._lastConsole = param1;
+         switch(param2)
          {
             case "partdebug":
                break;
@@ -57,47 +55,47 @@ package com.ankamagames.dofus.console.debug
                this.updaterDebugFrame.partListRequest(this.onPartInfo);
                break;
             case "partinfo":
-               if(args.length==1)
+               if(param3.length == 1)
                {
-                  this.updaterDebugFrame.partInfoRequest(args[0],this.onPartInfo);
+                  this.updaterDebugFrame.partInfoRequest(param3[0],this.onPartInfo);
                }
                else
                {
-                  console.output("bad arguments");
+                  param1.output("bad arguments");
                }
                break;
             case "updaterspeed":
-               if(args.length==1)
+               if(param3.length == 1)
                {
-                  this.updaterDebugFrame.setUpdaterSpeedRequest(args[0],this.onGetUpdaterSpeed);
+                  this.updaterDebugFrame.setUpdaterSpeedRequest(param3[0],this.onGetUpdaterSpeed);
                }
                else
                {
-                  if(args.length==0)
+                  if(param3.length == 0)
                   {
                      this.updaterDebugFrame.getUpdaterSpeedRequest(this.onGetUpdaterSpeed);
                   }
                   else
                   {
-                     console.output("bad arguments");
+                     param1.output("bad arguments");
                   }
                }
                break;
             case "downloadpart":
-               if(args.length==1)
+               if(param3.length == 1)
                {
-                  this.updaterDebugFrame.downloadPartRequest(args[0],this.onPartInfo);
+                  this.updaterDebugFrame.downloadPartRequest(param3[0],this.onPartInfo);
                }
                else
                {
-                  console.output("bad arguments");
+                  param1.output("bad arguments");
                }
                break;
          }
       }
-
-      public function getHelp(cmd:String) : String {
-         switch(cmd)
+      
+      public function getHelp(param1:String) : String {
+         switch(param1)
          {
             case "partdebug":
                return "enable client part debugging tools. Must be run before any other part debug command";
@@ -110,25 +108,26 @@ package com.ankamagames.dofus.console.debug
             case "downloadpart":
                return "ask for part download by part name";
             default:
-               return "No help for command \'"+cmd+"\'";
+               return "No help for command \'" + param1 + "\'";
          }
       }
-
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
-         var possibilities:Array = [];
-         if(!0)
+      
+      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+         var _loc4_:Array = [];
+         if(0)
          {
          }
+         return _loc4_;
       }
-
-      private function onGetUpdaterSpeed(speed:int) : void {
-         this._lastConsole.output("updater download speed : "+speed);
+      
+      private function onGetUpdaterSpeed(param1:int) : void {
+         this._lastConsole.output("updater download speed : " + param1);
       }
-
-      private function onPartInfo(part:ContentPart) : void {
-         if(part)
+      
+      private function onPartInfo(param1:ContentPart) : void {
+         if(param1)
          {
-            this._lastConsole.output(part.id+"\t\t\t"+stateToString(part.state));
+            this._lastConsole.output(param1.id + "\t\t\t" + stateToString(param1.state));
          }
          else
          {
@@ -136,5 +135,4 @@ package com.ankamagames.dofus.console.debug
          }
       }
    }
-
 }

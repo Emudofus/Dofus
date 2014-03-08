@@ -20,54 +20,56 @@ package com.ankamagames.jerakine.resources.adapters
    import flash.events.ProgressEvent;
    import flash.events.ErrorEvent;
    import com.ankamagames.jerakine.resources.ResourceErrorCode;
-
-
+   
    public class AbstractLoaderAdapter extends Object
    {
-         
-
+      
       public function AbstractLoaderAdapter() {
          super();
-         MEMORY_LOG[this]=1;
+         MEMORY_LOG[this] = 1;
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AbstractLoaderAdapter));
-
+      
       public static var MEMORY_LOG:Dictionary = new Dictionary(true);
-
+      
       private var _ldr:PoolableLoader;
-
+      
       private var _observer:IResourceObserver;
-
+      
       private var _uri:Uri;
-
+      
       private var _dispatchProgress:Boolean;
-
-      public function loadDirectly(uri:Uri, path:String, observer:IResourceObserver, dispatchProgress:Boolean) : void {
+      
+      public function loadDirectly(param1:Uri, param2:String, param3:IResourceObserver, param4:Boolean) : void {
          if(this._ldr)
          {
             throw new IllegalOperationError("A single adapter can\'t handle two simultaneous loadings.");
          }
          else
          {
-            this._observer=observer;
-            this._uri=uri;
-            this._dispatchProgress=dispatchProgress;
+            this._observer = param3;
+            this._uri = param1;
+            this._dispatchProgress = param4;
             this.prepareLoader();
-            this._ldr.load(new URLRequest(path),uri.loaderContext);
+            this._ldr.load(new URLRequest(param2),param1.loaderContext);
             return;
          }
       }
-
-      public function loadFromData(uri:Uri, data:ByteArray, observer:IResourceObserver, dispatchProgress:Boolean) : void {
+      
+      public function loadFromData(param1:Uri, param2:ByteArray, param3:IResourceObserver, param4:Boolean) : void {
+         var uri:Uri = param1;
+         var data:ByteArray = param2;
+         var observer:IResourceObserver = param3;
+         var dispatchProgress:Boolean = param4;
          if(this._ldr)
          {
             throw new IllegalOperationError("A single adapter can\'t handle two simultaneous loadings.");
          }
          else
          {
-            this._observer=observer;
-            this._uri=uri;
+            this._observer = observer;
+            this._uri = uri;
             this.prepareLoader();
             try
             {
@@ -77,36 +79,36 @@ package com.ankamagames.jerakine.resources.adapters
                }
                else
                {
-                  this._uri.loaderContext=new LoaderContext();
+                  this._uri.loaderContext = new LoaderContext();
                   AirScanner.allowByteCodeExecution(this._uri.loaderContext,true);
                }
                this._ldr.loadBytes(data,this._uri.loaderContext);
             }
             catch(e:SecurityError)
             {
-               trace("Erreur de sécurité en chargeant le fichier "+uri+" : \n"+e.getStackTrace());
+               trace("Erreur de sÃ©curitÃ© en chargeant le fichier " + uri + " : \n" + e.getStackTrace());
                throw e;
             }
             return;
          }
       }
-
+      
       public function free() : void {
          this.releaseLoader();
-         this._observer=null;
-         this._uri=null;
+         this._observer = null;
+         this._uri = null;
       }
-
-      protected function getResource(ldr:LoaderInfo) : * {
+      
+      protected function getResource(param1:LoaderInfo) : * {
          throw new AbstractMethodCallError("This method should be overrided.");
       }
-
+      
       public function getResourceType() : uint {
          throw new AbstractMethodCallError("This method should be overrided.");
       }
-
+      
       private function prepareLoader() : void {
-         this._ldr=PoolsManager.getInstance().getLoadersPool().checkOut() as PoolableLoader;
+         this._ldr = PoolsManager.getInstance().getLoadersPool().checkOut() as PoolableLoader;
          this._ldr.contentLoaderInfo.addEventListener(Event.COMPLETE,this.onInit);
          this._ldr.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,this.onError);
          if(this._dispatchProgress)
@@ -114,7 +116,7 @@ package com.ankamagames.jerakine.resources.adapters
             this._ldr.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,this.onProgress);
          }
       }
-
+      
       private function releaseLoader() : void {
          if(this._ldr)
          {
@@ -128,30 +130,32 @@ package com.ankamagames.jerakine.resources.adapters
             this._ldr.contentLoaderInfo.removeEventListener(Event.INIT,this.onInit);
             this._ldr.contentLoaderInfo.removeEventListener(Event.COMPLETE,this.onInit);
             this._ldr.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR,this.onError);
-            this._ldr.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS,this.onProgress);
+            if(this._dispatchProgress)
+            {
+               this._ldr.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS,this.onProgress);
+            }
             PoolsManager.getInstance().getLoadersPool().checkIn(this._ldr);
          }
-         this._ldr=null;
+         this._ldr = null;
       }
-
-      protected function init(ldr:LoaderInfo) : void {
-         var res:* = this.getResource(LoaderInfo(ldr));
+      
+      protected function init(param1:LoaderInfo) : void {
+         var _loc2_:* = this.getResource(LoaderInfo(param1));
          this.releaseLoader();
-         this._observer.onLoaded(this._uri,this.getResourceType(),res);
+         this._observer.onLoaded(this._uri,this.getResourceType(),_loc2_);
       }
-
-      protected function onInit(e:Event) : void {
-         this.init(LoaderInfo(e.target));
+      
+      protected function onInit(param1:Event) : void {
+         this.init(LoaderInfo(param1.target));
       }
-
-      protected function onError(ee:ErrorEvent) : void {
+      
+      protected function onError(param1:ErrorEvent) : void {
          this.releaseLoader();
-         this._observer.onFailed(this._uri,ee.text,ResourceErrorCode.RESOURCE_NOT_FOUND);
+         this._observer.onFailed(this._uri,param1.text,ResourceErrorCode.RESOURCE_NOT_FOUND);
       }
-
-      protected function onProgress(pe:ProgressEvent) : void {
-         this._observer.onProgress(this._uri,pe.bytesLoaded,pe.bytesTotal);
+      
+      protected function onProgress(param1:ProgressEvent) : void {
+         this._observer.onProgress(this._uri,param1.bytesLoaded,param1.bytesTotal);
       }
    }
-
 }

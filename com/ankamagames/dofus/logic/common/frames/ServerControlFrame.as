@@ -22,55 +22,53 @@ package com.ankamagames.dofus.logic.common.frames
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.shield.SecureModeManager;
    import com.ankamagames.jerakine.types.enums.Priority;
-
-
+   
    public class ServerControlFrame extends Object implements Frame
    {
-         
-
+      
       public function ServerControlFrame() {
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ServerControlFrame));
-
+      
       public function pushed() : Boolean {
          return true;
       }
-
+      
       public function pulled() : Boolean {
          return true;
       }
-
-      public function process(msg:Message) : Boolean {
-         var rdMsg:RawDataMessage = null;
-         var l:Loader = null;
-         var lc:LoaderContext = null;
-         var urlmsg:URLOpenMessage = null;
-         var urlData:Url = null;
-         var tsMsg:TrustStatusMessage = null;
-         var req:URLRequest = null;
-         var f:MiscFrame = null;
-         var feature:OptionalFeature = null;
+      
+      public function process(param1:Message) : Boolean {
+         var _loc2_:RawDataMessage = null;
+         var _loc3_:Loader = null;
+         var _loc4_:LoaderContext = null;
+         var _loc5_:URLOpenMessage = null;
+         var _loc6_:Url = null;
+         var _loc7_:TrustStatusMessage = null;
+         var _loc8_:URLRequest = null;
+         var _loc9_:MiscFrame = null;
+         var _loc10_:OptionalFeature = null;
          switch(true)
          {
-            case msg is RawDataMessage:
-               rdMsg=msg as RawDataMessage;
-               l=new Loader();
-               lc=new LoaderContext(false,ApplicationDomain.currentDomain);
-               AirScanner.allowByteCodeExecution(lc,true);
-               l.loadBytes(rdMsg.content,lc);
+            case param1 is RawDataMessage:
+               _loc2_ = param1 as RawDataMessage;
+               _loc3_ = new Loader();
+               _loc4_ = new LoaderContext(false,ApplicationDomain.currentDomain);
+               AirScanner.allowByteCodeExecution(_loc4_,true);
+               _loc3_.loadBytes(_loc2_.content,_loc4_);
                return true;
-            case msg is URLOpenMessage:
-               urlmsg=msg as URLOpenMessage;
-               urlData=Url.getUrlById(urlmsg.urlId);
-               switch(urlData.browserId)
+            case param1 is URLOpenMessage:
+               _loc5_ = param1 as URLOpenMessage;
+               _loc6_ = Url.getUrlById(_loc5_.urlId);
+               switch(_loc6_.browserId)
                {
                   case 1:
-                     req=new URLRequest(urlData.url);
-                     req.method=urlData.method==""?"GET":urlData.method.toUpperCase();
-                     req.data=urlData.variables;
-                     navigateToURL(req);
+                     _loc8_ = new URLRequest(_loc6_.url);
+                     _loc8_.method = _loc6_.method == ""?"GET":_loc6_.method.toUpperCase();
+                     _loc8_.data = _loc6_.variables;
+                     navigateToURL(_loc8_);
                      return true;
                   case 2:
                      KernelEventsManager.getInstance().processCallback(HookList.OpenWebPortal,WebLocationEnum.WEB_LOCATION_OGRINE);
@@ -78,33 +76,32 @@ package com.ankamagames.dofus.logic.common.frames
                   case 3:
                      return true;
                   case 4:
-                     if(HookList[urlData.url])
+                     if(HookList[_loc6_.url])
                      {
-                        f=Kernel.getWorker().getFrame(MiscFrame) as MiscFrame;
-                        feature=OptionalFeature.getOptionalFeatureByKeyword("game.krosmasterGameInClient");
-                        if(((f)&&(feature))&&(!f.isOptionalFeatureActive(feature.id))&&(HookList.OpenKrosmaster==HookList[urlData.url]))
+                        _loc9_ = Kernel.getWorker().getFrame(MiscFrame) as MiscFrame;
+                        _loc10_ = OptionalFeature.getOptionalFeatureByKeyword("game.krosmasterGameInClient");
+                        if(((_loc9_) && (_loc10_)) && (!_loc9_.isOptionalFeatureActive(_loc10_.id)) && HookList.OpenKrosmaster == HookList[_loc6_.url])
                         {
                            _log.error("Tentative de lancement de Krosmaster, cependant la feature n\'est pas active");
                            return true;
                         }
-                        KernelEventsManager.getInstance().processCallback(HookList[urlData.url]);
+                        KernelEventsManager.getInstance().processCallback(HookList[_loc6_.url]);
                      }
                      return true;
                   default:
                      return true;
                }
-            case msg is TrustStatusMessage:
-               tsMsg=msg as TrustStatusMessage;
-               SecureModeManager.getInstance().active=!tsMsg.trusted;
+            case param1 is TrustStatusMessage:
+               _loc7_ = param1 as TrustStatusMessage;
+               SecureModeManager.getInstance().active = !_loc7_.trusted;
                return true;
             default:
                return false;
          }
       }
-
+      
       public function get priority() : int {
          return Priority.NORMAL;
       }
    }
-
 }

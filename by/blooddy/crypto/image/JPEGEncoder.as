@@ -3,16 +3,13 @@ package by.blooddy.crypto.image
    import flash.utils.ByteArray;
    import flash.display.BitmapData;
    import flash.system.ApplicationDomain;
-
-
+   
    public class JPEGEncoder extends Object
    {
-         
-
+      
       public function JPEGEncoder() {
-         
       }
-
+      
       public static function encode(param1:BitmapData, param2:uint=60) : ByteArray {
          var _loc7_:uint = 0;
          var _loc9_:uint = 0;
@@ -58,11 +55,11 @@ package by.blooddy.crypto.image
          var _loc55_:* = 0;
          var _loc56_:* = 0;
          var _loc57_:* = 0;
-         if(param1==(null))
+         if(param1 == (null))
          {
             Error.throwError(TypeError,2007,"image");
          }
-         if(param2>100)
+         if(param2 > 100)
          {
             Error.throwError(RangeError,2006,"quality");
          }
@@ -70,1210 +67,1282 @@ package by.blooddy.crypto.image
          var _loc4_:uint = param1.width;
          var _loc5_:uint = param1.height;
          var _loc6_:ByteArray = new ByteArray();
-         _loc6_.position=1792;
+         _loc6_.position = 1792;
          _loc6_.writeBytes(JPEGTable.getTable(param2));
-         _loc6_.length=_loc6_.length+(680+_loc4_*_loc5_*3);
-         if(_loc6_.length<ApplicationDomain.MIN_DOMAIN_MEMORY_LENGTH)
+         _loc6_.length = _loc6_.length + (680 + _loc4_ * _loc5_ * 3);
+         if(_loc6_.length < ApplicationDomain.MIN_DOMAIN_MEMORY_LENGTH)
          {
-            _loc6_.length=ApplicationDomain.MIN_DOMAIN_MEMORY_LENGTH;
+            _loc6_.length = ApplicationDomain.MIN_DOMAIN_MEMORY_LENGTH;
          }
-         ApplicationDomain.currentDomain.domainMemory=_loc6_;
-         _loc7_=201611;
-         _loc7_=201629;
-         _loc6_.position=_loc7_+36;
+         ApplicationDomain.currentDomain.domainMemory = _loc6_;
+         _loc7_ = 201611;
+         _loc7_ = 201629;
+         _loc6_.position = _loc7_ + 36;
          _loc6_.writeMultiByte("by.blooddy.crypto.image.JPEGEncoder","x-ascii");
-         _loc7_=201701;
-         _loc6_.position=_loc7_+4;
+         _loc7_ = 201701;
+         _loc6_.position = _loc7_ + 4;
          _loc6_.writeBytes(_loc6_,1792,130);
-         _loc7_=201835;
+         _loc7_ = 201835;
          var _loc8_:uint = param1.width;
-         _loc9_=param1.height;
-         _loc7_=201854;
-         _loc6_.position=_loc7_+4;
+         _loc9_ = param1.height;
+         _loc7_ = 201854;
+         _loc6_.position = _loc7_ + 4;
          _loc6_.writeBytes(_loc6_,3010,416);
-         _loc7_=202274;
-         var _loc10_:int = 202288;
-         var _loc11_:int = 7;
-         var _loc12_:int = 0;
-         var _loc13_:int = 0;
-         var _loc14_:int = 0;
-         var _loc15_:int = 0;
-         _loc8_=0;
-         loop0:
+         _loc7_ = 202274;
+         var _loc10_:* = 202288;
+         var _loc11_:* = 7;
+         var _loc12_:* = 0;
+         var _loc13_:* = 0;
+         var _loc14_:* = 0;
+         var _loc15_:* = 0;
+         _loc8_ = 0;
          do
          {
-            _loc7_=0;
-            loop1:
-            do
-            {
-               _loc9_=0;
-               _loc16_=_loc7_+8;
-               _loc17_=_loc8_+8;
-               loop2:
-               while(true)
+               _loc7_ = 0;
+               do
                {
-                  do
-                  {
-                     _loc18_=param1.getPixel(_loc7_,_loc8_);
-                     _loc19_=_loc18_>>>16;
-                     _loc20_=_loc18_>>8&255;
-                     _loc21_=_loc18_&255;
-                     _loc9_=_loc9_+8;
-                     _loc7_++;
-                     if(_loc7_>=_loc16_)
+                     _loc9_ = 0;
+                     _loc16_ = _loc7_ + 8;
+                     _loc17_ = _loc8_ + 8;
+                     do
                      {
-                        _loc7_=_loc7_-8;
-                        _loc8_++;
-                        if(_loc8_>=_loc17_)
-                        {
-                           _loc8_=_loc8_-8;
-                           _loc9_=256;
-                           _loc22_=_loc13_;
-                           _loc16_=3426;
-                           _loc17_=3462;
-                           _loc18_=0;
                            do
                            {
-                              _loc23_=_loc9_+_loc18_;
-                              _loc24_=_loc9_+_loc18_+8;
-                              _loc25_=_loc9_+_loc18_+16;
-                              _loc26_=_loc9_+_loc18_+24;
-                              _loc27_=_loc9_+_loc18_+32;
-                              _loc28_=_loc9_+_loc18_+40;
-                              _loc29_=_loc9_+_loc18_+48;
-                              _loc30_=_loc9_+_loc18_+56;
-                              _loc31_=_loc23_+_loc30_;
-                              _loc38_=_loc23_-_loc30_;
-                              _loc32_=_loc24_+_loc29_;
-                              _loc37_=_loc24_-_loc29_;
-                              _loc33_=_loc25_+_loc28_;
-                              _loc36_=_loc25_-_loc28_;
-                              _loc34_=_loc26_+_loc27_;
-                              _loc35_=_loc26_-_loc27_;
-                              _loc39_=_loc31_+_loc34_;
-                              _loc42_=_loc31_-_loc34_;
-                              _loc40_=_loc32_+_loc33_;
-                              _loc41_=_loc32_-_loc33_;
-                              _loc43_=(_loc41_+_loc42_)*0.707106781;
-                              _loc39_=_loc35_+_loc36_;
-                              _loc40_=_loc36_+_loc37_;
-                              _loc41_=_loc37_+_loc38_;
-                              _loc47_=(_loc39_-_loc41_)*0.382683433;
-                              _loc44_=0.5411961*_loc39_+_loc47_;
-                              _loc46_=1.306562965*_loc41_+_loc47_;
-                              _loc45_=_loc40_*0.707106781;
-                              _loc48_=_loc38_+_loc45_;
-                              _loc49_=_loc38_-_loc45_;
-                              _loc18_=_loc18_+64;
-                              if(_loc18_>=512)
+                                 _loc18_ = param1.getPixel(_loc7_,_loc8_);
+                                 _loc19_ = _loc18_ >>> 16;
+                                 _loc20_ = _loc18_ >> 8 & 255;
+                                 _loc21_ = _loc18_ & 255;
+                                 _loc9_ = _loc9_ + 8;
+                                 _loc7_++;
+                              }while(_loc7_ < _loc16_);
+                              
+                              _loc7_ = _loc7_ - 8;
+                              _loc8_++;
+                           }while(_loc8_ < _loc17_);
+                           
+                           _loc8_ = _loc8_ - 8;
+                           _loc9_ = 256;
+                           _loc22_ = _loc13_;
+                           _loc16_ = 3426;
+                           _loc17_ = 3462;
+                           _loc18_ = 0;
+                           do
+                           {
+                                 _loc23_ = op_lf64(_loc9_ + _loc18_) /*Alchemy*/;
+                                 _loc24_ = op_lf64(_loc9_ + _loc18_ + 8) /*Alchemy*/;
+                                 _loc25_ = op_lf64(_loc9_ + _loc18_ + 16) /*Alchemy*/;
+                                 _loc26_ = op_lf64(_loc9_ + _loc18_ + 24) /*Alchemy*/;
+                                 _loc27_ = op_lf64(_loc9_ + _loc18_ + 32) /*Alchemy*/;
+                                 _loc28_ = op_lf64(_loc9_ + _loc18_ + 40) /*Alchemy*/;
+                                 _loc29_ = op_lf64(_loc9_ + _loc18_ + 48) /*Alchemy*/;
+                                 _loc30_ = op_lf64(_loc9_ + _loc18_ + 56) /*Alchemy*/;
+                                 _loc31_ = _loc23_ + _loc30_;
+                                 _loc38_ = _loc23_ - _loc30_;
+                                 _loc32_ = _loc24_ + _loc29_;
+                                 _loc37_ = _loc24_ - _loc29_;
+                                 _loc33_ = _loc25_ + _loc28_;
+                                 _loc36_ = _loc25_ - _loc28_;
+                                 _loc34_ = _loc26_ + _loc27_;
+                                 _loc35_ = _loc26_ - _loc27_;
+                                 _loc39_ = _loc31_ + _loc34_;
+                                 _loc42_ = _loc31_ - _loc34_;
+                                 _loc40_ = _loc32_ + _loc33_;
+                                 _loc41_ = _loc32_ - _loc33_;
+                                 _loc43_ = (_loc41_ + _loc42_) * 0.707106781;
+                                 _loc39_ = _loc35_ + _loc36_;
+                                 _loc40_ = _loc36_ + _loc37_;
+                                 _loc41_ = _loc37_ + _loc38_;
+                                 _loc47_ = (_loc39_ - _loc41_) * 0.382683433;
+                                 _loc44_ = 0.5411961 * _loc39_ + _loc47_;
+                                 _loc46_ = 1.306562965 * _loc41_ + _loc47_;
+                                 _loc45_ = _loc40_ * 0.707106781;
+                                 _loc48_ = _loc38_ + _loc45_;
+                                 _loc49_ = _loc38_ - _loc45_;
+                                 _loc18_ = _loc18_ + 64;
+                              }while(_loc18_ < 512);
+                              
+                              _loc18_ = 0;
+                              do
                               {
-                                 _loc18_=0;
+                                    _loc23_ = op_lf64(_loc9_ + _loc18_) /*Alchemy*/;
+                                    _loc24_ = op_lf64(_loc9_ + _loc18_ + 64) /*Alchemy*/;
+                                    _loc25_ = op_lf64(_loc9_ + _loc18_ + 128) /*Alchemy*/;
+                                    _loc26_ = op_lf64(_loc9_ + _loc18_ + 192) /*Alchemy*/;
+                                    _loc27_ = op_lf64(_loc9_ + _loc18_ + 256) /*Alchemy*/;
+                                    _loc28_ = op_lf64(_loc9_ + _loc18_ + 320) /*Alchemy*/;
+                                    _loc29_ = op_lf64(_loc9_ + _loc18_ + 384) /*Alchemy*/;
+                                    _loc30_ = op_lf64(_loc9_ + _loc18_ + 448) /*Alchemy*/;
+                                    _loc31_ = _loc23_ + _loc30_;
+                                    _loc38_ = _loc23_ - _loc30_;
+                                    _loc32_ = _loc24_ + _loc29_;
+                                    _loc37_ = _loc24_ - _loc29_;
+                                    _loc33_ = _loc25_ + _loc28_;
+                                    _loc36_ = _loc25_ - _loc28_;
+                                    _loc34_ = _loc26_ + _loc27_;
+                                    _loc35_ = _loc26_ - _loc27_;
+                                    _loc39_ = _loc31_ + _loc34_;
+                                    _loc42_ = _loc31_ - _loc34_;
+                                    _loc40_ = _loc32_ + _loc33_;
+                                    _loc41_ = _loc32_ - _loc33_;
+                                    _loc43_ = (_loc41_ + _loc42_) * 0.707106781;
+                                    _loc39_ = _loc35_ + _loc36_;
+                                    _loc40_ = _loc36_ + _loc37_;
+                                    _loc41_ = _loc37_ + _loc38_;
+                                    _loc47_ = (_loc39_ - _loc41_) * 0.382683433;
+                                    _loc44_ = 0.5411961 * _loc39_ + _loc47_;
+                                    _loc46_ = 1.306562965 * _loc41_ + _loc47_;
+                                    _loc45_ = _loc40_ * 0.707106781;
+                                    _loc48_ = _loc38_ + _loc45_;
+                                    _loc49_ = _loc38_ - _loc45_;
+                                    _loc18_ = _loc18_ + 8;
+                                 }while(_loc18_ < 64);
+                                 
+                                 _loc19_ = 0;
                                  do
                                  {
-                                    _loc23_=_loc9_+_loc18_;
-                                    _loc24_=_loc9_+_loc18_+64;
-                                    _loc25_=_loc9_+_loc18_+128;
-                                    _loc26_=_loc9_+_loc18_+192;
-                                    _loc27_=_loc9_+_loc18_+256;
-                                    _loc28_=_loc9_+_loc18_+320;
-                                    _loc29_=_loc9_+_loc18_+384;
-                                    _loc30_=_loc9_+_loc18_+448;
-                                    _loc31_=_loc23_+_loc30_;
-                                    _loc38_=_loc23_-_loc30_;
-                                    _loc32_=_loc24_+_loc29_;
-                                    _loc37_=_loc24_-_loc29_;
-                                    _loc33_=_loc25_+_loc28_;
-                                    _loc36_=_loc25_-_loc28_;
-                                    _loc34_=_loc26_+_loc27_;
-                                    _loc35_=_loc26_-_loc27_;
-                                    _loc39_=_loc31_+_loc34_;
-                                    _loc42_=_loc31_-_loc34_;
-                                    _loc40_=_loc32_+_loc33_;
-                                    _loc41_=_loc32_-_loc33_;
-                                    _loc43_=(_loc41_+_loc42_)*0.707106781;
-                                    _loc39_=_loc35_+_loc36_;
-                                    _loc40_=_loc36_+_loc37_;
-                                    _loc41_=_loc37_+_loc38_;
-                                    _loc47_=(_loc39_-_loc41_)*0.382683433;
-                                    _loc44_=0.5411961*_loc39_+_loc47_;
-                                    _loc46_=1.306562965*_loc41_+_loc47_;
-                                    _loc45_=_loc40_*0.707106781;
-                                    _loc48_=_loc38_+_loc45_;
-                                    _loc49_=_loc38_-_loc45_;
-                                    _loc18_=_loc18_+8;
-                                    if(_loc18_>=64)
+                                       _loc50_ = op_lf64(_loc9_ + (_loc19_ << 3)) /*Alchemy*/ * op_lf64(1922 + (_loc19_ << 3)) /*Alchemy*/;
+                                       _loc19_++;
+                                    }while(_loc19_ < 64);
+                                    
+                                    _loc51_ = op_li32(0) /*Alchemy*/;
+                                    _loc52_ = _loc51_ - _loc22_;
+                                    _loc22_ = _loc51_;
+                                    if(_loc52_ == 0)
                                     {
-                                       _loc19_=0;
-                                       do
+                                       _loc53_ = op_li8(_loc16_) /*Alchemy*/;
+                                       while(true)
                                        {
-                                          _loc50_=(_loc9_+(_loc19_<<3))*(1922+(_loc19_<<3));
-                                          _loc19_++;
-                                          if(_loc19_>=64)
+                                          _loc53_--;
+                                          if(_loc53_ < 0)
                                           {
-                                             _loc51_=0;
-                                             _loc52_=_loc51_-_loc22_;
-                                             _loc22_=_loc51_;
-                                             if(_loc52_==0)
+                                             break;
+                                          }
+                                          if((op_li16(_loc16_ + 1) /*Alchemy*/ & 1 << _loc53_) != 0)
+                                          {
+                                             _loc12_ = _loc12_ | 1 << _loc11_;
+                                          }
+                                          _loc11_--;
+                                          if(_loc11_ < 0)
+                                          {
+                                             if(_loc12_ == 255)
                                              {
-                                                _loc53_=_loc16_;
-                                                do
-                                                {
-                                                   _loc53_--;
-                                                   if(_loc53_<0)
-                                                   {
-                                                   }
-                                                   else
-                                                   {
-                                                      if((_loc16_+1&1<<_loc53_)!=0)
-                                                      {
-                                                         _loc12_=_loc12_|1<<_loc11_;
-                                                      }
-                                                      _loc11_--;
-                                                      if(_loc11_<0)
-                                                      {
-                                                         if(_loc12_==255)
-                                                         {
-                                                            _loc10_=_loc10_+2;
-                                                         }
-                                                         else
-                                                         {
-                                                            _loc10_++;
-                                                         }
-                                                         _loc11_=7;
-                                                         _loc12_=0;
-                                                      }
-                                                      continue;
-                                                   }
-                                                }
-                                                while(2946+_loc19_<<2);
+                                                _loc10_ = _loc10_ + 2;
                                              }
                                              else
                                              {
-                                                _loc18_=(32767+_loc52_)*3;
-                                                _loc19_=_loc16_+(5004+_loc18_)*3;
-                                                _loc53_=_loc19_;
-                                                do
-                                                {
-                                                   _loc53_--;
-                                                   if(_loc53_<0)
-                                                   {
-                                                      _loc19_=5004+_loc18_;
-                                                      _loc53_=_loc19_;
-                                                      do
-                                                      {
-                                                         _loc53_--;
-                                                         if(_loc53_<0)
-                                                         {
-                                                         }
-                                                         else
-                                                         {
-                                                            if((_loc19_+1&1<<_loc53_)!=0)
-                                                            {
-                                                               _loc12_=_loc12_|1<<_loc11_;
-                                                            }
-                                                            _loc11_--;
-                                                            if(_loc11_<0)
-                                                            {
-                                                               if(_loc12_==255)
-                                                               {
-                                                                  _loc10_=_loc10_+2;
-                                                               }
-                                                               else
-                                                               {
-                                                                  _loc10_++;
-                                                               }
-                                                               _loc11_=7;
-                                                               _loc12_=0;
-                                                            }
-                                                            continue;
-                                                         }
-                                                      }
-                                                      while(2946+_loc19_<<2);
-                                                   }
-                                                   else
-                                                   {
-                                                      if((_loc19_+1&1<<_loc53_)!=0)
-                                                      {
-                                                         _loc12_=_loc12_|1<<_loc11_;
-                                                      }
-                                                      _loc11_--;
-                                                      if(_loc11_<0)
-                                                      {
-                                                         if(_loc12_==255)
-                                                         {
-                                                            _loc10_=_loc10_+2;
-                                                         }
-                                                         else
-                                                         {
-                                                            _loc10_++;
-                                                         }
-                                                         _loc11_=7;
-                                                         _loc12_=0;
-                                                      }
-                                                      continue;
-                                                   }
-                                                }
-                                                while(2946+_loc19_<<2);
+                                                _loc10_++;
                                              }
-                                             _loc19_=63;
-                                             if(_loc19_>0)
+                                             if(_loc12_ == 255)
                                              {
+                                                _loc11_ = 7;
+                                                _loc12_ = 0;
                                              }
-                                             if(_loc19_!=0)
+                                             else
                                              {
-                                                _loc20_=1;
-                                                loop10:
-                                                while(_loc20_<=_loc19_)
-                                                {
-                                                   _loc54_=_loc20_;
-                                                   if(_loc20_<=_loc19_)
-                                                   {
-                                                   }
-                                                   _loc55_=_loc20_-_loc54_;
-                                                   if(_loc55_>=16)
-                                                   {
-                                                      _loc53_=_loc55_>>4;
-                                                      _loc56_=1;
-                                                      loop11:
-                                                      while(_loc56_<=_loc53_)
-                                                      {
-                                                         _loc21_=_loc17_+720;
-                                                         _loc57_=_loc21_;
-                                                         do
-                                                         {
-                                                            _loc57_--;
-                                                            if(_loc57_<0)
-                                                            {
-                                                               _loc56_++;
-                                                               continue loop11;
-                                                            }
-                                                            if((_loc21_+1&1<<_loc57_)!=0)
-                                                            {
-                                                               _loc12_=_loc12_|1<<_loc11_;
-                                                            }
-                                                            _loc11_--;
-                                                            if(_loc11_<0)
-                                                            {
-                                                               if(_loc12_==255)
-                                                               {
-                                                                  _loc10_=_loc10_+2;
-                                                               }
-                                                               else
-                                                               {
-                                                                  _loc10_++;
-                                                               }
-                                                               _loc11_=7;
-                                                               _loc12_=0;
-                                                            }
-                                                         }
-                                                         while(2946+_loc19_<<2);
-                                                      }
-                                                      _loc55_=_loc55_&15;
-                                                   }
-                                                   _loc18_=(32767+(_loc20_<<2))*3;
-                                                   _loc21_=_loc17_+(_loc55_<<4)*3+(5004+_loc18_)*3;
-                                                   _loc57_=_loc21_;
-                                                   do
-                                                   {
-                                                      _loc57_--;
-                                                      if(_loc57_<0)
-                                                      {
-                                                         _loc21_=5004+_loc18_;
-                                                         _loc57_=_loc21_;
-                                                         do
-                                                         {
-                                                            _loc57_--;
-                                                            if(_loc57_<0)
-                                                            {
-                                                               _loc20_++;
-                                                               continue loop10;
-                                                            }
-                                                            if((_loc21_+1&1<<_loc57_)!=0)
-                                                            {
-                                                               _loc12_=_loc12_|1<<_loc11_;
-                                                            }
-                                                            _loc11_--;
-                                                            if(_loc11_<0)
-                                                            {
-                                                               if(_loc12_==255)
-                                                               {
-                                                                  _loc10_=_loc10_+2;
-                                                               }
-                                                               else
-                                                               {
-                                                                  _loc10_++;
-                                                               }
-                                                               _loc11_=7;
-                                                               _loc12_=0;
-                                                            }
-                                                         }
-                                                         while(2946+_loc19_<<2);
-                                                      }
-                                                      else
-                                                      {
-                                                         if((_loc21_+1&1<<_loc57_)!=0)
-                                                         {
-                                                            _loc12_=_loc12_|1<<_loc11_;
-                                                         }
-                                                         _loc11_--;
-                                                         if(_loc11_<0)
-                                                         {
-                                                            if(_loc12_==255)
-                                                            {
-                                                               _loc10_=_loc10_+2;
-                                                            }
-                                                            else
-                                                            {
-                                                               _loc10_++;
-                                                            }
-                                                            _loc11_=7;
-                                                            _loc12_=0;
-                                                         }
-                                                         continue;
-                                                      }
-                                                   }
-                                                   while(2946+_loc19_<<2);
-                                                }
+                                                _loc11_ = 7;
+                                                _loc12_ = 0;
                                              }
-                                             if(_loc19_!=63)
-                                             {
-                                                _loc53_=_loc17_;
-                                                do
-                                                {
-                                                   _loc53_--;
-                                                   if(_loc53_<0)
-                                                   {
-                                                   }
-                                                   else
-                                                   {
-                                                      if((_loc17_+1&1<<_loc53_)!=0)
-                                                      {
-                                                         _loc12_=_loc12_|1<<_loc11_;
-                                                      }
-                                                      _loc11_--;
-                                                      if(_loc11_<0)
-                                                      {
-                                                         if(_loc12_==255)
-                                                         {
-                                                            _loc10_=_loc10_+2;
-                                                         }
-                                                         else
-                                                         {
-                                                            _loc10_++;
-                                                         }
-                                                         _loc11_=7;
-                                                         _loc12_=0;
-                                                      }
-                                                      continue;
-                                                   }
-                                                }
-                                                while(2946+_loc19_<<2);
-                                             }
-                                             _loc13_=_loc22_;
-                                             _loc9_=768;
-                                             _loc22_=_loc14_;
-                                             _loc16_=4215;
-                                             _loc17_=4251;
-                                             _loc18_=0;
-                                             do
-                                             {
-                                                _loc23_=_loc9_+_loc18_;
-                                                _loc24_=_loc9_+_loc18_+8;
-                                                _loc25_=_loc9_+_loc18_+16;
-                                                _loc26_=_loc9_+_loc18_+24;
-                                                _loc27_=_loc9_+_loc18_+32;
-                                                _loc28_=_loc9_+_loc18_+40;
-                                                _loc29_=_loc9_+_loc18_+48;
-                                                _loc30_=_loc9_+_loc18_+56;
-                                                _loc31_=_loc23_+_loc30_;
-                                                _loc38_=_loc23_-_loc30_;
-                                                _loc32_=_loc24_+_loc29_;
-                                                _loc37_=_loc24_-_loc29_;
-                                                _loc33_=_loc25_+_loc28_;
-                                                _loc36_=_loc25_-_loc28_;
-                                                _loc34_=_loc26_+_loc27_;
-                                                _loc35_=_loc26_-_loc27_;
-                                                _loc39_=_loc31_+_loc34_;
-                                                _loc42_=_loc31_-_loc34_;
-                                                _loc40_=_loc32_+_loc33_;
-                                                _loc41_=_loc32_-_loc33_;
-                                                _loc43_=(_loc41_+_loc42_)*0.707106781;
-                                                _loc39_=_loc35_+_loc36_;
-                                                _loc40_=_loc36_+_loc37_;
-                                                _loc41_=_loc37_+_loc38_;
-                                                _loc47_=(_loc39_-_loc41_)*0.382683433;
-                                                _loc44_=0.5411961*_loc39_+_loc47_;
-                                                _loc46_=1.306562965*_loc41_+_loc47_;
-                                                _loc45_=_loc40_*0.707106781;
-                                                _loc48_=_loc38_+_loc45_;
-                                                _loc49_=_loc38_-_loc45_;
-                                                _loc18_=_loc18_+64;
-                                                if(_loc18_>=512)
-                                                {
-                                                   _loc18_=0;
-                                                   do
-                                                   {
-                                                      _loc23_=_loc9_+_loc18_;
-                                                      _loc24_=_loc9_+_loc18_+64;
-                                                      _loc25_=_loc9_+_loc18_+128;
-                                                      _loc26_=_loc9_+_loc18_+192;
-                                                      _loc27_=_loc9_+_loc18_+256;
-                                                      _loc28_=_loc9_+_loc18_+320;
-                                                      _loc29_=_loc9_+_loc18_+384;
-                                                      _loc30_=_loc9_+_loc18_+448;
-                                                      _loc31_=_loc23_+_loc30_;
-                                                      _loc38_=_loc23_-_loc30_;
-                                                      _loc32_=_loc24_+_loc29_;
-                                                      _loc37_=_loc24_-_loc29_;
-                                                      _loc33_=_loc25_+_loc28_;
-                                                      _loc36_=_loc25_-_loc28_;
-                                                      _loc34_=_loc26_+_loc27_;
-                                                      _loc35_=_loc26_-_loc27_;
-                                                      _loc39_=_loc31_+_loc34_;
-                                                      _loc42_=_loc31_-_loc34_;
-                                                      _loc40_=_loc32_+_loc33_;
-                                                      _loc41_=_loc32_-_loc33_;
-                                                      _loc43_=(_loc41_+_loc42_)*0.707106781;
-                                                      _loc39_=_loc35_+_loc36_;
-                                                      _loc40_=_loc36_+_loc37_;
-                                                      _loc41_=_loc37_+_loc38_;
-                                                      _loc47_=(_loc39_-_loc41_)*0.382683433;
-                                                      _loc44_=0.5411961*_loc39_+_loc47_;
-                                                      _loc46_=1.306562965*_loc41_+_loc47_;
-                                                      _loc45_=_loc40_*0.707106781;
-                                                      _loc48_=_loc38_+_loc45_;
-                                                      _loc49_=_loc38_-_loc45_;
-                                                      _loc18_=_loc18_+8;
-                                                      if(_loc18_>=64)
-                                                      {
-                                                         _loc19_=0;
-                                                         do
-                                                         {
-                                                            _loc50_=(_loc9_+(_loc19_<<3))*(2434+(_loc19_<<3));
-                                                            _loc19_++;
-                                                            if(_loc19_>=64)
-                                                            {
-                                                               _loc51_=0;
-                                                               _loc52_=_loc51_-_loc22_;
-                                                               _loc22_=_loc51_;
-                                                               if(_loc52_==0)
-                                                               {
-                                                                  _loc53_=_loc16_;
-                                                                  do
-                                                                  {
-                                                                     _loc53_--;
-                                                                     if(_loc53_<0)
-                                                                     {
-                                                                     }
-                                                                     else
-                                                                     {
-                                                                        if((_loc16_+1&1<<_loc53_)!=0)
-                                                                        {
-                                                                           _loc12_=_loc12_|1<<_loc11_;
-                                                                        }
-                                                                        _loc11_--;
-                                                                        if(_loc11_<0)
-                                                                        {
-                                                                           if(_loc12_==255)
-                                                                           {
-                                                                              _loc10_=_loc10_+2;
-                                                                           }
-                                                                           else
-                                                                           {
-                                                                              _loc10_++;
-                                                                           }
-                                                                           _loc11_=7;
-                                                                           _loc12_=0;
-                                                                        }
-                                                                        continue;
-                                                                     }
-                                                                  }
-                                                                  while(2946+_loc19_<<2);
-                                                               }
-                                                               else
-                                                               {
-                                                                  _loc18_=(32767+_loc52_)*3;
-                                                                  _loc19_=_loc16_+(5004+_loc18_)*3;
-                                                                  _loc53_=_loc19_;
-                                                                  do
-                                                                  {
-                                                                     _loc53_--;
-                                                                     if(_loc53_<0)
-                                                                     {
-                                                                        _loc19_=5004+_loc18_;
-                                                                        _loc53_=_loc19_;
-                                                                        do
-                                                                        {
-                                                                           _loc53_--;
-                                                                           if(_loc53_<0)
-                                                                           {
-                                                                           }
-                                                                           else
-                                                                           {
-                                                                              if((_loc19_+1&1<<_loc53_)!=0)
-                                                                              {
-                                                                                 _loc12_=_loc12_|1<<_loc11_;
-                                                                              }
-                                                                              _loc11_--;
-                                                                              if(_loc11_<0)
-                                                                              {
-                                                                                 if(_loc12_==255)
-                                                                                 {
-                                                                                    _loc10_=_loc10_+2;
-                                                                                 }
-                                                                                 else
-                                                                                 {
-                                                                                    _loc10_++;
-                                                                                 }
-                                                                                 _loc11_=7;
-                                                                                 _loc12_=0;
-                                                                              }
-                                                                              continue;
-                                                                           }
-                                                                        }
-                                                                        while(2946+_loc19_<<2);
-                                                                     }
-                                                                     else
-                                                                     {
-                                                                        if((_loc19_+1&1<<_loc53_)!=0)
-                                                                        {
-                                                                           _loc12_=_loc12_|1<<_loc11_;
-                                                                        }
-                                                                        _loc11_--;
-                                                                        if(_loc11_<0)
-                                                                        {
-                                                                           if(_loc12_==255)
-                                                                           {
-                                                                              _loc10_=_loc10_+2;
-                                                                           }
-                                                                           else
-                                                                           {
-                                                                              _loc10_++;
-                                                                           }
-                                                                           _loc11_=7;
-                                                                           _loc12_=0;
-                                                                        }
-                                                                        continue;
-                                                                     }
-                                                                  }
-                                                                  while(2946+_loc19_<<2);
-                                                               }
-                                                               _loc19_=63;
-                                                               if(_loc19_>0)
-                                                               {
-                                                               }
-                                                               if(_loc19_!=0)
-                                                               {
-                                                                  _loc20_=1;
-                                                                  loop20:
-                                                                  while(_loc20_<=_loc19_)
-                                                                  {
-                                                                     _loc54_=_loc20_;
-                                                                     if(_loc20_<=_loc19_)
-                                                                     {
-                                                                     }
-                                                                     _loc55_=_loc20_-_loc54_;
-                                                                     if(_loc55_>=16)
-                                                                     {
-                                                                        _loc53_=_loc55_>>4;
-                                                                        _loc56_=1;
-                                                                        loop21:
-                                                                        while(_loc56_<=_loc53_)
-                                                                        {
-                                                                           _loc21_=_loc17_+720;
-                                                                           _loc57_=_loc21_;
-                                                                           do
-                                                                           {
-                                                                              _loc57_--;
-                                                                              if(_loc57_<0)
-                                                                              {
-                                                                                 _loc56_++;
-                                                                                 continue loop21;
-                                                                              }
-                                                                              if((_loc21_+1&1<<_loc57_)!=0)
-                                                                              {
-                                                                                 _loc12_=_loc12_|1<<_loc11_;
-                                                                              }
-                                                                              _loc11_--;
-                                                                              if(_loc11_<0)
-                                                                              {
-                                                                                 if(_loc12_==255)
-                                                                                 {
-                                                                                    _loc10_=_loc10_+2;
-                                                                                 }
-                                                                                 else
-                                                                                 {
-                                                                                    _loc10_++;
-                                                                                 }
-                                                                                 _loc11_=7;
-                                                                                 _loc12_=0;
-                                                                              }
-                                                                           }
-                                                                           while(2946+_loc19_<<2);
-                                                                        }
-                                                                        _loc55_=_loc55_&15;
-                                                                     }
-                                                                     _loc18_=(32767+(_loc20_<<2))*3;
-                                                                     _loc21_=_loc17_+(_loc55_<<4)*3+(5004+_loc18_)*3;
-                                                                     _loc57_=_loc21_;
-                                                                     do
-                                                                     {
-                                                                        _loc57_--;
-                                                                        if(_loc57_<0)
-                                                                        {
-                                                                           _loc21_=5004+_loc18_;
-                                                                           _loc57_=_loc21_;
-                                                                           do
-                                                                           {
-                                                                              _loc57_--;
-                                                                              if(_loc57_<0)
-                                                                              {
-                                                                                 _loc20_++;
-                                                                                 continue loop20;
-                                                                              }
-                                                                              if((_loc21_+1&1<<_loc57_)!=0)
-                                                                              {
-                                                                                 _loc12_=_loc12_|1<<_loc11_;
-                                                                              }
-                                                                              _loc11_--;
-                                                                              if(_loc11_<0)
-                                                                              {
-                                                                                 if(_loc12_==255)
-                                                                                 {
-                                                                                    _loc10_=_loc10_+2;
-                                                                                 }
-                                                                                 else
-                                                                                 {
-                                                                                    _loc10_++;
-                                                                                 }
-                                                                                 _loc11_=7;
-                                                                                 _loc12_=0;
-                                                                              }
-                                                                           }
-                                                                           while(2946+_loc19_<<2);
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                           if((_loc21_+1&1<<_loc57_)!=0)
-                                                                           {
-                                                                              _loc12_=_loc12_|1<<_loc11_;
-                                                                           }
-                                                                           _loc11_--;
-                                                                           if(_loc11_<0)
-                                                                           {
-                                                                              if(_loc12_==255)
-                                                                              {
-                                                                                 _loc10_=_loc10_+2;
-                                                                              }
-                                                                              else
-                                                                              {
-                                                                                 _loc10_++;
-                                                                              }
-                                                                              _loc11_=7;
-                                                                              _loc12_=0;
-                                                                           }
-                                                                           continue;
-                                                                        }
-                                                                     }
-                                                                     while(2946+_loc19_<<2);
-                                                                  }
-                                                               }
-                                                               if(_loc19_!=63)
-                                                               {
-                                                                  _loc53_=_loc17_;
-                                                                  do
-                                                                  {
-                                                                     _loc53_--;
-                                                                     if(_loc53_<0)
-                                                                     {
-                                                                     }
-                                                                     else
-                                                                     {
-                                                                        if((_loc17_+1&1<<_loc53_)!=0)
-                                                                        {
-                                                                           _loc12_=_loc12_|1<<_loc11_;
-                                                                        }
-                                                                        _loc11_--;
-                                                                        if(_loc11_<0)
-                                                                        {
-                                                                           if(_loc12_==255)
-                                                                           {
-                                                                              _loc10_=_loc10_+2;
-                                                                           }
-                                                                           else
-                                                                           {
-                                                                              _loc10_++;
-                                                                           }
-                                                                           _loc11_=7;
-                                                                           _loc12_=0;
-                                                                        }
-                                                                        continue;
-                                                                     }
-                                                                  }
-                                                                  while(2946+_loc19_<<2);
-                                                               }
-                                                               _loc14_=_loc22_;
-                                                               _loc9_=1280;
-                                                               _loc22_=_loc15_;
-                                                               _loc16_=4215;
-                                                               _loc17_=4251;
-                                                               _loc18_=0;
-                                                               do
-                                                               {
-                                                                  _loc23_=_loc9_+_loc18_;
-                                                                  _loc24_=_loc9_+_loc18_+8;
-                                                                  _loc25_=_loc9_+_loc18_+16;
-                                                                  _loc26_=_loc9_+_loc18_+24;
-                                                                  _loc27_=_loc9_+_loc18_+32;
-                                                                  _loc28_=_loc9_+_loc18_+40;
-                                                                  _loc29_=_loc9_+_loc18_+48;
-                                                                  _loc30_=_loc9_+_loc18_+56;
-                                                                  _loc31_=_loc23_+_loc30_;
-                                                                  _loc38_=_loc23_-_loc30_;
-                                                                  _loc32_=_loc24_+_loc29_;
-                                                                  _loc37_=_loc24_-_loc29_;
-                                                                  _loc33_=_loc25_+_loc28_;
-                                                                  _loc36_=_loc25_-_loc28_;
-                                                                  _loc34_=_loc26_+_loc27_;
-                                                                  _loc35_=_loc26_-_loc27_;
-                                                                  _loc39_=_loc31_+_loc34_;
-                                                                  _loc42_=_loc31_-_loc34_;
-                                                                  _loc40_=_loc32_+_loc33_;
-                                                                  _loc41_=_loc32_-_loc33_;
-                                                                  _loc43_=(_loc41_+_loc42_)*0.707106781;
-                                                                  _loc39_=_loc35_+_loc36_;
-                                                                  _loc40_=_loc36_+_loc37_;
-                                                                  _loc41_=_loc37_+_loc38_;
-                                                                  _loc47_=(_loc39_-_loc41_)*0.382683433;
-                                                                  _loc44_=0.5411961*_loc39_+_loc47_;
-                                                                  _loc46_=1.306562965*_loc41_+_loc47_;
-                                                                  _loc45_=_loc40_*0.707106781;
-                                                                  _loc48_=_loc38_+_loc45_;
-                                                                  _loc49_=_loc38_-_loc45_;
-                                                                  _loc18_=_loc18_+64;
-                                                                  if(_loc18_>=512)
-                                                                  {
-                                                                     _loc18_=0;
-                                                                     do
-                                                                     {
-                                                                        _loc23_=_loc9_+_loc18_;
-                                                                        _loc24_=_loc9_+_loc18_+64;
-                                                                        _loc25_=_loc9_+_loc18_+128;
-                                                                        _loc26_=_loc9_+_loc18_+192;
-                                                                        _loc27_=_loc9_+_loc18_+256;
-                                                                        _loc28_=_loc9_+_loc18_+320;
-                                                                        _loc29_=_loc9_+_loc18_+384;
-                                                                        _loc30_=_loc9_+_loc18_+448;
-                                                                        _loc31_=_loc23_+_loc30_;
-                                                                        _loc38_=_loc23_-_loc30_;
-                                                                        _loc32_=_loc24_+_loc29_;
-                                                                        _loc37_=_loc24_-_loc29_;
-                                                                        _loc33_=_loc25_+_loc28_;
-                                                                        _loc36_=_loc25_-_loc28_;
-                                                                        _loc34_=_loc26_+_loc27_;
-                                                                        _loc35_=_loc26_-_loc27_;
-                                                                        _loc39_=_loc31_+_loc34_;
-                                                                        _loc42_=_loc31_-_loc34_;
-                                                                        _loc40_=_loc32_+_loc33_;
-                                                                        _loc41_=_loc32_-_loc33_;
-                                                                        _loc43_=(_loc41_+_loc42_)*0.707106781;
-                                                                        _loc39_=_loc35_+_loc36_;
-                                                                        _loc40_=_loc36_+_loc37_;
-                                                                        _loc41_=_loc37_+_loc38_;
-                                                                        _loc47_=(_loc39_-_loc41_)*0.382683433;
-                                                                        _loc44_=0.5411961*_loc39_+_loc47_;
-                                                                        _loc46_=1.306562965*_loc41_+_loc47_;
-                                                                        _loc45_=_loc40_*0.707106781;
-                                                                        _loc48_=_loc38_+_loc45_;
-                                                                        _loc49_=_loc38_-_loc45_;
-                                                                        _loc18_=_loc18_+8;
-                                                                        if(_loc18_>=64)
-                                                                        {
-                                                                           _loc19_=0;
-                                                                           do
-                                                                           {
-                                                                              _loc50_=(_loc9_+(_loc19_<<3))*(2434+(_loc19_<<3));
-                                                                              _loc19_++;
-                                                                              if(_loc19_>=64)
-                                                                              {
-                                                                                 _loc51_=0;
-                                                                                 _loc52_=_loc51_-_loc22_;
-                                                                                 _loc22_=_loc51_;
-                                                                                 if(_loc52_==0)
-                                                                                 {
-                                                                                    _loc53_=_loc16_;
-                                                                                    do
-                                                                                    {
-                                                                                       _loc53_--;
-                                                                                       if(_loc53_<0)
-                                                                                       {
-                                                                                       }
-                                                                                       else
-                                                                                       {
-                                                                                          if((_loc16_+1&1<<_loc53_)!=0)
-                                                                                          {
-                                                                                             _loc12_=_loc12_|1<<_loc11_;
-                                                                                          }
-                                                                                          _loc11_--;
-                                                                                          if(_loc11_<0)
-                                                                                          {
-                                                                                             if(_loc12_==255)
-                                                                                             {
-                                                                                                _loc10_=_loc10_+2;
-                                                                                             }
-                                                                                             else
-                                                                                             {
-                                                                                                _loc10_++;
-                                                                                             }
-                                                                                             _loc11_=7;
-                                                                                             _loc12_=0;
-                                                                                          }
-                                                                                          continue;
-                                                                                       }
-                                                                                    }
-                                                                                    while(2946+_loc19_<<2);
-                                                                                 }
-                                                                                 else
-                                                                                 {
-                                                                                    _loc18_=(32767+_loc52_)*3;
-                                                                                    _loc19_=_loc16_+(5004+_loc18_)*3;
-                                                                                    _loc53_=_loc19_;
-                                                                                    do
-                                                                                    {
-                                                                                       _loc53_--;
-                                                                                       if(_loc53_<0)
-                                                                                       {
-                                                                                          _loc19_=5004+_loc18_;
-                                                                                          _loc53_=_loc19_;
-                                                                                          do
-                                                                                          {
-                                                                                             _loc53_--;
-                                                                                             if(_loc53_<0)
-                                                                                             {
-                                                                                             }
-                                                                                             else
-                                                                                             {
-                                                                                                if((_loc19_+1&1<<_loc53_)!=0)
-                                                                                                {
-                                                                                                   _loc12_=_loc12_|1<<_loc11_;
-                                                                                                }
-                                                                                                _loc11_--;
-                                                                                                if(_loc11_<0)
-                                                                                                {
-                                                                                                   if(_loc12_==255)
-                                                                                                   {
-                                                                                                      _loc10_=_loc10_+2;
-                                                                                                   }
-                                                                                                   else
-                                                                                                   {
-                                                                                                      _loc10_++;
-                                                                                                   }
-                                                                                                   _loc11_=7;
-                                                                                                   _loc12_=0;
-                                                                                                }
-                                                                                                continue;
-                                                                                             }
-                                                                                          }
-                                                                                          while(2946+_loc19_<<2);
-                                                                                       }
-                                                                                       else
-                                                                                       {
-                                                                                          if((_loc19_+1&1<<_loc53_)!=0)
-                                                                                          {
-                                                                                             _loc12_=_loc12_|1<<_loc11_;
-                                                                                          }
-                                                                                          _loc11_--;
-                                                                                          if(_loc11_<0)
-                                                                                          {
-                                                                                             if(_loc12_==255)
-                                                                                             {
-                                                                                                _loc10_=_loc10_+2;
-                                                                                             }
-                                                                                             else
-                                                                                             {
-                                                                                                _loc10_++;
-                                                                                             }
-                                                                                             _loc11_=7;
-                                                                                             _loc12_=0;
-                                                                                          }
-                                                                                          continue;
-                                                                                       }
-                                                                                    }
-                                                                                    while(2946+_loc19_<<2);
-                                                                                 }
-                                                                                 _loc19_=63;
-                                                                                 if(_loc19_>0)
-                                                                                 {
-                                                                                 }
-                                                                                 if(_loc19_!=0)
-                                                                                 {
-                                                                                    _loc20_=1;
-                                                                                    loop30:
-                                                                                    while(_loc20_<=_loc19_)
-                                                                                    {
-                                                                                       _loc54_=_loc20_;
-                                                                                       if(_loc20_<=_loc19_)
-                                                                                       {
-                                                                                       }
-                                                                                       _loc55_=_loc20_-_loc54_;
-                                                                                       if(_loc55_>=16)
-                                                                                       {
-                                                                                          _loc53_=_loc55_>>4;
-                                                                                          _loc56_=1;
-                                                                                          loop31:
-                                                                                          while(_loc56_<=_loc53_)
-                                                                                          {
-                                                                                             _loc21_=_loc17_+720;
-                                                                                             _loc57_=_loc21_;
-                                                                                             do
-                                                                                             {
-                                                                                                _loc57_--;
-                                                                                                if(_loc57_<0)
-                                                                                                {
-                                                                                                   _loc56_++;
-                                                                                                   continue loop31;
-                                                                                                }
-                                                                                                if((_loc21_+1&1<<_loc57_)!=0)
-                                                                                                {
-                                                                                                   _loc12_=_loc12_|1<<_loc11_;
-                                                                                                }
-                                                                                                _loc11_--;
-                                                                                                if(_loc11_<0)
-                                                                                                {
-                                                                                                   if(_loc12_==255)
-                                                                                                   {
-                                                                                                      _loc10_=_loc10_+2;
-                                                                                                   }
-                                                                                                   else
-                                                                                                   {
-                                                                                                      _loc10_++;
-                                                                                                   }
-                                                                                                   _loc11_=7;
-                                                                                                   _loc12_=0;
-                                                                                                }
-                                                                                             }
-                                                                                             while(2946+_loc19_<<2);
-                                                                                          }
-                                                                                          _loc55_=_loc55_&15;
-                                                                                       }
-                                                                                       _loc18_=(32767+(_loc20_<<2))*3;
-                                                                                       _loc21_=_loc17_+(_loc55_<<4)*3+(5004+_loc18_)*3;
-                                                                                       _loc57_=_loc21_;
-                                                                                       do
-                                                                                       {
-                                                                                          _loc57_--;
-                                                                                          if(_loc57_<0)
-                                                                                          {
-                                                                                             _loc21_=5004+_loc18_;
-                                                                                             _loc57_=_loc21_;
-                                                                                             do
-                                                                                             {
-                                                                                                _loc57_--;
-                                                                                                if(_loc57_<0)
-                                                                                                {
-                                                                                                   _loc20_++;
-                                                                                                   continue loop30;
-                                                                                                }
-                                                                                                if((_loc21_+1&1<<_loc57_)!=0)
-                                                                                                {
-                                                                                                   _loc12_=_loc12_|1<<_loc11_;
-                                                                                                }
-                                                                                                _loc11_--;
-                                                                                                if(_loc11_<0)
-                                                                                                {
-                                                                                                   if(_loc12_==255)
-                                                                                                   {
-                                                                                                      _loc10_=_loc10_+2;
-                                                                                                   }
-                                                                                                   else
-                                                                                                   {
-                                                                                                      _loc10_++;
-                                                                                                   }
-                                                                                                   _loc11_=7;
-                                                                                                   _loc12_=0;
-                                                                                                }
-                                                                                             }
-                                                                                             while(2946+_loc19_<<2);
-                                                                                          }
-                                                                                          else
-                                                                                          {
-                                                                                             if((_loc21_+1&1<<_loc57_)!=0)
-                                                                                             {
-                                                                                                _loc12_=_loc12_|1<<_loc11_;
-                                                                                             }
-                                                                                             _loc11_--;
-                                                                                             if(_loc11_<0)
-                                                                                             {
-                                                                                                if(_loc12_==255)
-                                                                                                {
-                                                                                                   _loc10_=_loc10_+2;
-                                                                                                }
-                                                                                                else
-                                                                                                {
-                                                                                                   _loc10_++;
-                                                                                                }
-                                                                                                _loc11_=7;
-                                                                                                _loc12_=0;
-                                                                                             }
-                                                                                             continue;
-                                                                                          }
-                                                                                       }
-                                                                                       while(2946+_loc19_<<2);
-                                                                                    }
-                                                                                 }
-                                                                                 if(_loc19_!=63)
-                                                                                 {
-                                                                                    _loc53_=_loc17_;
-                                                                                    do
-                                                                                    {
-                                                                                       _loc53_--;
-                                                                                       if(_loc53_<0)
-                                                                                       {
-                                                                                       }
-                                                                                       else
-                                                                                       {
-                                                                                          if((_loc17_+1&1<<_loc53_)!=0)
-                                                                                          {
-                                                                                             _loc12_=_loc12_|1<<_loc11_;
-                                                                                          }
-                                                                                          _loc11_--;
-                                                                                          if(_loc11_<0)
-                                                                                          {
-                                                                                             if(_loc12_==255)
-                                                                                             {
-                                                                                                _loc10_=_loc10_+2;
-                                                                                             }
-                                                                                             else
-                                                                                             {
-                                                                                                _loc10_++;
-                                                                                             }
-                                                                                             _loc11_=7;
-                                                                                             _loc12_=0;
-                                                                                          }
-                                                                                          continue;
-                                                                                       }
-                                                                                    }
-                                                                                    while(2946+_loc19_<<2);
-                                                                                 }
-                                                                                 _loc15_=_loc22_;
-                                                                                 _loc7_=_loc7_+8;
-                                                                                 if(_loc7_>=_loc4_)
-                                                                                 {
-                                                                                    _loc8_=_loc8_+8;
-                                                                                    if(_loc8_>=_loc5_)
-                                                                                    {
-                                                                                       if(_loc11_>=0)
-                                                                                       {
-                                                                                          _loc22_=_loc11_+1;
-                                                                                          do
-                                                                                          {
-                                                                                             _loc22_--;
-                                                                                             if(_loc22_<0)
-                                                                                             {
-                                                                                             }
-                                                                                             else
-                                                                                             {
-                                                                                                if(((1<<_loc11_+1)-1&1<<_loc22_)!=0)
-                                                                                                {
-                                                                                                   _loc12_=_loc12_|1<<_loc11_;
-                                                                                                }
-                                                                                                _loc11_--;
-                                                                                                if(_loc11_<0)
-                                                                                                {
-                                                                                                   if(_loc12_==255)
-                                                                                                   {
-                                                                                                      _loc10_=_loc10_+2;
-                                                                                                   }
-                                                                                                   else
-                                                                                                   {
-                                                                                                      _loc10_++;
-                                                                                                   }
-                                                                                                   _loc11_=7;
-                                                                                                   _loc12_=0;
-                                                                                                }
-                                                                                                continue;
-                                                                                             }
-                                                                                          }
-                                                                                          while(2946+_loc19_<<2);
-                                                                                       }
-                                                                                       ApplicationDomain.currentDomain.domainMemory=_loc3_;
-                                                                                       _loc58_=new ByteArray();
-                                                                                       _loc58_.writeBytes(_loc6_,201609,_loc10_-201609+2);
-                                                                                       _loc58_.position=0;
-                                                                                       return _loc58_;
-                                                                                    }
-                                                                                    continue loop0;
-                                                                                 }
-                                                                                 continue loop1;
-                                                                              }
-                                                                           }
-                                                                           while(2946+_loc19_<<2);
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                           continue;
-                                                                        }
-                                                                     }
-                                                                     while(_loc9_+_loc18_+448);
-                                                                  }
-                                                                  else
-                                                                  {
-                                                                     continue;
-                                                                  }
-                                                               }
-                                                               while(_loc9_+_loc18_+56);
-                                                            }
-                                                         }
-                                                         while(2946+_loc19_<<2);
-                                                      }
-                                                      else
-                                                      {
-                                                         continue;
-                                                      }
-                                                   }
-                                                   while(_loc9_+_loc18_+448);
-                                                }
-                                                else
-                                                {
-                                                   continue;
-                                                }
-                                             }
-                                             while(_loc9_+_loc18_+56);
                                           }
                                        }
-                                       while(2946+_loc19_<<2);
                                     }
                                     else
                                     {
-                                       continue;
+                                       _loc18_ = (32767 + _loc52_) * 3;
+                                       _loc19_ = _loc16_ + op_li8(5004 + _loc18_) /*Alchemy*/ * 3;
+                                       _loc53_ = op_li8(_loc19_) /*Alchemy*/;
+                                       while(true)
+                                       {
+                                          _loc53_--;
+                                          if(_loc53_ < 0)
+                                          {
+                                             break;
+                                          }
+                                          if((op_li16(_loc19_ + 1) /*Alchemy*/ & 1 << _loc53_) != 0)
+                                          {
+                                             _loc12_ = _loc12_ | 1 << _loc11_;
+                                          }
+                                          _loc11_--;
+                                          if(_loc11_ < 0)
+                                          {
+                                             if(_loc12_ == 255)
+                                             {
+                                                _loc10_ = _loc10_ + 2;
+                                             }
+                                             else
+                                             {
+                                                _loc10_++;
+                                             }
+                                             if(_loc12_ == 255)
+                                             {
+                                                _loc11_ = 7;
+                                                _loc12_ = 0;
+                                             }
+                                             else
+                                             {
+                                                _loc11_ = 7;
+                                                _loc12_ = 0;
+                                             }
+                                          }
+                                       }
+                                       _loc19_ = 5004 + _loc18_;
+                                       _loc53_ = op_li8(_loc19_) /*Alchemy*/;
+                                       while(true)
+                                       {
+                                          _loc53_--;
+                                          if(_loc53_ < 0)
+                                          {
+                                             break;
+                                          }
+                                          if((op_li16(_loc19_ + 1) /*Alchemy*/ & 1 << _loc53_) != 0)
+                                          {
+                                             _loc12_ = _loc12_ | 1 << _loc11_;
+                                          }
+                                          _loc11_--;
+                                          if(_loc11_ < 0)
+                                          {
+                                             if(_loc12_ == 255)
+                                             {
+                                                _loc10_ = _loc10_ + 2;
+                                             }
+                                             else
+                                             {
+                                                _loc10_++;
+                                             }
+                                             if(_loc12_ == 255)
+                                             {
+                                                _loc11_ = 7;
+                                                _loc12_ = 0;
+                                             }
+                                             else
+                                             {
+                                                _loc11_ = 7;
+                                                _loc12_ = 0;
+                                             }
+                                          }
+                                       }
                                     }
-                                 }
-                                 while(_loc9_+_loc18_+448);
-                              }
-                              else
-                              {
-                                 continue;
-                              }
-                           }
-                           while(_loc9_+_loc18_+56);
-                        }
-                     }
-                     else
-                     {
-                        continue;
-                     }
-                     continue loop2;
-                  }
-                  while(1280+_loc9_);
-               }
-               continue loop3;
-            }
-            while(true);
-         }
-         while(true);
-      }
-
-
-   }
-
-}
+                                    _loc19_ = 63;
+                                    while(true)
+                                    {
+                                       if(_loc19_ > 0)
+                                       {
+                                       }
+                                       if(!false)
+                                       {
+                                          break;
+                                       }
+                                       _loc19_--;
+                                    }
+                                    if(_loc19_ != 0)
+                                    {
+                                       _loc20_ = 1;
+                                       while(_loc20_ <= _loc19_)
+                                       {
+                                          _loc54_ = _loc20_;
+                                          while(true)
+                                          {
+                                             if(_loc20_ <= _loc19_)
+                                             {
+                                             }
+                                             if(!false)
+                                             {
+                                                break;
+                                             }
+                                             _loc20_++;
+                                          }
+                                          _loc55_ = _loc20_ - _loc54_;
+                                          if(_loc55_ >= 16)
+                                          {
+                                             _loc53_ = _loc55_ >> 4;
+                                             _loc56_ = 1;
+                                             while(_loc56_ <= _loc53_)
+                                             {
+                                                _loc21_ = _loc17_ + 720;
+                                                _loc57_ = op_li8(_loc21_) /*Alchemy*/;
+                                                while(true)
+                                                {
+                                                   _loc57_--;
+                                                   if(_loc57_ < 0)
+                                                   {
+                                                      break;
+                                                   }
+                                                   if((op_li16(_loc21_ + 1) /*Alchemy*/ & 1 << _loc57_) != 0)
+                                                   {
+                                                      _loc12_ = _loc12_ | 1 << _loc11_;
+                                                   }
+                                                   _loc11_--;
+                                                   if(_loc11_ < 0)
+                                                   {
+                                                      if(_loc12_ == 255)
+                                                      {
+                                                         _loc10_ = _loc10_ + 2;
+                                                      }
+                                                      else
+                                                      {
+                                                         _loc10_++;
+                                                      }
+                                                      if(_loc12_ == 255)
+                                                      {
+                                                         _loc11_ = 7;
+                                                         _loc12_ = 0;
+                                                      }
+                                                      else
+                                                      {
+                                                         _loc11_ = 7;
+                                                         _loc12_ = 0;
+                                                      }
+                                                   }
+                                                }
+                                                _loc56_++;
+                                             }
+                                             _loc55_ = _loc55_ & 15;
+                                          }
+                                          _loc18_ = (32767 + op_li32(_loc20_ << 2) /*Alchemy*/) * 3;
+                                          _loc21_ = _loc17_ + (_loc55_ << 4) * 3 + op_li8(5004 + _loc18_) /*Alchemy*/ * 3;
+                                          _loc57_ = op_li8(_loc21_) /*Alchemy*/;
+                                          while(true)
+                                          {
+                                             _loc57_--;
+                                             if(_loc57_ < 0)
+                                             {
+                                                break;
+                                             }
+                                             if((op_li16(_loc21_ + 1) /*Alchemy*/ & 1 << _loc57_) != 0)
+                                             {
+                                                _loc12_ = _loc12_ | 1 << _loc11_;
+                                             }
+                                             _loc11_--;
+                                             if(_loc11_ < 0)
+                                             {
+                                                if(_loc12_ == 255)
+                                                {
+                                                   _loc10_ = _loc10_ + 2;
+                                                }
+                                                else
+                                                {
+                                                   _loc10_++;
+                                                }
+                                                if(_loc12_ == 255)
+                                                {
+                                                   _loc11_ = 7;
+                                                   _loc12_ = 0;
+                                                }
+                                                else
+                                                {
+                                                   _loc11_ = 7;
+                                                   _loc12_ = 0;
+                                                }
+                                             }
+                                          }
+                                          _loc21_ = 5004 + _loc18_;
+                                          _loc57_ = op_li8(_loc21_) /*Alchemy*/;
+                                          while(true)
+                                          {
+                                             _loc57_--;
+                                             if(_loc57_ < 0)
+                                             {
+                                                break;
+                                             }
+                                             if((op_li16(_loc21_ + 1) /*Alchemy*/ & 1 << _loc57_) != 0)
+                                             {
+                                                _loc12_ = _loc12_ | 1 << _loc11_;
+                                             }
+                                             _loc11_--;
+                                             if(_loc11_ < 0)
+                                             {
+                                                if(_loc12_ == 255)
+                                                {
+                                                   _loc10_ = _loc10_ + 2;
+                                                }
+                                                else
+                                                {
+                                                   _loc10_++;
+                                                }
+                                                if(_loc12_ == 255)
+                                                {
+                                                   _loc11_ = 7;
+                                                   _loc12_ = 0;
+                                                }
+                                                else
+                                                {
+                                                   _loc11_ = 7;
+                                                   _loc12_ = 0;
+                                                }
+                                             }
+                                          }
+                                          _loc20_++;
+                                       }
+                                    }
+                                    if(_loc19_ != 63)
+                                    {
+                                       _loc53_ = op_li8(_loc17_) /*Alchemy*/;
+                                       while(true)
+                                       {
+                                          _loc53_--;
+                                          if(_loc53_ < 0)
+                                          {
+                                             break;
+                                          }
+                                          if((op_li16(_loc17_ + 1) /*Alchemy*/ & 1 << _loc53_) != 0)
+                                          {
+                                             _loc12_ = _loc12_ | 1 << _loc11_;
+                                          }
+                                          _loc11_--;
+                                          if(_loc11_ < 0)
+                                          {
+                                             if(_loc12_ == 255)
+                                             {
+                                                _loc10_ = _loc10_ + 2;
+                                             }
+                                             else
+                                             {
+                                                _loc10_++;
+                                             }
+                                             if(_loc12_ == 255)
+                                             {
+                                                _loc11_ = 7;
+                                                _loc12_ = 0;
+                                             }
+                                             else
+                                             {
+                                                _loc11_ = 7;
+                                                _loc12_ = 0;
+                                             }
+                                          }
+                                       }
+                                    }
+                                    _loc13_ = _loc22_;
+                                    _loc9_ = 768;
+                                    _loc22_ = _loc14_;
+                                    _loc16_ = 4215;
+                                    _loc17_ = 4251;
+                                    _loc18_ = 0;
+                                    do
+                                    {
+                                          _loc23_ = op_lf64(_loc9_ + _loc18_) /*Alchemy*/;
+                                          _loc24_ = op_lf64(_loc9_ + _loc18_ + 8) /*Alchemy*/;
+                                          _loc25_ = op_lf64(_loc9_ + _loc18_ + 16) /*Alchemy*/;
+                                          _loc26_ = op_lf64(_loc9_ + _loc18_ + 24) /*Alchemy*/;
+                                          _loc27_ = op_lf64(_loc9_ + _loc18_ + 32) /*Alchemy*/;
+                                          _loc28_ = op_lf64(_loc9_ + _loc18_ + 40) /*Alchemy*/;
+                                          _loc29_ = op_lf64(_loc9_ + _loc18_ + 48) /*Alchemy*/;
+                                          _loc30_ = op_lf64(_loc9_ + _loc18_ + 56) /*Alchemy*/;
+                                          _loc31_ = _loc23_ + _loc30_;
+                                          _loc38_ = _loc23_ - _loc30_;
+                                          _loc32_ = _loc24_ + _loc29_;
+                                          _loc37_ = _loc24_ - _loc29_;
+                                          _loc33_ = _loc25_ + _loc28_;
+                                          _loc36_ = _loc25_ - _loc28_;
+                                          _loc34_ = _loc26_ + _loc27_;
+                                          _loc35_ = _loc26_ - _loc27_;
+                                          _loc39_ = _loc31_ + _loc34_;
+                                          _loc42_ = _loc31_ - _loc34_;
+                                          _loc40_ = _loc32_ + _loc33_;
+                                          _loc41_ = _loc32_ - _loc33_;
+                                          _loc43_ = (_loc41_ + _loc42_) * 0.707106781;
+                                          _loc39_ = _loc35_ + _loc36_;
+                                          _loc40_ = _loc36_ + _loc37_;
+                                          _loc41_ = _loc37_ + _loc38_;
+                                          _loc47_ = (_loc39_ - _loc41_) * 0.382683433;
+                                          _loc44_ = 0.5411961 * _loc39_ + _loc47_;
+                                          _loc46_ = 1.306562965 * _loc41_ + _loc47_;
+                                          _loc45_ = _loc40_ * 0.707106781;
+                                          _loc48_ = _loc38_ + _loc45_;
+                                          _loc49_ = _loc38_ - _loc45_;
+                                          _loc18_ = _loc18_ + 64;
+                                       }while(_loc18_ < 512);
+                                       
+                                       _loc18_ = 0;
+                                       do
+                                       {
+                                             _loc23_ = op_lf64(_loc9_ + _loc18_) /*Alchemy*/;
+                                             _loc24_ = op_lf64(_loc9_ + _loc18_ + 64) /*Alchemy*/;
+                                             _loc25_ = op_lf64(_loc9_ + _loc18_ + 128) /*Alchemy*/;
+                                             _loc26_ = op_lf64(_loc9_ + _loc18_ + 192) /*Alchemy*/;
+                                             _loc27_ = op_lf64(_loc9_ + _loc18_ + 256) /*Alchemy*/;
+                                             _loc28_ = op_lf64(_loc9_ + _loc18_ + 320) /*Alchemy*/;
+                                             _loc29_ = op_lf64(_loc9_ + _loc18_ + 384) /*Alchemy*/;
+                                             _loc30_ = op_lf64(_loc9_ + _loc18_ + 448) /*Alchemy*/;
+                                             _loc31_ = _loc23_ + _loc30_;
+                                             _loc38_ = _loc23_ - _loc30_;
+                                             _loc32_ = _loc24_ + _loc29_;
+                                             _loc37_ = _loc24_ - _loc29_;
+                                             _loc33_ = _loc25_ + _loc28_;
+                                             _loc36_ = _loc25_ - _loc28_;
+                                             _loc34_ = _loc26_ + _loc27_;
+                                             _loc35_ = _loc26_ - _loc27_;
+                                             _loc39_ = _loc31_ + _loc34_;
+                                             _loc42_ = _loc31_ - _loc34_;
+                                             _loc40_ = _loc32_ + _loc33_;
+                                             _loc41_ = _loc32_ - _loc33_;
+                                             _loc43_ = (_loc41_ + _loc42_) * 0.707106781;
+                                             _loc39_ = _loc35_ + _loc36_;
+                                             _loc40_ = _loc36_ + _loc37_;
+                                             _loc41_ = _loc37_ + _loc38_;
+                                             _loc47_ = (_loc39_ - _loc41_) * 0.382683433;
+                                             _loc44_ = 0.5411961 * _loc39_ + _loc47_;
+                                             _loc46_ = 1.306562965 * _loc41_ + _loc47_;
+                                             _loc45_ = _loc40_ * 0.707106781;
+                                             _loc48_ = _loc38_ + _loc45_;
+                                             _loc49_ = _loc38_ - _loc45_;
+                                             _loc18_ = _loc18_ + 8;
+                                          }while(_loc18_ < 64);
+                                          
+                                          _loc19_ = 0;
+                                          do
+                                          {
+                                                _loc50_ = op_lf64(_loc9_ + (_loc19_ << 3)) /*Alchemy*/ * op_lf64(2434 + (_loc19_ << 3)) /*Alchemy*/;
+                                                _loc19_++;
+                                             }while(_loc19_ < 64);
+                                             
+                                             _loc51_ = op_li32(0) /*Alchemy*/;
+                                             _loc52_ = _loc51_ - _loc22_;
+                                             _loc22_ = _loc51_;
+                                             if(_loc52_ == 0)
+                                             {
+                                                _loc53_ = op_li8(_loc16_) /*Alchemy*/;
+                                                while(true)
+                                                {
+                                                   _loc53_--;
+                                                   if(_loc53_ < 0)
+                                                   {
+                                                      break;
+                                                   }
+                                                   if((op_li16(_loc16_ + 1) /*Alchemy*/ & 1 << _loc53_) != 0)
+                                                   {
+                                                      _loc12_ = _loc12_ | 1 << _loc11_;
+                                                   }
+                                                   _loc11_--;
+                                                   if(_loc11_ < 0)
+                                                   {
+                                                      if(_loc12_ == 255)
+                                                      {
+                                                         _loc10_ = _loc10_ + 2;
+                                                      }
+                                                      else
+                                                      {
+                                                         _loc10_++;
+                                                      }
+                                                      if(_loc12_ == 255)
+                                                      {
+                                                         _loc11_ = 7;
+                                                         _loc12_ = 0;
+                                                      }
+                                                      else
+                                                      {
+                                                         _loc11_ = 7;
+                                                         _loc12_ = 0;
+                                                      }
+                                                   }
+                                                }
+                                             }
+                                             else
+                                             {
+                                                _loc18_ = (32767 + _loc52_) * 3;
+                                                _loc19_ = _loc16_ + op_li8(5004 + _loc18_) /*Alchemy*/ * 3;
+                                                _loc53_ = op_li8(_loc19_) /*Alchemy*/;
+                                                while(true)
+                                                {
+                                                   _loc53_--;
+                                                   if(_loc53_ < 0)
+                                                   {
+                                                      break;
+                                                   }
+                                                   if((op_li16(_loc19_ + 1) /*Alchemy*/ & 1 << _loc53_) != 0)
+                                                   {
+                                                      _loc12_ = _loc12_ | 1 << _loc11_;
+                                                   }
+                                                   _loc11_--;
+                                                   if(_loc11_ < 0)
+                                                   {
+                                                      if(_loc12_ == 255)
+                                                      {
+                                                         _loc10_ = _loc10_ + 2;
+                                                      }
+                                                      else
+                                                      {
+                                                         _loc10_++;
+                                                      }
+                                                      if(_loc12_ == 255)
+                                                      {
+                                                         _loc11_ = 7;
+                                                         _loc12_ = 0;
+                                                      }
+                                                      else
+                                                      {
+                                                         _loc11_ = 7;
+                                                         _loc12_ = 0;
+                                                      }
+                                                   }
+                                                }
+                                                _loc19_ = 5004 + _loc18_;
+                                                _loc53_ = op_li8(_loc19_) /*Alchemy*/;
+                                                while(true)
+                                                {
+                                                   _loc53_--;
+                                                   if(_loc53_ < 0)
+                                                   {
+                                                      break;
+                                                   }
+                                                   if((op_li16(_loc19_ + 1) /*Alchemy*/ & 1 << _loc53_) != 0)
+                                                   {
+                                                      _loc12_ = _loc12_ | 1 << _loc11_;
+                                                   }
+                                                   _loc11_--;
+                                                   if(_loc11_ < 0)
+                                                   {
+                                                      if(_loc12_ == 255)
+                                                      {
+                                                         _loc10_ = _loc10_ + 2;
+                                                      }
+                                                      else
+                                                      {
+                                                         _loc10_++;
+                                                      }
+                                                      if(_loc12_ == 255)
+                                                      {
+                                                         _loc11_ = 7;
+                                                         _loc12_ = 0;
+                                                      }
+                                                      else
+                                                      {
+                                                         _loc11_ = 7;
+                                                         _loc12_ = 0;
+                                                      }
+                                                   }
+                                                }
+                                             }
+                                             _loc19_ = 63;
+                                             while(true)
+                                             {
+                                                if(_loc19_ > 0)
+                                                {
+                                                }
+                                                if(!false)
+                                                {
+                                                   break;
+                                                }
+                                                _loc19_--;
+                                             }
+                                             if(_loc19_ != 0)
+                                             {
+                                                _loc20_ = 1;
+                                                while(_loc20_ <= _loc19_)
+                                                {
+                                                   _loc54_ = _loc20_;
+                                                   while(true)
+                                                   {
+                                                      if(_loc20_ <= _loc19_)
+                                                      {
+                                                      }
+                                                      if(!false)
+                                                      {
+                                                         break;
+                                                      }
+                                                      _loc20_++;
+                                                   }
+                                                   _loc55_ = _loc20_ - _loc54_;
+                                                   if(_loc55_ >= 16)
+                                                   {
+                                                      _loc53_ = _loc55_ >> 4;
+                                                      _loc56_ = 1;
+                                                      while(_loc56_ <= _loc53_)
+                                                      {
+                                                         _loc21_ = _loc17_ + 720;
+                                                         _loc57_ = op_li8(_loc21_) /*Alchemy*/;
+                                                         while(true)
+                                                         {
+                                                            _loc57_--;
+                                                            if(_loc57_ < 0)
+                                                            {
+                                                               break;
+                                                            }
+                                                            if((op_li16(_loc21_ + 1) /*Alchemy*/ & 1 << _loc57_) != 0)
+                                                            {
+                                                               _loc12_ = _loc12_ | 1 << _loc11_;
+                                                            }
+                                                            _loc11_--;
+                                                            if(_loc11_ < 0)
+                                                            {
+                                                               if(_loc12_ == 255)
+                                                               {
+                                                                  _loc10_ = _loc10_ + 2;
+                                                               }
+                                                               else
+                                                               {
+                                                                  _loc10_++;
+                                                               }
+                                                               if(_loc12_ == 255)
+                                                               {
+                                                                  _loc11_ = 7;
+                                                                  _loc12_ = 0;
+                                                               }
+                                                               else
+                                                               {
+                                                                  _loc11_ = 7;
+                                                                  _loc12_ = 0;
+                                                               }
+                                                            }
+                                                         }
+                                                         _loc56_++;
+                                                      }
+                                                      _loc55_ = _loc55_ & 15;
+                                                   }
+                                                   _loc18_ = (32767 + op_li32(_loc20_ << 2) /*Alchemy*/) * 3;
+                                                   _loc21_ = _loc17_ + (_loc55_ << 4) * 3 + op_li8(5004 + _loc18_) /*Alchemy*/ * 3;
+                                                   _loc57_ = op_li8(_loc21_) /*Alchemy*/;
+                                                   while(true)
+                                                   {
+                                                      _loc57_--;
+                                                      if(_loc57_ < 0)
+                                                      {
+                                                         break;
+                                                      }
+                                                      if((op_li16(_loc21_ + 1) /*Alchemy*/ & 1 << _loc57_) != 0)
+                                                      {
+                                                         _loc12_ = _loc12_ | 1 << _loc11_;
+                                                      }
+                                                      _loc11_--;
+                                                      if(_loc11_ < 0)
+                                                      {
+                                                         if(_loc12_ == 255)
+                                                         {
+                                                            _loc10_ = _loc10_ + 2;
+                                                         }
+                                                         else
+                                                         {
+                                                            _loc10_++;
+                                                         }
+                                                         if(_loc12_ == 255)
+                                                         {
+                                                            _loc11_ = 7;
+                                                            _loc12_ = 0;
+                                                         }
+                                                         else
+                                                         {
+                                                            _loc11_ = 7;
+                                                            _loc12_ = 0;
+                                                         }
+                                                      }
+                                                   }
+                                                   _loc21_ = 5004 + _loc18_;
+                                                   _loc57_ = op_li8(_loc21_) /*Alchemy*/;
+                                                   while(true)
+                                                   {
+                                                      _loc57_--;
+                                                      if(_loc57_ < 0)
+                                                      {
+                                                         break;
+                                                      }
+                                                      if((op_li16(_loc21_ + 1) /*Alchemy*/ & 1 << _loc57_) != 0)
+                                                      {
+                                                         _loc12_ = _loc12_ | 1 << _loc11_;
+                                                      }
+                                                      _loc11_--;
+                                                      if(_loc11_ < 0)
+                                                      {
+                                                         if(_loc12_ == 255)
+                                                         {
+                                                            _loc10_ = _loc10_ + 2;
+                                                         }
+                                                         else
+                                                         {
+                                                            _loc10_++;
+                                                         }
+                                                         if(_loc12_ == 255)
+                                                         {
+                                                            _loc11_ = 7;
+                                                            _loc12_ = 0;
+                                                         }
+                                                         else
+                                                         {
+                                                            _loc11_ = 7;
+                                                            _loc12_ = 0;
+                                                         }
+                                                      }
+                                                   }
+                                                   _loc20_++;
+                                                }
+                                             }
+                                             if(_loc19_ != 63)
+                                             {
+                                                _loc53_ = op_li8(_loc17_) /*Alchemy*/;
+                                                while(true)
+                                                {
+                                                   _loc53_--;
+                                                   if(_loc53_ < 0)
+                                                   {
+                                                      break;
+                                                   }
+                                                   if((op_li16(_loc17_ + 1) /*Alchemy*/ & 1 << _loc53_) != 0)
+                                                   {
+                                                      _loc12_ = _loc12_ | 1 << _loc11_;
+                                                   }
+                                                   _loc11_--;
+                                                   if(_loc11_ < 0)
+                                                   {
+                                                      if(_loc12_ == 255)
+                                                      {
+                                                         _loc10_ = _loc10_ + 2;
+                                                      }
+                                                      else
+                                                      {
+                                                         _loc10_++;
+                                                      }
+                                                      if(_loc12_ == 255)
+                                                      {
+                                                         _loc11_ = 7;
+                                                         _loc12_ = 0;
+                                                      }
+                                                      else
+                                                      {
+                                                         _loc11_ = 7;
+                                                         _loc12_ = 0;
+                                                      }
+                                                   }
+                                                }
+                                             }
+                                             _loc14_ = _loc22_;
+                                             _loc9_ = 1280;
+                                             _loc22_ = _loc15_;
+                                             _loc16_ = 4215;
+                                             _loc17_ = 4251;
+                                             _loc18_ = 0;
+                                             do
+                                             {
+                                                   _loc23_ = op_lf64(_loc9_ + _loc18_) /*Alchemy*/;
+                                                   _loc24_ = op_lf64(_loc9_ + _loc18_ + 8) /*Alchemy*/;
+                                                   _loc25_ = op_lf64(_loc9_ + _loc18_ + 16) /*Alchemy*/;
+                                                   _loc26_ = op_lf64(_loc9_ + _loc18_ + 24) /*Alchemy*/;
+                                                   _loc27_ = op_lf64(_loc9_ + _loc18_ + 32) /*Alchemy*/;
+                                                   _loc28_ = op_lf64(_loc9_ + _loc18_ + 40) /*Alchemy*/;
+                                                   _loc29_ = op_lf64(_loc9_ + _loc18_ + 48) /*Alchemy*/;
+                                                   _loc30_ = op_lf64(_loc9_ + _loc18_ + 56) /*Alchemy*/;
+                                                   _loc31_ = _loc23_ + _loc30_;
+                                                   _loc38_ = _loc23_ - _loc30_;
+                                                   _loc32_ = _loc24_ + _loc29_;
+                                                   _loc37_ = _loc24_ - _loc29_;
+                                                   _loc33_ = _loc25_ + _loc28_;
+                                                   _loc36_ = _loc25_ - _loc28_;
+                                                   _loc34_ = _loc26_ + _loc27_;
+                                                   _loc35_ = _loc26_ - _loc27_;
+                                                   _loc39_ = _loc31_ + _loc34_;
+                                                   _loc42_ = _loc31_ - _loc34_;
+                                                   _loc40_ = _loc32_ + _loc33_;
+                                                   _loc41_ = _loc32_ - _loc33_;
+                                                   _loc43_ = (_loc41_ + _loc42_) * 0.707106781;
+                                                   _loc39_ = _loc35_ + _loc36_;
+                                                   _loc40_ = _loc36_ + _loc37_;
+                                                   _loc41_ = _loc37_ + _loc38_;
+                                                   _loc47_ = (_loc39_ - _loc41_) * 0.382683433;
+                                                   _loc44_ = 0.5411961 * _loc39_ + _loc47_;
+                                                   _loc46_ = 1.306562965 * _loc41_ + _loc47_;
+                                                   _loc45_ = _loc40_ * 0.707106781;
+                                                   _loc48_ = _loc38_ + _loc45_;
+                                                   _loc49_ = _loc38_ - _loc45_;
+                                                   _loc18_ = _loc18_ + 64;
+                                                }while(_loc18_ < 512);
+                                                
+                                                _loc18_ = 0;
+                                                do
+                                                {
+                                                      _loc23_ = op_lf64(_loc9_ + _loc18_) /*Alchemy*/;
+                                                      _loc24_ = op_lf64(_loc9_ + _loc18_ + 64) /*Alchemy*/;
+                                                      _loc25_ = op_lf64(_loc9_ + _loc18_ + 128) /*Alchemy*/;
+                                                      _loc26_ = op_lf64(_loc9_ + _loc18_ + 192) /*Alchemy*/;
+                                                      _loc27_ = op_lf64(_loc9_ + _loc18_ + 256) /*Alchemy*/;
+                                                      _loc28_ = op_lf64(_loc9_ + _loc18_ + 320) /*Alchemy*/;
+                                                      _loc29_ = op_lf64(_loc9_ + _loc18_ + 384) /*Alchemy*/;
+                                                      _loc30_ = op_lf64(_loc9_ + _loc18_ + 448) /*Alchemy*/;
+                                                      _loc31_ = _loc23_ + _loc30_;
+                                                      _loc38_ = _loc23_ - _loc30_;
+                                                      _loc32_ = _loc24_ + _loc29_;
+                                                      _loc37_ = _loc24_ - _loc29_;
+                                                      _loc33_ = _loc25_ + _loc28_;
+                                                      _loc36_ = _loc25_ - _loc28_;
+                                                      _loc34_ = _loc26_ + _loc27_;
+                                                      _loc35_ = _loc26_ - _loc27_;
+                                                      _loc39_ = _loc31_ + _loc34_;
+                                                      _loc42_ = _loc31_ - _loc34_;
+                                                      _loc40_ = _loc32_ + _loc33_;
+                                                      _loc41_ = _loc32_ - _loc33_;
+                                                      _loc43_ = (_loc41_ + _loc42_) * 0.707106781;
+                                                      _loc39_ = _loc35_ + _loc36_;
+                                                      _loc40_ = _loc36_ + _loc37_;
+                                                      _loc41_ = _loc37_ + _loc38_;
+                                                      _loc47_ = (_loc39_ - _loc41_) * 0.382683433;
+                                                      _loc44_ = 0.5411961 * _loc39_ + _loc47_;
+                                                      _loc46_ = 1.306562965 * _loc41_ + _loc47_;
+                                                      _loc45_ = _loc40_ * 0.707106781;
+                                                      _loc48_ = _loc38_ + _loc45_;
+                                                      _loc49_ = _loc38_ - _loc45_;
+                                                      _loc18_ = _loc18_ + 8;
+                                                   }while(_loc18_ < 64);
+                                                   
+                                                   _loc19_ = 0;
+                                                   do
+                                                   {
+                                                         _loc50_ = op_lf64(_loc9_ + (_loc19_ << 3)) /*Alchemy*/ * op_lf64(2434 + (_loc19_ << 3)) /*Alchemy*/;
+                                                         _loc19_++;
+                                                      }while(_loc19_ < 64);
+                                                      
+                                                      _loc51_ = op_li32(0) /*Alchemy*/;
+                                                      _loc52_ = _loc51_ - _loc22_;
+                                                      _loc22_ = _loc51_;
+                                                      if(_loc52_ == 0)
+                                                      {
+                                                         _loc53_ = op_li8(_loc16_) /*Alchemy*/;
+                                                         while(true)
+                                                         {
+                                                            _loc53_--;
+                                                            if(_loc53_ < 0)
+                                                            {
+                                                               break;
+                                                            }
+                                                            if((op_li16(_loc16_ + 1) /*Alchemy*/ & 1 << _loc53_) != 0)
+                                                            {
+                                                               _loc12_ = _loc12_ | 1 << _loc11_;
+                                                            }
+                                                            _loc11_--;
+                                                            if(_loc11_ < 0)
+                                                            {
+                                                               if(_loc12_ == 255)
+                                                               {
+                                                                  _loc10_ = _loc10_ + 2;
+                                                               }
+                                                               else
+                                                               {
+                                                                  _loc10_++;
+                                                               }
+                                                               if(_loc12_ == 255)
+                                                               {
+                                                                  _loc11_ = 7;
+                                                                  _loc12_ = 0;
+                                                               }
+                                                               else
+                                                               {
+                                                                  _loc11_ = 7;
+                                                                  _loc12_ = 0;
+                                                               }
+                                                            }
+                                                         }
+                                                      }
+                                                      else
+                                                      {
+                                                         _loc18_ = (32767 + _loc52_) * 3;
+                                                         _loc19_ = _loc16_ + op_li8(5004 + _loc18_) /*Alchemy*/ * 3;
+                                                         _loc53_ = op_li8(_loc19_) /*Alchemy*/;
+                                                         while(true)
+                                                         {
+                                                            _loc53_--;
+                                                            if(_loc53_ < 0)
+                                                            {
+                                                               break;
+                                                            }
+                                                            if((op_li16(_loc19_ + 1) /*Alchemy*/ & 1 << _loc53_) != 0)
+                                                            {
+                                                               _loc12_ = _loc12_ | 1 << _loc11_;
+                                                            }
+                                                            _loc11_--;
+                                                            if(_loc11_ < 0)
+                                                            {
+                                                               if(_loc12_ == 255)
+                                                               {
+                                                                  _loc10_ = _loc10_ + 2;
+                                                               }
+                                                               else
+                                                               {
+                                                                  _loc10_++;
+                                                               }
+                                                               if(_loc12_ == 255)
+                                                               {
+                                                                  _loc11_ = 7;
+                                                                  _loc12_ = 0;
+                                                               }
+                                                               else
+                                                               {
+                                                                  _loc11_ = 7;
+                                                                  _loc12_ = 0;
+                                                               }
+                                                            }
+                                                         }
+                                                         _loc19_ = 5004 + _loc18_;
+                                                         _loc53_ = op_li8(_loc19_) /*Alchemy*/;
+                                                         while(true)
+                                                         {
+                                                            _loc53_--;
+                                                            if(_loc53_ < 0)
+                                                            {
+                                                               break;
+                                                            }
+                                                            if((op_li16(_loc19_ + 1) /*Alchemy*/ & 1 << _loc53_) != 0)
+                                                            {
+                                                               _loc12_ = _loc12_ | 1 << _loc11_;
+                                                            }
+                                                            _loc11_--;
+                                                            if(_loc11_ < 0)
+                                                            {
+                                                               if(_loc12_ == 255)
+                                                               {
+                                                                  _loc10_ = _loc10_ + 2;
+                                                               }
+                                                               else
+                                                               {
+                                                                  _loc10_++;
+                                                               }
+                                                               if(_loc12_ == 255)
+                                                               {
+                                                                  _loc11_ = 7;
+                                                                  _loc12_ = 0;
+                                                               }
+                                                               else
+                                                               {
+                                                                  _loc11_ = 7;
+                                                                  _loc12_ = 0;
+                                                               }
+                                                            }
+                                                         }
+                                                      }
+                                                      _loc19_ = 63;
+                                                      while(true)
+                                                      {
+                                                         if(_loc19_ > 0)
+                                                         {
+                                                         }
+                                                         if(!false)
+                                                         {
+                                                            break;
+                                                         }
+                                                         _loc19_--;
+                                                      }
+                                                      if(_loc19_ != 0)
+                                                      {
+                                                         _loc20_ = 1;
+                                                         while(_loc20_ <= _loc19_)
+                                                         {
+                                                            _loc54_ = _loc20_;
+                                                            while(true)
+                                                            {
+                                                               if(_loc20_ <= _loc19_)
+                                                               {
+                                                               }
+                                                               if(!false)
+                                                               {
+                                                                  break;
+                                                               }
+                                                               _loc20_++;
+                                                            }
+                                                            _loc55_ = _loc20_ - _loc54_;
+                                                            if(_loc55_ >= 16)
+                                                            {
+                                                               _loc53_ = _loc55_ >> 4;
+                                                               _loc56_ = 1;
+                                                               while(_loc56_ <= _loc53_)
+                                                               {
+                                                                  _loc21_ = _loc17_ + 720;
+                                                                  _loc57_ = op_li8(_loc21_) /*Alchemy*/;
+                                                                  while(true)
+                                                                  {
+                                                                     _loc57_--;
+                                                                     if(_loc57_ < 0)
+                                                                     {
+                                                                        break;
+                                                                     }
+                                                                     if((op_li16(_loc21_ + 1) /*Alchemy*/ & 1 << _loc57_) != 0)
+                                                                     {
+                                                                        _loc12_ = _loc12_ | 1 << _loc11_;
+                                                                     }
+                                                                     _loc11_--;
+                                                                     if(_loc11_ < 0)
+                                                                     {
+                                                                        if(_loc12_ == 255)
+                                                                        {
+                                                                           _loc10_ = _loc10_ + 2;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                           _loc10_++;
+                                                                        }
+                                                                        if(_loc12_ == 255)
+                                                                        {
+                                                                           _loc11_ = 7;
+                                                                           _loc12_ = 0;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                           _loc11_ = 7;
+                                                                           _loc12_ = 0;
+                                                                        }
+                                                                     }
+                                                                  }
+                                                                  _loc56_++;
+                                                               }
+                                                               _loc55_ = _loc55_ & 15;
+                                                            }
+                                                            _loc18_ = (32767 + op_li32(_loc20_ << 2) /*Alchemy*/) * 3;
+                                                            _loc21_ = _loc17_ + (_loc55_ << 4) * 3 + op_li8(5004 + _loc18_) /*Alchemy*/ * 3;
+                                                            _loc57_ = op_li8(_loc21_) /*Alchemy*/;
+                                                            while(true)
+                                                            {
+                                                               _loc57_--;
+                                                               if(_loc57_ < 0)
+                                                               {
+                                                                  break;
+                                                               }
+                                                               if((op_li16(_loc21_ + 1) /*Alchemy*/ & 1 << _loc57_) != 0)
+                                                               {
+                                                                  _loc12_ = _loc12_ | 1 << _loc11_;
+                                                               }
+                                                               _loc11_--;
+                                                               if(_loc11_ < 0)
+                                                               {
+                                                                  if(_loc12_ == 255)
+                                                                  {
+                                                                     _loc10_ = _loc10_ + 2;
+                                                                  }
+                                                                  else
+                                                                  {
+                                                                     _loc10_++;
+                                                                  }
+                                                                  if(_loc12_ == 255)
+                                                                  {
+                                                                     _loc11_ = 7;
+                                                                     _loc12_ = 0;
+                                                                  }
+                                                                  else
+                                                                  {
+                                                                     _loc11_ = 7;
+                                                                     _loc12_ = 0;
+                                                                  }
+                                                               }
+                                                            }
+                                                            _loc21_ = 5004 + _loc18_;
+                                                            _loc57_ = op_li8(_loc21_) /*Alchemy*/;
+                                                            while(true)
+                                                            {
+                                                               _loc57_--;
+                                                               if(_loc57_ < 0)
+                                                               {
+                                                                  break;
+                                                               }
+                                                               if((op_li16(_loc21_ + 1) /*Alchemy*/ & 1 << _loc57_) != 0)
+                                                               {
+                                                                  _loc12_ = _loc12_ | 1 << _loc11_;
+                                                               }
+                                                               _loc11_--;
+                                                               if(_loc11_ < 0)
+                                                               {
+                                                                  if(_loc12_ == 255)
+                                                                  {
+                                                                     _loc10_ = _loc10_ + 2;
+                                                                  }
+                                                                  else
+                                                                  {
+                                                                     _loc10_++;
+                                                                  }
+                                                                  if(_loc12_ == 255)
+                                                                  {
+                                                                     _loc11_ = 7;
+                                                                     _loc12_ = 0;
+                                                                  }
+                                                                  else
+                                                                  {
+                                                                     _loc11_ = 7;
+                                                                     _loc12_ = 0;
+                                                                  }
+                                                               }
+                                                            }
+                                                            _loc20_++;
+                                                         }
+                                                      }
+                                                      if(_loc19_ != 63)
+                                                      {
+                                                         _loc53_ = op_li8(_loc17_) /*Alchemy*/;
+                                                         while(true)
+                                                         {
+                                                            _loc53_--;
+                                                            if(_loc53_ < 0)
+                                                            {
+                                                               break;
+                                                            }
+                                                            if((op_li16(_loc17_ + 1) /*Alchemy*/ & 1 << _loc53_) != 0)
+                                                            {
+                                                               _loc12_ = _loc12_ | 1 << _loc11_;
+                                                            }
+                                                            _loc11_--;
+                                                            if(_loc11_ < 0)
+                                                            {
+                                                               if(_loc12_ == 255)
+                                                               {
+                                                                  _loc10_ = _loc10_ + 2;
+                                                               }
+                                                               else
+                                                               {
+                                                                  _loc10_++;
+                                                               }
+                                                               if(_loc12_ == 255)
+                                                               {
+                                                                  _loc11_ = 7;
+                                                                  _loc12_ = 0;
+                                                               }
+                                                               else
+                                                               {
+                                                                  _loc11_ = 7;
+                                                                  _loc12_ = 0;
+                                                               }
+                                                            }
+                                                         }
+                                                      }
+                                                      _loc15_ = _loc22_;
+                                                      _loc7_ = _loc7_ + 8;
+                                                   }while(_loc7_ < _loc4_);
+                                                   
+                                                   _loc8_ = _loc8_ + 8;
+                                                }while(_loc8_ < _loc5_);
+                                                
+                                                if(_loc11_ >= 0)
+                                                {
+                                                   _loc22_ = _loc11_ + 1;
+                                                   while(true)
+                                                   {
+                                                      _loc22_--;
+                                                      if(_loc22_ < 0)
+                                                      {
+                                                         break;
+                                                      }
+                                                      if((1 << _loc11_ + 1-1 & 1 << _loc22_) != 0)
+                                                      {
+                                                         _loc12_ = _loc12_ | 1 << _loc11_;
+                                                      }
+                                                      _loc11_--;
+                                                      if(_loc11_ < 0)
+                                                      {
+                                                         if(_loc12_ == 255)
+                                                         {
+                                                            _loc10_ = _loc10_ + 2;
+                                                         }
+                                                         else
+                                                         {
+                                                            _loc10_++;
+                                                         }
+                                                         if(_loc12_ == 255)
+                                                         {
+                                                            _loc11_ = 7;
+                                                            _loc12_ = 0;
+                                                         }
+                                                         else
+                                                         {
+                                                            _loc11_ = 7;
+                                                            _loc12_ = 0;
+                                                         }
+                                                      }
+                                                   }
+                                                }
+                                                ApplicationDomain.currentDomain.domainMemory = _loc3_;
+                                                var _loc58_:ByteArray = new ByteArray();
+                                                _loc58_.writeBytes(_loc6_,201609,_loc10_ - 201609 + 2);
+                                                _loc58_.position = 0;
+                                                return _loc58_;
+                                             }
+                                          }
+                                       }

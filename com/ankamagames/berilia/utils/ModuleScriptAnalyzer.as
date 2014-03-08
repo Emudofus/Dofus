@@ -15,59 +15,57 @@ package com.ankamagames.berilia.utils
    import com.ankamagames.berilia.utils.web.HttpServer;
    import com.ankamagames.jerakine.resources.adapters.impl.AdvancedSwfAdapter;
    import flash.utils.setTimeout;
-
-
+   
    public class ModuleScriptAnalyzer extends Object
    {
-         
-
-      public function ModuleScriptAnalyzer(target:UiModule, readyFct:Function, appDomain:ApplicationDomain=null) {
-         var tmpList:Array = null;
-         var action:String = null;
-         var api:String = null;
-         var hook:String = null;
-         var scriptUrl:String = null;
-         var uri:Uri = null;
-         var mp:String = null;
-         this._loader=ResourceLoaderFactory.getLoader(ResourceLoaderType.SINGLE_LOADER);
-         this._actions=[];
-         this._hooks=[];
-         this._apis=[];
+      
+      public function ModuleScriptAnalyzer(param1:UiModule, param2:Function, param3:ApplicationDomain=null) {
+         var _loc4_:Array = null;
+         var _loc5_:String = null;
+         var _loc6_:String = null;
+         var _loc7_:String = null;
+         var _loc8_:String = null;
+         var _loc9_:Uri = null;
+         var _loc10_:String = null;
+         this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SINGLE_LOADER);
+         this._actions = [];
+         this._hooks = [];
+         this._apis = [];
          super();
          if(!_actionList)
          {
-            _actionList=new Dictionary();
-            tmpList=UiModuleManager.getInstance().sharedDefinitionInstance.getActionList();
-            for each (_actionList[action] in tmpList)
+            _actionList = new Dictionary();
+            _loc4_ = UiModuleManager.getInstance().sharedDefinitionInstance.getActionList();
+            for each (_actionList[_loc5_] in _loc4_)
             {
             }
-            _apiList=new Dictionary();
-            tmpList=UiModuleManager.getInstance().sharedDefinitionInstance.getApiList();
-            for each (_apiList[api] in tmpList)
+            _apiList = new Dictionary();
+            _loc4_ = UiModuleManager.getInstance().sharedDefinitionInstance.getApiList();
+            for each (_apiList[_loc6_] in _loc4_)
             {
             }
-            _hookList=new Dictionary();
-            tmpList=UiModuleManager.getInstance().sharedDefinitionInstance.getHookList();
-            for each (_hookList[hook] in tmpList)
+            _hookList = new Dictionary();
+            _loc4_ = UiModuleManager.getInstance().sharedDefinitionInstance.getHookList();
+            for each (_hookList[_loc7_] in _loc4_)
             {
             }
          }
-         this._readyFct=readyFct;
-         if(!appDomain)
+         this._readyFct = param2;
+         if(!param3)
          {
-            scriptUrl=target.script;
+            _loc8_ = param1.script;
             if(ApplicationDomain.currentDomain.hasDefinition("flash.net.ServerSocket"))
             {
-               mp=File.applicationDirectory.nativePath.split("\\").join("/");
-               if(scriptUrl.indexOf(mp)!=-1)
+               _loc10_ = File.applicationDirectory.nativePath.split("\\").join("/");
+               if(_loc8_.indexOf(_loc10_) != -1)
                {
-                  scriptUrl=scriptUrl.substr(scriptUrl.indexOf(mp)+mp.length);
+                  _loc8_ = _loc8_.substr(_loc8_.indexOf(_loc10_) + _loc10_.length);
                }
-               scriptUrl=HttpServer.getInstance().getUrlTo(scriptUrl);
-               uri=new Uri(scriptUrl);
+               _loc8_ = HttpServer.getInstance().getUrlTo(_loc8_);
+               _loc9_ = new Uri(_loc8_);
                this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onSwfLoaded);
                this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onSwfFailed);
-               this._loader.load(uri,null,AdvancedSwfAdapter,true);
+               this._loader.load(_loc9_,null,AdvancedSwfAdapter,true);
             }
             else
             {
@@ -76,77 +74,76 @@ package com.ankamagames.berilia.utils
          }
          else
          {
-            this.process(appDomain);
-            setTimeout(readyFct,1);
+            this.process(param3);
+            setTimeout(param2,1);
          }
       }
-
+      
       private static var _actionList:Dictionary;
-
+      
       private static var _apiList:Dictionary;
-
+      
       private static var _hookList:Dictionary;
-
+      
       private var _loader:IResourceLoader;
-
+      
       private var _actions:Array;
-
+      
       private var _hooks:Array;
-
+      
       private var _apis:Array;
-
+      
       private var _readyFct:Function;
-
+      
       public function get actions() : Array {
          return this._actions;
       }
-
+      
       public function get hooks() : Array {
          return this._hooks;
       }
-
+      
       public function get apis() : Array {
          return this._apis;
       }
-
-      private function onSwfLoaded(e:ResourceLoadedEvent) : void {
-         var aswf:ASwf = e.resource;
+      
+      private function onSwfLoaded(param1:ResourceLoadedEvent) : void {
+         var _loc2_:ASwf = param1.resource;
          this._loader.removeEventListener(ResourceLoadedEvent.LOADED,this.onSwfLoaded);
          this._loader.removeEventListener(ResourceErrorEvent.ERROR,this.onSwfFailed);
-         this.process(aswf.applicationDomain);
+         this.process(_loc2_.applicationDomain);
          this._readyFct();
       }
-
-      private function process(appDomain:ApplicationDomain) : void {
-         var action:String = null;
-         var hook:String = null;
-         var api:String = null;
-         for each (action in _actionList)
+      
+      private function process(param1:ApplicationDomain) : void {
+         var _loc2_:String = null;
+         var _loc3_:String = null;
+         var _loc4_:String = null;
+         for each (_loc2_ in _actionList)
          {
-            if(appDomain.hasDefinition("d2actions::"+action))
+            if(param1.hasDefinition("d2actions::" + _loc2_))
             {
-               this._actions.push(action);
+               this._actions.push(_loc2_);
             }
          }
-         for each (hook in _hookList)
+         for each (_loc3_ in _hookList)
          {
-            if(appDomain.hasDefinition("d2hooks::"+hook))
+            if(param1.hasDefinition("d2hooks::" + _loc3_))
             {
-               this._hooks.push(hook);
+               this._hooks.push(_loc3_);
             }
          }
-         for each (api in _apiList)
+         for each (_loc4_ in _apiList)
          {
-            if(appDomain.hasDefinition("d2api::"+api))
+            if(param1.hasDefinition("d2api::" + _loc4_))
             {
-               this._apis.push(api);
+               this._apis.push(_loc4_);
             }
          }
       }
-
-      private function onSwfFailed(e:ResourceErrorEvent) : void {
+      
+      private function onSwfFailed(param1:ResourceErrorEvent) : void {
          this._readyFct();
       }
    }
-
 }

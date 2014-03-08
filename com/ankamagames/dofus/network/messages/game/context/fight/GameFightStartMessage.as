@@ -5,59 +5,51 @@ package com.ankamagames.dofus.network.messages.game.context.fight
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class GameFightStartMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function GameFightStartMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 712;
-
+      
       override public function get isInitialized() : Boolean {
          return true;
       }
-
+      
       override public function getMessageId() : uint {
          return 712;
       }
-
+      
       public function initGameFightStartMessage() : GameFightStartMessage {
          return this;
       }
-
+      
       override public function reset() : void {
-         
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         
+      
+      public function serialize(param1:IDataOutput) : void {
       }
-
-      public function serializeAs_GameFightStartMessage(output:IDataOutput) : void {
-         
+      
+      public function serializeAs_GameFightStartMessage(param1:IDataOutput) : void {
       }
-
-      public function deserialize(input:IDataInput) : void {
-         
+      
+      public function deserialize(param1:IDataInput) : void {
       }
-
-      public function deserializeAs_GameFightStartMessage(input:IDataInput) : void {
-         
+      
+      public function deserializeAs_GameFightStartMessage(param1:IDataInput) : void {
       }
    }
-
 }

@@ -6,63 +6,59 @@ package flashx.textLayout.utils
    import flash.geom.Rectangle;
    import flashx.textLayout.compose.IFlowComposer;
    import flashx.textLayout.tlf_internal;
-
+   
    use namespace tlf_internal;
-
+   
    public final class GeometryUtil extends Object
    {
-         
-
+      
       public function GeometryUtil() {
          super();
       }
-
-      public static function getHighlightBounds(range:TextRange) : Array {
-         var nextLine:TextFlowLine = null;
-         var heightAndAdj:Array = null;
-         var textLine:TextLine = null;
-         var rect:Rectangle = null;
-         var temp:TextFlowLine = null;
-         var obj:Object = null;
-         var flowComposer:IFlowComposer = range.textFlow.flowComposer;
-         if(!flowComposer)
+      
+      public static function getHighlightBounds(param1:TextRange) : Array {
+         var _loc7_:TextFlowLine = null;
+         var _loc11_:Array = null;
+         var _loc12_:TextLine = null;
+         var _loc13_:Rectangle = null;
+         var _loc14_:TextFlowLine = null;
+         var _loc15_:Object = null;
+         var _loc2_:IFlowComposer = param1.textFlow.flowComposer;
+         if(!_loc2_)
          {
             return null;
          }
-         var resultShapes:Array = new Array();
-         var begLine:int = flowComposer.findLineIndexAtPosition(range.absoluteStart);
-         var endLine:int = range.absoluteStart==range.absoluteEnd?begLine:flowComposer.findLineIndexAtPosition(range.absoluteEnd);
-         if(endLine>=flowComposer.numLines)
+         var _loc3_:Array = new Array();
+         var _loc4_:int = _loc2_.findLineIndexAtPosition(param1.absoluteStart);
+         var _loc5_:int = param1.absoluteStart == param1.absoluteEnd?_loc4_:_loc2_.findLineIndexAtPosition(param1.absoluteEnd);
+         if(_loc5_ >= _loc2_.numLines)
          {
-            endLine=flowComposer.numLines-1;
+            _loc5_ = _loc2_.numLines-1;
          }
-         var prevLine:TextFlowLine = begLine<0?flowComposer.getLineAt(begLine-1):null;
-         var line:TextFlowLine = flowComposer.getLineAt(begLine);
-         var mainRects:Array = [];
-         var curLineIndex:int = begLine;
-         while(curLineIndex<=endLine)
+         var _loc6_:TextFlowLine = _loc4_ > 0?_loc2_.getLineAt(_loc4_-1):null;
+         var _loc8_:TextFlowLine = _loc2_.getLineAt(_loc4_);
+         var _loc9_:Array = [];
+         var _loc10_:int = _loc4_;
+         while(_loc10_ <= _loc5_)
          {
-            nextLine=!(curLineIndex==flowComposer.numLines-1)?flowComposer.getLineAt(curLineIndex+1):null;
-            heightAndAdj=line.getRomanSelectionHeightAndVerticalAdjustment(prevLine,nextLine);
-            textLine=line.getTextLine(true);
-            line.calculateSelectionBounds(textLine,mainRects,range.absoluteStart>line.absoluteStart?line.absoluteStart-line.paragraph.getAbsoluteStart():range.absoluteStart-line.paragraph.getAbsoluteStart(),range.absoluteEnd<line.absoluteStart+line.textLength?line.absoluteStart+line.textLength-line.paragraph.getAbsoluteStart():range.absoluteEnd-line.paragraph.getAbsoluteStart(),range.textFlow.computedFormat.blockProgression,heightAndAdj);
-            for each (rect in mainRects)
+            _loc7_ = _loc10_ != _loc2_.numLines-1?_loc2_.getLineAt(_loc10_ + 1):null;
+            _loc11_ = _loc8_.getRomanSelectionHeightAndVerticalAdjustment(_loc6_,_loc7_);
+            _loc12_ = _loc8_.getTextLine(true);
+            _loc8_.calculateSelectionBounds(_loc12_,_loc9_,param1.absoluteStart < _loc8_.absoluteStart?_loc8_.absoluteStart - _loc8_.paragraph.getAbsoluteStart():param1.absoluteStart - _loc8_.paragraph.getAbsoluteStart(),param1.absoluteEnd > _loc8_.absoluteStart + _loc8_.textLength?_loc8_.absoluteStart + _loc8_.textLength - _loc8_.paragraph.getAbsoluteStart():param1.absoluteEnd - _loc8_.paragraph.getAbsoluteStart(),param1.textFlow.computedFormat.blockProgression,_loc11_);
+            for each (_loc13_ in _loc9_)
             {
-               obj=new Object();
-               obj.textLine=textLine;
-               obj.rect=rect.clone();
-               resultShapes.push(obj);
+               _loc15_ = new Object();
+               _loc15_.textLine = _loc12_;
+               _loc15_.rect = _loc13_.clone();
+               _loc3_.push(_loc15_);
             }
-            mainRects.length=0;
-            temp=line;
-            line=nextLine;
-            prevLine=temp;
-            curLineIndex++;
+            _loc9_.length = 0;
+            _loc14_ = _loc8_;
+            _loc8_ = _loc7_;
+            _loc6_ = _loc14_;
+            _loc10_++;
          }
-         return resultShapes;
+         return _loc3_;
       }
-
-
    }
-
 }

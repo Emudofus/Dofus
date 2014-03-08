@@ -18,134 +18,135 @@ package com.ankamagames.dofus.misc.utils.errormanager
    import flash.net.URLLoader;
    import flash.net.navigateToURL;
    import com.ankamagames.dofus.kernel.Kernel;
-
-
+   
    public class ErrorReport extends Object
    {
-         
-
-      public function ErrorReport(reportInfo:Object, logBuffer:TemporaryBufferTarget) {
+      
+      public function ErrorReport(param1:Object, param2:TemporaryBufferTarget) {
          super();
-         this._logBuffer=logBuffer;
-         this._reportData=reportInfo;
+         this._logBuffer = param2;
+         this._reportData = param1;
       }
-
+      
       private static var _htmlTemplate:Class = ErrorReport__htmlTemplate;
-
+      
       private static var ONLINE_REPORT_PLATEFORM:String = "http://utils.dofus.lan/bugs/";
-
-      private static var ONLINE_REPORT_SERVICE:String = ONLINE_REPORT_PLATEFORM+"makeReport.php";
-
+      
+      private static var ONLINE_REPORT_SERVICE:String = ONLINE_REPORT_PLATEFORM + "makeReport.php";
+      
       private var _reportData:Object;
-
+      
       private var _logBuffer:TemporaryBufferTarget;
-
+      
       private var _htmlReport:String = "";
-
+      
       private var _fightFrame:FightContextFrame;
-
+      
       private function makeHtmlReport() : String {
-         var template:String = null;
-         var key:String = null;
-         if(this._htmlReport=="")
+         var _loc1_:String = null;
+         var _loc2_:String = null;
+         if(this._htmlReport == "")
          {
-            template=new _htmlTemplate();
-            if((this._reportData.screenshot)&&(this._reportData.screenshot is BitmapData))
+            _loc1_ = new _htmlTemplate();
+            if((this._reportData.screenshot) && this._reportData.screenshot is BitmapData)
             {
-               this._reportData.screenshot=Base64.encode(JPEGEncoder.encode(this._reportData.screenshot,80));
+               this._reportData.screenshot = Base64.encode(JPEGEncoder.encode(this._reportData.screenshot,80));
             }
-            for (key in this._reportData)
+            if((this._reportData.stacktrace) && this._reportData.stacktrace is String)
             {
-               template=template.replace("{{"+key+"}}",this._reportData[key]);
+               this._reportData.stacktrace = String(this._reportData.stacktrace).replace(new RegExp("<","g"),"&lt;").replace(new RegExp(">","g"),"&gt;");
             }
-            this._htmlReport=template;
+            for (_loc2_ in this._reportData)
+            {
+               _loc1_ = _loc1_.replace("{{" + _loc2_ + "}}",this._reportData[_loc2_]);
+            }
+            this._htmlReport = _loc1_;
          }
          return this._htmlReport;
       }
-
+      
       public function saveReport() : void {
-         var date:Date = new Date();
-         var fileName:String = "dofus_bug_report_"+date.date+"-"+(date.month+1)+"-"+date.fullYear+"_"+date.hours+"h"+date.minutes+"m"+date.seconds+"s.html";
-         var file:File = File.desktopDirectory.resolvePath(fileName);
+         var _loc1_:Date = new Date();
+         var _loc2_:* = "dofus_bug_report_" + _loc1_.date + "-" + (_loc1_.month + 1) + "-" + _loc1_.fullYear + "_" + _loc1_.hours + "h" + _loc1_.minutes + "m" + _loc1_.seconds + "s.html";
+         var _loc3_:File = File.desktopDirectory.resolvePath(_loc2_);
          if(!AirScanner.hasAir())
          {
-            file.save(this.makeHtmlReport(),fileName);
+            _loc3_.save(this.makeHtmlReport(),_loc2_);
          }
          else
          {
-            file.addEventListener(Event.SELECT,this.onFileSelected);
-            file.browseForSave("Save report");
+            _loc3_.addEventListener(Event.SELECT,this.onFileSelected);
+            _loc3_.browseForSave("Save report");
          }
       }
-
-      private function onFileSelected(e:Event) : void {
+      
+      private function onFileSelected(param1:Event) : void {
          var fs:FileStream = null;
          var popup:SystemPopupUI = null;
+         var e:Event = param1;
          try
          {
-            fs=new FileStream();
+            fs = new FileStream();
             fs.open(e.target as File,FileMode.WRITE);
             fs.writeUTFBytes(this.makeHtmlReport());
             fs.close();
          }
          catch(err:Error)
          {
-            popup=new SystemPopupUI("ReportSaveFail");
-            popup.title="Error";
-            popup.content="An error occurred during report saving :\n"+err.message;
+            popup = new SystemPopupUI("ReportSaveFail");
+            popup.title = "Error";
+            popup.content = "An error occurred during report saving :\n" + err.message;
             popup.show();
          }
       }
-
+      
       public function sendReport() : void {
-         var ur:URLRequest = new URLRequest(ONLINE_REPORT_SERVICE);
-         ur.method=URLRequestMethod.POST;
-         var reportRawData:ByteArray = new ByteArray();
-         reportRawData.writeUTFBytes(this.makeHtmlReport());
-         ur.data=new URLVariables();
-         URLVariables(ur.data).userName=File.documentsDirectory.nativePath.split(File.separator)[2];
-         URLVariables(ur.data).htmlContent=Base64.encode(reportRawData);
-         var urlLoader:URLLoader = new URLLoader(ur);
-         urlLoader.addEventListener(Event.COMPLETE,this.sendReportComplete);
+         var _loc1_:URLRequest = new URLRequest(ONLINE_REPORT_SERVICE);
+         _loc1_.method = URLRequestMethod.POST;
+         var _loc2_:ByteArray = new ByteArray();
+         _loc2_.writeUTFBytes(this.makeHtmlReport());
+         _loc1_.data = new URLVariables();
+         URLVariables(_loc1_.data).userName = File.documentsDirectory.nativePath.split(File.separator)[2];
+         URLVariables(_loc1_.data).htmlContent = Base64.encode(_loc2_);
+         var _loc3_:URLLoader = new URLLoader(_loc1_);
+         _loc3_.addEventListener(Event.COMPLETE,this.sendReportComplete);
       }
-
-      private function sendReportComplete(e:Event) : void {
-         var popup2:SystemPopupUI = null;
-         var response:String = e.currentTarget.data;
-         if(response.charAt(0)=="0")
+      
+      private function sendReportComplete(param1:Event) : void {
+         var _loc3_:SystemPopupUI = null;
+         var _loc2_:String = param1.currentTarget.data;
+         if(_loc2_.charAt(0) == "0")
          {
-            navigateToURL(new URLRequest(ONLINE_REPORT_PLATEFORM+response.substr(2)));
+            navigateToURL(new URLRequest(ONLINE_REPORT_PLATEFORM + _loc2_.substr(2)));
          }
          else
          {
-            popup2=new SystemPopupUI("exception"+Math.random());
-            popup2.width=300;
-            popup2.centerContent=false;
-            popup2.title="Error";
-            popup2.content=response.substr(2);
-            popup2.buttons=[
+            _loc3_ = new SystemPopupUI("exception" + Math.random());
+            _loc3_.width = 300;
+            _loc3_.centerContent = false;
+            _loc3_.title = "Error";
+            _loc3_.content = _loc2_.substr(2);
+            _loc3_.buttons = [
                {
-                  label:"OK",
-                  callback:trace
-               }
-            ];
-            popup2.show();
+                  "label":"OK",
+                  "callback":trace
+               }];
+            _loc3_.show();
             if(!AirScanner.hasAir())
             {
-               popup2.scaleX=800/1280;
-               popup2.scaleY=600/1024;
+               _loc3_.scaleX = 800 / 1280;
+               _loc3_.scaleY = 600 / 1024;
             }
          }
-         (e.currentTarget as URLLoader).removeEventListener(Event.COMPLETE,this.sendReportComplete);
+         (param1.currentTarget as URLLoader).removeEventListener(Event.COMPLETE,this.sendReportComplete);
       }
-
+      
       private function getFightFrame() : FightContextFrame {
-         if(this._fightFrame==null)
+         if(this._fightFrame == null)
          {
-            this._fightFrame=Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
+            this._fightFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
          }
          return this._fightFrame;
       }
    }
-
 }

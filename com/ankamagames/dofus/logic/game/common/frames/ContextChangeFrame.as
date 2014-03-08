@@ -17,34 +17,32 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.kernel.PanicMessages;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.dofus.logic.game.common.actions.GameContextQuitAction;
-
-
+   
    public class ContextChangeFrame extends Object implements Frame
    {
-         
-
+      
       public function ContextChangeFrame() {
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ContextChangeFrame));
-
+      
       public function get priority() : int {
          return Priority.LOW;
       }
-
+      
       public function pushed() : Boolean {
          return true;
       }
-
-      public function process(msg:Message) : Boolean {
-         var gccmsg:GameContextCreateMessage = null;
-         var gcqmsg:GameContextQuitMessage = null;
+      
+      public function process(param1:Message) : Boolean {
+         var _loc2_:GameContextCreateMessage = null;
+         var _loc3_:GameContextQuitMessage = null;
          switch(true)
          {
-            case msg is GameContextCreateMessage:
-               gccmsg=msg as GameContextCreateMessage;
-               switch(gccmsg.context)
+            case param1 is GameContextCreateMessage:
+               _loc2_ = param1 as GameContextCreateMessage;
+               switch(_loc2_.context)
                {
                   case GameContextEnum.ROLE_PLAY:
                      Kernel.getWorker().addFrame(new RoleplayContextFrame());
@@ -55,21 +53,20 @@ package com.ankamagames.dofus.logic.game.common.frames
                      KernelEventsManager.getInstance().processCallback(HookList.ContextChanged,GameContextEnum.FIGHT);
                      break;
                   default:
-                     Kernel.panic(PanicMessages.WRONG_CONTEXT_CREATED,[gccmsg.context]);
+                     Kernel.panic(PanicMessages.WRONG_CONTEXT_CREATED,[_loc2_.context]);
                }
                return true;
-            case msg is GameContextQuitAction:
-               gcqmsg=new GameContextQuitMessage();
-               ConnectionsHandler.getConnection().send(gcqmsg);
+            case param1 is GameContextQuitAction:
+               _loc3_ = new GameContextQuitMessage();
+               ConnectionsHandler.getConnection().send(_loc3_);
                return true;
             default:
                return false;
          }
       }
-
+      
       public function pulled() : Boolean {
          return true;
       }
    }
-
 }

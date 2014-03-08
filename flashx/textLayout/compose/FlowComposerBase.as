@@ -7,423 +7,430 @@ package flashx.textLayout.compose
    import flashx.textLayout.elements.BackgroundManager;
    import flash.text.engine.TextLineValidity;
    import flashx.textLayout.elements.FlowLeafElement;
-
+   
    use namespace tlf_internal;
-
+   
    public class FlowComposerBase extends Object
    {
-         
-
+      
       public function FlowComposerBase() {
          super();
-         this._lines=new Array();
-         this._swfContext=null;
+         this._lines = new Array();
+         this._swfContext = null;
       }
-
-      tlf_internal  static function computeBaseSWFContext(context:ISWFContext) : ISWFContext {
-         return (context)&&(Object(context).hasOwnProperty("getBaseSWFContext"))?context["getBaseSWFContext"]():context;
+      
+      tlf_internal  static function computeBaseSWFContext(param1:ISWFContext) : ISWFContext {
+         return (param1) && (Object(param1).hasOwnProperty("getBaseSWFContext"))?param1["getBaseSWFContext"]():param1;
       }
-
+      
       private var _lines:Array;
-
+      
       protected var _textFlow:TextFlow;
-
+      
       protected var _damageAbsoluteStart:int;
-
+      
       protected var _swfContext:ISWFContext;
-
+      
       public function get lines() : Array {
          return this._lines;
       }
-
-      public function getLineAt(index:int) : TextFlowLine {
-         return this._lines[index];
+      
+      public function getLineAt(param1:int) : TextFlowLine {
+         return this._lines[param1];
       }
-
+      
       public function get numLines() : int {
          return this._lines.length;
       }
-
+      
       public function get textFlow() : TextFlow {
          return this._textFlow;
       }
-
+      
       public function get damageAbsoluteStart() : int {
          return this._damageAbsoluteStart;
       }
-
+      
       protected function initializeLines() : void {
-         var line:TextFlowLine = null;
-         var textLine:TextLine = null;
-         var textBlock:TextBlock = null;
-         var backgroundManager:BackgroundManager = this._textFlow?this._textFlow.backgroundManager:null;
+         var _loc2_:TextFlowLine = null;
+         var _loc3_:TextLine = null;
+         var _loc4_:TextBlock = null;
+         var _loc1_:BackgroundManager = this._textFlow?this._textFlow.backgroundManager:null;
          if(TextLineRecycler.textLineRecyclerEnabled)
          {
-            for each (line in this._lines)
+            for each (_loc2_ in this._lines)
             {
-               textLine=line.peekTextLine();
-               if((textLine)&&(!textLine.parent))
+               _loc3_ = _loc2_.peekTextLine();
+               if((_loc3_) && !_loc3_.parent)
                {
-                  if(textLine.validity!=TextLineValidity.INVALID)
+                  if(_loc3_.validity != TextLineValidity.INVALID)
                   {
-                     textBlock=textLine.textBlock;
-                     textBlock.releaseLines(textBlock.firstLine,textBlock.lastLine);
+                     _loc4_ = _loc3_.textBlock;
+                     _loc4_.releaseLines(_loc4_.firstLine,_loc4_.lastLine);
                   }
-                  textLine.userData=null;
-                  TextLineRecycler.addLineForReuse(textLine);
-                  if(backgroundManager)
+                  if(_loc3_.validity != TextLineValidity.INVALID)
                   {
-                     backgroundManager.removeLineFromCache(textLine);
+                     _loc3_.userData = null;
+                     TextLineRecycler.addLineForReuse(_loc3_);
+                     if(_loc1_)
+                     {
+                        _loc1_.removeLineFromCache(_loc3_);
+                     }
+                  }
+                  else
+                  {
+                     _loc3_.userData = null;
+                     TextLineRecycler.addLineForReuse(_loc3_);
+                     if(_loc1_)
+                     {
+                        _loc1_.removeLineFromCache(_loc3_);
+                     }
                   }
                }
             }
          }
          this._lines.splice(0);
-         this._damageAbsoluteStart=0;
+         this._damageAbsoluteStart = 0;
       }
-
+      
       protected function finalizeLinesAfterCompose() : void {
-         var line:TextFlowLine = null;
-         var lineEnd:* = 0;
-         if(this._lines.length==0)
+         var _loc1_:TextFlowLine = null;
+         var _loc2_:* = 0;
+         if(this._lines.length == 0)
          {
-            line=new TextFlowLine(null,null);
-            line.setTextLength(this.textFlow.textLength);
-            this._lines.push(line);
+            _loc1_ = new TextFlowLine(null,null);
+            _loc1_.setTextLength(this.textFlow.textLength);
+            this._lines.push(_loc1_);
          }
          else
          {
-            line=this._lines[this._lines.length-1];
-            lineEnd=line.absoluteStart+line.textLength;
-            if(lineEnd<this.textFlow.textLength)
+            _loc1_ = this._lines[this._lines.length-1];
+            _loc2_ = _loc1_.absoluteStart + _loc1_.textLength;
+            if(_loc2_ < this.textFlow.textLength)
             {
-               line=new TextFlowLine(null,null);
-               line.setAbsoluteStart(lineEnd);
-               line.setTextLength(this.textFlow.textLength-lineEnd);
-               this._lines.push(line);
+               _loc1_ = new TextFlowLine(null,null);
+               _loc1_.setAbsoluteStart(_loc2_);
+               _loc1_.setTextLength(this.textFlow.textLength - _loc2_);
+               this._lines.push(_loc1_);
             }
          }
       }
-
-      public function updateLengths(startPosition:int, deltaLength:int) : void {
-         var line:TextFlowLine = null;
-         var lenToDel:* = 0;
-         var curPos:* = 0;
-         var lineEndIdx:* = 0;
-         var deleteChars:* = 0;
-         if(this.numLines==0)
+      
+      public function updateLengths(param1:int, param2:int) : void {
+         var _loc3_:TextFlowLine = null;
+         var _loc6_:* = 0;
+         var _loc7_:* = 0;
+         var _loc8_:* = 0;
+         var _loc9_:* = 0;
+         if(this.numLines == 0)
          {
             return;
          }
-         var lineIdx:int = this.findLineIndexAtPosition(startPosition);
-         var damageStart:int = int.MAX_VALUE;
-         if(deltaLength>0)
+         var _loc4_:int = this.findLineIndexAtPosition(param1);
+         var _loc5_:int = int.MAX_VALUE;
+         if(param2 > 0)
          {
-            if(lineIdx==this._lines.length)
+            if(_loc4_ == this._lines.length)
             {
-               line=this._lines[this._lines.length-1];
-               line.setTextLength(line.textLength+deltaLength);
+               _loc3_ = this._lines[this._lines.length-1];
+               _loc3_.setTextLength(_loc3_.textLength + param2);
             }
             else
             {
-               line=this._lines[lineIdx++];
-               line.setTextLength(line.textLength+deltaLength);
+               _loc3_ = this._lines[_loc4_++];
+               _loc3_.setTextLength(_loc3_.textLength + param2);
             }
-            damageStart=line.absoluteStart;
+            _loc5_ = _loc3_.absoluteStart;
          }
          else
          {
-            lenToDel=-deltaLength;
-            curPos=0;
+            _loc6_ = -param2;
+            _loc7_ = 0;
             do
             {
-               line=this._lines[lineIdx];
-               line.setAbsoluteStart(line.absoluteStart+lenToDel+deltaLength);
-               curPos=startPosition<line.absoluteStart?startPosition:line.absoluteStart;
-               lineEndIdx=line.absoluteStart+line.textLength;
-               deleteChars=0;
-               if(curPos+lenToDel<=lineEndIdx)
-               {
-                  if(curPos==line.absoluteStart)
+                  _loc3_ = this._lines[_loc4_];
+                  _loc3_.setAbsoluteStart(_loc3_.absoluteStart + _loc6_ + param2);
+                  _loc7_ = param1 > _loc3_.absoluteStart?param1:_loc3_.absoluteStart;
+                  _loc8_ = _loc3_.absoluteStart + _loc3_.textLength;
+                  _loc9_ = 0;
+                  if(_loc7_ + _loc6_ <= _loc8_)
                   {
-                     deleteChars=lenToDel;
-                  }
-                  else
-                  {
-                     if(curPos==startPosition)
+                     if(_loc7_ == _loc3_.absoluteStart)
                      {
-                        deleteChars=lenToDel;
+                        _loc9_ = _loc6_;
                      }
-                  }
-               }
-               else
-               {
-                  if(curPos==line.absoluteStart)
-                  {
-                     deleteChars=line.textLength;
-                  }
-                  else
-                  {
-                     deleteChars=lineEndIdx-curPos;
-                  }
-               }
-               if((curPos==line.absoluteStart)&&(curPos+deleteChars==lineEndIdx))
-               {
-                  lenToDel=lenToDel-deleteChars;
-                  this._lines.splice(lineIdx,1);
-               }
-               else
-               {
-                  if(damageStart>line.absoluteStart)
-                  {
-                     damageStart=line.absoluteStart;
-                  }
-                  line.setTextLength(line.textLength-deleteChars);
-                  lenToDel=lenToDel-deleteChars;
-                  lineIdx++;
-               }
-               if(lenToDel<=0)
-               {
-               }
-            }
-            while(true);
-         }
-         while(lineIdx<this._lines.length)
-         {
-            line=this._lines[lineIdx];
-            if(deltaLength>=0)
-            {
-               line.setAbsoluteStart(line.absoluteStart+deltaLength);
-            }
-            else
-            {
-               line.setAbsoluteStart(line.absoluteStart<-deltaLength?line.absoluteStart+deltaLength:0);
-            }
-            lineIdx++;
-         }
-         if(this._damageAbsoluteStart>damageStart)
-         {
-            this._damageAbsoluteStart=damageStart;
-         }
-      }
-
-      public function damage(startPosition:int, damageLength:int, damageType:String) : void {
-         var line:TextFlowLine = null;
-         if((this._lines.length==0)||(this.textFlow.textLength==0))
-         {
-            return;
-         }
-         if(startPosition==this.textFlow.textLength)
-         {
-            return;
-         }
-         var lineIndex:int = this.findLineIndexAtPosition(startPosition);
-         var leaf:FlowLeafElement = this.textFlow.findLeaf(startPosition);
-         if((leaf)&&(lineIndex<0))
-         {
-            lineIndex--;
-         }
-         if(this.lines[lineIndex].absoluteStart<this._damageAbsoluteStart)
-         {
-            this._damageAbsoluteStart=this._lines[lineIndex].absoluteStart;
-         }
-         while(lineIndex<this._lines.length)
-         {
-            line=this._lines[lineIndex];
-            if(line.absoluteStart>=startPosition+damageLength)
-            {
-            }
-            else
-            {
-               line.damage(damageType);
-               lineIndex++;
-               continue;
-            }
-         }
-      }
-
-      public function isDamaged(absolutePosition:int) : Boolean {
-         if(this._lines.length==0)
-         {
-            return true;
-         }
-         return (this._damageAbsoluteStart<=absolutePosition)&&(!(this._damageAbsoluteStart==this.textFlow.textLength));
-      }
-
-      public function findLineIndexAtPosition(absolutePosition:int, preferPrevious:Boolean=false) : int {
-         var mid:* = 0;
-         var line:TextFlowLine = null;
-         var lo:int = 0;
-         var hi:int = this._lines.length-1;
-         while(lo<=hi)
-         {
-            mid=(lo+hi)/2;
-            line=this._lines[mid];
-            if(line.absoluteStart<=absolutePosition)
-            {
-               if(preferPrevious)
-               {
-                  if(line.absoluteStart+line.textLength>=absolutePosition)
-                  {
-                     return mid;
-                  }
-               }
-               else
-               {
-                  if(line.absoluteStart+line.textLength>absolutePosition)
-                  {
-                     return mid;
-                  }
-               }
-               lo=mid+1;
-            }
-            else
-            {
-               hi=mid-1;
-            }
-         }
-         return this._lines.length;
-      }
-
-      public function findLineAtPosition(absolutePosition:int, preferPrevious:Boolean=false) : TextFlowLine {
-         return this._lines[this.findLineIndexAtPosition(absolutePosition,preferPrevious)];
-      }
-
-      public function addLine(newLine:TextFlowLine, workIndex:int) : void {
-         var afterLine:TextFlowLine = null;
-         var oldCharCount:* = 0;
-         var deleteCount:* = 0;
-         var amtRemaining:* = 0;
-         var nextLine:* = 0;
-         var backgroundManager:BackgroundManager = null;
-         var recycleIdx:* = 0;
-         var textLine:TextLine = null;
-         var workLine:TextFlowLine = this._lines[workIndex];
-         var damageStart:int = int.MAX_VALUE;
-         if(this._damageAbsoluteStart==newLine.absoluteStart)
-         {
-            this._damageAbsoluteStart=newLine.absoluteStart+newLine.textLength;
-         }
-         if(workLine==null)
-         {
-            this.lines.push(newLine);
-         }
-         else
-         {
-            if(workLine.absoluteStart!=newLine.absoluteStart)
-            {
-               if(workLine.absoluteStart+workLine.textLength>newLine.absoluteStart+newLine.textLength)
-               {
-                  afterLine=new TextFlowLine(null,newLine.paragraph);
-                  afterLine.setAbsoluteStart(newLine.absoluteStart+newLine.textLength);
-                  oldCharCount=workLine.textLength;
-                  workLine.setTextLength(newLine.absoluteStart-workLine.absoluteStart);
-                  afterLine.setTextLength(oldCharCount-newLine.textLength-workLine.textLength);
-                  this._lines.splice(workIndex+1,0,newLine,afterLine);
-               }
-               else
-               {
-                  workLine.setTextLength(newLine.absoluteStart-workLine.absoluteStart);
-                  afterLine=this._lines[workIndex+1];
-                  afterLine.setTextLength(newLine.absoluteStart+newLine.textLength-afterLine.absoluteStart);
-                  afterLine.setAbsoluteStart(newLine.absoluteStart+newLine.textLength);
-                  this._lines.splice(workIndex+1,0,newLine);
-               }
-               damageStart=workLine.absoluteStart;
-            }
-            else
-            {
-               if(workLine.textLength>newLine.textLength)
-               {
-                  workLine.setTextLength(workLine.textLength-newLine.textLength);
-                  workLine.setAbsoluteStart(newLine.absoluteStart+newLine.textLength);
-                  workLine.damage(TextLineValidity.INVALID);
-                  this._lines.splice(workIndex,0,newLine);
-                  damageStart=workLine.absoluteStart;
-               }
-               else
-               {
-                  deleteCount=1;
-                  if(workLine.textLength!=newLine.textLength)
-                  {
-                     amtRemaining=newLine.textLength-workLine.textLength;
-                     nextLine=workIndex+1;
-                     while(amtRemaining>0)
+                     else
                      {
-                        afterLine=this._lines[nextLine];
-                        if(amtRemaining<afterLine.textLength)
+                        if(_loc7_ == param1)
                         {
-                           afterLine.setTextLength(afterLine.textLength-amtRemaining);
-                           afterLine.damage(TextLineValidity.INVALID);
-                        }
-                        else
-                        {
-                           deleteCount++;
-                           amtRemaining=amtRemaining-afterLine.textLength;
-                           nextLine++;
-                           afterLine=nextLine>this._lines.length?this._lines[nextLine]:null;
-                           continue;
+                           _loc9_ = _loc6_;
                         }
                      }
                   }
-                  if(TextLineRecycler.textLineRecyclerEnabled)
+                  else
                   {
-                     backgroundManager=this.textFlow.backgroundManager;
-                     recycleIdx=workIndex;
-                     while(recycleIdx<workIndex+deleteCount)
+                     if(_loc7_ == _loc3_.absoluteStart)
                      {
-                        textLine=TextFlowLine(this._lines[recycleIdx]).peekTextLine();
-                        if((textLine)&&(!textLine.parent))
+                        _loc9_ = _loc3_.textLength;
+                     }
+                     else
+                     {
+                        _loc9_ = _loc8_ - _loc7_;
+                     }
+                  }
+                  if(_loc7_ == _loc3_.absoluteStart && _loc7_ + _loc9_ == _loc8_)
+                  {
+                     _loc6_ = _loc6_ - _loc9_;
+                     this._lines.splice(_loc4_,1);
+                  }
+                  else
+                  {
+                     if(_loc5_ > _loc3_.absoluteStart)
+                     {
+                        _loc5_ = _loc3_.absoluteStart;
+                     }
+                     _loc3_.setTextLength(_loc3_.textLength - _loc9_);
+                     _loc6_ = _loc6_ - _loc9_;
+                     _loc4_++;
+                  }
+               }while(_loc6_ > 0);
+               
+            }
+            while(_loc4_ < this._lines.length)
+            {
+               _loc3_ = this._lines[_loc4_];
+               if(param2 >= 0)
+               {
+                  _loc3_.setAbsoluteStart(_loc3_.absoluteStart + param2);
+               }
+               else
+               {
+                  _loc3_.setAbsoluteStart(_loc3_.absoluteStart > -param2?_loc3_.absoluteStart + param2:0);
+               }
+               _loc4_++;
+            }
+            if(this._damageAbsoluteStart > _loc5_)
+            {
+               this._damageAbsoluteStart = _loc5_;
+            }
+         }
+         
+         public function damage(param1:int, param2:int, param3:String) : void {
+            var _loc6_:TextFlowLine = null;
+            if(this._lines.length == 0 || this.textFlow.textLength == 0)
+            {
+               return;
+            }
+            if(param1 == this.textFlow.textLength)
+            {
+               return;
+            }
+            var _loc4_:int = this.findLineIndexAtPosition(param1);
+            var _loc5_:FlowLeafElement = this.textFlow.findLeaf(param1);
+            if((_loc5_) && _loc4_ > 0)
+            {
+               _loc4_--;
+            }
+            if(this.lines[_loc4_].absoluteStart < this._damageAbsoluteStart)
+            {
+               this._damageAbsoluteStart = this._lines[_loc4_].absoluteStart;
+            }
+            while(_loc4_ < this._lines.length)
+            {
+               _loc6_ = this._lines[_loc4_];
+               if(_loc6_.absoluteStart >= param1 + param2)
+               {
+                  break;
+               }
+               _loc6_.damage(param3);
+               _loc4_++;
+            }
+         }
+         
+         public function isDamaged(param1:int) : Boolean {
+            if(this._lines.length == 0)
+            {
+               return true;
+            }
+            return this._damageAbsoluteStart <= param1 && !(this._damageAbsoluteStart == this.textFlow.textLength);
+         }
+         
+         public function findLineIndexAtPosition(param1:int, param2:Boolean=false) : int {
+            var _loc5_:* = 0;
+            var _loc6_:TextFlowLine = null;
+            var _loc3_:* = 0;
+            var _loc4_:int = this._lines.length-1;
+            while(_loc3_ <= _loc4_)
+            {
+               _loc5_ = (_loc3_ + _loc4_) / 2;
+               _loc6_ = this._lines[_loc5_];
+               if(_loc6_.absoluteStart <= param1)
+               {
+                  if(param2)
+                  {
+                     if(_loc6_.absoluteStart + _loc6_.textLength >= param1)
+                     {
+                        return _loc5_;
+                     }
+                  }
+                  else
+                  {
+                     if(_loc6_.absoluteStart + _loc6_.textLength > param1)
+                     {
+                        return _loc5_;
+                     }
+                  }
+                  _loc3_ = _loc5_ + 1;
+               }
+               else
+               {
+                  _loc4_ = _loc5_-1;
+               }
+            }
+            return this._lines.length;
+         }
+         
+         public function findLineAtPosition(param1:int, param2:Boolean=false) : TextFlowLine {
+            return this._lines[this.findLineIndexAtPosition(param1,param2)];
+         }
+         
+         public function addLine(param1:TextFlowLine, param2:int) : void {
+            var _loc4_:TextFlowLine = null;
+            var _loc6_:* = 0;
+            var _loc7_:* = 0;
+            var _loc8_:* = 0;
+            var _loc9_:* = 0;
+            var _loc10_:BackgroundManager = null;
+            var _loc11_:* = 0;
+            var _loc12_:TextLine = null;
+            var _loc3_:TextFlowLine = this._lines[param2];
+            var _loc5_:int = int.MAX_VALUE;
+            if(this._damageAbsoluteStart == param1.absoluteStart)
+            {
+               this._damageAbsoluteStart = param1.absoluteStart + param1.textLength;
+            }
+            if(_loc3_ == null)
+            {
+               this.lines.push(param1);
+            }
+            else
+            {
+               if(_loc3_.absoluteStart != param1.absoluteStart)
+               {
+                  if(_loc3_.absoluteStart + _loc3_.textLength > param1.absoluteStart + param1.textLength)
+                  {
+                     _loc4_ = new TextFlowLine(null,param1.paragraph);
+                     _loc4_.setAbsoluteStart(param1.absoluteStart + param1.textLength);
+                     _loc6_ = _loc3_.textLength;
+                     _loc3_.setTextLength(param1.absoluteStart - _loc3_.absoluteStart);
+                     _loc4_.setTextLength(_loc6_ - param1.textLength - _loc3_.textLength);
+                     this._lines.splice(param2 + 1,0,param1,_loc4_);
+                  }
+                  else
+                  {
+                     _loc3_.setTextLength(param1.absoluteStart - _loc3_.absoluteStart);
+                     _loc4_ = this._lines[param2 + 1];
+                     _loc4_.setTextLength(param1.absoluteStart + param1.textLength - _loc4_.absoluteStart);
+                     _loc4_.setAbsoluteStart(param1.absoluteStart + param1.textLength);
+                     this._lines.splice(param2 + 1,0,param1);
+                  }
+                  _loc5_ = _loc3_.absoluteStart;
+               }
+               else
+               {
+                  if(_loc3_.textLength > param1.textLength)
+                  {
+                     _loc3_.setTextLength(_loc3_.textLength - param1.textLength);
+                     _loc3_.setAbsoluteStart(param1.absoluteStart + param1.textLength);
+                     _loc3_.damage(TextLineValidity.INVALID);
+                     this._lines.splice(param2,0,param1);
+                     _loc5_ = _loc3_.absoluteStart;
+                  }
+                  else
+                  {
+                     _loc7_ = 1;
+                     if(_loc3_.textLength != param1.textLength)
+                     {
+                        _loc8_ = param1.textLength - _loc3_.textLength;
+                        _loc9_ = param2 + 1;
+                        while(_loc8_ > 0)
                         {
-                           if(textLine.validity!=TextLineValidity.VALID)
+                           _loc4_ = this._lines[_loc9_];
+                           if(_loc8_ < _loc4_.textLength)
                            {
-                              textLine.userData=null;
-                              TextLineRecycler.addLineForReuse(textLine);
-                              if(backgroundManager)
+                              _loc4_.setTextLength(_loc4_.textLength - _loc8_);
+                              _loc4_.damage(TextLineValidity.INVALID);
+                              break;
+                           }
+                           _loc7_++;
+                           _loc8_ = _loc8_ - _loc4_.textLength;
+                           _loc9_++;
+                           _loc4_ = _loc9_ < this._lines.length?this._lines[_loc9_]:null;
+                        }
+                        if((_loc4_) && !(_loc4_.absoluteStart == param1.absoluteStart + param1.textLength))
+                        {
+                           _loc4_.setAbsoluteStart(param1.absoluteStart + param1.textLength);
+                           _loc4_.damage(TextLineValidity.INVALID);
+                        }
+                        _loc5_ = param1.absoluteStart + param1.textLength;
+                     }
+                     if(TextLineRecycler.textLineRecyclerEnabled)
+                     {
+                        _loc10_ = this.textFlow.backgroundManager;
+                        _loc11_ = param2;
+                        while(_loc11_ < param2 + _loc7_)
+                        {
+                           _loc12_ = TextFlowLine(this._lines[_loc11_]).peekTextLine();
+                           if((_loc12_) && !_loc12_.parent)
+                           {
+                              if(_loc12_.validity != TextLineValidity.VALID)
                               {
-                                 backgroundManager.removeLineFromCache(textLine);
+                                 _loc12_.userData = null;
+                                 TextLineRecycler.addLineForReuse(_loc12_);
+                                 if(_loc10_)
+                                 {
+                                    _loc10_.removeLineFromCache(_loc12_);
+                                 }
                               }
                            }
+                           _loc11_++;
                         }
-                        recycleIdx++;
                      }
+                     this._lines.splice(param2,_loc7_,param1);
                   }
-                  this._lines.splice(workIndex,deleteCount,newLine);
                }
             }
-         }
-         if(this._damageAbsoluteStart>damageStart)
-         {
-            this._damageAbsoluteStart=damageStart;
-         }
-      }
-
-      public function get swfContext() : ISWFContext {
-         return this._swfContext;
-      }
-
-      public function set swfContext(context:ISWFContext) : void {
-         var newBaseContext:ISWFContext = null;
-         var oldBaseContext:ISWFContext = null;
-         if(context!=this._swfContext)
-         {
-            if(this.textFlow)
+            if(this._damageAbsoluteStart > _loc5_)
             {
-               newBaseContext=computeBaseSWFContext(context);
-               oldBaseContext=computeBaseSWFContext(this._swfContext);
-               this._swfContext=context;
-               if(newBaseContext!=oldBaseContext)
+               this._damageAbsoluteStart = _loc5_;
+            }
+         }
+         
+         public function get swfContext() : ISWFContext {
+            return this._swfContext;
+         }
+         
+         public function set swfContext(param1:ISWFContext) : void {
+            var _loc2_:ISWFContext = null;
+            var _loc3_:ISWFContext = null;
+            if(param1 != this._swfContext)
+            {
+               if(this.textFlow)
                {
-                  this.damage(0,this.textFlow.textLength,FlowDamageType.INVALID);
-                  this.textFlow.invalidateAllFormats();
+                  _loc2_ = computeBaseSWFContext(param1);
+                  _loc3_ = computeBaseSWFContext(this._swfContext);
+                  this._swfContext = param1;
+                  if(_loc2_ != _loc3_)
+                  {
+                     this.damage(0,this.textFlow.textLength,FlowDamageType.INVALID);
+                     this.textFlow.invalidateAllFormats();
+                  }
                }
-            }
-            else
-            {
-               this._swfContext=context;
+               else
+               {
+                  this._swfContext = param1;
+               }
             }
          }
       }
    }
-
-}

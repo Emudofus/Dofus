@@ -7,36 +7,34 @@ package com.ankamagames.jerakine.data
    import flash.utils.IDataInput;
    import com.ankamagames.jerakine.enum.GameDataTypeEnum;
    import flash.utils.getDefinitionByName;
-
-
+   
    public class GameDataField extends Object
    {
-         
-
-      public function GameDataField(fieldName:String) {
+      
+      public function GameDataField(param1:String) {
          super();
-         this.name=fieldName;
+         this.name = param1;
       }
-
+      
       private static const _log:Logger = Log.getLogger(getQualifiedClassName(GameDataField));
-
+      
       private static const NULL_IDENTIFIER:int = -1431655766;
-
+      
       public var name:String;
-
+      
       public var readData:Function;
-
+      
       private var _innerReadMethods:Vector.<Function>;
-
+      
       private var _innerTypeNames:Vector.<String>;
-
-      public function readType(stream:IDataInput) : void {
-         var type:int = stream.readInt();
-         this.readData=this.getReadMethod(type,stream);
+      
+      public function readType(param1:IDataInput) : void {
+         var _loc2_:int = param1.readInt();
+         this.readData = this.getReadMethod(_loc2_,param1);
       }
-
-      private function getReadMethod(type:int, stream:IDataInput) : Function {
-         switch(type)
+      
+      private function getReadMethod(param1:int, param2:IDataInput) : Function {
+         switch(param1)
          {
             case GameDataTypeEnum.INT:
                return this.readInteger;
@@ -53,67 +51,71 @@ package com.ankamagames.jerakine.data
             case GameDataTypeEnum.VECTOR:
                if(!this._innerReadMethods)
                {
-                  this._innerReadMethods=new Vector.<Function>();
-                  this._innerTypeNames=new Vector.<String>();
+                  this._innerReadMethods = new Vector.<Function>();
+                  this._innerTypeNames = new Vector.<String>();
                }
-               this._innerTypeNames.push(stream.readUTF());
-               this._innerReadMethods.unshift(this.getReadMethod(stream.readInt(),stream));
+               this._innerTypeNames.push(param2.readUTF());
+               this._innerReadMethods.unshift(this.getReadMethod(param2.readInt(),param2));
                return this.readVector;
             default:
-               if(type>0)
+               if(param1 > 0)
                {
                   return this.readObject;
                }
-               throw new Error("Unknown type \'"+type+"\'.");
+               throw new Error("Unknown type \'" + param1 + "\'.");
          }
       }
-
-      private function readVector(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
-         var len:uint = stream.readInt();
-         var vectorTypeName:String = this._innerTypeNames[innerIndex];
-         var content:* = new getDefinitionByName(vectorTypeName)(len,true);
-         var i:uint = 0;
-         while(i<len)
+      
+      private function readVector(param1:String, param2:IDataInput, param3:uint=0) : * {
+         var _loc4_:uint = param2.readInt();
+         var _loc5_:String = this._innerTypeNames[param3];
+         var _loc6_:* = new getDefinitionByName(_loc5_)(_loc4_,true);
+         var _loc7_:uint = 0;
+         while(_loc7_ < _loc4_)
          {
-            content[i]=this._innerReadMethods[innerIndex](moduleName,stream,innerIndex+1);
-            i++;
+            _loc6_[_loc7_] = this._innerReadMethods[param3](param1,param2,param3 + 1);
+            _loc7_++;
          }
-         return content;
+         return _loc6_;
       }
-
-      private function readObject(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
-         var classIdentifier:int = stream.readInt();
-         if(classIdentifier==NULL_IDENTIFIER)
+      
+      private function readObject(param1:String, param2:IDataInput, param3:uint=0) : * {
+         var _loc4_:int = param2.readInt();
+         if(_loc4_ == NULL_IDENTIFIER)
          {
             return null;
          }
-         var classDefinition:GameDataClassDefinition = GameDataFileAccessor.getInstance().getClassDefinition(moduleName,classIdentifier);
-         return classDefinition.read(moduleName,stream);
+         var _loc5_:GameDataClassDefinition = GameDataFileAccessor.getInstance().getClassDefinition(param1,_loc4_);
+         return _loc5_.read(param1,param2);
       }
-
-      private function readInteger(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
-         return stream.readInt();
+      
+      private function readInteger(param1:String, param2:IDataInput, param3:uint=0) : * {
+         return param2.readInt();
       }
-
-      private function readBoolean(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
-         return stream.readBoolean();
+      
+      private function readBoolean(param1:String, param2:IDataInput, param3:uint=0) : * {
+         return param2.readBoolean();
       }
-
-      private function readString(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
-         return stream.readUTF();
+      
+      private function readString(param1:String, param2:IDataInput, param3:uint=0) : * {
+         var _loc4_:* = param2.readUTF();
+         if(_loc4_ == "null")
+         {
+            _loc4_ = null;
+         }
+         return _loc4_;
       }
-
-      private function readNumber(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
-         return stream.readDouble();
+      
+      private function readNumber(param1:String, param2:IDataInput, param3:uint=0) : * {
+         return param2.readDouble();
       }
-
-      private function readI18n(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
-         return stream.readInt();
+      
+      private function readI18n(param1:String, param2:IDataInput, param3:uint=0) : * {
+         return param2.readInt();
       }
-
-      private function readUnsignedInteger(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
-         return stream.readUnsignedInt();
+      
+      private function readUnsignedInteger(param1:String, param2:IDataInput, param3:uint=0) : * {
+         return param2.readUnsignedInt();
       }
    }
-
 }

@@ -5,76 +5,74 @@ package com.ankamagames.dofus.network.messages.game.context.mount
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class PaddockRemoveItemRequestMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function PaddockRemoveItemRequestMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 5958;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var cellId:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 5958;
       }
-
-      public function initPaddockRemoveItemRequestMessage(cellId:uint=0) : PaddockRemoveItemRequestMessage {
-         this.cellId=cellId;
-         this._isInitialized=true;
+      
+      public function initPaddockRemoveItemRequestMessage(param1:uint=0) : PaddockRemoveItemRequestMessage {
+         this.cellId = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.cellId=0;
-         this._isInitialized=false;
+         this.cellId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_PaddockRemoveItemRequestMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_PaddockRemoveItemRequestMessage(param1);
       }
-
-      public function serializeAs_PaddockRemoveItemRequestMessage(output:IDataOutput) : void {
-         if((this.cellId>0)||(this.cellId<559))
+      
+      public function serializeAs_PaddockRemoveItemRequestMessage(param1:IDataOutput) : void {
+         if(this.cellId < 0 || this.cellId > 559)
          {
-            throw new Error("Forbidden value ("+this.cellId+") on element cellId.");
+            throw new Error("Forbidden value (" + this.cellId + ") on element cellId.");
          }
          else
          {
-            output.writeShort(this.cellId);
+            param1.writeShort(this.cellId);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_PaddockRemoveItemRequestMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_PaddockRemoveItemRequestMessage(param1);
       }
-
-      public function deserializeAs_PaddockRemoveItemRequestMessage(input:IDataInput) : void {
-         this.cellId=input.readShort();
-         if((this.cellId>0)||(this.cellId<559))
+      
+      public function deserializeAs_PaddockRemoveItemRequestMessage(param1:IDataInput) : void {
+         this.cellId = param1.readShort();
+         if(this.cellId < 0 || this.cellId > 559)
          {
-            throw new Error("Forbidden value ("+this.cellId+") on element of PaddockRemoveItemRequestMessage.cellId.");
+            throw new Error("Forbidden value (" + this.cellId + ") on element of PaddockRemoveItemRequestMessage.cellId.");
          }
          else
          {
@@ -82,5 +80,4 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          }
       }
    }
-
 }

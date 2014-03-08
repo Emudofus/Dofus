@@ -11,187 +11,186 @@ package flashx.textLayout.elements
    import flashx.textLayout.container.ContainerController;
    import flash.text.engine.GroupElement;
    import flashx.textLayout.formats.TextLayoutFormat;
-
+   
    use namespace tlf_internal;
-
+   
    public class SpanElement extends FlowLeafElement
    {
-         
-
+      
       public function SpanElement() {
          super();
       }
-
-      tlf_internal  static const kParagraphTerminator:String = "?";
-
+      
+      tlf_internal  static const kParagraphTerminator:String = " ";
+      
       private static const _dblSpacePattern:RegExp = new RegExp("[ ]{2,}","g");
-
+      
       private static const _newLineTabPattern:RegExp = new RegExp("[\t\n\r]","g");
-
-      private static const _tabPlaceholderPattern:RegExp = new RegExp("?","g");
-
+      
+      private static const _tabPlaceholderPattern:RegExp = new RegExp("","g");
+      
       private static const anyPrintChar:RegExp = new RegExp("[^\t\n\r ]","g");
-
+      
       override tlf_internal function createContentElement() : void {
          if(_blockElement)
          {
             return;
          }
-         _blockElement=new TextElement(_text,null);
+         _blockElement = new TextElement(_text,null);
          super.createContentElement();
       }
-
-      override public function shallowCopy(startPos:int=0, endPos:int=-1) : FlowElement {
-         if(endPos==-1)
+      
+      override public function shallowCopy(param1:int=0, param2:int=-1) : FlowElement {
+         if(param2 == -1)
          {
-            endPos=textLength;
+            param2 = textLength;
          }
-         var retFlow:SpanElement = super.shallowCopy(startPos,endPos) as SpanElement;
-         var startSpan:int = 0;
-         var endSpan:int = startSpan+textLength;
-         var leafElStartPos:int = startSpan>=startPos?startSpan:startPos;
-         var leafElEndPos:int = endSpan>endPos?endSpan:endPos;
-         if((leafElEndPos==textLength)&&(this.hasParagraphTerminator))
+         var _loc3_:SpanElement = super.shallowCopy(param1,param2) as SpanElement;
+         var _loc4_:* = 0;
+         var _loc5_:int = _loc4_ + textLength;
+         var _loc6_:int = _loc4_ >= param1?_loc4_:param1;
+         var _loc7_:int = _loc5_ < param2?_loc5_:param2;
+         if(_loc7_ == textLength && (this.hasParagraphTerminator))
          {
-            leafElEndPos--;
+            _loc7_--;
          }
-         if(leafElStartPos>leafElEndPos)
+         if(_loc6_ > _loc7_)
          {
             throw RangeError(GlobalSettings.resourceStringFunction("badShallowCopyRange"));
          }
          else
          {
-            if((!(leafElStartPos==endSpan))&&(CharacterUtil.isLowSurrogate(_text.charCodeAt(leafElStartPos)))||(!(leafElEndPos==0))&&(CharacterUtil.isHighSurrogate(_text.charCodeAt(leafElEndPos-1))))
+            if(!(_loc6_ == _loc5_) && (CharacterUtil.isLowSurrogate(_text.charCodeAt(_loc6_))) || !(_loc7_ == 0) && (CharacterUtil.isHighSurrogate(_text.charCodeAt(_loc7_-1))))
             {
                throw RangeError(GlobalSettings.resourceStringFunction("badSurrogatePairCopy"));
             }
             else
             {
-               if(leafElStartPos!=leafElEndPos)
+               if(_loc6_ != _loc7_)
                {
-                  retFlow.replaceText(0,retFlow.textLength,_text.substring(leafElStartPos,leafElEndPos));
+                  _loc3_.replaceText(0,_loc3_.textLength,_text.substring(_loc6_,_loc7_));
                }
-               return retFlow;
+               return _loc3_;
             }
          }
       }
-
+      
       override protected function get abstract() : Boolean {
          return false;
       }
-
+      
       override tlf_internal function get defaultTypeName() : String {
          return "span";
       }
-
+      
       override public function get text() : String {
-         if(textLength==0)
+         if(textLength == 0)
          {
             return "";
          }
          return this.hasParagraphTerminator?_text.substr(0,textLength-1):_text;
       }
-
-      public function set text(textValue:String) : void {
-         this.replaceText(0,textLength,textValue);
+      
+      public function set text(param1:String) : void {
+         this.replaceText(0,textLength,param1);
       }
-
-      override public function getText(relativeStart:int=0, relativeEnd:int=-1, paragraphSeparator:String="\n") : String {
-         if(relativeEnd==-1)
+      
+      override public function getText(param1:int=0, param2:int=-1, param3:String="\n") : String {
+         if(param2 == -1)
          {
-            relativeEnd=textLength;
+            param2 = textLength;
          }
-         if((textLength)&&(relativeEnd==textLength)&&(this.hasParagraphTerminator))
+         if((textLength) && (param2 == textLength) && (this.hasParagraphTerminator))
          {
-            relativeEnd--;
+            param2--;
          }
-         return _text?_text.substring(relativeStart,relativeEnd):"";
+         return _text?_text.substring(param1,param2):"";
       }
-
+      
       public function get mxmlChildren() : Array {
          return [this.text];
       }
-
-      public function set mxmlChildren(array:Array) : void {
-         var elem:Object = null;
-         var str:String = new String();
-         for each (elem in array)
+      
+      public function set mxmlChildren(param1:Array) : void {
+         var _loc3_:Object = null;
+         var _loc2_:String = new String();
+         for each (_loc3_ in param1)
          {
-            if(elem is String)
+            if(_loc3_ is String)
             {
-               str=str+(elem as String);
+               _loc2_ = _loc2_ + (_loc3_ as String);
                continue;
             }
-            if(elem is Number)
+            if(_loc3_ is Number)
             {
-               str=str+elem.toString();
+               _loc2_ = _loc2_ + _loc3_.toString();
                continue;
             }
-            if(elem is BreakElement)
+            if(_loc3_ is BreakElement)
             {
-               str=str+String.fromCharCode(8232);
+               _loc2_ = _loc2_ + String.fromCharCode(8232);
                continue;
             }
-            if(elem is TabElement)
+            if(_loc3_ is TabElement)
             {
-               str=str+String.fromCharCode(57344);
+               _loc2_ = _loc2_ + String.fromCharCode(57344);
                continue;
             }
-            if(elem!=null)
+            if(_loc3_ != null)
             {
-               throw new TypeError(GlobalSettings.resourceStringFunction("badMXMLChildrenArgument",[getQualifiedClassName(elem)]));
+               throw new TypeError(GlobalSettings.resourceStringFunction("badMXMLChildrenArgument",[getQualifiedClassName(_loc3_)]));
             }
             else
             {
                continue;
             }
          }
-         this.replaceText(0,textLength,str);
+         this.replaceText(0,textLength,_loc2_);
       }
-
+      
       tlf_internal function get hasParagraphTerminator() : Boolean {
-         var p:ParagraphElement = getParagraph();
-         return (p)&&(p.getLastLeaf()==this);
+         var _loc1_:ParagraphElement = getParagraph();
+         return (_loc1_) && _loc1_.getLastLeaf() == this;
       }
-
-      override tlf_internal function applyWhiteSpaceCollapse(collapse:String) : void {
-         var ffc:ITextLayoutFormat = this.formatForCascade;
-         var wsc:* = ffc?ffc.whiteSpaceCollapse:undefined;
-         if((!(wsc===undefined))&&(!(wsc==FormatValue.INHERIT)))
+      
+      override tlf_internal function applyWhiteSpaceCollapse(param1:String) : void {
+         var _loc2_:ITextLayoutFormat = this.formatForCascade;
+         var _loc3_:* = _loc2_?_loc2_.whiteSpaceCollapse:undefined;
+         if(!(_loc3_ === undefined) && !(_loc3_ == FormatValue.INHERIT))
          {
-            collapse=wsc;
+            param1 = _loc3_;
          }
-         var origTxt:String = this.text;
-         var tempTxt:String = origTxt;
-         if((!collapse)||(collapse==WhiteSpaceCollapse.COLLAPSE))
+         var _loc4_:String = this.text;
+         var _loc5_:String = _loc4_;
+         if(!param1 || param1 == WhiteSpaceCollapse.COLLAPSE)
          {
-            if((impliedElement)&&(!(parent==null)))
+            if((impliedElement) && !(parent == null))
             {
-               if(tempTxt.search(anyPrintChar)==-1)
+               if(_loc5_.search(anyPrintChar) == -1)
                {
                   parent.removeChild(this);
                   return;
                }
             }
-            tempTxt=tempTxt.replace(_newLineTabPattern," ");
-            tempTxt=tempTxt.replace(_dblSpacePattern," ");
+            _loc5_ = _loc5_.replace(_newLineTabPattern," ");
+            _loc5_ = _loc5_.replace(_dblSpacePattern," ");
          }
-         tempTxt=tempTxt.replace(_tabPlaceholderPattern,"\t");
-         if(tempTxt!=origTxt)
+         _loc5_ = _loc5_.replace(_tabPlaceholderPattern,"\t");
+         if(_loc5_ != _loc4_)
          {
-            this.replaceText(0,textLength,tempTxt);
+            this.replaceText(0,textLength,_loc5_);
          }
-         super.applyWhiteSpaceCollapse(collapse);
+         super.applyWhiteSpaceCollapse(param1);
       }
-
-      public function replaceText(relativeStartPosition:int, relativeEndPosition:int, textValue:String) : void {
-         if((relativeStartPosition>0)||(relativeEndPosition<textLength)||(relativeEndPosition>relativeStartPosition))
+      
+      public function replaceText(param1:int, param2:int, param3:String) : void {
+         if(param1 < 0 || param2 > textLength || param2 < param1)
          {
             throw RangeError(GlobalSettings.resourceStringFunction("invalidReplaceTextPositions"));
          }
          else
          {
-            if((!(relativeStartPosition==0))&&(!(relativeStartPosition==textLength))&&(CharacterUtil.isLowSurrogate(_text.charCodeAt(relativeStartPosition)))||(!(relativeEndPosition==0))&&(!(relativeEndPosition==textLength))&&(CharacterUtil.isHighSurrogate(_text.charCodeAt(relativeEndPosition-1))))
+            if(!(param1 == 0) && !(param1 == textLength) && (CharacterUtil.isLowSurrogate(_text.charCodeAt(param1))) || !(param2 == 0) && !(param2 == textLength) && (CharacterUtil.isHighSurrogate(_text.charCodeAt(param2-1))))
             {
                throw RangeError(GlobalSettings.resourceStringFunction("invalidSurrogatePairSplit"));
             }
@@ -199,193 +198,193 @@ package flashx.textLayout.elements
             {
                if(this.hasParagraphTerminator)
                {
-                  if(relativeStartPosition==textLength)
+                  if(param1 == textLength)
                   {
-                     relativeStartPosition--;
+                     param1--;
                   }
-                  if(relativeEndPosition==textLength)
+                  if(param2 == textLength)
                   {
-                     relativeEndPosition--;
+                     param2--;
                   }
                }
-               if(relativeEndPosition!=relativeStartPosition)
+               if(param2 != param1)
                {
-                  modelChanged(ModelChange.TEXT_DELETED,this,relativeStartPosition,relativeEndPosition-relativeStartPosition);
+                  modelChanged(ModelChange.TEXT_DELETED,this,param1,param2 - param1);
                }
-               this.replaceTextInternal(relativeStartPosition,relativeEndPosition,textValue);
-               if((textValue)&&(textValue.length))
+               this.replaceTextInternal(param1,param2,param3);
+               if((param3) && (param3.length))
                {
-                  modelChanged(ModelChange.TEXT_INSERTED,this,relativeStartPosition,textValue.length);
+                  modelChanged(ModelChange.TEXT_INSERTED,this,param1,param3.length);
                }
                return;
             }
          }
       }
-
-      private function replaceTextInternal(startPos:int, endPos:int, textValue:String) : void {
-         var enclosingContainer:ContainerController = null;
-         var textValueLength:int = textValue==null?0:textValue.length;
-         var deleteTotal:int = endPos-startPos;
-         var deltaChars:int = textValueLength-deleteTotal;
+      
+      private function replaceTextInternal(param1:int, param2:int, param3:String) : void {
+         var _loc7_:ContainerController = null;
+         var _loc4_:int = param3 == null?0:param3.length;
+         var _loc5_:int = param2 - param1;
+         var _loc6_:int = _loc4_ - _loc5_;
          if(_blockElement)
          {
-            (_blockElement as TextElement).replaceText(startPos,endPos,textValue);
-            _text=_blockElement.rawText;
+            (_blockElement as TextElement).replaceText(param1,param2,param3);
+            _text = _blockElement.rawText;
          }
          else
          {
             if(_text)
             {
-               if(textValue)
+               if(param3)
                {
-                  _text=_text.slice(0,startPos)+textValue+_text.slice(endPos,_text.length);
+                  _text = _text.slice(0,param1) + param3 + _text.slice(param2,_text.length);
                }
                else
                {
-                  _text=_text.slice(0,startPos)+_text.slice(endPos,_text.length);
+                  _text = _text.slice(0,param1) + _text.slice(param2,_text.length);
                }
             }
             else
             {
-               _text=textValue;
+               _text = param3;
             }
          }
-         if(deltaChars!=0)
+         if(_loc6_ != 0)
          {
-            updateLengths(getAbsoluteStart()+startPos,deltaChars,true);
-            deleteContainerText(endPos,deleteTotal);
-            if(textValueLength!=0)
+            updateLengths(getAbsoluteStart() + param1,_loc6_,true);
+            deleteContainerText(param2,_loc5_);
+            if(_loc4_ != 0)
             {
-               enclosingContainer=getEnclosingController(startPos);
-               if(enclosingContainer)
+               _loc7_ = getEnclosingController(param1);
+               if(_loc7_)
                {
-                  ContainerController(enclosingContainer).setTextLength(enclosingContainer.textLength+textValueLength);
+                  ContainerController(_loc7_).setTextLength(_loc7_.textLength + _loc4_);
                }
             }
          }
       }
-
+      
       tlf_internal function addParaTerminator() : void {
          this.replaceTextInternal(textLength,textLength,SpanElement.kParagraphTerminator);
          modelChanged(ModelChange.TEXT_INSERTED,this,textLength-1,1);
       }
-
+      
       tlf_internal function removeParaTerminator() : void {
          this.replaceTextInternal(textLength-1,textLength,"");
-         modelChanged(ModelChange.TEXT_DELETED,this,textLength<0?textLength-1:0,1);
+         modelChanged(ModelChange.TEXT_DELETED,this,textLength > 0?textLength-1:0,1);
       }
-
-      override public function splitAtPosition(relativePosition:int) : FlowElement {
-         var newBlockElement:TextElement = null;
-         var newSpanLength:* = 0;
-         var p:ParagraphElement = null;
-         var group:GroupElement = null;
-         var elementIndex:* = 0;
-         if((relativePosition>0)||(relativePosition<textLength))
+      
+      override public function splitAtPosition(param1:int) : FlowElement {
+         var _loc3_:TextElement = null;
+         var _loc4_:* = 0;
+         var _loc5_:ParagraphElement = null;
+         var _loc6_:GroupElement = null;
+         var _loc7_:* = 0;
+         if(param1 < 0 || param1 > textLength)
          {
             throw RangeError(GlobalSettings.resourceStringFunction("invalidSplitAtPosition"));
          }
          else
          {
-            if((relativePosition>textLength)&&(CharacterUtil.isLowSurrogate(String(this.text).charCodeAt(relativePosition))))
+            if(param1 < textLength && (CharacterUtil.isLowSurrogate(String(this.text).charCodeAt(param1))))
             {
                throw RangeError(GlobalSettings.resourceStringFunction("invalidSurrogatePairSplit"));
             }
             else
             {
-               newSpan=new SpanElement();
-               newSpan.id=this.id;
-               newSpan.typeName=this.typeName;
+               _loc2_ = new SpanElement();
+               _loc2_.id = this.id;
+               _loc2_.typeName = this.typeName;
                if(parent)
                {
-                  newSpanLength=textLength-relativePosition;
+                  _loc4_ = textLength - param1;
                   if(_blockElement)
                   {
-                     group=parent.createContentAsGroup();
-                     elementIndex=group.getElementIndex(_blockElement);
-                     group.splitTextElement(elementIndex,relativePosition);
-                     _blockElement=group.getElementAt(elementIndex);
-                     _text=_blockElement.rawText;
-                     newBlockElement=group.getElementAt(elementIndex+1) as TextElement;
+                     _loc6_ = parent.createContentAsGroup();
+                     _loc7_ = _loc6_.getElementIndex(_blockElement);
+                     _loc6_.splitTextElement(_loc7_,param1);
+                     _blockElement = _loc6_.getElementAt(_loc7_);
+                     _text = _blockElement.rawText;
+                     _loc3_ = _loc6_.getElementAt(_loc7_ + 1) as TextElement;
                   }
                   else
                   {
-                     if(relativePosition<textLength)
+                     if(param1 < textLength)
                      {
-                        newSpan.text=_text.substr(relativePosition);
-                        _text=_text.substring(0,relativePosition);
+                        _loc2_.text = _text.substr(param1);
+                        _text = _text.substring(0,param1);
                      }
                   }
-                  modelChanged(ModelChange.TEXT_DELETED,this,relativePosition,newSpanLength);
-                  newSpan.quickInitializeForSplit(this,newSpanLength,newBlockElement);
-                  setTextLength(relativePosition);
-                  parent.addChildAfterInternal(this,newSpan);
-                  p=this.getParagraph();
-                  p.updateTerminatorSpan(this,newSpan);
-                  parent.modelChanged(ModelChange.ELEMENT_ADDED,newSpan,newSpan.parentRelativeStart,newSpan.textLength);
+                  modelChanged(ModelChange.TEXT_DELETED,this,param1,_loc4_);
+                  _loc2_.quickInitializeForSplit(this,_loc4_,_loc3_);
+                  setTextLength(param1);
+                  parent.addChildAfterInternal(this,_loc2_);
+                  _loc5_ = this.getParagraph();
+                  _loc5_.updateTerminatorSpan(this,_loc2_);
+                  parent.modelChanged(ModelChange.ELEMENT_ADDED,_loc2_,_loc2_.parentRelativeStart,_loc2_.textLength);
                }
                else
                {
-                  newSpan.format=format;
-                  if(relativePosition<textLength)
+                  _loc2_.format = format;
+                  if(param1 < textLength)
                   {
-                     newSpan.text=String(this.text).substr(relativePosition);
-                     this.replaceText(relativePosition,textLength,null);
+                     _loc2_.text = String(this.text).substr(param1);
+                     this.replaceText(param1,textLength,null);
                   }
                }
-               return newSpan;
+               return _loc2_;
             }
          }
       }
-
-      override tlf_internal function normalizeRange(normalizeStart:uint, normalizeEnd:uint) : void {
-         var p:ParagraphElement = null;
-         var prevLeaf:FlowLeafElement = null;
-         if((this.textLength==1)&&(!bindableElement))
+      
+      override tlf_internal function normalizeRange(param1:uint, param2:uint) : void {
+         var _loc3_:ParagraphElement = null;
+         var _loc4_:FlowLeafElement = null;
+         if(this.textLength == 1 && !bindableElement)
          {
-            p=getParagraph();
-            if((p)&&(p.getLastLeaf()==this))
+            _loc3_ = getParagraph();
+            if((_loc3_) && _loc3_.getLastLeaf() == this)
             {
-               prevLeaf=getPreviousLeaf(p);
-               if(prevLeaf)
+               _loc4_ = getPreviousLeaf(_loc3_);
+               if(_loc4_)
                {
-                  if(!TextLayoutFormat.isEqual(this.format,prevLeaf.format))
+                  if(!TextLayoutFormat.isEqual(this.format,_loc4_.format))
                   {
-                     this.format=prevLeaf.format;
+                     this.format = _loc4_.format;
                   }
                }
             }
          }
-         super.normalizeRange(normalizeStart,normalizeEnd);
+         super.normalizeRange(param1,param2);
       }
-
+      
       override tlf_internal function mergeToPreviousIfPossible() : Boolean {
-         var myidx:* = 0;
-         var sib:SpanElement = null;
-         var thisIsSimpleTerminator:* = false;
-         var p:ParagraphElement = null;
-         var prevLeaf:FlowLeafElement = null;
-         var siblingInsertPosition:* = 0;
-         if((parent)&&(!bindableElement))
+         var _loc1_:* = 0;
+         var _loc2_:SpanElement = null;
+         var _loc3_:* = false;
+         var _loc4_:ParagraphElement = null;
+         var _loc5_:FlowLeafElement = null;
+         var _loc6_:* = 0;
+         if((parent) && !bindableElement)
          {
-            myidx=parent.getChildIndex(this);
-            if(myidx!=0)
+            _loc1_ = parent.getChildIndex(this);
+            if(_loc1_ != 0)
             {
-               sib=parent.getChildAt(myidx-1) as SpanElement;
-               if((!sib)&&(this.textLength==1)&&(this.hasParagraphTerminator))
+               _loc2_ = parent.getChildAt(_loc1_-1) as SpanElement;
+               if(!_loc2_ && this.textLength == 1 && (this.hasParagraphTerminator))
                {
-                  p=getParagraph();
-                  if(p)
+                  _loc4_ = getParagraph();
+                  if(_loc4_)
                   {
-                     prevLeaf=getPreviousLeaf(p) as SpanElement;
-                     if(prevLeaf)
+                     _loc5_ = getPreviousLeaf(_loc4_) as SpanElement;
+                     if(_loc5_)
                      {
-                        parent.removeChildAt(myidx);
+                        parent.removeChildAt(_loc1_);
                         return true;
                      }
                   }
                }
-               if(sib==null)
+               if(_loc2_ == null)
                {
                   return false;
                }
@@ -393,16 +392,16 @@ package flashx.textLayout.elements
                {
                   return false;
                }
-               thisIsSimpleTerminator=(textLength==1)&&(this.hasParagraphTerminator);
-               if((sib.hasActiveEventMirror())&&(!thisIsSimpleTerminator))
+               _loc3_ = textLength == 1 && (this.hasParagraphTerminator);
+               if((_loc2_.hasActiveEventMirror()) && !_loc3_)
                {
                   return false;
                }
-               if((thisIsSimpleTerminator)||(equalStylesForMerge(sib)))
+               if((_loc3_) || (equalStylesForMerge(_loc2_)))
                {
-                  siblingInsertPosition=sib.textLength;
-                  sib.replaceText(siblingInsertPosition,siblingInsertPosition,this.text);
-                  parent.removeChildAt(myidx);
+                  _loc6_ = _loc2_.textLength;
+                  _loc2_.replaceText(_loc6_,_loc6_,this.text);
+                  parent.removeChildAt(_loc1_);
                   return true;
                }
             }
@@ -410,5 +409,4 @@ package flashx.textLayout.elements
          return false;
       }
    }
-
 }

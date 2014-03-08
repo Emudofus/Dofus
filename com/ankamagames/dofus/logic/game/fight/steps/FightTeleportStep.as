@@ -7,55 +7,51 @@ package com.ankamagames.dofus.logic.game.fight.steps
    import com.ankamagames.jerakine.entities.interfaces.IMovable;
    import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
    import com.ankamagames.atouin.enums.PlacementStrataEnums;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.fight.frames.FightSpellCastFrame;
    import com.ankamagames.dofus.logic.game.fight.fightEvents.FightEventsHelper;
    import com.ankamagames.dofus.logic.game.fight.types.FightEventEnum;
-   import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
-   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
-
-
+   
    public class FightTeleportStep extends AbstractSequencable implements IFightStep
    {
-         
-
-      public function FightTeleportStep(fighterId:int, destinationCell:MapPoint) {
+      
+      public function FightTeleportStep(param1:int, param2:MapPoint) {
          super();
-         this._fighterId=fighterId;
-         this._destinationCell=destinationCell;
-         var infos:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterId) as GameFightFighterInformations;
-         infos.disposition.cellId=destinationCell.cellId;
+         this._fighterId = param1;
+         this._destinationCell = param2;
       }
-
-
-
+      
       private var _fighterId:int;
-
+      
       private var _destinationCell:MapPoint;
-
+      
       public function get stepType() : String {
          return "teleport";
       }
-
+      
       override public function start() : void {
-         var fightTurnFrame:FightTurnFrame = null;
-         var entity:IMovable = DofusEntities.getEntity(this._fighterId) as IMovable;
-         if(entity)
+         var _loc3_:FightTurnFrame = null;
+         var _loc1_:IMovable = DofusEntities.getEntity(this._fighterId) as IMovable;
+         if(_loc1_)
          {
-            (entity as IDisplayable).display(PlacementStrataEnums.STRATA_PLAYER);
-            entity.jump(this._destinationCell);
+            (_loc1_ as IDisplayable).display(PlacementStrataEnums.STRATA_PLAYER);
+            _loc1_.jump(this._destinationCell);
          }
          else
          {
-            _log.warn("Unable to teleport unknown entity "+this._fighterId+".");
+            _log.warn("Unable to teleport unknown entity " + this._fighterId + ".");
          }
-         if(this._fighterId==PlayedCharacterManager.getInstance().id)
+         var _loc2_:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterId) as GameFightFighterInformations;
+         _loc2_.disposition.cellId = this._destinationCell.cellId;
+         if(this._fighterId == PlayedCharacterManager.getInstance().id)
          {
-            fightTurnFrame=Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
-            if((fightTurnFrame)&&(fightTurnFrame.myTurn))
+            _loc3_ = Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
+            if((_loc3_) && (_loc3_.myTurn))
             {
-               fightTurnFrame.drawPath();
+               _loc3_.drawPath();
             }
          }
          FightSpellCastFrame.updateRangeAndTarget();
@@ -63,5 +59,4 @@ package com.ankamagames.dofus.logic.game.fight.steps
          executeCallbacks();
       }
    }
-
 }

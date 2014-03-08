@@ -23,6 +23,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.connection.ServersListMessage;
    import com.ankamagames.dofus.network.messages.connection.ServerStatusUpdateMessage;
    import com.ankamagames.dofus.network.messages.connection.SelectedServerDataMessage;
+   import com.ankamagames.dofus.network.messages.connection.SelectedServerDataExtendedMessage;
    import com.ankamagames.dofus.network.messages.connection.SelectedServerRefusedMessage;
    import com.ankamagames.dofus.network.messages.connection.search.AcquaintanceSearchErrorMessage;
    import com.ankamagames.dofus.network.messages.connection.search.AcquaintanceServerListMessage;
@@ -32,6 +33,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.approach.AlreadyConnectedMessage;
    import com.ankamagames.dofus.network.messages.game.approach.AccountLoggingKickedMessage;
    import com.ankamagames.dofus.network.messages.game.approach.ServerSettingsMessage;
+   import com.ankamagames.dofus.network.messages.game.approach.ServerSessionConstantsMessage;
    import com.ankamagames.dofus.network.messages.game.approach.ServerOptionalFeaturesMessage;
    import com.ankamagames.dofus.network.messages.game.approach.AccountCapabilitiesMessage;
    import com.ankamagames.dofus.network.messages.secure.TrustStatusMessage;
@@ -43,6 +45,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.character.deletion.CharacterDeletionErrorMessage;
    import com.ankamagames.dofus.network.messages.game.character.creation.CharacterNameSuggestionSuccessMessage;
    import com.ankamagames.dofus.network.messages.game.character.creation.CharacterNameSuggestionFailureMessage;
+   import com.ankamagames.dofus.network.messages.game.character.choice.BasicCharactersListMessage;
    import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListMessage;
    import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListWithModificationsMessage;
    import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListErrorMessage;
@@ -62,11 +65,14 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.initialization.SetCharacterRestrictionsMessage;
    import com.ankamagames.dofus.network.messages.game.initialization.ServerExperienceModificatorMessage;
    import com.ankamagames.dofus.network.messages.game.initialization.CharacterCapabilitiesMessage;
+   import com.ankamagames.dofus.network.messages.game.initialization.CharacterLoadingCompleteMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameContextCreateMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameContextCreateErrorMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameContextDestroyMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameContextRemoveElementMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameContextRemoveMultipleElementsMessage;
+   import com.ankamagames.dofus.network.messages.game.context.GameContextRemoveElementWithEventMessage;
+   import com.ankamagames.dofus.network.messages.game.context.GameContextRemoveMultipleElementsWithEventsMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameContextMoveElementMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameContextMoveMultipleElementsMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameContextRefreshEntityLookMessage;
@@ -102,6 +108,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapComplementaryInformationsDataInHouseMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapComplementaryInformationsWithCoordsMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.GameRolePlayShowActorMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.GameRolePlayShowActorWithEventMessage;
    import com.ankamagames.dofus.network.messages.game.character.stats.CharacterStatsListMessage;
    import com.ankamagames.dofus.network.messages.game.character.stats.FighterStatsListMessage;
    import com.ankamagames.dofus.network.messages.game.character.stats.CharacterLevelUpMessage;
@@ -124,6 +131,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.GameRolePlayRemoveChallengeMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.visual.GameRolePlaySpellAnimMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.delay.GameRolePlayDelayedActionMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.delay.GameRolePlayDelayedObjectUseMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.delay.GameRolePlayDelayedActionFinishedMessage;
    import com.ankamagames.dofus.network.messages.game.context.ShowCellMessage;
    import com.ankamagames.dofus.network.messages.game.context.ShowCellSpectatorMessage;
@@ -143,8 +151,9 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightNewRoundMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnListMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnStartMessage;
+   import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnStartPlayingMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnResumeMessage;
-   import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnStartSlaveMessage;
+   import com.ankamagames.dofus.network.messages.game.context.fight.SlaveSwitchContextMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnReadyRequestMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightSynchronizeMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnEndMessage;
@@ -172,7 +181,6 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightLifePointsLostMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightLifeAndShieldPointsLostMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightDispellableEffectMessage;
-   import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightStateChangeMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightReflectSpellMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightReduceDamagesMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightReflectDamagesMessage;
@@ -217,7 +225,6 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.chat.channel.EnabledChannelsMessage;
    import com.ankamagames.dofus.network.messages.game.chat.channel.ChannelEnablingChangeMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.spells.SpellListMessage;
-   import com.ankamagames.dofus.network.messages.game.inventory.spells.SlaveSwitchContextMessage;
    import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogMessage;
    import com.ankamagames.dofus.network.messages.game.dialog.PauseDialogMessage;
    import com.ankamagames.dofus.network.messages.game.interactive.InteractiveUseErrorMessage;
@@ -256,11 +263,9 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.dungeon.DungeonLeftMessage;
    import com.ankamagames.dofus.network.messages.game.context.dungeon.DungeonKeyRingMessage;
    import com.ankamagames.dofus.network.messages.game.context.dungeon.DungeonKeyRingUpdateMessage;
+   import com.ankamagames.dofus.network.messages.game.pvp.UpdateMapPlayersAgressableStatusMessage;
+   import com.ankamagames.dofus.network.messages.game.pvp.UpdateSelfAgressableStatusMessage;
    import com.ankamagames.dofus.network.messages.game.pvp.AlignmentRankUpdateMessage;
-   import com.ankamagames.dofus.network.messages.game.pvp.AlignmentSubAreasListMessage;
-   import com.ankamagames.dofus.network.messages.game.pvp.AlignmentAreaUpdateMessage;
-   import com.ankamagames.dofus.network.messages.game.pvp.AlignmentSubAreaUpdateMessage;
-   import com.ankamagames.dofus.network.messages.game.pvp.AlignmentSubAreaUpdateExtendedMessage;
    import com.ankamagames.dofus.network.messages.game.atlas.compass.CompassResetMessage;
    import com.ankamagames.dofus.network.messages.game.atlas.compass.CompassUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.atlas.compass.CompassUpdatePartyMemberMessage;
@@ -282,6 +287,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyNewMemberMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyUpdateLightMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.companion.PartyCompanionUpdateLightMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyMemberRemoveMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyMemberEjectedMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyLeaderUpdateMessage;
@@ -312,6 +318,19 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.friend.IgnoredAddFailureMessage;
    import com.ankamagames.dofus.network.messages.game.friend.IgnoredAddedMessage;
    import com.ankamagames.dofus.network.messages.game.friend.IgnoredDeleteResultMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceCreationStartedMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceModificationStartedMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceCreationResultMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceInvitedMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceInvitationStateRecruterMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceInvitationStateRecrutedMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceJoinedMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceGuildLeavingMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceLeftMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceMembershipMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.KohUpdateMessage;
+   import com.ankamagames.dofus.network.messages.game.ui.ClientUIOpenedMessage;
+   import com.ankamagames.dofus.network.messages.game.ui.ClientUIOpenedByObjectMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildCreationStartedMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildModificationStartedMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildCreationResultMessage;
@@ -320,7 +339,6 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.guild.GuildInvitationStateRecrutedMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildJoinedMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildMemberOnlineStatusMessage;
-   import com.ankamagames.dofus.network.messages.game.guild.GuildUIOpenedMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildInformationsGeneralMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildInformationsMembersMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildInformationsMemberUpdateMessage;
@@ -336,9 +354,21 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.guild.GuildPaddockBoughtMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildPaddockRemovedMessage;
    import com.ankamagames.dofus.network.messages.game.friend.GuildMemberWarnOnConnectionStateMessage;
+   import com.ankamagames.dofus.network.messages.game.guild.GuildFactsErrorMessage;
+   import com.ankamagames.dofus.network.messages.game.guild.GuildFactsMessage;
+   import com.ankamagames.dofus.network.messages.game.guild.GuildInAllianceFactsMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceFactsErrorMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceFactsMessage;
+   import com.ankamagames.dofus.network.messages.game.guild.GuildListMessage;
+   import com.ankamagames.dofus.network.messages.game.guild.GuildVersatileInfoListMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceListMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceVersatileInfoListMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AlliancePartialListMessage;
+   import com.ankamagames.dofus.network.messages.game.alliance.AllianceInsiderInfoMessage;
    import com.ankamagames.dofus.network.messages.game.guild.tax.TaxCollectorMovementMessage;
    import com.ankamagames.dofus.network.messages.game.guild.tax.TaxCollectorErrorMessage;
    import com.ankamagames.dofus.network.messages.game.guild.tax.TaxCollectorListMessage;
+   import com.ankamagames.dofus.network.messages.game.guild.tax.TaxCollectorStateUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.guild.tax.TaxCollectorMovementAddMessage;
    import com.ankamagames.dofus.network.messages.game.guild.tax.TaxCollectorMovementRemoveMessage;
    import com.ankamagames.dofus.network.messages.game.guild.tax.TaxCollectorAttackedMessage;
@@ -347,21 +377,22 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.guild.tax.GuildFightPlayersHelpersLeaveMessage;
    import com.ankamagames.dofus.network.messages.game.guild.tax.GuildFightPlayersEnemiesListMessage;
    import com.ankamagames.dofus.network.messages.game.guild.tax.GuildFightPlayersEnemyRemoveMessage;
-   import com.ankamagames.dofus.network.messages.game.prism.PrismBalanceResultMessage;
-   import com.ankamagames.dofus.network.messages.game.prism.PrismAlignmentBonusResultMessage;
-   import com.ankamagames.dofus.network.messages.game.prism.PrismFightDefendersStateMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismSetSabotagedRefusedMessage;
    import com.ankamagames.dofus.network.messages.game.prism.PrismFightDefenderAddMessage;
    import com.ankamagames.dofus.network.messages.game.prism.PrismFightDefenderLeaveMessage;
    import com.ankamagames.dofus.network.messages.game.prism.PrismFightDefendersSwapMessage;
-   import com.ankamagames.dofus.network.messages.game.prism.PrismFightAttackedMessage;
    import com.ankamagames.dofus.network.messages.game.prism.PrismFightAttackerAddMessage;
    import com.ankamagames.dofus.network.messages.game.prism.PrismFightAttackerRemoveMessage;
-   import com.ankamagames.dofus.network.messages.game.prism.PrismWorldInformationMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismsListMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismsListUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.guild.ChallengeFightJoinRefusedMessage;
    import com.ankamagames.dofus.network.messages.game.prism.PrismInfoCloseMessage;
-   import com.ankamagames.dofus.network.messages.game.prism.PrismInfoValidMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismsInfoValidMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismFightAddedMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismFightRemovedMessage;
    import com.ankamagames.dofus.network.messages.game.prism.PrismInfoInValidMessage;
    import com.ankamagames.dofus.network.messages.game.prism.PrismFightStateUpdateMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismSettingsErrorMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.quest.QuestListMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.quest.QuestStartedMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.quest.QuestValidatedMessage;
@@ -379,6 +410,8 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.NpcDialogQuestionMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.TaxCollectorDialogQuestionBasicMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.TaxCollectorDialogQuestionExtendedMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.AllianceTaxCollectorDialogQuestionExtendedMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.AlliancePrismDialogQuestionMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.EntityTalkMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.job.JobDescriptionMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.job.JobLevelUpMessage;
@@ -426,6 +459,9 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.inventory.items.ObjectJobAddedMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ObjectFoundWhileRecoltingMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.LivingObjectMessageMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.MimicryObjectPreviewMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.MimicryObjectErrorMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.MimicryObjectAssociatedMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.InventoryContentAndPresetMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.preset.InventoryPresetUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.preset.InventoryPresetItemUpdateErrorMessage;
@@ -478,6 +514,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeStartedBidSellerMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeStartedBidBuyerMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeBidPriceMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeBidPriceForSellerMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeTypesExchangerDescriptionForUserMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeTypesItemsExchangerDescriptionForUserMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeWeightMessage;
@@ -573,20 +610,18 @@ package com.ankamagames.dofus.network
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import flash.utils.IDataInput;
-
-
+   
    public class MessageReceiver extends Object implements RawDataParser
    {
-         
-
+      
       public function MessageReceiver() {
          super();
       }
-
+      
       private static const _log:Logger = Log.getLogger(getQualifiedClassName(MessageReceiver));
-
+      
       private static const _messagesTypes:Dictionary = new Dictionary();
-
+      
       public static function register() : void {
          StoreDataManager.getInstance().registerClass(new NetworkDataContainerMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ProtocolRequired(),true,true);
@@ -607,6 +642,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new ServersListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ServerStatusUpdateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new SelectedServerDataMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new SelectedServerDataExtendedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new SelectedServerRefusedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new AcquaintanceSearchErrorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new AcquaintanceServerListMessage(),true,true);
@@ -616,6 +652,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new AlreadyConnectedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new AccountLoggingKickedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ServerSettingsMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new ServerSessionConstantsMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ServerOptionalFeaturesMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new AccountCapabilitiesMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TrustStatusMessage(),true,true);
@@ -627,6 +664,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new CharacterDeletionErrorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new CharacterNameSuggestionSuccessMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new CharacterNameSuggestionFailureMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new BasicCharactersListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new CharactersListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new CharactersListWithModificationsMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new CharactersListErrorMessage(),true,true);
@@ -646,11 +684,14 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new SetCharacterRestrictionsMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ServerExperienceModificatorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new CharacterCapabilitiesMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new CharacterLoadingCompleteMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameContextCreateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameContextCreateErrorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameContextDestroyMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameContextRemoveElementMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameContextRemoveMultipleElementsMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameContextRemoveElementWithEventMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameContextRemoveMultipleElementsWithEventsMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameContextMoveElementMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameContextMoveMultipleElementsMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameContextRefreshEntityLookMessage(),true,true);
@@ -686,6 +727,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new MapComplementaryInformationsDataInHouseMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new MapComplementaryInformationsWithCoordsMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayShowActorMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameRolePlayShowActorWithEventMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new CharacterStatsListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new FighterStatsListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new CharacterLevelUpMessage(),true,true);
@@ -708,6 +750,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GameRolePlayRemoveChallengeMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlaySpellAnimMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayDelayedActionMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameRolePlayDelayedObjectUseMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayDelayedActionFinishedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ShowCellMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ShowCellSpectatorMessage(),true,true);
@@ -727,8 +770,9 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GameFightNewRoundMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightTurnListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightTurnStartMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameFightTurnStartPlayingMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightTurnResumeMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new GameFightTurnStartSlaveMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new SlaveSwitchContextMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightTurnReadyRequestMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightSynchronizeMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightTurnEndMessage(),true,true);
@@ -756,7 +800,6 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GameActionFightLifePointsLostMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameActionFightLifeAndShieldPointsLostMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameActionFightDispellableEffectMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new GameActionFightStateChangeMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameActionFightReflectSpellMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameActionFightReduceDamagesMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameActionFightReflectDamagesMessage(),true,true);
@@ -801,7 +844,6 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new EnabledChannelsMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ChannelEnablingChangeMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new SpellListMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new SlaveSwitchContextMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new LeaveDialogMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PauseDialogMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new InteractiveUseErrorMessage(),true,true);
@@ -840,11 +882,9 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new DungeonLeftMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new DungeonKeyRingMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new DungeonKeyRingUpdateMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new UpdateMapPlayersAgressableStatusMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new UpdateSelfAgressableStatusMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new AlignmentRankUpdateMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new AlignmentSubAreasListMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new AlignmentAreaUpdateMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new AlignmentSubAreaUpdateMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new AlignmentSubAreaUpdateExtendedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new CompassResetMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new CompassUpdateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new CompassUpdatePartyMemberMessage(),true,true);
@@ -866,6 +906,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new PartyUpdateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyNewMemberMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyUpdateLightMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new PartyCompanionUpdateLightMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyMemberRemoveMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyMemberEjectedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyLeaderUpdateMessage(),true,true);
@@ -896,6 +937,19 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new IgnoredAddFailureMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new IgnoredAddedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new IgnoredDeleteResultMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceCreationStartedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceModificationStartedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceCreationResultMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceInvitedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceInvitationStateRecruterMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceInvitationStateRecrutedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceJoinedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceGuildLeavingMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceLeftMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceMembershipMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new KohUpdateMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new ClientUIOpenedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new ClientUIOpenedByObjectMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GuildCreationStartedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GuildModificationStartedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GuildCreationResultMessage(),true,true);
@@ -904,7 +958,6 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GuildInvitationStateRecrutedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GuildJoinedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GuildMemberOnlineStatusMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new GuildUIOpenedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GuildInformationsGeneralMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GuildInformationsMembersMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GuildInformationsMemberUpdateMessage(),true,true);
@@ -920,9 +973,21 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GuildPaddockBoughtMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GuildPaddockRemovedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GuildMemberWarnOnConnectionStateMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuildFactsErrorMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuildFactsMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuildInAllianceFactsMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceFactsErrorMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceFactsMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuildListMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuildVersatileInfoListMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceListMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceVersatileInfoListMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AlliancePartialListMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceInsiderInfoMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TaxCollectorMovementMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TaxCollectorErrorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TaxCollectorListMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new TaxCollectorStateUpdateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TaxCollectorMovementAddMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TaxCollectorMovementRemoveMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TaxCollectorAttackedMessage(),true,true);
@@ -931,21 +996,22 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GuildFightPlayersHelpersLeaveMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GuildFightPlayersEnemiesListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GuildFightPlayersEnemyRemoveMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new PrismBalanceResultMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new PrismAlignmentBonusResultMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new PrismFightDefendersStateMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new PrismSetSabotagedRefusedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PrismFightDefenderAddMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PrismFightDefenderLeaveMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PrismFightDefendersSwapMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new PrismFightAttackedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PrismFightAttackerAddMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PrismFightAttackerRemoveMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new PrismWorldInformationMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new PrismsListMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new PrismsListUpdateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ChallengeFightJoinRefusedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PrismInfoCloseMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new PrismInfoValidMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new PrismsInfoValidMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new PrismFightAddedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new PrismFightRemovedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PrismInfoInValidMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PrismFightStateUpdateMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new PrismSettingsErrorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new QuestListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new QuestStartedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new QuestValidatedMessage(),true,true);
@@ -963,6 +1029,8 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new NpcDialogQuestionMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TaxCollectorDialogQuestionBasicMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TaxCollectorDialogQuestionExtendedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceTaxCollectorDialogQuestionExtendedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AlliancePrismDialogQuestionMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new EntityTalkMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new JobDescriptionMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new JobLevelUpMessage(),true,true);
@@ -1010,6 +1078,9 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new ObjectJobAddedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ObjectFoundWhileRecoltingMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new LivingObjectMessageMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new MimicryObjectPreviewMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new MimicryObjectErrorMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new MimicryObjectAssociatedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new InventoryContentAndPresetMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new InventoryPresetUpdateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new InventoryPresetItemUpdateErrorMessage(),true,true);
@@ -1062,6 +1133,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new ExchangeStartedBidSellerMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ExchangeStartedBidBuyerMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ExchangeBidPriceMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new ExchangeBidPriceForSellerMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ExchangeTypesExchangerDescriptionForUserMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ExchangeTypesItemsExchangerDescriptionForUserMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ExchangeWeightMessage(),true,true);
@@ -1154,18 +1226,17 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new DownloadCurrentSpeedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new DownloadErrorMessage(),true,true);
       }
-
-      public function parse(input:IDataInput, messageId:uint, messageLength:uint) : INetworkMessage {
-         var messageType:Class = _messagesTypes[messageId];
-         if(!messageType)
+      
+      public function parse(param1:IDataInput, param2:uint, param3:uint) : INetworkMessage {
+         var _loc4_:Class = _messagesTypes[param2];
+         if(!_loc4_)
          {
-            _log.warn("Unknown packet received (ID "+messageId+", length "+messageLength+")");
+            _log.warn("Unknown packet received (ID " + param2 + ", length " + param3 + ")");
             return null;
          }
-         var message:INetworkMessage = new messageType();
-         message.unpack(input,messageLength);
-         return message;
+         var _loc5_:INetworkMessage = new _loc4_();
+         _loc5_.unpack(param1,param3);
+         return _loc5_;
       }
    }
-
 }

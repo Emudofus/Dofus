@@ -4,25 +4,23 @@ package com.ankamagames.dofus.datacenter.items.criterion
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-
-
+   
    public class ItemCriterionFactory extends Object implements IDataCenter
    {
-         
-
+      
       public function ItemCriterionFactory() {
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ItemCriterionFactory));
-
-      public static function create(pServerCriterionForm:String) : ItemCriterion {
-         var criterion:ItemCriterion = null;
-         var s:String = pServerCriterionForm.slice(0,2);
-         switch(s)
+      
+      public static function create(param1:String) : ItemCriterion {
+         var _loc2_:ItemCriterion = null;
+         var _loc3_:String = param1.slice(0,2);
+         switch(_loc3_)
          {
             case "BI":
-               criterion=new UnusableItemCriterion(pServerCriterionForm);
+               _loc2_ = new UnusableItemCriterion(param1);
                break;
             case "Ca":
             case "CA":
@@ -45,139 +43,145 @@ package com.ankamagames.dofus.datacenter.items.criterion
             case "CW":
             case "Ct":
             case "CT":
-               criterion=new ItemCriterion(pServerCriterionForm);
+               _loc2_ = new ItemCriterion(param1);
                break;
             case "OA":
-               criterion=new AchievementItemCriterion(pServerCriterionForm);
+               _loc2_ = new AchievementItemCriterion(param1);
+               break;
+            case "Ow":
+               _loc2_ = new AllianceItemCriterion(param1);
+               break;
+            case "Ox":
+               _loc2_ = new AllianceRightsItemCriterion(param1);
+               break;
+            case "Oz":
+               _loc2_ = new AllianceAvAItemCriterion(param1);
                break;
             case "Pa":
-               criterion=new AlignmentLevelItemCriterion(pServerCriterionForm);
+               _loc2_ = new AlignmentLevelItemCriterion(param1);
                break;
             case "PA":
-               criterion=new SoulStoneItemCriterion(pServerCriterionForm);
+               _loc2_ = new SoulStoneItemCriterion(param1);
                break;
             case "Pb":
-               criterion=new FriendlistItemCriterion(pServerCriterionForm);
+               _loc2_ = new FriendlistItemCriterion(param1);
                break;
             case "PB":
-               criterion=new SubareaItemCriterion(pServerCriterionForm);
+               _loc2_ = new SubareaItemCriterion(param1);
                break;
             case "Pe":
-               criterion=new PremiumAccountItemCriterion(pServerCriterionForm);
+               _loc2_ = new PremiumAccountItemCriterion(param1);
                break;
             case "PE":
-               criterion=new EmoteItemCriterion(pServerCriterionForm);
+               _loc2_ = new EmoteItemCriterion(param1);
                break;
             case "Pf":
-               criterion=new RideItemCriterion(pServerCriterionForm);
+               _loc2_ = new RideItemCriterion(param1);
                break;
             case "Pg":
-               criterion=new GiftItemCriterion(pServerCriterionForm);
+               _loc2_ = new GiftItemCriterion(param1);
                break;
             case "PG":
-               criterion=new BreedItemCriterion(pServerCriterionForm);
+               _loc2_ = new BreedItemCriterion(param1);
                break;
             case "Pi":
             case "PI":
-               criterion=new SkillItemCriterion(pServerCriterionForm);
+               _loc2_ = new SkillItemCriterion(param1);
                break;
             case "PJ":
             case "Pj":
-               criterion=new JobItemCriterion(pServerCriterionForm);
+               _loc2_ = new JobItemCriterion(param1);
                break;
             case "PK":
-               criterion=new KamaItemCriterion(pServerCriterionForm);
+               _loc2_ = new KamaItemCriterion(param1);
                break;
             case "PL":
-               criterion=new LevelItemCriterion(pServerCriterionForm);
+               _loc2_ = new LevelItemCriterion(param1);
                break;
             case "PN":
-               criterion=new NameItemCriterion(pServerCriterionForm);
+               _loc2_ = new NameItemCriterion(param1);
                break;
             case "PO":
-               criterion=new ObjectItemCriterion(pServerCriterionForm);
+               _loc2_ = new ObjectItemCriterion(param1);
                break;
             case "Po":
-               criterion=new AreaItemCriterion(pServerCriterionForm);
+               _loc2_ = new AreaItemCriterion(param1);
                break;
             case "Pp":
             case "PP":
-               criterion=new PVPRankItemCriterion(pServerCriterionForm);
+               _loc2_ = new PVPRankItemCriterion(param1);
                break;
             case "Pq":
-               criterion=new RankCriterion(pServerCriterionForm);
+               _loc2_ = new RankCriterion(param1);
                break;
             case "PQ":
-               criterion=new MaxRankCriterion(pServerCriterionForm);
+               _loc2_ = new MaxRankCriterion(param1);
                break;
             case "Pr":
-               criterion=new SpecializationItemCriterion(pServerCriterionForm);
+               _loc2_ = new SpecializationItemCriterion(param1);
                break;
             case "PR":
-               criterion=new MariedItemCriterion(pServerCriterionForm);
+               _loc2_ = new MariedItemCriterion(param1);
                break;
             case "Ps":
-               criterion=new AlignmentItemCriterion(pServerCriterionForm);
+               _loc2_ = new AlignmentItemCriterion(param1);
                break;
             case "PS":
-               criterion=new SexItemCriterion(pServerCriterionForm);
+               _loc2_ = new SexItemCriterion(param1);
                break;
             case "PT":
-               criterion=new SpellItemCriterion(pServerCriterionForm);
+               _loc2_ = new SpellItemCriterion(param1);
                break;
             case "PU":
-               criterion=new BonesItemCriterion(pServerCriterionForm);
+               _loc2_ = new BonesItemCriterion(param1);
                break;
             case "Pw":
-               criterion=new GuildItemCriterion(pServerCriterionForm);
+               _loc2_ = new GuildItemCriterion(param1);
                break;
             case "PW":
-               criterion=new WeightItemCriterion(pServerCriterionForm);
+               _loc2_ = new WeightItemCriterion(param1);
                break;
             case "Px":
-               criterion=new GuildRightsItemCriterion(pServerCriterionForm);
+               _loc2_ = new GuildRightsItemCriterion(param1);
                break;
             case "PX":
-               criterion=new AccountRightsItemCriterion(pServerCriterionForm);
+               _loc2_ = new AccountRightsItemCriterion(param1);
                break;
             case "Pz":
                break;
             case "Py":
-               criterion=new GuildLevelItemCriterion(pServerCriterionForm);
+               _loc2_ = new GuildLevelItemCriterion(param1);
                break;
             case "PZ":
-               criterion=new SubscribeItemCriterion(pServerCriterionForm);
+               _loc2_ = new SubscribeItemCriterion(param1);
                break;
             case "Qa":
             case "Qc":
             case "Qf":
-               criterion=new QuestItemCriterion(pServerCriterionForm);
+               _loc2_ = new QuestItemCriterion(param1);
                break;
             case "MK":
-               criterion=new MapCharactersItemCriterion(pServerCriterionForm);
+               _loc2_ = new MapCharactersItemCriterion(param1);
                break;
             case "Sc":
-               criterion=new StaticCriterionItemCriterion(pServerCriterionForm);
+               _loc2_ = new StaticCriterionItemCriterion(param1);
                break;
             case "SG":
-               criterion=new MonthItemCriterion(pServerCriterionForm);
+               _loc2_ = new MonthItemCriterion(param1);
                break;
             case "Sd":
-               criterion=new DayItemCriterion(pServerCriterionForm);
+               _loc2_ = new DayItemCriterion(param1);
                break;
             case "SI":
-               criterion=new ServerItemCriterion(pServerCriterionForm);
+               _loc2_ = new ServerItemCriterion(param1);
                break;
             case "Sy":
-               criterion=new CommunityItemCriterion(pServerCriterionForm);
+               _loc2_ = new CommunityItemCriterion(param1);
                break;
             default:
-               _log.warn("Criterion \'"+s+"\' unknow or unused ("+pServerCriterionForm+")");
+               _log.warn("Criterion \'" + _loc3_ + "\' unknow or unused (" + param1 + ")");
          }
-         return criterion;
+         return _loc2_;
       }
-
-
    }
-
 }

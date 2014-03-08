@@ -1,32 +1,26 @@
 package org.flintparticles.common.energyEasing
 {
-
-
    public class Quadratic extends Object
    {
-         
-
+      
       public function Quadratic() {
          super();
       }
-
-      public static function easeIn(age:Number, lifetime:Number) : Number {
-         return 1-(age=age/lifetime)*age;
+      
+      public static function easeIn(param1:Number, param2:Number) : Number {
+         return 1 - (param1 = param1 / param2) * param1;
       }
-
-      public static function easeOut(age:Number, lifetime:Number) : Number {
-         return (age=1-age/lifetime)*age;
+      
+      public static function easeOut(param1:Number, param2:Number) : Number {
+         return (param1 = 1 - param1 / param2) * param1;
       }
-
-      public static function easeInOut(age:Number, lifetime:Number) : Number {
-         if((age=age/lifetime*0.5)<1)
+      
+      public static function easeInOut(param1:Number, param2:Number) : Number {
+         if((param1 = param1 / (param2 * 0.5)) < 1)
          {
-            return 1-age*age*0.5;
+            return 1 - param1 * param1 * 0.5;
          }
-         return (age=age-2)*age*0.5;
+         return (param1 = param1 - 2) * param1 * 0.5;
       }
-
-
    }
-
 }

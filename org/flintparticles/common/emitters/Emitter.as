@@ -13,171 +13,167 @@ package org.flintparticles.common.emitters
    import org.flintparticles.common.events.ParticleEvent;
    import org.flintparticles.common.events.EmitterEvent;
    import org.flintparticles.common.counters.ZeroCounter;
-
-
+   
    public class Emitter extends EventDispatcher
    {
-         
-
+      
       public function Emitter() {
          super();
-         this._particles=new Array();
-         this._actions=new PriorityArray();
-         this._initializers=new PriorityArray();
-         this._activities=new PriorityArray();
-         this._counter=new ZeroCounter();
+         this._particles = new Array();
+         this._actions = new PriorityArray();
+         this._initializers = new PriorityArray();
+         this._activities = new PriorityArray();
+         this._counter = new ZeroCounter();
       }
-
-
-
+      
       protected var _particleFactory:ParticleFactory;
-
+      
       protected var _initializers:PriorityArray;
-
+      
       protected var _actions:PriorityArray;
-
+      
       protected var _activities:PriorityArray;
-
+      
       protected var _particles:Array;
-
+      
       protected var _counter:Counter;
-
+      
       protected var _useInternalTick:Boolean = true;
-
+      
       protected var _fixedFrameTime:Number = 0;
-
+      
       protected var _running:Boolean = false;
-
+      
       protected var _started:Boolean = false;
-
+      
       protected var _maximumFrameTime:Number = 0.1;
-
+      
       public function get maximumFrameTime() : Number {
          return this._maximumFrameTime;
       }
-
-      public function set maximumFrameTime(value:Number) : void {
-         this._maximumFrameTime=value;
+      
+      public function set maximumFrameTime(param1:Number) : void {
+         this._maximumFrameTime = param1;
       }
-
-      public function addInitializer(initializer:Initializer, priority:Number=NaN) : void {
-         if(isNaN(priority))
+      
+      public function addInitializer(param1:Initializer, param2:Number=NaN) : void {
+         if(isNaN(param2))
          {
-            priority=initializer.getDefaultPriority();
+            param2 = param1.getDefaultPriority();
          }
-         this._initializers.add(initializer,priority);
-         initializer.addedToEmitter(this);
+         this._initializers.add(param1,param2);
+         param1.addedToEmitter(this);
       }
-
-      public function removeInitializer(initializer:Initializer) : void {
-         if(this._initializers.remove(initializer))
+      
+      public function removeInitializer(param1:Initializer) : void {
+         if(this._initializers.remove(param1))
          {
-            initializer.removedFromEmitter(this);
+            param1.removedFromEmitter(this);
          }
       }
-
-      public function hasInitializer(initializer:Initializer) : Boolean {
-         return this._initializers.contains(initializer);
+      
+      public function hasInitializer(param1:Initializer) : Boolean {
+         return this._initializers.contains(param1);
       }
-
-      public function hasInitializerOfType(initializerClass:Class) : Boolean {
-         var len:uint = this._initializers.length;
-         var i:uint = 0;
-         while(i<len)
+      
+      public function hasInitializerOfType(param1:Class) : Boolean {
+         var _loc2_:uint = this._initializers.length;
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            if(this._initializers[i] is initializerClass)
+            if(this._initializers[_loc3_] is param1)
             {
                return true;
             }
-            i++;
+            _loc3_++;
          }
          return false;
       }
-
-      public function addAction(action:Action, priority:Number=NaN) : void {
-         if(isNaN(priority))
+      
+      public function addAction(param1:Action, param2:Number=NaN) : void {
+         if(isNaN(param2))
          {
-            priority=action.getDefaultPriority();
+            param2 = param1.getDefaultPriority();
          }
-         this._actions.add(action,priority);
-         action.addedToEmitter(this);
+         this._actions.add(param1,param2);
+         param1.addedToEmitter(this);
       }
-
-      public function removeAction(action:Action) : void {
-         if(this._actions.remove(action))
+      
+      public function removeAction(param1:Action) : void {
+         if(this._actions.remove(param1))
          {
-            action.removedFromEmitter(this);
+            param1.removedFromEmitter(this);
          }
       }
-
-      public function hasAction(action:Action) : Boolean {
-         return this._actions.contains(action);
+      
+      public function hasAction(param1:Action) : Boolean {
+         return this._actions.contains(param1);
       }
-
-      public function hasActionOfType(actionClass:Class) : Boolean {
-         var len:uint = this._actions.length;
-         var i:uint = 0;
-         while(i<len)
+      
+      public function hasActionOfType(param1:Class) : Boolean {
+         var _loc2_:uint = this._actions.length;
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            if(this._actions[i] is actionClass)
+            if(this._actions[_loc3_] is param1)
             {
                return true;
             }
-            i++;
+            _loc3_++;
          }
          return false;
       }
-
-      public function addActivity(activity:Activity, priority:Number=NaN) : void {
-         if(isNaN(priority))
+      
+      public function addActivity(param1:Activity, param2:Number=NaN) : void {
+         if(isNaN(param2))
          {
-            priority=activity.getDefaultPriority();
+            param2 = param1.getDefaultPriority();
          }
-         this._activities.add(activity,priority);
-         activity.addedToEmitter(this);
+         this._activities.add(param1,param2);
+         param1.addedToEmitter(this);
       }
-
-      public function removeActivity(activity:Activity) : void {
-         if(this._activities.remove(activity))
+      
+      public function removeActivity(param1:Activity) : void {
+         if(this._activities.remove(param1))
          {
-            activity.removedFromEmitter(this);
+            param1.removedFromEmitter(this);
          }
       }
-
-      public function hasActivity(activity:Activity) : Boolean {
-         return this._activities.contains(activity);
+      
+      public function hasActivity(param1:Activity) : Boolean {
+         return this._activities.contains(param1);
       }
-
-      public function hasActivityOfType(activityClass:Class) : Boolean {
-         var len:uint = this._activities.length;
-         var i:uint = 0;
-         while(i<len)
+      
+      public function hasActivityOfType(param1:Class) : Boolean {
+         var _loc2_:uint = this._activities.length;
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            if(this._activities[i] is activityClass)
+            if(this._activities[_loc3_] is param1)
             {
                return true;
             }
-            i++;
+            _loc3_++;
          }
          return false;
       }
-
+      
       public function get counter() : Counter {
          return this._counter;
       }
-
-      public function set counter(value:Counter) : void {
-         this._counter=value;
+      
+      public function set counter(param1:Counter) : void {
+         this._counter = param1;
       }
-
+      
       public function get useInternalTick() : Boolean {
          return this._useInternalTick;
       }
-
-      public function set useInternalTick(value:Boolean) : void {
-         if(this._useInternalTick!=value)
+      
+      public function set useInternalTick(param1:Boolean) : void {
+         if(this._useInternalTick != param1)
          {
-            this._useInternalTick=value;
+            this._useInternalTick = param1;
             if(this._started)
             {
                if(this._useInternalTick)
@@ -191,176 +187,175 @@ package org.flintparticles.common.emitters
             }
          }
       }
-
+      
       public function get fixedFrameTime() : Number {
          return this._fixedFrameTime;
       }
-
-      public function set fixedFrameTime(value:Number) : void {
-         this._fixedFrameTime=value;
+      
+      public function set fixedFrameTime(param1:Number) : void {
+         this._fixedFrameTime = param1;
       }
-
+      
       public function get running() : Boolean {
          return this._running;
       }
-
+      
       public function get particleFactory() : ParticleFactory {
          return this._particleFactory;
       }
-
-      public function set particleFactory(value:ParticleFactory) : void {
-         this._particleFactory=value;
+      
+      public function set particleFactory(param1:ParticleFactory) : void {
+         this._particleFactory = param1;
       }
-
+      
       public function get particles() : Array {
          return this._particles;
       }
-
+      
       protected function createParticle() : Particle {
-         var particle:Particle = this._particleFactory.createParticle();
-         var len:int = this._initializers.length;
-         this.initParticle(particle);
-         var i:int = 0;
-         while(i<len)
+         var _loc1_:Particle = this._particleFactory.createParticle();
+         var _loc2_:int = this._initializers.length;
+         this.initParticle(_loc1_);
+         var _loc3_:* = 0;
+         while(_loc3_ < _loc2_)
          {
-            this._initializers[i].initialize(this,particle);
-            i++;
+            this._initializers[_loc3_].initialize(this,_loc1_);
+            _loc3_++;
          }
-         this._particles.push(particle);
-         dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_CREATED,particle));
-         return particle;
+         this._particles.push(_loc1_);
+         dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_CREATED,_loc1_));
+         return _loc1_;
       }
-
-      protected function initParticle(particle:Particle) : void {
-         
+      
+      protected function initParticle(param1:Particle) : void {
       }
-
-      public function addExistingParticles(particles:Array, applyInitializers:Boolean=false) : void {
-         var i:* = 0;
-         var len2:* = 0;
-         var j:* = 0;
-         var len:int = particles.length;
-         if(applyInitializers)
+      
+      public function addExistingParticles(param1:Array, param2:Boolean=false) : void {
+         var _loc4_:* = 0;
+         var _loc5_:* = 0;
+         var _loc6_:* = 0;
+         var _loc3_:int = param1.length;
+         if(param2)
          {
-            len2=this._initializers.length;
-            j=0;
-            while(j<len2)
+            _loc5_ = this._initializers.length;
+            _loc6_ = 0;
+            while(_loc6_ < _loc5_)
             {
-               i=0;
-               while(i<len)
+               _loc4_ = 0;
+               while(_loc4_ < _loc3_)
                {
-                  this._initializers[j].initialize(this,particles[i]);
-                  i++;
+                  this._initializers[_loc6_].initialize(this,param1[_loc4_]);
+                  _loc4_++;
                }
-               j++;
+               _loc6_++;
             }
          }
-         i=0;
-         while(i<len)
+         _loc4_ = 0;
+         while(_loc4_ < _loc3_)
          {
-            this._particles.push(particles[i]);
-            dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_ADDED,particles[i]));
-            i++;
+            this._particles.push(param1[_loc4_]);
+            dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_ADDED,param1[_loc4_]));
+            _loc4_++;
          }
       }
-
+      
       public function killAllParticles() : void {
-         var len:int = this._particles.length;
-         var i:int = 0;
-         while(i<len)
+         var _loc1_:int = this._particles.length;
+         var _loc2_:* = 0;
+         while(_loc2_ < _loc1_)
          {
-            dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_DEAD,this._particles[i]));
-            this._particleFactory.disposeParticle(this._particles[i]);
-            i++;
+            dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_DEAD,this._particles[_loc2_]));
+            this._particleFactory.disposeParticle(this._particles[_loc2_]);
+            _loc2_++;
          }
-         this._particles.length=0;
+         this._particles.length = 0;
       }
-
+      
       public function start() : void {
          if(this._useInternalTick)
          {
             FrameUpdater.instance.addEventListener(UpdateEvent.UPDATE,this.updateEventListener,false,0,true);
          }
-         this._started=true;
-         this._running=true;
-         var len:int = this._activities.length;
-         var i:int = 0;
-         while(i<len)
+         this._started = true;
+         this._running = true;
+         var _loc1_:int = this._activities.length;
+         var _loc2_:* = 0;
+         while(_loc2_ < _loc1_)
          {
-            this._activities[i].initialize(this);
-            i++;
+            this._activities[_loc2_].initialize(this);
+            _loc2_++;
          }
-         len=this._counter.startEmitter(this);
-         i=0;
-         while(i<len)
+         _loc1_ = this._counter.startEmitter(this);
+         _loc2_ = 0;
+         while(_loc2_ < _loc1_)
          {
             this.createParticle();
-            i++;
+            _loc2_++;
          }
       }
-
-      private function updateEventListener(ev:UpdateEvent) : void {
+      
+      private function updateEventListener(param1:UpdateEvent) : void {
          if(this._fixedFrameTime)
          {
             this.update(this._fixedFrameTime);
          }
          else
          {
-            this.update(ev.time);
+            this.update(param1.time);
          }
       }
-
-      public function update(time:Number) : void {
-         var i:* = 0;
-         var particle:Particle = null;
-         var action:Action = null;
-         var len2:* = 0;
-         var j:* = 0;
-         if((!this._running)||(time<this._maximumFrameTime))
+      
+      public function update(param1:Number) : void {
+         var _loc2_:* = 0;
+         var _loc3_:Particle = null;
+         var _loc5_:Action = null;
+         var _loc6_:* = 0;
+         var _loc7_:* = 0;
+         if(!this._running || param1 > this._maximumFrameTime)
          {
             return;
          }
-         var len:int = this._counter.updateEmitter(this,time);
-         i=0;
-         while(i<len)
+         var _loc4_:int = this._counter.updateEmitter(this,param1);
+         _loc2_ = 0;
+         while(_loc2_ < _loc4_)
          {
             this.createParticle();
-            i++;
+            _loc2_++;
          }
          this.sortParticles();
-         len=this._activities.length;
-         i=0;
-         while(i<len)
+         _loc4_ = this._activities.length;
+         _loc2_ = 0;
+         while(_loc2_ < _loc4_)
          {
-            this._activities[i].update(this,time);
-            i++;
+            this._activities[_loc2_].update(this,param1);
+            _loc2_++;
          }
-         if(this._particles.length>0)
+         if(this._particles.length > 0)
          {
-            len=this._actions.length;
-            len2=this._particles.length;
-            j=0;
-            while(j<len)
+            _loc4_ = this._actions.length;
+            _loc6_ = this._particles.length;
+            _loc7_ = 0;
+            while(_loc7_ < _loc4_)
             {
-               action=this._actions[j];
-               i=0;
-               while(i<len2)
+               _loc5_ = this._actions[_loc7_];
+               _loc2_ = 0;
+               while(_loc2_ < _loc6_)
                {
-                  particle=this._particles[i];
-                  action.update(this,particle,time);
-                  i++;
+                  _loc3_ = this._particles[_loc2_];
+                  _loc5_.update(this,_loc3_,param1);
+                  _loc2_++;
                }
-               j++;
+               _loc7_++;
             }
-            i=len2;
-            while(i--)
+            _loc2_ = _loc6_;
+            while(_loc2_--)
             {
-               particle=this._particles[i];
-               if(particle.isDead)
+               _loc3_ = this._particles[_loc2_];
+               if(_loc3_.isDead)
                {
-                  dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_DEAD,particle));
-                  this._particleFactory.disposeParticle(particle);
-                  this._particles.splice(i,1);
+                  dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_DEAD,_loc3_));
+                  this._particleFactory.disposeParticle(_loc3_);
+                  this._particles.splice(_loc2_,1);
                }
             }
          }
@@ -370,39 +365,37 @@ package org.flintparticles.common.emitters
          }
          dispatchEvent(new EmitterEvent(EmitterEvent.EMITTER_UPDATED));
       }
-
+      
       protected function sortParticles() : void {
-         
       }
-
+      
       public function pause() : void {
-         this._running=false;
+         this._running = false;
       }
-
+      
       public function resume() : void {
-         this._running=true;
+         this._running = true;
       }
-
+      
       public function stop() : void {
          if(this._useInternalTick)
          {
             FrameUpdater.instance.removeEventListener(UpdateEvent.UPDATE,this.updateEventListener);
          }
-         this._started=false;
+         this._started = false;
          this.killAllParticles();
       }
-
-      public function runAhead(time:Number, frameRate:Number=10) : void {
-         var maxTime:Number = this._maximumFrameTime;
-         var step:Number = 1/frameRate;
-         this._maximumFrameTime=step;
-         while(time>0)
+      
+      public function runAhead(param1:Number, param2:Number=10) : void {
+         var _loc3_:Number = this._maximumFrameTime;
+         var _loc4_:Number = 1 / param2;
+         this._maximumFrameTime = _loc4_;
+         while(param1 > 0)
          {
-            time=time-step;
-            this.update(step);
+            param1 = param1 - _loc4_;
+            this.update(_loc4_);
          }
-         this._maximumFrameTime=maxTime;
+         this._maximumFrameTime = _loc3_;
       }
    }
-
 }

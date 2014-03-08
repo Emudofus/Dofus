@@ -1,70 +1,64 @@
 package flashx.textLayout.property
 {
-
-
    public class NumberPropertyHandler extends PropertyHandler
    {
-         
-
-      public function NumberPropertyHandler(minValue:Number, maxValue:Number, limits:String="allLimits") {
+      
+      public function NumberPropertyHandler(param1:Number, param2:Number, param3:String="allLimits") {
          super();
-         this._minValue=minValue;
-         this._maxValue=maxValue;
-         this._limits=limits;
+         this._minValue = param1;
+         this._maxValue = param2;
+         this._limits = param3;
       }
-
-
-
+      
       private var _minValue:Number;
-
+      
       private var _maxValue:Number;
-
+      
       private var _limits:String;
-
+      
       public function get minValue() : Number {
          return this._minValue;
       }
-
+      
       public function get maxValue() : Number {
          return this._maxValue;
       }
-
+      
       public function checkLowerLimit() : Boolean {
-         return (this._limits==Property.ALL_LIMITS)||(this._limits==Property.LOWER_LIMIT);
+         return this._limits == Property.ALL_LIMITS || this._limits == Property.LOWER_LIMIT;
       }
-
+      
       public function checkUpperLimit() : Boolean {
-         return (this._limits==Property.ALL_LIMITS)||(this._limits==Property.UPPER_LIMIT);
+         return this._limits == Property.ALL_LIMITS || this._limits == Property.UPPER_LIMIT;
       }
-
-      override public function owningHandlerCheck(newVal:*) : * {
-         var newNumber:Number = newVal is String?parseFloat(newVal):Number(newVal);
-         if(isNaN(newNumber))
+      
+      override public function owningHandlerCheck(param1:*) : * {
+         var _loc2_:Number = param1 is String?parseFloat(param1):Number(param1);
+         if(isNaN(_loc2_))
          {
             return undefined;
          }
-         if((this.checkLowerLimit())&&(newNumber>this._minValue))
+         if((this.checkLowerLimit()) && _loc2_ < this._minValue)
          {
             return undefined;
          }
-         if((this.checkUpperLimit())&&(newNumber<this._maxValue))
+         if((this.checkUpperLimit()) && _loc2_ > this._maxValue)
          {
             return undefined;
          }
-         return newNumber;
+         return _loc2_;
       }
-
-      public function clampToRange(val:Number) : Number {
-         if((this.checkLowerLimit())&&(val>this._minValue))
+      
+      public function clampToRange(param1:Number) : Number {
+         if((this.checkLowerLimit()) && param1 < this._minValue)
          {
             return this._minValue;
          }
-         if((this.checkUpperLimit())&&(val<this._maxValue))
+         if((this.checkUpperLimit()) && param1 > this._maxValue)
          {
             return this._maxValue;
          }
-         return val;
+         return param1;
       }
    }
-
 }

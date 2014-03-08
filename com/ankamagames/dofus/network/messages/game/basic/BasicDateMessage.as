@@ -5,114 +5,112 @@ package com.ankamagames.dofus.network.messages.game.basic
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class BasicDateMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function BasicDateMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 177;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var day:uint = 0;
-
+      
       public var month:uint = 0;
-
+      
       public var year:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 177;
       }
-
-      public function initBasicDateMessage(day:uint=0, month:uint=0, year:uint=0) : BasicDateMessage {
-         this.day=day;
-         this.month=month;
-         this.year=year;
-         this._isInitialized=true;
+      
+      public function initBasicDateMessage(param1:uint=0, param2:uint=0, param3:uint=0) : BasicDateMessage {
+         this.day = param1;
+         this.month = param2;
+         this.year = param3;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.day=0;
-         this.month=0;
-         this.year=0;
-         this._isInitialized=false;
+         this.day = 0;
+         this.month = 0;
+         this.year = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_BasicDateMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_BasicDateMessage(param1);
       }
-
-      public function serializeAs_BasicDateMessage(output:IDataOutput) : void {
-         if(this.day<0)
+      
+      public function serializeAs_BasicDateMessage(param1:IDataOutput) : void {
+         if(this.day < 0)
          {
-            throw new Error("Forbidden value ("+this.day+") on element day.");
+            throw new Error("Forbidden value (" + this.day + ") on element day.");
          }
          else
          {
-            output.writeByte(this.day);
-            if(this.month<0)
+            param1.writeByte(this.day);
+            if(this.month < 0)
             {
-               throw new Error("Forbidden value ("+this.month+") on element month.");
+               throw new Error("Forbidden value (" + this.month + ") on element month.");
             }
             else
             {
-               output.writeByte(this.month);
-               if(this.year<0)
+               param1.writeByte(this.month);
+               if(this.year < 0)
                {
-                  throw new Error("Forbidden value ("+this.year+") on element year.");
+                  throw new Error("Forbidden value (" + this.year + ") on element year.");
                }
                else
                {
-                  output.writeShort(this.year);
+                  param1.writeShort(this.year);
                   return;
                }
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_BasicDateMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_BasicDateMessage(param1);
       }
-
-      public function deserializeAs_BasicDateMessage(input:IDataInput) : void {
-         this.day=input.readByte();
-         if(this.day<0)
+      
+      public function deserializeAs_BasicDateMessage(param1:IDataInput) : void {
+         this.day = param1.readByte();
+         if(this.day < 0)
          {
-            throw new Error("Forbidden value ("+this.day+") on element of BasicDateMessage.day.");
+            throw new Error("Forbidden value (" + this.day + ") on element of BasicDateMessage.day.");
          }
          else
          {
-            this.month=input.readByte();
-            if(this.month<0)
+            this.month = param1.readByte();
+            if(this.month < 0)
             {
-               throw new Error("Forbidden value ("+this.month+") on element of BasicDateMessage.month.");
+               throw new Error("Forbidden value (" + this.month + ") on element of BasicDateMessage.month.");
             }
             else
             {
-               this.year=input.readShort();
-               if(this.year<0)
+               this.year = param1.readShort();
+               if(this.year < 0)
                {
-                  throw new Error("Forbidden value ("+this.year+") on element of BasicDateMessage.year.");
+                  throw new Error("Forbidden value (" + this.year + ") on element of BasicDateMessage.year.");
                }
                else
                {
@@ -122,5 +120,4 @@ package com.ankamagames.dofus.network.messages.game.basic
          }
       }
    }
-
 }

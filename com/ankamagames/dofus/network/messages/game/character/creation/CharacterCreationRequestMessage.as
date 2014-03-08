@@ -7,117 +7,115 @@ package com.ankamagames.dofus.network.messages.game.character.creation
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.enums.PlayableBreedEnum;
-
-
+   
    public class CharacterCreationRequestMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function CharacterCreationRequestMessage() {
-         this.colors=new Vector.<int>(5,true);
+         this.colors = new Vector.<int>(5,true);
          super();
       }
-
+      
       public static const protocolId:uint = 160;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var name:String = "";
-
+      
       public var breed:int = 0;
-
+      
       public var sex:Boolean = false;
-
+      
       public var colors:Vector.<int>;
-
+      
       public var cosmeticId:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 160;
       }
-
-      public function initCharacterCreationRequestMessage(name:String="", breed:int=0, sex:Boolean=false, colors:Vector.<int>=null, cosmeticId:uint=0) : CharacterCreationRequestMessage {
-         this.name=name;
-         this.breed=breed;
-         this.sex=sex;
-         this.colors=colors;
-         this.cosmeticId=cosmeticId;
-         this._isInitialized=true;
+      
+      public function initCharacterCreationRequestMessage(param1:String="", param2:int=0, param3:Boolean=false, param4:Vector.<int>=null, param5:uint=0) : CharacterCreationRequestMessage {
+         this.name = param1;
+         this.breed = param2;
+         this.sex = param3;
+         this.colors = param4;
+         this.cosmeticId = param5;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.name="";
-         this.breed=0;
-         this.sex=false;
-         this.colors=new Vector.<int>(5,true);
-         this.cosmeticId=0;
-         this._isInitialized=false;
+         this.name = "";
+         this.breed = 0;
+         this.sex = false;
+         this.colors = new Vector.<int>(5,true);
+         this.cosmeticId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_CharacterCreationRequestMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_CharacterCreationRequestMessage(param1);
       }
-
-      public function serializeAs_CharacterCreationRequestMessage(output:IDataOutput) : void {
-         output.writeUTF(this.name);
-         output.writeByte(this.breed);
-         output.writeBoolean(this.sex);
-         var _i4:uint = 0;
-         while(_i4<5)
+      
+      public function serializeAs_CharacterCreationRequestMessage(param1:IDataOutput) : void {
+         param1.writeUTF(this.name);
+         param1.writeByte(this.breed);
+         param1.writeBoolean(this.sex);
+         var _loc2_:uint = 0;
+         while(_loc2_ < 5)
          {
-            output.writeInt(this.colors[_i4]);
-            _i4++;
+            param1.writeInt(this.colors[_loc2_]);
+            _loc2_++;
          }
-         if(this.cosmeticId<0)
+         if(this.cosmeticId < 0)
          {
-            throw new Error("Forbidden value ("+this.cosmeticId+") on element cosmeticId.");
+            throw new Error("Forbidden value (" + this.cosmeticId + ") on element cosmeticId.");
          }
          else
          {
-            output.writeInt(this.cosmeticId);
+            param1.writeInt(this.cosmeticId);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_CharacterCreationRequestMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_CharacterCreationRequestMessage(param1);
       }
-
-      public function deserializeAs_CharacterCreationRequestMessage(input:IDataInput) : void {
-         this.name=input.readUTF();
-         this.breed=input.readByte();
-         if((this.breed>PlayableBreedEnum.Feca)||(this.breed<PlayableBreedEnum.Steamer))
+      
+      public function deserializeAs_CharacterCreationRequestMessage(param1:IDataInput) : void {
+         this.name = param1.readUTF();
+         this.breed = param1.readByte();
+         if(this.breed < PlayableBreedEnum.Feca || this.breed > PlayableBreedEnum.Steamer)
          {
-            throw new Error("Forbidden value ("+this.breed+") on element of CharacterCreationRequestMessage.breed.");
+            throw new Error("Forbidden value (" + this.breed + ") on element of CharacterCreationRequestMessage.breed.");
          }
          else
          {
-            this.sex=input.readBoolean();
-            _i4=0;
-            while(_i4<5)
+            this.sex = param1.readBoolean();
+            _loc2_ = 0;
+            while(_loc2_ < 5)
             {
-               this.colors[_i4]=input.readInt();
-               _i4++;
+               this.colors[_loc2_] = param1.readInt();
+               _loc2_++;
             }
-            this.cosmeticId=input.readInt();
-            if(this.cosmeticId<0)
+            this.cosmeticId = param1.readInt();
+            if(this.cosmeticId < 0)
             {
-               throw new Error("Forbidden value ("+this.cosmeticId+") on element of CharacterCreationRequestMessage.cosmeticId.");
+               throw new Error("Forbidden value (" + this.cosmeticId + ") on element of CharacterCreationRequestMessage.cosmeticId.");
             }
             else
             {
@@ -126,5 +124,4 @@ package com.ankamagames.dofus.network.messages.game.character.creation
          }
       }
    }
-
 }

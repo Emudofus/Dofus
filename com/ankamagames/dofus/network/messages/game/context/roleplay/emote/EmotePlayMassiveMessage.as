@@ -5,85 +5,82 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.emote
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class EmotePlayMassiveMessage extends EmotePlayAbstractMessage implements INetworkMessage
    {
-         
-
+      
       public function EmotePlayMassiveMessage() {
-         this.actorIds=new Vector.<int>();
+         this.actorIds = new Vector.<int>();
          super();
       }
-
+      
       public static const protocolId:uint = 5691;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
-         return (super.isInitialized)&&(this._isInitialized);
+         return (super.isInitialized) && (this._isInitialized);
       }
-
+      
       public var actorIds:Vector.<int>;
-
+      
       override public function getMessageId() : uint {
          return 5691;
       }
-
-      public function initEmotePlayMassiveMessage(emoteId:uint=0, emoteStartTime:Number=0, actorIds:Vector.<int>=null) : EmotePlayMassiveMessage {
-         super.initEmotePlayAbstractMessage(emoteId,emoteStartTime);
-         this.actorIds=actorIds;
-         this._isInitialized=true;
+      
+      public function initEmotePlayMassiveMessage(param1:uint=0, param2:Number=0, param3:Vector.<int>=null) : EmotePlayMassiveMessage {
+         super.initEmotePlayAbstractMessage(param1,param2);
+         this.actorIds = param3;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
          super.reset();
-         this.actorIds=new Vector.<int>();
-         this._isInitialized=false;
+         this.actorIds = new Vector.<int>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      override public function serialize(output:IDataOutput) : void {
-         this.serializeAs_EmotePlayMassiveMessage(output);
+      
+      override public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_EmotePlayMassiveMessage(param1);
       }
-
-      public function serializeAs_EmotePlayMassiveMessage(output:IDataOutput) : void {
-         super.serializeAs_EmotePlayAbstractMessage(output);
-         output.writeShort(this.actorIds.length);
-         var _i1:uint = 0;
-         while(_i1<this.actorIds.length)
+      
+      public function serializeAs_EmotePlayMassiveMessage(param1:IDataOutput) : void {
+         super.serializeAs_EmotePlayAbstractMessage(param1);
+         param1.writeShort(this.actorIds.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.actorIds.length)
          {
-            output.writeInt(this.actorIds[_i1]);
-            _i1++;
+            param1.writeInt(this.actorIds[_loc2_]);
+            _loc2_++;
          }
       }
-
-      override public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_EmotePlayMassiveMessage(input);
+      
+      override public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_EmotePlayMassiveMessage(param1);
       }
-
-      public function deserializeAs_EmotePlayMassiveMessage(input:IDataInput) : void {
-         var _val1:* = 0;
-         super.deserialize(input);
-         var _actorIdsLen:uint = input.readUnsignedShort();
-         var _i1:uint = 0;
-         while(_i1<_actorIdsLen)
+      
+      public function deserializeAs_EmotePlayMassiveMessage(param1:IDataInput) : void {
+         var _loc4_:* = 0;
+         super.deserialize(param1);
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            _val1=input.readInt();
-            this.actorIds.push(_val1);
-            _i1++;
+            _loc4_ = param1.readInt();
+            this.actorIds.push(_loc4_);
+            _loc3_++;
          }
       }
    }
-
 }

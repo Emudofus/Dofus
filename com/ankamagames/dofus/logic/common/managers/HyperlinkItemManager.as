@@ -11,73 +11,68 @@ package com.ankamagames.dofus.logic.common.managers
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.berilia.managers.UiModuleManager;
    import com.ankamagames.berilia.enums.StrataEnum;
-
-
+   
    public class HyperlinkItemManager extends Object
    {
-         
-
+      
       public function HyperlinkItemManager() {
          super();
       }
-
+      
       private static var _itemId:int = 0;
-
+      
       private static var _itemList:Array = new Array();
-
+      
       public static var lastItemTooltipId:int = -1;
-
-      public static function showItem(objectGID:uint, objectUID:uint=0) : void {
-         var itemWrapper:ItemWrapper = InventoryManager.getInstance().inventory.getItem(objectUID);
-         if(itemWrapper)
+      
+      public static function showItem(param1:uint, param2:uint=0) : void {
+         var _loc3_:ItemWrapper = InventoryManager.getInstance().inventory.getItem(param2);
+         if(_loc3_)
          {
-            KernelEventsManager.getInstance().processCallback(ChatHookList.ShowObjectLinked,itemWrapper);
+            KernelEventsManager.getInstance().processCallback(ChatHookList.ShowObjectLinked,_loc3_);
          }
          else
          {
-            KernelEventsManager.getInstance().processCallback(ChatHookList.ShowObjectLinked,ItemWrapper.create(0,0,objectGID,1,null));
+            KernelEventsManager.getInstance().processCallback(ChatHookList.ShowObjectLinked,ItemWrapper.create(0,0,param1,1,null));
          }
       }
-
-      public static function showChatItem(id:int) : void {
-         if((id==lastItemTooltipId)&&(TooltipManager.isVisible("Hyperlink")))
+      
+      public static function showChatItem(param1:int) : void {
+         if(param1 == lastItemTooltipId && (TooltipManager.isVisible("Hyperlink")))
          {
             TooltipManager.hide("Hyperlink");
-            lastItemTooltipId=-1;
+            lastItemTooltipId = -1;
             return;
          }
-         lastItemTooltipId=id;
-         HyperlinkSpellManager.lastSpellTooltipId=-1;
-         KernelEventsManager.getInstance().processCallback(ChatHookList.ShowObjectLinked,_itemList[id]);
+         lastItemTooltipId = param1;
+         HyperlinkSpellManager.lastSpellTooltipId = -1;
+         KernelEventsManager.getInstance().processCallback(ChatHookList.ShowObjectLinked,_itemList[param1]);
       }
-
-      public static function duplicateChatHyperlink(id:int) : void {
-         KernelEventsManager.getInstance().processCallback(ChatHookList.AddItemHyperlink,_itemList[id]);
+      
+      public static function duplicateChatHyperlink(param1:int) : void {
+         KernelEventsManager.getInstance().processCallback(ChatHookList.AddItemHyperlink,_itemList[param1]);
       }
-
-      public static function getItemName(objectGID:uint, objectUID:uint=0) : String {
-         var item:Item = Item.getItemById(objectGID);
-         if(item)
+      
+      public static function getItemName(param1:uint, param2:uint=0) : String {
+         var _loc3_:Item = Item.getItemById(param1);
+         if(_loc3_)
          {
-            return "["+item.name+"]";
+            return "[" + _loc3_.name + "]";
          }
          return "[null]";
       }
-
-      public static function newChatItem(item:ItemWrapper) : String {
-         _itemList[_itemId]=item;
-         var code:String = "{chatitem,"+_itemId+"::["+item.realName+"]}";
+      
+      public static function newChatItem(param1:ItemWrapper) : String {
+         _itemList[_itemId] = param1;
+         var _loc2_:* = "{chatitem," + _itemId + "::[" + param1.realName + "]}";
          _itemId++;
-         return code;
+         return _loc2_;
       }
-
-      public static function rollOver(pX:int, pY:int, objectGID:uint, objectUID:uint=0) : void {
-         var target:Rectangle = new Rectangle(pX,pY,10,10);
-         var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.object"));
-         TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
+      
+      public static function rollOver(param1:int, param2:int, param3:uint, param4:uint=0) : void {
+         var _loc5_:Rectangle = new Rectangle(param1,param2,10,10);
+         var _loc6_:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.object"));
+         TooltipManager.show(_loc6_,_loc5_,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
       }
-
-
    }
-
 }

@@ -1,32 +1,26 @@
 package org.flintparticles.common.energyEasing
 {
-
-
    public class Linear extends Object
    {
-         
-
+      
       public function Linear() {
          super();
       }
-
-      public static function easeNone(age:Number, lifetime:Number) : Number {
-         return 1-age/lifetime;
+      
+      public static function easeNone(param1:Number, param2:Number) : Number {
+         return 1 - param1 / param2;
       }
-
-      public static function easeIn(age:Number, lifetime:Number) : Number {
-         return 1-age/lifetime;
+      
+      public static function easeIn(param1:Number, param2:Number) : Number {
+         return 1 - param1 / param2;
       }
-
-      public static function easeOut(age:Number, lifetime:Number) : Number {
-         return 1-age/lifetime;
+      
+      public static function easeOut(param1:Number, param2:Number) : Number {
+         return 1 - param1 / param2;
       }
-
-      public static function easeInOut(age:Number, lifetime:Number) : Number {
-         return 1-age/lifetime;
+      
+      public static function easeInOut(param1:Number, param2:Number) : Number {
+         return 1 - param1 / param2;
       }
-
-
    }
-
 }

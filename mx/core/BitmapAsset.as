@@ -5,319 +5,318 @@ package mx.core
    import flash.events.Event;
    import flash.system.ApplicationDomain;
    import flash.display.BitmapData;
-
+   
    use namespace mx_internal;
-
+   
    public class BitmapAsset extends FlexBitmap implements IFlexAsset, IFlexDisplayObject, ILayoutDirectionElement
    {
-         
-
-      public function BitmapAsset(bitmapData:BitmapData=null, pixelSnapping:String="auto", smoothing:Boolean=false) {
-         var appDomain:ApplicationDomain = null;
-         super(bitmapData,pixelSnapping,smoothing);
-         if(FlexVersionClass==null)
+      
+      public function BitmapAsset(param1:BitmapData=null, param2:String="auto", param3:Boolean=false) {
+         var _loc4_:ApplicationDomain = null;
+         super(param1,param2,param3);
+         if(FlexVersionClass == null)
          {
-            appDomain=ApplicationDomain.currentDomain;
-            if(appDomain.hasDefinition("mx.core::FlexVersion"))
+            _loc4_ = ApplicationDomain.currentDomain;
+            if(_loc4_.hasDefinition("mx.core::FlexVersion"))
             {
-               FlexVersionClass=Class(appDomain.getDefinition("mx.core::FlexVersion"));
+               FlexVersionClass = Class(_loc4_.getDefinition("mx.core::FlexVersion"));
             }
          }
-         if((FlexVersionClass)&&(FlexVersionClass["compatibilityVersion"]>=FlexVersionClass["VERSION_4_0"]))
+         if((FlexVersionClass) && FlexVersionClass["compatibilityVersion"] >= FlexVersionClass["VERSION_4_0"])
          {
             this.addEventListener(Event.ADDED,this.addedHandler);
          }
       }
-
+      
       mx_internal  static const VERSION:String = "4.6.0.23201";
-
+      
       private static var FlexVersionClass:Class;
-
+      
       private static var MatrixUtilClass:Class;
-
+      
       private var layoutFeaturesClass:Class;
-
+      
       private var layoutFeatures:IAssetLayoutFeatures;
-
+      
       override public function get x() : Number {
-         return this.layoutFeatures==null?super.x:this.layoutFeatures.layoutX;
+         return this.layoutFeatures == null?super.x:this.layoutFeatures.layoutX;
       }
-
-      override public function set x(value:Number) : void {
-         if(this.x==value)
+      
+      override public function set x(param1:Number) : void {
+         if(this.x == param1)
          {
             return;
          }
-         if(this.layoutFeatures==null)
+         if(this.layoutFeatures == null)
          {
-            super.x=value;
+            super.x = param1;
          }
          else
          {
-            this.layoutFeatures.layoutX=value;
+            this.layoutFeatures.layoutX = param1;
             this.validateTransformMatrix();
          }
       }
-
+      
       override public function get y() : Number {
-         return this.layoutFeatures==null?super.y:this.layoutFeatures.layoutY;
+         return this.layoutFeatures == null?super.y:this.layoutFeatures.layoutY;
       }
-
-      override public function set y(value:Number) : void {
-         if(this.y==value)
+      
+      override public function set y(param1:Number) : void {
+         if(this.y == param1)
          {
             return;
          }
-         if(this.layoutFeatures==null)
+         if(this.layoutFeatures == null)
          {
-            super.y=value;
+            super.y = param1;
          }
          else
          {
-            this.layoutFeatures.layoutY=value;
+            this.layoutFeatures.layoutY = param1;
             this.validateTransformMatrix();
          }
       }
-
+      
       override public function get z() : Number {
-         return this.layoutFeatures==null?super.z:this.layoutFeatures.layoutZ;
+         return this.layoutFeatures == null?super.z:this.layoutFeatures.layoutZ;
       }
-
-      override public function set z(value:Number) : void {
-         if(this.z==value)
+      
+      override public function set z(param1:Number) : void {
+         if(this.z == param1)
          {
             return;
          }
-         if(this.layoutFeatures==null)
+         if(this.layoutFeatures == null)
          {
-            super.z=value;
+            super.z = param1;
          }
          else
          {
-            this.layoutFeatures.layoutZ=value;
+            this.layoutFeatures.layoutZ = param1;
             this.validateTransformMatrix();
          }
       }
-
+      
       override public function get width() : Number {
-         var p:Point = null;
-         if(this.layoutFeatures==null)
+         var _loc1_:Point = null;
+         if(this.layoutFeatures == null)
          {
             return super.width;
          }
-         if(MatrixUtilClass!=null)
+         if(MatrixUtilClass != null)
          {
-            p=MatrixUtilClass["transformSize"](this.layoutFeatures.layoutWidth,this._height,transform.matrix);
+            _loc1_ = MatrixUtilClass["transformSize"](this.layoutFeatures.layoutWidth,this._height,transform.matrix);
          }
-         return p?p.x:super.width;
+         return _loc1_?_loc1_.x:super.width;
       }
-
-      override public function set width(value:Number) : void {
-         if(this.width==value)
+      
+      override public function set width(param1:Number) : void {
+         if(this.width == param1)
          {
             return;
          }
-         if(this.layoutFeatures==null)
+         if(this.layoutFeatures == null)
          {
-            super.width=value;
+            super.width = param1;
          }
          else
          {
-            this.layoutFeatures.layoutWidth=value;
-            this.layoutFeatures.layoutScaleX=!(this.measuredWidth==0)?value/this.measuredWidth:0;
+            this.layoutFeatures.layoutWidth = param1;
+            this.layoutFeatures.layoutScaleX = this.measuredWidth != 0?param1 / this.measuredWidth:0;
             this.validateTransformMatrix();
          }
       }
-
+      
       private var _height:Number;
-
+      
       override public function get height() : Number {
-         var p:Point = null;
-         if(this.layoutFeatures==null)
+         var _loc1_:Point = null;
+         if(this.layoutFeatures == null)
          {
             return super.height;
          }
-         if(MatrixUtilClass!=null)
+         if(MatrixUtilClass != null)
          {
-            p=MatrixUtilClass["transformSize"](this.layoutFeatures.layoutWidth,this._height,transform.matrix);
+            _loc1_ = MatrixUtilClass["transformSize"](this.layoutFeatures.layoutWidth,this._height,transform.matrix);
          }
-         return p?p.y:super.height;
+         return _loc1_?_loc1_.y:super.height;
       }
-
-      override public function set height(value:Number) : void {
-         if(this.height==value)
+      
+      override public function set height(param1:Number) : void {
+         if(this.height == param1)
          {
             return;
          }
-         if(this.layoutFeatures==null)
+         if(this.layoutFeatures == null)
          {
-            super.height=value;
+            super.height = param1;
          }
          else
          {
-            this._height=value;
-            this.layoutFeatures.layoutScaleY=!(this.measuredHeight==0)?value/this.measuredHeight:0;
+            this._height = param1;
+            this.layoutFeatures.layoutScaleY = this.measuredHeight != 0?param1 / this.measuredHeight:0;
             this.validateTransformMatrix();
          }
       }
-
+      
       override public function get rotationX() : Number {
-         return this.layoutFeatures==null?super.rotationX:this.layoutFeatures.layoutRotationX;
+         return this.layoutFeatures == null?super.rotationX:this.layoutFeatures.layoutRotationX;
       }
-
-      override public function set rotationX(value:Number) : void {
-         if(this.rotationX==value)
+      
+      override public function set rotationX(param1:Number) : void {
+         if(this.rotationX == param1)
          {
             return;
          }
-         if(this.layoutFeatures==null)
+         if(this.layoutFeatures == null)
          {
-            super.rotationX=value;
+            super.rotationX = param1;
          }
          else
          {
-            this.layoutFeatures.layoutRotationX=value;
+            this.layoutFeatures.layoutRotationX = param1;
             this.validateTransformMatrix();
          }
       }
-
+      
       override public function get rotationY() : Number {
-         return this.layoutFeatures==null?super.rotationY:this.layoutFeatures.layoutRotationY;
+         return this.layoutFeatures == null?super.rotationY:this.layoutFeatures.layoutRotationY;
       }
-
-      override public function set rotationY(value:Number) : void {
-         if(this.rotationY==value)
+      
+      override public function set rotationY(param1:Number) : void {
+         if(this.rotationY == param1)
          {
             return;
          }
-         if(this.layoutFeatures==null)
+         if(this.layoutFeatures == null)
          {
-            super.rotationY=value;
+            super.rotationY = param1;
          }
          else
          {
-            this.layoutFeatures.layoutRotationY=value;
+            this.layoutFeatures.layoutRotationY = param1;
             this.validateTransformMatrix();
          }
       }
-
+      
       override public function get rotationZ() : Number {
-         return this.layoutFeatures==null?super.rotationZ:this.layoutFeatures.layoutRotationZ;
+         return this.layoutFeatures == null?super.rotationZ:this.layoutFeatures.layoutRotationZ;
       }
-
-      override public function set rotationZ(value:Number) : void {
-         if(this.rotationZ==value)
+      
+      override public function set rotationZ(param1:Number) : void {
+         if(this.rotationZ == param1)
          {
             return;
          }
-         if(this.layoutFeatures==null)
+         if(this.layoutFeatures == null)
          {
-            super.rotationZ=value;
+            super.rotationZ = param1;
          }
          else
          {
-            this.layoutFeatures.layoutRotationZ=value;
+            this.layoutFeatures.layoutRotationZ = param1;
             this.validateTransformMatrix();
          }
       }
-
+      
       override public function get rotation() : Number {
-         return this.layoutFeatures==null?super.rotation:this.layoutFeatures.layoutRotationZ;
+         return this.layoutFeatures == null?super.rotation:this.layoutFeatures.layoutRotationZ;
       }
-
-      override public function set rotation(value:Number) : void {
-         if(this.rotation==value)
+      
+      override public function set rotation(param1:Number) : void {
+         if(this.rotation == param1)
          {
             return;
          }
-         if(this.layoutFeatures==null)
+         if(this.layoutFeatures == null)
          {
-            super.rotation=value;
+            super.rotation = param1;
          }
          else
          {
-            this.layoutFeatures.layoutRotationZ=value;
+            this.layoutFeatures.layoutRotationZ = param1;
             this.validateTransformMatrix();
          }
       }
-
+      
       override public function get scaleX() : Number {
-         return this.layoutFeatures==null?super.scaleX:this.layoutFeatures.layoutScaleX;
+         return this.layoutFeatures == null?super.scaleX:this.layoutFeatures.layoutScaleX;
       }
-
-      override public function set scaleX(value:Number) : void {
-         if(this.scaleX==value)
+      
+      override public function set scaleX(param1:Number) : void {
+         if(this.scaleX == param1)
          {
             return;
          }
-         if(this.layoutFeatures==null)
+         if(this.layoutFeatures == null)
          {
-            super.scaleX=value;
+            super.scaleX = param1;
          }
          else
          {
-            this.layoutFeatures.layoutScaleX=value;
-            this.layoutFeatures.layoutWidth=Math.abs(value)*this.measuredWidth;
+            this.layoutFeatures.layoutScaleX = param1;
+            this.layoutFeatures.layoutWidth = Math.abs(param1) * this.measuredWidth;
             this.validateTransformMatrix();
          }
       }
-
+      
       override public function get scaleY() : Number {
-         return this.layoutFeatures==null?super.scaleY:this.layoutFeatures.layoutScaleY;
+         return this.layoutFeatures == null?super.scaleY:this.layoutFeatures.layoutScaleY;
       }
-
-      override public function set scaleY(value:Number) : void {
-         if(this.scaleY==value)
+      
+      override public function set scaleY(param1:Number) : void {
+         if(this.scaleY == param1)
          {
             return;
          }
-         if(this.layoutFeatures==null)
+         if(this.layoutFeatures == null)
          {
-            super.scaleY=value;
+            super.scaleY = param1;
          }
          else
          {
-            this.layoutFeatures.layoutScaleY=value;
-            this._height=Math.abs(value)*this.measuredHeight;
+            this.layoutFeatures.layoutScaleY = param1;
+            this._height = Math.abs(param1) * this.measuredHeight;
             this.validateTransformMatrix();
          }
       }
-
+      
       override public function get scaleZ() : Number {
-         return this.layoutFeatures==null?super.scaleZ:this.layoutFeatures.layoutScaleZ;
+         return this.layoutFeatures == null?super.scaleZ:this.layoutFeatures.layoutScaleZ;
       }
-
-      override public function set scaleZ(value:Number) : void {
-         if(this.scaleZ==value)
+      
+      override public function set scaleZ(param1:Number) : void {
+         if(this.scaleZ == param1)
          {
             return;
          }
-         if(this.layoutFeatures==null)
+         if(this.layoutFeatures == null)
          {
-            super.scaleZ=value;
+            super.scaleZ = param1;
          }
          else
          {
-            this.layoutFeatures.layoutScaleZ=value;
+            this.layoutFeatures.layoutScaleZ = param1;
             this.validateTransformMatrix();
          }
       }
-
+      
       private var _layoutDirection:String = "ltr";
-
+      
       public function get layoutDirection() : String {
          return this._layoutDirection;
       }
-
-      public function set layoutDirection(value:String) : void {
-         if(value==this._layoutDirection)
+      
+      public function set layoutDirection(param1:String) : void {
+         if(param1 == this._layoutDirection)
          {
             return;
          }
-         this._layoutDirection=value;
+         this._layoutDirection = param1;
          this.invalidateLayoutDirection();
       }
-
+      
       public function get measuredHeight() : Number {
          if(bitmapData)
          {
@@ -325,7 +324,7 @@ package mx.core
          }
          return 0;
       }
-
+      
       public function get measuredWidth() : Number {
          if(bitmapData)
          {
@@ -333,105 +332,101 @@ package mx.core
          }
          return 0;
       }
-
+      
       public function invalidateLayoutDirection() : void {
-         var mirror:* = false;
-         var p:DisplayObjectContainer = parent;
-         while(p)
+         var _loc2_:* = false;
+         var _loc1_:DisplayObjectContainer = parent;
+         while(_loc1_)
          {
-            if(p is ILayoutDirectionElement)
+            if(_loc1_ is ILayoutDirectionElement)
             {
-               mirror=(!(this._layoutDirection==null))&&(!(ILayoutDirectionElement(p).layoutDirection==null))&&(!(this._layoutDirection==ILayoutDirectionElement(p).layoutDirection));
-               if((mirror)&&(this.layoutFeatures==null))
+               _loc2_ = !(this._layoutDirection == null) && !(ILayoutDirectionElement(_loc1_).layoutDirection == null) && !(this._layoutDirection == ILayoutDirectionElement(_loc1_).layoutDirection);
+               if((_loc2_) && this.layoutFeatures == null)
                {
                   this.initAdvancedLayoutFeatures();
-                  if(this.layoutFeatures!=null)
+                  if(this.layoutFeatures != null)
                   {
-                     this.layoutFeatures.mirror=mirror;
+                     this.layoutFeatures.mirror = _loc2_;
                      this.validateTransformMatrix();
                   }
                }
                else
                {
-                  if((!mirror)&&(this.layoutFeatures))
+                  if(!_loc2_ && (this.layoutFeatures))
                   {
-                     this.layoutFeatures.mirror=mirror;
+                     this.layoutFeatures.mirror = _loc2_;
                      this.validateTransformMatrix();
-                     this.layoutFeatures=null;
+                     this.layoutFeatures = null;
                   }
                }
+               break;
             }
-            else
-            {
-               p=p.parent;
-               continue;
-            }
+            _loc1_ = _loc1_.parent;
          }
       }
-
-      public function move(x:Number, y:Number) : void {
-         this.x=x;
-         this.y=y;
+      
+      public function move(param1:Number, param2:Number) : void {
+         this.x = param1;
+         this.y = param2;
       }
-
-      public function setActualSize(newWidth:Number, newHeight:Number) : void {
-         this.width=newWidth;
-         this.height=newHeight;
+      
+      public function setActualSize(param1:Number, param2:Number) : void {
+         this.width = param1;
+         this.height = param2;
       }
-
-      private function addedHandler(event:Event) : void {
+      
+      private function addedHandler(param1:Event) : void {
          this.invalidateLayoutDirection();
       }
-
+      
       private function initAdvancedLayoutFeatures() : void {
-         var appDomain:ApplicationDomain = null;
-         var features:IAssetLayoutFeatures = null;
-         if(this.layoutFeaturesClass==null)
+         var _loc1_:ApplicationDomain = null;
+         var _loc2_:IAssetLayoutFeatures = null;
+         if(this.layoutFeaturesClass == null)
          {
-            appDomain=ApplicationDomain.currentDomain;
-            if(appDomain.hasDefinition("mx.core::AdvancedLayoutFeatures"))
+            _loc1_ = ApplicationDomain.currentDomain;
+            if(_loc1_.hasDefinition("mx.core::AdvancedLayoutFeatures"))
             {
-               this.layoutFeaturesClass=Class(appDomain.getDefinition("mx.core::AdvancedLayoutFeatures"));
+               this.layoutFeaturesClass = Class(_loc1_.getDefinition("mx.core::AdvancedLayoutFeatures"));
             }
-            if(MatrixUtilClass==null)
+            if(MatrixUtilClass == null)
             {
-               if(appDomain.hasDefinition("mx.utils::MatrixUtil"))
+               if(_loc1_.hasDefinition("mx.utils::MatrixUtil"))
                {
-                  MatrixUtilClass=Class(appDomain.getDefinition("mx.utils::MatrixUtil"));
+                  MatrixUtilClass = Class(_loc1_.getDefinition("mx.utils::MatrixUtil"));
                }
             }
          }
-         if(this.layoutFeaturesClass!=null)
+         if(this.layoutFeaturesClass != null)
          {
-            features=new this.layoutFeaturesClass();
-            features.layoutScaleX=this.scaleX;
-            features.layoutScaleY=this.scaleY;
-            features.layoutScaleZ=this.scaleZ;
-            features.layoutRotationX=this.rotationX;
-            features.layoutRotationY=this.rotationY;
-            features.layoutRotationZ=this.rotation;
-            features.layoutX=this.x;
-            features.layoutY=this.y;
-            features.layoutZ=this.z;
-            features.layoutWidth=this.width;
-            this._height=this.height;
-            this.layoutFeatures=features;
+            _loc2_ = new this.layoutFeaturesClass();
+            _loc2_.layoutScaleX = this.scaleX;
+            _loc2_.layoutScaleY = this.scaleY;
+            _loc2_.layoutScaleZ = this.scaleZ;
+            _loc2_.layoutRotationX = this.rotationX;
+            _loc2_.layoutRotationY = this.rotationY;
+            _loc2_.layoutRotationZ = this.rotation;
+            _loc2_.layoutX = this.x;
+            _loc2_.layoutY = this.y;
+            _loc2_.layoutZ = this.z;
+            _loc2_.layoutWidth = this.width;
+            this._height = this.height;
+            this.layoutFeatures = _loc2_;
          }
       }
-
+      
       private function validateTransformMatrix() : void {
-         if(this.layoutFeatures!=null)
+         if(this.layoutFeatures != null)
          {
             if(this.layoutFeatures.is3D)
             {
-               super.transform.matrix3D=this.layoutFeatures.computedMatrix3D;
+               super.transform.matrix3D = this.layoutFeatures.computedMatrix3D;
             }
             else
             {
-               super.transform.matrix=this.layoutFeatures.computedMatrix;
+               super.transform.matrix = this.layoutFeatures.computedMatrix;
             }
          }
       }
    }
-
 }

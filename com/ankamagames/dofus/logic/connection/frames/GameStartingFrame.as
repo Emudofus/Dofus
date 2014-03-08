@@ -26,116 +26,113 @@ package com.ankamagames.dofus.logic.connection.frames
    import com.ankamagames.dofus.datacenter.communication.InfoMessage;
    import com.ankamagames.dofus.misc.utils.ParamsDecoder;
    import com.ankamagames.dofus.kernel.sound.SoundManager;
-
-
+   
    public class GameStartingFrame extends Object implements Frame
    {
-         
-
+      
       public function GameStartingFrame() {
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GameStartingFrame));
-
+      
       private var _worker:Worker;
-
+      
       private var m:MapEditorManager;
-
+      
       public function get priority() : int {
          return Priority.NORMAL;
       }
-
+      
       public function pushed() : Boolean {
-         this._worker=Kernel.getWorker();
-         this.m=new MapEditorManager();
+         this._worker = Kernel.getWorker();
+         this.m = new MapEditorManager();
          Kernel.getWorker().process(new GameStartingMessage());
          Dofus.getInstance().renameApp("Dofus");
          return true;
       }
-
-      public function process(msg:Message) : Boolean {
-         var dsmdmsg:DelayedSystemMessageDisplayMessage = null;
-         var smdmsg:SystemMessageDisplayMessage = null;
-         var aaa:AgreementAgreedAction = null;
-         var newLength:String = null;
-         var dsmdmsg2:DelayedSystemMessageDisplayMessage = null;
+      
+      public function process(param1:Message) : Boolean {
+         var _loc2_:DelayedSystemMessageDisplayMessage = null;
+         var _loc3_:SystemMessageDisplayMessage = null;
+         var _loc4_:AgreementAgreedAction = null;
+         var _loc5_:String = null;
+         var _loc6_:DelayedSystemMessageDisplayMessage = null;
          switch(true)
          {
-            case msg is DelayedSystemMessageDisplayMessage:
-               dsmdmsg=msg as DelayedSystemMessageDisplayMessage;
-               this.systemMessageDisplay(dsmdmsg);
+            case param1 is DelayedSystemMessageDisplayMessage:
+               _loc2_ = param1 as DelayedSystemMessageDisplayMessage;
+               this.systemMessageDisplay(_loc2_);
                return true;
-            case msg is SystemMessageDisplayMessage:
-               smdmsg=msg as SystemMessageDisplayMessage;
-               if(smdmsg.hangUp)
+            case param1 is SystemMessageDisplayMessage:
+               _loc3_ = param1 as SystemMessageDisplayMessage;
+               if(_loc3_.hangUp)
                {
                   ConnectionsHandler.connectionGonnaBeClosed(DisconnectionReasonEnum.DISCONNECTED_BY_POPUP);
-                  dsmdmsg2=new DelayedSystemMessageDisplayMessage();
-                  dsmdmsg2.initDelayedSystemMessageDisplayMessage(smdmsg.hangUp,smdmsg.msgId,smdmsg.parameters);
-                  DisconnectionHandlerFrame.messagesAfterReset.push(dsmdmsg2);
+                  _loc6_ = new DelayedSystemMessageDisplayMessage();
+                  _loc6_.initDelayedSystemMessageDisplayMessage(_loc3_.hangUp,_loc3_.msgId,_loc3_.parameters);
+                  DisconnectionHandlerFrame.messagesAfterReset.push(_loc6_);
                }
-               this.systemMessageDisplay(smdmsg);
+               this.systemMessageDisplay(_loc3_);
                return true;
-            case msg is AgreementAgreedAction:
-               aaa=AgreementAgreedAction(msg);
-               if(aaa.fileName=="eula")
+            case param1 is AgreementAgreedAction:
+               _loc4_ = AgreementAgreedAction(param1);
+               if(_loc4_.fileName == "eula")
                {
-                  newLength=XmlConfig.getInstance().getEntry("config.lang.current")+"#"+I18n.getUiText("ui.legal."+aaa.fileName).length;
-                  OptionManager.getOptionManager("dofus")["legalAgreementEula"]=newLength;
+                  _loc5_ = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + I18n.getUiText("ui.legal." + _loc4_.fileName).length;
+                  OptionManager.getOptionManager("dofus")["legalAgreementEula"] = _loc5_;
                }
-               if(aaa.fileName=="tou")
+               if(_loc4_.fileName == "tou")
                {
-                  newLength=XmlConfig.getInstance().getEntry("config.lang.current")+"#"+(I18n.getUiText("ui.legal.tou1")+I18n.getUiText("ui.legal.tou2")).length;
-                  OptionManager.getOptionManager("dofus")["legalAgreementTou"]=newLength;
+                  _loc5_ = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + (I18n.getUiText("ui.legal.tou1") + I18n.getUiText("ui.legal.tou2")).length;
+                  OptionManager.getOptionManager("dofus")["legalAgreementTou"] = _loc5_;
                }
-               if(aaa.fileName=="modstou")
+               if(_loc4_.fileName == "modstou")
                {
-                  newLength=XmlConfig.getInstance().getEntry("config.lang.current")+"#"+I18n.getUiText("ui.legal.modstou").length;
-                  OptionManager.getOptionManager("dofus")["legalAgreementModsTou"]=newLength;
+                  _loc5_ = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + I18n.getUiText("ui.legal.modstou").length;
+                  OptionManager.getOptionManager("dofus")["legalAgreementModsTou"] = _loc5_;
                }
                return true;
-            case msg is OpenMainMenuAction:
+            case param1 is OpenMainMenuAction:
                KernelEventsManager.getInstance().processCallback(HookList.OpenMainMenu);
                return true;
             default:
                return false;
          }
       }
-
+      
       public function pulled() : Boolean {
          return true;
       }
-
-      private function systemMessageDisplay(msg:SystemMessageDisplayMessage) : void {
-         var i:* = undefined;
-         var textId:uint = 0;
-         var commonMod:Object = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-         var a:Array = new Array();
-         for each (i in msg.parameters)
+      
+      private function systemMessageDisplay(param1:SystemMessageDisplayMessage) : void {
+         var _loc4_:* = undefined;
+         var _loc5_:uint = 0;
+         var _loc2_:Object = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
+         var _loc3_:Array = new Array();
+         for each (_loc4_ in param1.parameters)
          {
-            a.push(i);
+            _loc3_.push(_loc4_);
          }
-         if((InfoMessage.getInfoMessageById(40000+msg.msgId))&&(InfoMessage.getInfoMessageById(40000+msg.msgId).textId))
+         if((InfoMessage.getInfoMessageById(40000 + param1.msgId)) && (InfoMessage.getInfoMessageById(40000 + param1.msgId).textId))
          {
-            textId=InfoMessage.getInfoMessageById(40000+msg.msgId).textId;
+            _loc5_ = InfoMessage.getInfoMessageById(40000 + param1.msgId).textId;
          }
          else
          {
-            _log.error("Information message "+(40000+msg.msgId)+" cannot be found.");
-            textId=InfoMessage.getInfoMessageById(207).textId;
-            a=new Array();
-            a.push(msg.msgId);
+            _log.error("Information message " + (40000 + param1.msgId) + " cannot be found.");
+            _loc5_ = InfoMessage.getInfoMessageById(207).textId;
+            _loc3_ = new Array();
+            _loc3_.push(param1.msgId);
          }
-         var msgContent:String = I18n.getText(textId);
-         if(msgContent)
+         var _loc6_:String = I18n.getText(_loc5_);
+         if(_loc6_)
          {
-            msgContent=ParamsDecoder.applyParams(msgContent,a);
-            commonMod.openPopup(I18n.getUiText("ui.popup.warning"),msgContent,[I18n.getUiText("ui.common.ok")],null,null,null,null,false,true);
+            _loc6_ = ParamsDecoder.applyParams(_loc6_,_loc3_);
+            _loc2_.openPopup(I18n.getUiText("ui.popup.warning"),_loc6_,[I18n.getUiText("ui.common.ok")],null,null,null,null,false,true);
             SoundManager.getInstance().manager.removeAllSounds();
             return;
          }
       }
    }
-
 }

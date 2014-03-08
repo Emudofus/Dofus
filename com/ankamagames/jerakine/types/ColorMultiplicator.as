@@ -1,73 +1,70 @@
 package com.ankamagames.jerakine.types
 {
    import flash.utils.Dictionary;
-
-
+   
    public class ColorMultiplicator extends Object
    {
-         
-
-      public function ColorMultiplicator(redComponent:int, greenComponent:int, blueComponent:int, forceCalculation:Boolean=false) {
+      
+      public function ColorMultiplicator(param1:int, param2:int, param3:int, param4:Boolean=false) {
          super();
-         MEMORY_LOG[this]=1;
-         this.red=redComponent;
-         this.green=greenComponent;
-         this.blue=blueComponent;
-         if((!forceCalculation)&&(redComponent+greenComponent+blueComponent==0))
+         MEMORY_LOG[this] = 1;
+         this.red = param1;
+         this.green = param2;
+         this.blue = param3;
+         if(!param4 && param1 + param2 + param3 == 0)
          {
-            this._isOne=true;
+            this._isOne = true;
          }
       }
-
+      
       public static var MEMORY_LOG:Dictionary = new Dictionary(true);
-
-      public static function clamp(value:Number, min:Number, max:Number) : Number {
-         if(value>max)
+      
+      public static function clamp(param1:Number, param2:Number, param3:Number) : Number {
+         if(param1 > param3)
          {
-            return max;
+            return param3;
          }
-         if(value<min)
+         if(param1 < param2)
          {
-            return min;
+            return param2;
          }
-         return value;
+         return param1;
       }
-
+      
       public var red:Number;
-
+      
       public var green:Number;
-
+      
       public var blue:Number;
-
+      
       private var _isOne:Boolean;
-
+      
       public function isOne() : Boolean {
          return this._isOne;
       }
-
-      public function multiply(cm:ColorMultiplicator) : ColorMultiplicator {
+      
+      public function multiply(param1:ColorMultiplicator) : ColorMultiplicator {
          if(this._isOne)
          {
-            return cm;
+            return param1;
          }
-         if(cm.isOne())
+         if(param1.isOne())
          {
             return this;
          }
-         var cmr:ColorMultiplicator = new ColorMultiplicator(0,0,0);
-         cmr.red=this.red+cm.red;
-         cmr.green=this.green+cm.green;
-         cmr.blue=this.blue+cm.blue;
-         cmr.red=clamp(cmr.red,-128,127);
-         cmr.green=clamp(cmr.green,-128,127);
-         cmr.blue=clamp(cmr.blue,-128,127);
-         cmr._isOne=false;
-         return cmr;
+         var _loc2_:ColorMultiplicator = new ColorMultiplicator(0,0,0);
+         _loc2_.red = this.red + param1.red;
+         _loc2_.green = this.green + param1.green;
+         _loc2_.blue = this.blue + param1.blue;
+         _loc2_.red = clamp(_loc2_.red,-128,127);
+         _loc2_.green = clamp(_loc2_.green,-128,127);
+         _loc2_.blue = clamp(_loc2_.blue,-128,127);
+         _loc2_._isOne = false;
+         return _loc2_;
       }
-
+      
       public function toString() : String {
-         return "[r: "+this.red+", g: "+this.green+", b: "+this.blue+"]";
+         return "[r: " + this.red + ", g: " + this.green + ", b: " + this.blue + "]";
       }
    }
-
 }

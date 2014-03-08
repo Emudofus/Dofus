@@ -16,62 +16,58 @@ package com.ankamagames.dofus.logic.common.frames
    import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.dofus.network.messages.game.basic.BasicLatencyStatsRequestMessage;
-
-
+   
    public class LatencyFrame extends Object implements Frame
    {
-         
-
+      
       public function LatencyFrame() {
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LatencyFrame));
-
+      
       public var pingRequested:uint;
-
+      
       public function get priority() : int {
          return Priority.NORMAL;
       }
-
+      
       public function pushed() : Boolean {
          return true;
       }
-
-      public function process(msg:Message) : Boolean {
-         var bpmsg:BasicPongMessage = null;
-         var pongReceived:uint = 0;
-         var delay:uint = 0;
-         var connection:IServerConnection = null;
-         var blsmsg:BasicLatencyStatsMessage = null;
+      
+      public function process(param1:Message) : Boolean {
+         var _loc2_:BasicPongMessage = null;
+         var _loc3_:uint = 0;
+         var _loc4_:uint = 0;
+         var _loc5_:IServerConnection = null;
+         var _loc6_:BasicLatencyStatsMessage = null;
          switch(true)
          {
-            case msg is BasicPongMessage:
-               bpmsg=msg as BasicPongMessage;
-               if(bpmsg.quiet)
+            case param1 is BasicPongMessage:
+               _loc2_ = param1 as BasicPongMessage;
+               if(_loc2_.quiet)
                {
-                  _log.warn("I don\'t know what to do with quiest Pong messages.");
-                  return false;
+                  return true;
                }
-               pongReceived=getTimer();
-               delay=pongReceived-this.pingRequested;
-               this.pingRequested=0;
-               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,"Pong "+delay+"ms !",ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               _loc3_ = getTimer();
+               _loc4_ = _loc3_ - this.pingRequested;
+               this.pingRequested = 0;
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,"Pong " + _loc4_ + "ms !",ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                return true;
-            case msg is BasicLatencyStatsRequestMessage:
-               connection=ConnectionsHandler.getConnection();
-               blsmsg=new BasicLatencyStatsMessage();
-               blsmsg.initBasicLatencyStatsMessage(Math.min(32767,connection.latencyAvg),connection.latencySamplesCount,connection.latencySamplesMax);
-               connection.send(blsmsg);
+            case param1 is BasicLatencyStatsRequestMessage:
+               _loc5_ = ConnectionsHandler.getConnection().mainConnection;
+               _loc6_ = new BasicLatencyStatsMessage();
+               _loc6_.initBasicLatencyStatsMessage(Math.min(32767,_loc5_.latencyAvg),_loc5_.latencySamplesCount,_loc5_.latencySamplesMax);
+               _loc5_.send(_loc6_);
                return true;
             default:
                return false;
          }
       }
-
+      
       public function pulled() : Boolean {
          return true;
       }
    }
-
 }

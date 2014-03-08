@@ -11,63 +11,61 @@ package com.ankamagames.dofus.logic.game.common.managers
    import com.ankamagames.dofus.misc.lists.FightHookList;
    import flash.events.Event;
    import flash.events.TimerEvent;
-
-
+   
    public class AFKFightManager extends Object
    {
-         
-
+      
       public function AFKFightManager() {
-         this._afkSecurity=new Timer(5000);
+         this._afkSecurity = new Timer(5000);
          super();
-         this._enabled=false;
+         this._enabled = false;
          this._afkSecurity.addEventListener(TimerEvent.TIMER,this.onTimer);
       }
-
+      
       private static var _self:AFKFightManager;
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AFKFightManager));
-
+      
       public static function getInstance() : AFKFightManager {
          if(!_self)
          {
-            _self=new AFKFightManager();
+            _self = new AFKFightManager();
          }
          return _self;
       }
-
+      
       private var _enabled:Boolean;
-
+      
       private var _confirm:Boolean;
-
+      
       private var _afkSecurity:Timer;
-
+      
       private var _securityTimerUp:Boolean;
-
+      
       public var lastTurnSkip:int;
-
+      
       public function initialize() : void {
-         this._confirm=false;
-         this.enabled=true;
+         this._confirm = false;
+         this.enabled = true;
       }
-
-      public function set enabled(e:Boolean) : void {
-         if(e==this._enabled)
+      
+      public function set enabled(param1:Boolean) : void {
+         if(param1 == this._enabled)
          {
             return;
          }
-         if(!e)
+         if(!param1)
          {
-            this.confirm=false;
+            this.confirm = false;
          }
-         this._enabled=e;
+         this._enabled = param1;
          if(this._enabled)
          {
             _log.info("looking for mouse or keybord activity");
             StageShareManager.stage.addEventListener(KeyboardEvent.KEY_DOWN,this.onActivity);
             StageShareManager.stage.addEventListener(MouseEvent.CLICK,this.onActivity);
             StageShareManager.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onActivity);
-            this._securityTimerUp=false;
+            this._securityTimerUp = false;
             this._afkSecurity.start();
          }
          else
@@ -78,19 +76,19 @@ package com.ankamagames.dofus.logic.game.common.managers
             this._afkSecurity.stop();
          }
       }
-
-      public function set confirm(confirmed:Boolean) : void {
+      
+      public function set confirm(param1:Boolean) : void {
          this._afkSecurity.stop();
-         if((this.enabled)||(!confirmed))
+         if((this.enabled) || !param1)
          {
-            if(this._confirm!=confirmed)
+            if(this._confirm != param1)
             {
-               if((confirmed)&&(!this._securityTimerUp))
+               if((param1) && !this._securityTimerUp)
                {
-                  this.enabled=false;
+                  this.enabled = false;
                   return;
                }
-               if(confirmed)
+               if(param1)
                {
                   _log.info("AFK mode enabled");
                }
@@ -98,32 +96,31 @@ package com.ankamagames.dofus.logic.game.common.managers
                {
                   _log.info("AFK mode disabled");
                }
-               if(confirmed)
+               if(param1)
                {
                }
-               KernelEventsManager.getInstance().processCallback(FightHookList.AfkModeChanged,confirmed);
+               KernelEventsManager.getInstance().processCallback(FightHookList.AfkModeChanged,param1);
             }
-            this._confirm=confirmed;
+            this._confirm = param1;
          }
       }
-
+      
       public function get isAfk() : Boolean {
-         return (this._enabled)&&(this._confirm);
+         return (this._enabled) && (this._confirm);
       }
-
+      
       public function get enabled() : Boolean {
          return this._enabled;
       }
-
-      private function onActivity(event:Event) : void {
+      
+      private function onActivity(param1:Event) : void {
          _log.info("Activity detected. Player is not AFK");
-         this.confirm=false;
-         this.enabled=false;
+         this.confirm = false;
+         this.enabled = false;
       }
-
-      private function onTimer(event:Event) : void {
-         this._securityTimerUp=true;
+      
+      private function onTimer(param1:Event) : void {
+         this._securityTimerUp = true;
       }
    }
-
 }

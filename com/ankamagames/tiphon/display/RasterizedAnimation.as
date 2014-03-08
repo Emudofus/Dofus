@@ -3,165 +3,159 @@ package com.ankamagames.tiphon.display
    import flash.utils.Dictionary;
    import flash.display.MovieClip;
    import flash.display.Bitmap;
-
-
+   
    public class RasterizedAnimation extends TiphonAnimation
    {
-         
-
-      public function RasterizedAnimation(target:MovieClip, lookCode:String) {
+      
+      public function RasterizedAnimation(param1:MovieClip, param2:String) {
          super();
-         this._target=target;
-         this._targetName="["+this._target.scaleX+","+this._target.scaleY+"]"+target.toString()+" ["+lookCode+"]";
-         this._totalFrames=this._target.totalFrames;
-         var rfl:RasterizedFrameList = FRAMES[this._targetName];
-         if(rfl)
+         this._target = param1;
+         this._targetName = "[" + this._target.scaleX + "," + this._target.scaleY + "]" + param1.toString() + " [" + param2 + "]";
+         this._totalFrames = this._target.totalFrames;
+         var _loc3_:RasterizedFrameList = FRAMES[this._targetName];
+         if(_loc3_)
          {
-            rfl.death=0;
-            rfl.life=rfl.life+2;
-            if(rfl.life>rfl.maxLife)
+            _loc3_.death = 0;
+            _loc3_.life = _loc3_.life + 2;
+            if(_loc3_.life > _loc3_.maxLife)
             {
-               rfl.life=rfl.maxLife;
+               _loc3_.life = _loc3_.maxLife;
             }
          }
          else
          {
-            FRAMES[this._targetName]=new RasterizedFrameList(this._targetName,5);
+            FRAMES[this._targetName] = new RasterizedFrameList(this._targetName,5);
          }
       }
-
+      
       public static var FRAMES:Dictionary = new Dictionary(false);
-
+      
       public static function countFrames() : Object {
-         var rfl:RasterizedFrameList = null;
-         var num:* = 0;
-         var i:* = 0;
-         var animations:int = 0;
-         var frames:int = 0;
-         for each (rfl in FRAMES)
+         var _loc3_:RasterizedFrameList = null;
+         var _loc4_:* = 0;
+         var _loc5_:* = 0;
+         var _loc1_:* = 0;
+         var _loc2_:* = 0;
+         for each (_loc3_ in FRAMES)
          {
-            animations++;
-            num=rfl.frameList.length;
-            i=0;
-            while(i<num)
+            _loc1_++;
+            _loc4_ = _loc3_.frameList.length;
+            _loc5_ = 0;
+            while(_loc5_ < _loc4_)
             {
-               if(rfl.frameList[i])
+               if(_loc3_.frameList[_loc5_])
                {
-                  frames++;
+                  _loc2_++;
                }
-               i++;
+               _loc5_++;
             }
          }
          return 
             {
-               animations:animations,
-               frames:frames
-            }
-         ;
+               "animations":_loc1_,
+               "frames":_loc2_
+            };
       }
-
-      public static function optimize(val:int=1) : void {
-         var rfl:RasterizedFrameList = null;
-         for each (rfl in FRAMES)
+      
+      public static function optimize(param1:int=1) : void {
+         var _loc2_:RasterizedFrameList = null;
+         for each (_loc2_ in FRAMES)
          {
-            rfl.death=rfl.death+val;
-            rfl.life=rfl.life-rfl.death;
-            if(rfl.life<1)
+            _loc2_.death = _loc2_.death + param1;
+            _loc2_.life = _loc2_.life - _loc2_.death;
+            if(_loc2_.life < 1)
             {
-               delete FRAMES[[rfl.key]];
+               delete FRAMES[[_loc2_.key]];
             }
          }
       }
-
+      
       protected var _target:MovieClip;
-
+      
       private var _targetName:String;
-
+      
       private var _bitmap:Bitmap;
-
+      
       private var _smoothing:Boolean;
-
+      
       protected var _totalFrames:uint;
-
+      
       private var _currentIndex:int = -1;
-
+      
       override public function get totalFrames() : int {
          return this._totalFrames;
       }
-
+      
       override public function get currentFrame() : int {
-         return this._currentIndex+1;
+         return this._currentIndex + 1;
       }
-
+      
       public function get smoothing() : Boolean {
          return this._smoothing;
       }
-
-      public function set smoothing(value:Boolean) : void {
-         this._smoothing=value;
+      
+      public function set smoothing(param1:Boolean) : void {
+         this._smoothing = param1;
          if(this._bitmap)
          {
-            this._bitmap.smoothing=value;
+            this._bitmap.smoothing = param1;
          }
       }
-
-      override public function gotoAndStop(frame:Object, scene:String=null) : void {
-         var targetFrame:uint = frame as uint;
-         if(targetFrame>0)
+      
+      override public function gotoAndStop(param1:Object, param2:String=null) : void {
+         var _loc3_:uint = param1 as uint;
+         if(_loc3_ > 0)
          {
-            targetFrame--;
+            _loc3_--;
          }
-         this.displayFrame(targetFrame%this._totalFrames);
+         this.displayFrame(_loc3_ % this._totalFrames);
       }
-
-      override public function gotoAndPlay(frame:Object, scene:String=null) : void {
-         this.gotoAndStop(frame,scene);
+      
+      override public function gotoAndPlay(param1:Object, param2:String=null) : void {
+         this.gotoAndStop(param1,param2);
          this.play();
       }
-
+      
       override public function play() : void {
-         
       }
-
+      
       override public function stop() : void {
-         
       }
-
+      
       override public function nextFrame() : void {
-         this.displayFrame((this._currentIndex+1)%this._totalFrames);
+         this.displayFrame((this._currentIndex + 1) % this._totalFrames);
       }
-
+      
       override public function prevFrame() : void {
-         this.displayFrame(this._currentIndex<0?this._currentIndex-1:this._totalFrames-1);
+         this.displayFrame(this._currentIndex > 0?this._currentIndex-1:this._totalFrames-1);
       }
-
-      protected function displayFrame(frameIndex:uint) : Boolean {
-         if(frameIndex==this._currentIndex)
+      
+      protected function displayFrame(param1:uint) : Boolean {
+         if(param1 == this._currentIndex)
          {
             return false;
          }
-         var frameList:Array = FRAMES[this._targetName].frameList;
-         var rf:RasterizedFrame = frameList[frameIndex] as RasterizedFrame;
-         if(!rf)
+         var _loc2_:Array = FRAMES[this._targetName].frameList;
+         var _loc3_:RasterizedFrame = _loc2_[param1] as RasterizedFrame;
+         if(!_loc3_)
          {
-            rf=new RasterizedFrame(this._target,frameIndex);
-            frameList[frameIndex]=rf;
+            _loc3_ = new RasterizedFrame(this._target,param1);
+            _loc2_[param1] = _loc3_;
          }
          if(!this._bitmap)
          {
-            this._bitmap=new Bitmap(rf.bitmapData);
-            this._bitmap.smoothing=this._smoothing;
+            this._bitmap = new Bitmap(_loc3_.bitmapData);
+            this._bitmap.smoothing = this._smoothing;
             addChild(this._bitmap);
          }
          else
          {
-            this._bitmap.bitmapData=rf.bitmapData;
+            this._bitmap.bitmapData = _loc3_.bitmapData;
          }
-         this._bitmap.x=rf.x;
-         this._bitmap.y=rf.y;
-         this._currentIndex=frameIndex;
+         this._bitmap.x = _loc3_.x;
+         this._bitmap.y = _loc3_.y;
+         this._currentIndex = param1;
          return true;
       }
    }
-
 }

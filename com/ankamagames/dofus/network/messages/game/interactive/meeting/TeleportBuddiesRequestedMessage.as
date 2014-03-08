@@ -6,91 +6,89 @@ package com.ankamagames.dofus.network.messages.game.interactive.meeting
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class TeleportBuddiesRequestedMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function TeleportBuddiesRequestedMessage() {
-         this.invalidBuddiesIds=new Vector.<uint>();
+         this.invalidBuddiesIds = new Vector.<uint>();
          super();
       }
-
+      
       public static const protocolId:uint = 6302;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var dungeonId:uint = 0;
-
+      
       public var inviterId:uint = 0;
-
+      
       public var invalidBuddiesIds:Vector.<uint>;
-
+      
       override public function getMessageId() : uint {
          return 6302;
       }
-
-      public function initTeleportBuddiesRequestedMessage(dungeonId:uint=0, inviterId:uint=0, invalidBuddiesIds:Vector.<uint>=null) : TeleportBuddiesRequestedMessage {
-         this.dungeonId=dungeonId;
-         this.inviterId=inviterId;
-         this.invalidBuddiesIds=invalidBuddiesIds;
-         this._isInitialized=true;
+      
+      public function initTeleportBuddiesRequestedMessage(param1:uint=0, param2:uint=0, param3:Vector.<uint>=null) : TeleportBuddiesRequestedMessage {
+         this.dungeonId = param1;
+         this.inviterId = param2;
+         this.invalidBuddiesIds = param3;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.dungeonId=0;
-         this.inviterId=0;
-         this.invalidBuddiesIds=new Vector.<uint>();
-         this._isInitialized=false;
+         this.dungeonId = 0;
+         this.inviterId = 0;
+         this.invalidBuddiesIds = new Vector.<uint>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_TeleportBuddiesRequestedMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_TeleportBuddiesRequestedMessage(param1);
       }
-
-      public function serializeAs_TeleportBuddiesRequestedMessage(output:IDataOutput) : void {
-         if(this.dungeonId<0)
+      
+      public function serializeAs_TeleportBuddiesRequestedMessage(param1:IDataOutput) : void {
+         if(this.dungeonId < 0)
          {
-            throw new Error("Forbidden value ("+this.dungeonId+") on element dungeonId.");
+            throw new Error("Forbidden value (" + this.dungeonId + ") on element dungeonId.");
          }
          else
          {
-            output.writeShort(this.dungeonId);
-            if(this.inviterId<0)
+            param1.writeShort(this.dungeonId);
+            if(this.inviterId < 0)
             {
-               throw new Error("Forbidden value ("+this.inviterId+") on element inviterId.");
+               throw new Error("Forbidden value (" + this.inviterId + ") on element inviterId.");
             }
             else
             {
-               output.writeInt(this.inviterId);
-               output.writeShort(this.invalidBuddiesIds.length);
-               _i3=0;
-               while(_i3<this.invalidBuddiesIds.length)
+               param1.writeInt(this.inviterId);
+               param1.writeShort(this.invalidBuddiesIds.length);
+               _loc2_ = 0;
+               while(_loc2_ < this.invalidBuddiesIds.length)
                {
-                  if(this.invalidBuddiesIds[_i3]<0)
+                  if(this.invalidBuddiesIds[_loc2_] < 0)
                   {
-                     throw new Error("Forbidden value ("+this.invalidBuddiesIds[_i3]+") on element 3 (starting at 1) of invalidBuddiesIds.");
+                     throw new Error("Forbidden value (" + this.invalidBuddiesIds[_loc2_] + ") on element 3 (starting at 1) of invalidBuddiesIds.");
                   }
                   else
                   {
-                     output.writeInt(this.invalidBuddiesIds[_i3]);
-                     _i3++;
+                     param1.writeInt(this.invalidBuddiesIds[_loc2_]);
+                     _loc2_++;
                      continue;
                   }
                }
@@ -98,40 +96,40 @@ package com.ankamagames.dofus.network.messages.game.interactive.meeting
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_TeleportBuddiesRequestedMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_TeleportBuddiesRequestedMessage(param1);
       }
-
-      public function deserializeAs_TeleportBuddiesRequestedMessage(input:IDataInput) : void {
-         var _val3:uint = 0;
-         this.dungeonId=input.readShort();
-         if(this.dungeonId<0)
+      
+      public function deserializeAs_TeleportBuddiesRequestedMessage(param1:IDataInput) : void {
+         var _loc4_:uint = 0;
+         this.dungeonId = param1.readShort();
+         if(this.dungeonId < 0)
          {
-            throw new Error("Forbidden value ("+this.dungeonId+") on element of TeleportBuddiesRequestedMessage.dungeonId.");
+            throw new Error("Forbidden value (" + this.dungeonId + ") on element of TeleportBuddiesRequestedMessage.dungeonId.");
          }
          else
          {
-            this.inviterId=input.readInt();
-            if(this.inviterId<0)
+            this.inviterId = param1.readInt();
+            if(this.inviterId < 0)
             {
-               throw new Error("Forbidden value ("+this.inviterId+") on element of TeleportBuddiesRequestedMessage.inviterId.");
+               throw new Error("Forbidden value (" + this.inviterId + ") on element of TeleportBuddiesRequestedMessage.inviterId.");
             }
             else
             {
-               _invalidBuddiesIdsLen=input.readUnsignedShort();
-               _i3=0;
-               while(_i3<_invalidBuddiesIdsLen)
+               _loc2_ = param1.readUnsignedShort();
+               _loc3_ = 0;
+               while(_loc3_ < _loc2_)
                {
-                  _val3=input.readInt();
-                  if(_val3<0)
+                  _loc4_ = param1.readInt();
+                  if(_loc4_ < 0)
                   {
-                     throw new Error("Forbidden value ("+_val3+") on elements of invalidBuddiesIds.");
+                     throw new Error("Forbidden value (" + _loc4_ + ") on elements of invalidBuddiesIds.");
                   }
                   else
                   {
-                     this.invalidBuddiesIds.push(_val3);
-                     _i3++;
+                     this.invalidBuddiesIds.push(_loc4_);
+                     _loc3_++;
                      continue;
                   }
                }
@@ -140,5 +138,4 @@ package com.ankamagames.dofus.network.messages.game.interactive.meeting
          }
       }
    }
-
 }

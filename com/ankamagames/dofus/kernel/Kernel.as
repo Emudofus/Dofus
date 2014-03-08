@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.kernel
 {
    import com.ankamagames.jerakine.logger.Logger;
-   import com.ankamagames.jerakine.messages.Worker;
    import flash.display.Sprite;
    import flash.text.TextField;
    import com.ankamagames.dofus.misc.utils.LoadingScreen;
@@ -33,7 +32,6 @@ package com.ankamagames.dofus.kernel
    import com.ankamagames.dofus.datacenter.sounds.SoundUi;
    import com.ankamagames.dofus.datacenter.sounds.SoundUiElement;
    import com.ankamagames.jerakine.data.XmlConfig;
-   import com.ankamagames.jerakine.managers.LangManager;
    import com.ankamagames.dofus.network.enums.BuildTypeEnum;
    import com.ankamagames.dofus.BuildInfos;
    import com.ankamagames.atouin.Atouin;
@@ -41,11 +39,12 @@ package com.ankamagames.dofus.kernel
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
    import com.ankamagames.tiphon.engine.Tiphon;
    import com.ankamagames.dofus.types.enums.AnimationEnum;
+   import com.ankamagames.tiphon.types.Skin;
+   import com.ankamagames.dofus.misc.utils.SkinPartTransformProvider;
    import com.ankamagames.dofus.logic.game.common.managers.AlmanaxManager;
    import com.ankamagames.berilia.managers.UiSoundManager;
    import com.ankamagames.dofus.kernel.sound.SoundManager;
    import com.ankamagames.berilia.Berilia;
-   import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.Constants;
    import com.ankamagames.dofus.logic.connection.managers.AuthentificationManager;
    import com.ankamagames.berilia.managers.UiModuleManager;
@@ -60,16 +59,16 @@ package com.ankamagames.dofus.kernel
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.logic.game.common.managers.SpeakingItemManager;
    import com.ankamagames.berilia.types.graphic.TimeoutHTMLLoader;
-   import com.ankamagames.jerakine.managers.OptionManager;
    import com.ankamagames.dofus.externalnotification.ExternalNotificationManager;
    import com.ankamagames.jerakine.utils.system.SystemPopupUI;
    import com.ankamagames.atouin.types.AtouinOptions;
    import com.ankamagames.atouin.types.Frustum;
+   import com.ankamagames.jerakine.messages.*;
+   import com.ankamagames.jerakine.managers.*;
    import com.ankamagames.dofus.types.DofusOptions;
    import com.ankamagames.berilia.types.BeriliaOptions;
    import com.ankamagames.tiphon.types.TiphonOptions;
    import com.ankamagames.tubul.types.TubulOptions;
-   import com.ankamagames.jerakine.managers.PerformanceManager;
    import com.ankamagames.jerakine.replay.LogFrame;
    import com.ankamagames.jerakine.types.events.PropertyChangeEvent;
    import com.ankamagames.dofus.logic.connection.frames.InitializationFrame;
@@ -81,20 +80,19 @@ package com.ankamagames.dofus.kernel
    import com.ankamagames.berilia.frames.UIInteractionFrame;
    import com.ankamagames.berilia.frames.ShortcutsFrame;
    import com.ankamagames.dofus.logic.common.frames.DisconnectionHandlerFrame;
+   import com.ankamagames.dofus.logic.common.frames.CleanupCrewFrame;
    import com.ankamagames.berilia.utils.UriCacheFactory;
    import com.ankamagames.jerakine.newCache.impl.DisplayObjectCache;
    import com.ankamagames.jerakine.newCache.impl.Cache;
    import com.ankamagames.jerakine.newCache.garbage.LruGarbageCollector;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
-
-
+   
    public class Kernel extends Object
    {
-         
-
+      
       public function Kernel() {
          super();
-         if(_self!=null)
+         if(_self != null)
          {
             throw new SingletonError("Kernel is a singleton and should not be instanciated directly.");
          }
@@ -103,99 +101,101 @@ package com.ankamagames.dofus.kernel
             return;
          }
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Kernel));
-
+      
       private static var _self:Kernel;
-
+      
       private static var _worker:Worker = new Worker();
-
+      
       public static var beingInReconection:Boolean;
-
+      
       public static function getInstance() : Kernel {
-         if(_self==null)
+         if(_self == null)
          {
-            _self=new Kernel();
+            _self = new Kernel();
          }
          return _self;
       }
-
+      
       public static function getWorker() : Worker {
          return _worker;
       }
-
-      public static function panic(errorId:uint=0, panicArgs:Array=null) : void {
-         var blueScreen:Sprite = null;
-         var errorTitle:TextField = null;
-         var errorMsg:TextField = null;
-         var ls:LoadingScreen = null;
+      
+      public static function panic(param1:uint=0, param2:Array=null) : void {
+         var _loc3_:Sprite = null;
+         var _loc4_:TextField = null;
+         var _loc5_:TextField = null;
+         var _loc6_:LoadingScreen = null;
          _worker.clear();
          ConnectionsHandler.closeConnection();
-         if(Math.random()*1000>999)
+         if(Math.random() * 1000 > 999)
          {
-            blueScreen=new Sprite();
-            blueScreen.graphics.beginFill(6710886,0.9);
-            blueScreen.graphics.drawRect(-2000,-2000,5000,5000);
-            blueScreen.graphics.endFill();
-            StageShareManager.stage.addChild(blueScreen);
-            errorTitle=new TextField();
-            errorTitle.selectable=false;
-            errorTitle.defaultTextFormat=new TextFormat("Courier New",12,16777215,true,false,false,null,null,TextFormatAlign.CENTER);
-            errorTitle.text="FATAL ERROR 0x"+errorId.toString(16).toUpperCase();
-            errorTitle.width=StageShareManager.stage.stageWidth;
-            errorTitle.y=StageShareManager.stage.stageHeight/2-errorTitle.textHeight/2;
-            StageShareManager.stage.addChild(errorTitle);
-            errorMsg=new TextField();
-            errorMsg.selectable=false;
-            errorMsg.defaultTextFormat=new TextFormat("Courier New",11,16777215,false,false,false,null,null,TextFormatAlign.CENTER);
-            errorMsg.text="A fatal error has occured.\n"+PanicMessages.getMessage(errorId,panicArgs);
-            errorMsg.width=StageShareManager.stage.stageWidth;
-            errorMsg.height=errorMsg.textHeight+10;
-            errorMsg.y=StageShareManager.stage.stageHeight/2+errorTitle.textHeight/2+10;
-            StageShareManager.stage.addChild(errorMsg);
+            _loc3_ = new Sprite();
+            _loc3_.graphics.beginFill(6710886,0.9);
+            _loc3_.graphics.drawRect(-2000,-2000,5000,5000);
+            _loc3_.graphics.endFill();
+            StageShareManager.stage.addChild(_loc3_);
+            _loc4_ = new TextField();
+            _loc4_.selectable = false;
+            _loc4_.defaultTextFormat = new TextFormat("Courier New",12,16777215,true,false,false,null,null,TextFormatAlign.CENTER);
+            _loc4_.text = "FATAL ERROR 0x" + param1.toString(16).toUpperCase();
+            _loc4_.width = StageShareManager.stage.stageWidth;
+            _loc4_.y = StageShareManager.stage.stageHeight / 2 - _loc4_.textHeight / 2;
+            StageShareManager.stage.addChild(_loc4_);
+            _loc5_ = new TextField();
+            _loc5_.selectable = false;
+            _loc5_.defaultTextFormat = new TextFormat("Courier New",11,16777215,false,false,false,null,null,TextFormatAlign.CENTER);
+            _loc5_.text = "A fatal error has occured.\n" + PanicMessages.getMessage(param1,param2);
+            _loc5_.width = StageShareManager.stage.stageWidth;
+            _loc5_.height = _loc5_.textHeight + 10;
+            _loc5_.y = StageShareManager.stage.stageHeight / 2 + _loc4_.textHeight / 2 + 10;
+            StageShareManager.stage.addChild(_loc5_);
          }
          else
          {
-            ls=new LoadingScreen();
-            ls.useEmbedFont=false;
-            if(errorId==4)
+            _loc6_ = new LoadingScreen();
+            _loc6_.useEmbedFont = false;
+            if(param1 == 4)
             {
-               ls.tip="FATAL ERROR 0x"+errorId.toString(16).toUpperCase()+" : "+I18n.getUiText("ui.error.clientServerDesync");
+               _loc6_.tip = "FATAL ERROR 0x" + param1.toString(16).toUpperCase() + " : " + I18n.getUiText("ui.error.clientServerDesync");
             }
             else
             {
-               ls.tip="FATAL ERROR 0x"+errorId.toString(16).toUpperCase()+"\n"+"A fatal error has occured.\n"+PanicMessages.getMessage(errorId,panicArgs);
+               _loc6_.tip = "FATAL ERROR 0x" + param1.toString(16).toUpperCase() + "\n" + "A fatal error has occured.\n" + PanicMessages.getMessage(param1,param2);
             }
-            ls.log(PanicMessages.getMessage(errorId,panicArgs),LoadingScreen.ERROR);
-            ls.value=-1;
-            ls.showLog(false);
-            Dofus.getInstance().addChild(ls);
+            _loc6_.log(PanicMessages.getMessage(param1,param2),LoadingScreen.ERROR);
+            _loc6_.value = -1;
+            _loc6_.showLog(false);
+            Dofus.getInstance().addChild(_loc6_);
          }
       }
-
+      
       protected var _gamedataClassList:GameDataList = null;
-
+      
       protected var _enumList:EnumList = null;
-
+      
       protected var _apiList:ApiList = null;
-
+      
       protected var _apiActionList:ApiActionList = null;
-
+      
       protected var _ApiRolePlayActionList:ApiRolePlayActionList = null;
-
+      
       private var _include_DebugTarget:DebugTarget = null;
-
-      public function init(stage:Stage, rootClip:DisplayObject) : void {
-         StageShareManager.stage=stage;
-         StageShareManager.rootContainer=Dofus.getInstance();
+      
+      public function init(param1:Stage, param2:DisplayObject) : void {
+         var stage:Stage = param1;
+         var rootClip:DisplayObject = param2;
+         StageShareManager.stage = stage;
+         StageShareManager.rootContainer = Dofus.getInstance();
          FrameIdManager.init();
-         ApplicationDomainShareManager.currentApplicationDomain=ApplicationDomain.currentDomain;
+         ApplicationDomainShareManager.currentApplicationDomain = ApplicationDomain.currentDomain;
          _worker.clear();
-         HumanInputHandler.getInstance().handler=_worker;
+         HumanInputHandler.getInstance().handler = _worker;
          BoneIndexManager.getInstance().setAnimNameModifier(AnimationCleaner.cleanBones1AnimName);
          InterClientManager.getInstance().update();
          this.addInitialFrames(true);
-         _log.info("Using protocole #"+Metadata.PROTOCOL_BUILD+", build on "+Metadata.PROTOCOL_DATE+" (visibility "+Metadata.PROTOCOL_VISIBILITY+")");
+         _log.info("Using protocole #" + Metadata.PROTOCOL_BUILD + ", build on " + Metadata.PROTOCOL_DATE + " (visibility " + Metadata.PROTOCOL_VISIBILITY + ")");
          if(AirScanner.hasAir())
          {
             try
@@ -207,46 +207,46 @@ package com.ankamagames.dofus.kernel
             }
          }
       }
-
+      
       public function postInit() : void {
-         var ui:SoundUi = null;
-         var imeLang:Array = null;
-         var buildType:* = 0;
-         var configVersion:String = null;
-         var uiElem:SoundUiElement = null;
+         var _loc2_:SoundUi = null;
+         var _loc3_:Array = null;
+         var _loc4_:* = 0;
+         var _loc5_:String = null;
+         var _loc6_:SoundUiElement = null;
          this.initCaches();
          XmlConfig.getInstance().init(LangManager.getInstance().getCategory("config"));
          if(XmlConfig.getInstance().getEntry("config.buildType"))
          {
-            buildType=-1;
-            configVersion=XmlConfig.getInstance().getEntry("config.buildType");
-            switch(configVersion.toLowerCase())
+            _loc4_ = -1;
+            _loc5_ = XmlConfig.getInstance().getEntry("config.buildType");
+            switch(_loc5_.toLowerCase())
             {
                case "debug":
-                  buildType=BuildTypeEnum.DEBUG;
+                  _loc4_ = BuildTypeEnum.DEBUG;
                   break;
                case "internal":
-                  buildType=BuildTypeEnum.INTERNAL;
+                  _loc4_ = BuildTypeEnum.INTERNAL;
                   break;
                case "testing":
-                  buildType=BuildTypeEnum.TESTING;
+                  _loc4_ = BuildTypeEnum.TESTING;
                   break;
                case "alpha":
-                  buildType=BuildTypeEnum.ALPHA;
+                  _loc4_ = BuildTypeEnum.ALPHA;
                   break;
                case "beta":
-                  buildType=BuildTypeEnum.BETA;
+                  _loc4_ = BuildTypeEnum.BETA;
                   break;
                case "release":
-                  buildType=BuildTypeEnum.RELEASE;
+                  _loc4_ = BuildTypeEnum.RELEASE;
                   break;
             }
-            if((!(buildType==-1))&&(buildType>BuildInfos.BUILD_TYPE))
+            if(!(_loc4_ == -1) && _loc4_ < BuildInfos.BUILD_TYPE)
             {
-               BuildInfos.BUILD_TYPE=buildType;
+               BuildInfos.BUILD_TYPE = _loc4_;
             }
          }
-         BuildInfos.BUILD_VERSION.buildType=BuildInfos.BUILD_TYPE;
+         BuildInfos.BUILD_VERSION.buildType = BuildInfos.BUILD_TYPE;
          this.initOptions();
          Atouin.getInstance().showWorld(false);
          DataMapProvider.init(AnimatedCharacter);
@@ -254,32 +254,33 @@ package com.ankamagames.dofus.kernel
          Tiphon.getInstance().addRasterizeAnimation(AnimationEnum.ANIM_COURSE);
          Tiphon.getInstance().addRasterizeAnimation(AnimationEnum.ANIM_MARCHE);
          Tiphon.getInstance().addRasterizeAnimation(AnimationEnum.ANIM_STATIQUE);
+         Skin.skinPartTransformProvider = new SkinPartTransformProvider();
          AlmanaxManager.getInstance();
-         UiSoundManager.getInstance().playSound=SoundManager.getInstance().manager.playUISound;
-         var uiSound:Array = SoundUi.getSoundUis();
-         for each (ui in uiSound)
+         UiSoundManager.getInstance().playSound = SoundManager.getInstance().manager.playUISound;
+         var _loc1_:Array = SoundUi.getSoundUis();
+         for each (_loc2_ in _loc1_)
          {
-            UiSoundManager.getInstance().registerUi(ui.uiName,ui.openFile,ui.closeFile);
-            for each (uiElem in ui.subElements)
+            UiSoundManager.getInstance().registerUi(_loc2_.uiName,_loc2_.openFile,_loc2_.closeFile);
+            for each (_loc6_ in _loc2_.subElements)
             {
-               UiSoundManager.getInstance().registerUiElement(ui.uiName,uiElem.name,uiElem.hook,uiElem.file);
+               UiSoundManager.getInstance().registerUiElement(_loc2_.uiName,_loc6_.name,_loc6_.hook,_loc6_.file);
             }
          }
-         imeLang=LangManager.getInstance().getStringEntry("config.lang.usingIME").split(",");
-         if(imeLang.indexOf(LangManager.getInstance().getStringEntry("config.lang.current"))!=-1)
+         _loc3_ = LangManager.getInstance().getStringEntry("config.lang.usingIME").split(",");
+         if(_loc3_.indexOf(LangManager.getInstance().getStringEntry("config.lang.current")) != -1)
          {
-            Berilia.getInstance().useIME=true;
+            Berilia.getInstance().useIME = true;
          }
       }
-
-      public function reset(messagesToDispatchAfter:Array=null, autoRetry:Boolean=false, reloadData:Boolean=false) : void {
-         var msg:Message = null;
+      
+      public function reset(param1:Array=null, param2:Boolean=false, param3:Boolean=false) : void {
+         var _loc4_:Message = null;
          if(Constants.EVENT_MODE)
          {
             _log.error("eventmode : quit");
             Dofus.getInstance().reboot();
          }
-         if(!autoRetry)
+         if(!param2)
          {
             AuthentificationManager.getInstance().destroy();
          }
@@ -302,82 +303,82 @@ package com.ankamagames.dofus.kernel
          TimeoutHTMLLoader.resetCache();
          OptionManager.reset();
          this.initOptions();
-         this.addInitialFrames(reloadData);
-         Kernel.beingInReconection=false;
-         if((!(messagesToDispatchAfter==null))&&(messagesToDispatchAfter.length<0))
+         this.addInitialFrames(param3);
+         Kernel.beingInReconection = false;
+         if(!(param1 == null) && param1.length > 0)
          {
-            for each (msg in messagesToDispatchAfter)
+            for each (_loc4_ in param1)
             {
-               _worker.process(msg);
+               _worker.process(_loc4_);
             }
          }
          SoundManager.getInstance().manager.reset();
-         if((AirScanner.hasAir())&&(ExternalNotificationManager.getInstance().initialized))
+         if((AirScanner.hasAir()) && (ExternalNotificationManager.getInstance().initialized))
          {
             ExternalNotificationManager.getInstance().reset();
          }
       }
-
+      
       public function initOptions() : void {
-         var popup:SystemPopupUI = null;
+         var _loc6_:SystemPopupUI = null;
          OptionManager.reset();
-         var ao:AtouinOptions = new AtouinOptions(Dofus.getInstance().getWorldContainer(),Kernel.getWorker());
-         ao.frustum=new Frustum(LangManager.getInstance().getIntEntry("config.atouin.frustum.marginLeft"),LangManager.getInstance().getIntEntry("config.atouin.frustum.marginTop"),LangManager.getInstance().getIntEntry("config.atouin.frustum.marginRight"),LangManager.getInstance().getIntEntry("config.atouin.frustum.marginBottom"));
-         ao.mapsPath=LangManager.getInstance().getEntry("config.atouin.path.maps");
-         ao.elementsIndexPath=LangManager.getInstance().getEntry("config.atouin.path.elements");
-         ao.elementsPath=LangManager.getInstance().getEntry("config.gfx.path.cellElement");
-         ao.jpgSubPath=LangManager.getInstance().getEntry("config.gfx.subpath.world.jpg");
-         ao.pngSubPath=LangManager.getInstance().getEntry("config.gfx.subpath.world.png");
-         ao.particlesScriptsPath=LangManager.getInstance().getEntry("config.atouin.path.emitters");
-         ao.mapPictoExtension=LangManager.getInstance().getEntry("config.gfx.subpath.world.extension");
-         if(ao.jpgSubPath.charAt(0)=="!")
+         var _loc1_:AtouinOptions = new AtouinOptions(Dofus.getInstance().getWorldContainer(),Kernel.getWorker());
+         _loc1_.frustum = new Frustum(LangManager.getInstance().getIntEntry("config.atouin.frustum.marginLeft"),LangManager.getInstance().getIntEntry("config.atouin.frustum.marginTop"),LangManager.getInstance().getIntEntry("config.atouin.frustum.marginRight"),LangManager.getInstance().getIntEntry("config.atouin.frustum.marginBottom"));
+         _loc1_.mapsPath = LangManager.getInstance().getEntry("config.atouin.path.maps");
+         _loc1_.elementsIndexPath = LangManager.getInstance().getEntry("config.atouin.path.elements");
+         _loc1_.elementsPath = LangManager.getInstance().getEntry("config.gfx.path.cellElement");
+         _loc1_.jpgSubPath = LangManager.getInstance().getEntry("config.gfx.subpath.world.jpg");
+         _loc1_.pngSubPath = LangManager.getInstance().getEntry("config.gfx.subpath.world.png");
+         _loc1_.particlesScriptsPath = LangManager.getInstance().getEntry("config.atouin.path.emitters");
+         _loc1_.mapPictoExtension = LangManager.getInstance().getEntry("config.gfx.subpath.world.extension");
+         if(_loc1_.jpgSubPath.charAt(0) == "!")
          {
-            ao.jpgSubPath="jpg";
+            _loc1_.jpgSubPath = "jpg";
          }
-         if(ao.pngSubPath.charAt(0)=="!")
+         if(_loc1_.pngSubPath.charAt(0) == "!")
          {
-            ao.pngSubPath="png";
+            _loc1_.pngSubPath = "png";
          }
-         if(ao.mapPictoExtension.charAt(0)=="!")
+         if(_loc1_.mapPictoExtension.charAt(0) == "!")
          {
-            ao.mapPictoExtension="png";
+            _loc1_.mapPictoExtension = "png";
          }
-         Atouin.getInstance().setDisplayOptions(ao);
-         var dofusO:DofusOptions = new DofusOptions();
-         Dofus.getInstance().setDisplayOptions(dofusO);
-         var beriliaO:BeriliaOptions = new BeriliaOptions();
-         Berilia.getInstance().setDisplayOptions(beriliaO);
-         var tiphonO:TiphonOptions = new TiphonOptions();
-         Tiphon.getInstance().setDisplayOptions(tiphonO);
-         var tubulO:TubulOptions = new TubulOptions();
-         SoundManager.getInstance().setDisplayOptions(tubulO);
+         Atouin.getInstance().setDisplayOptions(_loc1_);
+         var _loc2_:DofusOptions = new DofusOptions();
+         Dofus.getInstance().setDisplayOptions(_loc2_);
+         var _loc3_:BeriliaOptions = new BeriliaOptions();
+         Berilia.getInstance().setDisplayOptions(_loc3_);
+         var _loc4_:TiphonOptions = new TiphonOptions();
+         Tiphon.getInstance().setDisplayOptions(_loc4_);
+         var _loc5_:TubulOptions = new TubulOptions();
+         SoundManager.getInstance().setDisplayOptions(_loc5_);
          PerformanceManager.init(Dofus.getInstance().options["optimize"]);
-         if(dofusO.allowLog)
+         if(_loc2_.allowLog)
          {
             _worker.addFrame(LogFrame.getInstance(Constants.LOG_UPLOAD_MODE));
-            dofusO.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onDofusOptionChange);
+            _loc2_.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onDofusOptionChange);
          }
          else
          {
             if(Constants.LOG_UPLOAD_MODE)
             {
-               popup=new SystemPopupUI("logWarning");
-               popup.title="Attention";
-               popup.content="Vous participez au programme d\'analyse des performances de Dofus 2.0 mais le système de log est désactivé dans les options (Options -> Support)";
-               popup.show();
+               _loc6_ = new SystemPopupUI("logWarning");
+               _loc6_.title = "Attention";
+               _loc6_.content = "Vous participez au programme d\'analyse des performances de Dofus 2.0 mais le systÃ¨me de log est dÃ©sactivÃ© dans les options (Options -> Support)";
+               _loc6_.show();
             }
          }
       }
-
-      private function onDofusOptionChange(e:PropertyChangeEvent) : void {
-         if((e.propertyName=="allowLog")&&(!e.propertyValue)&&(_worker.contains(LogFrame)))
+      
+      private function onDofusOptionChange(param1:PropertyChangeEvent) : void {
+         if(param1.propertyName == "allowLog" && !param1.propertyValue && (_worker.contains(LogFrame)))
          {
             _worker.removeFrame(_worker.getFrame(LogFrame));
          }
       }
-
-      private function addInitialFrames(firstLaunch:Boolean=false) : void {
-         if(firstLaunch)
+      
+      private function addInitialFrames(param1:Boolean=false) : void {
+         if(param1)
          {
             _worker.addFrame(new InitializationFrame());
          }
@@ -406,12 +407,15 @@ package com.ankamagames.dofus.kernel
          _worker.addFrame(new UIInteractionFrame());
          _worker.addFrame(new ShortcutsFrame());
          _worker.addFrame(new DisconnectionHandlerFrame());
+         if(!_worker.contains(CleanupCrewFrame))
+         {
+            _worker.addFrame(new CleanupCrewFrame());
+         }
       }
-
+      
       private function initCaches() : void {
          UriCacheFactory.init(".swf",new DisplayObjectCache(100));
          UriCacheFactory.init(".png",new Cache(200,new LruGarbageCollector()));
       }
    }
-
 }

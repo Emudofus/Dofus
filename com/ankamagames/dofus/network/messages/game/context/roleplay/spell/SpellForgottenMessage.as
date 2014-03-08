@@ -6,113 +6,111 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.spell
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class SpellForgottenMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function SpellForgottenMessage() {
-         this.spellsId=new Vector.<uint>();
+         this.spellsId = new Vector.<uint>();
          super();
       }
-
+      
       public static const protocolId:uint = 5834;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var spellsId:Vector.<uint>;
-
+      
       public var boostPoint:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 5834;
       }
-
-      public function initSpellForgottenMessage(spellsId:Vector.<uint>=null, boostPoint:uint=0) : SpellForgottenMessage {
-         this.spellsId=spellsId;
-         this.boostPoint=boostPoint;
-         this._isInitialized=true;
+      
+      public function initSpellForgottenMessage(param1:Vector.<uint>=null, param2:uint=0) : SpellForgottenMessage {
+         this.spellsId = param1;
+         this.boostPoint = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.spellsId=new Vector.<uint>();
-         this.boostPoint=0;
-         this._isInitialized=false;
+         this.spellsId = new Vector.<uint>();
+         this.boostPoint = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_SpellForgottenMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_SpellForgottenMessage(param1);
       }
-
-      public function serializeAs_SpellForgottenMessage(output:IDataOutput) : void {
-         output.writeShort(this.spellsId.length);
-         var _i1:uint = 0;
-         while(_i1<this.spellsId.length)
+      
+      public function serializeAs_SpellForgottenMessage(param1:IDataOutput) : void {
+         param1.writeShort(this.spellsId.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.spellsId.length)
          {
-            if(this.spellsId[_i1]<0)
+            if(this.spellsId[_loc2_] < 0)
             {
-               throw new Error("Forbidden value ("+this.spellsId[_i1]+") on element 1 (starting at 1) of spellsId.");
+               throw new Error("Forbidden value (" + this.spellsId[_loc2_] + ") on element 1 (starting at 1) of spellsId.");
             }
             else
             {
-               output.writeShort(this.spellsId[_i1]);
-               _i1++;
+               param1.writeShort(this.spellsId[_loc2_]);
+               _loc2_++;
                continue;
             }
          }
-         if(this.boostPoint<0)
+         if(this.boostPoint < 0)
          {
-            throw new Error("Forbidden value ("+this.boostPoint+") on element boostPoint.");
+            throw new Error("Forbidden value (" + this.boostPoint + ") on element boostPoint.");
          }
          else
          {
-            output.writeShort(this.boostPoint);
+            param1.writeShort(this.boostPoint);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_SpellForgottenMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_SpellForgottenMessage(param1);
       }
-
-      public function deserializeAs_SpellForgottenMessage(input:IDataInput) : void {
-         var _val1:uint = 0;
-         var _spellsIdLen:uint = input.readUnsignedShort();
-         var _i1:uint = 0;
-         while(_i1<_spellsIdLen)
+      
+      public function deserializeAs_SpellForgottenMessage(param1:IDataInput) : void {
+         var _loc4_:uint = 0;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            _val1=input.readShort();
-            if(_val1<0)
+            _loc4_ = param1.readShort();
+            if(_loc4_ < 0)
             {
-               throw new Error("Forbidden value ("+_val1+") on elements of spellsId.");
+               throw new Error("Forbidden value (" + _loc4_ + ") on elements of spellsId.");
             }
             else
             {
-               this.spellsId.push(_val1);
-               _i1++;
+               this.spellsId.push(_loc4_);
+               _loc3_++;
                continue;
             }
          }
-         this.boostPoint=input.readShort();
-         if(this.boostPoint<0)
+         this.boostPoint = param1.readShort();
+         if(this.boostPoint < 0)
          {
-            throw new Error("Forbidden value ("+this.boostPoint+") on element of SpellForgottenMessage.boostPoint.");
+            throw new Error("Forbidden value (" + this.boostPoint + ") on element of SpellForgottenMessage.boostPoint.");
          }
          else
          {
@@ -120,5 +118,4 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.spell
          }
       }
    }
-
 }

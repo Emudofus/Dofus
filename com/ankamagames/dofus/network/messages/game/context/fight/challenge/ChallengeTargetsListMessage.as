@@ -6,118 +6,115 @@ package com.ankamagames.dofus.network.messages.game.context.fight.challenge
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ChallengeTargetsListMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ChallengeTargetsListMessage() {
-         this.targetIds=new Vector.<int>();
-         this.targetCells=new Vector.<int>();
+         this.targetIds = new Vector.<int>();
+         this.targetCells = new Vector.<int>();
          super();
       }
-
+      
       public static const protocolId:uint = 5613;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var targetIds:Vector.<int>;
-
+      
       public var targetCells:Vector.<int>;
-
+      
       override public function getMessageId() : uint {
          return 5613;
       }
-
-      public function initChallengeTargetsListMessage(targetIds:Vector.<int>=null, targetCells:Vector.<int>=null) : ChallengeTargetsListMessage {
-         this.targetIds=targetIds;
-         this.targetCells=targetCells;
-         this._isInitialized=true;
+      
+      public function initChallengeTargetsListMessage(param1:Vector.<int>=null, param2:Vector.<int>=null) : ChallengeTargetsListMessage {
+         this.targetIds = param1;
+         this.targetCells = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.targetIds=new Vector.<int>();
-         this.targetCells=new Vector.<int>();
-         this._isInitialized=false;
+         this.targetIds = new Vector.<int>();
+         this.targetCells = new Vector.<int>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ChallengeTargetsListMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ChallengeTargetsListMessage(param1);
       }
-
-      public function serializeAs_ChallengeTargetsListMessage(output:IDataOutput) : void {
-         output.writeShort(this.targetIds.length);
-         var _i1:uint = 0;
-         while(_i1<this.targetIds.length)
+      
+      public function serializeAs_ChallengeTargetsListMessage(param1:IDataOutput) : void {
+         param1.writeShort(this.targetIds.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.targetIds.length)
          {
-            output.writeInt(this.targetIds[_i1]);
-            _i1++;
+            param1.writeInt(this.targetIds[_loc2_]);
+            _loc2_++;
          }
-         output.writeShort(this.targetCells.length);
-         var _i2:uint = 0;
-         while(_i2<this.targetCells.length)
+         param1.writeShort(this.targetCells.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.targetCells.length)
          {
-            if((this.targetCells[_i2]>-1)||(this.targetCells[_i2]<559))
+            if(this.targetCells[_loc3_] < -1 || this.targetCells[_loc3_] > 559)
             {
-               throw new Error("Forbidden value ("+this.targetCells[_i2]+") on element 2 (starting at 1) of targetCells.");
+               throw new Error("Forbidden value (" + this.targetCells[_loc3_] + ") on element 2 (starting at 1) of targetCells.");
             }
             else
             {
-               output.writeShort(this.targetCells[_i2]);
-               _i2++;
+               param1.writeShort(this.targetCells[_loc3_]);
+               _loc3_++;
                continue;
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ChallengeTargetsListMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ChallengeTargetsListMessage(param1);
       }
-
-      public function deserializeAs_ChallengeTargetsListMessage(input:IDataInput) : void {
-         var _val1:* = 0;
-         var _val2:* = 0;
-         var _targetIdsLen:uint = input.readUnsignedShort();
-         var _i1:uint = 0;
-         while(_i1<_targetIdsLen)
+      
+      public function deserializeAs_ChallengeTargetsListMessage(param1:IDataInput) : void {
+         var _loc6_:* = 0;
+         var _loc7_:* = 0;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            _val1=input.readInt();
-            this.targetIds.push(_val1);
-            _i1++;
+            _loc6_ = param1.readInt();
+            this.targetIds.push(_loc6_);
+            _loc3_++;
          }
-         var _targetCellsLen:uint = input.readUnsignedShort();
-         var _i2:uint = 0;
-         while(_i2<_targetCellsLen)
+         var _loc4_:uint = param1.readUnsignedShort();
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc4_)
          {
-            _val2=input.readShort();
-            if((_val2>-1)||(_val2<559))
+            _loc7_ = param1.readShort();
+            if(_loc7_ < -1 || _loc7_ > 559)
             {
-               throw new Error("Forbidden value ("+_val2+") on elements of targetCells.");
+               throw new Error("Forbidden value (" + _loc7_ + ") on elements of targetCells.");
             }
             else
             {
-               this.targetCells.push(_val2);
-               _i2++;
+               this.targetCells.push(_loc7_);
+               _loc5_++;
                continue;
             }
          }
       }
    }
-
 }

@@ -1,107 +1,100 @@
 package com.hurlant.util.der
 {
    import flash.utils.ByteArray;
-
-
+   
    public dynamic class Sequence extends Array implements IAsn1Type
    {
-         
-
-      public function Sequence(type:uint=48, length:uint=0) {
+      
+      public function Sequence(param1:uint=48, param2:uint=0) {
          super();
-         this.type=type;
-         this.len=length;
+         this.type = param1;
+         this.len = param2;
       }
-
-
-
+      
       protected var type:uint;
-
+      
       protected var len:uint;
-
+      
       public function getLength() : uint {
          return this.len;
       }
-
+      
       public function getType() : uint {
          return this.type;
       }
-
+      
       public function toDER() : ByteArray {
-         var e:IAsn1Type = null;
-         var tmp:ByteArray = new ByteArray();
-         var i:int = 0;
-         while(i<length)
+         var _loc3_:IAsn1Type = null;
+         var _loc1_:ByteArray = new ByteArray();
+         var _loc2_:* = 0;
+         while(_loc2_ < length)
          {
-            e=this[i];
-            if(e==null)
+            _loc3_ = this[_loc2_];
+            if(_loc3_ == null)
             {
-               tmp.writeByte(5);
-               tmp.writeByte(0);
+               _loc1_.writeByte(5);
+               _loc1_.writeByte(0);
             }
             else
             {
-               tmp.writeBytes(e.toDER());
+               _loc1_.writeBytes(_loc3_.toDER());
             }
-            i++;
+            _loc2_++;
          }
-         return DER.wrapDER(this.type,tmp);
+         return DER.wrapDER(this.type,_loc1_);
       }
-
+      
       public function toString() : String {
-         var found:* = false;
-         var key:String = null;
-         var s:String = DER.indent;
-         DER.indent=DER.indent+"    ";
-         var t:String = "";
-         var i:int = 0;
-         while(i<length)
+         var _loc4_:* = false;
+         var _loc5_:String = null;
+         var _loc1_:String = DER.indent;
+         DER.indent = DER.indent + "    ";
+         var _loc2_:* = "";
+         var _loc3_:* = 0;
+         while(_loc3_ < length)
          {
-            if(this[i]==null)
+            if(this[_loc3_] != null)
             {
-            }
-            else
-            {
-               found=false;
-               for (key in this)
+               _loc4_ = false;
+               for (_loc5_ in this)
                {
-                  if((!(i.toString()==key))&&(this[i]==this[key]))
+                  if(!(_loc3_.toString() == _loc5_) && this[_loc3_] == this[_loc5_])
                   {
-                     t=t+(key+": "+this[i]+"\n");
-                     found=true;
+                     _loc2_ = _loc2_ + (_loc5_ + ": " + this[_loc3_] + "\n");
+                     _loc4_ = true;
                      break;
                   }
                }
-               if(!found)
+               if(!_loc4_)
                {
-                  t=t+(this[i]+"\n");
+                  _loc2_ = _loc2_ + (this[_loc3_] + "\n");
                }
             }
-            i++;
+            _loc3_++;
          }
-         DER.indent=s;
-         return DER.indent+"Sequence["+this.type+"]["+this.len+"][\n"+t+"\n"+s+"]";
+         DER.indent = _loc1_;
+         return DER.indent + "Sequence[" + this.type + "][" + this.len + "][\n" + _loc2_ + "\n" + _loc1_ + "]";
       }
-
-      public function findAttributeValue(oid:String) : IAsn1Type {
-         var set:* = undefined;
-         var child:* = undefined;
-         var tmp:* = undefined;
-         var id:ObjectIdentifier = null;
-         for each (set in this)
+      
+      public function findAttributeValue(param1:String) : IAsn1Type {
+         var _loc2_:* = undefined;
+         var _loc3_:* = undefined;
+         var _loc4_:* = undefined;
+         var _loc5_:ObjectIdentifier = null;
+         for each (_loc2_ in this)
          {
-            if(set is Set)
+            if(_loc2_ is Set)
             {
-               child=set[0];
-               if(child is Sequence)
+               _loc3_ = _loc2_[0];
+               if(_loc3_ is Sequence)
                {
-                  tmp=child[0];
-                  if(tmp is ObjectIdentifier)
+                  _loc4_ = _loc3_[0];
+                  if(_loc4_ is ObjectIdentifier)
                   {
-                     id=tmp as ObjectIdentifier;
-                     if(id.toString()==oid)
+                     _loc5_ = _loc4_ as ObjectIdentifier;
+                     if(_loc5_.toString() == param1)
                      {
-                        return child[1] as IAsn1Type;
+                        return _loc3_[1] as IAsn1Type;
                      }
                   }
                }
@@ -110,5 +103,4 @@ package com.hurlant.util.der
          return null;
       }
    }
-
 }

@@ -7,82 +7,79 @@ package com.ankamagames.dofus.network.messages.web.krosmaster
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class KrosmasterInventoryMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function KrosmasterInventoryMessage() {
-         this.figures=new Vector.<KrosmasterFigure>();
+         this.figures = new Vector.<KrosmasterFigure>();
          super();
       }
-
+      
       public static const protocolId:uint = 6350;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var figures:Vector.<KrosmasterFigure>;
-
+      
       override public function getMessageId() : uint {
          return 6350;
       }
-
-      public function initKrosmasterInventoryMessage(figures:Vector.<KrosmasterFigure>=null) : KrosmasterInventoryMessage {
-         this.figures=figures;
-         this._isInitialized=true;
+      
+      public function initKrosmasterInventoryMessage(param1:Vector.<KrosmasterFigure>=null) : KrosmasterInventoryMessage {
+         this.figures = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.figures=new Vector.<KrosmasterFigure>();
-         this._isInitialized=false;
+         this.figures = new Vector.<KrosmasterFigure>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_KrosmasterInventoryMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_KrosmasterInventoryMessage(param1);
       }
-
-      public function serializeAs_KrosmasterInventoryMessage(output:IDataOutput) : void {
-         output.writeShort(this.figures.length);
-         var _i1:uint = 0;
-         while(_i1<this.figures.length)
+      
+      public function serializeAs_KrosmasterInventoryMessage(param1:IDataOutput) : void {
+         param1.writeShort(this.figures.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.figures.length)
          {
-            (this.figures[_i1] as KrosmasterFigure).serializeAs_KrosmasterFigure(output);
-            _i1++;
+            (this.figures[_loc2_] as KrosmasterFigure).serializeAs_KrosmasterFigure(param1);
+            _loc2_++;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_KrosmasterInventoryMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_KrosmasterInventoryMessage(param1);
       }
-
-      public function deserializeAs_KrosmasterInventoryMessage(input:IDataInput) : void {
-         var _item1:KrosmasterFigure = null;
-         var _figuresLen:uint = input.readUnsignedShort();
-         var _i1:uint = 0;
-         while(_i1<_figuresLen)
+      
+      public function deserializeAs_KrosmasterInventoryMessage(param1:IDataInput) : void {
+         var _loc4_:KrosmasterFigure = null;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            _item1=new KrosmasterFigure();
-            _item1.deserialize(input);
-            this.figures.push(_item1);
-            _i1++;
+            _loc4_ = new KrosmasterFigure();
+            _loc4_.deserialize(param1);
+            this.figures.push(_loc4_);
+            _loc3_++;
          }
       }
    }
-
 }

@@ -6,52 +6,48 @@ package com.ankamagames.dofus.datacenter.items.criterion
    import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.quest.Achievement;
    import com.ankamagames.jerakine.data.I18n;
-
-
+   
    public class AchievementItemCriterion extends ItemCriterion implements IDataCenter
    {
-         
-
-      public function AchievementItemCriterion(pCriterion:String) {
-         super(pCriterion);
+      
+      public function AchievementItemCriterion(param1:String) {
+         super(param1);
       }
-
-
-
+      
       override public function get isRespected() : Boolean {
-         var id:* = 0;
-         var achievementFinishedList:Vector.<uint> = (Kernel.getWorker().getFrame(QuestFrame) as QuestFrame).finishedAchievementsIds;
-         for each (id in achievementFinishedList)
+         var _loc2_:* = 0;
+         var _loc1_:Vector.<uint> = (Kernel.getWorker().getFrame(QuestFrame) as QuestFrame).finishedAchievementsIds;
+         for each (_loc2_ in _loc1_)
          {
-            if(id==_criterionValue)
+            if(_loc2_ == _criterionValue)
             {
                return true;
             }
          }
          return false;
       }
-
+      
       override public function get text() : String {
-         var readableValue:String = " \'"+Achievement.getAchievementById(_criterionValue).name+"\'";
-         var readableCriterion:String = I18n.getUiText("ui.tooltip.unlockAchievement",[readableValue]);
-         if(_operator.text==ItemCriterionOperator.DIFFERENT)
+         var _loc1_:* = " \'" + Achievement.getAchievementById(_criterionValue).name + "\'";
+         var _loc2_:String = I18n.getUiText("ui.tooltip.unlockAchievement",[_loc1_]);
+         if(_operator.text == ItemCriterionOperator.DIFFERENT)
          {
-            readableCriterion=I18n.getUiText("ui.tooltip.dontUnlockAchievement",[readableValue]);
+            _loc2_ = I18n.getUiText("ui.tooltip.dontUnlockAchievement",[_loc1_]);
          }
-         return readableCriterion;
+         return _loc2_;
       }
-
+      
       override public function clone() : IItemCriterion {
-         var clonedCriterion:AchievementItemCriterion = new AchievementItemCriterion(this.basicText);
-         return clonedCriterion;
+         var _loc1_:AchievementItemCriterion = new AchievementItemCriterion(this.basicText);
+         return _loc1_;
       }
-
+      
       override protected function getCriterion() : int {
-         var id:* = 0;
-         var achievementFinishedList:Vector.<uint> = (Kernel.getWorker().getFrame(QuestFrame) as QuestFrame).finishedAchievementsIds;
-         for each (id in achievementFinishedList)
+         var _loc2_:* = 0;
+         var _loc1_:Vector.<uint> = (Kernel.getWorker().getFrame(QuestFrame) as QuestFrame).finishedAchievementsIds;
+         for each (_loc2_ in _loc1_)
          {
-            if(id==_criterionValue)
+            if(_loc2_ == _criterionValue)
             {
                return 1;
             }
@@ -59,5 +55,4 @@ package com.ankamagames.dofus.datacenter.items.criterion
          return 0;
       }
    }
-
 }

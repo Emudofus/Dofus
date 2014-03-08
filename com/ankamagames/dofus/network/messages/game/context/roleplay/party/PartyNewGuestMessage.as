@@ -5,72 +5,69 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class PartyNewGuestMessage extends AbstractPartyEventMessage implements INetworkMessage
    {
-         
-
+      
       public function PartyNewGuestMessage() {
-         this.guest=new PartyGuestInformations();
+         this.guest = new PartyGuestInformations();
          super();
       }
-
+      
       public static const protocolId:uint = 6260;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
-         return (super.isInitialized)&&(this._isInitialized);
+         return (super.isInitialized) && (this._isInitialized);
       }
-
+      
       public var guest:PartyGuestInformations;
-
+      
       override public function getMessageId() : uint {
          return 6260;
       }
-
-      public function initPartyNewGuestMessage(partyId:uint=0, guest:PartyGuestInformations=null) : PartyNewGuestMessage {
-         super.initAbstractPartyEventMessage(partyId);
-         this.guest=guest;
-         this._isInitialized=true;
+      
+      public function initPartyNewGuestMessage(param1:uint=0, param2:PartyGuestInformations=null) : PartyNewGuestMessage {
+         super.initAbstractPartyEventMessage(param1);
+         this.guest = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
          super.reset();
-         this.guest=new PartyGuestInformations();
-         this._isInitialized=false;
+         this.guest = new PartyGuestInformations();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      override public function serialize(output:IDataOutput) : void {
-         this.serializeAs_PartyNewGuestMessage(output);
+      
+      override public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_PartyNewGuestMessage(param1);
       }
-
-      public function serializeAs_PartyNewGuestMessage(output:IDataOutput) : void {
-         super.serializeAs_AbstractPartyEventMessage(output);
-         this.guest.serializeAs_PartyGuestInformations(output);
+      
+      public function serializeAs_PartyNewGuestMessage(param1:IDataOutput) : void {
+         super.serializeAs_AbstractPartyEventMessage(param1);
+         this.guest.serializeAs_PartyGuestInformations(param1);
       }
-
-      override public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_PartyNewGuestMessage(input);
+      
+      override public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_PartyNewGuestMessage(param1);
       }
-
-      public function deserializeAs_PartyNewGuestMessage(input:IDataInput) : void {
-         super.deserialize(input);
-         this.guest=new PartyGuestInformations();
-         this.guest.deserialize(input);
+      
+      public function deserializeAs_PartyNewGuestMessage(param1:IDataInput) : void {
+         super.deserialize(param1);
+         this.guest = new PartyGuestInformations();
+         this.guest.deserialize(param1);
       }
    }
-
 }

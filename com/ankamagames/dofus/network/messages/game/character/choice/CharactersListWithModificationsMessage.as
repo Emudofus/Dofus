@@ -8,150 +8,147 @@ package com.ankamagames.dofus.network.messages.game.character.choice
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class CharactersListWithModificationsMessage extends CharactersListMessage implements INetworkMessage
    {
-         
-
+      
       public function CharactersListWithModificationsMessage() {
-         this.charactersToRecolor=new Vector.<CharacterToRecolorInformation>();
-         this.charactersToRename=new Vector.<int>();
-         this.unusableCharacters=new Vector.<int>();
-         this.charactersToRelook=new Vector.<CharacterToRelookInformation>();
+         this.charactersToRecolor = new Vector.<CharacterToRecolorInformation>();
+         this.charactersToRename = new Vector.<int>();
+         this.unusableCharacters = new Vector.<int>();
+         this.charactersToRelook = new Vector.<CharacterToRelookInformation>();
          super();
       }
-
+      
       public static const protocolId:uint = 6120;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
-         return (super.isInitialized)&&(this._isInitialized);
+         return (super.isInitialized) && (this._isInitialized);
       }
-
+      
       public var charactersToRecolor:Vector.<CharacterToRecolorInformation>;
-
+      
       public var charactersToRename:Vector.<int>;
-
+      
       public var unusableCharacters:Vector.<int>;
-
+      
       public var charactersToRelook:Vector.<CharacterToRelookInformation>;
-
+      
       override public function getMessageId() : uint {
          return 6120;
       }
-
-      public function initCharactersListWithModificationsMessage(hasStartupActions:Boolean=false, characters:Vector.<CharacterBaseInformations>=null, charactersToRecolor:Vector.<CharacterToRecolorInformation>=null, charactersToRename:Vector.<int>=null, unusableCharacters:Vector.<int>=null, charactersToRelook:Vector.<CharacterToRelookInformation>=null) : CharactersListWithModificationsMessage {
-         super.initCharactersListMessage(hasStartupActions,characters);
-         this.charactersToRecolor=charactersToRecolor;
-         this.charactersToRename=charactersToRename;
-         this.unusableCharacters=unusableCharacters;
-         this.charactersToRelook=charactersToRelook;
-         this._isInitialized=true;
+      
+      public function initCharactersListWithModificationsMessage(param1:Vector.<CharacterBaseInformations>=null, param2:Boolean=false, param3:Vector.<CharacterToRecolorInformation>=null, param4:Vector.<int>=null, param5:Vector.<int>=null, param6:Vector.<CharacterToRelookInformation>=null) : CharactersListWithModificationsMessage {
+         super.initCharactersListMessage(param1,param2);
+         this.charactersToRecolor = param3;
+         this.charactersToRename = param4;
+         this.unusableCharacters = param5;
+         this.charactersToRelook = param6;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
          super.reset();
-         this.charactersToRecolor=new Vector.<CharacterToRecolorInformation>();
-         this.charactersToRename=new Vector.<int>();
-         this.unusableCharacters=new Vector.<int>();
-         this.charactersToRelook=new Vector.<CharacterToRelookInformation>();
-         this._isInitialized=false;
+         this.charactersToRecolor = new Vector.<CharacterToRecolorInformation>();
+         this.charactersToRename = new Vector.<int>();
+         this.unusableCharacters = new Vector.<int>();
+         this.charactersToRelook = new Vector.<CharacterToRelookInformation>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      override public function serialize(output:IDataOutput) : void {
-         this.serializeAs_CharactersListWithModificationsMessage(output);
+      
+      override public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_CharactersListWithModificationsMessage(param1);
       }
-
-      public function serializeAs_CharactersListWithModificationsMessage(output:IDataOutput) : void {
-         super.serializeAs_CharactersListMessage(output);
-         output.writeShort(this.charactersToRecolor.length);
-         var _i1:uint = 0;
-         while(_i1<this.charactersToRecolor.length)
+      
+      public function serializeAs_CharactersListWithModificationsMessage(param1:IDataOutput) : void {
+         super.serializeAs_CharactersListMessage(param1);
+         param1.writeShort(this.charactersToRecolor.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.charactersToRecolor.length)
          {
-            (this.charactersToRecolor[_i1] as CharacterToRecolorInformation).serializeAs_CharacterToRecolorInformation(output);
-            _i1++;
+            (this.charactersToRecolor[_loc2_] as CharacterToRecolorInformation).serializeAs_CharacterToRecolorInformation(param1);
+            _loc2_++;
          }
-         output.writeShort(this.charactersToRename.length);
-         var _i2:uint = 0;
-         while(_i2<this.charactersToRename.length)
+         param1.writeShort(this.charactersToRename.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.charactersToRename.length)
          {
-            output.writeInt(this.charactersToRename[_i2]);
-            _i2++;
+            param1.writeInt(this.charactersToRename[_loc3_]);
+            _loc3_++;
          }
-         output.writeShort(this.unusableCharacters.length);
-         var _i3:uint = 0;
-         while(_i3<this.unusableCharacters.length)
+         param1.writeShort(this.unusableCharacters.length);
+         var _loc4_:uint = 0;
+         while(_loc4_ < this.unusableCharacters.length)
          {
-            output.writeInt(this.unusableCharacters[_i3]);
-            _i3++;
+            param1.writeInt(this.unusableCharacters[_loc4_]);
+            _loc4_++;
          }
-         output.writeShort(this.charactersToRelook.length);
-         var _i4:uint = 0;
-         while(_i4<this.charactersToRelook.length)
+         param1.writeShort(this.charactersToRelook.length);
+         var _loc5_:uint = 0;
+         while(_loc5_ < this.charactersToRelook.length)
          {
-            (this.charactersToRelook[_i4] as CharacterToRelookInformation).serializeAs_CharacterToRelookInformation(output);
-            _i4++;
+            (this.charactersToRelook[_loc5_] as CharacterToRelookInformation).serializeAs_CharacterToRelookInformation(param1);
+            _loc5_++;
          }
       }
-
-      override public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_CharactersListWithModificationsMessage(input);
+      
+      override public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_CharactersListWithModificationsMessage(param1);
       }
-
-      public function deserializeAs_CharactersListWithModificationsMessage(input:IDataInput) : void {
-         var _item1:CharacterToRecolorInformation = null;
-         var _val2:* = 0;
-         var _val3:* = 0;
-         var _item4:CharacterToRelookInformation = null;
-         super.deserialize(input);
-         var _charactersToRecolorLen:uint = input.readUnsignedShort();
-         var _i1:uint = 0;
-         while(_i1<_charactersToRecolorLen)
+      
+      public function deserializeAs_CharactersListWithModificationsMessage(param1:IDataInput) : void {
+         var _loc10_:CharacterToRecolorInformation = null;
+         var _loc11_:* = 0;
+         var _loc12_:* = 0;
+         var _loc13_:CharacterToRelookInformation = null;
+         super.deserialize(param1);
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            _item1=new CharacterToRecolorInformation();
-            _item1.deserialize(input);
-            this.charactersToRecolor.push(_item1);
-            _i1++;
+            _loc10_ = new CharacterToRecolorInformation();
+            _loc10_.deserialize(param1);
+            this.charactersToRecolor.push(_loc10_);
+            _loc3_++;
          }
-         var _charactersToRenameLen:uint = input.readUnsignedShort();
-         var _i2:uint = 0;
-         while(_i2<_charactersToRenameLen)
+         var _loc4_:uint = param1.readUnsignedShort();
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc4_)
          {
-            _val2=input.readInt();
-            this.charactersToRename.push(_val2);
-            _i2++;
+            _loc11_ = param1.readInt();
+            this.charactersToRename.push(_loc11_);
+            _loc5_++;
          }
-         var _unusableCharactersLen:uint = input.readUnsignedShort();
-         var _i3:uint = 0;
-         while(_i3<_unusableCharactersLen)
+         var _loc6_:uint = param1.readUnsignedShort();
+         var _loc7_:uint = 0;
+         while(_loc7_ < _loc6_)
          {
-            _val3=input.readInt();
-            this.unusableCharacters.push(_val3);
-            _i3++;
+            _loc12_ = param1.readInt();
+            this.unusableCharacters.push(_loc12_);
+            _loc7_++;
          }
-         var _charactersToRelookLen:uint = input.readUnsignedShort();
-         var _i4:uint = 0;
-         while(_i4<_charactersToRelookLen)
+         var _loc8_:uint = param1.readUnsignedShort();
+         var _loc9_:uint = 0;
+         while(_loc9_ < _loc8_)
          {
-            _item4=new CharacterToRelookInformation();
-            _item4.deserialize(input);
-            this.charactersToRelook.push(_item4);
-            _i4++;
+            _loc13_ = new CharacterToRelookInformation();
+            _loc13_.deserialize(param1);
+            this.charactersToRelook.push(_loc13_);
+            _loc9_++;
          }
       }
    }
-
 }

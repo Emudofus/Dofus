@@ -41,242 +41,321 @@ package flashx.textLayout.edit
    import flash.desktop.ClipboardFormats;
    import flashx.textLayout.formats.TextLayoutFormat;
    import flashx.textLayout.elements.TextRange;
-
+   
    use namespace tlf_internal;
-
+   
    public class SelectionManager extends Object implements ISelectionManager
    {
-         
-
+      
       public function SelectionManager() {
-         this.marks=[];
+         this.marks = [];
          super();
-         this._textFlow=null;
-         this.anchorMark=this.createMark();
-         this.activeMark=this.createMark();
-         this._pointFormat=null;
-         this._isActive=false;
+         this._textFlow = null;
+         this.anchorMark = this.createMark();
+         this.activeMark = this.createMark();
+         this._pointFormat = null;
+         this._isActive = false;
       }
-
-      private static function computeSelectionIndexInContainer(textFlow:TextFlow, controller:ContainerController, localX:Number, localY:Number) : int {
-         var rtline:TextFlowLine = null;
-         var rtTextLine:TextLine = null;
-         var bounds:Rectangle = null;
-         var linePerpCoor:* = NaN;
-         var midPerpCoor:* = NaN;
-         var isLineBelow:* = false;
-         var prevPerpCoor:* = NaN;
-         var inPrevLine:* = false;
-         var lastLinePosInPar:* = 0;
-         var lastChar:String = null;
-         var lineIndex:int = -1;
-         var firstCharVisible:int = controller.absoluteStart;
-         var length:int = controller.textLength;
-         var bp:String = textFlow.computedFormat.blockProgression;
-         var isTTB:Boolean = bp==BlockProgression.RL;
-         var isDirectionRTL:Boolean = textFlow.computedFormat.direction==Direction.RTL;
-         var perpCoor:Number = isTTB?localX:localY;
-         var nearestColIdx:int = locateNearestColumn(controller,localX,localY,textFlow.computedFormat.blockProgression,textFlow.computedFormat.direction);
-         var prevLineBounds:Rectangle = null;
-         var previousLineIndex:int = -1;
-         var lastLineIndexInColumn:int = -1;
-         var testIndex:int = textFlow.flowComposer.numLines-1;
-         while(testIndex>=0)
+      
+      private static function computeSelectionIndexInContainer(param1:TextFlow, param2:ContainerController, param3:Number, param4:Number) : int {
+         var _loc16_:TextFlowLine = null;
+         var _loc17_:TextLine = null;
+         var _loc25_:Rectangle = null;
+         var _loc26_:* = NaN;
+         var _loc27_:* = NaN;
+         var _loc28_:* = false;
+         var _loc29_:* = NaN;
+         var _loc30_:* = false;
+         var _loc31_:* = 0;
+         var _loc32_:String = null;
+         var _loc5_:* = -1;
+         var _loc6_:int = param2.absoluteStart;
+         var _loc7_:int = param2.textLength;
+         var _loc8_:String = param1.computedFormat.blockProgression;
+         var _loc9_:* = _loc8_ == BlockProgression.RL;
+         var _loc10_:* = param1.computedFormat.direction == Direction.RTL;
+         var _loc11_:Number = _loc9_?param3:param4;
+         var _loc12_:int = locateNearestColumn(param2,param3,param4,param1.computedFormat.blockProgression,param1.computedFormat.direction);
+         var _loc13_:Rectangle = null;
+         var _loc14_:* = -1;
+         var _loc15_:* = -1;
+         var _loc18_:int = param1.flowComposer.numLines-1;
+         while(_loc18_ >= 0)
          {
-            rtline=textFlow.flowComposer.getLineAt(testIndex);
-            if((!(rtline.controller==controller))||(!(rtline.columnIndex==nearestColIdx)))
+            _loc16_ = param1.flowComposer.getLineAt(_loc18_);
+            if(!(_loc16_.controller == param2) || !(_loc16_.columnIndex == _loc12_))
             {
-               if(lastLineIndexInColumn!=-1)
+               if(_loc15_ != -1)
                {
-                  lineIndex=testIndex+1;
+                  _loc5_ = _loc18_ + 1;
+                  break;
                }
             }
             else
             {
-               if((rtline.absoluteStart>firstCharVisible)||(rtline.absoluteStart>=firstCharVisible+length))
+               if(!(_loc16_.absoluteStart < _loc6_ || _loc16_.absoluteStart >= _loc6_ + _loc7_))
                {
-               }
-               else
-               {
-                  rtTextLine=rtline.getTextLine();
-                  if((rtTextLine==null)||(rtTextLine.parent==null))
+                  _loc17_ = _loc16_.getTextLine();
+                  if(!(_loc17_ == null || _loc17_.parent == null))
                   {
-                  }
-                  else
-                  {
-                     if(lastLineIndexInColumn==-1)
+                     if(_loc15_ == -1)
                      {
-                        lastLineIndexInColumn=testIndex;
+                        _loc15_ = _loc18_;
                      }
-                     bounds=rtTextLine.getBounds(DisplayObject(controller.container));
-                     linePerpCoor=isTTB?bounds.left:bounds.bottom;
-                     midPerpCoor=-1;
-                     if(prevLineBounds)
+                     _loc25_ = _loc17_.getBounds(DisplayObject(param2.container));
+                     _loc26_ = _loc9_?_loc25_.left:_loc25_.bottom;
+                     _loc27_ = -1;
+                     if(_loc13_)
                      {
-                        prevPerpCoor=isTTB?prevLineBounds.right:prevLineBounds.top;
-                        midPerpCoor=(linePerpCoor+prevPerpCoor)/2;
+                        _loc29_ = _loc9_?_loc13_.right:_loc13_.top;
+                        _loc27_ = (_loc26_ + _loc29_) / 2;
                      }
-                     isLineBelow=isTTB?linePerpCoor<perpCoor:linePerpCoor>perpCoor;
-                     if((isLineBelow)||(testIndex==0))
+                     _loc28_ = _loc9_?_loc26_ > _loc11_:_loc26_ < _loc11_;
+                     if((_loc28_) || _loc18_ == 0)
                      {
-                        inPrevLine=(!(midPerpCoor==-1))&&(isTTB?perpCoor>midPerpCoor:perpCoor<midPerpCoor);
-                        lineIndex=(inPrevLine)&&(!(testIndex==lastLineIndexInColumn))?testIndex+1:testIndex;
+                        _loc30_ = !(_loc27_ == -1) && (_loc9_?_loc11_ < _loc27_:_loc11_ > _loc27_);
+                        _loc5_ = (_loc30_) && !(_loc18_ == _loc15_)?_loc18_ + 1:_loc18_;
+                        break;
                      }
-                     else
-                     {
-                        prevLineBounds=bounds;
-                        previousLineIndex=testIndex;
-                     }
+                     _loc13_ = _loc25_;
+                     _loc14_ = _loc18_;
                   }
                }
             }
-            testIndex--;
+            _loc18_--;
          }
-      }
-
-      private static function locateNearestColumn(container:ContainerController, localX:Number, localY:Number, wm:String, direction:String) : int {
-         var curCol:Rectangle = null;
-         var nextCol:Rectangle = null;
-         var colIdx:int = 0;
-         var columnState:ColumnState = container.columnState;
-         while(colIdx<columnState.columnCount-1)
+         if(_loc5_ == -1)
          {
-            curCol=columnState.getColumnAt(colIdx);
-            nextCol=columnState.getColumnAt(colIdx+1);
-            if(curCol.contains(localX,localY))
+            _loc5_ = _loc14_;
+            if(_loc5_ == -1)
             {
-            }
-            else
-            {
-               if(nextCol.contains(localX,localY))
-               {
-                  colIdx++;
-               }
-               else
-               {
-                  if(wm==BlockProgression.RL)
-                  {
-                     if((localY>curCol.top)||(localY>nextCol.top)&&(Math.abs(curCol.bottom-localY)<=Math.abs(nextCol.top-localY)))
-                     {
-                     }
-                     else
-                     {
-                        if(localY>nextCol.top)
-                        {
-                           colIdx++;
-                        }
-                     }
-                  }
-                  else
-                  {
-                     if(direction==Direction.LTR)
-                     {
-                        if((localX>curCol.left)||(localX>nextCol.left)&&(Math.abs(curCol.right-localX)<=Math.abs(nextCol.left-localX)))
-                        {
-                        }
-                        else
-                        {
-                           if(localX<nextCol.left)
-                           {
-                              colIdx++;
-                           }
-                        }
-                     }
-                     else
-                     {
-                        if((localX<curCol.right)||(localX<nextCol.right)&&(Math.abs(curCol.left-localX)<=Math.abs(nextCol.right-localX)))
-                        {
-                        }
-                        else
-                        {
-                           if(localX>nextCol.right)
-                           {
-                              colIdx++;
-                           }
-                        }
-                     }
-                  }
-                  colIdx++;
-                  continue;
-               }
+               return -1;
             }
          }
-      }
-
-      private static function computeSelectionIndexInLine(textFlow:TextFlow, textLine:TextLine, localX:Number, localY:Number) : int {
-         var paraSelectionIdx:* = 0;
-         if(!(textLine.userData is TextFlowLine))
+         var _loc19_:TextFlowLine = param1.flowComposer.getLineAt(_loc5_);
+         var _loc20_:TextLine = _loc19_.getTextLine(true);
+         var param3:Number = param3 - _loc20_.x;
+         var param4:Number = param4 - _loc20_.y;
+         var _loc21_:* = false;
+         var _loc22_:* = -1;
+         if(_loc10_)
          {
-            return -1;
-         }
-         var rtline:TextFlowLine = TextFlowLine(textLine.userData);
-         if(rtline.validity==TextLineValidity.INVALID)
-         {
-            return -1;
-         }
-         var textLine:TextLine = rtline.getTextLine(true);
-         var isTTB:Boolean = textFlow.computedFormat.blockProgression==BlockProgression.RL;
-         var perpCoor:Number = isTTB?localX:localY;
-         var pt:Point = new Point();
-         pt.x=localX;
-         pt.y=localY;
-         pt=textLine.localToGlobal(pt);
-         var elemIdx:int = textLine.getAtomIndexAtPoint(pt.x,pt.y);
-         if(elemIdx==-1)
-         {
-            pt.x=localX;
-            pt.y=localY;
-            if((pt.x>0)||(isTTB)&&(perpCoor<textLine.ascent))
-            {
-               pt.x=0;
-            }
-            if((pt.y>0)||(!isTTB)&&(perpCoor<textLine.descent))
-            {
-               pt.y=0;
-            }
-            pt=textLine.localToGlobal(pt);
-            elemIdx=textLine.getAtomIndexAtPoint(pt.x,pt.y);
-         }
-         if(elemIdx==-1)
-         {
-            pt.x=localX;
-            pt.y=localY;
-            pt=textLine.localToGlobal(pt);
-            if(textLine.parent)
-            {
-               pt=textLine.parent.globalToLocal(pt);
-            }
-            if(!isTTB)
-            {
-               return pt.x<=textLine.x?rtline.absoluteStart:rtline.absoluteStart+rtline.textLength-1;
-            }
-            return pt.y<=textLine.y?rtline.absoluteStart:rtline.absoluteStart+rtline.textLength-1;
-         }
-         var glyphRect:Rectangle = textLine.getAtomBounds(elemIdx);
-         var leanRight:Boolean = false;
-         if(glyphRect)
-         {
-            if((isTTB)&&(!(textLine.getAtomTextRotation(elemIdx)==TextRotation.ROTATE_0)))
-            {
-               leanRight=localY<glyphRect.y+glyphRect.height/2;
-            }
-            else
-            {
-               leanRight=localX<glyphRect.x+glyphRect.width/2;
-            }
-         }
-         if(textLine.getAtomBidiLevel(elemIdx)%2!=0)
-         {
-            paraSelectionIdx=leanRight?textLine.getAtomTextBlockBeginIndex(elemIdx):textLine.getAtomTextBlockEndIndex(elemIdx);
+            _loc22_ = _loc20_.atomCount-1;
          }
          else
          {
-            paraSelectionIdx=leanRight?textLine.getAtomTextBlockEndIndex(elemIdx):textLine.getAtomTextBlockBeginIndex(elemIdx);
+            if(_loc19_.absoluteStart + _loc19_.textLength >= _loc19_.paragraph.getAbsoluteStart() + _loc19_.paragraph.textLength)
+            {
+               if(_loc20_.atomCount > 1)
+               {
+                  _loc22_ = _loc20_.atomCount - 2;
+               }
+            }
+            else
+            {
+               _loc31_ = _loc19_.absoluteStart + _loc19_.textLength-1;
+               _loc32_ = _loc20_.textBlock.content.rawText.charAt(_loc31_);
+               if(_loc32_ == " ")
+               {
+                  if(_loc20_.atomCount > 1)
+                  {
+                     _loc22_ = _loc20_.atomCount - 2;
+                  }
+               }
+               else
+               {
+                  _loc21_ = true;
+                  if(_loc20_.atomCount > 0)
+                  {
+                     _loc22_ = _loc20_.atomCount-1;
+                  }
+               }
+            }
          }
-         return rtline.paragraph.getAbsoluteStart()+paraSelectionIdx;
+         var _loc23_:Rectangle = _loc22_ > 0?_loc20_.getAtomBounds(_loc22_):new Rectangle(0,0,0,0);
+         if(!_loc9_)
+         {
+            if(param3 < 0)
+            {
+               param3 = 0;
+            }
+            else
+            {
+               if(param3 > _loc23_.x + _loc23_.width)
+               {
+                  if(_loc21_)
+                  {
+                     return _loc19_.absoluteStart + _loc19_.textLength-1;
+                  }
+                  if(_loc23_.x + _loc23_.width > 0)
+                  {
+                     param3 = _loc23_.x + _loc23_.width;
+                  }
+               }
+            }
+         }
+         else
+         {
+            if(param4 < 0)
+            {
+               param4 = 0;
+            }
+            else
+            {
+               if(param4 > _loc23_.y + _loc23_.height)
+               {
+                  if(_loc21_)
+                  {
+                     return _loc19_.absoluteStart + _loc19_.textLength-1;
+                  }
+                  if(_loc23_.y + _loc23_.height > 0)
+                  {
+                     param4 = _loc23_.y + _loc23_.height;
+                  }
+               }
+            }
+         }
+         var _loc24_:int = computeSelectionIndexInLine(param1,_loc20_,param3,param4);
+         return _loc24_ != -1?_loc24_:_loc6_ + _loc7_;
       }
-
-      private static function checkForDisplayed(container:DisplayObject) : Boolean {
+      
+      private static function locateNearestColumn(param1:ContainerController, param2:Number, param3:Number, param4:String, param5:String) : int {
+         var _loc8_:Rectangle = null;
+         var _loc9_:Rectangle = null;
+         var _loc6_:* = 0;
+         var _loc7_:ColumnState = param1.columnState;
+         while(_loc6_ < _loc7_.columnCount-1)
+         {
+            _loc8_ = _loc7_.getColumnAt(_loc6_);
+            _loc9_ = _loc7_.getColumnAt(_loc6_ + 1);
+            if(_loc8_.contains(param2,param3))
+            {
+               break;
+            }
+            if(_loc9_.contains(param2,param3))
+            {
+               _loc6_++;
+               break;
+            }
+            if(param4 == BlockProgression.RL)
+            {
+               if(param3 < _loc8_.top || param3 < _loc9_.top && Math.abs(_loc8_.bottom - param3) <= Math.abs(_loc9_.top - param3))
+               {
+                  break;
+               }
+               if(param3 > _loc9_.top)
+               {
+                  _loc6_++;
+                  break;
+               }
+            }
+            else
+            {
+               if(param5 == Direction.LTR)
+               {
+                  if(param2 < _loc8_.left || param2 < _loc9_.left && Math.abs(_loc8_.right - param2) <= Math.abs(_loc9_.left - param2))
+                  {
+                     break;
+                  }
+                  if(param2 < _loc9_.left)
+                  {
+                     _loc6_++;
+                     break;
+                  }
+               }
+               else
+               {
+                  if(param2 > _loc8_.right || param2 > _loc9_.right && Math.abs(_loc8_.left - param2) <= Math.abs(_loc9_.right - param2))
+                  {
+                     break;
+                  }
+                  if(param2 > _loc9_.right)
+                  {
+                     _loc6_++;
+                     break;
+                  }
+               }
+            }
+            _loc6_++;
+         }
+         return _loc6_;
+      }
+      
+      private static function computeSelectionIndexInLine(param1:TextFlow, param2:TextLine, param3:Number, param4:Number) : int {
+         var _loc12_:* = 0;
+         if(!(param2.userData is TextFlowLine))
+         {
+            return -1;
+         }
+         var _loc5_:TextFlowLine = TextFlowLine(param2.userData);
+         if(_loc5_.validity == TextLineValidity.INVALID)
+         {
+            return -1;
+         }
+         var param2:TextLine = _loc5_.getTextLine(true);
+         var _loc6_:* = param1.computedFormat.blockProgression == BlockProgression.RL;
+         var _loc7_:Number = _loc6_?param3:param4;
+         var _loc8_:Point = new Point();
+         _loc8_.x = param3;
+         _loc8_.y = param4;
+         _loc8_ = param2.localToGlobal(_loc8_);
+         var _loc9_:int = param2.getAtomIndexAtPoint(_loc8_.x,_loc8_.y);
+         if(_loc9_ == -1)
+         {
+            _loc8_.x = param3;
+            _loc8_.y = param4;
+            if(_loc8_.x < 0 || (_loc6_) && _loc7_ > param2.ascent)
+            {
+               _loc8_.x = 0;
+            }
+            if(_loc8_.y < 0 || !_loc6_ && _loc7_ > param2.descent)
+            {
+               _loc8_.y = 0;
+            }
+            _loc8_ = param2.localToGlobal(_loc8_);
+            _loc9_ = param2.getAtomIndexAtPoint(_loc8_.x,_loc8_.y);
+         }
+         if(_loc9_ == -1)
+         {
+            _loc8_.x = param3;
+            _loc8_.y = param4;
+            _loc8_ = param2.localToGlobal(_loc8_);
+            if(param2.parent)
+            {
+               _loc8_ = param2.parent.globalToLocal(_loc8_);
+            }
+            if(!_loc6_)
+            {
+               return _loc8_.x <= param2.x?_loc5_.absoluteStart:_loc5_.absoluteStart + _loc5_.textLength-1;
+            }
+            return _loc8_.y <= param2.y?_loc5_.absoluteStart:_loc5_.absoluteStart + _loc5_.textLength-1;
+         }
+         var _loc10_:Rectangle = param2.getAtomBounds(_loc9_);
+         var _loc11_:* = false;
+         if(_loc10_)
+         {
+            if((_loc6_) && !(param2.getAtomTextRotation(_loc9_) == TextRotation.ROTATE_0))
+            {
+               _loc11_ = param4 > _loc10_.y + _loc10_.height / 2;
+            }
+            else
+            {
+               _loc11_ = param3 > _loc10_.x + _loc10_.width / 2;
+            }
+         }
+         if(param2.getAtomBidiLevel(_loc9_) % 2 != 0)
+         {
+            _loc12_ = _loc11_?param2.getAtomTextBlockBeginIndex(_loc9_):param2.getAtomTextBlockEndIndex(_loc9_);
+         }
+         else
+         {
+            _loc12_ = _loc11_?param2.getAtomTextBlockEndIndex(_loc9_):param2.getAtomTextBlockBeginIndex(_loc9_);
+         }
+         return _loc5_.paragraph.getAbsoluteStart() + _loc12_;
+      }
+      
+      private static function checkForDisplayed(param1:DisplayObject) : Boolean {
+         var container:DisplayObject = param1;
          try
          {
             while(container)
@@ -285,6 +364,7 @@ package flashx.textLayout.edit
                {
                   return false;
                }
+               container = container.parent;
                if(container is Stage)
                {
                   return true;
@@ -297,260 +377,356 @@ package flashx.textLayout.edit
          }
          return false;
       }
-
-      tlf_internal  static function computeSelectionIndex(textFlow:TextFlow, target:Object, currentTarget:Object, localX:Number, localY:Number) : int {
-         var containerPoint:Point = null;
-         var tfl:TextFlowLine = null;
-         var para:ParagraphElement = null;
-         var controller:ContainerController = null;
-         var idx:* = 0;
-         var testController:ContainerController = null;
-         var controllerCandidate:ContainerController = null;
-         var candidateLocalX:* = NaN;
-         var candidateLocalY:* = NaN;
-         var relDistance:* = NaN;
-         var containerIndex:* = 0;
-         var curContainerController:ContainerController = null;
-         var bounds:Rectangle = null;
-         var containerWidth:* = NaN;
-         var containerHeight:* = NaN;
-         var adjustX:* = NaN;
-         var adjustY:* = NaN;
-         var relDistanceX:* = NaN;
-         var relDistanceY:* = NaN;
-         var tempDist:* = NaN;
-         var rslt:int = 0;
-         var useTargetedTextLine:Boolean = false;
-         if(target is TextLine)
+      
+      tlf_internal  static function computeSelectionIndex(param1:TextFlow, param2:Object, param3:Object, param4:Number, param5:Number) : int {
+         var _loc7_:Point = null;
+         var _loc9_:TextFlowLine = null;
+         var _loc10_:ParagraphElement = null;
+         var _loc11_:ContainerController = null;
+         var _loc12_:* = 0;
+         var _loc13_:ContainerController = null;
+         var _loc14_:ContainerController = null;
+         var _loc15_:* = NaN;
+         var _loc16_:* = NaN;
+         var _loc17_:* = NaN;
+         var _loc18_:* = 0;
+         var _loc19_:ContainerController = null;
+         var _loc20_:Rectangle = null;
+         var _loc21_:* = NaN;
+         var _loc22_:* = NaN;
+         var _loc23_:* = NaN;
+         var _loc24_:* = NaN;
+         var _loc25_:* = NaN;
+         var _loc26_:* = NaN;
+         var _loc27_:* = NaN;
+         var _loc6_:* = 0;
+         var _loc8_:* = false;
+         if(param2 is TextLine)
          {
-            tfl=TextLine(target).userData as TextFlowLine;
-            if(tfl)
+            _loc9_ = TextLine(param2).userData as TextFlowLine;
+            if(_loc9_)
             {
-               para=tfl.paragraph;
-               if(para.getTextFlow()==textFlow)
+               _loc10_ = _loc9_.paragraph;
+               if(_loc10_.getTextFlow() == param1)
                {
-                  useTargetedTextLine=true;
+                  _loc8_ = true;
                }
             }
          }
-         if(useTargetedTextLine)
+         if(_loc8_)
          {
-            rslt=computeSelectionIndexInLine(textFlow,TextLine(target),localX,localY);
+            _loc6_ = computeSelectionIndexInLine(param1,TextLine(param2),param4,param5);
          }
          else
          {
-            idx=0;
-            while(idx<textFlow.flowComposer.numControllers)
+            _loc12_ = 0;
+            while(_loc12_ < param1.flowComposer.numControllers)
             {
-               testController=textFlow.flowComposer.getControllerAt(idx);
-               if((testController.container==target)||(testController.container==currentTarget))
+               _loc13_ = param1.flowComposer.getControllerAt(_loc12_);
+               if(_loc13_.container == param2 || _loc13_.container == param3)
                {
-                  controller=testController;
+                  _loc11_ = _loc13_;
+                  break;
                }
-               else
+               _loc12_++;
+            }
+            if(_loc11_)
+            {
+               if(param2 != _loc11_.container)
                {
-                  idx++;
-                  continue;
+                  _loc7_ = DisplayObject(param2).localToGlobal(new Point(param4,param5));
+                  _loc7_ = DisplayObject(_loc11_.container).globalToLocal(_loc7_);
+                  param4 = _loc7_.x;
+                  param5 = _loc7_.y;
                }
+               _loc6_ = computeSelectionIndexInContainer(param1,_loc11_,param4,param5);
+            }
+            else
+            {
+               _loc14_ = null;
+               _loc17_ = Number.MAX_VALUE;
+               _loc18_ = 0;
+               while(_loc18_ < param1.flowComposer.numControllers)
+               {
+                  _loc19_ = param1.flowComposer.getControllerAt(_loc18_);
+                  if(checkForDisplayed(_loc19_.container as DisplayObject))
+                  {
+                     _loc20_ = _loc19_.getContentBounds();
+                     _loc21_ = isNaN(_loc19_.compositionWidth)?_loc19_.getTotalPaddingLeft() + _loc20_.width:_loc19_.compositionWidth;
+                     _loc22_ = isNaN(_loc19_.compositionHeight)?_loc19_.getTotalPaddingTop() + _loc20_.height:_loc19_.compositionHeight;
+                     _loc7_ = DisplayObject(param2).localToGlobal(new Point(param4,param5));
+                     _loc7_ = DisplayObject(_loc19_.container).globalToLocal(_loc7_);
+                     _loc23_ = 0;
+                     _loc24_ = 0;
+                     if(_loc19_.hasScrollRect)
+                     {
+                        _loc7_.x = _loc7_.x - (_loc23_ = _loc19_.container.scrollRect.x);
+                        _loc7_.y = _loc7_.y - (_loc24_ = _loc19_.container.scrollRect.y);
+                     }
+                     if(_loc7_.x >= 0 && _loc7_.x <= _loc21_ && _loc7_.y >= 0 && _loc7_.y <= _loc22_)
+                     {
+                        _loc14_ = _loc19_;
+                        _loc15_ = _loc7_.x + _loc23_;
+                        _loc16_ = _loc7_.y + _loc24_;
+                        break;
+                     }
+                     _loc25_ = 0;
+                     _loc26_ = 0;
+                     if(_loc7_.x < 0)
+                     {
+                        _loc25_ = _loc7_.x;
+                        if(_loc7_.y < 0)
+                        {
+                           _loc26_ = _loc7_.y;
+                        }
+                        else
+                        {
+                           if(_loc7_.y > _loc22_)
+                           {
+                              _loc26_ = _loc7_.y - _loc22_;
+                           }
+                        }
+                     }
+                     else
+                     {
+                        if(_loc7_.x > _loc21_)
+                        {
+                           _loc25_ = _loc7_.x - _loc21_;
+                           if(_loc7_.y < 0)
+                           {
+                              _loc26_ = _loc7_.y;
+                           }
+                           else
+                           {
+                              if(_loc7_.y > _loc22_)
+                              {
+                                 _loc26_ = _loc7_.y - _loc22_;
+                              }
+                           }
+                        }
+                        else
+                        {
+                           if(_loc7_.y < 0)
+                           {
+                              _loc26_ = -_loc7_.y;
+                           }
+                           else
+                           {
+                              _loc26_ = _loc7_.y - _loc22_;
+                           }
+                        }
+                     }
+                     _loc27_ = _loc25_ * _loc25_ + _loc26_ * _loc26_;
+                     if(_loc27_ <= _loc17_)
+                     {
+                        _loc17_ = _loc27_;
+                        _loc14_ = _loc19_;
+                        _loc15_ = _loc7_.x + _loc23_;
+                        _loc16_ = _loc7_.y + _loc24_;
+                     }
+                  }
+                  _loc18_++;
+               }
+               _loc6_ = _loc14_?computeSelectionIndexInContainer(param1,_loc14_,_loc15_,_loc16_):-1;
             }
          }
-         if(rslt>=textFlow.textLength)
+         if(_loc6_ >= param1.textLength)
          {
-            rslt=textFlow.textLength-1;
+            _loc6_ = param1.textLength-1;
          }
-         return rslt;
+         return _loc6_;
       }
-
+      
       private var _focusedSelectionFormat:SelectionFormat;
-
+      
       private var _unfocusedSelectionFormat:SelectionFormat;
-
+      
       private var _inactiveSelectionFormat:SelectionFormat;
-
+      
       private var _selFormatState:String = "unfocused";
-
+      
       private var _isActive:Boolean;
-
+      
       private var _textFlow:TextFlow;
-
+      
       private var anchorMark:Mark;
-
+      
       private var activeMark:Mark;
-
+      
       private var _pointFormat:ITextLayoutFormat;
-
+      
       protected function get pointFormat() : ITextLayoutFormat {
          return this._pointFormat;
       }
-
+      
       protected var ignoreNextTextEvent:Boolean = false;
-
+      
       protected var allowOperationMerge:Boolean = false;
-
+      
       private var _mouseOverSelectionArea:Boolean = false;
-
+      
       public function getSelectionState() : SelectionState {
          return new SelectionState(this._textFlow,this.anchorMark.position,this.activeMark.position,this.pointFormat);
       }
-
-      public function setSelectionState(sel:SelectionState) : void {
-         this.internalSetSelection(sel.textFlow,sel.anchorPosition,sel.activePosition,sel.pointFormat);
+      
+      public function setSelectionState(param1:SelectionState) : void {
+         this.internalSetSelection(param1.textFlow,param1.anchorPosition,param1.activePosition,param1.pointFormat);
       }
-
+      
       public function hasSelection() : Boolean {
-         return !(this.anchorMark.position==-1);
+         return !(this.anchorMark.position == -1);
       }
-
+      
       public function isRangeSelection() : Boolean {
-         return (!(this.anchorMark.position==-1))&&(!(this.anchorMark.position==this.activeMark.position));
+         return !(this.anchorMark.position == -1) && !(this.anchorMark.position == this.activeMark.position);
       }
-
+      
       public function get textFlow() : TextFlow {
          return this._textFlow;
       }
-
-      public function set textFlow(value:TextFlow) : void {
-         if(this._textFlow!=value)
+      
+      public function set textFlow(param1:TextFlow) : void {
+         if(this._textFlow != param1)
          {
             if(this._textFlow)
             {
                this.flushPendingOperations();
             }
             this.clear();
-            if(!value)
+            if(!param1)
             {
                this.setMouseCursor(MouseCursor.AUTO);
             }
-            this._textFlow=value;
-            if((this._textFlow)&&(!(this._textFlow.interactionManager==this)))
+            this._textFlow = param1;
+            if((this._textFlow) && !(this._textFlow.interactionManager == this))
             {
-               this._textFlow.interactionManager=this;
+               this._textFlow.interactionManager = this;
             }
          }
       }
-
+      
       public function get editingMode() : String {
          return EditingMode.READ_SELECT;
       }
-
+      
       public function get windowActive() : Boolean {
-         return !(this._selFormatState==SelectionFormatState.INACTIVE);
+         return !(this._selFormatState == SelectionFormatState.INACTIVE);
       }
-
+      
       public function get focused() : Boolean {
-         return this._selFormatState==SelectionFormatState.FOCUSED;
+         return this._selFormatState == SelectionFormatState.FOCUSED;
       }
-
+      
       public function get currentSelectionFormat() : SelectionFormat {
-         if(this._selFormatState==SelectionFormatState.UNFOCUSED)
+         if(this._selFormatState == SelectionFormatState.UNFOCUSED)
          {
             return this.unfocusedSelectionFormat;
          }
-         if(this._selFormatState==SelectionFormatState.INACTIVE)
+         if(this._selFormatState == SelectionFormatState.INACTIVE)
          {
             return this.inactiveSelectionFormat;
          }
          return this.focusedSelectionFormat;
       }
-
-      public function set focusedSelectionFormat(val:SelectionFormat) : void {
-         this._focusedSelectionFormat=val;
-         if(this._selFormatState==SelectionFormatState.FOCUSED)
+      
+      public function set focusedSelectionFormat(param1:SelectionFormat) : void {
+         this._focusedSelectionFormat = param1;
+         if(this._selFormatState == SelectionFormatState.FOCUSED)
          {
             this.refreshSelection();
          }
       }
-
+      
       public function get focusedSelectionFormat() : SelectionFormat {
          return this._focusedSelectionFormat?this._focusedSelectionFormat:this._textFlow?this._textFlow.configuration.focusedSelectionFormat:null;
       }
-
-      public function set unfocusedSelectionFormat(val:SelectionFormat) : void {
-         this._unfocusedSelectionFormat=val;
-         if(this._selFormatState==SelectionFormatState.UNFOCUSED)
+      
+      public function set unfocusedSelectionFormat(param1:SelectionFormat) : void {
+         this._unfocusedSelectionFormat = param1;
+         if(this._selFormatState == SelectionFormatState.UNFOCUSED)
          {
             this.refreshSelection();
          }
       }
-
+      
       public function get unfocusedSelectionFormat() : SelectionFormat {
          return this._unfocusedSelectionFormat?this._unfocusedSelectionFormat:this._textFlow?this._textFlow.configuration.unfocusedSelectionFormat:null;
       }
-
-      public function set inactiveSelectionFormat(val:SelectionFormat) : void {
-         this._inactiveSelectionFormat=val;
-         if(this._selFormatState==SelectionFormatState.INACTIVE)
+      
+      public function set inactiveSelectionFormat(param1:SelectionFormat) : void {
+         this._inactiveSelectionFormat = param1;
+         if(this._selFormatState == SelectionFormatState.INACTIVE)
          {
             this.refreshSelection();
          }
       }
-
+      
       public function get inactiveSelectionFormat() : SelectionFormat {
          return this._inactiveSelectionFormat?this._inactiveSelectionFormat:this._textFlow?this._textFlow.configuration.inactiveSelectionFormat:null;
       }
-
+      
       tlf_internal function get selectionFormatState() : String {
          return this._selFormatState;
       }
-
-      tlf_internal function setSelectionFormatState(selFormatState:String) : void {
-         var oldSelectionFormat:SelectionFormat = null;
-         var newSelectionFormat:SelectionFormat = null;
-         if(selFormatState!=this._selFormatState)
+      
+      tlf_internal function setSelectionFormatState(param1:String) : void {
+         var _loc2_:SelectionFormat = null;
+         var _loc3_:SelectionFormat = null;
+         if(param1 != this._selFormatState)
          {
-            oldSelectionFormat=this.currentSelectionFormat;
-            this._selFormatState=selFormatState;
-            newSelectionFormat=this.currentSelectionFormat;
-            if(!newSelectionFormat.equals(oldSelectionFormat))
+            _loc2_ = this.currentSelectionFormat;
+            this._selFormatState = param1;
+            _loc3_ = this.currentSelectionFormat;
+            if(!_loc3_.equals(_loc2_))
             {
                this.refreshSelection();
             }
          }
       }
-
-      tlf_internal function cloneSelectionFormatState(oldISelectionManager:ISelectionManager) : void {
-         var oldSelectionManager:SelectionManager = oldISelectionManager as SelectionManager;
-         if(oldSelectionManager)
+      
+      tlf_internal function cloneSelectionFormatState(param1:ISelectionManager) : void {
+         var _loc2_:SelectionManager = param1 as SelectionManager;
+         if(_loc2_)
          {
-            this._isActive=oldSelectionManager._isActive;
-            this._mouseOverSelectionArea=oldSelectionManager._mouseOverSelectionArea;
-            this.setSelectionFormatState(oldSelectionManager.selectionFormatState);
+            this._isActive = _loc2_._isActive;
+            this._mouseOverSelectionArea = _loc2_._mouseOverSelectionArea;
+            this.setSelectionFormatState(_loc2_.selectionFormatState);
          }
       }
-
-      private function selectionPoint(currentTarget:Object, target:InteractiveObject, localX:Number, localY:Number, extendSelection:Boolean=false) : SelectionState {
+      
+      private function selectionPoint(param1:Object, param2:InteractiveObject, param3:Number, param4:Number, param5:Boolean=false) : SelectionState {
          if(!this._textFlow)
          {
             return null;
          }
          if(!this.hasSelection())
          {
-            extendSelection=false;
+            param5 = false;
          }
-         var begIdx:int = this.anchorMark.position;
-         var endIdx:int = this.activeMark.position;
-         endIdx=computeSelectionIndex(this._textFlow,target,currentTarget,localX,localY);
-         if(endIdx==-1)
+         var _loc6_:int = this.anchorMark.position;
+         var _loc7_:int = this.activeMark.position;
+         _loc7_ = computeSelectionIndex(this._textFlow,param2,param1,param3,param4);
+         if(_loc7_ == -1)
          {
             return null;
          }
-         endIdx=Math.min(endIdx,this._textFlow.textLength-1);
-         if(!extendSelection)
+         _loc7_ = Math.min(_loc7_,this._textFlow.textLength-1);
+         if(!param5)
          {
-            begIdx=endIdx;
+            _loc6_ = _loc7_;
          }
-         if(begIdx==endIdx)
+         if(_loc6_ == _loc7_)
          {
-            begIdx=NavigationUtil.updateStartIfInReadOnlyElement(this._textFlow,begIdx);
-            endIdx=NavigationUtil.updateEndIfInReadOnlyElement(this._textFlow,endIdx);
+            _loc6_ = NavigationUtil.updateStartIfInReadOnlyElement(this._textFlow,_loc6_);
+            _loc7_ = NavigationUtil.updateEndIfInReadOnlyElement(this._textFlow,_loc7_);
          }
          else
          {
-            endIdx=NavigationUtil.updateEndIfInReadOnlyElement(this._textFlow,endIdx);
+            _loc7_ = NavigationUtil.updateEndIfInReadOnlyElement(this._textFlow,_loc7_);
          }
-         return new SelectionState(this.textFlow,begIdx,endIdx);
+         return new SelectionState(this.textFlow,_loc6_,_loc7_);
       }
-
+      
       public function setFocus() : void {
          if(!this._textFlow)
          {
@@ -562,66 +738,66 @@ package flashx.textLayout.edit
          }
          this.setSelectionFormatState(SelectionFormatState.FOCUSED);
       }
-
-      protected function setMouseCursor(cursor:String) : void {
-         Mouse.cursor=cursor;
+      
+      protected function setMouseCursor(param1:String) : void {
+         Mouse.cursor = param1;
       }
-
+      
       public function get anchorPosition() : int {
          return this.anchorMark.position;
       }
-
+      
       public function get activePosition() : int {
          return this.activeMark.position;
       }
-
+      
       public function get absoluteStart() : int {
-         return this.anchorMark.position<this.activeMark.position?this.anchorMark.position:this.activeMark.position;
+         return this.anchorMark.position < this.activeMark.position?this.anchorMark.position:this.activeMark.position;
       }
-
+      
       public function get absoluteEnd() : int {
-         return this.anchorMark.position>this.activeMark.position?this.anchorMark.position:this.activeMark.position;
+         return this.anchorMark.position > this.activeMark.position?this.anchorMark.position:this.activeMark.position;
       }
-
+      
       public function selectAll() : void {
          this.selectRange(0,int.MAX_VALUE);
       }
-
-      public function selectRange(anchorPosition:int, activePosition:int) : void {
+      
+      public function selectRange(param1:int, param2:int) : void {
          this.flushPendingOperations();
-         if((!(anchorPosition==this.anchorMark.position))||(!(activePosition==this.activeMark.position)))
+         if(!(param1 == this.anchorMark.position) || !(param2 == this.activeMark.position))
          {
             this.clearSelectionShapes();
-            this.internalSetSelection(this._textFlow,anchorPosition,activePosition);
+            this.internalSetSelection(this._textFlow,param1,param2);
             this.selectionChanged();
-            this.allowOperationMerge=false;
+            this.allowOperationMerge = false;
          }
       }
-
-      private function internalSetSelection(root:TextFlow, anchorPosition:int, activePosition:int, format:ITextLayoutFormat=null) : void {
-         this._textFlow=root;
-         if((anchorPosition>0)||(activePosition>0))
+      
+      private function internalSetSelection(param1:TextFlow, param2:int, param3:int, param4:ITextLayoutFormat=null) : void {
+         this._textFlow = param1;
+         if(param2 < 0 || param3 < 0)
          {
-            anchorPosition=-1;
-            activePosition=-1;
+            param2 = -1;
+            param3 = -1;
          }
-         var lastSelectablePos:int = this._textFlow.textLength>0?this._textFlow.textLength-1:0;
-         if((!(anchorPosition==-1))&&(!(activePosition==-1)))
+         var _loc5_:int = this._textFlow.textLength > 0?this._textFlow.textLength-1:0;
+         if(!(param2 == -1) && !(param3 == -1))
          {
-            if(anchorPosition>lastSelectablePos)
+            if(param2 > _loc5_)
             {
-               anchorPosition=lastSelectablePos;
+               param2 = _loc5_;
             }
-            if(activePosition>lastSelectablePos)
+            if(param3 > _loc5_)
             {
-               activePosition=lastSelectablePos;
+               param3 = _loc5_;
             }
          }
-         this._pointFormat=format;
-         this.anchorMark.position=anchorPosition;
-         this.activeMark.position=activePosition;
+         this._pointFormat = param4;
+         this.anchorMark.position = param2;
+         this.activeMark.position = param3;
       }
-
+      
       private function clear() : void {
          if(this.hasSelection())
          {
@@ -629,39 +805,39 @@ package flashx.textLayout.edit
             this.clearSelectionShapes();
             this.internalSetSelection(this._textFlow,-1,-1);
             this.selectionChanged();
-            this.allowOperationMerge=false;
+            this.allowOperationMerge = false;
          }
       }
-
+      
       private function addSelectionShapes() : void {
-         var containerIter:* = 0;
+         var _loc1_:* = 0;
          if(this._textFlow.flowComposer)
          {
             this.internalSetSelection(this._textFlow,this.anchorMark.position,this.activeMark.position,this._pointFormat);
-            if((this.currentSelectionFormat)&&((this.absoluteStart==this.absoluteEnd)&&(!(this.currentSelectionFormat.pointAlpha==0))||(!(this.absoluteStart==this.absoluteEnd))&&(!(this.currentSelectionFormat.rangeAlpha==0))))
+            if((this.currentSelectionFormat) && (this.absoluteStart == this.absoluteEnd && !(this.currentSelectionFormat.pointAlpha == 0) || !(this.absoluteStart == this.absoluteEnd) && !(this.currentSelectionFormat.rangeAlpha == 0)))
             {
-               containerIter=0;
-               while(containerIter<this._textFlow.flowComposer.numControllers)
+               _loc1_ = 0;
+               while(_loc1_ < this._textFlow.flowComposer.numControllers)
                {
-                  this._textFlow.flowComposer.getControllerAt(containerIter++).addSelectionShapes(this.currentSelectionFormat,this.absoluteStart,this.absoluteEnd);
+                  this._textFlow.flowComposer.getControllerAt(_loc1_++).addSelectionShapes(this.currentSelectionFormat,this.absoluteStart,this.absoluteEnd);
                }
             }
          }
       }
-
+      
       private function clearSelectionShapes() : void {
-         var containerIter:* = 0;
-         var flowComposer:IFlowComposer = this._textFlow?this._textFlow.flowComposer:null;
-         if(flowComposer)
+         var _loc2_:* = 0;
+         var _loc1_:IFlowComposer = this._textFlow?this._textFlow.flowComposer:null;
+         if(_loc1_)
          {
-            containerIter=0;
-            while(containerIter<flowComposer.numControllers)
+            _loc2_ = 0;
+            while(_loc2_ < _loc1_.numControllers)
             {
-               flowComposer.getControllerAt(containerIter++).clearSelectionShapes();
+               _loc1_.getControllerAt(_loc2_++).clearSelectionShapes();
             }
          }
       }
-
+      
       public function refreshSelection() : void {
          if(this.hasSelection())
          {
@@ -669,53 +845,53 @@ package flashx.textLayout.edit
             this.addSelectionShapes();
          }
       }
-
-      tlf_internal function selectionChanged(doDispatchEvent:Boolean=true, resetPointFormat:Boolean=true) : void {
-         if(resetPointFormat)
+      
+      tlf_internal function selectionChanged(param1:Boolean=true, param2:Boolean=true) : void {
+         if(param2)
          {
-            this._pointFormat=null;
+            this._pointFormat = null;
          }
-         if((doDispatchEvent)&&(this._textFlow))
+         if((param1) && (this._textFlow))
          {
             this.textFlow.dispatchEvent(new SelectionEvent(SelectionEvent.SELECTION_CHANGE,false,false,this.hasSelection()?this.getSelectionState():null));
          }
       }
-
-      tlf_internal function setNewSelectionPoint(currentTarget:Object, target:InteractiveObject, localX:Number, localY:Number, extendSelection:Boolean=false) : Boolean {
-         var selState:SelectionState = this.selectionPoint(currentTarget,target,localX,localY,extendSelection);
-         if(selState==null)
+      
+      tlf_internal function setNewSelectionPoint(param1:Object, param2:InteractiveObject, param3:Number, param4:Number, param5:Boolean=false) : Boolean {
+         var _loc6_:SelectionState = this.selectionPoint(param1,param2,param3,param4,param5);
+         if(_loc6_ == null)
          {
             return false;
          }
-         if((!(selState.anchorPosition==this.anchorMark.position))||(!(selState.activePosition==this.activeMark.position)))
+         if(!(_loc6_.anchorPosition == this.anchorMark.position) || !(_loc6_.activePosition == this.activeMark.position))
          {
-            this.selectRange(selState.anchorPosition,selState.activePosition);
+            this.selectRange(_loc6_.anchorPosition,_loc6_.activePosition);
             return true;
          }
          return false;
       }
-
-      public function mouseDownHandler(event:MouseEvent) : void {
-         this.handleMouseEventForSelection(event,event.shiftKey);
+      
+      public function mouseDownHandler(param1:MouseEvent) : void {
+         this.handleMouseEventForSelection(param1,param1.shiftKey);
       }
-
-      public function mouseMoveHandler(event:MouseEvent) : void {
-         var wmode:String = this.textFlow.computedFormat.blockProgression;
-         if(wmode!=BlockProgression.RL)
+      
+      public function mouseMoveHandler(param1:MouseEvent) : void {
+         var _loc2_:String = this.textFlow.computedFormat.blockProgression;
+         if(_loc2_ != BlockProgression.RL)
          {
             this.setMouseCursor(MouseCursor.IBEAM);
          }
-         if(event.buttonDown)
+         if(param1.buttonDown)
          {
-            this.handleMouseEventForSelection(event,true);
+            this.handleMouseEventForSelection(param1,true);
          }
       }
-
-      tlf_internal function handleMouseEventForSelection(event:MouseEvent, allowExtend:Boolean) : void {
-         var startSelectionActive:Boolean = this.hasSelection();
-         if(this.setNewSelectionPoint(event.currentTarget,event.target as InteractiveObject,event.localX,event.localY,(startSelectionActive)&&(allowExtend)))
+      
+      tlf_internal function handleMouseEventForSelection(param1:MouseEvent, param2:Boolean) : void {
+         var _loc3_:Boolean = this.hasSelection();
+         if(this.setNewSelectionPoint(param1.currentTarget,param1.target as InteractiveObject,param1.localX,param1.localY,(_loc3_) && (param2)))
          {
-            if(startSelectionActive)
+            if(_loc3_)
             {
                this.clearSelectionShapes();
             }
@@ -724,80 +900,80 @@ package flashx.textLayout.edit
                this.addSelectionShapes();
             }
          }
-         this.allowOperationMerge=false;
+         this.allowOperationMerge = false;
       }
-
-      public function mouseUpHandler(event:MouseEvent) : void {
+      
+      public function mouseUpHandler(param1:MouseEvent) : void {
          if(!this._mouseOverSelectionArea)
          {
             this.setMouseCursor(MouseCursor.AUTO);
          }
       }
-
-      private function atBeginningWordPos(activePara:ParagraphElement, pos:int) : Boolean {
-         if(pos==0)
+      
+      private function atBeginningWordPos(param1:ParagraphElement, param2:int) : Boolean {
+         if(param2 == 0)
          {
             return true;
          }
-         var nextPos:int = activePara.findNextWordBoundary(pos);
-         nextPos=activePara.findPreviousWordBoundary(nextPos);
-         return pos==nextPos;
+         var _loc3_:int = param1.findNextWordBoundary(param2);
+         _loc3_ = param1.findPreviousWordBoundary(_loc3_);
+         return param2 == _loc3_;
       }
-
-      public function mouseDoubleClickHandler(event:MouseEvent) : void {
-         var newActiveIndex:* = 0;
-         var newAnchorIndex:* = 0;
-         var anchorPara:ParagraphElement = null;
-         var anchorParaStart:* = 0;
+      
+      public function mouseDoubleClickHandler(param1:MouseEvent) : void {
+         var _loc4_:* = 0;
+         var _loc5_:* = 0;
+         var _loc6_:ParagraphElement = null;
+         var _loc7_:* = 0;
          if(!this.hasSelection())
          {
             return;
          }
-         var activePara:ParagraphElement = this._textFlow.findAbsoluteParagraph(this.activeMark.position);
-         var activeParaStart:int = activePara.getAbsoluteStart();
-         if(this.anchorMark.position<=this.activeMark.position)
+         var _loc2_:ParagraphElement = this._textFlow.findAbsoluteParagraph(this.activeMark.position);
+         var _loc3_:int = _loc2_.getAbsoluteStart();
+         if(this.anchorMark.position <= this.activeMark.position)
          {
-            newActiveIndex=activePara.findNextWordBoundary(this.activeMark.position-activeParaStart)+activeParaStart;
+            _loc4_ = _loc2_.findNextWordBoundary(this.activeMark.position - _loc3_) + _loc3_;
          }
          else
          {
-            newActiveIndex=activePara.findPreviousWordBoundary(this.activeMark.position-activeParaStart)+activeParaStart;
+            _loc4_ = _loc2_.findPreviousWordBoundary(this.activeMark.position - _loc3_) + _loc3_;
          }
-         if(newActiveIndex==activeParaStart+activePara.textLength)
+         if(_loc4_ == _loc3_ + _loc2_.textLength)
          {
-            newActiveIndex--;
+            _loc4_--;
          }
-         if(event.shiftKey)
+         if(param1.shiftKey)
          {
-            newAnchorIndex=this.anchorMark.position;
+            _loc5_ = this.anchorMark.position;
          }
          else
          {
-            anchorPara=this._textFlow.findAbsoluteParagraph(this.anchorMark.position);
-            anchorParaStart=anchorPara.getAbsoluteStart();
-            if(this.atBeginningWordPos(anchorPara,this.anchorMark.position-anchorParaStart))
+            _loc6_ = this._textFlow.findAbsoluteParagraph(this.anchorMark.position);
+            _loc7_ = _loc6_.getAbsoluteStart();
+            if(this.atBeginningWordPos(_loc6_,this.anchorMark.position - _loc7_))
             {
-               newAnchorIndex=this.anchorMark.position;
+               _loc5_ = this.anchorMark.position;
             }
             else
             {
-               if(this.anchorMark.position<=this.activeMark.position)
+               if(this.anchorMark.position <= this.activeMark.position)
                {
-                  newAnchorIndex=anchorPara.findPreviousWordBoundary(this.anchorMark.position-anchorParaStart)+anchorParaStart;
+                  _loc5_ = _loc6_.findPreviousWordBoundary(this.anchorMark.position - _loc7_) + _loc7_;
                }
                else
                {
-                  newAnchorIndex=anchorPara.findNextWordBoundary(this.anchorMark.position-anchorParaStart)+anchorParaStart;
+                  _loc5_ = _loc6_.findNextWordBoundary(this.anchorMark.position - _loc7_) + _loc7_;
                }
-               if(newAnchorIndex==anchorParaStart+anchorPara.textLength)
+               if(_loc5_ == _loc7_ + _loc6_.textLength)
                {
-                  newAnchorIndex--;
+                  _loc5_--;
                }
             }
          }
-         if((!(newAnchorIndex==this.anchorMark.position))||(!(newActiveIndex==this.activeMark.position)))
+         if(!(_loc5_ == this.anchorMark.position) || !(_loc4_ == this.activeMark.position))
          {
-            this.internalSetSelection(this._textFlow,newAnchorIndex,newActiveIndex,null);
+            this.internalSetSelection(this._textFlow,_loc5_,_loc4_,null);
             this.selectionChanged();
             this.clearSelectionShapes();
             if(this.hasSelection())
@@ -805,13 +981,13 @@ package flashx.textLayout.edit
                this.addSelectionShapes();
             }
          }
-         this.allowOperationMerge=false;
+         this.allowOperationMerge = false;
       }
-
-      public function mouseOverHandler(event:MouseEvent) : void {
-         this._mouseOverSelectionArea=true;
-         var wmode:String = this.textFlow.computedFormat.blockProgression;
-         if(wmode!=BlockProgression.RL)
+      
+      public function mouseOverHandler(param1:MouseEvent) : void {
+         this._mouseOverSelectionArea = true;
+         var _loc2_:String = this.textFlow.computedFormat.blockProgression;
+         if(_loc2_ != BlockProgression.RL)
          {
             this.setMouseCursor(MouseCursor.IBEAM);
          }
@@ -820,64 +996,66 @@ package flashx.textLayout.edit
             this.setMouseCursor(MouseCursor.AUTO);
          }
       }
-
-      public function mouseOutHandler(event:MouseEvent) : void {
-         this._mouseOverSelectionArea=false;
+      
+      public function mouseOutHandler(param1:MouseEvent) : void {
+         this._mouseOverSelectionArea = false;
          this.setMouseCursor(MouseCursor.AUTO);
       }
-
-      public function focusInHandler(event:FocusEvent) : void {
-         this._isActive=true;
+      
+      public function focusInHandler(param1:FocusEvent) : void {
+         this._isActive = true;
          this.setSelectionFormatState(SelectionFormatState.FOCUSED);
       }
-
-      public function focusOutHandler(event:FocusEvent) : void {
+      
+      public function focusOutHandler(param1:FocusEvent) : void {
          if(this._isActive)
          {
             this.setSelectionFormatState(SelectionFormatState.UNFOCUSED);
          }
       }
-
-      public function activateHandler(event:Event) : void {
+      
+      public function activateHandler(param1:Event) : void {
          if(!this._isActive)
          {
-            this._isActive=true;
+            this._isActive = true;
             this.setSelectionFormatState(SelectionFormatState.UNFOCUSED);
          }
       }
-
-      public function deactivateHandler(event:Event) : void {
+      
+      public function deactivateHandler(param1:Event) : void {
          if(this._isActive)
          {
-            this._isActive=false;
+            this._isActive = false;
             this.setSelectionFormatState(SelectionFormatState.INACTIVE);
          }
       }
-
-      public function doOperation(op:FlowOperation) : void {
+      
+      public function doOperation(param1:FlowOperation) : void {
          var opError:Error = null;
+         var op:FlowOperation = param1;
          var opEvent:FlowOperationEvent = new FlowOperationEvent(FlowOperationEvent.FLOW_OPERATION_BEGIN,false,true,op,0,null);
          this.textFlow.dispatchEvent(opEvent);
          if(!opEvent.isDefaultPrevented())
          {
+            op = opEvent.operation;
             if(!(op is CopyOperation))
             {
                throw new IllegalOperationError(GlobalSettings.resourceStringFunction("illegalOperation",[getQualifiedClassName(op)]));
             }
             else
             {
-               opError=null;
+               opError = null;
                try
                {
                   op.doOperation();
                }
                catch(e:Error)
                {
-                  opError=e;
+                  opError = e;
                }
-               opEvent=new FlowOperationEvent(FlowOperationEvent.FLOW_OPERATION_END,false,true,op,0,opError);
+               opEvent = new FlowOperationEvent(FlowOperationEvent.FLOW_OPERATION_END,false,true,op,0,opError);
                this.textFlow.dispatchEvent(opEvent);
-               opError=opEvent.isDefaultPrevented()?null:opEvent.error;
+               opError = opEvent.isDefaultPrevented()?null:opEvent.error;
                if(opError)
                {
                   throw opError;
@@ -889,9 +1067,9 @@ package flashx.textLayout.edit
             }
          }
       }
-
-      public function editHandler(event:Event) : void {
-         switch(event.type)
+      
+      public function editHandler(param1:Event) : void {
+         switch(param1.type)
          {
             case Event.COPY:
                this.flushPendingOperations();
@@ -904,287 +1082,287 @@ package flashx.textLayout.edit
                break;
          }
       }
-
-      private function handleLeftArrow(event:KeyboardEvent) : SelectionState {
-         var selState:SelectionState = this.getSelectionState();
-         if(this._textFlow.computedFormat.blockProgression!=BlockProgression.RL)
+      
+      private function handleLeftArrow(param1:KeyboardEvent) : SelectionState {
+         var _loc2_:SelectionState = this.getSelectionState();
+         if(this._textFlow.computedFormat.blockProgression != BlockProgression.RL)
          {
-            if(this._textFlow.computedFormat.direction==Direction.LTR)
+            if(this._textFlow.computedFormat.direction == Direction.LTR)
             {
-               if((event.ctrlKey)||(event.altKey))
+               if((param1.ctrlKey) || (param1.altKey))
                {
-                  NavigationUtil.previousWord(selState,event.shiftKey);
+                  NavigationUtil.previousWord(_loc2_,param1.shiftKey);
                }
                else
                {
-                  NavigationUtil.previousCharacter(selState,event.shiftKey);
+                  NavigationUtil.previousCharacter(_loc2_,param1.shiftKey);
                }
             }
             else
             {
-               if((event.ctrlKey)||(event.altKey))
+               if((param1.ctrlKey) || (param1.altKey))
                {
-                  NavigationUtil.nextWord(selState,event.shiftKey);
+                  NavigationUtil.nextWord(_loc2_,param1.shiftKey);
                }
                else
                {
-                  NavigationUtil.nextCharacter(selState,event.shiftKey);
+                  NavigationUtil.nextCharacter(_loc2_,param1.shiftKey);
                }
             }
          }
          else
          {
-            if(event.altKey)
+            if(param1.altKey)
             {
-               NavigationUtil.endOfParagraph(selState,event.shiftKey);
+               NavigationUtil.endOfParagraph(_loc2_,param1.shiftKey);
             }
             else
             {
-               if(event.ctrlKey)
+               if(param1.ctrlKey)
                {
-                  NavigationUtil.endOfDocument(selState,event.shiftKey);
+                  NavigationUtil.endOfDocument(_loc2_,param1.shiftKey);
                }
                else
                {
-                  NavigationUtil.nextLine(selState,event.shiftKey);
+                  NavigationUtil.nextLine(_loc2_,param1.shiftKey);
                }
             }
          }
-         return selState;
+         return _loc2_;
       }
-
-      private function handleUpArrow(event:KeyboardEvent) : SelectionState {
-         var selState:SelectionState = this.getSelectionState();
-         if(this._textFlow.computedFormat.blockProgression!=BlockProgression.RL)
+      
+      private function handleUpArrow(param1:KeyboardEvent) : SelectionState {
+         var _loc2_:SelectionState = this.getSelectionState();
+         if(this._textFlow.computedFormat.blockProgression != BlockProgression.RL)
          {
-            if(event.altKey)
+            if(param1.altKey)
             {
-               NavigationUtil.startOfParagraph(selState,event.shiftKey);
+               NavigationUtil.startOfParagraph(_loc2_,param1.shiftKey);
             }
             else
             {
-               if(event.ctrlKey)
+               if(param1.ctrlKey)
                {
-                  NavigationUtil.startOfDocument(selState,event.shiftKey);
+                  NavigationUtil.startOfDocument(_loc2_,param1.shiftKey);
                }
                else
                {
-                  NavigationUtil.previousLine(selState,event.shiftKey);
+                  NavigationUtil.previousLine(_loc2_,param1.shiftKey);
                }
             }
          }
          else
          {
-            if(this._textFlow.computedFormat.direction==Direction.LTR)
+            if(this._textFlow.computedFormat.direction == Direction.LTR)
             {
-               if((event.ctrlKey)||(event.altKey))
+               if((param1.ctrlKey) || (param1.altKey))
                {
-                  NavigationUtil.previousWord(selState,event.shiftKey);
+                  NavigationUtil.previousWord(_loc2_,param1.shiftKey);
                }
                else
                {
-                  NavigationUtil.previousCharacter(selState,event.shiftKey);
+                  NavigationUtil.previousCharacter(_loc2_,param1.shiftKey);
                }
             }
             else
             {
-               if((event.ctrlKey)||(event.altKey))
+               if((param1.ctrlKey) || (param1.altKey))
                {
-                  NavigationUtil.nextWord(selState,event.shiftKey);
+                  NavigationUtil.nextWord(_loc2_,param1.shiftKey);
                }
                else
                {
-                  NavigationUtil.nextCharacter(selState,event.shiftKey);
+                  NavigationUtil.nextCharacter(_loc2_,param1.shiftKey);
                }
             }
          }
-         return selState;
+         return _loc2_;
       }
-
-      private function handleRightArrow(event:KeyboardEvent) : SelectionState {
-         var selState:SelectionState = this.getSelectionState();
-         if(this._textFlow.computedFormat.blockProgression!=BlockProgression.RL)
+      
+      private function handleRightArrow(param1:KeyboardEvent) : SelectionState {
+         var _loc2_:SelectionState = this.getSelectionState();
+         if(this._textFlow.computedFormat.blockProgression != BlockProgression.RL)
          {
-            if(this._textFlow.computedFormat.direction==Direction.LTR)
+            if(this._textFlow.computedFormat.direction == Direction.LTR)
             {
-               if((event.ctrlKey)||(event.altKey))
+               if((param1.ctrlKey) || (param1.altKey))
                {
-                  NavigationUtil.nextWord(selState,event.shiftKey);
+                  NavigationUtil.nextWord(_loc2_,param1.shiftKey);
                }
                else
                {
-                  NavigationUtil.nextCharacter(selState,event.shiftKey);
+                  NavigationUtil.nextCharacter(_loc2_,param1.shiftKey);
                }
             }
             else
             {
-               if((event.ctrlKey)||(event.altKey))
+               if((param1.ctrlKey) || (param1.altKey))
                {
-                  NavigationUtil.previousWord(selState,event.shiftKey);
+                  NavigationUtil.previousWord(_loc2_,param1.shiftKey);
                }
                else
                {
-                  NavigationUtil.previousCharacter(selState,event.shiftKey);
+                  NavigationUtil.previousCharacter(_loc2_,param1.shiftKey);
                }
             }
          }
          else
          {
-            if(event.altKey)
+            if(param1.altKey)
             {
-               NavigationUtil.startOfParagraph(selState,event.shiftKey);
+               NavigationUtil.startOfParagraph(_loc2_,param1.shiftKey);
             }
             else
             {
-               if(event.ctrlKey)
+               if(param1.ctrlKey)
                {
-                  NavigationUtil.startOfDocument(selState,event.shiftKey);
+                  NavigationUtil.startOfDocument(_loc2_,param1.shiftKey);
                }
                else
                {
-                  NavigationUtil.previousLine(selState,event.shiftKey);
+                  NavigationUtil.previousLine(_loc2_,param1.shiftKey);
                }
             }
          }
-         return selState;
+         return _loc2_;
       }
-
-      private function handleDownArrow(event:KeyboardEvent) : SelectionState {
-         var selState:SelectionState = this.getSelectionState();
-         if(this._textFlow.computedFormat.blockProgression!=BlockProgression.RL)
+      
+      private function handleDownArrow(param1:KeyboardEvent) : SelectionState {
+         var _loc2_:SelectionState = this.getSelectionState();
+         if(this._textFlow.computedFormat.blockProgression != BlockProgression.RL)
          {
-            if(event.altKey)
+            if(param1.altKey)
             {
-               NavigationUtil.endOfParagraph(selState,event.shiftKey);
+               NavigationUtil.endOfParagraph(_loc2_,param1.shiftKey);
             }
             else
             {
-               if(event.ctrlKey)
+               if(param1.ctrlKey)
                {
-                  NavigationUtil.endOfDocument(selState,event.shiftKey);
+                  NavigationUtil.endOfDocument(_loc2_,param1.shiftKey);
                }
                else
                {
-                  NavigationUtil.nextLine(selState,event.shiftKey);
+                  NavigationUtil.nextLine(_loc2_,param1.shiftKey);
                }
             }
          }
          else
          {
-            if(this._textFlow.computedFormat.direction==Direction.LTR)
+            if(this._textFlow.computedFormat.direction == Direction.LTR)
             {
-               if((event.ctrlKey)||(event.altKey))
+               if((param1.ctrlKey) || (param1.altKey))
                {
-                  NavigationUtil.nextWord(selState,event.shiftKey);
+                  NavigationUtil.nextWord(_loc2_,param1.shiftKey);
                }
                else
                {
-                  NavigationUtil.nextCharacter(selState,event.shiftKey);
+                  NavigationUtil.nextCharacter(_loc2_,param1.shiftKey);
                }
             }
             else
             {
-               if((event.ctrlKey)||(event.altKey))
+               if((param1.ctrlKey) || (param1.altKey))
                {
-                  NavigationUtil.previousWord(selState,event.shiftKey);
+                  NavigationUtil.previousWord(_loc2_,param1.shiftKey);
                }
                else
                {
-                  NavigationUtil.previousCharacter(selState,event.shiftKey);
+                  NavigationUtil.previousCharacter(_loc2_,param1.shiftKey);
                }
             }
          }
-         return selState;
+         return _loc2_;
       }
-
-      private function handleHomeKey(event:KeyboardEvent) : SelectionState {
-         var selState:SelectionState = this.getSelectionState();
-         if((event.ctrlKey)&&(!event.altKey))
+      
+      private function handleHomeKey(param1:KeyboardEvent) : SelectionState {
+         var _loc2_:SelectionState = this.getSelectionState();
+         if((param1.ctrlKey) && !param1.altKey)
          {
-            NavigationUtil.startOfDocument(selState,event.shiftKey);
+            NavigationUtil.startOfDocument(_loc2_,param1.shiftKey);
          }
          else
          {
-            NavigationUtil.startOfLine(selState,event.shiftKey);
+            NavigationUtil.startOfLine(_loc2_,param1.shiftKey);
          }
-         return selState;
+         return _loc2_;
       }
-
-      private function handleEndKey(event:KeyboardEvent) : SelectionState {
-         var selState:SelectionState = this.getSelectionState();
-         if((event.ctrlKey)&&(!event.altKey))
+      
+      private function handleEndKey(param1:KeyboardEvent) : SelectionState {
+         var _loc2_:SelectionState = this.getSelectionState();
+         if((param1.ctrlKey) && !param1.altKey)
          {
-            NavigationUtil.endOfDocument(selState,event.shiftKey);
+            NavigationUtil.endOfDocument(_loc2_,param1.shiftKey);
          }
          else
          {
-            NavigationUtil.endOfLine(selState,event.shiftKey);
+            NavigationUtil.endOfLine(_loc2_,param1.shiftKey);
          }
-         return selState;
+         return _loc2_;
       }
-
-      private function handlePageUpKey(event:KeyboardEvent) : SelectionState {
-         var selState:SelectionState = this.getSelectionState();
-         NavigationUtil.previousPage(selState,event.shiftKey);
-         return selState;
+      
+      private function handlePageUpKey(param1:KeyboardEvent) : SelectionState {
+         var _loc2_:SelectionState = this.getSelectionState();
+         NavigationUtil.previousPage(_loc2_,param1.shiftKey);
+         return _loc2_;
       }
-
-      private function handlePageDownKey(event:KeyboardEvent) : SelectionState {
-         var selState:SelectionState = this.getSelectionState();
-         NavigationUtil.nextPage(selState,event.shiftKey);
-         return selState;
+      
+      private function handlePageDownKey(param1:KeyboardEvent) : SelectionState {
+         var _loc2_:SelectionState = this.getSelectionState();
+         NavigationUtil.nextPage(_loc2_,param1.shiftKey);
+         return _loc2_;
       }
-
-      private function handleKeyEvent(event:KeyboardEvent) : void {
-         var selState:SelectionState = null;
+      
+      private function handleKeyEvent(param1:KeyboardEvent) : void {
+         var _loc2_:SelectionState = null;
          this.flushPendingOperations();
-         switch(event.keyCode)
+         switch(param1.keyCode)
          {
             case Keyboard.LEFT:
-               selState=this.handleLeftArrow(event);
+               _loc2_ = this.handleLeftArrow(param1);
                break;
             case Keyboard.UP:
-               selState=this.handleUpArrow(event);
+               _loc2_ = this.handleUpArrow(param1);
                break;
             case Keyboard.RIGHT:
-               selState=this.handleRightArrow(event);
+               _loc2_ = this.handleRightArrow(param1);
                break;
             case Keyboard.DOWN:
-               selState=this.handleDownArrow(event);
+               _loc2_ = this.handleDownArrow(param1);
                break;
             case Keyboard.HOME:
-               selState=this.handleHomeKey(event);
+               _loc2_ = this.handleHomeKey(param1);
                break;
             case Keyboard.END:
-               selState=this.handleEndKey(event);
+               _loc2_ = this.handleEndKey(param1);
                break;
             case Keyboard.PAGE_DOWN:
-               selState=this.handlePageDownKey(event);
+               _loc2_ = this.handlePageDownKey(param1);
                break;
             case Keyboard.PAGE_UP:
-               selState=this.handlePageUpKey(event);
+               _loc2_ = this.handlePageUpKey(param1);
                break;
          }
-         if(selState!=null)
+         if(_loc2_ != null)
          {
-            event.preventDefault();
-            this.updateSelectionAndShapes(this._textFlow,selState.anchorPosition,selState.activePosition);
-            if((this._textFlow.flowComposer)&&(!(this._textFlow.flowComposer.numControllers==0)))
+            param1.preventDefault();
+            this.updateSelectionAndShapes(this._textFlow,_loc2_.anchorPosition,_loc2_.activePosition);
+            if((this._textFlow.flowComposer) && !(this._textFlow.flowComposer.numControllers == 0))
             {
-               this._textFlow.flowComposer.getControllerAt(this._textFlow.flowComposer.numControllers-1).scrollToRange(selState.activePosition,selState.activePosition);
+               this._textFlow.flowComposer.getControllerAt(this._textFlow.flowComposer.numControllers-1).scrollToRange(_loc2_.activePosition,_loc2_.activePosition);
             }
          }
-         this.allowOperationMerge=false;
+         this.allowOperationMerge = false;
       }
-
-      public function keyDownHandler(event:KeyboardEvent) : void {
-         if((!this.hasSelection())||(event.isDefaultPrevented()))
+      
+      public function keyDownHandler(param1:KeyboardEvent) : void {
+         if(!this.hasSelection() || (param1.isDefaultPrevented()))
          {
             return;
          }
-         if(event.charCode==0)
+         if(param1.charCode == 0)
          {
-            switch(event.keyCode)
+            switch(param1.keyCode)
             {
                case Keyboard.LEFT:
                case Keyboard.UP:
@@ -1195,114 +1373,107 @@ package flashx.textLayout.edit
                case Keyboard.PAGE_DOWN:
                case Keyboard.PAGE_UP:
                case Keyboard.ESCAPE:
-                  this.handleKeyEvent(event);
+                  this.handleKeyEvent(param1);
                   break;
             }
          }
          else
          {
-            if(event.keyCode==Keyboard.ESCAPE)
+            if(param1.keyCode == Keyboard.ESCAPE)
             {
-               this.handleKeyEvent(event);
+               this.handleKeyEvent(param1);
             }
          }
       }
-
-      public function keyUpHandler(event:KeyboardEvent) : void {
-         
+      
+      public function keyUpHandler(param1:KeyboardEvent) : void {
       }
-
-      public function keyFocusChangeHandler(event:FocusEvent) : void {
-         
+      
+      public function keyFocusChangeHandler(param1:FocusEvent) : void {
       }
-
-      public function textInputHandler(event:TextEvent) : void {
-         this.ignoreNextTextEvent=false;
+      
+      public function textInputHandler(param1:TextEvent) : void {
+         this.ignoreNextTextEvent = false;
       }
-
-      public function imeStartCompositionHandler(event:IMEEvent) : void {
-         
+      
+      public function imeStartCompositionHandler(param1:IMEEvent) : void {
       }
-
-      public function softKeyboardActivatingHandler(event:Event) : void {
-         
+      
+      public function softKeyboardActivatingHandler(param1:Event) : void {
       }
-
-      protected function enterFrameHandler(event:Event) : void {
+      
+      protected function enterFrameHandler(param1:Event) : void {
          this.flushPendingOperations();
       }
-
-      public function focusChangeHandler(event:FocusEvent) : void {
-         
+      
+      public function focusChangeHandler(param1:FocusEvent) : void {
       }
-
-      public function menuSelectHandler(event:ContextMenuEvent) : void {
-         var menu:ContextMenu = event.target as ContextMenu;
-         if(this.activePosition!=this.anchorPosition)
+      
+      public function menuSelectHandler(param1:ContextMenuEvent) : void {
+         var _loc2_:ContextMenu = param1.target as ContextMenu;
+         if(this.activePosition != this.anchorPosition)
          {
-            menu.clipboardItems.copy=true;
-            menu.clipboardItems.cut=this.editingMode==EditingMode.READ_WRITE;
-            menu.clipboardItems.clear=this.editingMode==EditingMode.READ_WRITE;
+            _loc2_.clipboardItems.copy = true;
+            _loc2_.clipboardItems.cut = this.editingMode == EditingMode.READ_WRITE;
+            _loc2_.clipboardItems.clear = this.editingMode == EditingMode.READ_WRITE;
          }
          else
          {
-            menu.clipboardItems.copy=false;
-            menu.clipboardItems.cut=false;
-            menu.clipboardItems.clear=false;
+            _loc2_.clipboardItems.copy = false;
+            _loc2_.clipboardItems.cut = false;
+            _loc2_.clipboardItems.clear = false;
          }
-         var systemClipboard:Clipboard = Clipboard.generalClipboard;
-         if((!(this.activePosition==-1))&&(this.editingMode==EditingMode.READ_WRITE)&&((systemClipboard.hasFormat(TextClipboard.TEXT_LAYOUT_MARKUP))||(systemClipboard.hasFormat(ClipboardFormats.TEXT_FORMAT))))
+         var _loc3_:Clipboard = Clipboard.generalClipboard;
+         if(!(this.activePosition == -1) && this.editingMode == EditingMode.READ_WRITE && ((_loc3_.hasFormat(TextClipboard.TEXT_LAYOUT_MARKUP)) || (_loc3_.hasFormat(ClipboardFormats.TEXT_FORMAT))))
          {
-            menu.clipboardItems.paste=true;
+            _loc2_.clipboardItems.paste = true;
          }
          else
          {
-            menu.clipboardItems.paste=false;
+            _loc2_.clipboardItems.paste = false;
          }
-         menu.clipboardItems.selectAll=true;
+         _loc2_.clipboardItems.selectAll = true;
       }
-
-      public function mouseWheelHandler(event:MouseEvent) : void {
-         
+      
+      public function mouseWheelHandler(param1:MouseEvent) : void {
       }
-
+      
       public function flushPendingOperations() : void {
-         
       }
-
-      public function getCommonCharacterFormat(range:TextRange=null) : TextLayoutFormat {
-         if((!range)&&(!this.hasSelection()))
+      
+      public function getCommonCharacterFormat(param1:TextRange=null) : TextLayoutFormat {
+         if(!param1 && !this.hasSelection())
          {
             return null;
          }
-         var selRange:ElementRange = ElementRange.createElementRange(this._textFlow,range?range.absoluteStart:this.absoluteStart,range?range.absoluteEnd:this.absoluteEnd);
-         var rslt:TextLayoutFormat = selRange.getCommonCharacterFormat();
-         if((selRange.absoluteEnd==selRange.absoluteStart)&&(this.pointFormat))
+         var _loc2_:ElementRange = ElementRange.createElementRange(this._textFlow,param1?param1.absoluteStart:this.absoluteStart,param1?param1.absoluteEnd:this.absoluteEnd);
+         var _loc3_:TextLayoutFormat = _loc2_.getCommonCharacterFormat();
+         if(_loc2_.absoluteEnd == _loc2_.absoluteStart && (this.pointFormat))
          {
-            rslt.apply(this.pointFormat);
+            _loc3_.apply(this.pointFormat);
          }
-         return rslt;
+         return _loc3_;
       }
-
-      public function getCommonParagraphFormat(range:TextRange=null) : TextLayoutFormat {
-         if((!range)&&(!this.hasSelection()))
-         {
-            return null;
-         }
-         return ElementRange.createElementRange(this._textFlow,range?range.absoluteStart:this.absoluteStart,range?range.absoluteEnd:this.absoluteEnd).getCommonParagraphFormat();
-      }
-
-      public function getCommonContainerFormat(range:TextRange=null) : TextLayoutFormat {
-         if((!range)&&(!this.hasSelection()))
+      
+      public function getCommonParagraphFormat(param1:TextRange=null) : TextLayoutFormat {
+         if(!param1 && !this.hasSelection())
          {
             return null;
          }
-         return ElementRange.createElementRange(this._textFlow,range?range.absoluteStart:this.absoluteStart,range?range.absoluteEnd:this.absoluteEnd).getCommonContainerFormat();
+         return ElementRange.createElementRange(this._textFlow,param1?param1.absoluteStart:this.absoluteStart,param1?param1.absoluteEnd:this.absoluteEnd).getCommonParagraphFormat();
       }
-
-      private function updateSelectionAndShapes(tf:TextFlow, begIdx:int, endIdx:int) : void {
-         this.internalSetSelection(tf,begIdx,endIdx);
-         if((this._textFlow.flowComposer)&&(!(this._textFlow.flowComposer.numControllers==0)))
+      
+      public function getCommonContainerFormat(param1:TextRange=null) : TextLayoutFormat {
+         if(!param1 && !this.hasSelection())
+         {
+            return null;
+         }
+         return ElementRange.createElementRange(this._textFlow,param1?param1.absoluteStart:this.absoluteStart,param1?param1.absoluteEnd:this.absoluteEnd).getCommonContainerFormat();
+      }
+      
+      private function updateSelectionAndShapes(param1:TextFlow, param2:int, param3:int) : void {
+         this.internalSetSelection(param1,param2,param3);
+         if((this._textFlow.flowComposer) && !(this._textFlow.flowComposer.numControllers == 0))
          {
             this._textFlow.flowComposer.getControllerAt(this._textFlow.flowComposer.numControllers-1).scrollToRange(this.activeMark.position,this.anchorMark.position);
          }
@@ -1310,47 +1481,46 @@ package flashx.textLayout.edit
          this.clearSelectionShapes();
          this.addSelectionShapes();
       }
-
+      
       private var marks:Array;
-
+      
       tlf_internal function createMark() : Mark {
-         var mark:Mark = new Mark(-1);
-         this.marks.push(mark);
-         return mark;
+         var _loc1_:Mark = new Mark(-1);
+         this.marks.push(_loc1_);
+         return _loc1_;
       }
-
-      tlf_internal function removeMark(mark:Mark) : void {
-         var idx:int = this.marks.indexOf(mark);
-         if(idx!=-1)
+      
+      tlf_internal function removeMark(param1:Mark) : void {
+         var _loc2_:int = this.marks.indexOf(param1);
+         if(_loc2_ != -1)
          {
-            this.marks.splice(idx,idx+1);
+            this.marks.splice(_loc2_,_loc2_ + 1);
          }
       }
-
-      public function notifyInsertOrDelete(absolutePosition:int, length:int) : void {
-         var mark:Mark = null;
-         if(length==0)
+      
+      public function notifyInsertOrDelete(param1:int, param2:int) : void {
+         var _loc4_:Mark = null;
+         if(param2 == 0)
          {
             return;
          }
-         var i:int = 0;
-         while(i<this.marks.length)
+         var _loc3_:* = 0;
+         while(_loc3_ < this.marks.length)
          {
-            mark=this.marks[i];
-            if(mark.position>=absolutePosition)
+            _loc4_ = this.marks[_loc3_];
+            if(_loc4_.position >= param1)
             {
-               if(length<0)
+               if(param2 < 0)
                {
-                  mark.position=mark.position+length<absolutePosition?absolutePosition:mark.position+length;
+                  _loc4_.position = _loc4_.position + param2 < param1?param1:_loc4_.position + param2;
                }
                else
                {
-                  mark.position=mark.position+length;
+                  _loc4_.position = _loc4_.position + param2;
                }
             }
-            i++;
+            _loc3_++;
          }
       }
    }
-
 }

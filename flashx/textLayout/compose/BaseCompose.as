@@ -35,401 +35,310 @@ package flashx.textLayout.compose
    import flash.text.engine.TextBaseline;
    import flashx.textLayout.elements.TCYElement;
    import flashx.textLayout.formats.FormatValue;
-
+   
    use namespace tlf_internal;
-
+   
    public class BaseCompose extends Object
    {
-         
-
+      
       public function BaseCompose() {
-         this._lineSlug=new Slug();
+         this._lineSlug = new Slug();
          super();
       }
-
+      
       public static function get globalSWFContext() : ISWFContext {
          return GlobalSWFContext.globalSWFContext;
       }
-
+      
       private static var _savedAlignData:AlignData;
-
-      private static function createAlignData(tfl:TextFlowLine) : AlignData {
-         var rslt:AlignData = null;
+      
+      private static function createAlignData(param1:TextFlowLine) : AlignData {
+         var _loc2_:AlignData = null;
          if(_savedAlignData)
          {
-            rslt=_savedAlignData;
-            rslt.textFlowLine=tfl;
-            _savedAlignData=null;
-            return rslt;
+            _loc2_ = _savedAlignData;
+            _loc2_.textFlowLine = param1;
+            _savedAlignData = null;
+            return _loc2_;
          }
-         return new AlignData(tfl);
+         return new AlignData(param1);
       }
-
-      private static function releaseAlignData(ad:AlignData) : void {
-         ad.textLine=null;
-         ad.textFlowLine=null;
-         _savedAlignData=ad;
+      
+      private static function releaseAlignData(param1:AlignData) : void {
+         param1.textLine = null;
+         param1.textFlowLine = null;
+         _savedAlignData = param1;
       }
-
+      
       protected static var _savedLineSlug:Slug;
-
+      
       protected static var _floatSlug:Slug;
-
-      tlf_internal  static function computeNumberLineAlignment(alignData:AlignData, textLineWidth:Number, textLineOffset:Number, numberLine:TextLine, coord:Number, delta:Number, extraSpace:Number) : Number {
-         var rslt:* = NaN;
-         if(alignData.textAlign==TextAlign.CENTER)
+      
+      tlf_internal  static function computeNumberLineAlignment(param1:AlignData, param2:Number, param3:Number, param4:TextLine, param5:Number, param6:Number, param7:Number) : Number {
+         var _loc8_:* = NaN;
+         if(param1.textAlign == TextAlign.CENTER)
          {
-            if(TextFlowLine.getNumberLineParagraphDirection(numberLine)==Direction.LTR)
+            if(TextFlowLine.getNumberLineParagraphDirection(param4) == Direction.LTR)
             {
-               rslt=-(numberLine.textWidth+TextFlowLine.getListEndIndent(numberLine)+delta)-alignData.textIndent;
+               _loc8_ = -(param4.textWidth + TextFlowLine.getListEndIndent(param4) + param6) - param1.textIndent;
             }
             else
             {
-               rslt=textLineWidth+TextFlowLine.getListEndIndent(numberLine)+(TextFlowLine.getNumberLineInsideLineWidth(numberLine)-numberLine.textWidth)+(coord-delta+extraSpace-textLineOffset)+alignData.textIndent;
+               _loc8_ = param2 + TextFlowLine.getListEndIndent(param4) + (TextFlowLine.getNumberLineInsideLineWidth(param4) - param4.textWidth) + (param5 - param6 + param7 - param3) + param1.textIndent;
             }
          }
          else
          {
-            if(alignData.textAlign==TextAlign.RIGHT)
+            if(param1.textAlign == TextAlign.RIGHT)
             {
-               if(TextFlowLine.getNumberLineParagraphDirection(numberLine)==Direction.LTR)
+               if(TextFlowLine.getNumberLineParagraphDirection(param4) == Direction.LTR)
                {
-                  rslt=-(numberLine.textWidth+TextFlowLine.getListEndIndent(numberLine)+delta)-alignData.textIndent;
+                  _loc8_ = -(param4.textWidth + TextFlowLine.getListEndIndent(param4) + param6) - param1.textIndent;
                }
                else
                {
-                  rslt=textLineWidth+TextFlowLine.getListEndIndent(numberLine)+(TextFlowLine.getNumberLineInsideLineWidth(numberLine)-numberLine.textWidth)+alignData.textIndent;
+                  _loc8_ = param2 + TextFlowLine.getListEndIndent(param4) + (TextFlowLine.getNumberLineInsideLineWidth(param4) - param4.textWidth) + param1.textIndent;
                }
             }
             else
             {
-               if(TextFlowLine.getNumberLineParagraphDirection(numberLine)==Direction.LTR)
+               if(TextFlowLine.getNumberLineParagraphDirection(param4) == Direction.LTR)
                {
-                  rslt=-(numberLine.textWidth+TextFlowLine.getListEndIndent(numberLine))-alignData.textIndent;
+                  _loc8_ = -(param4.textWidth + TextFlowLine.getListEndIndent(param4)) - param1.textIndent;
                }
                else
                {
-                  rslt=textLineWidth+TextFlowLine.getListEndIndent(numberLine)+(TextFlowLine.getNumberLineInsideLineWidth(numberLine)-numberLine.textWidth)+(coord-textLineOffset)+alignData.textIndent;
+                  _loc8_ = param2 + TextFlowLine.getListEndIndent(param4) + (TextFlowLine.getNumberLineInsideLineWidth(param4) - param4.textWidth) + (param5 - param3) + param1.textIndent;
                }
             }
          }
-         return rslt;
+         return _loc8_;
       }
-
+      
       protected var _parcelList:ParcelList;
-
+      
       public function get parcelList() : ParcelList {
          return this._parcelList;
       }
-
+      
       protected var _curElement:FlowLeafElement;
-
+      
       protected var _curElementStart:int;
-
+      
       protected var _curElementOffset:int;
-
+      
       protected var _curParaElement:ParagraphElement;
-
+      
       protected var _curParaFormat:ITextLayoutFormat;
-
+      
       protected var _curParaStart:int;
-
+      
       private var _curLineLeadingModel:String = "";
-
+      
       private var _curLineLeading:Number;
-
+      
       protected var _lastLineLeadingModel:String = "";
-
+      
       protected var _lastLineLeading:Number;
-
+      
       protected var _lastLineDescent:Number;
-
+      
       protected var _paragraphSpaceCarried:Number;
-
+      
       protected var _verticalSpaceCarried:Number;
-
+      
       protected var _blockProgression:String;
-
+      
       protected var _atColumnStart:Boolean;
-
+      
       protected var _textIndent:Number;
-
+      
       private var _controllerLeft:Number;
-
+      
       private var _controllerTop:Number;
-
+      
       private var _controllerRight:Number;
-
+      
       private var _controllerBottom:Number;
-
+      
       protected var _contentLogicalExtent:Number;
-
+      
       protected var _contentCommittedExtent:Number;
-
+      
       protected var _contentCommittedHeight:Number;
-
+      
       protected var _workingContentLogicalExtent:Number;
-
+      
       protected var _workingContentExtent:Number;
-
+      
       protected var _workingContentHeight:Number;
-
+      
       protected var _workingTotalDepth:Number;
-
+      
       protected var _workingParcelIndex:int;
-
+      
       protected var _workingParcelLogicalTop:Number;
-
+      
       protected var _accumulatedMinimumStart:Number;
-
+      
       protected var _parcelLogicalTop:Number;
-
+      
       protected var _parcelLeft:Number;
-
+      
       protected var _parcelTop:Number;
-
+      
       protected var _parcelRight:Number;
-
+      
       protected var _parcelBottom:Number;
-
+      
       protected var _textFlow:TextFlow;
-
+      
       private var _releaseLineCreationData:Boolean;
-
+      
       protected var _flowComposer:IFlowComposer;
-
+      
       protected var _rootElement:ContainerFormattedElement;
-
+      
       protected var _stopComposePos:int;
-
+      
       protected var _startController:ContainerController;
-
+      
       protected var _startComposePosition:int;
-
+      
       protected var _controllerVisibleBoundsXTW:int;
-
+      
       protected var _controllerVisibleBoundsYTW:int;
-
+      
       protected var _controllerVisibleBoundsWidthTW:int;
-
+      
       protected var _controllerVisibleBoundsHeightTW:int;
-
+      
       protected var _forceILGs:Boolean;
-
+      
       protected var _lastGoodStart:int;
-
+      
       protected var _linePass:int;
-
+      
       protected var _paragraphContainsVisibleLines:Boolean;
-
+      
       protected var _lineSlug:Slug;
-
+      
       protected var _pushInFloats:Array;
-
+      
       private var _alignLines:Array;
-
+      
       protected var _curParcel:Parcel;
-
+      
       protected var _curParcelStart:int;
-
+      
       protected var _measuring:Boolean;
-
+      
       protected var _curLine:TextFlowLine;
-
+      
       protected var _previousLine:TextLine;
-
+      
       protected var _listItemElement:ListItemElement;
-
+      
       protected function createParcelList() : ParcelList {
          return null;
       }
-
-      protected function releaseParcelList(list:ParcelList) : void {
-         
+      
+      protected function releaseParcelList(param1:ParcelList) : void {
       }
-
+      
       public function get startController() : ContainerController {
          return this._startController;
       }
-
+      
       tlf_internal function releaseAnyReferences() : void {
-         this._curElement=null;
-         this._curParaElement=null;
-         this._curParaFormat=null;
-         this._flowComposer=null;
-         this._parcelList=null;
-         this._rootElement=null;
-         this._startController=null;
-         this._textFlow=null;
-         this._previousLine=null;
-         this._curLine=null;
+         this._curElement = null;
+         this._curParaElement = null;
+         this._curParaFormat = null;
+         this._flowComposer = null;
+         this._parcelList = null;
+         this._rootElement = null;
+         this._startController = null;
+         this._textFlow = null;
+         this._previousLine = null;
+         this._curLine = null;
       }
-
-      protected function initializeForComposer(composer:IFlowComposer, composeToPosition:int, controllerStartIndex:int, controllerEndIndex:int) : void {
+      
+      protected function initializeForComposer(param1:IFlowComposer, param2:int, param3:int, param4:int) : void {
          if(!_savedLineSlug)
          {
-            this._lineSlug=new Slug();
+            this._lineSlug = new Slug();
          }
          else
          {
-            this._lineSlug=_savedLineSlug;
-            _savedLineSlug=null;
+            this._lineSlug = _savedLineSlug;
+            _savedLineSlug = null;
          }
-         this._parcelList=this.createParcelList();
-         this._paragraphSpaceCarried=0;
-         this._blockProgression=composer.rootElement.computedFormat.blockProgression;
-         this._stopComposePos=composeToPosition>=0?Math.min(this._textFlow.textLength,composeToPosition):this._textFlow.textLength;
-         if(controllerStartIndex<0)
+         this._parcelList = this.createParcelList();
+         this._paragraphSpaceCarried = 0;
+         this._blockProgression = param1.rootElement.computedFormat.blockProgression;
+         this._stopComposePos = param2 >= 0?Math.min(this._textFlow.textLength,param2):this._textFlow.textLength;
+         if(param3 < 0)
          {
-            controllerStartIndex=0;
+            param3 = 0;
          }
-         this._parcelList.beginCompose(composer,controllerStartIndex,controllerEndIndex,composeToPosition<0);
-         this._contentLogicalExtent=0;
-         this._contentCommittedExtent=0;
-         this._contentCommittedHeight=0;
-         this._accumulatedMinimumStart=TextLine.MAX_LINE_WIDTH;
-         this._parcelLogicalTop=NaN;
-         this._linePass=0;
-         this._lastGoodStart=-1;
+         this._parcelList.beginCompose(param1,param3,param4,param2 > 0);
+         this._contentLogicalExtent = 0;
+         this._contentCommittedExtent = 0;
+         this._contentCommittedHeight = 0;
+         this._accumulatedMinimumStart = TextLine.MAX_LINE_WIDTH;
+         this._parcelLogicalTop = NaN;
+         this._linePass = 0;
+         this._lastGoodStart = -1;
          if(this._pushInFloats)
          {
-            this._pushInFloats.length=0;
+            this._pushInFloats.length = 0;
          }
-         this._listItemElement=null;
+         this._listItemElement = null;
       }
-
-      private function composeBlockElement(elem:FlowGroupElement, absStart:int) : Boolean {
-         var child:FlowElement = null;
-         var rslt:* = false;
-         var boxLeftIndent:* = NaN;
-         var boxRightIndent:* = NaN;
-         var boxTopIndent:* = NaN;
-         var boxBottomIndent:* = NaN;
-         var para:ParagraphElement = null;
-         var adjustedDepth:* = NaN;
-         var savedListItemElement:ListItemElement = null;
-         var idx:int = 0;
-         if(absStart!=this._curElementStart+this._curElementOffset)
-         {
-            idx=elem.findChildIndexAtPosition(this._curElementStart+this._curElementOffset-absStart);
-            child=elem.getChildAt(idx);
-            absStart=absStart+child.parentRelativeStart;
-         }
-         var composeEntireElement:Boolean = absStart==this._curElementStart+this._curElementOffset;
-         while((idx>elem.numChildren)&&((absStart<=this._stopComposePos)||(!this.parcelList.atLast())))
-         {
-            for(;child.computedFormat.clearFloats!=ClearFloats.NONE;continue loop1)
-            {
-               if(this._blockProgression==BlockProgression.RL)
-               {
-                  boxLeftIndent=child.getEffectivePaddingTop();
-                  boxRightIndent=child.getEffectivePaddingBottom();
-                  boxTopIndent=child.getEffectivePaddingRight();
-                  boxBottomIndent=child.getEffectivePaddingLeft();
-               }
-               else
-               {
-                  boxLeftIndent=child.getEffectivePaddingLeft();
-                  boxRightIndent=child.getEffectivePaddingRight();
-                  boxTopIndent=child.getEffectivePaddingTop();
-                  boxBottomIndent=child.getEffectivePaddingBottom();
-               }
-               this._parcelList.pushLeftMargin(boxLeftIndent);
-               this._parcelList.pushRightMargin(boxRightIndent);
-               if((composeEntireElement)&&(boxTopIndent<this._verticalSpaceCarried))
-               {
-                  this._parcelList.addTotalDepth(boxTopIndent-this._verticalSpaceCarried);
-               }
-               this._verticalSpaceCarried=Math.max(boxTopIndent,0);
-               para=child as ParagraphElement;
-               if(para)
-               {
-                  if(!this.composeParagraphElement(para,absStart))
-                  {
-                     return false;
-                  }
-               }
-               else
-               {
-                  if(child is ListElement)
-                  {
-                     rslt=this.composeBlockElement(FlowGroupElement(child),absStart);
-                     if(!rslt)
-                     {
-                        return false;
-                     }
-                  }
-                  else
-                  {
-                     if(child is ListItemElement)
-                     {
-                        savedListItemElement=this._listItemElement;
-                        this._listItemElement=child as ListItemElement;
-                        rslt=this.composeBlockElement(FlowGroupElement(child),absStart);
-                        this._listItemElement=savedListItemElement;
-                        if(!rslt)
-                        {
-                           return false;
-                        }
-                     }
-                     else
-                     {
-                        if(!this.composeBlockElement(FlowGroupElement(child),absStart))
-                        {
-                           return false;
-                        }
-                     }
-                  }
-               }
-               if(boxBottomIndent>this._verticalSpaceCarried)
-               {
-                  this._parcelList.addTotalDepth(boxBottomIndent-this._verticalSpaceCarried);
-               }
-               this._verticalSpaceCarried=Math.max(boxBottomIndent,0);
-               this._parcelList.popLeftMargin(boxLeftIndent);
-               this._parcelList.popRightMargin(boxRightIndent);
-               absStart=absStart+child.textLength;
-               composeEntireElement=true;
-               idx++;
-            }
-         }
-         return true;
+      
+      private function composeBlockElement(param1:FlowGroupElement, param2:int) : Boolean {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
-
-      public function composeTextFlow(textFlow:TextFlow, composeToPosition:int, controllerEndIndex:int) : int {
-         var startLineIndex:* = 0;
-         var line:TextFlowLine = null;
-         this._textFlow=textFlow;
-         this._releaseLineCreationData=(textFlow.configuration.releaseLineCreationData)&&(Configuration.playerEnablesArgoFeatures);
-         this._flowComposer=this._textFlow.flowComposer;
-         this._rootElement=textFlow;
-         this._curElementOffset=0;
-         this._curElement=this._rootElement.getFirstLeaf();
-         this._curElementStart=0;
-         this._curParcel=null;
-         this.initializeForComposer(this._flowComposer,composeToPosition,-1,controllerEndIndex);
+      
+      public function composeTextFlow(param1:TextFlow, param2:int, param3:int) : int {
+         var _loc4_:* = 0;
+         var _loc5_:TextFlowLine = null;
+         this._textFlow = param1;
+         this._releaseLineCreationData = (param1.configuration.releaseLineCreationData) && (Configuration.playerEnablesArgoFeatures);
+         this._flowComposer = this._textFlow.flowComposer;
+         this._rootElement = param1;
+         this._curElementOffset = 0;
+         this._curElement = this._rootElement.getFirstLeaf();
+         this._curElementStart = 0;
+         this._curParcel = null;
+         this.initializeForComposer(this._flowComposer,param2,-1,param3);
          this.resetControllerBounds();
-         this._curElement=this._textFlow.findLeaf(this._startComposePosition);
-         this._curElementStart=this._curElement.getAbsoluteStart();
-         this._curElementOffset=this._startComposePosition-this._curElementStart;
-         if((this._startComposePosition<=this._startController.absoluteStart)||(!this.advanceToComposeStartPosition()))
+         this._curElement = this._textFlow.findLeaf(this._startComposePosition);
+         this._curElementStart = this._curElement.getAbsoluteStart();
+         this._curElementOffset = this._startComposePosition - this._curElementStart;
+         if(this._startComposePosition <= this._startController.absoluteStart || !this.advanceToComposeStartPosition())
          {
-            if(this._startComposePosition>this._startController.absoluteStart)
+            if(this._startComposePosition > this._startController.absoluteStart)
             {
-               this._startComposePosition=this._startController.absoluteStart;
-               this._curElement=this._textFlow.findLeaf(this._startComposePosition);
-               this._curElementStart=this._curElement.getAbsoluteStart();
-               this._curElementOffset=this._startComposePosition-this._curElementStart;
+               this._startComposePosition = this._startController.absoluteStart;
+               this._curElement = this._textFlow.findLeaf(this._startComposePosition);
+               this._curElementStart = this._curElement.getAbsoluteStart();
+               this._curElementOffset = this._startComposePosition - this._curElementStart;
             }
-            if(this._startComposePosition==this._curElement.getParagraph().getAbsoluteStart())
+            if(this._startComposePosition == this._curElement.getParagraph().getAbsoluteStart())
             {
-               this._previousLine=null;
+               this._previousLine = null;
             }
             else
             {
-               startLineIndex=this._flowComposer.findLineIndexAtPosition(this._startComposePosition-1);
-               line=this._flowComposer.getLineAt(startLineIndex);
-               this._previousLine=line.getTextLine(true);
+               _loc4_ = this._flowComposer.findLineIndexAtPosition(this._startComposePosition-1);
+               _loc5_ = this._flowComposer.getLineAt(_loc4_);
+               this._previousLine = _loc5_.getTextLine(true);
             }
             this.advanceToNextParcel();
             if(this._curParcel)
@@ -437,8 +346,8 @@ package flashx.textLayout.compose
                this._curParcel.controller.clearFloatsAt(0);
             }
          }
-         this._startController.clearComposedLines(this._curElementStart+this._curElementOffset);
-         this._curParcelStart=this._startController.absoluteStart;
+         this._startController.clearComposedLines(this._curElementStart + this._curElementOffset);
+         this._curParcelStart = this._startController.absoluteStart;
          this.composeInternal(this._rootElement,0);
          while(!this.parcelList.atEnd())
          {
@@ -446,1804 +355,1727 @@ package flashx.textLayout.compose
          }
          this.parcelHasChanged(null);
          this.releaseParcelList(this._parcelList);
-         this._parcelList=null;
-         _savedLineSlug=this._lineSlug;
-         return this._curElementStart+this._curElementOffset;
+         this._parcelList = null;
+         _savedLineSlug = this._lineSlug;
+         return this._curElementStart + this._curElementOffset;
       }
-
+      
       private function advanceToComposeStartPosition() : Boolean {
-         var numFloats:* = 0;
-         var floatInfo:FloatCompositionData = null;
-         var ilg:InlineGraphicElement = null;
-         var logicalHeight:* = NaN;
-         var startLineIndex:int = this._flowComposer.findLineIndexAtPosition(this._startComposePosition-1);
-         var curLine:TextFlowLine = this._flowComposer.getLineAt(startLineIndex);
-         if(curLine.controller.numFloats)
-         {
-            if(this._measuring)
-            {
-               return false;
-            }
-         }
-         this._curLine=curLine;
-         var previousElement:FlowLeafElement = this._curElementOffset==0?this._curElement.getPreviousLeaf():this._curElement;
-         this._curLineLeadingModel=previousElement.getParagraph().getEffectiveLeadingModel();
-         var curElem:FlowLeafElement = this._textFlow.findLeaf(this._curLine.absoluteStart);
-         var curElemStart:int = curElem.getAbsoluteStart();
-         this.calculateLeadingParameters(curElem,curElemStart,TextFlowLine.findNumberLine(this._curLine.getTextLine()));
-         if(this._startComposePosition==this._curElement.getParagraph().getAbsoluteStart())
-         {
-            this._previousLine=null;
-         }
-         else
-         {
-            this._previousLine=this._curLine.getTextLine(true);
-         }
-         this._paragraphSpaceCarried=this._curLine.spaceAfter;
-         this.commitLastLineState(this._curLine);
-         var startParcel:int = this._curLine.columnIndex==-1?0:this._curLine.columnIndex;
-         this._curParcel=this._parcelList.currentParcel;
-         var floatIndex:int = 0;
-         var parcelIndex:int = -1;
-         while(parcelIndex<startParcel)
-         {
-            this.advanceToNextParcel();
-            this._curParcelStart=this._curParcel.controller.absoluteStart;
-            numFloats=this._curParcel.controller.numFloats;
-            if(numFloats)
-            {
-               while(floatIndex<numFloats)
-               {
-                  floatInfo=this._curParcel.controller.getFloatAt(floatIndex);
-                  if(floatInfo.columnIndex>this._curParcel.columnIndex)
-                  {
-                  }
-                  else
-                  {
-                     if((!(floatInfo.floatType==Float.NONE))&&(floatInfo.absolutePosition>this._startComposePosition))
-                     {
-                        ilg=this._textFlow.findLeaf(floatInfo.absolutePosition) as InlineGraphicElement;
-                        logicalHeight=this._blockProgression==BlockProgression.RL?ilg.elementWidthWithMarginsAndPadding():ilg.elementHeightWithMarginsAndPadding();
-                        this._curParcel.knockOut(floatInfo.knockOutWidth,floatInfo.depth-this._lastLineDescent,floatInfo.depth+logicalHeight,floatInfo.floatType==Float.LEFT);
-                     }
-                     floatIndex++;
-                     continue;
-                  }
-               }
-            }
-            this._curParcel.controller.clearFloatsAt(this._startComposePosition);
-            parcelIndex++;
-         }
-         this._curParcelStart=this._curElementStart+this._curElementOffset;
-         if(this._blockProgression==BlockProgression.TB)
-         {
-            this._parcelList.addTotalDepth(this._curLine.y+this._curLine.ascent-this._curParcel.y);
-         }
-         else
-         {
-            this._parcelList.addTotalDepth(this._curParcel.right-this._curLine.x);
-         }
-         this._atColumnStart=false;
-         var lineIndex:int = this._flowComposer.findLineIndexAtPosition(this._startController.absoluteStart);
-         this.initializeContentBounds(lineIndex,startLineIndex);
-         return true;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
-
-      private function initializeContentBounds(lineIndex:int, lastLineToCheck:int) : void {
-         var line:TextFlowLine = null;
-         var lineExtent:* = NaN;
-         var textLine:TextLine = null;
-         var alignData:AlignData = null;
-         var paraFormat:ITextLayoutFormat = null;
-         var columnIndex:int = -1;
-         this._parcelLogicalTop=this.computeTextFlowLineMinimumLogicalTop(this._flowComposer.getLineAt(lineIndex),null);
+      
+      private function initializeContentBounds(param1:int, param2:int) : void {
+         var _loc4_:TextFlowLine = null;
+         var _loc5_:* = NaN;
+         var _loc6_:TextLine = null;
+         var _loc7_:AlignData = null;
+         var _loc8_:ITextLayoutFormat = null;
+         var _loc3_:* = -1;
+         this._parcelLogicalTop = this.computeTextFlowLineMinimumLogicalTop(this._flowComposer.getLineAt(param1),null);
          if(this._measuring)
          {
-            while(lineIndex<=lastLineToCheck)
+            while(param1 <= param2)
             {
-               line=this._flowComposer.getLineAt(lineIndex);
-               if(line.columnIndex!=columnIndex)
+               _loc4_ = this._flowComposer.getLineAt(param1);
+               if(_loc4_.columnIndex != _loc3_)
                {
-                  columnIndex=line.columnIndex;
-                  this._contentLogicalExtent=0;
-                  this._contentCommittedExtent=0;
-                  this._accumulatedMinimumStart=TextLine.MAX_LINE_WIDTH;
+                  _loc3_ = _loc4_.columnIndex;
+                  this._contentLogicalExtent = 0;
+                  this._contentCommittedExtent = 0;
+                  this._accumulatedMinimumStart = TextLine.MAX_LINE_WIDTH;
                }
-               lineExtent=line.lineExtent;
-               this._contentLogicalExtent=Math.max(this._contentLogicalExtent,lineExtent);
-               if((line.alignment==TextAlign.LEFT)&&(!line.hasNumberLine))
+               _loc5_ = _loc4_.lineExtent;
+               this._contentLogicalExtent = Math.max(this._contentLogicalExtent,_loc5_);
+               if(_loc4_.alignment == TextAlign.LEFT && !_loc4_.hasNumberLine)
                {
-                  this._contentCommittedExtent=Math.max(this._contentCommittedExtent,lineExtent);
+                  this._contentCommittedExtent = Math.max(this._contentCommittedExtent,_loc5_);
                }
                else
                {
-                  alignData=createAlignData(line);
-                  alignData.textLine=line.getTextLine(true);
-                  alignData.textAlign=line.alignment;
-                  paraFormat=line.paragraph.computedFormat;
-                  alignData.rightSideGap=this.getRightSideGap(line,!(line.alignment==TextAlign.LEFT));
-                  alignData.leftSideGap=this.getLeftSideGap(line);
-                  alignData.textIndent=paraFormat.textIndent;
-                  alignData.lineWidth=lineExtent-alignData.rightSideGap+alignData.leftSideGap;
+                  _loc7_ = createAlignData(_loc4_);
+                  _loc7_.textLine = _loc4_.getTextLine(true);
+                  _loc7_.textAlign = _loc4_.alignment;
+                  _loc8_ = _loc4_.paragraph.computedFormat;
+                  _loc7_.rightSideGap = this.getRightSideGap(_loc4_,!(_loc4_.alignment == TextAlign.LEFT));
+                  _loc7_.leftSideGap = this.getLeftSideGap(_loc4_);
+                  _loc7_.textIndent = _loc8_.textIndent;
+                  _loc7_.lineWidth = _loc5_ - (_loc7_.rightSideGap + _loc7_.leftSideGap);
                   if(!this._alignLines)
                   {
-                     this._alignLines=[];
+                     this._alignLines = [];
                   }
-                  this._alignLines.push(alignData);
+                  this._alignLines.push(_loc7_);
                }
-               lineIndex++;
+               param1++;
             }
          }
          else
          {
-            line=this._flowComposer.getLineAt(lastLineToCheck);
-            this._contentLogicalExtent=this._contentCommittedExtent=line.accumulatedLineExtent;
-            this._accumulatedMinimumStart=line.accumulatedMinimumStart;
-            if((this._parcelList.currentParcelIndex<0)&&(this._parcelList.currentParcel.columnIndex<0))
+            _loc4_ = this._flowComposer.getLineAt(param2);
+            this._contentLogicalExtent = this._contentCommittedExtent = _loc4_.accumulatedLineExtent;
+            this._accumulatedMinimumStart = _loc4_.accumulatedMinimumStart;
+            if(this._parcelList.currentParcelIndex > 0 && this._parcelList.currentParcel.columnIndex > 0)
             {
-               if(this._blockProgression==BlockProgression.TB)
+               if(this._blockProgression == BlockProgression.TB)
                {
-                  this._controllerBottom=this._curParcel.controller.compositionHeight;
+                  this._controllerBottom = this._curParcel.controller.compositionHeight;
                }
                else
                {
-                  this._controllerLeft=0-this._curParcel.controller.compositionWidth;
+                  this._controllerLeft = 0 - this._curParcel.controller.compositionWidth;
                }
-               if(this._textFlow.computedFormat.direction==Direction.RTL)
+               if(this._textFlow.computedFormat.direction == Direction.RTL)
                {
-                  this._controllerRight=this._curParcel.controller.compositionWidth;
+                  this._controllerRight = this._curParcel.controller.compositionWidth;
                }
             }
          }
       }
-
-      tlf_internal function computeTextFlowLineMinimumLogicalTop(line:TextFlowLine, textLine:TextLine) : Number {
-         var pos:* = 0;
-         var leafElement:FlowLeafElement = null;
-         var adjustedAscent:* = NaN;
-         var parcelTop:* = NaN;
-         var controller:ContainerController = null;
-         var lineEnd:* = 0;
-         var floatInfo:FloatCompositionData = null;
-         if(line.hasGraphicElement)
+      
+      tlf_internal function computeTextFlowLineMinimumLogicalTop(param1:TextFlowLine, param2:TextLine) : Number {
+         var _loc3_:* = 0;
+         var _loc4_:FlowLeafElement = null;
+         var _loc5_:* = NaN;
+         var _loc6_:* = NaN;
+         var _loc7_:ContainerController = null;
+         var _loc8_:* = 0;
+         var _loc9_:FloatCompositionData = null;
+         if(param1.hasGraphicElement)
          {
-            pos=line.absoluteStart;
-            leafElement=this._textFlow.findLeaf(pos);
-            adjustedAscent=line.getLineTypographicAscent(leafElement,leafElement.getAbsoluteStart(),textLine);
-            parcelTop=this._blockProgression==BlockProgression.RL?line.x+adjustedAscent:line.y+line.ascent-adjustedAscent;
-            controller=line.controller;
-            lineEnd=pos+line.textLength;
-            if(controller.numFloats>0)
+            _loc3_ = param1.absoluteStart;
+            _loc4_ = this._textFlow.findLeaf(_loc3_);
+            _loc5_ = param1.getLineTypographicAscent(_loc4_,_loc4_.getAbsoluteStart(),param2);
+            _loc6_ = this._blockProgression == BlockProgression.RL?param1.x + _loc5_:param1.y + param1.ascent - _loc5_;
+            _loc7_ = param1.controller;
+            _loc8_ = _loc3_ + param1.textLength;
+            if(_loc7_.numFloats > 0)
             {
-               while(pos<lineEnd)
+               while(_loc3_ < _loc8_)
                {
-                  floatInfo=controller.getFloatAtPosition(pos);
-                  if(floatInfo)
+                  _loc9_ = _loc7_.getFloatAtPosition(_loc3_);
+                  if(_loc9_)
                   {
-                     parcelTop=Math.min(parcelTop,floatInfo.depth);
-                     pos=floatInfo.absolutePosition+1;
+                     _loc6_ = Math.min(_loc6_,_loc9_.depth);
+                     _loc3_ = _loc9_.absolutePosition + 1;
                      continue;
                   }
+                  break;
                }
             }
-            return parcelTop;
+            return _loc6_;
          }
          return NaN;
       }
-
+      
       private function resetControllerBounds() : void {
-         this._controllerLeft=TextLine.MAX_LINE_WIDTH;
-         this._controllerTop=TextLine.MAX_LINE_WIDTH;
-         this._controllerRight=-TextLine.MAX_LINE_WIDTH;
-         this._controllerBottom=-TextLine.MAX_LINE_WIDTH;
+         this._controllerLeft = TextLine.MAX_LINE_WIDTH;
+         this._controllerTop = TextLine.MAX_LINE_WIDTH;
+         this._controllerRight = -TextLine.MAX_LINE_WIDTH;
+         this._controllerBottom = -TextLine.MAX_LINE_WIDTH;
       }
-
+      
       protected function get releaseLineCreationData() : Boolean {
          return this._releaseLineCreationData;
       }
-
-      protected function composeInternal(composeRoot:FlowGroupElement, absStart:int) : void {
-         this.composeBlockElement(composeRoot,absStart);
+      
+      protected function composeInternal(param1:FlowGroupElement, param2:int) : void {
+         this.composeBlockElement(param1,param2);
       }
-
-      protected function composeParagraphElement(elem:ParagraphElement, absStart:int) : Boolean {
-         var textBlock:TextBlock = null;
-         var textLine:TextLine = null;
-         this._curParaElement=elem;
-         this._curParaStart=absStart;
-         this._curParaFormat=elem.computedFormat;
-         this._paragraphContainsVisibleLines=!(this._curElementStart+this._curElementOffset==this._curParaStart);
-         var success:Boolean = this.composeParagraphElementIntoLines();
-         var okToRelease:Boolean = true;
+      
+      protected function composeParagraphElement(param1:ParagraphElement, param2:int) : Boolean {
+         var _loc5_:TextBlock = null;
+         var _loc6_:TextLine = null;
+         this._curParaElement = param1;
+         this._curParaStart = param2;
+         this._curParaFormat = param1.computedFormat;
+         this._paragraphContainsVisibleLines = !(this._curElementStart + this._curElementOffset == this._curParaStart);
+         var _loc3_:Boolean = this.composeParagraphElementIntoLines();
+         var _loc4_:* = true;
          if(!this._paragraphContainsVisibleLines)
          {
-            textBlock=elem.getTextBlock();
-            textLine=textBlock.lastLine;
-            while((textLine)&&(okToRelease))
+            _loc5_ = param1.getTextBlock();
+            _loc6_ = _loc5_.lastLine;
+            while((_loc6_) && (_loc4_))
             {
-               if(textLine.parent)
+               if(_loc6_.parent)
                {
-                  okToRelease=false;
+                  _loc4_ = false;
                }
-               textLine=textLine.previousLine;
+               _loc6_ = _loc6_.previousLine;
             }
-            if(okToRelease)
+            if(_loc4_)
             {
-               textLine=textBlock.lastLine;
-               while(textLine)
+               _loc6_ = _loc5_.lastLine;
+               while(_loc6_)
                {
-                  textBlock.releaseLines(textLine,textLine);
-                  textLine.userData=null;
-                  TextLineRecycler.addLineForReuse(textLine);
+                  _loc5_.releaseLines(_loc6_,_loc6_);
+                  _loc6_.userData = null;
+                  TextLineRecycler.addLineForReuse(_loc6_);
                   if(this._textFlow.backgroundManager)
                   {
-                     this._textFlow.backgroundManager.removeLineFromCache(textLine);
+                     this._textFlow.backgroundManager.removeLineFromCache(_loc6_);
                   }
-                  textLine=textBlock.lastLine;
+                  _loc6_ = _loc5_.lastLine;
                }
-               elem.releaseTextBlock();
+               param1.releaseTextBlock();
             }
          }
-         if((this.releaseLineCreationData)&&(!okToRelease))
+         if((this.releaseLineCreationData) && !_loc4_)
          {
-            elem.releaseLineCreationData();
+            param1.releaseLineCreationData();
          }
-         return success;
+         return _loc3_;
       }
-
-      protected function getFirstIndentCharPos(paragraph:ParagraphElement) : int {
-         var pos:int = 0;
-         var leaf:FlowLeafElement = paragraph.getFirstLeaf();
-         for(;(leaf)&&(leaf is InlineGraphicElement)&&(!(InlineGraphicElement(leaf).effectiveFloat==Float.NONE));continue loop0)
+      
+      protected function getFirstIndentCharPos(param1:ParagraphElement) : int {
+         var _loc2_:* = 0;
+         var _loc3_:FlowLeafElement = param1.getFirstLeaf();
+         while((_loc3_) && (_loc3_ is InlineGraphicElement) && !(InlineGraphicElement(_loc3_).effectiveFloat == Float.NONE))
          {
-            pos=pos+leaf.textLength;
-            leaf=leaf.getNextLeaf();
+            _loc2_ = _loc2_ + _loc3_.textLength;
+            _loc3_ = _loc3_.getNextLeaf();
          }
-         return pos;
+         return _loc2_;
       }
-
+      
       protected function composeParagraphElementIntoLines() : Boolean {
-         var textLine:TextLine = null;
-         var leftMargin:* = NaN;
-         var rightMargin:* = NaN;
-         var textAlignment:String = null;
-         var numberLine:TextLine = null;
-         var needAlignData:* = false;
-         var alignData:AlignData = null;
-         var spaceBefore:* = NaN;
-         var spaceCarried:* = NaN;
-         var location:* = 0;
-         var result:Boolean = true;
-         var firstLineIndent:Number = 0;
-         if(this._curParaFormat.direction==Direction.LTR)
+         var _loc2_:TextLine = null;
+         var _loc3_:* = NaN;
+         var _loc4_:* = NaN;
+         var _loc7_:String = null;
+         var _loc8_:TextLine = null;
+         var _loc9_:* = false;
+         var _loc10_:AlignData = null;
+         var _loc11_:* = NaN;
+         var _loc12_:* = NaN;
+         var _loc13_:* = 0;
+         var _loc1_:* = true;
+         var _loc5_:Number = 0;
+         if(this._curParaFormat.direction == Direction.LTR)
          {
-            leftMargin=this._curParaFormat.paragraphStartIndent;
-            rightMargin=this._curParaFormat.paragraphEndIndent;
+            _loc3_ = this._curParaFormat.paragraphStartIndent;
+            _loc4_ = this._curParaFormat.paragraphEndIndent;
          }
          else
          {
-            leftMargin=this._curParaFormat.paragraphEndIndent;
-            rightMargin=this._curParaFormat.paragraphStartIndent;
+            _loc3_ = this._curParaFormat.paragraphEndIndent;
+            _loc4_ = this._curParaFormat.paragraphStartIndent;
          }
-         this._parcelList.pushLeftMargin(leftMargin);
-         this._parcelList.pushRightMargin(rightMargin);
-         var firstIndentCharPos:int = this._curParaStart;
-         if(this.preProcessILGs(this._curElementStart-this._curParaStart))
+         this._parcelList.pushLeftMargin(_loc3_);
+         this._parcelList.pushRightMargin(_loc4_);
+         var _loc6_:int = this._curParaStart;
+         if(this.preProcessILGs(this._curElementStart - this._curParaStart))
          {
-            firstIndentCharPos=this.getFirstIndentCharPos(this._curParaElement)+this._curParaStart;
+            _loc6_ = this.getFirstIndentCharPos(this._curParaElement) + this._curParaStart;
          }
-         while(result)
+         while(_loc1_)
          {
             if(this._parcelList.atEnd())
             {
-               result=false;
+               _loc1_ = false;
+               break;
             }
-            else
+            this.startLine();
+            if(!this._forceILGs)
             {
-               this.startLine();
-               if(!this._forceILGs)
+               this.processFloatsAtLineStart();
+            }
+            this._textIndent = this._curElementStart + this._curElementOffset <= _loc6_?this._curParaFormat.textIndent:0;
+            if(this._parcelList.atEnd())
+            {
+               _loc1_ = false;
+               break;
+            }
+            _loc2_ = this.composeNextLine();
+            if(_loc2_ == null)
+            {
+               _loc1_ = false;
+               break;
+            }
+            _loc7_ = this._curParaFormat.textAlign;
+            if(_loc7_ == TextAlign.JUSTIFY)
+            {
+               _loc13_ = this._curLine.location;
+               if(_loc13_ == TextFlowLineLocation.LAST || _loc13_ == TextFlowLineLocation.ONLY)
                {
-                  this.processFloatsAtLineStart();
+                  _loc7_ = this._curParaFormat.textAlignLast;
                }
-               this._textIndent=this._curElementStart+this._curElementOffset<=firstIndentCharPos?this._curParaFormat.textIndent:0;
-               if(this._parcelList.atEnd())
+            }
+            switch(_loc7_)
+            {
+               case TextAlign.START:
+                  _loc7_ = this._curParaFormat.direction == Direction.LTR?TextAlign.LEFT:TextAlign.RIGHT;
+                  break;
+               case TextAlign.END:
+                  _loc7_ = this._curParaFormat.direction == Direction.LTR?TextAlign.RIGHT:TextAlign.LEFT;
+                  break;
+            }
+            _loc8_ = TextFlowLine.findNumberLine(_loc2_);
+            _loc9_ = ((_loc8_) && (TextFlowLine.getNumberLineListStylePosition(_loc8_) == ListStylePosition.OUTSIDE)) || _loc7_ == TextAlign.CENTER || _loc7_ == TextAlign.RIGHT;
+            if(Configuration.playerEnablesArgoFeatures)
+            {
+               if(_loc2_["hasTabs"])
                {
-                  result=false;
-               }
-               else
-               {
-                  textLine=this.composeNextLine();
-                  if(textLine==null)
+                  if(this._curParaFormat.direction == Direction.LTR)
                   {
-                     result=false;
+                     if(!_loc8_ || TextFlowLine.getNumberLineListStylePosition(_loc8_) == ListStylePosition.INSIDE)
+                     {
+                        _loc9_ = false;
+                     }
+                     _loc7_ = TextAlign.LEFT;
                   }
                   else
                   {
-                     textAlignment=this._curParaFormat.textAlign;
-                     if(textAlignment==TextAlign.JUSTIFY)
-                     {
-                        location=this._curLine.location;
-                        if((location==TextFlowLineLocation.LAST)||(location==TextFlowLineLocation.ONLY))
+                     _loc9_ = true;
+                     _loc7_ = TextAlign.RIGHT;
+                  }
+               }
+            }
+            if(_loc9_)
+            {
+               _loc10_ = createAlignData(this._curLine);
+               _loc10_.textLine = _loc2_;
+               _loc10_.textAlign = _loc7_;
+            }
+            _loc11_ = (this._atColumnStart) && !(this._curParaFormat.leadingModel == LeadingModel.BOX)?0:this._curLine.spaceBefore;
+            _loc12_ = this._atColumnStart?0:this._paragraphSpaceCarried;
+            if(!(_loc11_ == 0) || !(_loc12_ == 0))
+            {
+               this._parcelList.addTotalDepth(Math.max(_loc11_,_loc12_));
+            }
+            this._paragraphSpaceCarried = 0;
+            if(this._verticalSpaceCarried != 0)
+            {
+               this._verticalSpaceCarried = 0;
+            }
+            this._parcelList.addTotalDepth(this._curLine.height);
+            _loc10_ = this.calculateLineAlignmentAndBounds(_loc2_,_loc8_,_loc10_);
+            if(_loc10_)
+            {
+               if(!this._alignLines)
+               {
+                  this._alignLines = [];
+               }
+               this._alignLines.push(_loc10_);
+               this._curLine.alignment = _loc7_;
+            }
+            if(_loc5_ != 0)
+            {
+               if(this._curParaFormat.direction == Direction.LTR)
+               {
+                  this._parcelList.popLeftMargin(_loc5_);
+               }
+               else
+               {
+                  this._parcelList.popRightMargin(_loc5_);
+               }
+               _loc5_ = 0;
+            }
+            if(!this.processFloatsAtLineEnd(_loc2_) || !this._curLine)
+            {
+               this.resetLine(_loc2_);
+            }
+            else
+            {
+               this.endLine(_loc2_);
+               this._lastGoodStart = -1;
+               if(this.isLineVisible(_loc2_))
+               {
+                  this._curParcel.controller.addComposedLine(_loc2_);
+                  this._paragraphContainsVisibleLines = true;
+               }
+               if(this._parcelList.atEnd())
+               {
+                  _loc1_ = false;
+                  break;
+               }
+               this._previousLine = _loc2_;
+               this._curElementOffset = this._curElementOffset + this._curLine.textLength;
+               if(this._curElementOffset >= this._curElement.textLength)
+               {
+                  do
+                  {
+                        this._curElementOffset = this._curElementOffset - this._curElement.textLength;
+                        this._curElementStart = this._curElementStart + this._curElement.textLength;
+                        this._curElement = this._curElement.getNextLeaf();
+                        if(this._curElementStart == this._curParaStart + this._curParaElement.textLength)
                         {
-                           textAlignment=this._curParaFormat.textAlignLast;
-                        }
-                     }
-                     switch(textAlignment)
-                     {
-                        case TextAlign.START:
-                           textAlignment=this._curParaFormat.direction==Direction.LTR?TextAlign.LEFT:TextAlign.RIGHT;
                            break;
-                        case TextAlign.END:
-                           textAlignment=this._curParaFormat.direction==Direction.LTR?TextAlign.RIGHT:TextAlign.LEFT;
-                           break;
-                     }
-                     numberLine=TextFlowLine.findNumberLine(textLine);
-                     needAlignData=((numberLine)&&(TextFlowLine.getNumberLineListStylePosition(numberLine)==ListStylePosition.OUTSIDE))||(textAlignment==TextAlign.CENTER)||(textAlignment==TextAlign.RIGHT);
-                     if(Configuration.playerEnablesArgoFeatures)
-                     {
-                        if(textLine["hasTabs"])
-                        {
-                           if(this._curParaFormat.direction==Direction.LTR)
-                           {
-                              if((!numberLine)||(TextFlowLine.getNumberLineListStylePosition(numberLine)==ListStylePosition.INSIDE))
-                              {
-                                 needAlignData=false;
-                              }
-                              textAlignment=TextAlign.LEFT;
-                           }
-                           else
-                           {
-                              needAlignData=true;
-                              textAlignment=TextAlign.RIGHT;
-                           }
                         }
-                     }
-                     if(needAlignData)
+                     }while(this._curElementOffset >= this._curElement.textLength || this._curElement.textLength == 0);
+                     
+                  }
+                  this._paragraphSpaceCarried = this._curLine.spaceAfter;
+                  if(this._curElementStart == this._curParaStart + this._curParaElement.textLength)
+                  {
+                     break;
+                  }
+               }
+            }
+            this._parcelList.popLeftMargin(_loc3_);
+            this._parcelList.popRightMargin(_loc4_);
+            if(_loc5_ != 0)
+            {
+               if(this._curParaFormat.direction == Direction.LTR)
+               {
+                  this._parcelList.popLeftMargin(_loc5_);
+               }
+               else
+               {
+                  this._parcelList.popRightMargin(_loc5_);
+               }
+               _loc5_ = 0;
+            }
+            this._previousLine = null;
+            return _loc1_;
+         }
+         
+         protected function createTextLine(param1:Number, param2:Boolean) : TextLine {
+            var _loc3_:Number = this._curParaFormat.direction == Direction.LTR?this._lineSlug.leftMargin:this._lineSlug.rightMargin;
+            var _loc4_:TextLine = null;
+            _loc4_ = TextLineRecycler.getLineForReuse();
+            var _loc5_:TextBlock = this._curParaElement.getTextBlock();
+            if(_loc4_)
+            {
+               _loc4_ = this.swfContext.callInContext(_loc5_["recreateTextLine"],_loc5_,[_loc4_,this._previousLine,param1,_loc3_,true]);
+            }
+            else
+            {
+               _loc4_ = this.swfContext.callInContext(_loc5_.createTextLine,_loc5_,[this._previousLine,param1,_loc3_,true]);
+            }
+            if(!param2 && _loc5_.textLineCreationResult == TextLineCreationResult.EMERGENCY)
+            {
+               _loc4_ = null;
+            }
+            if(_loc4_ == null)
+            {
+               return null;
+            }
+            this._curLine.initialize(this._curParaElement,param1,_loc3_ - this._parcelList.insideListItemMargin,_loc4_.textBlockBeginIndex + this._curParaStart,_loc4_.rawTextLength,_loc4_);
+            return _loc4_;
+         }
+         
+         protected function startLine() : void {
+            this._workingContentExtent = 0;
+            this._workingContentHeight = 0;
+            this._workingContentLogicalExtent = 0;
+            this._workingParcelIndex = this._parcelList.currentParcelIndex;
+            this._workingTotalDepth = this.parcelList.totalDepth;
+            this._workingParcelLogicalTop = NaN;
+         }
+         
+         protected function isLineVisible(param1:TextLine) : Boolean {
+            return !(this._curParcel.controller.isLineVisible(this._blockProgression,this._controllerVisibleBoundsXTW,this._controllerVisibleBoundsYTW,this._controllerVisibleBoundsWidthTW,this._controllerVisibleBoundsHeightTW,this._curLine,param1) == null);
+         }
+         
+         protected function endLine(param1:TextLine) : void {
+            this._contentCommittedExtent = Math.max(this._contentCommittedExtent,this._workingContentExtent);
+            this._contentCommittedHeight = Math.max(this._contentCommittedHeight,this._workingContentHeight);
+            this._contentLogicalExtent = Math.max(this._contentLogicalExtent,this._workingContentLogicalExtent);
+            if(!this._measuring)
+            {
+               this._contentLogicalExtent = this._contentCommittedExtent;
+            }
+            if(this._pushInFloats)
+            {
+               this._pushInFloats.length = 0;
+            }
+            this._atColumnStart = false;
+            this._linePass = 0;
+            if(!isNaN(this._workingParcelLogicalTop))
+            {
+               this._parcelLogicalTop = this._workingParcelLogicalTop;
+            }
+         }
+         
+         protected function resetLine(param1:TextLine) : void {
+            if(this._textFlow.backgroundManager)
+            {
+               this._textFlow.backgroundManager.removeLineFromCache(param1);
+            }
+            if(this._workingParcelIndex != this.parcelList.currentParcelIndex)
+            {
+               this._linePass = 0;
+               if(this._pushInFloats)
+               {
+                  this._pushInFloats.length = 0;
+               }
+            }
+            else
+            {
+               this._linePass++;
+            }
+            this.parcelList.addTotalDepth(this._workingTotalDepth - this._parcelList.totalDepth);
+            this._workingTotalDepth = this.parcelList.totalDepth;
+         }
+         
+         protected function preProcessILGs(param1:int) : Boolean {
+            var _loc5_:InlineGraphicElement = null;
+            if(!this._curParcel)
+            {
+               return false;
+            }
+            var _loc2_:* = false;
+            var _loc3_:* = this._blockProgression == BlockProgression.RL;
+            this._forceILGs = (this._parcelList.explicitLineBreaks) || (_loc3_) && (this._curParcel.controller.measureHeight) || !_loc3_ && (this._curParcel.controller.measureWidth);
+            var _loc4_:FlowLeafElement = this._curParaElement.findLeaf(param1);
+            while(_loc4_)
+            {
+               if(_loc4_ is InlineGraphicElement)
+               {
+                  _loc5_ = _loc4_ as InlineGraphicElement;
+                  _loc5_.setEffectiveFloat(this._forceILGs?Float.NONE:_loc5_.computedFloat);
+                  _loc2_ = true;
+               }
+               _loc4_ = _loc4_.getNextLeaf(this._curParaElement);
+            }
+            return _loc2_;
+         }
+         
+         protected function processFloatsAtLineStart() : void {
+            var _loc1_:* = 0;
+            var _loc2_:* = 0;
+            var _loc3_:FlowLeafElement = null;
+            if(this._forceILGs)
+            {
+               return;
+            }
+            if((this._pushInFloats) && this._pushInFloats.length > 0)
+            {
+               _loc1_ = 0;
+               while(_loc1_ < this._pushInFloats.length)
+               {
+                  _loc2_ = this._pushInFloats[_loc1_];
+                  _loc3_ = this._textFlow.findLeaf(_loc2_);
+                  if(!this.composeFloat(_loc3_ as InlineGraphicElement,false))
+                  {
+                     this._pushInFloats.length = _loc1_;
+                  }
+                  _loc1_++;
+               }
+            }
+         }
+         
+         protected function processFloatsAtLineEnd(param1:TextLine) : Boolean {
+            var _loc8_:* = 0;
+            var _loc9_:* = 0;
+            var _loc10_:InlineGraphicElement = null;
+            var _loc11_:* = NaN;
+            var _loc12_:FloatCompositionData = null;
+            var _loc13_:* = NaN;
+            var _loc14_:InlineGraphicElement = null;
+            if(!param1.hasGraphicElement && this._linePass <= 0)
+            {
+               return true;
+            }
+            if((this._pushInFloats) && this._pushInFloats.length > 0)
+            {
+               _loc8_ = this._pushInFloats[this._pushInFloats.length-1];
+               if(this._curLine.absoluteStart + this._curLine.textLength <= _loc8_)
+               {
+                  _loc9_ = this._pushInFloats.length-1;
+                  while(_loc9_ >= 0)
+                  {
+                     _loc8_ = this._pushInFloats[_loc9_];
+                     _loc10_ = this._textFlow.findLeaf(_loc8_) as InlineGraphicElement;
+                     _loc11_ = this._blockProgression == BlockProgression.RL?_loc10_.elementWidth + _loc10_.getEffectivePaddingLeft() + _loc10_.getEffectivePaddingRight():_loc10_.elementHeightWithMarginsAndPadding();
+                     _loc12_ = this._curLine.controller.getFloatAtPosition(_loc8_);
+                     if((_loc12_) && _loc12_.absolutePosition == _loc8_)
                      {
-                        alignData=createAlignData(this._curLine);
-                        alignData.textLine=textLine;
-                        alignData.textAlign=textAlignment;
+                        _loc13_ = isNaN(this._lastLineDescent)?0:this._lastLineDescent;
+                        this._curParcel.removeKnockOut(_loc12_.knockOutWidth,_loc12_.depth - _loc13_,_loc12_.depth + _loc11_,_loc12_.floatType == Float.LEFT);
                      }
-                     spaceBefore=(this._atColumnStart)&&(!(this._curParaFormat.leadingModel==LeadingModel.BOX))?0:this._curLine.spaceBefore;
-                     spaceCarried=this._atColumnStart?0:this._paragraphSpaceCarried;
-                     if((!(spaceBefore==0))||(!(spaceCarried==0)))
+                     _loc9_--;
+                  }
+                  this._curLine.controller.clearFloatsAt(this._pushInFloats[0]);
+                  this._pushInFloats.length--;
+                  return false;
+               }
+            }
+            var _loc2_:int = this._curElementStart;
+            var _loc3_:FlowLeafElement = this._curElement;
+            var _loc4_:int = this._curLine.absoluteStart + this._curLine.textLength;
+            var _loc5_:* = 0;
+            var _loc6_:* = false;
+            while(_loc2_ < _loc4_)
+            {
+               if(_loc3_ is InlineGraphicElement)
+               {
+                  _loc14_ = InlineGraphicElement(_loc3_);
+                  if(_loc14_.computedFloat == Float.NONE || (this._forceILGs))
+                  {
+                     _loc6_ = true;
+                  }
+                  else
+                  {
+                     if(this._linePass == 0)
                      {
-                        this._parcelList.addTotalDepth(Math.max(spaceBefore,spaceCarried));
-                     }
-                     this._paragraphSpaceCarried=0;
-                     if(this._verticalSpaceCarried!=0)
-                     {
-                        this._verticalSpaceCarried=0;
-                     }
-                     this._parcelList.addTotalDepth(this._curLine.height);
-                     alignData=this.calculateLineAlignmentAndBounds(textLine,numberLine,alignData);
-                     if(alignData)
-                     {
-                        if(!this._alignLines)
+                        if(!this._pushInFloats)
                         {
-                           this._alignLines=[];
+                           this._pushInFloats = [];
                         }
-                        this._alignLines.push(alignData);
-                        this._curLine.alignment=textAlignment;
-                     }
-                     if(firstLineIndent!=0)
-                     {
-                        if(this._curParaFormat.direction==Direction.LTR)
-                        {
-                           this._parcelList.popLeftMargin(firstLineIndent);
-                        }
-                        else
-                        {
-                           this._parcelList.popRightMargin(firstLineIndent);
-                        }
-                        firstLineIndent=0;
-                     }
-                     if((!this.processFloatsAtLineEnd(textLine))||(!this._curLine))
-                     {
-                        this.resetLine(textLine);
-                        continue;
-                     }
-                     this.endLine(textLine);
-                     this._lastGoodStart=-1;
-                     if(this.isLineVisible(textLine))
-                     {
-                        this._curParcel.controller.addComposedLine(textLine);
-                        this._paragraphContainsVisibleLines=true;
-                     }
-                     if(this._parcelList.atEnd())
-                     {
-                        result=false;
+                        this._pushInFloats.push(_loc2_);
                      }
                      else
                      {
-                        this._previousLine=textLine;
-                        this._curElementOffset=this._curElementOffset+this._curLine.textLength;
-                        if(this._curElementOffset>=this._curElement.textLength)
+                        if(this._pushInFloats.indexOf(_loc2_) >= 0)
                         {
-                           do
+                           _loc5_++;
+                        }
+                        else
+                        {
+                           if(!this.composeFloat(_loc14_,true))
                            {
-                              this._curElementOffset=this._curElementOffset-this._curElement.textLength;
-                              this._curElementStart=this._curElementStart+this._curElement.textLength;
-                              this._curElement=this._curElement.getNextLeaf();
-                              if(this._curElementStart==this._curParaStart+this._curParaElement.textLength)
+                              this.advanceToNextParcel();
+                              return false;
+                           }
+                        }
+                     }
+                  }
+               }
+               _loc2_ = _loc2_ + _loc3_.textLength;
+               _loc3_ = _loc3_.getNextLeaf();
+            }
+            var _loc7_:* = _loc5_ >= (this._pushInFloats?this._pushInFloats.length:0);
+            if((_loc7_) && (_loc6_))
+            {
+               this.processInlinesAtLineEnd(param1);
+            }
+            return _loc7_;
+         }
+         
+         protected function processInlinesAtLineEnd(param1:TextLine) : void {
+            var _loc5_:InlineGraphicElement = null;
+            var _loc2_:int = this._curElementStart;
+            var _loc3_:FlowLeafElement = this._curElement;
+            var _loc4_:int = this._curLine.absoluteStart + this._curLine.textLength;
+            while(_loc2_ < _loc4_)
+            {
+               if(_loc3_ is InlineGraphicElement)
+               {
+                  _loc5_ = _loc3_ as InlineGraphicElement;
+                  if(_loc5_.computedFloat == Float.NONE || (this._forceILGs))
+                  {
+                     this.composeInlineGraphicElement(_loc5_,param1);
+                  }
+               }
+               _loc2_ = _loc2_ + _loc3_.textLength;
+               _loc3_ = _loc3_.getNextLeaf();
+            }
+         }
+         
+         protected function composeInlineGraphicElement(param1:InlineGraphicElement, param2:TextLine) : Boolean {
+            var _loc3_:Number = this._blockProgression == BlockProgression.RL?-param1.getEffectivePaddingRight():param1.getEffectivePaddingLeft();
+            var _loc4_:Number = param1.getEffectivePaddingTop();
+            var _loc5_:DisplayObject = param1.placeholderGraphic.parent;
+            this._curParcel.controller.addFloatAt(this._curParaStart + param1.getElementRelativeStart(this._curParaElement),param1.graphic,Float.NONE,_loc3_,_loc4_,_loc5_?_loc5_.alpha:1,_loc5_?_loc5_.transform.matrix:null,this._parcelList.totalDepth,0,this._curParcel.columnIndex,param2);
+            return true;
+         }
+         
+         protected function composeFloat(param1:InlineGraphicElement, param2:Boolean) : Boolean {
+            var _loc7_:* = NaN;
+            var _loc8_:* = NaN;
+            var _loc11_:String = null;
+            var _loc12_:Rectangle = null;
+            var _loc13_:* = NaN;
+            var _loc14_:* = NaN;
+            if(param1.elementHeight == 0 || param1.elementWidth == 0)
+            {
+               return true;
+            }
+            if(this._lastGoodStart == -1)
+            {
+               this._lastGoodStart = this._curElementStart + this._curElementOffset;
+            }
+            var _loc3_:* = this._blockProgression == BlockProgression.RL;
+            var _loc4_:Number = 0;
+            if(((param2) || !this._atColumnStart) && !isNaN(this._lastLineDescent))
+            {
+               _loc4_ = this._lastLineDescent;
+            }
+            var _loc5_:Number = 0;
+            if((this._curLine) && (!(this._curParaElement == this._curLine.paragraph)) && !this._atColumnStart)
+            {
+               _loc5_ = Math.max(this._curParaElement.computedFormat.paragraphSpaceBefore,this._paragraphSpaceCarried);
+            }
+            var _loc6_:Number = this._parcelList.totalDepth + _loc5_ + _loc4_;
+            if(!_floatSlug)
+            {
+               _floatSlug = new Slug();
+            }
+            if(_loc3_)
+            {
+               _loc7_ = param1.elementHeight + param1.getEffectivePaddingTop() + param1.getEffectivePaddingBottom();
+               _loc8_ = param1.elementWidth + param1.getEffectivePaddingLeft() + param1.getEffectivePaddingRight();
+            }
+            else
+            {
+               _loc7_ = param1.elementWidthWithMarginsAndPadding();
+               _loc8_ = param1.elementHeightWithMarginsAndPadding();
+            }
+            var _loc9_:int = param1.getAbsoluteStart();
+            var _loc10_:Boolean = this._parcelList.fitFloat(_floatSlug,_loc6_,_loc7_,_loc8_);
+            if(!_loc10_ && ((this._curParcel.fitAny) || (this._curParcel.fitsInHeight(_loc6_,int(_loc8_)))) && (!this._curLine || this._curLine.absoluteStart == _loc9_ || (param2)))
+            {
+               _loc10_ = true;
+            }
+            if(_loc10_)
+            {
+               _loc11_ = param1.computedFloat;
+               if(_loc11_ == Float.START)
+               {
+                  _loc11_ = this._curParaFormat.direction == Direction.LTR?Float.LEFT:Float.RIGHT;
+               }
+               else
+               {
+                  if(_loc11_ == Float.END)
+                  {
+                     _loc11_ = this._curParaFormat.direction == Direction.LTR?Float.RIGHT:Float.LEFT;
+                  }
+               }
+               _loc12_ = this.calculateFloatBounds(param1,_loc3_,_loc11_);
+               if(_loc3_)
+               {
+                  this._workingContentExtent = Math.max(this._workingContentExtent,_loc12_.bottom);
+                  this._workingContentHeight = Math.max(this._workingContentHeight,_floatSlug.depth + _loc12_.width);
+                  this._workingContentLogicalExtent = Math.max(this._workingContentLogicalExtent,_loc12_.bottom);
+                  this._accumulatedMinimumStart = Math.min(this._accumulatedMinimumStart,_loc12_.y);
+               }
+               else
+               {
+                  this._workingContentExtent = Math.max(this._workingContentExtent,_loc12_.right);
+                  this._workingContentHeight = Math.max(this._workingContentHeight,_floatSlug.depth + _loc12_.height);
+                  this._workingContentLogicalExtent = Math.max(this._workingContentLogicalExtent,_loc12_.right);
+                  this._accumulatedMinimumStart = Math.min(this._accumulatedMinimumStart,_loc12_.x);
+               }
+               if(_loc9_ == this._curParcelStart)
+               {
+                  this._workingParcelLogicalTop = _floatSlug.depth;
+               }
+               _loc13_ = (_loc11_ == Float.LEFT?_floatSlug.leftMargin:_floatSlug.rightMargin) + _loc7_;
+               _loc14_ = isNaN(this._lastLineDescent)?0:this._lastLineDescent;
+               this._curParcel.knockOut(_loc13_,_floatSlug.depth - _loc14_,_floatSlug.depth + _loc8_,_loc11_ == Float.LEFT);
+               this._curParcel.controller.addFloatAt(_loc9_,param1.graphic,_loc11_,_loc12_.x,_loc12_.y,param1.computedFormat.textAlpha,null,_floatSlug.depth,_loc13_,this._curParcel.columnIndex,this._curParcel.controller.container);
+            }
+            return _loc10_;
+         }
+         
+         private function calculateFloatBounds(param1:InlineGraphicElement, param2:Boolean, param3:String) : Rectangle {
+            var _loc4_:Rectangle = new Rectangle();
+            if(param2)
+            {
+               _loc4_.x = this._curParcel.right - _floatSlug.depth - param1.elementWidth - param1.getEffectivePaddingRight();
+               _loc4_.y = param3 == Float.LEFT?this._curParcel.y + _floatSlug.leftMargin + param1.getEffectivePaddingTop():this._curParcel.bottom - _floatSlug.rightMargin - param1.getEffectivePaddingBottom() - param1.elementHeight;
+               _loc4_.width = param1.elementWidth;
+               _loc4_.height = param1.elementHeight;
+            }
+            else
+            {
+               _loc4_.x = param3 == Float.LEFT?this._curParcel.x + _floatSlug.leftMargin + param1.getEffectivePaddingLeft():this._curParcel.right - _floatSlug.rightMargin - param1.getEffectivePaddingRight() - param1.elementWidth;
+               _loc4_.y = this._curParcel.y + _floatSlug.depth + param1.getEffectivePaddingTop();
+               _loc4_.width = param1.elementWidth;
+               _loc4_.height = param1.elementHeight;
+            }
+            return _loc4_;
+         }
+         
+         private function calculateLineWidthExplicit(param1:TextLine) : Number {
+            var _loc2_:* = this._curParaElement.computedFormat.direction == Direction.RTL;
+            var _loc3_:int = param1.atomCount-1;
+            var _loc4_:* = this._curLine.absoluteStart + this._curLine.textLength == this._curParaStart + this._curParaElement.textLength;
+            if((_loc4_) && !_loc2_)
+            {
+               _loc3_--;
+            }
+            var _loc5_:Rectangle = param1.getAtomBounds(_loc3_ >= 0?_loc3_:0);
+            var _loc6_:Number = this._blockProgression == BlockProgression.TB?_loc3_ >= 0?_loc5_.right:_loc5_.left:_loc3_ >= 0?_loc5_.bottom:_loc5_.top;
+            if(_loc2_)
+            {
+               _loc5_ = param1.getAtomBounds(!(_loc3_ == 0) && (_loc4_)?1:0);
+               _loc6_ = _loc6_ - (this._blockProgression == BlockProgression.TB?_loc5_.left:_loc5_.top);
+            }
+            return _loc6_;
+         }
+         
+         private function getRightSideGap(param1:TextFlowLine, param2:Boolean) : Number {
+            var _loc6_:TextLine = null;
+            var _loc7_:TextLine = null;
+            var _loc3_:FlowGroupElement = param1.paragraph;
+            var _loc4_:ITextLayoutFormat = _loc3_.computedFormat;
+            var _loc5_:Number = _loc4_.direction == Direction.RTL?_loc4_.paragraphStartIndent:_loc4_.paragraphEndIndent;
+            if(_loc4_.direction == Direction.RTL && (param1.location & TextFlowLineLocation.FIRST))
+            {
+               _loc5_ = _loc5_ + _loc4_.textIndent;
+               if((param1.hasNumberLine) && _loc3_.getParentByType(ListItemElement).computedFormat.listStylePosition == ListStylePosition.INSIDE)
+               {
+                  _loc6_ = param1.getTextLine(true);
+                  _loc7_ = TextFlowLine.findNumberLine(_loc6_);
+                  _loc5_ = _loc5_ + TextFlowLine.getNumberLineInsideLineWidth(_loc7_);
+               }
+            }
+            do
+            {
+                  _loc5_ = _loc5_ + (this._blockProgression == BlockProgression.TB?_loc3_.getEffectivePaddingRight():_loc3_.getEffectivePaddingBottom());
+                  _loc3_ = _loc3_.parent;
+               }while(!(_loc3_ is TextFlow));
+               
+               return _loc5_;
+            }
+            
+            private function getLeftSideGap(param1:TextFlowLine) : Number {
+               var _loc5_:TextLine = null;
+               var _loc6_:TextLine = null;
+               var _loc2_:FlowGroupElement = param1.paragraph;
+               var _loc3_:ITextLayoutFormat = _loc2_.computedFormat;
+               var _loc4_:Number = _loc3_.direction == Direction.LTR?_loc3_.paragraphStartIndent:_loc3_.paragraphEndIndent;
+               if(_loc3_.direction == Direction.LTR && (param1.location & TextFlowLineLocation.FIRST))
+               {
+                  _loc4_ = _loc4_ + _loc3_.textIndent;
+                  if((param1.hasNumberLine) && _loc2_.getParentByType(ListItemElement).computedFormat.listStylePosition == ListStylePosition.INSIDE)
+                  {
+                     _loc5_ = param1.getTextLine(true);
+                     _loc6_ = TextFlowLine.findNumberLine(_loc5_);
+                     _loc4_ = _loc4_ + TextFlowLine.getNumberLineInsideLineWidth(_loc6_);
+                  }
+               }
+               do
+               {
+                     _loc4_ = _loc4_ + (this._blockProgression == BlockProgression.TB?_loc2_.getEffectivePaddingLeft():_loc2_.getEffectivePaddingTop());
+                     _loc2_ = _loc2_.parent;
+                  }while(!(_loc2_ is TextFlow));
+                  
+                  return _loc4_;
+               }
+               
+               private function calculateLineAlignmentAndBounds(param1:TextLine, param2:TextLine, param3:AlignData) : AlignData {
+                  var _loc9_:* = NaN;
+                  var _loc10_:* = NaN;
+                  var _loc11_:* = NaN;
+                  var _loc12_:* = NaN;
+                  var _loc13_:* = NaN;
+                  var _loc14_:* = NaN;
+                  var _loc15_:* = NaN;
+                  var _loc4_:Number = this._parcelList.explicitLineBreaks?this.calculateLineWidthExplicit(param1):param1.textWidth;
+                  var _loc5_:Number = this._lineSlug.rightMargin;
+                  var _loc6_:Number = this._lineSlug.leftMargin;
+                  var _loc7_:Number = 0;
+                  if(param3)
+                  {
+                     param3.rightSideGap = _loc5_;
+                     param3.leftSideGap = _loc6_;
+                     param3.lineWidth = _loc4_;
+                     param3.textIndent = this._curParaFormat.textIndent;
+                     if(this._blockProgression == BlockProgression.TB)
+                     {
+                        if(!this._measuring)
+                        {
+                           _loc12_ = param1.textWidth;
+                           _loc9_ = this._curParcel.width - _loc6_ - _loc5_ - _loc12_;
+                           if(param3.textAlign != TextAlign.LEFT)
+                           {
+                              _loc7_ = param3.textAlign == TextAlign.CENTER?_loc9_ / 2:_loc9_;
+                              _loc10_ = this._curParcel.x + _loc6_ + _loc7_;
+                           }
+                           else
+                           {
+                              _loc10_ = this._curParcel.x + _loc6_ + _loc9_;
+                           }
+                           if(param3.textAlign != TextAlign.LEFT)
+                           {
+                              this._curLine.x = _loc10_;
+                              param1.x = _loc10_;
+                           }
+                           else
+                           {
+                              param1.x = this._curLine.x;
+                           }
+                           if((param2) && TextFlowLine.getNumberLineListStylePosition(param2) == ListStylePosition.OUTSIDE)
+                           {
+                              param2.x = computeNumberLineAlignment(param3,param1.textWidth,param1.x,param2,_loc10_,_loc7_,_loc9_);
+                              this._curLine.numberLinePosition = param2.x;
+                           }
+                           releaseAlignData(param3);
+                           param3 = null;
+                        }
+                     }
+                     else
+                     {
+                        if(!this._measuring)
+                        {
+                           _loc9_ = this._curParcel.height - _loc6_ - _loc5_ - param1.textWidth;
+                           if(param3.textAlign != TextAlign.LEFT)
+                           {
+                              _loc7_ = param3.textAlign == TextAlign.CENTER?_loc9_ / 2:_loc9_;
+                              _loc10_ = this._curParcel.y + _loc6_ + _loc7_;
+                           }
+                           else
+                           {
+                              _loc10_ = this._curParcel.y + _loc6_ + _loc9_;
+                           }
+                           if(param3.textAlign != TextAlign.LEFT)
+                           {
+                              this._curLine.y = _loc10_;
+                              param1.y = _loc10_;
+                           }
+                           else
+                           {
+                              param1.y = this._curLine.y;
+                           }
+                           if((param2) && TextFlowLine.getNumberLineListStylePosition(param2) == ListStylePosition.OUTSIDE)
+                           {
+                              param2.y = computeNumberLineAlignment(param3,param1.textWidth,param1.y,param2,_loc10_,_loc7_,_loc9_);
+                              this._curLine.numberLinePosition = param2.y;
+                           }
+                           releaseAlignData(param3);
+                           param3 = null;
+                        }
+                     }
+                  }
+                  var _loc8_:Number = _loc4_ + _loc6_ + _loc5_ + _loc7_;
+                  this._curLine.lineExtent = _loc8_;
+                  this._workingContentLogicalExtent = Math.max(this._workingContentLogicalExtent,_loc8_);
+                  this._curLine.accumulatedLineExtent = Math.max(this._contentLogicalExtent,this._workingContentLogicalExtent);
+                  if(!param3)
+                  {
+                     _loc13_ = this._curParaFormat.direction == Direction.LTR?Math.max(this._curLine.lineOffset,0):this._curParaFormat.paragraphEndIndent;
+                     _loc13_ = this._blockProgression == BlockProgression.RL?this._curLine.y - _loc13_:this._curLine.x - _loc13_;
+                     if(param2)
+                     {
+                        _loc14_ = this._blockProgression == BlockProgression.TB?param2.x + this._curLine.x:param2.y + this._curLine.y;
+                        _loc13_ = Math.min(_loc13_,_loc14_);
+                        if(TextFlowLine.getNumberLineListStylePosition(param2) == ListStylePosition.OUTSIDE)
+                        {
+                           _loc15_ = _loc14_ + TextFlowLine.getNumberLineInsideLineWidth(param2);
+                           _loc15_ = _loc15_ - _loc8_;
+                           if(_loc15_ > 0)
+                           {
+                              _loc7_ = _loc7_ + _loc15_;
+                           }
+                        }
+                     }
+                     this._workingContentExtent = Math.max(this._workingContentExtent,_loc4_ + _loc6_ + Math.max(0,_loc5_) + _loc7_);
+                     this._curLine.accumulatedMinimumStart = this._accumulatedMinimumStart = Math.min(this._accumulatedMinimumStart,_loc13_);
+                  }
+                  if(this._curLine.absoluteStart == this._curParcelStart && (isNaN(this._workingParcelLogicalTop)))
+                  {
+                     this._workingParcelLogicalTop = this.computeTextFlowLineMinimumLogicalTop(this._curLine,param1);
+                  }
+                  return param3;
+               }
+               
+               protected function composeNextLine() : TextLine {
+                  return null;
+               }
+               
+               protected function fitLineToParcel(param1:TextLine, param2:Boolean, param3:TextLine) : Boolean {
+                  var _loc4_:Number = this._lineSlug.depth;
+                  this._curLine.setController(this._curParcel.controller,this._curParcel.columnIndex);
+                  var _loc5_:Number = Math.max(this._curLine.spaceBefore,this._paragraphSpaceCarried);
+                  loop0:
+                  while(true)
+                  {
+                     this.finishComposeLine(param1,param3);
+                     if(this._parcelList.getLineSlug(this._lineSlug,_loc5_ + ((this._parcelList.atLast()) && !(this._textFlow.configuration.overflowPolicy == OverflowPolicy.FIT_DESCENDERS)?this._curLine.height - this._curLine.ascent:this._curLine.height + this._curLine.descent),1,this._textIndent,this._curParaFormat.direction == Direction.LTR))
+                     {
+                        if(Twips.to(this._lineSlug.width) == this._curLine.outerTargetWidthTW && !(this._lineSlug.depth == _loc4_))
+                        {
+                           this.finishComposeLine(param1,param3);
+                        }
+                        break;
+                     }
+                     _loc5_ = this._curLine.spaceBefore;
+                     if((this._pushInFloats) && (this._parcelList.currentParcel.fitAny) && this._pushInFloats.length > 0)
+                     {
+                        break;
+                     }
+                     while(true)
+                     {
+                        this.advanceToNextParcel();
+                        if(!this._curLine || (this._parcelList.atEnd()))
+                        {
+                           break;
+                        }
+                        if(this._parcelList.getLineSlug(this._lineSlug,0,1,this._textIndent,this._curParaFormat.direction == Direction.LTR))
+                        {
+                           _loc4_ = this._lineSlug.depth;
+                           this._curLine.setController(this._curParcel.controller,this._curParcel.columnIndex);
+                           continue loop0;
+                        }
+                     }
+                     return false;
+                  }
+                  if(Twips.to(this._lineSlug.width) != this._curLine.outerTargetWidthTW)
+                  {
+                     return false;
+                  }
+                  if(param2)
+                  {
+                     if(param3)
+                     {
+                        TextFlowLine.initializeNumberLinePosition(param3,this._listItemElement,this._curParaElement,param1.textWidth);
+                     }
+                     this._curLine.createAdornments(this._blockProgression,this._curElement,this._curElementStart,param1,param3);
+                  }
+                  return true;
+               }
+               
+               protected function calculateLeadingParameters(param1:FlowLeafElement, param2:int, param3:TextLine=null) : Number {
+                  var _loc4_:ITextLayoutFormat = null;
+                  var _loc5_:Rectangle = null;
+                  if(param3)
+                  {
+                     _loc4_ = TextFlowLine.getNumberLineSpanFormat(param3);
+                  }
+                  if(this._curLineLeadingModel == LeadingModel.BOX)
+                  {
+                     _loc5_ = this._curLine.getCSSLineBox(this._blockProgression,param1,param2,this._textFlow.flowComposer.swfContext,_loc4_,param3);
+                     this._curLineLeading = _loc5_?_loc5_.bottom:0;
+                     return _loc5_?-_loc5_.top:0;
+                  }
+                  this._curLineLeading = this._curLine.getLineLeading(this._blockProgression,param1,param2);
+                  if(_loc4_)
+                  {
+                     this._curLineLeading = Math.max(this._curLineLeading,TextLayoutFormat.lineHeightProperty.computeActualPropertyValue(_loc4_.lineHeight,_loc4_.fontSize));
+                  }
+                  return 0;
+               }
+               
+               protected function finishComposeLine(param1:TextLine, param2:TextLine) : void {
+                  var _loc4_:* = NaN;
+                  var _loc5_:* = NaN;
+                  var _loc9_:ITextLayoutFormat = null;
+                  var _loc10_:Object = null;
+                  var _loc11_:String = null;
+                  var _loc12_:LeadingAdjustment = null;
+                  var _loc13_:* = NaN;
+                  var _loc14_:* = false;
+                  var _loc15_:* = false;
+                  var _loc16_:FlowLeafElement = null;
+                  var _loc17_:LeadingAdjustment = null;
+                  var _loc18_:* = NaN;
+                  var _loc3_:Number = 0;
+                  if(this._blockProgression == BlockProgression.RL)
+                  {
+                     _loc4_ = this._curParcel.x + this._curParcel.width - this._lineSlug.depth;
+                     _loc5_ = this._curParcel.y;
+                  }
+                  else
+                  {
+                     _loc4_ = this._curParcel.y + this._lineSlug.depth;
+                     _loc5_ = this._curParcel.x;
+                  }
+                  _loc5_ = _loc5_ + this._lineSlug.leftMargin;
+                  this._curLineLeadingModel = this._curParaElement.getEffectiveLeadingModel();
+                  var _loc6_:Number = this.calculateLeadingParameters(this._curElement,this._curElementStart,param2);
+                  if(this._curLineLeadingModel == LeadingModel.BOX)
+                  {
+                     _loc3_ = _loc3_ + (this._atColumnStart?0:this._lastLineDescent);
+                     _loc3_ = _loc3_ + _loc6_;
+                  }
+                  else
+                  {
+                     _loc9_ = this._curParcel.controller.computedFormat;
+                     _loc10_ = BaselineOffset.LINE_HEIGHT;
+                     if(this._atColumnStart)
+                     {
+                        if(!(_loc9_.firstBaselineOffset == BaselineOffset.AUTO) && !(_loc9_.verticalAlign == VerticalAlign.BOTTOM) && !(_loc9_.verticalAlign == VerticalAlign.MIDDLE))
+                        {
+                           _loc10_ = _loc9_.firstBaselineOffset;
+                           _loc11_ = LocaleUtil.leadingModel(_loc9_.locale) == LeadingModel.IDEOGRAPHIC_TOP_DOWN?TextBaseline.IDEOGRAPHIC_BOTTOM:TextBaseline.ROMAN;
+                           _loc3_ = _loc3_ - param1.getBaselinePosition(_loc11_);
+                        }
+                        else
+                        {
+                           if(this._curLineLeadingModel == LeadingModel.APPROXIMATE_TEXT_FIELD)
+                           {
+                              _loc3_ = _loc3_ + (Math.round(param1.descent) + Math.round(param1.ascent));
+                              if(this._blockProgression == BlockProgression.TB)
                               {
+                                 _loc3_ = Math.round(_loc4_ + _loc3_) - _loc4_;
                               }
                               else
                               {
-                                 if(!((this._curElementOffset>=this._curElement.textLength)||(this._curElement.textLength==0)))
-                                 {
-                                 }
-                                 else
-                                 {
-                                    continue;
-                                 }
+                                 _loc3_ = _loc4_ - Math.round(_loc4_ - _loc3_);
                               }
-                           }
-                           while(true);
-                        }
-                        this._paragraphSpaceCarried=this._curLine.spaceAfter;
-                        if(this._curElementStart==this._curParaStart+this._curParaElement.textLength)
-                        {
-                        }
-                        else
-                        {
-                           continue;
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-
-      protected function createTextLine(targetWidth:Number, allowEmergencyBreaks:Boolean) : TextLine {
-         var lineOffset:Number = this._curParaFormat.direction==Direction.LTR?this._lineSlug.leftMargin:this._lineSlug.rightMargin;
-         var textLine:TextLine = null;
-         textLine=TextLineRecycler.getLineForReuse();
-         var textBlock:TextBlock = this._curParaElement.getTextBlock();
-         if(textLine)
-         {
-            textLine=this.swfContext.callInContext(textBlock["recreateTextLine"],textBlock,[textLine,this._previousLine,targetWidth,lineOffset,true]);
-         }
-         else
-         {
-            textLine=this.swfContext.callInContext(textBlock.createTextLine,textBlock,[this._previousLine,targetWidth,lineOffset,true]);
-         }
-         if((!allowEmergencyBreaks)&&(textBlock.textLineCreationResult==TextLineCreationResult.EMERGENCY))
-         {
-            textLine=null;
-         }
-         if(textLine==null)
-         {
-            return null;
-         }
-         this._curLine.initialize(this._curParaElement,targetWidth,lineOffset-this._parcelList.insideListItemMargin,textLine.textBlockBeginIndex+this._curParaStart,textLine.rawTextLength,textLine);
-         return textLine;
-      }
-
-      protected function startLine() : void {
-         this._workingContentExtent=0;
-         this._workingContentHeight=0;
-         this._workingContentLogicalExtent=0;
-         this._workingParcelIndex=this._parcelList.currentParcelIndex;
-         this._workingTotalDepth=this.parcelList.totalDepth;
-         this._workingParcelLogicalTop=NaN;
-      }
-
-      protected function isLineVisible(textLine:TextLine) : Boolean {
-         return !(this._curParcel.controller.isLineVisible(this._blockProgression,this._controllerVisibleBoundsXTW,this._controllerVisibleBoundsYTW,this._controllerVisibleBoundsWidthTW,this._controllerVisibleBoundsHeightTW,this._curLine,textLine)==null);
-      }
-
-      protected function endLine(textLine:TextLine) : void {
-         this._contentCommittedExtent=Math.max(this._contentCommittedExtent,this._workingContentExtent);
-         this._contentCommittedHeight=Math.max(this._contentCommittedHeight,this._workingContentHeight);
-         this._contentLogicalExtent=Math.max(this._contentLogicalExtent,this._workingContentLogicalExtent);
-         if(!this._measuring)
-         {
-            this._contentLogicalExtent=this._contentCommittedExtent;
-         }
-         if(this._pushInFloats)
-         {
-            this._pushInFloats.length=0;
-         }
-         this._atColumnStart=false;
-         this._linePass=0;
-         if(!isNaN(this._workingParcelLogicalTop))
-         {
-            this._parcelLogicalTop=this._workingParcelLogicalTop;
-         }
-      }
-
-      protected function resetLine(textLine:TextLine) : void {
-         if(this._textFlow.backgroundManager)
-         {
-            this._textFlow.backgroundManager.removeLineFromCache(textLine);
-         }
-         if(this._workingParcelIndex!=this.parcelList.currentParcelIndex)
-         {
-            this._linePass=0;
-            if(this._pushInFloats)
-            {
-               this._pushInFloats.length=0;
-            }
-         }
-         else
-         {
-            this._linePass++;
-         }
-         this.parcelList.addTotalDepth(this._workingTotalDepth-this._parcelList.totalDepth);
-         this._workingTotalDepth=this.parcelList.totalDepth;
-      }
-
-      protected function preProcessILGs(startPos:int) : Boolean {
-         var inlineGraphic:InlineGraphicElement = null;
-         if(!this._curParcel)
-         {
-            return false;
-         }
-         var foundFloat:Boolean = false;
-         var verticalText:Boolean = this._blockProgression==BlockProgression.RL;
-         this._forceILGs=(this._parcelList.explicitLineBreaks)||(verticalText)&&(this._curParcel.controller.measureHeight)||(!verticalText)&&(this._curParcel.controller.measureWidth);
-         var leaf:FlowLeafElement = this._curParaElement.findLeaf(startPos);
-         while(leaf)
-         {
-            if(leaf is InlineGraphicElement)
-            {
-               inlineGraphic=leaf as InlineGraphicElement;
-               inlineGraphic.setEffectiveFloat(this._forceILGs?Float.NONE:inlineGraphic.computedFloat);
-               foundFloat=true;
-            }
-            leaf=leaf.getNextLeaf(this._curParaElement);
-         }
-         return foundFloat;
-      }
-
-      protected function processFloatsAtLineStart() : void {
-         var i:* = 0;
-         var pos:* = 0;
-         var leaf:FlowLeafElement = null;
-         if(this._forceILGs)
-         {
-            return;
-         }
-         if((this._pushInFloats)&&(this._pushInFloats.length<0))
-         {
-            i=0;
-            while(i<this._pushInFloats.length)
-            {
-               pos=this._pushInFloats[i];
-               leaf=this._textFlow.findLeaf(pos);
-               if(!this.composeFloat(leaf as InlineGraphicElement,false))
-               {
-                  this._pushInFloats.length=i;
-               }
-               i++;
-            }
-         }
-      }
-
-      protected function processFloatsAtLineEnd(textLine:TextLine) : Boolean {
-         var floatPosition:* = 0;
-         var floatIndex:* = 0;
-         var elem:InlineGraphicElement = null;
-         var logicalFloatHeight:* = NaN;
-         var floatInfo:FloatCompositionData = null;
-         var adjustTop:* = NaN;
-         var inlineGraphic:InlineGraphicElement = null;
-         if((!textLine.hasGraphicElement)&&(this._linePass<=0))
-         {
-            return true;
-         }
-         if((this._pushInFloats)&&(this._pushInFloats.length<0))
-         {
-            floatPosition=this._pushInFloats[this._pushInFloats.length-1];
-            if(this._curLine.absoluteStart+this._curLine.textLength<=floatPosition)
-            {
-               floatIndex=this._pushInFloats.length-1;
-               while(floatIndex>=0)
-               {
-                  floatPosition=this._pushInFloats[floatIndex];
-                  elem=this._textFlow.findLeaf(floatPosition) as InlineGraphicElement;
-                  logicalFloatHeight=this._blockProgression==BlockProgression.RL?elem.elementWidth+elem.getEffectivePaddingLeft()+elem.getEffectivePaddingRight():elem.elementHeightWithMarginsAndPadding();
-                  floatInfo=this._curLine.controller.getFloatAtPosition(floatPosition);
-                  if((floatInfo)&&(floatInfo.absolutePosition==floatPosition))
-                  {
-                     adjustTop=isNaN(this._lastLineDescent)?0:this._lastLineDescent;
-                     this._curParcel.removeKnockOut(floatInfo.knockOutWidth,floatInfo.depth-adjustTop,floatInfo.depth+logicalFloatHeight,floatInfo.floatType==Float.LEFT);
-                  }
-                  floatIndex--;
-               }
-               this._curLine.controller.clearFloatsAt(this._pushInFloats[0]);
-               this._pushInFloats.length--;
-               return false;
-            }
-         }
-         var elementStart:int = this._curElementStart;
-         var element:FlowLeafElement = this._curElement;
-         var endPos:int = this._curLine.absoluteStart+this._curLine.textLength;
-         var skipCount:int = 0;
-         var hasInlines:Boolean = false;
-         while(elementStart<endPos)
-         {
-            if(element is InlineGraphicElement)
-            {
-               inlineGraphic=InlineGraphicElement(element);
-               if((inlineGraphic.computedFloat==Float.NONE)||(this._forceILGs))
-               {
-                  hasInlines=true;
-               }
-               else
-               {
-                  if(this._linePass==0)
-                  {
-                     if(!this._pushInFloats)
-                     {
-                        this._pushInFloats=[];
-                     }
-                     this._pushInFloats.push(elementStart);
-                  }
-                  else
-                  {
-                     if(this._pushInFloats.indexOf(elementStart)>=0)
-                     {
-                        skipCount++;
-                     }
-                     else
-                     {
-                        if(!this.composeFloat(inlineGraphic,true))
-                        {
-                           this.advanceToNextParcel();
-                           return false;
-                        }
-                     }
-                  }
-               }
-            }
-            elementStart=elementStart+element.textLength;
-            element=element.getNextLeaf();
-         }
-         var completed:Boolean = skipCount>=(this._pushInFloats?this._pushInFloats.length:0);
-         if((completed)&&(hasInlines))
-         {
-            this.processInlinesAtLineEnd(textLine);
-         }
-         return completed;
-      }
-
-      protected function processInlinesAtLineEnd(textLine:TextLine) : void {
-         var inlineGraphic:InlineGraphicElement = null;
-         var elementStart:int = this._curElementStart;
-         var element:FlowLeafElement = this._curElement;
-         var endPos:int = this._curLine.absoluteStart+this._curLine.textLength;
-         while(elementStart<endPos)
-         {
-            if(element is InlineGraphicElement)
-            {
-               inlineGraphic=element as InlineGraphicElement;
-               if((inlineGraphic.computedFloat==Float.NONE)||(this._forceILGs))
-               {
-                  this.composeInlineGraphicElement(inlineGraphic,textLine);
-               }
-            }
-            elementStart=elementStart+element.textLength;
-            element=element.getNextLeaf();
-         }
-      }
-
-      protected function composeInlineGraphicElement(inlineGraphic:InlineGraphicElement, textLine:TextLine) : Boolean {
-         var marginAndPaddingX:Number = this._blockProgression==BlockProgression.RL?-inlineGraphic.getEffectivePaddingRight():inlineGraphic.getEffectivePaddingLeft();
-         var marginAndPaddingY:Number = inlineGraphic.getEffectivePaddingTop();
-         var fteInline:DisplayObject = inlineGraphic.placeholderGraphic.parent;
-         this._curParcel.controller.addFloatAt(this._curParaStart+inlineGraphic.getElementRelativeStart(this._curParaElement),inlineGraphic.graphic,Float.NONE,marginAndPaddingX,marginAndPaddingY,fteInline?fteInline.alpha:1,fteInline?fteInline.transform.matrix:null,this._parcelList.totalDepth,0,this._curParcel.columnIndex,textLine);
-         return true;
-      }
-
-      protected function composeFloat(elem:InlineGraphicElement, afterLine:Boolean) : Boolean {
-         var logicalFloatWidth:* = NaN;
-         var logicalFloatHeight:* = NaN;
-         var floatType:String = null;
-         var floatRect:Rectangle = null;
-         var knockOutWidth:* = NaN;
-         var adjustTop:* = NaN;
-         if((elem.elementHeight==0)||(elem.elementWidth==0))
-         {
-            return true;
-         }
-         if(this._lastGoodStart==-1)
-         {
-            this._lastGoodStart=this._curElementStart+this._curElementOffset;
-         }
-         var verticalText:Boolean = this._blockProgression==BlockProgression.RL;
-         var effectiveLastLineDescent:Number = 0;
-         if(((afterLine)||(!this._atColumnStart))&&(!isNaN(this._lastLineDescent)))
-         {
-            effectiveLastLineDescent=this._lastLineDescent;
-         }
-         var spaceBefore:Number = 0;
-         if((this._curLine)&&(!(this._curParaElement==this._curLine.paragraph))&&(!this._atColumnStart))
-         {
-            spaceBefore=Math.max(this._curParaElement.computedFormat.paragraphSpaceBefore,this._paragraphSpaceCarried);
-         }
-         var totalDepth:Number = this._parcelList.totalDepth+spaceBefore+effectiveLastLineDescent;
-         if(!_floatSlug)
-         {
-            _floatSlug=new Slug();
-         }
-         if(verticalText)
-         {
-            logicalFloatWidth=elem.elementHeight+elem.getEffectivePaddingTop()+elem.getEffectivePaddingBottom();
-            logicalFloatHeight=elem.elementWidth+elem.getEffectivePaddingLeft()+elem.getEffectivePaddingRight();
-         }
-         else
-         {
-            logicalFloatWidth=elem.elementWidthWithMarginsAndPadding();
-            logicalFloatHeight=elem.elementHeightWithMarginsAndPadding();
-         }
-         var floatPosition:int = elem.getAbsoluteStart();
-         var floatFits:Boolean = this._parcelList.fitFloat(_floatSlug,totalDepth,logicalFloatWidth,logicalFloatHeight);
-         if((!floatFits)&&((this._curParcel.fitAny)||(this._curParcel.fitsInHeight(totalDepth,int(logicalFloatHeight))))&&((!this._curLine)||(this._curLine.absoluteStart==floatPosition)||(afterLine)))
-         {
-            floatFits=true;
-         }
-         if(floatFits)
-         {
-            floatType=elem.computedFloat;
-            if(floatType==Float.START)
-            {
-               floatType=this._curParaFormat.direction==Direction.LTR?Float.LEFT:Float.RIGHT;
-            }
-            else
-            {
-               if(floatType==Float.END)
-               {
-                  floatType=this._curParaFormat.direction==Direction.LTR?Float.RIGHT:Float.LEFT;
-               }
-            }
-            floatRect=this.calculateFloatBounds(elem,verticalText,floatType);
-            if(verticalText)
-            {
-               this._workingContentExtent=Math.max(this._workingContentExtent,floatRect.bottom);
-               this._workingContentHeight=Math.max(this._workingContentHeight,_floatSlug.depth+floatRect.width);
-               this._workingContentLogicalExtent=Math.max(this._workingContentLogicalExtent,floatRect.bottom);
-               this._accumulatedMinimumStart=Math.min(this._accumulatedMinimumStart,floatRect.y);
-            }
-            else
-            {
-               this._workingContentExtent=Math.max(this._workingContentExtent,floatRect.right);
-               this._workingContentHeight=Math.max(this._workingContentHeight,_floatSlug.depth+floatRect.height);
-               this._workingContentLogicalExtent=Math.max(this._workingContentLogicalExtent,floatRect.right);
-               this._accumulatedMinimumStart=Math.min(this._accumulatedMinimumStart,floatRect.x);
-            }
-            if(floatPosition==this._curParcelStart)
-            {
-               this._workingParcelLogicalTop=_floatSlug.depth;
-            }
-            knockOutWidth=(floatType==Float.LEFT?_floatSlug.leftMargin:_floatSlug.rightMargin)+logicalFloatWidth;
-            adjustTop=isNaN(this._lastLineDescent)?0:this._lastLineDescent;
-            this._curParcel.knockOut(knockOutWidth,_floatSlug.depth-adjustTop,_floatSlug.depth+logicalFloatHeight,floatType==Float.LEFT);
-            this._curParcel.controller.addFloatAt(floatPosition,elem.graphic,floatType,floatRect.x,floatRect.y,elem.computedFormat.textAlpha,null,_floatSlug.depth,knockOutWidth,this._curParcel.columnIndex,this._curParcel.controller.container);
-         }
-         return floatFits;
-      }
-
-      private function calculateFloatBounds(elem:InlineGraphicElement, verticalText:Boolean, floatType:String) : Rectangle {
-         var floatRect:Rectangle = new Rectangle();
-         if(verticalText)
-         {
-            floatRect.x=this._curParcel.right-_floatSlug.depth-elem.elementWidth-elem.getEffectivePaddingRight();
-            floatRect.y=floatType==Float.LEFT?this._curParcel.y+_floatSlug.leftMargin+elem.getEffectivePaddingTop():this._curParcel.bottom-_floatSlug.rightMargin-elem.getEffectivePaddingBottom()-elem.elementHeight;
-            floatRect.width=elem.elementWidth;
-            floatRect.height=elem.elementHeight;
-         }
-         else
-         {
-            floatRect.x=floatType==Float.LEFT?this._curParcel.x+_floatSlug.leftMargin+elem.getEffectivePaddingLeft():this._curParcel.right-_floatSlug.rightMargin-elem.getEffectivePaddingRight()-elem.elementWidth;
-            floatRect.y=this._curParcel.y+_floatSlug.depth+elem.getEffectivePaddingTop();
-            floatRect.width=elem.elementWidth;
-            floatRect.height=elem.elementHeight;
-         }
-         return floatRect;
-      }
-
-      private function calculateLineWidthExplicit(textLine:TextLine) : Number {
-         var isRTL:Boolean = this._curParaElement.computedFormat.direction==Direction.RTL;
-         var lastAtom:int = textLine.atomCount-1;
-         var endOfParagraph:Boolean = this._curLine.absoluteStart+this._curLine.textLength==this._curParaStart+this._curParaElement.textLength;
-         if((endOfParagraph)&&(!isRTL))
-         {
-            lastAtom--;
-         }
-         var bounds:Rectangle = textLine.getAtomBounds(lastAtom>=0?lastAtom:0);
-         var lineWidth:Number = this._blockProgression==BlockProgression.TB?lastAtom>=0?bounds.right:bounds.left:lastAtom>=0?bounds.bottom:bounds.top;
-         if(isRTL)
-         {
-            bounds=textLine.getAtomBounds((!(lastAtom==0))&&(endOfParagraph)?1:0);
-            lineWidth=lineWidth-(this._blockProgression==BlockProgression.TB?bounds.left:bounds.top);
-         }
-         return lineWidth;
-      }
-
-      private function getRightSideGap(curLine:TextFlowLine, aligned:Boolean) : Number {
-         var textLine:TextLine = null;
-         var numberLine:TextLine = null;
-         var elem:FlowGroupElement = curLine.paragraph;
-         var paraFormat:ITextLayoutFormat = elem.computedFormat;
-         var rightSideGap:Number = paraFormat.direction==Direction.RTL?paraFormat.paragraphStartIndent:paraFormat.paragraphEndIndent;
-         if((paraFormat.direction==Direction.RTL)&&(curLine.location&TextFlowLineLocation.FIRST))
-         {
-            rightSideGap=rightSideGap+paraFormat.textIndent;
-            if((curLine.hasNumberLine)&&(elem.getParentByType(ListItemElement).computedFormat.listStylePosition==ListStylePosition.INSIDE))
-            {
-               textLine=curLine.getTextLine(true);
-               numberLine=TextFlowLine.findNumberLine(textLine);
-               rightSideGap=rightSideGap+TextFlowLine.getNumberLineInsideLineWidth(numberLine);
-            }
-         }
-         rightSideGap=rightSideGap+(this._blockProgression==BlockProgression.TB?elem.getEffectivePaddingRight():elem.getEffectivePaddingBottom());
-         elem=elem.parent;
-         if(elem is TextFlow)
-         {
-            return rightSideGap;
-         }
-         continue loop0;
-      }
-
-      private function getLeftSideGap(curLine:TextFlowLine) : Number {
-         var textLine:TextLine = null;
-         var numberLine:TextLine = null;
-         var elem:FlowGroupElement = curLine.paragraph;
-         var paraFormat:ITextLayoutFormat = elem.computedFormat;
-         var leftSideGap:Number = paraFormat.direction==Direction.LTR?paraFormat.paragraphStartIndent:paraFormat.paragraphEndIndent;
-         if((paraFormat.direction==Direction.LTR)&&(curLine.location&TextFlowLineLocation.FIRST))
-         {
-            leftSideGap=leftSideGap+paraFormat.textIndent;
-            if((curLine.hasNumberLine)&&(elem.getParentByType(ListItemElement).computedFormat.listStylePosition==ListStylePosition.INSIDE))
-            {
-               textLine=curLine.getTextLine(true);
-               numberLine=TextFlowLine.findNumberLine(textLine);
-               leftSideGap=leftSideGap+TextFlowLine.getNumberLineInsideLineWidth(numberLine);
-            }
-         }
-         leftSideGap=leftSideGap+(this._blockProgression==BlockProgression.TB?elem.getEffectivePaddingLeft():elem.getEffectivePaddingTop());
-         elem=elem.parent;
-         if(elem is TextFlow)
-         {
-            return leftSideGap;
-         }
-         continue loop0;
-      }
-
-      private function calculateLineAlignmentAndBounds(textLine:TextLine, numberLine:TextLine, alignData:AlignData) : AlignData {
-         var extraSpace:* = NaN;
-         var coord:* = NaN;
-         var adjustedLogicalRight:* = NaN;
-         var textLineWidth:* = NaN;
-         var edgeAdjust:* = NaN;
-         var numberLineStart:* = NaN;
-         var numberLineMaxExtent:* = NaN;
-         var lineWidth:Number = this._parcelList.explicitLineBreaks?this.calculateLineWidthExplicit(textLine):textLine.textWidth;
-         var rightSideGap:Number = this._lineSlug.rightMargin;
-         var leftSideGap:Number = this._lineSlug.leftMargin;
-         var delta:Number = 0;
-         if(alignData)
-         {
-            alignData.rightSideGap=rightSideGap;
-            alignData.leftSideGap=leftSideGap;
-            alignData.lineWidth=lineWidth;
-            alignData.textIndent=this._curParaFormat.textIndent;
-            if(this._blockProgression==BlockProgression.TB)
-            {
-               if(!this._measuring)
-               {
-                  textLineWidth=textLine.textWidth;
-                  extraSpace=this._curParcel.width-leftSideGap-rightSideGap-textLineWidth;
-                  if(alignData.textAlign!=TextAlign.LEFT)
-                  {
-                     delta=alignData.textAlign==TextAlign.CENTER?extraSpace/2:extraSpace;
-                     coord=this._curParcel.x+leftSideGap+delta;
-                  }
-                  else
-                  {
-                     coord=this._curParcel.x+leftSideGap+extraSpace;
-                  }
-                  if(alignData.textAlign!=TextAlign.LEFT)
-                  {
-                     this._curLine.x=coord;
-                     textLine.x=coord;
-                  }
-                  else
-                  {
-                     textLine.x=this._curLine.x;
-                  }
-                  if((numberLine)&&(TextFlowLine.getNumberLineListStylePosition(numberLine)==ListStylePosition.OUTSIDE))
-                  {
-                     numberLine.x=computeNumberLineAlignment(alignData,textLine.textWidth,textLine.x,numberLine,coord,delta,extraSpace);
-                     this._curLine.numberLinePosition=numberLine.x;
-                  }
-                  releaseAlignData(alignData);
-                  alignData=null;
-               }
-            }
-            else
-            {
-               if(!this._measuring)
-               {
-                  extraSpace=this._curParcel.height-leftSideGap-rightSideGap-textLine.textWidth;
-                  if(alignData.textAlign!=TextAlign.LEFT)
-                  {
-                     delta=alignData.textAlign==TextAlign.CENTER?extraSpace/2:extraSpace;
-                     coord=this._curParcel.y+leftSideGap+delta;
-                  }
-                  else
-                  {
-                     coord=this._curParcel.y+leftSideGap+extraSpace;
-                  }
-                  if(alignData.textAlign!=TextAlign.LEFT)
-                  {
-                     this._curLine.y=coord;
-                     textLine.y=coord;
-                  }
-                  else
-                  {
-                     textLine.y=this._curLine.y;
-                  }
-                  if((numberLine)&&(TextFlowLine.getNumberLineListStylePosition(numberLine)==ListStylePosition.OUTSIDE))
-                  {
-                     numberLine.y=computeNumberLineAlignment(alignData,textLine.textWidth,textLine.y,numberLine,coord,delta,extraSpace);
-                     this._curLine.numberLinePosition=numberLine.y;
-                  }
-                  releaseAlignData(alignData);
-                  alignData=null;
-               }
-            }
-         }
-         var lineExtent:Number = lineWidth+leftSideGap+rightSideGap+delta;
-         this._curLine.lineExtent=lineExtent;
-         this._workingContentLogicalExtent=Math.max(this._workingContentLogicalExtent,lineExtent);
-         this._curLine.accumulatedLineExtent=Math.max(this._contentLogicalExtent,this._workingContentLogicalExtent);
-         if(!alignData)
-         {
-            edgeAdjust=this._curParaFormat.direction==Direction.LTR?Math.max(this._curLine.lineOffset,0):this._curParaFormat.paragraphEndIndent;
-            edgeAdjust=this._blockProgression==BlockProgression.RL?this._curLine.y-edgeAdjust:this._curLine.x-edgeAdjust;
-            if(numberLine)
-            {
-               numberLineStart=this._blockProgression==BlockProgression.TB?numberLine.x+this._curLine.x:numberLine.y+this._curLine.y;
-               edgeAdjust=Math.min(edgeAdjust,numberLineStart);
-               if(TextFlowLine.getNumberLineListStylePosition(numberLine)==ListStylePosition.OUTSIDE)
-               {
-                  numberLineMaxExtent=numberLineStart+TextFlowLine.getNumberLineInsideLineWidth(numberLine);
-                  numberLineMaxExtent=numberLineMaxExtent-lineExtent;
-                  if(numberLineMaxExtent>0)
-                  {
-                     delta=delta+numberLineMaxExtent;
-                  }
-               }
-            }
-            this._workingContentExtent=Math.max(this._workingContentExtent,lineWidth+leftSideGap+Math.max(0,rightSideGap)+delta);
-            this._curLine.accumulatedMinimumStart=this._accumulatedMinimumStart=Math.min(this._accumulatedMinimumStart,edgeAdjust);
-         }
-         if((this._curLine.absoluteStart==this._curParcelStart)&&(isNaN(this._workingParcelLogicalTop)))
-         {
-            this._workingParcelLogicalTop=this.computeTextFlowLineMinimumLogicalTop(this._curLine,textLine);
-         }
-         return alignData;
-      }
-
-      protected function composeNextLine() : TextLine {
-         return null;
-      }
-
-      protected function fitLineToParcel(textLine:TextLine, isNewLine:Boolean, numberLine:TextLine) : Boolean {
-         var composeYCoord:Number = this._lineSlug.depth;
-         this._curLine.setController(this._curParcel.controller,this._curParcel.columnIndex);
-         var spaceBefore:Number = Math.max(this._curLine.spaceBefore,this._paragraphSpaceCarried);
-         this.finishComposeLine(textLine,numberLine);
-         if(this._parcelList.getLineSlug(this._lineSlug,spaceBefore+((this._parcelList.atLast())&&(!(this._textFlow.configuration.overflowPolicy==OverflowPolicy.FIT_DESCENDERS))?this._curLine.height-this._curLine.ascent:this._curLine.height+this._curLine.descent),1,this._textIndent,this._curParaFormat.direction==Direction.LTR))
-         {
-            if((Twips.to(this._lineSlug.width)==this._curLine.outerTargetWidthTW)&&(!(this._lineSlug.depth==composeYCoord)))
-            {
-               this.finishComposeLine(textLine,numberLine);
-            }
-         }
-         else
-         {
-            spaceBefore=this._curLine.spaceBefore;
-            if((this._pushInFloats)&&(this._parcelList.currentParcel.fitAny)&&(this._pushInFloats.length<0))
-            {
-            }
-            else
-            {
-               this.advanceToNextParcel();
-               while(!((!this._curLine)||(this._parcelList.atEnd())))
-               {
-                  if(this._parcelList.getLineSlug(this._lineSlug,0,1,this._textIndent,this._curParaFormat.direction==Direction.LTR))
-                  {
-                     composeYCoord=this._lineSlug.depth;
-                     this._curLine.setController(this._curParcel.controller,this._curParcel.columnIndex);
-                  }
-                  else
-                  {
-                     continue;
-                  }
-               }
-               return false;
-            }
-         }
-         this.finishComposeLine(textLine,numberLine);
-         continue loop0;
-      }
-
-      protected function calculateLeadingParameters(curElement:FlowLeafElement, curElementStart:int, numberLine:TextLine=null) : Number {
-         var effectiveListMarkerFormat:ITextLayoutFormat = null;
-         var lineBox:Rectangle = null;
-         if(numberLine)
-         {
-            effectiveListMarkerFormat=TextFlowLine.getNumberLineSpanFormat(numberLine);
-         }
-         if(this._curLineLeadingModel==LeadingModel.BOX)
-         {
-            lineBox=this._curLine.getCSSLineBox(this._blockProgression,curElement,curElementStart,this._textFlow.flowComposer.swfContext,effectiveListMarkerFormat,numberLine);
-            this._curLineLeading=lineBox?lineBox.bottom:0;
-            return lineBox?-lineBox.top:0;
-         }
-         this._curLineLeading=this._curLine.getLineLeading(this._blockProgression,curElement,curElementStart);
-         if(effectiveListMarkerFormat)
-         {
-            this._curLineLeading=Math.max(this._curLineLeading,TextLayoutFormat.lineHeightProperty.computeActualPropertyValue(effectiveListMarkerFormat.lineHeight,effectiveListMarkerFormat.fontSize));
-         }
-         return 0;
-      }
-
-      protected function finishComposeLine(curTextLine:TextLine, numberLine:TextLine) : void {
-         var rise:* = NaN;
-         var run:* = NaN;
-         var containerAttrs:ITextLayoutFormat = null;
-         var baselineType:Object = null;
-         var firstBaselineOffsetBasis:String = null;
-         var firstLineAdjustment:LeadingAdjustment = null;
-         var curLineAscent:* = NaN;
-         var curLeadingDirectionUp:* = false;
-         var prevLeadingDirectionUp:* = false;
-         var prevLineFirstElement:FlowLeafElement = null;
-         var adjustment:LeadingAdjustment = null;
-         var spaceAdjust:* = NaN;
-         var lineHeight:Number = 0;
-         if(this._blockProgression==BlockProgression.RL)
-         {
-            rise=this._curParcel.x+this._curParcel.width-this._lineSlug.depth;
-            run=this._curParcel.y;
-         }
-         else
-         {
-            rise=this._curParcel.y+this._lineSlug.depth;
-            run=this._curParcel.x;
-         }
-         run=run+this._lineSlug.leftMargin;
-         this._curLineLeadingModel=this._curParaElement.getEffectiveLeadingModel();
-         var secondaryLeadingParameter:Number = this.calculateLeadingParameters(this._curElement,this._curElementStart,numberLine);
-         if(this._curLineLeadingModel==LeadingModel.BOX)
-         {
-            lineHeight=lineHeight+(this._atColumnStart?0:this._lastLineDescent);
-            lineHeight=lineHeight+secondaryLeadingParameter;
-         }
-         else
-         {
-            containerAttrs=this._curParcel.controller.computedFormat;
-            baselineType=BaselineOffset.LINE_HEIGHT;
-            if(this._atColumnStart)
-            {
-               if((!(containerAttrs.firstBaselineOffset==BaselineOffset.AUTO))&&(!(containerAttrs.verticalAlign==VerticalAlign.BOTTOM))&&(!(containerAttrs.verticalAlign==VerticalAlign.MIDDLE)))
-               {
-                  baselineType=containerAttrs.firstBaselineOffset;
-                  firstBaselineOffsetBasis=LocaleUtil.leadingModel(containerAttrs.locale)==LeadingModel.IDEOGRAPHIC_TOP_DOWN?TextBaseline.IDEOGRAPHIC_BOTTOM:TextBaseline.ROMAN;
-                  lineHeight=lineHeight-curTextLine.getBaselinePosition(firstBaselineOffsetBasis);
-               }
-               else
-               {
-                  if(this._curLineLeadingModel==LeadingModel.APPROXIMATE_TEXT_FIELD)
-                  {
-                     lineHeight=lineHeight+(Math.round(curTextLine.descent)+Math.round(curTextLine.ascent));
-                     if(this._blockProgression==BlockProgression.TB)
-                     {
-                        lineHeight=Math.round(rise+lineHeight)-rise;
-                     }
-                     else
-                     {
-                        lineHeight=rise-Math.round(rise-lineHeight);
-                     }
-                     baselineType=0;
-                  }
-                  else
-                  {
-                     baselineType=BaselineOffset.ASCENT;
-                     if(curTextLine.hasGraphicElement)
-                     {
-                        firstLineAdjustment=this.getLineAdjustmentForInline(curTextLine,this._curLineLeadingModel,true);
-                        if(firstLineAdjustment!=null)
-                        {
-                           if(this._blockProgression==BlockProgression.RL)
-                           {
-                              firstLineAdjustment.rise=-firstLineAdjustment.rise;
-                           }
-                           this._curLineLeading=this._curLineLeading+firstLineAdjustment.leading;
-                           rise=rise+firstLineAdjustment.rise;
-                        }
-                     }
-                     lineHeight=lineHeight-curTextLine.getBaselinePosition(TextBaseline.ROMAN);
-                  }
-               }
-            }
-            if(baselineType==BaselineOffset.ASCENT)
-            {
-               curLineAscent=this._curLine.getLineTypographicAscent(this._curElement,this._curElementStart,curTextLine);
-               if(numberLine)
-               {
-                  lineHeight=lineHeight+Math.max(curLineAscent,TextFlowLine.getTextLineTypographicAscent(numberLine,null,0,0));
-               }
-               else
-               {
-                  lineHeight=lineHeight+curLineAscent;
-               }
-            }
-            else
-            {
-               if(baselineType==BaselineOffset.LINE_HEIGHT)
-               {
-                  if(this._curLineLeadingModel==LeadingModel.APPROXIMATE_TEXT_FIELD)
-                  {
-                     lineHeight=lineHeight+(Math.round(this._lastLineDescent)+Math.round(curTextLine.ascent)+Math.round(curTextLine.descent)+Math.round(this._curLineLeading));
-                  }
-                  else
-                  {
-                     if(this._curLineLeadingModel==LeadingModel.ASCENT_DESCENT_UP)
-                     {
-                        lineHeight=lineHeight+(this._lastLineDescent+curTextLine.ascent+this._curLineLeading);
-                     }
-                     else
-                     {
-                        curLeadingDirectionUp=this._atColumnStart?true:ParagraphElement.useUpLeadingDirection(this._curLineLeadingModel);
-                        prevLeadingDirectionUp=(this._atColumnStart)||(this._lastLineLeadingModel=="")?true:ParagraphElement.useUpLeadingDirection(this._lastLineLeadingModel);
-                        if(curLeadingDirectionUp)
-                        {
-                           lineHeight=lineHeight+this._curLineLeading;
-                        }
-                        else
-                        {
-                           if(!prevLeadingDirectionUp)
-                           {
-                              lineHeight=lineHeight+this._lastLineLeading;
+                              _loc10_ = 0;
                            }
                            else
                            {
-                              lineHeight=lineHeight+(this._lastLineDescent+curTextLine.ascent);
+                              _loc10_ = BaselineOffset.ASCENT;
+                              if(param1.hasGraphicElement)
+                              {
+                                 _loc12_ = this.getLineAdjustmentForInline(param1,this._curLineLeadingModel,true);
+                                 if(_loc12_ != null)
+                                 {
+                                    if(this._blockProgression == BlockProgression.RL)
+                                    {
+                                       _loc12_.rise = -_loc12_.rise;
+                                    }
+                                    this._curLineLeading = this._curLineLeading + _loc12_.leading;
+                                    _loc4_ = _loc4_ + _loc12_.rise;
+                                 }
+                              }
+                              _loc3_ = _loc3_ - param1.getBaselinePosition(TextBaseline.ROMAN);
                            }
                         }
                      }
-                  }
-               }
-               else
-               {
-                  lineHeight=lineHeight+Number(baselineType);
-               }
-            }
-            if((curTextLine.hasGraphicElement)&&(!(baselineType==BaselineOffset.ASCENT)))
-            {
-               adjustment=this.getLineAdjustmentForInline(curTextLine,this._curLineLeadingModel,false);
-               if(adjustment!=null)
-               {
-                  if(this._blockProgression==BlockProgression.RL)
-                  {
-                     adjustment.rise=-adjustment.rise;
-                  }
-                  this._curLineLeading=this._curLineLeading+adjustment.leading;
-                  rise=rise+adjustment.rise;
-               }
-            }
-         }
-         rise=rise+(this._blockProgression==BlockProgression.RL?-lineHeight:lineHeight-curTextLine.ascent);
-         var spaceBefore:Number = (this._atColumnStart)&&(!(this._curLineLeadingModel==LeadingModel.BOX))?0:this._curLine.spaceBefore;
-         var spaceCarried:Number = this._atColumnStart?0:this._paragraphSpaceCarried;
-         if((!(spaceBefore==0))||(!(spaceCarried==0)))
-         {
-            spaceAdjust=Math.max(spaceBefore,spaceCarried);
-            rise=rise+(this._blockProgression==BlockProgression.RL?-spaceAdjust:spaceAdjust);
-         }
-         if(this._blockProgression==BlockProgression.TB)
-         {
-            this._curLine.setXYAndHeight(run,rise,lineHeight);
-         }
-         else
-         {
-            this._curLine.setXYAndHeight(rise,run,lineHeight);
-         }
-      }
-
-      private function applyTextAlign(effectiveParcelWidth:Number) : void {
-         var textLine:TextLine = null;
-         var numberLine:TextLine = null;
-         var line:TextFlowLine = null;
-         var alignData:AlignData = null;
-         var coord:* = NaN;
-         var delta:* = NaN;
-         var adjustedLogicalRight:* = NaN;
-         var extraSpace:* = NaN;
-         var leftSideGap:* = NaN;
-         var rightSideGap:* = NaN;
-         var numberLineMetric:* = NaN;
-         if(this._blockProgression==BlockProgression.TB)
-         {
-            for each (alignData in this._alignLines)
-            {
-               textLine=alignData.textLine;
-               rightSideGap=alignData.rightSideGap;
-               leftSideGap=alignData.leftSideGap;
-               extraSpace=effectiveParcelWidth-leftSideGap-rightSideGap-textLine.textWidth;
-               delta=alignData.textAlign==TextAlign.CENTER?extraSpace/2:extraSpace;
-               coord=this._curParcel.x+leftSideGap+delta;
-               if(alignData.textAlign!=TextAlign.LEFT)
-               {
-                  line=textLine.userData as TextFlowLine;
-                  if(line)
-                  {
-                     line.x=coord;
-                  }
-                  textLine.x=coord;
-               }
-               adjustedLogicalRight=alignData.lineWidth+coord+Math.max(rightSideGap,0);
-               this._parcelRight=Math.max(adjustedLogicalRight,this._parcelRight);
-               numberLine=TextFlowLine.findNumberLine(textLine);
-               if((numberLine)&&(TextFlowLine.getNumberLineListStylePosition(numberLine)==ListStylePosition.OUTSIDE))
-               {
-                  numberLine.x=computeNumberLineAlignment(alignData,textLine.textWidth,textLine.x,numberLine,coord,delta,extraSpace);
-                  alignData.textFlowLine.numberLinePosition=numberLine.x;
-                  numberLineMetric=numberLine.x+textLine.x;
-                  if(numberLineMetric<this._parcelLeft)
-                  {
-                     this._parcelLeft=numberLineMetric;
-                  }
-                  numberLineMetric=numberLineMetric+TextFlowLine.getNumberLineInsideLineWidth(numberLine);
-                  if(numberLineMetric>this._parcelRight)
-                  {
-                     this._parcelRight=numberLineMetric;
-                  }
-               }
-            }
-         }
-         else
-         {
-            for each (alignData in this._alignLines)
-            {
-               textLine=alignData.textLine;
-               rightSideGap=alignData.rightSideGap;
-               leftSideGap=alignData.leftSideGap;
-               extraSpace=effectiveParcelWidth-leftSideGap-rightSideGap-textLine.textWidth;
-               delta=alignData.textAlign==TextAlign.CENTER?extraSpace/2:extraSpace;
-               coord=this._curParcel.y+leftSideGap+delta;
-               if(alignData.textAlign!=TextAlign.LEFT)
-               {
-                  line=textLine.userData as TextFlowLine;
-                  if(line)
-                  {
-                     line.y=coord;
-                  }
-                  textLine.y=coord;
-               }
-               adjustedLogicalRight=alignData.lineWidth+coord+Math.max(rightSideGap,0);
-               this._parcelBottom=Math.max(adjustedLogicalRight,this._parcelBottom);
-               numberLine=TextFlowLine.findNumberLine(textLine);
-               if((numberLine)&&(TextFlowLine.getNumberLineListStylePosition(numberLine)==ListStylePosition.OUTSIDE))
-               {
-                  numberLine.y=computeNumberLineAlignment(alignData,textLine.textWidth,textLine.y,numberLine,coord,delta,extraSpace);
-                  alignData.textFlowLine.numberLinePosition=numberLine.y;
-                  numberLineMetric=numberLine.y+textLine.y;
-                  if(numberLineMetric<this._parcelTop)
-                  {
-                     this._parcelTop=numberLineMetric;
-                  }
-                  numberLineMetric=numberLineMetric+TextFlowLine.getNumberLineInsideLineWidth(numberLine);
-                  if(numberLineMetric>this._parcelBottom)
-                  {
-                     this._parcelBottom=numberLineMetric;
-                  }
-               }
-            }
-         }
-      }
-
-      protected function commitLastLineState(curLine:TextFlowLine) : void {
-         this._lastLineDescent=this._curLineLeadingModel==LeadingModel.BOX?this._curLineLeading:curLine.descent;
-         this._lastLineLeading=this._curLineLeading;
-         this._lastLineLeadingModel=this._curLineLeadingModel;
-      }
-
-      protected function doVerticalAlignment(canVerticalAlign:Boolean, nextParcel:Parcel) : void {
-         
-      }
-
-      protected function finalParcelAdjustment(controller:ContainerController) : void {
-         
-      }
-
-      protected function finishParcel(controller:ContainerController, nextParcel:Parcel) : Boolean {
-         if(this._curParcelStart==this._curElementStart+this._curElementOffset)
-         {
-            return false;
-         }
-         var totalDepth:Number = this._parcelList.totalDepth;
-         if((this._textFlow.configuration.overflowPolicy==OverflowPolicy.FIT_DESCENDERS)&&(!isNaN(this._lastLineDescent)))
-         {
-            totalDepth=totalDepth+this._lastLineDescent;
-         }
-         totalDepth=Math.max(totalDepth,this._contentCommittedHeight);
-         if(this._blockProgression==BlockProgression.TB)
-         {
-            this._parcelLeft=this._curParcel.x;
-            this._parcelTop=this._curParcel.y;
-            this._parcelRight=this._contentCommittedExtent+this._curParcel.x;
-            this._parcelBottom=totalDepth+this._curParcel.y;
-         }
-         else
-         {
-            this._parcelLeft=this._curParcel.right-totalDepth;
-            this._parcelTop=this._curParcel.y;
-            this._parcelRight=this._curParcel.right;
-            this._parcelBottom=this._contentCommittedExtent+this._curParcel.y;
-         }
-         if((this._alignLines)&&(this._alignLines.length<0))
-         {
-            this.applyTextAlign(this._contentLogicalExtent);
-            releaseAlignData(this._alignLines[0]);
-            this._alignLines.length=0;
-         }
-         var canVerticalAlign:Boolean = false;
-         if(this._blockProgression==BlockProgression.TB)
-         {
-            if((!controller.measureHeight)&&((!this._curParcel.fitAny)||(this._curElementStart+this._curElementOffset>=this._textFlow.textLength)))
-            {
-               canVerticalAlign=true;
-            }
-         }
-         else
-         {
-            if((!controller.measureWidth)&&((!this._curParcel.fitAny)||(this._curElementStart+this._curElementOffset>=this._textFlow.textLength)))
-            {
-               canVerticalAlign=true;
-            }
-         }
-         this.doVerticalAlignment(canVerticalAlign,nextParcel);
-         this.finalParcelAdjustment(controller);
-         this._contentLogicalExtent=0;
-         this._contentCommittedExtent=0;
-         this._contentCommittedHeight=0;
-         this._accumulatedMinimumStart=TextLine.MAX_LINE_WIDTH;
-         return true;
-      }
-
-      protected function applyVerticalAlignmentToColumn(controller:ContainerController, vjType:String, lines:Array, beginIndex:int, numLines:int, beginFloatIndex:int, endFloatIndex:int) : void {
-         var firstLineCoord:* = NaN;
-         var lastLineCoord:* = NaN;
-         var firstLine:IVerticalJustificationLine = lines[beginIndex];
-         var lastLine:IVerticalJustificationLine = lines[beginIndex+numLines-1];
-         if(this._blockProgression==BlockProgression.TB)
-         {
-            firstLineCoord=firstLine.y;
-            lastLineCoord=lastLine.y;
-         }
-         else
-         {
-            firstLineCoord=firstLine.x;
-            lastLineCoord=lastLine.x;
-         }
-         var firstLineAdjustment:Number = VerticalJustifier.applyVerticalAlignmentToColumn(controller,vjType,lines,beginIndex,numLines,beginFloatIndex,endFloatIndex);
-         if(!isNaN(this._parcelLogicalTop))
-         {
-            this._parcelLogicalTop=this._parcelLogicalTop+firstLineAdjustment;
-         }
-         if(this._blockProgression==BlockProgression.TB)
-         {
-            this._parcelTop=this._parcelTop+(firstLine.y-firstLineCoord);
-            this._parcelBottom=this._parcelBottom+(lastLine.y-lastLineCoord);
-         }
-         else
-         {
-            this._parcelRight=this._parcelRight+(firstLine.x-firstLineCoord);
-            this._parcelLeft=this._parcelLeft+(lastLine.x-lastLineCoord);
-         }
-      }
-
-      protected function finishController(controller:ContainerController) : void {
-         var paddingLeft:* = NaN;
-         var paddingTop:* = NaN;
-         var paddingRight:* = NaN;
-         var paddingBottom:* = NaN;
-         var controllerTextLength:int = this._curElementStart+this._curElementOffset-controller.absoluteStart;
-         if(controllerTextLength!=0)
-         {
-            paddingLeft=controller.getTotalPaddingLeft();
-            paddingTop=controller.getTotalPaddingTop();
-            paddingRight=controller.getTotalPaddingRight();
-            paddingBottom=controller.getTotalPaddingBottom();
-            if(this._blockProgression==BlockProgression.TB)
-            {
-               if(this._controllerLeft>0)
-               {
-                  if(this._controllerLeft<paddingLeft)
-                  {
-                     this._controllerLeft=0;
-                  }
-                  else
-                  {
-                     this._controllerLeft=this._controllerLeft-paddingLeft;
-                  }
-               }
-               if(this._controllerTop>0)
-               {
-                  if(this._controllerTop<paddingTop)
-                  {
-                     this._controllerTop=0;
-                  }
-                  else
-                  {
-                     this._controllerTop=this._controllerTop-paddingTop;
-                  }
-               }
-               if(isNaN(controller.compositionWidth))
-               {
-                  this._controllerRight=this._controllerRight+paddingRight;
-               }
-               else
-               {
-                  if(this._controllerRight<controller.compositionWidth)
-                  {
-                     if(this._controllerRight>controller.compositionWidth-paddingRight)
+                     if(_loc10_ == BaselineOffset.ASCENT)
                      {
-                        this._controllerRight=controller.compositionWidth;
-                     }
-                     else
-                     {
-                        this._controllerRight=this._controllerRight+paddingRight;
-                     }
-                  }
-               }
-               this._controllerBottom=this._controllerBottom+paddingBottom;
-            }
-            else
-            {
-               this._controllerLeft=this._controllerLeft-paddingLeft;
-               if(this._controllerTop>0)
-               {
-                  if(this._controllerTop<paddingTop)
-                  {
-                     this._controllerTop=0;
-                  }
-                  else
-                  {
-                     this._controllerTop=this._controllerTop-paddingTop;
-                  }
-               }
-               if(this._controllerRight<0)
-               {
-                  if(this._controllerRight>-paddingRight)
-                  {
-                     this._controllerRight=0;
-                  }
-                  else
-                  {
-                     this._controllerRight=this._controllerRight+paddingRight;
-                  }
-               }
-               if(isNaN(controller.compositionHeight))
-               {
-                  this._controllerBottom=this._controllerBottom+paddingBottom;
-               }
-               else
-               {
-                  if(this._controllerBottom<controller.compositionHeight)
-                  {
-                     if(this._controllerBottom>controller.compositionHeight-paddingBottom)
-                     {
-                        this._controllerBottom=controller.compositionHeight;
-                     }
-                     else
-                     {
-                        this._controllerBottom=this._controllerBottom+paddingBottom;
-                     }
-                  }
-               }
-            }
-            controller.setContentBounds(this._controllerLeft,this._controllerTop,this._controllerRight-this._controllerLeft,this._controllerBottom-this._controllerTop);
-         }
-         else
-         {
-            controller.setContentBounds(0,0,0,0);
-         }
-         controller.setTextLength(controllerTextLength);
-         controller.finalParcelStart=this._curParcelStart;
-      }
-
-      private function clearControllers(oldController:ContainerController, newController:ContainerController) : void {
-         var controllerToClear:ContainerController = null;
-         var firstToClear:int = oldController?this._flowComposer.getControllerIndex(oldController)+1:0;
-         var lastToClear:int = newController?this._flowComposer.getControllerIndex(newController):this._flowComposer.numControllers-1;
-         while(firstToClear<=lastToClear)
-         {
-            controllerToClear=ContainerController(this._flowComposer.getControllerAt(firstToClear));
-            controllerToClear.setContentBounds(0,0,0,0);
-            controllerToClear.setTextLength(0);
-            controllerToClear.clearComposedLines(controllerToClear.absoluteStart);
-            controllerToClear.clearFloatsAt(controllerToClear.absoluteStart);
-            firstToClear++;
-         }
-      }
-
-      protected function advanceToNextParcel() : void {
-         this.parcelHasChanged(this._parcelList.atLast()?null:this._parcelList.getParcelAt(this._parcelList.currentParcelIndex+1));
-         this._parcelList.next();
-      }
-
-      protected function parcelHasChanged(newParcel:Parcel) : void {
-         var oldController:ContainerController = this._curParcel?ContainerController(this._curParcel.controller):null;
-         var newController:ContainerController = newParcel?ContainerController(newParcel.controller):null;
-         if((!(oldController==null))&&(!(this._lastGoodStart==-1)))
-         {
-            oldController.clearFloatsAt(this._lastGoodStart);
-            this._curLine=null;
-            this._linePass=0;
-            this._pushInFloats.length=0;
-         }
-         if(this._curParcel!=null)
-         {
-            if(this.finishParcel(oldController,newParcel))
-            {
-               if(this._parcelLeft<this._controllerLeft)
-               {
-                  this._controllerLeft=this._parcelLeft;
-               }
-               if(this._parcelRight>this._controllerRight)
-               {
-                  this._controllerRight=this._parcelRight;
-               }
-               if(this._parcelTop<this._controllerTop)
-               {
-                  this._controllerTop=this._parcelTop;
-               }
-               if(this._parcelBottom>this._controllerBottom)
-               {
-                  this._controllerBottom=this._parcelBottom;
-               }
-            }
-         }
-         if(oldController!=newController)
-         {
-            if(oldController)
-            {
-               this.finishController(oldController);
-            }
-            this.resetControllerBounds();
-            if(this._flowComposer.numControllers>1)
-            {
-               if((oldController==null)&&(this._startController))
-               {
-                  this.clearControllers(this._startController,newController);
-               }
-               else
-               {
-                  this.clearControllers(oldController,newController);
-               }
-            }
-            if(newController)
-            {
-               if(oldController)
-               {
-                  this._startComposePosition=newController.absoluteStart;
-               }
-               this.calculateControllerVisibleBounds(newController);
-            }
-         }
-         this._curParcel=newParcel;
-         this._curParcelStart=this._curElementStart+this._curElementOffset;
-         this._atColumnStart=true;
-         this._workingTotalDepth=0;
-         if(newController)
-         {
-            this._verticalSpaceCarried=this._blockProgression==BlockProgression.RL?newController.getTotalPaddingRight():newController.getTotalPaddingTop();
-            this._measuring=(this._blockProgression==BlockProgression.TB)&&(newController.measureWidth)||(this._blockProgression==BlockProgression.RL)&&(newController.measureHeight);
-         }
-      }
-
-      private function calculateControllerVisibleBounds(controller:ContainerController) : void {
-         var width:Number = controller.measureWidth?Number.MAX_VALUE:controller.compositionWidth;
-         var xScroll:Number = controller.horizontalScrollPosition;
-         this._controllerVisibleBoundsXTW=Twips.roundTo(this._blockProgression==BlockProgression.RL?xScroll-width:xScroll);
-         this._controllerVisibleBoundsYTW=Twips.roundTo(controller.verticalScrollPosition);
-         this._controllerVisibleBoundsWidthTW=controller.measureWidth?int.MAX_VALUE:Twips.to(controller.compositionWidth);
-         this._controllerVisibleBoundsHeightTW=controller.measureHeight?int.MAX_VALUE:Twips.to(controller.compositionHeight);
-      }
-
-      private function getLineAdjustmentForInline(curTextLine:TextLine, curLeadingDir:String, isFirstLine:Boolean) : LeadingAdjustment {
-         var inlineImg:InlineGraphicElement = null;
-         var domBaseline:String = null;
-         var curAdjustment:LeadingAdjustment = null;
-         var tempSize:* = NaN;
-         var adjustment:LeadingAdjustment = null;
-         var para:ParagraphElement = this._curLine.paragraph;
-         var flowElem:FlowLeafElement = this._curElement;
-         var curPos:int = flowElem.getAbsoluteStart();
-         var largestPointSize:Number = flowElem.getEffectiveFontSize();
-         var largestImg:Number = 0;
-         while((flowElem)&&(curPos>this._curLine.absoluteStart+this._curLine.textLength))
-         {
-            if((curPos>=this._curLine.absoluteStart)||(curPos+flowElem.textLength>=this._curLine.absoluteStart))
-            {
-               if(flowElem is InlineGraphicElement)
-               {
-                  inlineImg=flowElem as InlineGraphicElement;
-                  if((inlineImg.effectiveFloat==Float.NONE)&&(!((this._blockProgression==BlockProgression.RL)&&(flowElem.parent is TCYElement))))
-                  {
-                     if(largestImg<inlineImg.getEffectiveFontSize())
-                     {
-                        largestImg=inlineImg.getEffectiveFontSize();
-                        if(largestImg>=largestPointSize)
+                        _loc13_ = this._curLine.getLineTypographicAscent(this._curElement,this._curElementStart,param1);
+                        if(param2)
                         {
-                           largestImg=largestImg;
-                           domBaseline=flowElem.computedFormat.dominantBaseline;
-                           if(domBaseline==FormatValue.AUTO)
+                           _loc3_ = _loc3_ + Math.max(_loc13_,TextFlowLine.getTextLineTypographicAscent(param2,null,0,0));
+                        }
+                        else
+                        {
+                           _loc3_ = _loc3_ + _loc13_;
+                        }
+                     }
+                     else
+                     {
+                        if(_loc10_ == BaselineOffset.LINE_HEIGHT)
+                        {
+                           if(this._curLineLeadingModel == LeadingModel.APPROXIMATE_TEXT_FIELD)
                            {
-                              domBaseline=LocaleUtil.dominantBaseline(para.computedFormat.locale);
+                              _loc3_ = _loc3_ + (Math.round(this._lastLineDescent) + Math.round(param1.ascent) + Math.round(param1.descent) + Math.round(this._curLineLeading));
                            }
-                           if(domBaseline==TextBaseline.IDEOGRAPHIC_CENTER)
+                           else
                            {
-                              curAdjustment=this.calculateLinePlacementAdjustment(curTextLine,domBaseline,curLeadingDir,inlineImg,isFirstLine);
-                              if((!adjustment)||(Math.abs(curAdjustment.rise)<Math.abs(adjustment.rise))||(Math.abs(curAdjustment.leading)<Math.abs(adjustment.leading)))
+                              if(this._curLineLeadingModel == LeadingModel.ASCENT_DESCENT_UP)
                               {
-                                 if(adjustment)
+                                 _loc3_ = _loc3_ + (this._lastLineDescent + param1.ascent + this._curLineLeading);
+                              }
+                              else
+                              {
+                                 _loc14_ = this._atColumnStart?true:ParagraphElement.useUpLeadingDirection(this._curLineLeadingModel);
+                                 _loc15_ = (this._atColumnStart) || this._lastLineLeadingModel == ""?true:ParagraphElement.useUpLeadingDirection(this._lastLineLeadingModel);
+                                 if(_loc14_)
                                  {
-                                    adjustment.rise=curAdjustment.rise;
-                                    adjustment.leading=curAdjustment.leading;
+                                    _loc3_ = _loc3_ + this._curLineLeading;
                                  }
                                  else
                                  {
-                                    adjustment=curAdjustment;
+                                    if(!_loc15_)
+                                    {
+                                       _loc3_ = _loc3_ + this._lastLineLeading;
+                                    }
+                                    else
+                                    {
+                                       _loc3_ = _loc3_ + (this._lastLineDescent + param1.ascent);
+                                    }
                                  }
                               }
                            }
                         }
+                        else
+                        {
+                           _loc3_ = _loc3_ + Number(_loc10_);
+                        }
+                     }
+                     if((param1.hasGraphicElement) && !(_loc10_ == BaselineOffset.ASCENT))
+                     {
+                        _loc17_ = this.getLineAdjustmentForInline(param1,this._curLineLeadingModel,false);
+                        if(_loc17_ != null)
+                        {
+                           if(this._blockProgression == BlockProgression.RL)
+                           {
+                              _loc17_.rise = -_loc17_.rise;
+                           }
+                           this._curLineLeading = this._curLineLeading + _loc17_.leading;
+                           _loc4_ = _loc4_ + _loc17_.rise;
+                        }
+                     }
+                  }
+                  _loc4_ = _loc4_ + (this._blockProgression == BlockProgression.RL?-_loc3_:_loc3_ - param1.ascent);
+                  var _loc7_:Number = (this._atColumnStart) && !(this._curLineLeadingModel == LeadingModel.BOX)?0:this._curLine.spaceBefore;
+                  var _loc8_:Number = this._atColumnStart?0:this._paragraphSpaceCarried;
+                  if(!(_loc7_ == 0) || !(_loc8_ == 0))
+                  {
+                     _loc18_ = Math.max(_loc7_,_loc8_);
+                     _loc4_ = _loc4_ + (this._blockProgression == BlockProgression.RL?-_loc18_:_loc18_);
+                  }
+                  if(this._blockProgression == BlockProgression.TB)
+                  {
+                     this._curLine.setXYAndHeight(_loc5_,_loc4_,_loc3_);
+                  }
+                  else
+                  {
+                     this._curLine.setXYAndHeight(_loc4_,_loc5_,_loc3_);
+                  }
+               }
+               
+               private function applyTextAlign(param1:Number) : void {
+                  var _loc2_:TextLine = null;
+                  var _loc3_:TextLine = null;
+                  var _loc4_:TextFlowLine = null;
+                  var _loc5_:AlignData = null;
+                  var _loc6_:* = NaN;
+                  var _loc7_:* = NaN;
+                  var _loc8_:* = NaN;
+                  var _loc9_:* = NaN;
+                  var _loc10_:* = NaN;
+                  var _loc11_:* = NaN;
+                  var _loc12_:* = NaN;
+                  if(this._blockProgression == BlockProgression.TB)
+                  {
+                     for each (_loc5_ in this._alignLines)
+                     {
+                        _loc2_ = _loc5_.textLine;
+                        _loc11_ = _loc5_.rightSideGap;
+                        _loc10_ = _loc5_.leftSideGap;
+                        _loc9_ = param1 - _loc10_ - _loc11_ - _loc2_.textWidth;
+                        _loc7_ = _loc5_.textAlign == TextAlign.CENTER?_loc9_ / 2:_loc9_;
+                        _loc6_ = this._curParcel.x + _loc10_ + _loc7_;
+                        if(_loc5_.textAlign != TextAlign.LEFT)
+                        {
+                           _loc4_ = _loc2_.userData as TextFlowLine;
+                           if(_loc4_)
+                           {
+                              _loc4_.x = _loc6_;
+                           }
+                           _loc2_.x = _loc6_;
+                        }
+                        _loc8_ = _loc5_.lineWidth + _loc6_ + Math.max(_loc11_,0);
+                        this._parcelRight = Math.max(_loc8_,this._parcelRight);
+                        _loc3_ = TextFlowLine.findNumberLine(_loc2_);
+                        if((_loc3_) && TextFlowLine.getNumberLineListStylePosition(_loc3_) == ListStylePosition.OUTSIDE)
+                        {
+                           _loc3_.x = computeNumberLineAlignment(_loc5_,_loc2_.textWidth,_loc2_.x,_loc3_,_loc6_,_loc7_,_loc9_);
+                           _loc5_.textFlowLine.numberLinePosition = _loc3_.x;
+                           _loc12_ = _loc3_.x + _loc2_.x;
+                           if(_loc12_ < this._parcelLeft)
+                           {
+                              this._parcelLeft = _loc12_;
+                           }
+                           _loc12_ = _loc12_ + TextFlowLine.getNumberLineInsideLineWidth(_loc3_);
+                           if(_loc12_ > this._parcelRight)
+                           {
+                              this._parcelRight = _loc12_;
+                           }
+                        }
+                     }
+                  }
+                  else
+                  {
+                     for each (_loc5_ in this._alignLines)
+                     {
+                        _loc2_ = _loc5_.textLine;
+                        _loc11_ = _loc5_.rightSideGap;
+                        _loc10_ = _loc5_.leftSideGap;
+                        _loc9_ = param1 - _loc10_ - _loc11_ - _loc2_.textWidth;
+                        _loc7_ = _loc5_.textAlign == TextAlign.CENTER?_loc9_ / 2:_loc9_;
+                        _loc6_ = this._curParcel.y + _loc10_ + _loc7_;
+                        if(_loc5_.textAlign != TextAlign.LEFT)
+                        {
+                           _loc4_ = _loc2_.userData as TextFlowLine;
+                           if(_loc4_)
+                           {
+                              _loc4_.y = _loc6_;
+                           }
+                           _loc2_.y = _loc6_;
+                        }
+                        _loc8_ = _loc5_.lineWidth + _loc6_ + Math.max(_loc11_,0);
+                        this._parcelBottom = Math.max(_loc8_,this._parcelBottom);
+                        _loc3_ = TextFlowLine.findNumberLine(_loc2_);
+                        if((_loc3_) && TextFlowLine.getNumberLineListStylePosition(_loc3_) == ListStylePosition.OUTSIDE)
+                        {
+                           _loc3_.y = computeNumberLineAlignment(_loc5_,_loc2_.textWidth,_loc2_.y,_loc3_,_loc6_,_loc7_,_loc9_);
+                           _loc5_.textFlowLine.numberLinePosition = _loc3_.y;
+                           _loc12_ = _loc3_.y + _loc2_.y;
+                           if(_loc12_ < this._parcelTop)
+                           {
+                              this._parcelTop = _loc12_;
+                           }
+                           _loc12_ = _loc12_ + TextFlowLine.getNumberLineInsideLineWidth(_loc3_);
+                           if(_loc12_ > this._parcelBottom)
+                           {
+                              this._parcelBottom = _loc12_;
+                           }
+                        }
                      }
                   }
                }
-               else
-               {
-                  tempSize=flowElem.getEffectiveFontSize();
-                  if(largestPointSize<=tempSize)
+               
+               protected function commitLastLineState(param1:TextFlowLine) : void {
+                  this._lastLineDescent = this._curLineLeadingModel == LeadingModel.BOX?this._curLineLeading:param1.descent;
+                  this._lastLineLeading = this._curLineLeading;
+                  this._lastLineLeadingModel = this._curLineLeadingModel;
+               }
+               
+               protected function doVerticalAlignment(param1:Boolean, param2:Parcel) : void {
+               }
+               
+               protected function finalParcelAdjustment(param1:ContainerController) : void {
+               }
+               
+               protected function finishParcel(param1:ContainerController, param2:Parcel) : Boolean {
+                  if(this._curParcelStart == this._curElementStart + this._curElementOffset)
                   {
-                     largestPointSize=tempSize;
+                     return false;
                   }
-                  if((adjustment)&&(largestImg>largestPointSize))
+                  var _loc3_:Number = this._parcelList.totalDepth;
+                  if(this._textFlow.configuration.overflowPolicy == OverflowPolicy.FIT_DESCENDERS && !isNaN(this._lastLineDescent))
                   {
-                     adjustment.leading=0;
-                     adjustment.rise=0;
+                     _loc3_ = _loc3_ + this._lastLineDescent;
+                  }
+                  _loc3_ = Math.max(_loc3_,this._contentCommittedHeight);
+                  if(this._blockProgression == BlockProgression.TB)
+                  {
+                     this._parcelLeft = this._curParcel.x;
+                     this._parcelTop = this._curParcel.y;
+                     this._parcelRight = this._contentCommittedExtent + this._curParcel.x;
+                     this._parcelBottom = _loc3_ + this._curParcel.y;
+                  }
+                  else
+                  {
+                     this._parcelLeft = this._curParcel.right - _loc3_;
+                     this._parcelTop = this._curParcel.y;
+                     this._parcelRight = this._curParcel.right;
+                     this._parcelBottom = this._contentCommittedExtent + this._curParcel.y;
+                  }
+                  if((this._alignLines) && this._alignLines.length > 0)
+                  {
+                     this.applyTextAlign(this._contentLogicalExtent);
+                     releaseAlignData(this._alignLines[0]);
+                     this._alignLines.length = 0;
+                  }
+                  var _loc4_:* = false;
+                  if(this._blockProgression == BlockProgression.TB)
+                  {
+                     if(!param1.measureHeight && (!this._curParcel.fitAny || this._curElementStart + this._curElementOffset >= this._textFlow.textLength))
+                     {
+                        _loc4_ = true;
+                     }
+                  }
+                  else
+                  {
+                     if(!param1.measureWidth && (!this._curParcel.fitAny || this._curElementStart + this._curElementOffset >= this._textFlow.textLength))
+                     {
+                        _loc4_ = true;
+                     }
+                  }
+                  this.doVerticalAlignment(_loc4_,param2);
+                  this.finalParcelAdjustment(param1);
+                  this._contentLogicalExtent = 0;
+                  this._contentCommittedExtent = 0;
+                  this._contentCommittedHeight = 0;
+                  this._accumulatedMinimumStart = TextLine.MAX_LINE_WIDTH;
+                  return true;
+               }
+               
+               protected function applyVerticalAlignmentToColumn(param1:ContainerController, param2:String, param3:Array, param4:int, param5:int, param6:int, param7:int) : void {
+                  var _loc10_:* = NaN;
+                  var _loc11_:* = NaN;
+                  var _loc8_:IVerticalJustificationLine = param3[param4];
+                  var _loc9_:IVerticalJustificationLine = param3[param4 + param5-1];
+                  if(this._blockProgression == BlockProgression.TB)
+                  {
+                     _loc10_ = _loc8_.y;
+                     _loc11_ = _loc9_.y;
+                  }
+                  else
+                  {
+                     _loc10_ = _loc8_.x;
+                     _loc11_ = _loc9_.x;
+                  }
+                  var _loc12_:Number = VerticalJustifier.applyVerticalAlignmentToColumn(param1,param2,param3,param4,param5,param6,param7);
+                  if(!isNaN(this._parcelLogicalTop))
+                  {
+                     this._parcelLogicalTop = this._parcelLogicalTop + _loc12_;
+                  }
+                  if(this._blockProgression == BlockProgression.TB)
+                  {
+                     this._parcelTop = this._parcelTop + (_loc8_.y - _loc10_);
+                     this._parcelBottom = this._parcelBottom + (_loc9_.y - _loc11_);
+                  }
+                  else
+                  {
+                     this._parcelRight = this._parcelRight + (_loc8_.x - _loc10_);
+                     this._parcelLeft = this._parcelLeft + (_loc9_.x - _loc11_);
+                  }
+               }
+               
+               protected function finishController(param1:ContainerController) : void {
+                  var _loc3_:* = NaN;
+                  var _loc4_:* = NaN;
+                  var _loc5_:* = NaN;
+                  var _loc6_:* = NaN;
+                  var _loc2_:int = this._curElementStart + this._curElementOffset - param1.absoluteStart;
+                  if(_loc2_ != 0)
+                  {
+                     _loc3_ = param1.getTotalPaddingLeft();
+                     _loc4_ = param1.getTotalPaddingTop();
+                     _loc5_ = param1.getTotalPaddingRight();
+                     _loc6_ = param1.getTotalPaddingBottom();
+                     if(this._blockProgression == BlockProgression.TB)
+                     {
+                        if(this._controllerLeft > 0)
+                        {
+                           if(this._controllerLeft < _loc3_)
+                           {
+                              this._controllerLeft = 0;
+                           }
+                           else
+                           {
+                              this._controllerLeft = this._controllerLeft - _loc3_;
+                           }
+                        }
+                        if(this._controllerTop > 0)
+                        {
+                           if(this._controllerTop < _loc4_)
+                           {
+                              this._controllerTop = 0;
+                           }
+                           else
+                           {
+                              this._controllerTop = this._controllerTop - _loc4_;
+                           }
+                        }
+                        if(isNaN(param1.compositionWidth))
+                        {
+                           this._controllerRight = this._controllerRight + _loc5_;
+                        }
+                        else
+                        {
+                           if(this._controllerRight < param1.compositionWidth)
+                           {
+                              if(this._controllerRight > param1.compositionWidth - _loc5_)
+                              {
+                                 this._controllerRight = param1.compositionWidth;
+                              }
+                              else
+                              {
+                                 this._controllerRight = this._controllerRight + _loc5_;
+                              }
+                           }
+                        }
+                        this._controllerBottom = this._controllerBottom + _loc6_;
+                     }
+                     else
+                     {
+                        this._controllerLeft = this._controllerLeft - _loc3_;
+                        if(this._controllerTop > 0)
+                        {
+                           if(this._controllerTop < _loc4_)
+                           {
+                              this._controllerTop = 0;
+                           }
+                           else
+                           {
+                              this._controllerTop = this._controllerTop - _loc4_;
+                           }
+                        }
+                        if(this._controllerRight < 0)
+                        {
+                           if(this._controllerRight > -_loc5_)
+                           {
+                              this._controllerRight = 0;
+                           }
+                           else
+                           {
+                              this._controllerRight = this._controllerRight + _loc5_;
+                           }
+                        }
+                        if(isNaN(param1.compositionHeight))
+                        {
+                           this._controllerBottom = this._controllerBottom + _loc6_;
+                        }
+                        else
+                        {
+                           if(this._controllerBottom < param1.compositionHeight)
+                           {
+                              if(this._controllerBottom > param1.compositionHeight - _loc6_)
+                              {
+                                 this._controllerBottom = param1.compositionHeight;
+                              }
+                              else
+                              {
+                                 this._controllerBottom = this._controllerBottom + _loc6_;
+                              }
+                           }
+                        }
+                     }
+                     param1.setContentBounds(this._controllerLeft,this._controllerTop,this._controllerRight - this._controllerLeft,this._controllerBottom - this._controllerTop);
+                  }
+                  else
+                  {
+                     param1.setContentBounds(0,0,0,0);
+                  }
+                  param1.setTextLength(_loc2_);
+                  param1.finalParcelStart = this._curParcelStart;
+               }
+               
+               private function clearControllers(param1:ContainerController, param2:ContainerController) : void {
+                  var _loc5_:ContainerController = null;
+                  var _loc3_:int = param1?this._flowComposer.getControllerIndex(param1) + 1:0;
+                  var _loc4_:int = param2?this._flowComposer.getControllerIndex(param2):this._flowComposer.numControllers-1;
+                  while(_loc3_ <= _loc4_)
+                  {
+                     _loc5_ = ContainerController(this._flowComposer.getControllerAt(_loc3_));
+                     _loc5_.setContentBounds(0,0,0,0);
+                     _loc5_.setTextLength(0);
+                     _loc5_.clearComposedLines(_loc5_.absoluteStart);
+                     _loc5_.clearFloatsAt(_loc5_.absoluteStart);
+                     _loc3_++;
+                  }
+               }
+               
+               protected function advanceToNextParcel() : void {
+                  this.parcelHasChanged(this._parcelList.atLast()?null:this._parcelList.getParcelAt(this._parcelList.currentParcelIndex + 1));
+                  this._parcelList.next();
+               }
+               
+               protected function parcelHasChanged(param1:Parcel) : void {
+                  var _loc2_:ContainerController = this._curParcel?ContainerController(this._curParcel.controller):null;
+                  var _loc3_:ContainerController = param1?ContainerController(param1.controller):null;
+                  if(!(_loc2_ == null) && !(this._lastGoodStart == -1))
+                  {
+                     _loc2_.clearFloatsAt(this._lastGoodStart);
+                     this._curLine = null;
+                     this._linePass = 0;
+                     this._pushInFloats.length = 0;
+                  }
+                  if(this._curParcel != null)
+                  {
+                     if(this.finishParcel(_loc2_,param1))
+                     {
+                        if(this._parcelLeft < this._controllerLeft)
+                        {
+                           this._controllerLeft = this._parcelLeft;
+                        }
+                        if(this._parcelRight > this._controllerRight)
+                        {
+                           this._controllerRight = this._parcelRight;
+                        }
+                        if(this._parcelTop < this._controllerTop)
+                        {
+                           this._controllerTop = this._parcelTop;
+                        }
+                        if(this._parcelBottom > this._controllerBottom)
+                        {
+                           this._controllerBottom = this._parcelBottom;
+                        }
+                     }
+                  }
+                  if(_loc2_ != _loc3_)
+                  {
+                     if(_loc2_)
+                     {
+                        this.finishController(_loc2_);
+                     }
+                     this.resetControllerBounds();
+                     if(this._flowComposer.numControllers > 1)
+                     {
+                        if(_loc2_ == null && (this._startController))
+                        {
+                           this.clearControllers(this._startController,_loc3_);
+                        }
+                        else
+                        {
+                           this.clearControllers(_loc2_,_loc3_);
+                        }
+                     }
+                     if(_loc3_)
+                     {
+                        if(_loc2_)
+                        {
+                           this._startComposePosition = _loc3_.absoluteStart;
+                        }
+                        this.calculateControllerVisibleBounds(_loc3_);
+                     }
+                  }
+                  this._curParcel = param1;
+                  this._curParcelStart = this._curElementStart + this._curElementOffset;
+                  this._atColumnStart = true;
+                  this._workingTotalDepth = 0;
+                  if(_loc3_)
+                  {
+                     this._verticalSpaceCarried = this._blockProgression == BlockProgression.RL?_loc3_.getTotalPaddingRight():_loc3_.getTotalPaddingTop();
+                     this._measuring = this._blockProgression == BlockProgression.TB && (_loc3_.measureWidth) || this._blockProgression == BlockProgression.RL && (_loc3_.measureHeight);
+                  }
+               }
+               
+               private function calculateControllerVisibleBounds(param1:ContainerController) : void {
+                  var _loc2_:Number = param1.measureWidth?Number.MAX_VALUE:param1.compositionWidth;
+                  var _loc3_:Number = param1.horizontalScrollPosition;
+                  this._controllerVisibleBoundsXTW = Twips.roundTo(this._blockProgression == BlockProgression.RL?_loc3_ - _loc2_:_loc3_);
+                  this._controllerVisibleBoundsYTW = Twips.roundTo(param1.verticalScrollPosition);
+                  this._controllerVisibleBoundsWidthTW = param1.measureWidth?int.MAX_VALUE:Twips.to(param1.compositionWidth);
+                  this._controllerVisibleBoundsHeightTW = param1.measureHeight?int.MAX_VALUE:Twips.to(param1.compositionHeight);
+               }
+               
+               private function getLineAdjustmentForInline(param1:TextLine, param2:String, param3:Boolean) : LeadingAdjustment {
+                  var _loc10_:InlineGraphicElement = null;
+                  var _loc11_:String = null;
+                  var _loc12_:LeadingAdjustment = null;
+                  var _loc13_:* = NaN;
+                  var _loc4_:LeadingAdjustment = null;
+                  var _loc5_:ParagraphElement = this._curLine.paragraph;
+                  var _loc6_:FlowLeafElement = this._curElement;
+                  var _loc7_:int = _loc6_.getAbsoluteStart();
+                  var _loc8_:Number = _loc6_.getEffectiveFontSize();
+                  var _loc9_:Number = 0;
+                  while((_loc6_) && _loc7_ < this._curLine.absoluteStart + this._curLine.textLength)
+                  {
+                     if(_loc7_ >= this._curLine.absoluteStart || _loc7_ + _loc6_.textLength >= this._curLine.absoluteStart)
+                     {
+                        if(_loc6_ is InlineGraphicElement)
+                        {
+                           _loc10_ = _loc6_ as InlineGraphicElement;
+                           if(_loc10_.effectiveFloat == Float.NONE && !(this._blockProgression == BlockProgression.RL && _loc6_.parent is TCYElement))
+                           {
+                              if(_loc9_ < _loc10_.getEffectiveFontSize())
+                              {
+                                 _loc9_ = _loc10_.getEffectiveFontSize();
+                                 if(_loc9_ >= _loc8_)
+                                 {
+                                    _loc9_ = _loc9_;
+                                    _loc11_ = _loc6_.computedFormat.dominantBaseline;
+                                    if(_loc11_ == FormatValue.AUTO)
+                                    {
+                                       _loc11_ = LocaleUtil.dominantBaseline(_loc5_.computedFormat.locale);
+                                    }
+                                    if(_loc11_ == TextBaseline.IDEOGRAPHIC_CENTER)
+                                    {
+                                       _loc12_ = this.calculateLinePlacementAdjustment(param1,_loc11_,param2,_loc10_,param3);
+                                       if(!_loc4_ || Math.abs(_loc12_.rise) > Math.abs(_loc4_.rise) || Math.abs(_loc12_.leading) > Math.abs(_loc4_.leading))
+                                       {
+                                          if(_loc4_)
+                                          {
+                                             _loc4_.rise = _loc12_.rise;
+                                             _loc4_.leading = _loc12_.leading;
+                                          }
+                                          else
+                                          {
+                                             _loc4_ = _loc12_;
+                                          }
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                        else
+                        {
+                           _loc13_ = _loc6_.getEffectiveFontSize();
+                           if(_loc8_ <= _loc13_)
+                           {
+                              _loc8_ = _loc13_;
+                           }
+                           if((_loc4_) && _loc9_ < _loc8_)
+                           {
+                              _loc4_.leading = 0;
+                              _loc4_.rise = 0;
+                           }
+                        }
+                     }
+                     _loc7_ = _loc7_ + _loc6_.textLength;
+                     _loc6_ = _loc6_.getNextLeaf(_loc5_);
+                  }
+                  return _loc4_;
+               }
+               
+               public function get swfContext() : ISWFContext {
+                  var _loc1_:ISWFContext = this._flowComposer.swfContext;
+                  return _loc1_?_loc1_:GlobalSWFContext.globalSWFContext;
+               }
+               
+               private function calculateLinePlacementAdjustment(param1:TextLine, param2:String, param3:String, param4:InlineGraphicElement, param5:Boolean) : LeadingAdjustment {
+                  var _loc6_:LeadingAdjustment = new LeadingAdjustment();
+                  var _loc7_:Number = param4.getEffectiveLineHeight(this._blockProgression);
+                  var _loc8_:Number = TextLayoutFormat.lineHeightProperty.computeActualPropertyValue(param4.computedFormat.lineHeight,param1.textHeight);
+                  if(param2 == TextBaseline.IDEOGRAPHIC_CENTER)
+                  {
+                     if(!param5)
+                     {
+                        _loc6_.rise = _loc6_.rise + (_loc7_ - _loc8_) / 2;
+                     }
+                     else
+                     {
+                        _loc6_.leading = _loc6_.leading - (_loc7_ - _loc8_) / 2;
+                     }
+                  }
+                  return _loc6_;
+               }
+               
+               protected function pushInsideListItemMargins(param1:TextLine) : void {
+                  var _loc2_:* = NaN;
+                  if((param1) && this._listItemElement.computedFormat.listStylePosition == ListStylePosition.INSIDE)
+                  {
+                     _loc2_ = TextFlowLine.getNumberLineInsideLineWidth(param1);
+                     this._parcelList.pushInsideListItemMargin(_loc2_);
+                  }
+               }
+               
+               protected function popInsideListItemMargins(param1:TextLine) : void {
+                  var _loc2_:* = NaN;
+                  if((param1) && this._listItemElement.computedFormat.listStylePosition == ListStylePosition.INSIDE)
+                  {
+                     _loc2_ = TextFlowLine.getNumberLineInsideLineWidth(param1);
+                     this._parcelList.popInsideListItemMargin(_loc2_);
                   }
                }
             }
-            curPos=curPos+flowElem.textLength;
-            flowElem=flowElem.getNextLeaf(para);
          }
-         return adjustment;
-      }
-
-      public function get swfContext() : ISWFContext {
-         var composerContext:ISWFContext = this._flowComposer.swfContext;
-         return composerContext?composerContext:GlobalSWFContext.globalSWFContext;
-      }
-
-      private function calculateLinePlacementAdjustment(curTextLine:TextLine, domBaseline:String, curLeadingDir:String, inlineImg:InlineGraphicElement, isFirstLine:Boolean) : LeadingAdjustment {
-         var curAdjustment:LeadingAdjustment = new LeadingAdjustment();
-         var imgHeight:Number = inlineImg.getEffectiveLineHeight(this._blockProgression);
-         var lineLeading:Number = TextLayoutFormat.lineHeightProperty.computeActualPropertyValue(inlineImg.computedFormat.lineHeight,curTextLine.textHeight);
-         if(domBaseline==TextBaseline.IDEOGRAPHIC_CENTER)
+         import flashx.textLayout.compose.TextFlowLine;
+         import flash.text.engine.TextLine;
+         
+         class AlignData extends Object
          {
-            if(!isFirstLine)
-            {
-               curAdjustment.rise=curAdjustment.rise+(imgHeight-lineLeading)/2;
+            
+            function AlignData(param1:TextFlowLine) {
+               super();
+               this.textFlowLine = param1;
             }
-            else
-            {
-               curAdjustment.leading=curAdjustment.leading-(imgHeight-lineLeading)/2;
+            
+            public var textFlowLine:TextFlowLine;
+            
+            public var textLine:TextLine;
+            
+            public var lineWidth:Number;
+            
+            public var textAlign:String;
+            
+            public var leftSideGap:Number;
+            
+            public var rightSideGap:Number;
+            
+            public var textIndent:Number;
+         }
+         import flashx.textLayout.compose.ISWFContext;
+         
+         class GlobalSWFContext extends Object implements ISWFContext
+         {
+            
+            function GlobalSWFContext() {
+               super();
+            }
+            
+            public static const globalSWFContext:GlobalSWFContext = new GlobalSWFContext();
+            
+            public function callInContext(param1:Function, param2:Object, param3:Array, param4:Boolean=true) : * {
+               if(param4)
+               {
+                  return param1.apply(param2,param3);
+               }
+               param1.apply(param2,param3);
             }
          }
-         return curAdjustment;
-      }
-
-      protected function pushInsideListItemMargins(numberLine:TextLine) : void {
-         var numberLineWidth:* = NaN;
-         if((numberLine)&&(this._listItemElement.computedFormat.listStylePosition==ListStylePosition.INSIDE))
+         class LeadingAdjustment extends Object
          {
-            numberLineWidth=TextFlowLine.getNumberLineInsideLineWidth(numberLine);
-            this._parcelList.pushInsideListItemMargin(numberLineWidth);
+            
+            function LeadingAdjustment() {
+               super();
+            }
+            
+            public var rise:Number = 0;
+            
+            public var leading:Number = 0;
+            
+            public var lineHeight:Number = 0;
          }
-      }
-
-      protected function popInsideListItemMargins(numberLine:TextLine) : void {
-         var numberLineWidth:* = NaN;
-         if((numberLine)&&(this._listItemElement.computedFormat.listStylePosition==ListStylePosition.INSIDE))
-         {
-            numberLineWidth=TextFlowLine.getNumberLineInsideLineWidth(numberLine);
-            this._parcelList.popInsideListItemMargin(numberLineWidth);
-         }
-      }
-   }
-
-}
-
-   import flashx.textLayout.compose.TextFlowLine;
-   import flash.text.engine.TextLine;
-
-
-   class AlignData extends Object
-   {
-         
-
-      function AlignData(tfl:TextFlowLine) {
-         super();
-         this.textFlowLine=tfl;
-      }
-
-
-
-      public var textFlowLine:TextFlowLine;
-
-      public var textLine:TextLine;
-
-      public var lineWidth:Number;
-
-      public var textAlign:String;
-
-      public var leftSideGap:Number;
-
-      public var rightSideGap:Number;
-
-      public var textIndent:Number;
-   }
-
-
-   import flashx.textLayout.compose.ISWFContext;
-
-
-   class GlobalSWFContext extends Object implements ISWFContext
-   {
-         
-
-      function GlobalSWFContext() {
-         super();
-      }
-
-      public static const globalSWFContext:GlobalSWFContext = new GlobalSWFContext();
-
-      public function callInContext(fn:Function, thisArg:Object, argsArray:Array, returns:Boolean=true) : * {
-         if(returns)
-         {
-            return fn.apply(thisArg,argsArray);
-         }
-         fn.apply(thisArg,argsArray);
-      }
-   }
-
-
-
-
-   class LeadingAdjustment extends Object
-   {
-         
-
-      function LeadingAdjustment() {
-         super();
-      }
-
-
-
-      public var rise:Number = 0;
-
-      public var leading:Number = 0;
-
-      public var lineHeight:Number = 0;
-   }

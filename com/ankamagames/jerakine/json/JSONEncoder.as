@@ -3,200 +3,181 @@ package com.ankamagames.jerakine.json
    import flash.utils.Dictionary;
    import flash.utils.describeType;
    import flash.utils.getQualifiedClassName;
-
-
+   
    public class JSONEncoder extends Object
    {
-         
-
-      public function JSONEncoder(value:*, pMaxDepth:uint=0, pShowObjectType:Boolean=false) {
+      
+      public function JSONEncoder(param1:*, param2:uint=0, param3:Boolean=false) {
          super();
-         this._depthLimit=pMaxDepth;
-         this._showObjectType=pShowObjectType;
-         this.jsonString=this.convertToString(value);
+         this._depthLimit = param2;
+         this._showObjectType = param3;
+         this.jsonString = this.convertToString(param1);
       }
-
-
-
+      
       private var _depthLimit:uint = 0;
-
+      
       private var _showObjectType:Boolean = false;
-
+      
       private var jsonString:String;
-
+      
       public function getString() : String {
          return this.jsonString;
       }
-
-      private function convertToString(value:*, depth:int=0) : String {
-         if((!(this._depthLimit==0))&&(depth<this._depthLimit))
+      
+      private function convertToString(param1:*, param2:int=0) : String {
+         if(!(this._depthLimit == 0) && param2 > this._depthLimit)
          {
             return "";
          }
-         if(value is String)
+         if(param1 is String)
          {
-            return this.escapeString(value as String);
+            return this.escapeString(param1 as String);
          }
-         if(value is Number)
+         if(param1 is Number)
          {
-            return isFinite(value as Number)?value.toString():"null";
+            return isFinite(param1 as Number)?param1.toString():"null";
          }
-         if(value is Boolean)
+         if(param1 is Boolean)
          {
-            return value?"true":"false";
+            return param1?"true":"false";
          }
-         if((value is Array)||(value is Vector.<int>)||(value is Vector.<uint>)||(value is Vector.<String>)||(value is Vector.<Boolean>)||(value is Vector.<*>)||(value is Dictionary))
+         if(param1 is Array || param1 is Vector.<int> || param1 is Vector.<uint> || param1 is Vector.<String> || param1 is Vector.<Boolean> || param1 is Vector.<*> || param1 is Dictionary)
          {
-            return this.arrayToString(value,depth+1);
+            return this.arrayToString(param1,param2 + 1);
          }
-         if((value is Object)&&(!(value==null)))
+         if(param1 is Object && !(param1 == null))
          {
-            return this.objectToString(value,depth+1);
+            return this.objectToString(param1,param2 + 1);
          }
          return "null";
       }
-
-      private function escapeString(str:String) : String {
-         var ch:String = null;
-         var hexCode:String = null;
-         var zeroPad:String = null;
-         var s:String = "";
-         var len:Number = str.length;
-         var i:int = 0;
-         while(i<len)
+      
+      private function escapeString(param1:String) : String {
+         var _loc3_:String = null;
+         var _loc6_:String = null;
+         var _loc7_:String = null;
+         var _loc2_:* = "";
+         var _loc4_:Number = param1.length;
+         var _loc5_:* = 0;
+         while(_loc5_ < _loc4_)
          {
-            ch=str.charAt(i);
-            switch(ch)
+            _loc3_ = param1.charAt(_loc5_);
+            switch(_loc3_)
             {
                case "\"":
-                  s=s+"\\\"";
+                  _loc2_ = _loc2_ + "\\\"";
                   break;
                case "\\":
-                  s=s+"\\\\";
+                  _loc2_ = _loc2_ + "\\\\";
                   break;
                case "\b":
-                  s=s+"\\b";
+                  _loc2_ = _loc2_ + "\\b";
                   break;
                case "\f":
-                  s=s+"\\f";
+                  _loc2_ = _loc2_ + "\\f";
                   break;
                case "\n":
-                  s=s+"\\n";
+                  _loc2_ = _loc2_ + "\\n";
                   break;
                case "\r":
-                  s=s+"\\r";
+                  _loc2_ = _loc2_ + "\\r";
                   break;
                case "\t":
-                  s=s+"\\t";
+                  _loc2_ = _loc2_ + "\\t";
                   break;
                default:
-                  if(ch<" ")
+                  if(_loc3_ < " ")
                   {
-                     hexCode=ch.charCodeAt(0).toString(16);
-                     zeroPad=hexCode.length==2?"00":"000";
-                     s=s+("\\u"+zeroPad+hexCode);
+                     _loc6_ = _loc3_.charCodeAt(0).toString(16);
+                     _loc7_ = _loc6_.length == 2?"00":"000";
+                     _loc2_ = _loc2_ + ("\\u" + _loc7_ + _loc6_);
                   }
                   else
                   {
-                     s=s+ch;
+                     _loc2_ = _loc2_ + _loc3_;
                   }
             }
-            i++;
+            _loc5_++;
          }
-         return "\""+s+"\"";
+         return "\"" + _loc2_ + "\"";
       }
-
-      private function arrayToString(a:*, depth:int) : String {
-         var value:* = undefined;
-         if((!(this._depthLimit==0))&&(depth<this._depthLimit))
+      
+      private function arrayToString(param1:*, param2:int) : String {
+         var _loc4_:* = undefined;
+         if(!(this._depthLimit == 0) && param2 > this._depthLimit)
          {
             return "";
          }
-         var s:String = "";
-         for each (value in a)
+         var _loc3_:* = "";
+         for each (_loc4_ in param1)
          {
-            if(s.length>0)
+            if(_loc3_.length > 0)
             {
-               s=s+",";
+               _loc3_ = _loc3_ + ",";
             }
-            s=s+this.convertToString(value);
+            _loc3_ = _loc3_ + this.convertToString(_loc4_);
          }
-         return "["+s+"]";
+         return "[" + _loc3_ + "]";
       }
-
-      private function objectToString(o:Object, depth:int) : String {
+      
+      private function objectToString(param1:Object, param2:int) : String {
          var className:Array = null;
          var value:Object = null;
          var key:String = null;
          var v:XML = null;
-         if((!(this._depthLimit==0))&&(depth<this._depthLimit))
+         var o:Object = param1;
+         var depth:int = param2;
+         if(!(this._depthLimit == 0) && depth > this._depthLimit)
          {
             return "";
          }
          var s:String = "";
          var classInfo:XML = describeType(o);
-         if(classInfo.@name.toString()=="Object")
+         if(classInfo.@name.toString() == "Object")
          {
             for (key in o)
             {
-               value=o[key];
-               if(value is Function)
+               value = o[key];
+               if(!(value is Function))
                {
-               }
-               else
-               {
-                  if(s.length>0)
+                  if(s.length > 0)
                   {
-                     s=s+",";
+                     s = s + ",";
                   }
-                  s=s+(this.escapeString(key)+":"+this.convertToString(value));
+                  s = s + (this.escapeString(key) + ":" + this.convertToString(value));
                }
             }
          }
          else
          {
-            for each (_loc10_ in classInfo..*)
+            for each (v in classInfo..*.(name() == "variable" || name() == "accessor" && attribute("access").charAt(0) == "r"))
             {
-               with(_loc10_)
+               if(!((v.metadata) && v.metadata.(@name == "Transient").length() > 0))
                {
-                  
-                  if((name()=="variable")||(name()=="accessor")&&(attribute("access").charAt(0)=="r"))
+                  if(s.length > 0)
                   {
-                     _loc6_[_loc7_]=_loc9_;
-                  }
-               }
-            }
-            for each (v in _loc6_)
-            {
-               if((v.metadata)&&(_loc6_.length()<0))
-               {
-               }
-               else
-               {
-                  if(s.length>0)
-                  {
-                     s=s+",";
+                     s = s + ",";
                   }
                   try
                   {
-                     s=s+(this.escapeString(v.@name.toString())+":"+this.convertToString(o[v.@name]));
+                     s = s + (this.escapeString(v.@name.toString()) + ":" + this.convertToString(o[v.@name]));
                   }
                   catch(e:Error)
                   {
+                     continue;
                   }
                }
             }
          }
          if(this._showObjectType)
          {
-            className=getQualifiedClassName(o).split("::");
+            className = getQualifiedClassName(o).split("::");
          }
-         if(className!=null)
+         if(className != null)
          {
-            return "{"+this.escapeString("type")+":"+this.escapeString(className.pop())+", "+this.escapeString("value")+":{"+s+"}}";
+            return "{" + this.escapeString("type") + ":" + this.escapeString(className.pop()) + ", " + this.escapeString("value") + ":{" + s + "}}";
          }
-         return "{"+s+"}";
+         return "{" + s + "}";
       }
    }
-
 }

@@ -7,25 +7,22 @@ package com.ankamagames.berilia.api
    import flash.errors.IllegalOperationError;
    import flash.utils.flash_proxy;
    import flash.utils.getQualifiedClassName;
-
+   
    use namespace flash_proxy;
-
+   
    public class ModuleReference extends Proxy implements Secure
    {
-         
-
-      public function ModuleReference(o:Object, accessKey:Object) {
+      
+      public function ModuleReference(param1:Object, param2:Object) {
          super();
-         SecureCenter.checkAccessKey(accessKey);
-         this._object=new WeakReference(o);
+         SecureCenter.checkAccessKey(param2);
+         this._object = new WeakReference(param1);
       }
-
-
-
+      
       private var _object:WeakReference;
-
-      public function getObject(accessKey:Object) : * {
-         if(accessKey!=SecureCenter.ACCESS_KEY)
+      
+      public function getObject(param1:Object) : * {
+         if(param1 != SecureCenter.ACCESS_KEY)
          {
             throw new IllegalOperationError();
          }
@@ -34,33 +31,33 @@ package com.ankamagames.berilia.api
             return this._object.object;
          }
       }
-
-      override flash_proxy function callProperty(name:*, ... rest) : * {
-         var result:* = this._object.object[name].apply(this,rest);
-         this.verify(result);
-         return result;
+      
+      override flash_proxy function callProperty(param1:*, ... rest) : * {
+         var _loc3_:* = this._object.object[param1].apply(this,rest);
+         this.verify(_loc3_);
+         return _loc3_;
       }
-
-      override flash_proxy function getProperty(name:*) : * {
-         var result:* = this._object.object[name];
-         if(result is Function)
+      
+      override flash_proxy function getProperty(param1:*) : * {
+         var _loc2_:* = this._object.object[param1];
+         if(_loc2_ is Function)
          {
-            return result;
+            return _loc2_;
          }
          throw new IllegalOperationError("You cannot access to property. You have access only to functions");
       }
-
-      override flash_proxy function setProperty(name:*, value:*) : void {
+      
+      override flash_proxy function setProperty(param1:*, param2:*) : void {
          throw new IllegalOperationError("You cannot access to property. You have access only to functions");
       }
-
-      override flash_proxy function hasProperty(name:*) : Boolean {
-         return this._object.object.hasOwnProperty(name);
+      
+      override flash_proxy function hasProperty(param1:*) : Boolean {
+         return this._object.object.hasOwnProperty(param1);
       }
-
-      private function verify(o:*) : void {
-         var pkg:String = getQualifiedClassName(o);
-         if(pkg.indexOf("d2api")==0)
+      
+      private function verify(param1:*) : void {
+         var _loc2_:String = getQualifiedClassName(param1);
+         if(_loc2_.indexOf("d2api") == 0)
          {
             throw new IllegalOperationError("You cannot get API from an other module");
          }
@@ -70,5 +67,4 @@ package com.ankamagames.berilia.api
          }
       }
    }
-
 }

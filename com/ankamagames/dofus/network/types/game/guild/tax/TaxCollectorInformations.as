@@ -2,245 +2,197 @@ package com.ankamagames.dofus.network.types.game.guild.tax
 {
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.look.EntityLook;
+   import __AS3__.vec.Vector;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
-
-
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
+   
    public class TaxCollectorInformations extends Object implements INetworkType
    {
-         
-
+      
       public function TaxCollectorInformations() {
-         this.additionalInfos=new AdditionalTaxCollectorInformations();
-         this.look=new EntityLook();
+         this.additionalInfos = new AdditionalTaxCollectorInformations();
+         this.look = new EntityLook();
+         this.complements = new Vector.<TaxCollectorComplementaryInformations>();
          super();
       }
-
+      
       public static const protocolId:uint = 167;
-
+      
       public var uniqueId:int = 0;
-
+      
       public var firtNameId:uint = 0;
-
+      
       public var lastNameId:uint = 0;
-
+      
       public var additionalInfos:AdditionalTaxCollectorInformations;
-
+      
       public var worldX:int = 0;
-
+      
       public var worldY:int = 0;
-
+      
       public var subAreaId:uint = 0;
-
-      public var state:int = 0;
-
+      
+      public var state:uint = 0;
+      
       public var look:EntityLook;
-
-      public var kamas:uint = 0;
-
-      public var experience:Number = 0;
-
-      public var pods:uint = 0;
-
-      public var itemsValue:uint = 0;
-
+      
+      public var complements:Vector.<TaxCollectorComplementaryInformations>;
+      
       public function getTypeId() : uint {
          return 167;
       }
-
-      public function initTaxCollectorInformations(uniqueId:int=0, firtNameId:uint=0, lastNameId:uint=0, additionalInfos:AdditionalTaxCollectorInformations=null, worldX:int=0, worldY:int=0, subAreaId:uint=0, state:int=0, look:EntityLook=null, kamas:uint=0, experience:Number=0, pods:uint=0, itemsValue:uint=0) : TaxCollectorInformations {
-         this.uniqueId=uniqueId;
-         this.firtNameId=firtNameId;
-         this.lastNameId=lastNameId;
-         this.additionalInfos=additionalInfos;
-         this.worldX=worldX;
-         this.worldY=worldY;
-         this.subAreaId=subAreaId;
-         this.state=state;
-         this.look=look;
-         this.kamas=kamas;
-         this.experience=experience;
-         this.pods=pods;
-         this.itemsValue=itemsValue;
+      
+      public function initTaxCollectorInformations(param1:int=0, param2:uint=0, param3:uint=0, param4:AdditionalTaxCollectorInformations=null, param5:int=0, param6:int=0, param7:uint=0, param8:uint=0, param9:EntityLook=null, param10:Vector.<TaxCollectorComplementaryInformations>=null) : TaxCollectorInformations {
+         this.uniqueId = param1;
+         this.firtNameId = param2;
+         this.lastNameId = param3;
+         this.additionalInfos = param4;
+         this.worldX = param5;
+         this.worldY = param6;
+         this.subAreaId = param7;
+         this.state = param8;
+         this.look = param9;
+         this.complements = param10;
          return this;
       }
-
+      
       public function reset() : void {
-         this.uniqueId=0;
-         this.firtNameId=0;
-         this.lastNameId=0;
-         this.additionalInfos=new AdditionalTaxCollectorInformations();
-         this.worldY=0;
-         this.subAreaId=0;
-         this.state=0;
-         this.look=new EntityLook();
-         this.experience=0;
-         this.pods=0;
-         this.itemsValue=0;
+         this.uniqueId = 0;
+         this.firtNameId = 0;
+         this.lastNameId = 0;
+         this.additionalInfos = new AdditionalTaxCollectorInformations();
+         this.worldY = 0;
+         this.subAreaId = 0;
+         this.state = 0;
+         this.look = new EntityLook();
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_TaxCollectorInformations(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_TaxCollectorInformations(param1);
       }
-
-      public function serializeAs_TaxCollectorInformations(output:IDataOutput) : void {
-         output.writeInt(this.uniqueId);
-         if(this.firtNameId<0)
+      
+      public function serializeAs_TaxCollectorInformations(param1:IDataOutput) : void {
+         param1.writeInt(this.uniqueId);
+         if(this.firtNameId < 0)
          {
-            throw new Error("Forbidden value ("+this.firtNameId+") on element firtNameId.");
+            throw new Error("Forbidden value (" + this.firtNameId + ") on element firtNameId.");
          }
          else
          {
-            output.writeShort(this.firtNameId);
-            if(this.lastNameId<0)
+            param1.writeShort(this.firtNameId);
+            if(this.lastNameId < 0)
             {
-               throw new Error("Forbidden value ("+this.lastNameId+") on element lastNameId.");
+               throw new Error("Forbidden value (" + this.lastNameId + ") on element lastNameId.");
             }
             else
             {
-               output.writeShort(this.lastNameId);
-               this.additionalInfos.serializeAs_AdditionalTaxCollectorInformations(output);
-               if((this.worldX>-255)||(this.worldX<255))
+               param1.writeShort(this.lastNameId);
+               this.additionalInfos.serializeAs_AdditionalTaxCollectorInformations(param1);
+               if(this.worldX < -255 || this.worldX > 255)
                {
-                  throw new Error("Forbidden value ("+this.worldX+") on element worldX.");
+                  throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
                }
                else
                {
-                  output.writeShort(this.worldX);
-                  if((this.worldY>-255)||(this.worldY<255))
+                  param1.writeShort(this.worldX);
+                  if(this.worldY < -255 || this.worldY > 255)
                   {
-                     throw new Error("Forbidden value ("+this.worldY+") on element worldY.");
+                     throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
                   }
                   else
                   {
-                     output.writeShort(this.worldY);
-                     if(this.subAreaId<0)
+                     param1.writeShort(this.worldY);
+                     if(this.subAreaId < 0)
                      {
-                        throw new Error("Forbidden value ("+this.subAreaId+") on element subAreaId.");
+                        throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
                      }
                      else
                      {
-                        output.writeShort(this.subAreaId);
-                        output.writeByte(this.state);
-                        this.look.serializeAs_EntityLook(output);
-                        if(this.kamas<0)
+                        param1.writeShort(this.subAreaId);
+                        param1.writeByte(this.state);
+                        this.look.serializeAs_EntityLook(param1);
+                        param1.writeShort(this.complements.length);
+                        _loc2_ = 0;
+                        while(_loc2_ < this.complements.length)
                         {
-                           throw new Error("Forbidden value ("+this.kamas+") on element kamas.");
+                           param1.writeShort((this.complements[_loc2_] as TaxCollectorComplementaryInformations).getTypeId());
+                           (this.complements[_loc2_] as TaxCollectorComplementaryInformations).serialize(param1);
+                           _loc2_++;
                         }
-                        else
-                        {
-                           output.writeInt(this.kamas);
-                           if(this.experience<0)
-                           {
-                              throw new Error("Forbidden value ("+this.experience+") on element experience.");
-                           }
-                           else
-                           {
-                              output.writeDouble(this.experience);
-                              if(this.pods<0)
-                              {
-                                 throw new Error("Forbidden value ("+this.pods+") on element pods.");
-                              }
-                              else
-                              {
-                                 output.writeInt(this.pods);
-                                 if(this.itemsValue<0)
-                                 {
-                                    throw new Error("Forbidden value ("+this.itemsValue+") on element itemsValue.");
-                                 }
-                                 else
-                                 {
-                                    output.writeInt(this.itemsValue);
-                                    return;
-                                 }
-                              }
-                           }
-                        }
+                        return;
                      }
                   }
                }
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_TaxCollectorInformations(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_TaxCollectorInformations(param1);
       }
-
-      public function deserializeAs_TaxCollectorInformations(input:IDataInput) : void {
-         this.uniqueId=input.readInt();
-         this.firtNameId=input.readShort();
-         if(this.firtNameId<0)
+      
+      public function deserializeAs_TaxCollectorInformations(param1:IDataInput) : void {
+         var _loc4_:uint = 0;
+         var _loc5_:TaxCollectorComplementaryInformations = null;
+         this.uniqueId = param1.readInt();
+         this.firtNameId = param1.readShort();
+         if(this.firtNameId < 0)
          {
-            throw new Error("Forbidden value ("+this.firtNameId+") on element of TaxCollectorInformations.firtNameId.");
+            throw new Error("Forbidden value (" + this.firtNameId + ") on element of TaxCollectorInformations.firtNameId.");
          }
          else
          {
-            this.lastNameId=input.readShort();
-            if(this.lastNameId<0)
+            this.lastNameId = param1.readShort();
+            if(this.lastNameId < 0)
             {
-               throw new Error("Forbidden value ("+this.lastNameId+") on element of TaxCollectorInformations.lastNameId.");
+               throw new Error("Forbidden value (" + this.lastNameId + ") on element of TaxCollectorInformations.lastNameId.");
             }
             else
             {
-               this.additionalInfos=new AdditionalTaxCollectorInformations();
-               this.additionalInfos.deserialize(input);
-               this.worldX=input.readShort();
-               if((this.worldX>-255)||(this.worldX<255))
+               this.additionalInfos = new AdditionalTaxCollectorInformations();
+               this.additionalInfos.deserialize(param1);
+               this.worldX = param1.readShort();
+               if(this.worldX < -255 || this.worldX > 255)
                {
-                  throw new Error("Forbidden value ("+this.worldX+") on element of TaxCollectorInformations.worldX.");
+                  throw new Error("Forbidden value (" + this.worldX + ") on element of TaxCollectorInformations.worldX.");
                }
                else
                {
-                  this.worldY=input.readShort();
-                  if((this.worldY>-255)||(this.worldY<255))
+                  this.worldY = param1.readShort();
+                  if(this.worldY < -255 || this.worldY > 255)
                   {
-                     throw new Error("Forbidden value ("+this.worldY+") on element of TaxCollectorInformations.worldY.");
+                     throw new Error("Forbidden value (" + this.worldY + ") on element of TaxCollectorInformations.worldY.");
                   }
                   else
                   {
-                     this.subAreaId=input.readShort();
-                     if(this.subAreaId<0)
+                     this.subAreaId = param1.readShort();
+                     if(this.subAreaId < 0)
                      {
-                        throw new Error("Forbidden value ("+this.subAreaId+") on element of TaxCollectorInformations.subAreaId.");
+                        throw new Error("Forbidden value (" + this.subAreaId + ") on element of TaxCollectorInformations.subAreaId.");
                      }
                      else
                      {
-                        this.state=input.readByte();
-                        this.look=new EntityLook();
-                        this.look.deserialize(input);
-                        this.kamas=input.readInt();
-                        if(this.kamas<0)
+                        this.state = param1.readByte();
+                        if(this.state < 0)
                         {
-                           throw new Error("Forbidden value ("+this.kamas+") on element of TaxCollectorInformations.kamas.");
+                           throw new Error("Forbidden value (" + this.state + ") on element of TaxCollectorInformations.state.");
                         }
                         else
                         {
-                           this.experience=input.readDouble();
-                           if(this.experience<0)
+                           this.look = new EntityLook();
+                           this.look.deserialize(param1);
+                           _loc2_ = param1.readUnsignedShort();
+                           _loc3_ = 0;
+                           while(_loc3_ < _loc2_)
                            {
-                              throw new Error("Forbidden value ("+this.experience+") on element of TaxCollectorInformations.experience.");
+                              _loc4_ = param1.readUnsignedShort();
+                              _loc5_ = ProtocolTypeManager.getInstance(TaxCollectorComplementaryInformations,_loc4_);
+                              _loc5_.deserialize(param1);
+                              this.complements.push(_loc5_);
+                              _loc3_++;
                            }
-                           else
-                           {
-                              this.pods=input.readInt();
-                              if(this.pods<0)
-                              {
-                                 throw new Error("Forbidden value ("+this.pods+") on element of TaxCollectorInformations.pods.");
-                              }
-                              else
-                              {
-                                 this.itemsValue=input.readInt();
-                                 if(this.itemsValue<0)
-                                 {
-                                    throw new Error("Forbidden value ("+this.itemsValue+") on element of TaxCollectorInformations.itemsValue.");
-                                 }
-                                 else
-                                 {
-                                    return;
-                                 }
-                              }
-                           }
+                           return;
                         }
                      }
                   }
@@ -249,5 +201,4 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          }
       }
    }
-
 }

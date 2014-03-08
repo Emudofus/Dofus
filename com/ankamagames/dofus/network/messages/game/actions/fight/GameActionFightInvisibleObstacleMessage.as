@@ -5,80 +5,78 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class GameActionFightInvisibleObstacleMessage extends AbstractGameActionMessage implements INetworkMessage
    {
-         
-
+      
       public function GameActionFightInvisibleObstacleMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 5820;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
-         return (super.isInitialized)&&(this._isInitialized);
+         return (super.isInitialized) && (this._isInitialized);
       }
-
+      
       public var sourceSpellId:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 5820;
       }
-
-      public function initGameActionFightInvisibleObstacleMessage(actionId:uint=0, sourceId:int=0, sourceSpellId:uint=0) : GameActionFightInvisibleObstacleMessage {
-         super.initAbstractGameActionMessage(actionId,sourceId);
-         this.sourceSpellId=sourceSpellId;
-         this._isInitialized=true;
+      
+      public function initGameActionFightInvisibleObstacleMessage(param1:uint=0, param2:int=0, param3:uint=0) : GameActionFightInvisibleObstacleMessage {
+         super.initAbstractGameActionMessage(param1,param2);
+         this.sourceSpellId = param3;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
          super.reset();
-         this.sourceSpellId=0;
-         this._isInitialized=false;
+         this.sourceSpellId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      override public function serialize(output:IDataOutput) : void {
-         this.serializeAs_GameActionFightInvisibleObstacleMessage(output);
+      
+      override public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_GameActionFightInvisibleObstacleMessage(param1);
       }
-
-      public function serializeAs_GameActionFightInvisibleObstacleMessage(output:IDataOutput) : void {
-         super.serializeAs_AbstractGameActionMessage(output);
-         if(this.sourceSpellId<0)
+      
+      public function serializeAs_GameActionFightInvisibleObstacleMessage(param1:IDataOutput) : void {
+         super.serializeAs_AbstractGameActionMessage(param1);
+         if(this.sourceSpellId < 0)
          {
-            throw new Error("Forbidden value ("+this.sourceSpellId+") on element sourceSpellId.");
+            throw new Error("Forbidden value (" + this.sourceSpellId + ") on element sourceSpellId.");
          }
          else
          {
-            output.writeInt(this.sourceSpellId);
+            param1.writeInt(this.sourceSpellId);
             return;
          }
       }
-
-      override public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_GameActionFightInvisibleObstacleMessage(input);
+      
+      override public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_GameActionFightInvisibleObstacleMessage(param1);
       }
-
-      public function deserializeAs_GameActionFightInvisibleObstacleMessage(input:IDataInput) : void {
-         super.deserialize(input);
-         this.sourceSpellId=input.readInt();
-         if(this.sourceSpellId<0)
+      
+      public function deserializeAs_GameActionFightInvisibleObstacleMessage(param1:IDataInput) : void {
+         super.deserialize(param1);
+         this.sourceSpellId = param1.readInt();
+         if(this.sourceSpellId < 0)
          {
-            throw new Error("Forbidden value ("+this.sourceSpellId+") on element of GameActionFightInvisibleObstacleMessage.sourceSpellId.");
+            throw new Error("Forbidden value (" + this.sourceSpellId + ") on element of GameActionFightInvisibleObstacleMessage.sourceSpellId.");
          }
          else
          {
@@ -86,5 +84,4 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          }
       }
    }
-
 }

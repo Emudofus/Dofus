@@ -12,47 +12,45 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.ExchangeHookList;
    import com.ankamagames.dofus.misc.lists.MountHookList;
-
-
+   
    public class MountDialogFrame extends Object implements Frame
    {
-         
-
+      
       public function MountDialogFrame() {
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MountDialogFrame));
-
+      
       public static function get mountFrame() : MountFrame {
          return Kernel.getWorker().getFrame(MountFrame) as MountFrame;
       }
-
+      
       private var _inStable:Boolean = false;
-
+      
       public function get priority() : int {
          return 0;
       }
-
+      
       public function get inStable() : Boolean {
          return this._inStable;
       }
-
+      
       public function pushed() : Boolean {
-         this._inStable=true;
+         this._inStable = true;
          this.sendStartOkMount();
          return true;
       }
-
-      public function process(msg:Message) : Boolean {
-         var elm:ExchangeLeaveMessage = null;
+      
+      public function process(param1:Message) : Boolean {
+         var _loc2_:ExchangeLeaveMessage = null;
          switch(true)
          {
-            case msg is ExchangeMountStableErrorMessage:
+            case param1 is ExchangeMountStableErrorMessage:
                return true;
-            case msg is ExchangeLeaveMessage:
-               elm=msg as ExchangeLeaveMessage;
-               if(elm.dialogType==DialogTypeEnum.DIALOG_EXCHANGE)
+            case param1 is ExchangeLeaveMessage:
+               _loc2_ = param1 as ExchangeLeaveMessage;
+               if(_loc2_.dialogType == DialogTypeEnum.DIALOG_EXCHANGE)
                {
                   Kernel.getWorker().removeFrame(this);
                }
@@ -61,16 +59,15 @@ package com.ankamagames.dofus.logic.game.common.frames
                return false;
          }
       }
-
+      
       public function pulled() : Boolean {
-         this._inStable=false;
+         this._inStable = false;
          KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeLeave,true);
          return true;
       }
-
+      
       private function sendStartOkMount() : void {
          KernelEventsManager.getInstance().processCallback(MountHookList.ExchangeStartOkMount,mountFrame.stableList,mountFrame.paddockList);
       }
    }
-
 }

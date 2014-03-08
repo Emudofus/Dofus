@@ -6,62 +6,58 @@ package org.flintparticles.common.renderers
    import org.flintparticles.common.events.EmitterEvent;
    import org.flintparticles.common.events.ParticleEvent;
    import flash.events.Event;
-
-
+   
    public class SpriteRendererBase extends Sprite implements Renderer
    {
-         
-
+      
       public function SpriteRendererBase() {
          super();
-         this._emitters=new Array();
-         mouseEnabled=false;
-         mouseChildren=false;
+         this._emitters = new Array();
+         mouseEnabled = false;
+         mouseChildren = false;
          addEventListener(Event.ADDED_TO_STAGE,this.addedToStage,false,0,true);
       }
-
-
-
+      
       protected var _emitters:Array;
-
-      public function addEmitter(emitter:Emitter) : void {
-         var p:Particle = null;
-         this._emitters.push(emitter);
+      
+      public function addEmitter(param1:Emitter) : void {
+         var _loc2_:Particle = null;
+         this._emitters.push(param1);
          if(stage)
          {
             stage.invalidate();
          }
-         emitter.addEventListener(EmitterEvent.EMITTER_UPDATED,this.emitterUpdated,false,0,true);
-         emitter.addEventListener(ParticleEvent.PARTICLE_CREATED,this.particleAdded,false,0,true);
-         emitter.addEventListener(ParticleEvent.PARTICLE_ADDED,this.particleAdded,false,0,true);
-         emitter.addEventListener(ParticleEvent.PARTICLE_DEAD,this.particleRemoved,false,0,true);
-         for each (p in emitter.particles)
+         param1.addEventListener(EmitterEvent.EMITTER_UPDATED,this.emitterUpdated,false,0,true);
+         param1.addEventListener(ParticleEvent.PARTICLE_CREATED,this.particleAdded,false,0,true);
+         param1.addEventListener(ParticleEvent.PARTICLE_ADDED,this.particleAdded,false,0,true);
+         param1.addEventListener(ParticleEvent.PARTICLE_DEAD,this.particleRemoved,false,0,true);
+         for each (_loc2_ in param1.particles)
          {
-            this.addParticle(p);
+            this.addParticle(_loc2_);
          }
-         if(this._emitters.length==1)
+         if(this._emitters.length == 1)
          {
             addEventListener(Event.RENDER,this.updateParticles,false,0,true);
          }
       }
-
-      public function removeEmitter(emitter:Emitter) : void {
-         var p:Particle = null;
-         var i:int = 0;
-         while(i<this._emitters.length)
+      
+      public function removeEmitter(param1:Emitter) : void {
+         var _loc3_:Particle = null;
+         var _loc2_:* = 0;
+         while(_loc2_ < this._emitters.length)
          {
-            if(this._emitters[i]==emitter)
+            if(this._emitters[_loc2_] == param1)
             {
-               this._emitters.splice(i,1);
-               emitter.removeEventListener(EmitterEvent.EMITTER_UPDATED,this.emitterUpdated);
-               emitter.removeEventListener(ParticleEvent.PARTICLE_CREATED,this.particleAdded);
-               emitter.removeEventListener(ParticleEvent.PARTICLE_ADDED,this.particleAdded);
-               emitter.removeEventListener(ParticleEvent.PARTICLE_DEAD,this.particleRemoved);
-               for each (p in emitter.particles)
+               this._emitters.splice(_loc2_,1);
+               param1.removeEventListener(EmitterEvent.EMITTER_UPDATED,this.emitterUpdated);
+               param1.removeEventListener(ParticleEvent.PARTICLE_CREATED,this.particleAdded);
+               param1.removeEventListener(ParticleEvent.PARTICLE_ADDED,this.particleAdded);
+               param1.removeEventListener(ParticleEvent.PARTICLE_DEAD,this.particleRemoved);
+               for each (_loc3_ in param1.particles)
                {
-                  this.removeParticle(p);
+                  this.removeParticle(_loc3_);
                }
-               if(this._emitters.length==0)
+               if(this._emitters.length == 0)
                {
                   removeEventListener(Event.RENDER,this.updateParticles);
                   this.renderParticles([]);
@@ -72,66 +68,62 @@ package org.flintparticles.common.renderers
                }
                return;
             }
-            i++;
+            _loc2_++;
          }
       }
-
-      private function addedToStage(ev:Event) : void {
+      
+      private function addedToStage(param1:Event) : void {
          if(stage)
          {
             stage.invalidate();
          }
       }
-
-      private function particleAdded(ev:ParticleEvent) : void {
-         this.addParticle(ev.particle);
+      
+      private function particleAdded(param1:ParticleEvent) : void {
+         this.addParticle(param1.particle);
          if(stage)
          {
             stage.invalidate();
          }
       }
-
-      private function particleRemoved(ev:ParticleEvent) : void {
-         this.removeParticle(ev.particle);
+      
+      private function particleRemoved(param1:ParticleEvent) : void {
+         this.removeParticle(param1.particle);
          if(stage)
          {
             stage.invalidate();
          }
       }
-
-      private function emitterUpdated(ev:EmitterEvent) : void {
+      
+      private function emitterUpdated(param1:EmitterEvent) : void {
          if(stage)
          {
             stage.invalidate();
          }
       }
-
-      private function updateParticles(ev:Event) : void {
-         var particles:Array = new Array();
-         var i:int = 0;
-         while(i<this._emitters.length)
+      
+      private function updateParticles(param1:Event) : void {
+         var _loc2_:Array = new Array();
+         var _loc3_:* = 0;
+         while(_loc3_ < this._emitters.length)
          {
-            particles=particles.concat(this._emitters[i].particles);
-            i++;
+            _loc2_ = _loc2_.concat(this._emitters[_loc3_].particles);
+            _loc3_++;
          }
-         this.renderParticles(particles);
+         this.renderParticles(_loc2_);
       }
-
-      protected function addParticle(particle:Particle) : void {
-         
+      
+      protected function addParticle(param1:Particle) : void {
       }
-
-      protected function removeParticle(particle:Particle) : void {
-         
+      
+      protected function removeParticle(param1:Particle) : void {
       }
-
-      protected function renderParticles(particles:Array) : void {
-         
+      
+      protected function renderParticles(param1:Array) : void {
       }
-
+      
       public function get emitters() : Array {
          return this._emitters;
       }
    }
-
 }

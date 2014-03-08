@@ -1,37 +1,32 @@
 package com.ankamagames.jerakine.pools
 {
    import flash.utils.Dictionary;
-
-
+   
    public class GenericPool extends Object
    {
-         
-
+      
       public function GenericPool() {
          super();
       }
-
+      
       private static var _pools:Dictionary = new Dictionary();
-
-      public static function get(type:Class, ... args) : * {
-         if((_pools[type])&&(_pools[type].length))
+      
+      public static function get(param1:Class, ... rest) : * {
+         if((_pools[param1]) && (_pools[param1].length))
          {
-            return type["create"].apply(null,args.concat(_pools[type].pop()));
+            return param1["create"].apply(null,rest.concat(_pools[param1].pop()));
          }
-         return type["create"].apply(null,args);
+         return param1["create"].apply(null,rest);
       }
-
-      public static function free(target:Poolable) : void {
-         target.free();
-         var type:Class = Object(target).constructor;
-         if(!_pools[type])
+      
+      public static function free(param1:Poolable) : void {
+         param1.free();
+         var _loc2_:Class = Object(param1).constructor;
+         if(!_pools[_loc2_])
          {
-            _pools[type]=new Array();
+            _pools[_loc2_] = new Array();
          }
-         (_pools[type] as Array).push(target);
+         (_pools[_loc2_] as Array).push(param1);
       }
-
-
    }
-
 }

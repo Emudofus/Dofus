@@ -7,110 +7,107 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ExchangeStartOkNpcShopMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ExchangeStartOkNpcShopMessage() {
-         this.objectsInfos=new Vector.<ObjectItemToSellInNpcShop>();
+         this.objectsInfos = new Vector.<ObjectItemToSellInNpcShop>();
          super();
       }
-
+      
       public static const protocolId:uint = 5761;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var npcSellerId:int = 0;
-
+      
       public var tokenId:uint = 0;
-
+      
       public var objectsInfos:Vector.<ObjectItemToSellInNpcShop>;
-
+      
       override public function getMessageId() : uint {
          return 5761;
       }
-
-      public function initExchangeStartOkNpcShopMessage(npcSellerId:int=0, tokenId:uint=0, objectsInfos:Vector.<ObjectItemToSellInNpcShop>=null) : ExchangeStartOkNpcShopMessage {
-         this.npcSellerId=npcSellerId;
-         this.tokenId=tokenId;
-         this.objectsInfos=objectsInfos;
-         this._isInitialized=true;
+      
+      public function initExchangeStartOkNpcShopMessage(param1:int=0, param2:uint=0, param3:Vector.<ObjectItemToSellInNpcShop>=null) : ExchangeStartOkNpcShopMessage {
+         this.npcSellerId = param1;
+         this.tokenId = param2;
+         this.objectsInfos = param3;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.npcSellerId=0;
-         this.tokenId=0;
-         this.objectsInfos=new Vector.<ObjectItemToSellInNpcShop>();
-         this._isInitialized=false;
+         this.npcSellerId = 0;
+         this.tokenId = 0;
+         this.objectsInfos = new Vector.<ObjectItemToSellInNpcShop>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ExchangeStartOkNpcShopMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ExchangeStartOkNpcShopMessage(param1);
       }
-
-      public function serializeAs_ExchangeStartOkNpcShopMessage(output:IDataOutput) : void {
-         output.writeInt(this.npcSellerId);
-         if(this.tokenId<0)
+      
+      public function serializeAs_ExchangeStartOkNpcShopMessage(param1:IDataOutput) : void {
+         param1.writeInt(this.npcSellerId);
+         if(this.tokenId < 0)
          {
-            throw new Error("Forbidden value ("+this.tokenId+") on element tokenId.");
+            throw new Error("Forbidden value (" + this.tokenId + ") on element tokenId.");
          }
          else
          {
-            output.writeInt(this.tokenId);
-            output.writeShort(this.objectsInfos.length);
-            _i3=0;
-            while(_i3<this.objectsInfos.length)
+            param1.writeInt(this.tokenId);
+            param1.writeShort(this.objectsInfos.length);
+            _loc2_ = 0;
+            while(_loc2_ < this.objectsInfos.length)
             {
-               (this.objectsInfos[_i3] as ObjectItemToSellInNpcShop).serializeAs_ObjectItemToSellInNpcShop(output);
-               _i3++;
+               (this.objectsInfos[_loc2_] as ObjectItemToSellInNpcShop).serializeAs_ObjectItemToSellInNpcShop(param1);
+               _loc2_++;
             }
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ExchangeStartOkNpcShopMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ExchangeStartOkNpcShopMessage(param1);
       }
-
-      public function deserializeAs_ExchangeStartOkNpcShopMessage(input:IDataInput) : void {
-         var _item3:ObjectItemToSellInNpcShop = null;
-         this.npcSellerId=input.readInt();
-         this.tokenId=input.readInt();
-         if(this.tokenId<0)
+      
+      public function deserializeAs_ExchangeStartOkNpcShopMessage(param1:IDataInput) : void {
+         var _loc4_:ObjectItemToSellInNpcShop = null;
+         this.npcSellerId = param1.readInt();
+         this.tokenId = param1.readInt();
+         if(this.tokenId < 0)
          {
-            throw new Error("Forbidden value ("+this.tokenId+") on element of ExchangeStartOkNpcShopMessage.tokenId.");
+            throw new Error("Forbidden value (" + this.tokenId + ") on element of ExchangeStartOkNpcShopMessage.tokenId.");
          }
          else
          {
-            _objectsInfosLen=input.readUnsignedShort();
-            _i3=0;
-            while(_i3<_objectsInfosLen)
+            _loc2_ = param1.readUnsignedShort();
+            _loc3_ = 0;
+            while(_loc3_ < _loc2_)
             {
-               _item3=new ObjectItemToSellInNpcShop();
-               _item3.deserialize(input);
-               this.objectsInfos.push(_item3);
-               _i3++;
+               _loc4_ = new ObjectItemToSellInNpcShop();
+               _loc4_.deserialize(param1);
+               this.objectsInfos.push(_loc4_);
+               _loc3_++;
             }
             return;
          }
       }
    }
-
 }

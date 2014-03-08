@@ -4,259 +4,255 @@ package flashx.textLayout.property
    import flashx.textLayout.tlf_internal;
    import __AS3__.vec.Vector;
    import flashx.textLayout.formats.FormatValue;
-
+   
    use namespace tlf_internal;
-
+   
    public class Property extends Object
    {
-         
-
-      public function Property(nameValue:String, defaultValue:*, inherited:Boolean, categories:Vector.<String>) {
+      
+      public function Property(param1:String, param2:*, param3:Boolean, param4:Vector.<String>) {
          super();
-         this._name=nameValue;
-         this._default=defaultValue;
-         this._inherited=inherited;
-         this._categories=categories;
-         this._hasCustomExporterHandler=false;
+         this._name = param1;
+         this._default = param2;
+         this._inherited = param3;
+         this._categories = param4;
+         this._hasCustomExporterHandler = false;
       }
-
+      
       public static var errorHandler:Function = defaultErrorHandler;
-
-      public static function defaultErrorHandler(p:Property, value:Object) : void {
-         throw new RangeError(createErrorString(p,value));
+      
+      public static function defaultErrorHandler(param1:Property, param2:Object) : void {
+         throw new RangeError(createErrorString(param1,param2));
       }
-
-      public static function createErrorString(p:Property, value:Object) : String {
-         return GlobalSettings.resourceStringFunction("badPropertyValue",[p.name,value.toString()]);
+      
+      public static function createErrorString(param1:Property, param2:Object) : String {
+         return GlobalSettings.resourceStringFunction("badPropertyValue",[param1.name,param2.toString()]);
       }
-
+      
       tlf_internal  static const sharedStringHandler:StringPropertyHandler = new StringPropertyHandler();
-
+      
       tlf_internal  static const sharedInheritEnumHandler:EnumPropertyHandler = new EnumPropertyHandler([FormatValue.INHERIT]);
-
+      
       tlf_internal  static const sharedUndefinedHandler:UndefinedPropertyHandler = new UndefinedPropertyHandler();
-
+      
       tlf_internal  static const sharedUintHandler:UintPropertyHandler = new UintPropertyHandler();
-
+      
       tlf_internal  static const sharedBooleanHandler:BooleanPropertyHandler = new BooleanPropertyHandler();
-
+      
       tlf_internal  static const sharedTextLayoutFormatHandler:FormatPropertyHandler = new FormatPropertyHandler();
-
+      
       tlf_internal  static const sharedListMarkerFormatHandler:FormatPropertyHandler = new FormatPropertyHandler();
-
-      public static function NewBooleanProperty(nameValue:String, defaultValue:Boolean, inherited:Boolean, categories:Vector.<String>) : Property {
-         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
-         rslt.addHandlers(sharedUndefinedHandler,sharedBooleanHandler,sharedInheritEnumHandler);
-         return rslt;
+      
+      public static function NewBooleanProperty(param1:String, param2:Boolean, param3:Boolean, param4:Vector.<String>) : Property {
+         var _loc5_:Property = new Property(param1,param2,param3,param4);
+         _loc5_.addHandlers(sharedUndefinedHandler,sharedBooleanHandler,sharedInheritEnumHandler);
+         return _loc5_;
       }
-
-      public static function NewStringProperty(nameValue:String, defaultValue:String, inherited:Boolean, categories:Vector.<String>) : Property {
-         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
-         rslt.addHandlers(sharedUndefinedHandler,sharedStringHandler);
-         return rslt;
+      
+      public static function NewStringProperty(param1:String, param2:String, param3:Boolean, param4:Vector.<String>) : Property {
+         var _loc5_:Property = new Property(param1,param2,param3,param4);
+         _loc5_.addHandlers(sharedUndefinedHandler,sharedStringHandler);
+         return _loc5_;
       }
-
-      public static function NewUintProperty(nameValue:String, defaultValue:uint, inherited:Boolean, categories:Vector.<String>) : Property {
-         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
-         rslt.addHandlers(sharedUndefinedHandler,sharedUintHandler,sharedInheritEnumHandler);
-         return rslt;
+      
+      public static function NewUintProperty(param1:String, param2:uint, param3:Boolean, param4:Vector.<String>) : Property {
+         var _loc5_:Property = new Property(param1,param2,param3,param4);
+         _loc5_.addHandlers(sharedUndefinedHandler,sharedUintHandler,sharedInheritEnumHandler);
+         return _loc5_;
       }
-
-      public static function NewEnumStringProperty(nameValue:String, defaultValue:String, inherited:Boolean, categories:Vector.<String>, ... rest) : Property {
-         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
-         rslt.addHandlers(sharedUndefinedHandler,new EnumPropertyHandler(rest),sharedInheritEnumHandler);
-         return rslt;
+      
+      public static function NewEnumStringProperty(param1:String, param2:String, param3:Boolean, param4:Vector.<String>, ... rest) : Property {
+         var _loc6_:Property = new Property(param1,param2,param3,param4);
+         _loc6_.addHandlers(sharedUndefinedHandler,new EnumPropertyHandler(rest),sharedInheritEnumHandler);
+         return _loc6_;
       }
-
-      public static function NewIntOrEnumProperty(nameValue:String, defaultValue:Object, inherited:Boolean, categories:Vector.<String>, minValue:int, maxValue:int, ... rest) : Property {
-         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
-         rslt.addHandlers(sharedUndefinedHandler,new EnumPropertyHandler(rest),new IntPropertyHandler(minValue,maxValue),sharedInheritEnumHandler);
-         return rslt;
+      
+      public static function NewIntOrEnumProperty(param1:String, param2:Object, param3:Boolean, param4:Vector.<String>, param5:int, param6:int, ... rest) : Property {
+         var _loc8_:Property = new Property(param1,param2,param3,param4);
+         _loc8_.addHandlers(sharedUndefinedHandler,new EnumPropertyHandler(rest),new IntPropertyHandler(param5,param6),sharedInheritEnumHandler);
+         return _loc8_;
       }
-
-      public static function NewUintOrEnumProperty(nameValue:String, defaultValue:Object, inherited:Boolean, categories:Vector.<String>, ... rest) : Property {
-         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
-         rslt.addHandlers(sharedUndefinedHandler,new EnumPropertyHandler(rest),sharedUintHandler,sharedInheritEnumHandler);
-         return rslt;
+      
+      public static function NewUintOrEnumProperty(param1:String, param2:Object, param3:Boolean, param4:Vector.<String>, ... rest) : Property {
+         var _loc6_:Property = new Property(param1,param2,param3,param4);
+         _loc6_.addHandlers(sharedUndefinedHandler,new EnumPropertyHandler(rest),sharedUintHandler,sharedInheritEnumHandler);
+         return _loc6_;
       }
-
-      public static function NewNumberProperty(nameValue:String, defaultValue:Number, inherited:Boolean, categories:Vector.<String>, minValue:Number, maxValue:Number) : Property {
-         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
-         rslt.addHandlers(sharedUndefinedHandler,new NumberPropertyHandler(minValue,maxValue),sharedInheritEnumHandler);
-         return rslt;
+      
+      public static function NewNumberProperty(param1:String, param2:Number, param3:Boolean, param4:Vector.<String>, param5:Number, param6:Number) : Property {
+         var _loc7_:Property = new Property(param1,param2,param3,param4);
+         _loc7_.addHandlers(sharedUndefinedHandler,new NumberPropertyHandler(param5,param6),sharedInheritEnumHandler);
+         return _loc7_;
       }
-
-      public static function NewNumberOrPercentOrEnumProperty(nameValue:String, defaultValue:Object, inherited:Boolean, categories:Vector.<String>, minValue:Number, maxValue:Number, minPercentValue:String, maxPercentValue:String, ... rest) : Property {
-         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
-         rslt.addHandlers(sharedUndefinedHandler,new EnumPropertyHandler(rest),new PercentPropertyHandler(minPercentValue,maxPercentValue),new NumberPropertyHandler(minValue,maxValue),sharedInheritEnumHandler);
-         return rslt;
+      
+      public static function NewNumberOrPercentOrEnumProperty(param1:String, param2:Object, param3:Boolean, param4:Vector.<String>, param5:Number, param6:Number, param7:String, param8:String, ... rest) : Property {
+         var _loc10_:Property = new Property(param1,param2,param3,param4);
+         _loc10_.addHandlers(sharedUndefinedHandler,new EnumPropertyHandler(rest),new PercentPropertyHandler(param7,param8),new NumberPropertyHandler(param5,param6),sharedInheritEnumHandler);
+         return _loc10_;
       }
-
-      public static function NewNumberOrPercentProperty(nameValue:String, defaultValue:Object, inherited:Boolean, categories:Vector.<String>, minValue:Number, maxValue:Number, minPercentValue:String, maxPercentValue:String) : Property {
-         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
-         rslt.addHandlers(sharedUndefinedHandler,new PercentPropertyHandler(minPercentValue,maxPercentValue),new NumberPropertyHandler(minValue,maxValue),sharedInheritEnumHandler);
-         return rslt;
+      
+      public static function NewNumberOrPercentProperty(param1:String, param2:Object, param3:Boolean, param4:Vector.<String>, param5:Number, param6:Number, param7:String, param8:String) : Property {
+         var _loc9_:Property = new Property(param1,param2,param3,param4);
+         _loc9_.addHandlers(sharedUndefinedHandler,new PercentPropertyHandler(param7,param8),new NumberPropertyHandler(param5,param6),sharedInheritEnumHandler);
+         return _loc9_;
       }
-
-      public static function NewNumberOrEnumProperty(nameValue:String, defaultValue:Object, inherited:Boolean, categories:Vector.<String>, minValue:Number, maxValue:Number, ... rest) : Property {
-         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
-         rslt.addHandlers(sharedUndefinedHandler,new EnumPropertyHandler(rest),new NumberPropertyHandler(minValue,maxValue),sharedInheritEnumHandler);
-         return rslt;
+      
+      public static function NewNumberOrEnumProperty(param1:String, param2:Object, param3:Boolean, param4:Vector.<String>, param5:Number, param6:Number, ... rest) : Property {
+         var _loc8_:Property = new Property(param1,param2,param3,param4);
+         _loc8_.addHandlers(sharedUndefinedHandler,new EnumPropertyHandler(rest),new NumberPropertyHandler(param5,param6),sharedInheritEnumHandler);
+         return _loc8_;
       }
-
-      public static function NewTabStopsProperty(nameValue:String, defaultValue:Array, inherited:Boolean, categories:Vector.<String>) : Property {
-         return new TabStopsProperty(nameValue,defaultValue,inherited,categories);
+      
+      public static function NewTabStopsProperty(param1:String, param2:Array, param3:Boolean, param4:Vector.<String>) : Property {
+         return new TabStopsProperty(param1,param2,param3,param4);
       }
-
-      public static function NewSpacingLimitProperty(nameValue:String, defaultValue:Object, inherited:Boolean, categories:Vector.<String>, minPercentValue:String, maxPercentValue:String) : Property {
-         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
-         rslt.addHandlers(sharedUndefinedHandler,new SpacingLimitPropertyHandler(minPercentValue,maxPercentValue),sharedInheritEnumHandler);
-         return rslt;
+      
+      public static function NewSpacingLimitProperty(param1:String, param2:Object, param3:Boolean, param4:Vector.<String>, param5:String, param6:String) : Property {
+         var _loc7_:Property = new Property(param1,param2,param3,param4);
+         _loc7_.addHandlers(sharedUndefinedHandler,new SpacingLimitPropertyHandler(param5,param6),sharedInheritEnumHandler);
+         return _loc7_;
       }
-
+      
       private static const undefinedValue = undefined;
-
-      public static function NewTextLayoutFormatProperty(nameValue:String, defaultValue:Object, inherited:Boolean, categories:Vector.<String>) : Property {
-         var rslt:Property = new Property(nameValue,undefinedValue,inherited,categories);
-         rslt.addHandlers(sharedUndefinedHandler,sharedTextLayoutFormatHandler,sharedInheritEnumHandler);
-         return rslt;
+      
+      public static function NewTextLayoutFormatProperty(param1:String, param2:Object, param3:Boolean, param4:Vector.<String>) : Property {
+         var _loc5_:Property = new Property(param1,undefinedValue,param3,param4);
+         _loc5_.addHandlers(sharedUndefinedHandler,sharedTextLayoutFormatHandler,sharedInheritEnumHandler);
+         return _loc5_;
       }
-
-      public static function NewListMarkerFormatProperty(nameValue:String, defaultValue:Object, inherited:Boolean, categories:Vector.<String>) : Property {
-         var rslt:Property = new Property(nameValue,undefinedValue,inherited,categories);
-         rslt.addHandlers(sharedUndefinedHandler,sharedListMarkerFormatHandler,sharedInheritEnumHandler);
-         return rslt;
+      
+      public static function NewListMarkerFormatProperty(param1:String, param2:Object, param3:Boolean, param4:Vector.<String>) : Property {
+         var _loc5_:Property = new Property(param1,undefinedValue,param3,param4);
+         _loc5_.addHandlers(sharedUndefinedHandler,sharedListMarkerFormatHandler,sharedInheritEnumHandler);
+         return _loc5_;
       }
-
+      
       public static const NO_LIMITS:String = "noLimits";
-
+      
       public static const LOWER_LIMIT:String = "lowerLimit";
-
+      
       public static const UPPER_LIMIT:String = "upperLimit";
-
+      
       public static const ALL_LIMITS:String = "allLimits";
-
-      public static function defaultConcatHelper(currVal:*, concatVal:*) : * {
-         return (currVal===undefined)||(currVal==FormatValue.INHERIT)?concatVal:currVal;
+      
+      public static function defaultConcatHelper(param1:*, param2:*) : * {
+         return param1 === undefined || param1 == FormatValue.INHERIT?param2:param1;
       }
-
-      public static function defaultsAllHelper(description:Object, current:Object) : void {
-         var prop:Property = null;
-         for each (prop in description)
+      
+      public static function defaultsAllHelper(param1:Object, param2:Object) : void {
+         var _loc3_:Property = null;
+         for each (_loc3_ in param1)
          {
-            current[prop.name]=prop.defaultValue;
+            param2[_loc3_.name] = _loc3_.defaultValue;
          }
       }
-
-      public static function equalAllHelper(description:Object, p1:Object, p2:Object) : Boolean {
-         var prop:Property = null;
-         var name:String = null;
-         if(p1==p2)
+      
+      public static function equalAllHelper(param1:Object, param2:Object, param3:Object) : Boolean {
+         var _loc4_:Property = null;
+         var _loc5_:String = null;
+         if(param2 == param3)
          {
             return true;
          }
-         if((p1==null)||(p2==null))
+         if(param2 == null || param3 == null)
          {
             return false;
          }
-         for each (prop in description)
+         for each (_loc4_ in param1)
          {
-            name=prop.name;
-            if(!prop.equalHelper(p1[name],p2[name]))
+            _loc5_ = _loc4_.name;
+            if(!_loc4_.equalHelper(param2[_loc5_],param3[_loc5_]))
             {
                return false;
             }
          }
          return true;
       }
-
-      public static function extractInCategory(formatClass:Class, description:Object, props:Object, category:String, legacy:Boolean=true) : Object {
-         var prop:Property = null;
-         var rslt:Object = null;
-         for each (prop in description)
+      
+      public static function extractInCategory(param1:Class, param2:Object, param3:Object, param4:String, param5:Boolean=true) : Object {
+         var _loc7_:Property = null;
+         var _loc6_:Object = null;
+         for each (_loc7_ in param2)
          {
-            if(props[prop.name]==null)
+            if(param3[_loc7_.name] != null)
             {
-            }
-            else
-            {
-               if(legacy)
+               if(param5)
                {
-                  if(prop.category!=category)
+                  if(_loc7_.category != param4)
                   {
                      continue;
                   }
                }
                else
                {
-                  if(prop.categories.indexOf(category)==-1)
+                  if(_loc7_.categories.indexOf(param4) == -1)
                   {
                      continue;
                   }
                }
-               if(rslt==null)
+               if(_loc6_ == null)
                {
-                  rslt=new formatClass();
+                  _loc6_ = new param1();
                }
-               rslt[prop.name]=props[prop.name];
+               _loc6_[_loc7_.name] = param3[_loc7_.name];
             }
          }
-         return rslt;
+         return _loc6_;
       }
-
-      public static function shallowCopy(src:Object) : Object {
-         var val:Object = null;
-         var rslt:Object = new Object();
-         for (val in src)
+      
+      public static function shallowCopy(param1:Object) : Object {
+         var _loc3_:Object = null;
+         var _loc2_:Object = new Object();
+         for (_loc3_ in param1)
          {
-            rslt[val]=src[val];
+            _loc2_[_loc3_] = param1[_loc3_];
          }
-         return rslt;
+         return _loc2_;
       }
-
-      public static function shallowCopyInFilter(src:Object, filter:Object) : Object {
-         var val:Object = null;
-         var rslt:Object = new Object();
-         for (val in src)
+      
+      public static function shallowCopyInFilter(param1:Object, param2:Object) : Object {
+         var _loc4_:Object = null;
+         var _loc3_:Object = new Object();
+         for (_loc4_ in param1)
          {
-            if(filter.hasOwnProperty(val))
+            if(param2.hasOwnProperty(_loc4_))
             {
-               rslt[val]=src[val];
+               _loc3_[_loc4_] = param1[_loc4_];
             }
          }
-         return rslt;
+         return _loc3_;
       }
-
-      public static function shallowCopyNotInFilter(src:Object, filter:Object) : Object {
-         var val:Object = null;
-         var rslt:Object = new Object();
-         for (val in src)
+      
+      public static function shallowCopyNotInFilter(param1:Object, param2:Object) : Object {
+         var _loc4_:Object = null;
+         var _loc3_:Object = new Object();
+         for (_loc4_ in param1)
          {
-            if(!filter.hasOwnProperty(val))
+            if(!param2.hasOwnProperty(_loc4_))
             {
-               rslt[val]=src[val];
+               _loc3_[_loc4_] = param1[_loc4_];
             }
          }
-         return rslt;
+         return _loc3_;
       }
-
-      private static function compareStylesLoop(o1:Object, o2:Object, description:Object) : Boolean {
-         var val:String = null;
-         var o1val:Object = null;
-         var o2val:Object = null;
-         var prop:ArrayProperty = null;
-         for (val in o1)
+      
+      private static function compareStylesLoop(param1:Object, param2:Object, param3:Object) : Boolean {
+         var _loc4_:String = null;
+         var _loc5_:Object = null;
+         var _loc6_:Object = null;
+         var _loc7_:ArrayProperty = null;
+         for (_loc4_ in param1)
          {
-            o1val=o1[val];
-            o2val=o2[val];
-            if(o1val!=o2val)
+            _loc5_ = param1[_loc4_];
+            _loc6_ = param2[_loc4_];
+            if(_loc5_ != _loc6_)
             {
-               if((!(o1val is Array))||(!(o2val is Array))||(!(o1val.length==o2val.length))||(!description))
+               if(!(_loc5_ is Array) || !(_loc6_ is Array) || !(_loc5_.length == _loc6_.length) || !param3)
                {
                   return false;
                }
-               prop=description[val];
-               if((!prop)||(!equalAllHelper(prop.memberType.description,o1val,o2val)))
+               _loc7_ = param3[_loc4_];
+               if(!_loc7_ || !equalAllHelper(_loc7_.memberType.description,_loc5_,_loc6_))
                {
                   return false;
                }
@@ -264,195 +260,194 @@ package flashx.textLayout.property
          }
          return true;
       }
-
+      
       tlf_internal  static const nullStyleObject:Object = new Object();
-
-      public static function equalStyles(o1:Object, o2:Object, description:Object) : Boolean {
-         if(o1==null)
+      
+      public static function equalStyles(param1:Object, param2:Object, param3:Object) : Boolean {
+         if(param1 == null)
          {
-            o1=nullStyleObject;
+            param1 = nullStyleObject;
          }
-         if(o2==null)
+         if(param2 == null)
          {
-            o2=nullStyleObject;
+            param2 = nullStyleObject;
          }
-         return (compareStylesLoop(o1,o2,description))&&(compareStylesLoop(o2,o1,description));
+         return (compareStylesLoop(param1,param2,param3)) && (compareStylesLoop(param2,param1,param3));
       }
-
-      public static function toNumberIfPercent(o:Object) : Number {
-         if(!(o is String))
+      
+      public static function toNumberIfPercent(param1:Object) : Number {
+         if(!(param1 is String))
          {
             return NaN;
          }
-         var s:String = String(o);
-         var len:int = s.length;
-         return (!(len==0))&&(s.charAt(len-1)=="%")?parseFloat(s):NaN;
+         var _loc2_:String = String(param1);
+         var _loc3_:int = _loc2_.length;
+         return !(_loc3_ == 0) && _loc2_.charAt(_loc3_-1) == "%"?parseFloat(_loc2_):NaN;
       }
-
-      private static var prototypeFactory:Function = new function():void
-                                                           {
-                                                           };
-
-      public static function createObjectWithPrototype(parent:Object) : Object {
-         prototypeFactory.prototype=parent;
+      
+      private static var prototypeFactory:Function = function():void
+      {
+      };
+      
+      public static function createObjectWithPrototype(param1:Object) : Object {
+         prototypeFactory.prototype = param1;
          return new prototypeFactory();
       }
-
+      
       private var _name:String;
-
+      
       private var _default;
-
+      
       private var _inherited:Boolean;
-
+      
       private var _categories:Vector.<String>;
-
+      
       private var _hasCustomExporterHandler:Boolean;
-
+      
       private var _numberPropertyHandler:NumberPropertyHandler;
-
+      
       protected var _handlers:Vector.<PropertyHandler>;
-
+      
       public function get name() : String {
          return this._name;
       }
-
+      
       public function get defaultValue() : * {
          return this._default;
       }
-
+      
       public function get inherited() : Object {
          return this._inherited;
       }
-
+      
       public function get category() : String {
          return this._categories[0];
       }
-
+      
       public function get categories() : Vector.<String> {
          return this._categories;
       }
-
+      
       public function addHandlers(... rest) : void {
-         var handler:PropertyHandler = null;
-         this._handlers=new Vector.<PropertyHandler>(rest.length,true);
-         var idx:int = 0;
-         while(idx<rest.length)
+         var _loc3_:PropertyHandler = null;
+         this._handlers = new Vector.<PropertyHandler>(rest.length,true);
+         var _loc2_:* = 0;
+         while(_loc2_ < rest.length)
          {
-            handler=rest[idx];
-            this._handlers[idx]=handler;
-            if(handler.customXMLStringHandler)
+            _loc3_ = rest[_loc2_];
+            this._handlers[_loc2_] = _loc3_;
+            if(_loc3_.customXMLStringHandler)
             {
-               this._hasCustomExporterHandler=true;
+               this._hasCustomExporterHandler = true;
             }
-            if(handler is NumberPropertyHandler)
+            if(_loc3_ is NumberPropertyHandler)
             {
-               this._numberPropertyHandler=handler as NumberPropertyHandler;
+               this._numberPropertyHandler = _loc3_ as NumberPropertyHandler;
             }
-            idx++;
+            _loc2_++;
          }
       }
-
-      public function findHandler(handlerClass:Class) : PropertyHandler {
-         var prop:PropertyHandler = null;
-         for each (prop in this._handlers)
+      
+      public function findHandler(param1:Class) : PropertyHandler {
+         var _loc2_:PropertyHandler = null;
+         for each (_loc2_ in this._handlers)
          {
-            if(prop is handlerClass)
+            if(_loc2_ is param1)
             {
-               return prop;
+               return _loc2_;
             }
          }
          return null;
       }
-
-      public function setHelper(currVal:*, newVal:*) : * {
-         var handler:PropertyHandler = null;
-         var checkRslt:* = undefined;
-         for each (handler in this._handlers)
+      
+      public function setHelper(param1:*, param2:*) : * {
+         var _loc3_:PropertyHandler = null;
+         var _loc4_:* = undefined;
+         for each (_loc3_ in this._handlers)
          {
-            checkRslt=handler.owningHandlerCheck(newVal);
-            if(checkRslt!==undefined)
+            _loc4_ = _loc3_.owningHandlerCheck(param2);
+            if(_loc4_ !== undefined)
             {
-               return handler.setHelper(checkRslt);
+               return _loc3_.setHelper(_loc4_);
             }
          }
-         Property.errorHandler(this,newVal);
-         return currVal;
+         Property.errorHandler(this,param2);
+         return param1;
       }
-
-      public function concatInheritOnlyHelper(currVal:*, concatVal:*) : * {
-         return (this._inherited)&&(currVal===undefined)||(currVal==FormatValue.INHERIT)?concatVal:currVal;
+      
+      public function concatInheritOnlyHelper(param1:*, param2:*) : * {
+         return (this._inherited) && param1 === undefined || param1 == FormatValue.INHERIT?param2:param1;
       }
-
-      public function concatHelper(currVal:*, concatVal:*) : * {
+      
+      public function concatHelper(param1:*, param2:*) : * {
          if(this._inherited)
          {
-            return (currVal===undefined)||(currVal==FormatValue.INHERIT)?concatVal:currVal;
+            return param1 === undefined || param1 == FormatValue.INHERIT?param2:param1;
          }
-         if(currVal===undefined)
+         if(param1 === undefined)
          {
             return this.defaultValue;
          }
-         return currVal==FormatValue.INHERIT?concatVal:currVal;
+         return param1 == FormatValue.INHERIT?param2:param1;
       }
-
-      public function equalHelper(v1:*, v2:*) : Boolean {
-         return v1==v2;
+      
+      public function equalHelper(param1:*, param2:*) : Boolean {
+         return param1 == param2;
       }
-
-      public function toXMLString(val:Object) : String {
-         var prop:PropertyHandler = null;
+      
+      public function toXMLString(param1:Object) : String {
+         var _loc2_:PropertyHandler = null;
          if(this._hasCustomExporterHandler)
          {
-            for each (prop in this._handlers)
+            for each (_loc2_ in this._handlers)
             {
-               if((prop.customXMLStringHandler)&&(!(prop.owningHandlerCheck(val)===undefined)))
+               if((_loc2_.customXMLStringHandler) && !(_loc2_.owningHandlerCheck(param1) === undefined))
                {
-                  return prop.toXMLString(val);
+                  return _loc2_.toXMLString(param1);
                }
             }
          }
-         return val.toString();
+         return param1.toString();
       }
-
+      
       public function get maxPercentValue() : Number {
-         var handler:PercentPropertyHandler = this.findHandler(PercentPropertyHandler) as PercentPropertyHandler;
-         return handler?handler.maxValue:NaN;
+         var _loc1_:PercentPropertyHandler = this.findHandler(PercentPropertyHandler) as PercentPropertyHandler;
+         return _loc1_?_loc1_.maxValue:NaN;
       }
-
+      
       public function get minPercentValue() : Number {
-         var handler:PercentPropertyHandler = this.findHandler(PercentPropertyHandler) as PercentPropertyHandler;
-         return handler?handler.minValue:NaN;
+         var _loc1_:PercentPropertyHandler = this.findHandler(PercentPropertyHandler) as PercentPropertyHandler;
+         return _loc1_?_loc1_.minValue:NaN;
       }
-
+      
       public function get minValue() : Number {
-         var numberHandler:NumberPropertyHandler = this.findHandler(NumberPropertyHandler) as NumberPropertyHandler;
-         if(numberHandler)
+         var _loc1_:NumberPropertyHandler = this.findHandler(NumberPropertyHandler) as NumberPropertyHandler;
+         if(_loc1_)
          {
-            return numberHandler.minValue;
+            return _loc1_.minValue;
          }
-         var intHandler:IntPropertyHandler = this.findHandler(IntPropertyHandler) as IntPropertyHandler;
-         return intHandler?intHandler.minValue:NaN;
+         var _loc2_:IntPropertyHandler = this.findHandler(IntPropertyHandler) as IntPropertyHandler;
+         return _loc2_?_loc2_.minValue:NaN;
       }
-
+      
       public function get maxValue() : Number {
-         var numberHandler:NumberPropertyHandler = this.findHandler(NumberPropertyHandler) as NumberPropertyHandler;
-         if(numberHandler)
+         var _loc1_:NumberPropertyHandler = this.findHandler(NumberPropertyHandler) as NumberPropertyHandler;
+         if(_loc1_)
          {
-            return numberHandler.maxValue;
+            return _loc1_.maxValue;
          }
-         var intHandler:IntPropertyHandler = this.findHandler(IntPropertyHandler) as IntPropertyHandler;
-         return intHandler?intHandler.maxValue:NaN;
+         var _loc2_:IntPropertyHandler = this.findHandler(IntPropertyHandler) as IntPropertyHandler;
+         return _loc2_?_loc2_.maxValue:NaN;
       }
-
-      public function computeActualPropertyValue(propertyValue:Object, percentInput:Number) : Number {
-         var percent:Number = toNumberIfPercent(propertyValue);
-         if(isNaN(percent))
+      
+      public function computeActualPropertyValue(param1:Object, param2:Number) : Number {
+         var _loc3_:Number = toNumberIfPercent(param1);
+         if(isNaN(_loc3_))
          {
-            return Number(propertyValue);
+            return Number(param1);
          }
-         var rslt:Number = percentInput*percent/100;
-         return this._numberPropertyHandler?this._numberPropertyHandler.clampToRange(rslt):rslt;
+         var _loc4_:Number = param2 * _loc3_ / 100;
+         return this._numberPropertyHandler?this._numberPropertyHandler.clampToRange(_loc4_):_loc4_;
       }
    }
-
 }

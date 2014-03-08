@@ -6,68 +6,65 @@ package com.ankamagames.dofus.network.messages.game.inventory.storage
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class StorageObjectUpdateMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function StorageObjectUpdateMessage() {
-         this.object=new ObjectItem();
+         this.object = new ObjectItem();
          super();
       }
-
+      
       public static const protocolId:uint = 5647;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var object:ObjectItem;
-
+      
       override public function getMessageId() : uint {
          return 5647;
       }
-
-      public function initStorageObjectUpdateMessage(object:ObjectItem=null) : StorageObjectUpdateMessage {
-         this.object=object;
-         this._isInitialized=true;
+      
+      public function initStorageObjectUpdateMessage(param1:ObjectItem=null) : StorageObjectUpdateMessage {
+         this.object = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.object=new ObjectItem();
-         this._isInitialized=false;
+         this.object = new ObjectItem();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_StorageObjectUpdateMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_StorageObjectUpdateMessage(param1);
       }
-
-      public function serializeAs_StorageObjectUpdateMessage(output:IDataOutput) : void {
-         this.object.serializeAs_ObjectItem(output);
+      
+      public function serializeAs_StorageObjectUpdateMessage(param1:IDataOutput) : void {
+         this.object.serializeAs_ObjectItem(param1);
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_StorageObjectUpdateMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_StorageObjectUpdateMessage(param1);
       }
-
-      public function deserializeAs_StorageObjectUpdateMessage(input:IDataInput) : void {
-         this.object=new ObjectItem();
-         this.object.deserialize(input);
+      
+      public function deserializeAs_StorageObjectUpdateMessage(param1:IDataInput) : void {
+         this.object = new ObjectItem();
+         this.object.deserialize(param1);
       }
    }
-
 }

@@ -11,28 +11,27 @@ package com.ankamagames.atouin.utils
    import com.ankamagames.atouin.data.map.CellData;
    import com.ankamagames.atouin.managers.MapDisplayManager;
    import com.ankamagames.atouin.managers.EntitiesManager;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import com.ankamagames.atouin.data.map.Cell;
    import com.ankamagames.atouin.AtouinConstants;
-
-
+   
    public class DataMapProvider extends Object implements IDataMapProvider
    {
-         
-
+      
       public function DataMapProvider() {
-         this._updatedCell=new Dictionary();
-         this._specialEffects=new Dictionary();
+         this._updatedCell = new Dictionary();
+         this._specialEffects = new Dictionary();
          super();
       }
-
+      
       private static const TOLERANCE_ELEVATION:int = 11;
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DataMapProvider));
-
+      
       private static var _self:DataMapProvider;
-
+      
       private static var _playerClass:Class;
-
+      
       public static function getInstance() : DataMapProvider {
          if(!_self)
          {
@@ -43,99 +42,99 @@ package com.ankamagames.atouin.utils
             return _self;
          }
       }
-
-      public static function init(playerClass:Class) : void {
-         _playerClass=playerClass;
+      
+      public static function init(param1:Class) : void {
+         _playerClass = param1;
          if(!_self)
          {
-            _self=new DataMapProvider();
+            _self = new DataMapProvider();
          }
       }
-
+      
       public var isInFight:Boolean;
-
+      
       private var _updatedCell:Dictionary;
-
+      
       private var _specialEffects:Dictionary;
-
-      public function pointLos(x:int, y:int, bAllowTroughEntity:Boolean=true) : Boolean {
-         var cellEntities:Array = null;
-         var o:IObstacle = null;
-         var cellId:uint = MapPoint.fromCoords(x,y).cellId;
-         var los:Boolean = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cellId]).los;
-         if(this._updatedCell[cellId]!=null)
+      
+      public function pointLos(param1:int, param2:int, param3:Boolean=true) : Boolean {
+         var _loc6_:Array = null;
+         var _loc7_:IObstacle = null;
+         var _loc4_:uint = MapPoint.fromCoords(param1,param2).cellId;
+         var _loc5_:Boolean = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[_loc4_]).los;
+         if(this._updatedCell[_loc4_] != null)
          {
-            los=this._updatedCell[cellId];
+            _loc5_ = this._updatedCell[_loc4_];
          }
-         if(!bAllowTroughEntity)
+         if(!param3)
          {
-            cellEntities=EntitiesManager.getInstance().getEntitiesOnCell(cellId,IObstacle);
-            if(cellEntities.length)
+            _loc6_ = EntitiesManager.getInstance().getEntitiesOnCell(_loc4_,IObstacle);
+            if(_loc6_.length)
             {
-               for each (o in cellEntities)
+               for each (_loc7_ in _loc6_)
                {
-                  if(!IObstacle(o).canSeeThrough())
+                  if(!IObstacle(_loc7_).canSeeThrough())
                   {
                      return false;
                   }
                }
             }
          }
-         return los;
+         return _loc5_;
       }
-
-      public function farmCell(x:int, y:int) : Boolean {
-         var cellId:uint = MapPoint.fromCoords(x,y).cellId;
-         return CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cellId]).farmCell;
+      
+      public function farmCell(param1:int, param2:int) : Boolean {
+         var _loc3_:uint = MapPoint.fromCoords(param1,param2).cellId;
+         return CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[_loc3_]).farmCell;
       }
-
-      public function isChangeZone(cell1:uint, cell2:uint) : Boolean {
-         var cellData1:CellData = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cell1]);
-         var cellData2:CellData = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cell2]);
-         var dif:int = Math.abs(Math.abs(cellData1.floor)-Math.abs(cellData2.floor));
-         if((!(cellData1.moveZone==cellData2.moveZone))&&(dif==0))
+      
+      public function isChangeZone(param1:uint, param2:uint) : Boolean {
+         var _loc3_:CellData = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[param1]);
+         var _loc4_:CellData = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[param2]);
+         var _loc5_:int = Math.abs(Math.abs(_loc3_.floor) - Math.abs(_loc4_.floor));
+         if(!(_loc3_.moveZone == _loc4_.moveZone) && _loc5_ == 0)
          {
             return true;
          }
          return false;
       }
-
-      public function pointMov(x:int, y:int, bAllowTroughEntity:Boolean=true, previousCellId:int=-1) : Boolean {
-         var useNewSystem:* = false;
-         var cellId:uint = 0;
-         var cellData:CellData = null;
-         var mov:* = false;
-         var previousCellData:CellData = null;
-         var dif:* = 0;
-         var cellEntities:Array = null;
-         var o:IObstacle = null;
-         if(MapPoint.isInMap(x,y))
+      
+      public function pointMov(param1:int, param2:int, param3:Boolean=true, param4:int=-1) : Boolean {
+         var _loc5_:* = false;
+         var _loc6_:uint = 0;
+         var _loc7_:CellData = null;
+         var _loc8_:* = false;
+         var _loc9_:CellData = null;
+         var _loc10_:* = 0;
+         var _loc11_:Array = null;
+         var _loc12_:IObstacle = null;
+         if(MapPoint.isInMap(param1,param2))
          {
-            useNewSystem=MapDisplayManager.getInstance().getDataMapContainer().dataMap.isUsingNewMovementSystem;
-            cellId=MapPoint.fromCoords(x,y).cellId;
-            cellData=CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cellId]);
-            mov=(cellData.mov)&&((!this.isInFight)||(!cellData.nonWalkableDuringFight));
-            if(this._updatedCell[cellId]!=null)
+            _loc5_ = MapDisplayManager.getInstance().getDataMapContainer().dataMap.isUsingNewMovementSystem;
+            _loc6_ = MapPoint.fromCoords(param1,param2).cellId;
+            _loc7_ = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[_loc6_]);
+            _loc8_ = (_loc7_.mov) && (!this.isInFight || !_loc7_.nonWalkableDuringFight);
+            if(this._updatedCell[_loc6_] != null)
             {
-               mov=this._updatedCell[cellId];
+               _loc8_ = this._updatedCell[_loc6_];
             }
-            if((mov)&&(useNewSystem)&&(!(previousCellId==-1))&&(!(previousCellId==cellId)))
+            if((_loc8_) && (_loc5_) && !(param4 == -1) && !(param4 == _loc6_))
             {
-               previousCellData=CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[previousCellId]);
-               dif=Math.abs(Math.abs(cellData.floor)-Math.abs(previousCellData.floor));
-               if((!(previousCellData.moveZone==cellData.moveZone))&&(dif<0)||(previousCellData.moveZone==cellData.moveZone)&&(cellData.moveZone==0)&&(dif<TOLERANCE_ELEVATION))
+               _loc9_ = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[param4]);
+               _loc10_ = Math.abs(Math.abs(_loc7_.floor) - Math.abs(_loc9_.floor));
+               if(!(_loc9_.moveZone == _loc7_.moveZone) && _loc10_ > 0 || _loc9_.moveZone == _loc7_.moveZone && _loc7_.moveZone == 0 && _loc10_ > TOLERANCE_ELEVATION)
                {
-                  mov=false;
+                  _loc8_ = false;
                }
             }
-            if(!bAllowTroughEntity)
+            if(!param3)
             {
-               cellEntities=EntitiesManager.getInstance().getEntitiesOnCell(cellId,IObstacle);
-               if(cellEntities.length)
+               _loc11_ = EntitiesManager.getInstance().getEntitiesOnCell(_loc6_,IObstacle);
+               if(_loc11_.length)
                {
-                  for each (o in cellEntities)
+                  for each (_loc12_ in _loc11_)
                   {
-                     if(!IObstacle(o).canSeeThrough())
+                     if(!IObstacle(_loc12_).canSeeThrough())
                      {
                         return false;
                      }
@@ -145,94 +144,96 @@ package com.ankamagames.atouin.utils
          }
          else
          {
-            mov=false;
+            _loc8_ = false;
          }
-         return mov;
+         return _loc8_;
       }
-
-      public function pointCanStop(x:int, y:int, bAllowTroughEntity:Boolean=true) : Boolean {
-         var cellId:uint = MapPoint.fromCoords(x,y).cellId;
-         var cellData:CellData = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cellId]);
-         return (this.pointMov(x,y,bAllowTroughEntity))&&((this.isInFight)||(!cellData.nonWalkableDuringRP));
+      
+      public function pointCanStop(param1:int, param2:int, param3:Boolean=true) : Boolean {
+         var _loc4_:uint = MapPoint.fromCoords(param1,param2).cellId;
+         var _loc5_:CellData = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[_loc4_]);
+         return (this.pointMov(param1,param2,param3)) && ((this.isInFight) || !_loc5_.nonWalkableDuringRP);
       }
-
-      public function pointWeight(x:int, y:int, bAllowTroughEntity:Boolean=true) : Number {
-         var weight:Number = 1;
-         var speed:int = this.getCellSpeed(MapPoint.fromCoords(x,y).cellId);
-         if(bAllowTroughEntity)
+      
+      public function pointWeight(param1:int, param2:int, param3:Boolean=true) : Number {
+         var _loc6_:IEntity = null;
+         var _loc4_:Number = 1;
+         var _loc5_:int = this.getCellSpeed(MapPoint.fromCoords(param1,param2).cellId);
+         if(param3)
          {
-            if(speed>=0)
+            if(_loc5_ >= 0)
             {
-               weight=weight+(5-speed);
+               _loc4_ = _loc4_ + (5 - _loc5_);
             }
             else
             {
-               weight=weight+(11+Math.abs(speed));
+               _loc4_ = _loc4_ + (11 + Math.abs(_loc5_));
             }
-            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(x,y),_playerClass)!=null)
+            _loc6_ = EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(param1,param2),_playerClass);
+            if((_loc6_) && !_loc6_["allowMovementThrough"])
             {
-               weight=20;
+               _loc4_ = 20;
             }
          }
          else
          {
-            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(x,y),_playerClass)!=null)
+            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(param1,param2),_playerClass) != null)
             {
-               weight=weight+0.3;
+               _loc4_ = _loc4_ + 0.3;
             }
-            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(x+1,y),_playerClass)!=null)
+            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(param1 + 1,param2),_playerClass) != null)
             {
-               weight=weight+0.3;
+               _loc4_ = _loc4_ + 0.3;
             }
-            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(x,y+1),_playerClass)!=null)
+            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(param1,param2 + 1),_playerClass) != null)
             {
-               weight=weight+0.3;
+               _loc4_ = _loc4_ + 0.3;
             }
-            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(x-1,y),_playerClass)!=null)
+            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(param1-1,param2),_playerClass) != null)
             {
-               weight=weight+0.3;
+               _loc4_ = _loc4_ + 0.3;
             }
-            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(x,y-1),_playerClass)!=null)
+            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(param1,param2-1),_playerClass) != null)
             {
-               weight=weight+0.3;
+               _loc4_ = _loc4_ + 0.3;
             }
-            if((this.pointSpecialEffects(x,y)&2)==2)
+            if((this.pointSpecialEffects(param1,param2) & 2) == 2)
             {
-               weight=weight+0.2;
+               _loc4_ = _loc4_ + 0.2;
             }
          }
-         return weight;
+         return _loc4_;
       }
-
-      public function getCellSpeed(cellId:uint) : int {
-         return (MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cellId] as CellData).speed;
+      
+      public function getCellSpeed(param1:uint) : int {
+         return (MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[param1] as CellData).speed;
       }
-
-      public function pointSpecialEffects(x:int, y:int) : uint {
-         var cellId:uint = MapPoint.fromCoords(x,y).cellId;
-         if(this._specialEffects[cellId])
+      
+      public function pointSpecialEffects(param1:int, param2:int) : uint {
+         var _loc3_:uint = MapPoint.fromCoords(param1,param2).cellId;
+         if(this._specialEffects[_loc3_])
          {
-            return this._specialEffects[cellId];
+            return this._specialEffects[_loc3_];
          }
          return 0;
       }
-
+      
       public function get width() : int {
-         return AtouinConstants.MAP_HEIGHT+AtouinConstants.MAP_WIDTH-2;
+         return AtouinConstants.MAP_HEIGHT + AtouinConstants.MAP_WIDTH - 2;
       }
-
+      
       public function get height() : int {
-         return AtouinConstants.MAP_HEIGHT+AtouinConstants.MAP_WIDTH-1;
+         return AtouinConstants.MAP_HEIGHT + AtouinConstants.MAP_WIDTH-1;
       }
-
-      public function hasEntity(x:int, y:int) : Boolean {
-         var o:IObstacle = null;
-         var cellEntities:Array = EntitiesManager.getInstance().getEntitiesOnCell(MapPoint.fromCoords(x,y).cellId,IObstacle);
-         if(cellEntities.length)
+      
+      public function hasEntity(param1:int, param2:int) : Boolean {
+         var _loc4_:IObstacle = null;
+         var _loc3_:Array = EntitiesManager.getInstance().getEntitiesOnCell(MapPoint.fromCoords(param1,param2).cellId,IObstacle);
+         if(_loc3_.length)
          {
-            for each (o in cellEntities)
+            for each (_loc4_ in _loc3_)
             {
-               if(!IObstacle(o).canSeeThrough())
+               if(!IObstacle(_loc4_).canSeeThrough())
                {
                   return true;
                }
@@ -240,22 +241,21 @@ package com.ankamagames.atouin.utils
          }
          return false;
       }
-
-      public function updateCellMovLov(cellId:uint, canMove:Boolean) : void {
-         this._updatedCell[cellId]=canMove;
+      
+      public function updateCellMovLov(param1:uint, param2:Boolean) : void {
+         this._updatedCell[param1] = param2;
       }
-
+      
       public function resetUpdatedCell() : void {
-         this._updatedCell=new Dictionary();
+         this._updatedCell = new Dictionary();
       }
-
-      public function setSpecialEffects(cellId:uint, value:uint) : void {
-         this._specialEffects[cellId]=value;
+      
+      public function setSpecialEffects(param1:uint, param2:uint) : void {
+         this._specialEffects[param1] = param2;
       }
-
+      
       public function resetSpecialEffects() : void {
-         this._specialEffects=new Dictionary();
+         this._specialEffects = new Dictionary();
       }
    }
-
 }

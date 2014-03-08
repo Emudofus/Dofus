@@ -12,56 +12,54 @@ package com.ankamagames.dofus.logic.game.fight.steps
    import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
    import com.ankamagames.dofus.logic.game.fight.fightEvents.FightEventsHelper;
    import com.ankamagames.dofus.logic.game.fight.types.FightEventEnum;
-
-
+   
    public class FightSummonStep extends AbstractSequencable implements IFightStep
    {
-         
-
-      public function FightSummonStep(summonerId:int, summonInfos:GameFightFighterInformations) {
+      
+      public function FightSummonStep(param1:int, param2:GameFightFighterInformations) {
          super();
-         this._summonerId=summonerId;
-         this._summonInfos=summonInfos;
+         this._summonerId = param1;
+         this._summonInfos = param2;
       }
-
-
-
+      
       private var _summonerId:int;
-
+      
       private var _summonInfos:GameFightFighterInformations;
-
+      
       public function get stepType() : String {
          return "summon";
       }
-
+      
       override public function start() : void {
-         var fighterInfos:GameFightFighterInformations = null;
-         var summonedCreature:Sprite = DofusEntities.getEntity(this._summonInfos.contextualId) as Sprite;
-         summonedCreature.visible=true;
-         SpellWrapper.refreshAllPlayerSpellHolder(this._summonerId);
-         var fightBattleFrame:FightBattleFrame = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
-         if((fightBattleFrame)&&(!(fightBattleFrame.deadFightersList.indexOf(this._summonInfos.contextualId)==-1)))
+         var _loc3_:GameFightFighterInformations = null;
+         var _loc1_:Sprite = DofusEntities.getEntity(this._summonInfos.contextualId) as Sprite;
+         if(_loc1_)
          {
-            fightBattleFrame.deadFightersList.splice(fightBattleFrame.deadFightersList.indexOf(this._summonInfos.contextualId),1);
+            _loc1_.visible = true;
          }
-         if(this._summonInfos.contextualId==PlayedCharacterManager.getInstance().infos.id)
+         SpellWrapper.refreshAllPlayerSpellHolder(this._summonerId);
+         var _loc2_:FightBattleFrame = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
+         if((_loc2_) && !(_loc2_.deadFightersList.indexOf(this._summonInfos.contextualId) == -1))
          {
-            fighterInfos=FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._summonInfos.contextualId) as GameFightFighterInformations;
-            if(!fighterInfos)
+            _loc2_.deadFightersList.splice(_loc2_.deadFightersList.indexOf(this._summonInfos.contextualId),1);
+         }
+         if(this._summonInfos.contextualId == PlayedCharacterManager.getInstance().id)
+         {
+            _loc3_ = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._summonInfos.contextualId) as GameFightFighterInformations;
+            if(!_loc3_)
             {
                super.executeCallbacks();
                return;
             }
-            CurrentPlayedFighterManager.getInstance().getSpellCastManager().resetInitialCooldown();
-            fighterInfos.stats.lifePoints=this._summonInfos.stats.lifePoints;
-            if(PlayedCharacterManager.getInstance().infos.id==this._summonInfos.contextualId)
+            CurrentPlayedFighterManager.getInstance().getSpellCastManager().resetInitialCooldown(true);
+            _loc3_.stats.lifePoints = this._summonInfos.stats.lifePoints;
+            if(PlayedCharacterManager.getInstance().id == this._summonInfos.contextualId)
             {
-               PlayedCharacterManager.getInstance().characteristics.lifePoints=fighterInfos.stats.lifePoints;
+               PlayedCharacterManager.getInstance().characteristics.lifePoints = _loc3_.stats.lifePoints;
             }
          }
          FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_SUMMONED,[this._summonerId,this._summonInfos.contextualId],this._summonInfos.contextualId,castingSpellId);
          executeCallbacks();
       }
    }
-
 }

@@ -6,167 +6,167 @@ package com.ankamagames.jerakine.data
    import com.ankamagames.jerakine.enum.GameDataTypeEnum;
    import flash.utils.ByteArray;
    import flash.filesystem.FileStream;
-
-
+   
    public class GameDataProcess extends Object
    {
-         
-
-      public function GameDataProcess(stream:FileStream) {
+      
+      public function GameDataProcess(param1:FileStream) {
          super();
-         this._stream=stream;
-         this._sortIndex=new Dictionary();
+         this._stream = param1;
+         this._sortIndex = new Dictionary();
          this.parseStream();
       }
-
-
-
+      
       private var _searchFieldIndex:Dictionary;
-
+      
       private var _searchFieldCount:Dictionary;
-
+      
       private var _searchFieldType:Dictionary;
-
+      
       private var _queryableField:Vector.<String>;
-
+      
       private var _stream:IDataInput;
-
+      
       private var _currentStream:IDataInput;
-
+      
       private var _sortIndex:Dictionary;
-
+      
       public function getQueryableField() : Vector.<String> {
          return this._queryableField;
       }
-
-      public function getFieldType(fieldName:String) : int {
-         return this._searchFieldType[fieldName];
+      
+      public function getFieldType(param1:String) : int {
+         return this._searchFieldType[param1];
       }
-
-      public function query(fieldName:String, match:Function) : Vector.<uint> {
-         var idsCount:* = undefined;
-         var j:uint = 0;
-         var result:Vector.<uint> = new Vector.<uint>();
-         if(!this._searchFieldIndex[fieldName])
+      
+      public function query(param1:String, param2:Function) : Vector.<uint> {
+         var _loc8_:* = NaN;
+         var _loc9_:uint = 0;
+         var _loc3_:Vector.<uint> = new Vector.<uint>();
+         if(!this._searchFieldIndex[param1])
          {
             return null;
          }
-         var type:* = this._searchFieldType[fieldName];
-         var readFct:Function = this.getReadFunction(type);
-         var itemCount:uint = this._searchFieldCount[fieldName];
-         Object(this._stream).position=this._searchFieldIndex[fieldName];
-         if(readFct==null)
+         var _loc4_:int = this._searchFieldType[param1];
+         var _loc5_:Function = this.getReadFunction(_loc4_);
+         var _loc6_:uint = this._searchFieldCount[param1];
+         Object(this._stream).position = this._searchFieldIndex[param1];
+         if(_loc5_ == null)
          {
             return null;
          }
-         var i:uint = 0;
-         while(i++<itemCount)
+         var _loc7_:uint = 0;
+         while(_loc7_++ < _loc6_)
          {
-            if(match(readFct()))
+            if(param2(_loc5_()))
             {
-               idsCount=this._stream.readInt()*0.25;
-               j=0;
-               while(j<idsCount)
+               _loc8_ = this._stream.readInt() * 0.25;
+               _loc9_ = 0;
+               while(_loc9_ < _loc8_)
                {
-                  result.push(this._stream.readInt());
-                  j++;
+                  _loc3_.push(this._stream.readInt());
+                  _loc9_++;
                }
             }
             else
             {
-               Object(this._stream).position=this._stream.readInt()+Object(this._stream).position;
+               Object(this._stream).position = this._stream.readInt() + Object(this._stream).position;
             }
          }
-         return result;
+         return _loc3_;
       }
-
-      public function queryEquals(fieldName:String, value:*) : Vector.<uint> {
-         var readValue:* = undefined;
-         var idsCount:* = undefined;
-         var j:uint = 0;
-         var result:Vector.<uint> = new Vector.<uint>();
-         if(!this._searchFieldIndex[fieldName])
+      
+      public function queryEquals(param1:String, param2:*) : Vector.<uint> {
+         var _loc9_:* = undefined;
+         var _loc12_:* = NaN;
+         var _loc13_:uint = 0;
+         var _loc3_:Vector.<uint> = new Vector.<uint>();
+         if(!this._searchFieldIndex[param1])
          {
             return null;
          }
-         var iterable:Boolean = !((value is uint)||(value is int)||(value is Number)||(value is String)||(value is Boolean)||(value==null));
-         if((iterable)&&(value.length==0))
+         var _loc4_:* = !(param2 is uint || param2 is int || param2 is Number || param2 is String || param2 is Boolean || param2 == null);
+         if((_loc4_) && param2.length == 0)
          {
-            return result;
+            return _loc3_;
          }
-         if(!iterable)
+         if(!_loc4_)
          {
-            value=[value];
+            param2 = [param2];
          }
-         var itemCount:uint = this._searchFieldCount[fieldName];
-         Object(this._stream).position=this._searchFieldIndex[fieldName];
-         var type:* = this._searchFieldType[fieldName];
-         var readFct:Function = this.getReadFunction(type);
-         if(readFct==null)
+         var _loc5_:uint = this._searchFieldCount[param1];
+         Object(this._stream).position = this._searchFieldIndex[param1];
+         var _loc6_:int = this._searchFieldType[param1];
+         var _loc7_:Function = this.getReadFunction(_loc6_);
+         if(_loc7_ == null)
          {
             return null;
          }
-         var valueIndex:uint = 0;
-         value.sort(Array.NUMERIC);
-         var currentValue:* = value[0];
-         var i:uint = 0;
-         while(i++<itemCount)
+         var _loc8_:uint = 0;
+         param2.sort(Array.NUMERIC);
+         var _loc10_:* = param2[0];
+         var _loc11_:uint = 0;
+         while(_loc11_++ < _loc5_)
          {
-            readValue=readFct();
-            while(readValue>currentValue)
+            _loc9_ = _loc7_();
+            while(_loc9_ > _loc10_)
             {
-               if(++valueIndex==value.length)
+               if(++_loc8_ == param2.length)
                {
-                  return result;
+                  return _loc3_;
                }
-               currentValue=value[valueIndex];
+               _loc10_ = param2[_loc8_];
             }
-            if(readValue==currentValue)
+            if(_loc9_ == _loc10_)
             {
-               idsCount=this._stream.readInt()*0.25;
-               j=0;
-               while(j<idsCount)
+               _loc12_ = this._stream.readInt() * 0.25;
+               _loc13_ = 0;
+               while(_loc13_ < _loc12_)
                {
-                  result.push(this._stream.readInt());
-                  j++;
+                  _loc3_.push(this._stream.readInt());
+                  _loc13_++;
                }
-               if(++valueIndex==value.length)
+               if(++_loc8_ == param2.length)
                {
-                  return result;
+                  return _loc3_;
                }
-               currentValue=value[valueIndex];
+               _loc10_ = param2[_loc8_];
             }
             else
             {
-               Object(this._stream).position=this._stream.readInt()+Object(this._stream).position;
+               Object(this._stream).position = this._stream.readInt() + Object(this._stream).position;
             }
          }
-         return result;
+         return _loc3_;
       }
-
-      public function sort(fieldNames:*, ids:Vector.<uint>, ascending:*=true) : Vector.<uint> {
-         ids.sort(this.getSortFunction(fieldNames,ascending));
-         return ids;
+      
+      public function sort(param1:*, param2:Vector.<uint>, param3:*=true) : Vector.<uint> {
+         param2.sort(this.getSortFunction(param1,param3));
+         return param2;
       }
-
-      private function getSortFunction(fieldNames:*, ascending:*) : Function {
+      
+      private function getSortFunction(param1:*, param2:*) : Function {
          var sortWay:Vector.<Number> = null;
          var indexes:Vector.<Dictionary> = null;
          var maxFieldIndex:uint = 0;
          var fieldName:String = null;
+         var fieldNames:* = param1;
+         var ascending:* = param2;
          if(fieldNames is String)
          {
+            fieldNames = [fieldNames];
          }
          if(ascending is Boolean)
          {
+            ascending = [ascending];
          }
-         sortWay=new Vector.<Number>();
-         indexes=new Vector.<Dictionary>();
+         sortWay = new Vector.<Number>();
+         indexes = new Vector.<Dictionary>();
          var i:uint = 0;
-         while(i<fieldNames.length)
+         while(i < fieldNames.length)
          {
-            fieldName=fieldNames[i];
-            if(this._searchFieldType[fieldName]==GameDataTypeEnum.I18N)
+            fieldName = fieldNames[i];
+            if(this._searchFieldType[fieldName] == GameDataTypeEnum.I18N)
             {
                this.buildI18nSortIndex(fieldName);
             }
@@ -174,7 +174,7 @@ package com.ankamagames.jerakine.data
             {
                this.buildSortIndex(fieldName);
             }
-            if(ascending.length<fieldNames.length)
+            if(ascending.length < fieldNames.length)
             {
                ascending.push(true);
             }
@@ -182,154 +182,153 @@ package com.ankamagames.jerakine.data
             indexes.push(this._sortIndex[fieldName]);
             i++;
          }
-         maxFieldIndex=fieldNames.length;
-         return new function(t1:uint, t2:uint):Number
+         maxFieldIndex = fieldNames.length;
+         return function(param1:uint, param2:uint):Number
          {
-            var fieldIndex:* = 0;
-            while(fieldIndex<maxFieldIndex)
+            var _loc3_:* = 0;
+            while(_loc3_ < maxFieldIndex)
             {
-                  if(indexes[fieldIndex][t1]<indexes[fieldIndex][t2])
-                  {
-                     return -sortWay[fieldIndex];
-                  }
-                  if(indexes[fieldIndex][t1]>indexes[fieldIndex][t2])
-                  {
-                     return sortWay[fieldIndex];
-                  }
-                  fieldIndex++;
+               if(indexes[_loc3_][param1] < indexes[_loc3_][param2])
+               {
+                  return -sortWay[_loc3_];
+               }
+               if(indexes[_loc3_][param1] > indexes[_loc3_][param2])
+               {
+                  return sortWay[_loc3_];
+               }
+               _loc3_++;
             }
             return 0;
          };
       }
-
-      private function buildSortIndex(fieldName:String) : void {
-         var v:* = undefined;
-         var idsCount:* = undefined;
-         var j:uint = 0;
-         if((this._sortIndex[fieldName])||(!this._searchFieldIndex[fieldName]))
+      
+      private function buildSortIndex(param1:String) : void {
+         var _loc10_:* = undefined;
+         var _loc11_:* = NaN;
+         var _loc12_:uint = 0;
+         if((this._sortIndex[param1]) || !this._searchFieldIndex[param1])
          {
             return;
          }
-         var result:Vector.<uint> = new Vector.<uint>();
-         var itemCount:uint = this._searchFieldCount[fieldName];
-         Object(this._stream).position=this._searchFieldIndex[fieldName];
-         var ref:Dictionary = new Dictionary();
-         this._sortIndex[fieldName]=ref;
-         var type:* = this._searchFieldType[fieldName];
-         var readFct:Function = this.getReadFunction(type);
-         if(readFct==null)
+         var _loc2_:Vector.<uint> = new Vector.<uint>();
+         var _loc3_:uint = this._searchFieldCount[param1];
+         Object(this._stream).position = this._searchFieldIndex[param1];
+         var _loc4_:Dictionary = new Dictionary();
+         this._sortIndex[param1] = _loc4_;
+         var _loc5_:int = this._searchFieldType[param1];
+         var _loc6_:Function = this.getReadFunction(_loc5_);
+         if(_loc6_ == null)
          {
             return;
          }
-         var id:uint = 0;
-         var quickIndexCount:uint = 0;
-         var i:uint = 0;
-         while(i++<itemCount)
+         var _loc7_:uint = 0;
+         var _loc8_:uint = 0;
+         var _loc9_:uint = 0;
+         while(_loc9_++ < _loc3_)
          {
-            v=readFct();
-            idsCount=this._stream.readInt()*0.25;
-            j=0;
-            while(j<idsCount)
+            _loc10_ = _loc6_();
+            _loc11_ = this._stream.readInt() * 0.25;
+            _loc12_ = 0;
+            while(_loc12_ < _loc11_)
             {
-               ref[this._stream.readInt()]=v;
-               j++;
+               _loc4_[this._stream.readInt()] = _loc10_;
+               _loc12_++;
             }
          }
       }
-
-      private function buildI18nSortIndex(fieldName:String) : void {
-         var key:uint = 0;
-         var idsCount:* = undefined;
-         var i18nOrder:uint = 0;
-         var j:uint = 0;
-         if((this._sortIndex[fieldName])||(!this._searchFieldIndex[fieldName]))
+      
+      private function buildI18nSortIndex(param1:String) : void {
+         var _loc6_:uint = 0;
+         var _loc7_:* = NaN;
+         var _loc8_:uint = 0;
+         var _loc9_:uint = 0;
+         if((this._sortIndex[param1]) || !this._searchFieldIndex[param1])
          {
             return;
          }
-         var result:Vector.<uint> = new Vector.<uint>();
-         var itemCount:uint = this._searchFieldCount[fieldName];
-         Object(this._stream).position=this._searchFieldIndex[fieldName];
-         var ref:Dictionary = new Dictionary();
-         this._sortIndex[fieldName]=ref;
-         var i:uint = 0;
-         while(i++<itemCount)
+         var _loc2_:Vector.<uint> = new Vector.<uint>();
+         var _loc3_:uint = this._searchFieldCount[param1];
+         Object(this._stream).position = this._searchFieldIndex[param1];
+         var _loc4_:Dictionary = new Dictionary();
+         this._sortIndex[param1] = _loc4_;
+         var _loc5_:uint = 0;
+         while(_loc5_++ < _loc3_)
          {
-            key=this._stream.readInt();
-            idsCount=this._stream.readInt()*0.25;
-            if(idsCount)
+            _loc6_ = this._stream.readInt();
+            _loc7_ = this._stream.readInt() * 0.25;
+            if(_loc7_)
             {
-               i18nOrder=I18nFileAccessor.getInstance().getOrderIndex(key);
-               j=0;
-               while(j<idsCount)
+               _loc8_ = I18nFileAccessor.getInstance().getOrderIndex(_loc6_);
+               _loc9_ = 0;
+               while(_loc9_ < _loc7_)
                {
-                  ref[this._stream.readInt()]=i18nOrder;
-                  j++;
+                  _loc4_[this._stream.readInt()] = _loc8_;
+                  _loc9_++;
                }
             }
          }
       }
-
+      
       private function readI18n() : String {
          return I18nFileAccessor.getInstance().getUnDiacriticalText(this._currentStream.readInt());
       }
-
-      private function getReadFunction(type:int) : Function {
-         var readFct:Function = null;
-         var directBuffer:ByteArray = null;
-         switch(type)
+      
+      private function getReadFunction(param1:int) : Function {
+         var _loc2_:Function = null;
+         var _loc3_:ByteArray = null;
+         switch(param1)
          {
             case GameDataTypeEnum.INT:
-               readFct=this._stream.readInt;
+               _loc2_ = this._stream.readInt;
                break;
             case GameDataTypeEnum.BOOLEAN:
-               readFct=this._stream.readBoolean;
+               _loc2_ = this._stream.readBoolean;
                break;
             case GameDataTypeEnum.STRING:
-               readFct=this._stream.readUTF;
+               _loc2_ = this._stream.readUTF;
                break;
             case GameDataTypeEnum.NUMBER:
-               readFct=this._stream.readDouble;
+               _loc2_ = this._stream.readDouble;
                break;
             case GameDataTypeEnum.I18N:
                I18nFileAccessor.getInstance().useDirectBuffer(true);
-               readFct=this.readI18n;
+               _loc2_ = this.readI18n;
                if(!(this._stream is ByteArray))
                {
-                  directBuffer=new ByteArray();
-                  Object(this._stream).position=0;
-                  this._stream.readBytes(directBuffer);
-                  directBuffer.position=0;
-                  this._stream=directBuffer;
-                  this._currentStream=this._stream;
+                  _loc3_ = new ByteArray();
+                  Object(this._stream).position = 0;
+                  this._stream.readBytes(_loc3_);
+                  _loc3_.position = 0;
+                  this._stream = _loc3_;
+                  this._currentStream = this._stream;
                }
                break;
             case GameDataTypeEnum.UINT:
-               readFct=this._stream.readUnsignedInt;
+               _loc2_ = this._stream.readUnsignedInt;
                break;
          }
-         return readFct;
+         return _loc2_;
       }
-
+      
       private function parseStream() : void {
-         var size:uint = 0;
-         var fieldName:String = null;
-         this._queryableField=new Vector.<String>();
-         this._searchFieldIndex=new Dictionary();
-         this._searchFieldType=new Dictionary();
-         this._searchFieldCount=new Dictionary();
-         var fieldListSize:int = this._stream.readInt();
-         var indexSearchOffset:uint = Object(this._stream).position+fieldListSize+4;
-         while(fieldListSize)
+         var _loc3_:uint = 0;
+         var _loc4_:String = null;
+         this._queryableField = new Vector.<String>();
+         this._searchFieldIndex = new Dictionary();
+         this._searchFieldType = new Dictionary();
+         this._searchFieldCount = new Dictionary();
+         var _loc1_:int = this._stream.readInt();
+         var _loc2_:uint = Object(this._stream).position + _loc1_ + 4;
+         while(_loc1_)
          {
-            size=this._stream.bytesAvailable;
-            fieldName=this._stream.readUTF();
-            this._queryableField.push(fieldName);
-            this._searchFieldIndex[fieldName]=this._stream.readInt()+indexSearchOffset;
-            this._searchFieldType[fieldName]=this._stream.readInt();
-            this._searchFieldCount[fieldName]=this._stream.readInt();
-            fieldListSize=fieldListSize-size-this._stream.bytesAvailable;
+            _loc3_ = this._stream.bytesAvailable;
+            _loc4_ = this._stream.readUTF();
+            this._queryableField.push(_loc4_);
+            this._searchFieldIndex[_loc4_] = this._stream.readInt() + _loc2_;
+            this._searchFieldType[_loc4_] = this._stream.readInt();
+            this._searchFieldCount[_loc4_] = this._stream.readInt();
+            _loc1_ = _loc1_ - (_loc3_ - this._stream.bytesAvailable);
          }
       }
    }
-
 }

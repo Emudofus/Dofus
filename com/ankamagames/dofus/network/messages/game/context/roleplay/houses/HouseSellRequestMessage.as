@@ -5,76 +5,74 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class HouseSellRequestMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function HouseSellRequestMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 5697;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var amount:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 5697;
       }
-
-      public function initHouseSellRequestMessage(amount:uint=0) : HouseSellRequestMessage {
-         this.amount=amount;
-         this._isInitialized=true;
+      
+      public function initHouseSellRequestMessage(param1:uint=0) : HouseSellRequestMessage {
+         this.amount = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.amount=0;
-         this._isInitialized=false;
+         this.amount = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_HouseSellRequestMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_HouseSellRequestMessage(param1);
       }
-
-      public function serializeAs_HouseSellRequestMessage(output:IDataOutput) : void {
-         if(this.amount<0)
+      
+      public function serializeAs_HouseSellRequestMessage(param1:IDataOutput) : void {
+         if(this.amount < 0)
          {
-            throw new Error("Forbidden value ("+this.amount+") on element amount.");
+            throw new Error("Forbidden value (" + this.amount + ") on element amount.");
          }
          else
          {
-            output.writeInt(this.amount);
+            param1.writeInt(this.amount);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_HouseSellRequestMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_HouseSellRequestMessage(param1);
       }
-
-      public function deserializeAs_HouseSellRequestMessage(input:IDataInput) : void {
-         this.amount=input.readInt();
-         if(this.amount<0)
+      
+      public function deserializeAs_HouseSellRequestMessage(param1:IDataInput) : void {
+         this.amount = param1.readInt();
+         if(this.amount < 0)
          {
-            throw new Error("Forbidden value ("+this.amount+") on element of HouseSellRequestMessage.amount.");
+            throw new Error("Forbidden value (" + this.amount + ") on element of HouseSellRequestMessage.amount.");
          }
          else
          {
@@ -82,5 +80,4 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          }
       }
    }
-
 }

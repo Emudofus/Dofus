@@ -9,154 +9,147 @@ package com.ankamagames.dofus.scripts.api
    import com.ankamagames.dofus.types.entities.ExplosionEntity;
    import com.ankamagames.jerakine.types.Uri;
    import com.ankamagames.tiphon.TiphonConstants;
-
-
+   
    public class SpellFxApi extends FxApi
    {
-         
-
+      
       public function SpellFxApi() {
          super();
       }
-
-      public static function GetCastingSpell(runner:SpellFxRunner) : CastingSpell {
-         return runner.castingSpell;
+      
+      public static function GetCastingSpell(param1:SpellFxRunner) : CastingSpell {
+         return param1.castingSpell;
       }
-
-      public static function GetUsedWeaponType(spell:CastingSpell) : uint {
-         if(spell.weaponId>0)
+      
+      public static function GetUsedWeaponType(param1:CastingSpell) : uint {
+         if(param1.weaponId > 0)
          {
-            return Item.getItemById(spell.weaponId).typeId;
+            return Item.getItemById(param1.weaponId).typeId;
          }
          return 0;
       }
-
-      public static function IsCriticalHit(spell:CastingSpell) : Boolean {
-         return spell.isCriticalHit;
+      
+      public static function IsCriticalHit(param1:CastingSpell) : Boolean {
+         return param1.isCriticalHit;
       }
-
-      public static function IsCriticalFail(spell:CastingSpell) : Boolean {
-         return spell.isCriticalFail;
+      
+      public static function IsCriticalFail(param1:CastingSpell) : Boolean {
+         return param1.isCriticalFail;
       }
-
-      public static function GetSpellParam(spell:CastingSpell, name:String) : * {
-         var r:* = spell.spell.getParamByName(name,IsCriticalHit(spell));
-         if(r is String)
+      
+      public static function GetSpellParam(param1:CastingSpell, param2:String) : * {
+         var _loc3_:* = param1.spell.getParamByName(param2,IsCriticalHit(param1));
+         if(_loc3_ is String)
          {
-            return r;
+            return _loc3_;
          }
-         return isNaN(r)?0:r;
+         return isNaN(_loc3_)?0:_loc3_;
       }
-
-      public static function HasSpellParam(spell:CastingSpell, name:String) : Boolean {
-         return !isNaN(spell.spell.getParamByName(name,IsCriticalHit(spell)));
+      
+      public static function HasSpellParam(param1:CastingSpell, param2:String) : Boolean {
+         var _loc3_:* = param1.spell.getParamByName(param2,IsCriticalHit(param1));
+         return !isNaN(_loc3_) || !(_loc3_ == null);
       }
-
-      public static function GetStepType(step:ISequencable) : String {
-         if(step is IFightStep)
+      
+      public static function GetStepType(param1:ISequencable) : String {
+         if(param1 is IFightStep)
          {
-            return (step as IFightStep).stepType;
+            return (param1 as IFightStep).stepType;
          }
          return "other";
       }
-
-      public static function GetStepsFromType(runner:SpellFxRunner, type:String) : Vector.<IFightStep> {
-         var stepInside:ISequencable = null;
-         var fightStepInside:IFightStep = null;
-         var steps:Vector.<IFightStep> = new Vector.<IFightStep>(0,false);
-         for each (stepInside in runner.stepsBuffer)
+      
+      public static function GetStepsFromType(param1:SpellFxRunner, param2:String) : Vector.<IFightStep> {
+         var _loc4_:ISequencable = null;
+         var _loc5_:IFightStep = null;
+         var _loc3_:Vector.<IFightStep> = new Vector.<IFightStep>(0,false);
+         for each (_loc4_ in param1.stepsBuffer)
          {
-            if(!(stepInside is IFightStep))
+            if(_loc4_ is IFightStep)
             {
-            }
-            else
-            {
-               fightStepInside=stepInside as IFightStep;
-               if(fightStepInside.stepType==type)
+               _loc5_ = _loc4_ as IFightStep;
+               if(_loc5_.stepType == param2)
                {
-                  steps.push(fightStepInside);
+                  _loc3_.push(_loc5_);
                }
             }
          }
-         return steps;
+         return _loc3_;
       }
-
-      public static function AddFrontStep(runner:SpellFxRunner, step:ISequencable) : void {
-         runner.stepsBuffer.splice(0,0,step);
+      
+      public static function AddFrontStep(param1:SpellFxRunner, param2:ISequencable) : void {
+         param1.stepsBuffer.splice(0,0,param2);
       }
-
-      public static function AddBackStep(runner:SpellFxRunner, step:ISequencable) : void {
-         runner.stepsBuffer.push(step);
+      
+      public static function AddBackStep(param1:SpellFxRunner, param2:ISequencable) : void {
+         param1.stepsBuffer.push(param2);
       }
-
-      public static function AddStepBefore(runner:SpellFxRunner, referenceStep:ISequencable, stepToAdd:ISequencable) : void {
-         var stepInside:ISequencable = null;
-         var index:int = -1;
-         var currentIndex:uint = 0;
-         for each (stepInside in runner.stepsBuffer)
+      
+      public static function AddStepBefore(param1:SpellFxRunner, param2:ISequencable, param3:ISequencable) : void {
+         var _loc6_:ISequencable = null;
+         var _loc4_:* = -1;
+         var _loc5_:uint = 0;
+         for each (_loc6_ in param1.stepsBuffer)
          {
-            if(stepInside==referenceStep)
+            if(_loc6_ == param2)
             {
-               index=currentIndex;
+               _loc4_ = _loc5_;
                break;
             }
-            currentIndex++;
+            _loc5_++;
          }
-         if(index<0)
+         if(_loc4_ < 0)
          {
-            _log.warn("Cannot add a step before "+referenceStep+"; step not found.");
+            _log.warn("Cannot add a step before " + param2 + "; step not found.");
             return;
          }
-         runner.stepsBuffer.splice(index,0,stepToAdd);
+         param1.stepsBuffer.splice(_loc4_,0,param3);
       }
-
-      public static function AddStepAfter(runner:SpellFxRunner, referenceStep:ISequencable, stepToAdd:ISequencable) : void {
-         var stepInside:ISequencable = null;
-         var index:int = -1;
-         var currentIndex:uint = 0;
-         for each (stepInside in runner.stepsBuffer)
+      
+      public static function AddStepAfter(param1:SpellFxRunner, param2:ISequencable, param3:ISequencable) : void {
+         var _loc6_:ISequencable = null;
+         var _loc4_:* = -1;
+         var _loc5_:uint = 0;
+         for each (_loc6_ in param1.stepsBuffer)
          {
-            if(stepInside==referenceStep)
+            if(_loc6_ == param2)
             {
-               index=currentIndex;
+               _loc4_ = _loc5_;
                break;
             }
-            currentIndex++;
+            _loc5_++;
          }
-         if(index<0)
+         if(_loc4_ < 0)
          {
-            _log.warn("Cannot add a step after "+referenceStep+"; step not found.");
+            _log.warn("Cannot add a step after " + param2 + "; step not found.");
             return;
          }
-         runner.stepsBuffer.splice(index+1,0,stepToAdd);
+         param1.stepsBuffer.splice(_loc4_ + 1,0,param3);
       }
-
-      public static function CreateExplosionEntity(runner:SpellFxRunner, gfxId:uint, startColors:String, particleCount:uint, levelChange:Boolean, subExplo:Boolean, exploType:uint) : ExplosionEntity {
-         var tmp:Array = null;
-         var i:uint = 0;
-         var spellRank:* = 0;
-         var uri:Uri = new Uri(TiphonConstants.SWF_SKULL_PATH+"/"+gfxId+".swl");
-         if(startColors)
+      
+      public static function CreateExplosionEntity(param1:SpellFxRunner, param2:uint, param3:String, param4:uint, param5:Boolean, param6:Boolean, param7:uint) : ExplosionEntity {
+         var _loc9_:Array = null;
+         var _loc10_:uint = 0;
+         var _loc11_:* = 0;
+         var _loc8_:Uri = new Uri(TiphonConstants.SWF_SKULL_PATH + "/" + param2 + ".swl");
+         if(param3)
          {
-            tmp=startColors.split(";");
-            while(i<tmp.length)
+            _loc9_ = param3.split(";");
+            while(_loc10_ < _loc9_.length)
             {
-               tmp[i]=parseInt(tmp[i],16);
-               i++;
+               _loc9_[_loc10_] = parseInt(_loc9_[_loc10_],16);
+               _loc10_++;
             }
          }
-         if(levelChange)
+         if(param5)
          {
-            spellRank=runner.castingSpell.spellRank.spell.spellLevels.indexOf(runner.castingSpell.spellRank.id);
-            if(spellRank!=-1)
+            _loc11_ = param1.castingSpell.spellRank.spell.spellLevels.indexOf(param1.castingSpell.spellRank.id);
+            if(_loc11_ != -1)
             {
-               particleCount=particleCount*runner.castingSpell.spellRank.spell.spellLevels.length/10+particleCount*(spellRank+1)/10;
+               param4 = param4 * param1.castingSpell.spellRank.spell.spellLevels.length / 10 + param4 * (_loc11_ + 1) / 10;
             }
          }
-         return new ExplosionEntity(uri,tmp,particleCount,subExplo,exploType);
+         return new ExplosionEntity(_loc8_,_loc9_,param4,param6,param7);
       }
-
-
    }
-
 }

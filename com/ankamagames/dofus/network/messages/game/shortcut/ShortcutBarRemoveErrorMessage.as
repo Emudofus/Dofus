@@ -5,68 +5,66 @@ package com.ankamagames.dofus.network.messages.game.shortcut
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ShortcutBarRemoveErrorMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ShortcutBarRemoveErrorMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6222;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var error:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 6222;
       }
-
-      public function initShortcutBarRemoveErrorMessage(error:uint=0) : ShortcutBarRemoveErrorMessage {
-         this.error=error;
-         this._isInitialized=true;
+      
+      public function initShortcutBarRemoveErrorMessage(param1:uint=0) : ShortcutBarRemoveErrorMessage {
+         this.error = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.error=0;
-         this._isInitialized=false;
+         this.error = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ShortcutBarRemoveErrorMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ShortcutBarRemoveErrorMessage(param1);
       }
-
-      public function serializeAs_ShortcutBarRemoveErrorMessage(output:IDataOutput) : void {
-         output.writeByte(this.error);
+      
+      public function serializeAs_ShortcutBarRemoveErrorMessage(param1:IDataOutput) : void {
+         param1.writeByte(this.error);
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ShortcutBarRemoveErrorMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ShortcutBarRemoveErrorMessage(param1);
       }
-
-      public function deserializeAs_ShortcutBarRemoveErrorMessage(input:IDataInput) : void {
-         this.error=input.readByte();
-         if(this.error<0)
+      
+      public function deserializeAs_ShortcutBarRemoveErrorMessage(param1:IDataInput) : void {
+         this.error = param1.readByte();
+         if(this.error < 0)
          {
-            throw new Error("Forbidden value ("+this.error+") on element of ShortcutBarRemoveErrorMessage.error.");
+            throw new Error("Forbidden value (" + this.error + ") on element of ShortcutBarRemoveErrorMessage.error.");
          }
          else
          {
@@ -74,5 +72,4 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          }
       }
    }
-
 }

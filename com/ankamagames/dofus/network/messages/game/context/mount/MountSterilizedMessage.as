@@ -5,66 +5,63 @@ package com.ankamagames.dofus.network.messages.game.context.mount
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class MountSterilizedMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function MountSterilizedMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 5977;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var mountId:Number = 0;
-
+      
       override public function getMessageId() : uint {
          return 5977;
       }
-
-      public function initMountSterilizedMessage(mountId:Number=0) : MountSterilizedMessage {
-         this.mountId=mountId;
-         this._isInitialized=true;
+      
+      public function initMountSterilizedMessage(param1:Number=0) : MountSterilizedMessage {
+         this.mountId = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.mountId=0;
-         this._isInitialized=false;
+         this.mountId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_MountSterilizedMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_MountSterilizedMessage(param1);
       }
-
-      public function serializeAs_MountSterilizedMessage(output:IDataOutput) : void {
-         output.writeDouble(this.mountId);
+      
+      public function serializeAs_MountSterilizedMessage(param1:IDataOutput) : void {
+         param1.writeDouble(this.mountId);
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_MountSterilizedMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_MountSterilizedMessage(param1);
       }
-
-      public function deserializeAs_MountSterilizedMessage(input:IDataInput) : void {
-         this.mountId=input.readDouble();
+      
+      public function deserializeAs_MountSterilizedMessage(param1:IDataInput) : void {
+         this.mountId = param1.readDouble();
       }
    }
-
 }

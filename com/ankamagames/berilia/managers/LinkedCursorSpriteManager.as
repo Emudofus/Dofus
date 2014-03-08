@@ -9,15 +9,13 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
    import flash.display.DisplayObject;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
-
-
+   
    public class LinkedCursorSpriteManager extends Object
    {
-         
-
+      
       public function LinkedCursorSpriteManager() {
-         this.items=new Array();
-         this._mustBeRemoved=new Array();
+         this.items = new Array();
+         this._mustBeRemoved = new Array();
          super();
          if(_self)
          {
@@ -28,127 +26,126 @@ package com.ankamagames.berilia.managers
             return;
          }
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LinkedCursorSpriteManager));
-
+      
       private static var _self:LinkedCursorSpriteManager;
-
+      
       public static function getInstance() : LinkedCursorSpriteManager {
          if(!_self)
          {
-            _self=new LinkedCursorSpriteManager();
+            _self = new LinkedCursorSpriteManager();
          }
          return _self;
       }
-
+      
       private var items:Array;
-
+      
       private var _mustBeRemoved:Array;
-
+      
       private var _mustClean:Boolean;
-
-      public function getItem(name:String) : LinkedCursorData {
-         return this.items[name];
+      
+      public function getItem(param1:String) : LinkedCursorData {
+         return this.items[param1];
       }
-
-      public function addItem(name:String, item:LinkedCursorData, overAll:Boolean=false) : void {
-         this._mustBeRemoved[name]=false;
-         if(this.items[name])
+      
+      public function addItem(param1:String, param2:LinkedCursorData, param3:Boolean=false) : void {
+         this._mustBeRemoved[param1] = false;
+         if(this.items[param1])
          {
-            this.removeItem(name);
+            this.removeItem(param1);
          }
-         this.items[name]=item;
-         item.sprite.mouseChildren=false;
-         item.sprite.mouseEnabled=false;
-         if(overAll)
+         this.items[param1] = param2;
+         param2.sprite.mouseChildren = false;
+         param2.sprite.mouseEnabled = false;
+         if(param3)
          {
-            Berilia.getInstance().strataSuperTooltip.addChild(item.sprite);
+            Berilia.getInstance().strataSuperTooltip.addChild(param2.sprite);
          }
          else
          {
-            Berilia.getInstance().strataTooltip.addChild(item.sprite);
+            Berilia.getInstance().strataTooltip.addChild(param2.sprite);
          }
-         var fmouseX:* = StageShareManager.mouseX;
-         var fmouseY:* = StageShareManager.mouseY;
-         item.sprite.x=(item.lockX?item.sprite.x:StageShareManager.mouseX)-(item.offset?item.offset.x:item.sprite.width/2);
-         item.sprite.y=(item.lockY?item.sprite.y:StageShareManager.mouseY)-(item.offset?item.offset.y:item.sprite.height/2);
-         if((item.lockX)||(item.lockY))
+         var _loc4_:* = StageShareManager.mouseX;
+         var _loc5_:* = StageShareManager.mouseY;
+         param2.sprite.x = (param2.lockX?param2.sprite.x:StageShareManager.mouseX) - (param2.offset?param2.offset.x:param2.sprite.width / 2);
+         param2.sprite.y = (param2.lockY?param2.sprite.y:StageShareManager.mouseY) - (param2.offset?param2.offset.y:param2.sprite.height / 2);
+         if((param2.lockX) || (param2.lockY))
          {
          }
          this.updateCursors();
          EnterFrameDispatcher.addEventListener(this.updateCursors,"updateCursors");
       }
-
-      public function removeItem(name:String, asynch:Boolean=false) : Boolean {
-         if(!this.items[name])
+      
+      public function removeItem(param1:String, param2:Boolean=false) : Boolean {
+         if(!this.items[param1])
          {
             return false;
          }
-         this._mustBeRemoved[name]=true;
-         if(asynch)
+         this._mustBeRemoved[param1] = true;
+         if(param2)
          {
-            this._mustClean=true;
+            this._mustClean = true;
             EnterFrameDispatcher.addEventListener(this.updateCursors,"updateCursors");
          }
          else
          {
-            this.remove(name);
+            this.remove(param1);
          }
          return true;
       }
-
-      private function updateCursors(e:*=null) : void {
-         var item:LinkedCursorData = null;
-         var cursorName:String = null;
+      
+      private function updateCursors(param1:*=null) : void {
+         var _loc4_:LinkedCursorData = null;
+         var _loc5_:String = null;
          if(this._mustClean)
          {
-            this._mustClean=false;
-            for (cursorName in this._mustBeRemoved)
+            this._mustClean = false;
+            for (_loc5_ in this._mustBeRemoved)
             {
-               if((this._mustBeRemoved[cursorName])&&(this.items[cursorName]))
+               if((this._mustBeRemoved[_loc5_]) && (this.items[_loc5_]))
                {
-                  this.remove(cursorName);
+                  this.remove(_loc5_);
                }
             }
          }
-         var xMouse:int = StageShareManager.mouseX;
-         var yMouse:int = StageShareManager.mouseY;
-         for each (item in this.items)
+         var _loc2_:int = StageShareManager.mouseX;
+         var _loc3_:int = StageShareManager.mouseY;
+         for each (_loc4_ in this.items)
          {
-            if(item)
+            if(_loc4_)
             {
-               if(!item.lockX)
+               if(!_loc4_.lockX)
                {
-                  item.sprite.x=xMouse+(item.offset?item.offset.x:0);
+                  _loc4_.sprite.x = _loc2_ + (_loc4_.offset?_loc4_.offset.x:0);
                }
-               if(!item.lockY)
+               if(!_loc4_.lockY)
                {
-                  item.sprite.y=yMouse+(item.offset?item.offset.y:0);
+                  _loc4_.sprite.y = _loc3_ + (_loc4_.offset?_loc4_.offset.y:0);
                }
             }
          }
       }
-
-      private function remove(name:String) : void {
-         var o:Object = null;
-         var s:DisplayObject = this.items[name].sprite as DisplayObject;
-         if(s.parent)
+      
+      private function remove(param1:String) : void {
+         var _loc4_:Object = null;
+         var _loc2_:DisplayObject = this.items[param1].sprite as DisplayObject;
+         if(_loc2_.parent)
          {
-            s.parent.removeChild(s);
+            _loc2_.parent.removeChild(_loc2_);
          }
-         this.items[name]=null;
-         delete this.items[[name]];
-         delete this._mustBeRemoved[[name]];
-         var empty:Boolean = true;
-         for (o in this.items)
+         this.items[param1] = null;
+         delete this.items[[param1]];
+         delete this._mustBeRemoved[[param1]];
+         var _loc3_:* = true;
+         for (_loc4_ in this.items)
          {
-            empty=false;
+            _loc3_ = false;
          }
-         if(empty)
+         if(_loc3_)
          {
             EnterFrameDispatcher.removeEventListener(this.updateCursors);
          }
       }
    }
-
 }

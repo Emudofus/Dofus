@@ -5,76 +5,74 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ObjectJobAddedMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ObjectJobAddedMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6014;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var jobId:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 6014;
       }
-
-      public function initObjectJobAddedMessage(jobId:uint=0) : ObjectJobAddedMessage {
-         this.jobId=jobId;
-         this._isInitialized=true;
+      
+      public function initObjectJobAddedMessage(param1:uint=0) : ObjectJobAddedMessage {
+         this.jobId = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.jobId=0;
-         this._isInitialized=false;
+         this.jobId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ObjectJobAddedMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ObjectJobAddedMessage(param1);
       }
-
-      public function serializeAs_ObjectJobAddedMessage(output:IDataOutput) : void {
-         if(this.jobId<0)
+      
+      public function serializeAs_ObjectJobAddedMessage(param1:IDataOutput) : void {
+         if(this.jobId < 0)
          {
-            throw new Error("Forbidden value ("+this.jobId+") on element jobId.");
+            throw new Error("Forbidden value (" + this.jobId + ") on element jobId.");
          }
          else
          {
-            output.writeByte(this.jobId);
+            param1.writeByte(this.jobId);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ObjectJobAddedMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ObjectJobAddedMessage(param1);
       }
-
-      public function deserializeAs_ObjectJobAddedMessage(input:IDataInput) : void {
-         this.jobId=input.readByte();
-         if(this.jobId<0)
+      
+      public function deserializeAs_ObjectJobAddedMessage(param1:IDataInput) : void {
+         this.jobId = param1.readByte();
+         if(this.jobId < 0)
          {
-            throw new Error("Forbidden value ("+this.jobId+") on element of ObjectJobAddedMessage.jobId.");
+            throw new Error("Forbidden value (" + this.jobId + ") on element of ObjectJobAddedMessage.jobId.");
          }
          else
          {
@@ -82,5 +80,4 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          }
       }
    }
-
 }

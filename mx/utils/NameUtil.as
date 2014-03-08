@@ -4,95 +4,88 @@ package mx.utils
    import flash.utils.getQualifiedClassName;
    import flash.display.DisplayObject;
    import mx.core.IRepeaterClient;
-
+   
    use namespace mx_internal;
-
+   
    public class NameUtil extends Object
    {
-         
-
+      
       public function NameUtil() {
          super();
       }
-
+      
       mx_internal  static const VERSION:String = "4.6.0.23201";
-
+      
       private static var counter:int = 0;
-
-      public static function createUniqueName(object:Object) : String {
-         if(!object)
+      
+      public static function createUniqueName(param1:Object) : String {
+         if(!param1)
          {
             return null;
          }
-         var name:String = getQualifiedClassName(object);
-         var index:int = name.indexOf("::");
-         if(index!=-1)
+         var _loc2_:String = getQualifiedClassName(param1);
+         var _loc3_:int = _loc2_.indexOf("::");
+         if(_loc3_ != -1)
          {
-            name=name.substr(index+2);
+            _loc2_ = _loc2_.substr(_loc3_ + 2);
          }
-         var charCode:int = name.charCodeAt(name.length-1);
-         if((charCode>=48)&&(charCode<=57))
+         var _loc4_:int = _loc2_.charCodeAt(_loc2_.length-1);
+         if(_loc4_ >= 48 && _loc4_ <= 57)
          {
-            name=name+"_";
+            _loc2_ = _loc2_ + "_";
          }
-         return name+counter++;
+         return _loc2_ + counter++;
       }
-
-      public static function displayObjectToString(displayObject:DisplayObject) : String {
-         var result:String = null;
-         var o:DisplayObject = null;
-         var s:String = null;
-         var indices:Array = null;
+      
+      public static function displayObjectToString(param1:DisplayObject) : String {
+         var _loc2_:String = null;
+         var _loc3_:DisplayObject = null;
+         var _loc4_:String = null;
+         var _loc5_:Array = null;
          try
          {
-            o=displayObject;
-            while(o!=null)
+            _loc3_ = param1;
+            while(_loc3_ != null)
             {
-               if((o.parent)&&(o.stage)&&(o.parent==o.stage))
+               if((_loc3_.parent) && (_loc3_.stage) && _loc3_.parent == _loc3_.stage)
                {
+                  break;
                }
-               else
+               _loc4_ = "id" in _loc3_ && (_loc3_["id"])?_loc3_["id"]:_loc3_.name;
+               if(_loc3_ is IRepeaterClient)
                {
-                  s=("id" in o)&&(o["id"])?o["id"]:o.name;
-                  if(o is IRepeaterClient)
+                  _loc5_ = IRepeaterClient(_loc3_).instanceIndices;
+                  if(_loc5_)
                   {
-                     indices=IRepeaterClient(o).instanceIndices;
-                     if(indices)
-                     {
-                        s=s+("["+indices.join("][")+"]");
-                     }
+                     _loc4_ = _loc4_ + ("[" + _loc5_.join("][") + "]");
                   }
-                  result=result==null?s:s+"."+result;
-                  o=o.parent;
-                  continue;
                }
+               _loc2_ = _loc2_ == null?_loc4_:_loc4_ + "." + _loc2_;
+               _loc3_ = _loc3_.parent;
             }
          }
          catch(e:SecurityError)
          {
          }
-         return result;
+         return _loc2_;
       }
-
-      public static function getUnqualifiedClassName(object:Object) : String {
-         var name:String = null;
-         if(object is String)
+      
+      public static function getUnqualifiedClassName(param1:Object) : String {
+         var _loc2_:String = null;
+         if(param1 is String)
          {
-            name=object as String;
+            _loc2_ = param1 as String;
          }
          else
          {
-            name=getQualifiedClassName(object);
+            _loc2_ = getQualifiedClassName(param1);
          }
-         var index:int = name.indexOf("::");
-         if(index!=-1)
+         var _loc3_:int = _loc2_.indexOf("::");
+         if(_loc3_ != -1)
          {
-            name=name.substr(index+2);
+            _loc2_ = _loc2_.substr(_loc3_ + 2);
          }
-         return name;
+         return _loc2_;
       }
-
-
    }
-
 }

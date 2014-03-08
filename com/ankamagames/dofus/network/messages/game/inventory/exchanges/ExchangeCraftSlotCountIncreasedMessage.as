@@ -5,76 +5,74 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ExchangeCraftSlotCountIncreasedMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ExchangeCraftSlotCountIncreasedMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6125;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var newMaxSlot:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 6125;
       }
-
-      public function initExchangeCraftSlotCountIncreasedMessage(newMaxSlot:uint=0) : ExchangeCraftSlotCountIncreasedMessage {
-         this.newMaxSlot=newMaxSlot;
-         this._isInitialized=true;
+      
+      public function initExchangeCraftSlotCountIncreasedMessage(param1:uint=0) : ExchangeCraftSlotCountIncreasedMessage {
+         this.newMaxSlot = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.newMaxSlot=0;
-         this._isInitialized=false;
+         this.newMaxSlot = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ExchangeCraftSlotCountIncreasedMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ExchangeCraftSlotCountIncreasedMessage(param1);
       }
-
-      public function serializeAs_ExchangeCraftSlotCountIncreasedMessage(output:IDataOutput) : void {
-         if(this.newMaxSlot<0)
+      
+      public function serializeAs_ExchangeCraftSlotCountIncreasedMessage(param1:IDataOutput) : void {
+         if(this.newMaxSlot < 0)
          {
-            throw new Error("Forbidden value ("+this.newMaxSlot+") on element newMaxSlot.");
+            throw new Error("Forbidden value (" + this.newMaxSlot + ") on element newMaxSlot.");
          }
          else
          {
-            output.writeByte(this.newMaxSlot);
+            param1.writeByte(this.newMaxSlot);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ExchangeCraftSlotCountIncreasedMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ExchangeCraftSlotCountIncreasedMessage(param1);
       }
-
-      public function deserializeAs_ExchangeCraftSlotCountIncreasedMessage(input:IDataInput) : void {
-         this.newMaxSlot=input.readByte();
-         if(this.newMaxSlot<0)
+      
+      public function deserializeAs_ExchangeCraftSlotCountIncreasedMessage(param1:IDataInput) : void {
+         this.newMaxSlot = param1.readByte();
+         if(this.newMaxSlot < 0)
          {
-            throw new Error("Forbidden value ("+this.newMaxSlot+") on element of ExchangeCraftSlotCountIncreasedMessage.newMaxSlot.");
+            throw new Error("Forbidden value (" + this.newMaxSlot + ") on element of ExchangeCraftSlotCountIncreasedMessage.newMaxSlot.");
          }
          else
          {
@@ -82,5 +80,4 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          }
       }
    }
-
 }

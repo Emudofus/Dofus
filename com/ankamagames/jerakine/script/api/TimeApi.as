@@ -5,45 +5,40 @@ package com.ankamagames.jerakine.script.api
    import flash.utils.clearTimeout;
    import flash.utils.setInterval;
    import flash.utils.clearInterval;
-
-
+   
    public class TimeApi extends Object
    {
-         
-
+      
       public function TimeApi() {
          super();
       }
-
-      public static function Timeout(delay:uint, fct:Function, ... parameters) : uint {
-         if(!parameters)
+      
+      public static function Timeout(param1:uint, param2:Function, ... rest) : uint {
+         if(!rest)
          {
-            parameters=new Array();
+            rest = new Array();
          }
-         parameters.unshift(delay);
-         parameters.unshift(fct);
-         return CallWithParameters.callR(setTimeout,parameters);
+         rest.unshift(param1);
+         rest.unshift(param2);
+         return CallWithParameters.callR(setTimeout,rest);
       }
-
-      public static function CancelTimeout(timeoutID:uint) : void {
-         clearTimeout(timeoutID);
+      
+      public static function CancelTimeout(param1:uint) : void {
+         clearTimeout(param1);
       }
-
-      public static function Repeat(delay:uint, fct:Function, ... parameters) : uint {
-         if(!parameters)
+      
+      public static function Repeat(param1:uint, param2:Function, ... rest) : uint {
+         if(!rest)
          {
-            parameters=new Array();
+            rest = new Array();
          }
-         parameters.unshift(delay);
-         parameters.unshift(fct);
-         return CallWithParameters.callR(setInterval,parameters);
+         rest.unshift(param1);
+         rest.unshift(param2);
+         return CallWithParameters.callR(setInterval,rest);
       }
-
-      public static function CancelRepeat(intervalID:uint) : void {
-         clearInterval(intervalID);
+      
+      public static function CancelRepeat(param1:uint) : void {
+         clearInterval(param1);
       }
-
-
    }
-
 }

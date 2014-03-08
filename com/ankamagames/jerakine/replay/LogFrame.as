@@ -22,13 +22,11 @@ package com.ankamagames.jerakine.replay
    import flash.utils.getDefinitionByName;
    import com.ankamagames.jerakine.types.CustomSharedObject;
    import com.ankamagames.jerakine.utils.misc.LogUploadManager;
-
-
+   
    public class LogFrame extends Object implements Frame
    {
-         
-
-      public function LogFrame(allowLogUpload:Boolean) {
+      
+      public function LogFrame(param1:Boolean) {
          var maxFile:File = null;
          var date:Date = null;
          var log_files:Array = null;
@@ -38,34 +36,35 @@ package com.ankamagames.jerakine.replay
          var mega:uint = 0;
          var sizeLimit:uint = 0;
          var maxSize:uint = 0;
+         var allowLogUpload:Boolean = param1;
          super();
          try
          {
-            date=new Date();
-            this._logFile=new File(CustomSharedObject.getCustomSharedObjectDirectory()+"/logs/log_"+date.fullYear+"-"+date.month+"-"+date.day+"_"+date.hours+"h"+date.minutes+"m"+date.seconds+"s"+date.milliseconds+".d2l");
+            date = new Date();
+            this._logFile = new File(CustomSharedObject.getCustomSharedObjectDirectory() + "/logs/log_" + date.fullYear + "-" + date.month + "-" + date.day + "_" + date.hours + "h" + date.minutes + "m" + date.seconds + "s" + date.milliseconds + ".d2l");
             this._logFile.parent.createDirectory();
-            this._logStream=new FileStream();
+            this._logStream = new FileStream();
             this._logStream.open(this._logFile,FileMode.WRITE);
-            log_files=this._logFile.parent.getDirectoryListing();
+            log_files = this._logFile.parent.getDirectoryListing();
             log_files.sortOn("creationDate",Array.DESCENDING);
-            today=new Date();
-            twoDay=1000*60*60*24*2;
-            mega=Math.pow(2,20)*0+1024*250;
-            sizeLimit=Math.pow(2,20)*8*4;
+            today = new Date();
+            twoDay = 1000 * 60 * 60 * 24 * 2;
+            mega = Math.pow(2,20) * 0 + 1024 * 250;
+            sizeLimit = Math.pow(2,20) * 8 * 4;
             try
             {
                for each (deleteFile in log_files)
                {
-                  if((today.getTime()-deleteFile.modificationDate.getTime()<twoDay)&&(!(deleteFile.url.indexOf("log_")==-1))&&(deleteFile.extension=="d2l"))
+                  if(today.getTime() - deleteFile.modificationDate.getTime() > twoDay && !(deleteFile.url.indexOf("log_") == -1) && deleteFile.extension == "d2l")
                   {
                      deleteFile.deleteFile();
                   }
                   else
                   {
-                     if((deleteFile.size<mega)&&(deleteFile.size<maxSize)&&(deleteFile.size>sizeLimit)&&(!LogUploadManager.getInstance().hasBeenAlreadySend(deleteFile.name)))
+                     if(deleteFile.size > mega && deleteFile.size > maxSize && deleteFile.size < sizeLimit && !LogUploadManager.getInstance().hasBeenAlreadySend(deleteFile.name))
                      {
-                        maxFile=deleteFile;
-                        maxSize=deleteFile.size;
+                        maxFile = deleteFile;
+                        maxSize = deleteFile.size;
                      }
                   }
                }
@@ -76,116 +75,116 @@ package com.ankamagames.jerakine.replay
          }
          catch(e:Error)
          {
-            trace("Error IO lors de la tentation de la création du fichier de log");
+            trace("Error IO lors de la tentation de la crÃ©ation du fichier de log");
          }
-         this._buffer=new ByteArray();
-         this._classRef=new Dictionary();
-         this._stringRef=new Dictionary();
-         this._classIndex=new Dictionary();
-         this._reverseStringRef=new Array();
-         this._classIndex["uint"]=UINT;
-         this._classIndex["int"]=INT;
-         this._classIndex["Boolean"]=BOOLEAN;
-         this._classIndex["Number"]=NUMBER;
-         this._classIndex["String"]=STRING;
-         if((maxFile)&&(allowLogUpload))
+         this._buffer = new ByteArray();
+         this._classRef = new Dictionary();
+         this._stringRef = new Dictionary();
+         this._classIndex = new Dictionary();
+         this._reverseStringRef = new Array();
+         this._classIndex["uint"] = UINT;
+         this._classIndex["int"] = INT;
+         this._classIndex["Boolean"] = BOOLEAN;
+         this._classIndex["Number"] = NUMBER;
+         this._classIndex["String"] = STRING;
+         if((maxFile) && (allowLogUpload))
          {
             LogUploadManager.getInstance().askForUpload(maxFile);
          }
       }
-
+      
       public static const UINT:int = -1;
-
+      
       public static const INT:int = -2;
-
+      
       public static const NUMBER:int = -3;
-
+      
       public static const BOOLEAN:int = -4;
-
+      
       public static const STRING:int = -5;
-
+      
       public static const NULL_IDENTIFIER:int = -1431655766;
-
+      
       private static const NO_LOG_STRING:String = "NoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLog";
-
+      
       public static const REPLAY_LC_NAME:String = "_Dofus2ReplayInfo";
-
-      public static function set sendReplayInfo(v:Boolean) : void {
+      
+      public static function set sendReplayInfo(param1:Boolean) : void {
          getInstance();
-         _self._sendReplayInfo=v;
-         _self._sendindLc=new LocalConnection();
+         _self._sendReplayInfo = param1;
+         _self._sendindLc = new LocalConnection();
       }
-
+      
       private static var _self:LogFrame;
-
+      
       private static var _logEnable:Boolean;
-
+      
       public static function get enabled() : Boolean {
          return _logEnable;
       }
-
-      public static function getInstance(allowLogUpload:Boolean=false) : LogFrame {
+      
+      public static function getInstance(param1:Boolean=false) : LogFrame {
          if(!_self)
          {
-            _self=new LogFrame(allowLogUpload);
+            _self = new LogFrame(param1);
          }
          return _self;
       }
-
-      public static function log(logType:uint, o:*) : void {
+      
+      public static function log(param1:uint, param2:*) : void {
          if(!_self)
          {
             return;
          }
-         _self._log(logType,o);
+         _self._log(param1,param2);
       }
-
+      
       public static function sendAck() : void {
          _self._sendindLc.send(REPLAY_LC_NAME,"process","ack");
       }
-
+      
       private var _logStream:FileStream;
-
+      
       private var _buffer:ByteArray;
-
+      
       private var _sendBuffer:ByteArray;
-
+      
       private var _stringRef:Dictionary;
-
+      
       private var _reverseStringRef:Array;
-
+      
       private var _classRef:Dictionary;
-
+      
       private var _classIndex:Dictionary;
-
+      
       private var _classCount:uint;
-
+      
       private var _stringCount:uint;
-
+      
       private var _arrayDef:Dictionary;
-
+      
       private var _sendindLc:LocalConnection;
-
+      
       private var _sendReplayInfo:Boolean;
-
+      
       private var _logFile:File;
-
+      
       public function pushed() : Boolean {
-         _logEnable=true;
+         _logEnable = true;
          return true;
       }
-
+      
       public function get priority() : int {
          return Priority.LOG;
       }
-
+      
       public function pulled() : Boolean {
-         _logEnable=false;
+         _logEnable = false;
          return true;
       }
-
-      public function process(msg:Message) : Boolean {
-         var o:DisplayObject = null;
+      
+      public function process(param1:Message) : Boolean {
+         var _loc2_:DisplayObject = null;
          if(!_logEnable)
          {
             return false;
@@ -194,29 +193,29 @@ package com.ankamagames.jerakine.replay
          {
             switch(true)
             {
-               case msg is INetworkMessage:
-                  this._log(LogTypeEnum.NETWORK_IN,msg);
+               case param1 is INetworkMessage:
+                  this._log(LogTypeEnum.NETWORK_IN,param1);
                   break;
-               case msg is ILogableMessage:
-                  this._log(LogTypeEnum.MESSAGE,msg);
+               case param1 is ILogableMessage:
+                  this._log(LogTypeEnum.MESSAGE,param1);
                   break;
-               case msg is MouseMessage:
-                  if(MouseMessage(msg).target is ICustomUnicNameGetter)
+               case param1 is MouseMessage:
+                  if(MouseMessage(param1).target is ICustomUnicNameGetter)
                   {
-                     this._log(LogTypeEnum.MOUSE,new MouseInteraction(ICustomUnicNameGetter(MouseMessage(msg).target).customUnicName,getQualifiedClassName(msg),MouseMessage(msg).mouseEvent.stageX,MouseMessage(msg).mouseEvent.stageY));
+                     this._log(LogTypeEnum.MOUSE,new MouseInteraction(ICustomUnicNameGetter(MouseMessage(param1).target).customUnicName,getQualifiedClassName(param1),MouseMessage(param1).mouseEvent.stageX,MouseMessage(param1).mouseEvent.stageY));
                   }
                   else
                   {
-                     o=MouseMessage(msg).target;
-                     if(o!=null)
+                     _loc2_ = MouseMessage(param1).target;
+                     if(_loc2_ != null)
                      {
-                        while((o.parent)&&(!(o is ICustomUnicNameGetter)))
+                        while((_loc2_.parent) && !(_loc2_ is ICustomUnicNameGetter))
                         {
-                           o=o.parent;
+                           _loc2_ = _loc2_.parent;
                         }
-                        if(o is ICustomUnicNameGetter)
+                        if(_loc2_ is ICustomUnicNameGetter)
                         {
-                           this._log(LogTypeEnum.MOUSE,new MouseInteraction(ICustomUnicNameGetter(o).customUnicName,getQualifiedClassName(msg),MouseMessage(msg).mouseEvent.stageX,MouseMessage(msg).mouseEvent.stageY));
+                           this._log(LogTypeEnum.MOUSE,new MouseInteraction(ICustomUnicNameGetter(_loc2_).customUnicName,getQualifiedClassName(param1),MouseMessage(param1).mouseEvent.stageX,MouseMessage(param1).mouseEvent.stageY));
                         }
                      }
                   }
@@ -228,7 +227,7 @@ package com.ankamagames.jerakine.replay
          }
          return false;
       }
-
+      
       public function duplicateLogFile() : File {
          if(!enabled)
          {
@@ -236,29 +235,31 @@ package com.ankamagames.jerakine.replay
          }
          this._logStream.close();
          this._logStream.open(this._logFile,FileMode.READ);
-         var copyLogFile:File = new File(this._logFile.nativePath+".copy");
-         var fs:FileStream = new FileStream();
-         fs.open(copyLogFile,FileMode.WRITE);
-         var ba:ByteArray = new ByteArray();
-         this._logStream.position=0;
-         this._logStream.readBytes(ba);
-         fs.writeBytes(ba);
-         fs.close();
+         var _loc1_:File = new File(this._logFile.nativePath + ".copy");
+         var _loc2_:FileStream = new FileStream();
+         _loc2_.open(_loc1_,FileMode.WRITE);
+         var _loc3_:ByteArray = new ByteArray();
+         this._logStream.position = 0;
+         this._logStream.readBytes(_loc3_);
+         _loc2_.writeBytes(_loc3_);
+         _loc2_.close();
          this._logStream.close();
          this._logStream.open(this._logFile,FileMode.APPEND);
-         return copyLogFile;
+         return _loc1_;
       }
-
-      private function _log(logType:uint, o:*) : void {
+      
+      private function _log(param1:uint, param2:*) : void {
          var objectEncodingLen:uint = 0;
-         if((!_logEnable)||(o is IDontLogThisMessage))
+         var logType:uint = param1;
+         var o:* = param2;
+         if(!_logEnable || o is IDontLogThisMessage)
          {
             return;
          }
          try
          {
-            this._arrayDef=new Dictionary(true);
-            objectEncodingLen=this.writeObject(this._buffer,o);
+            this._arrayDef = new Dictionary(true);
+            objectEncodingLen = this.writeObject(this._buffer,o);
             this._logStream.writeShort(0);
             this._logStream.writeDouble(getTimer());
             this._logStream.writeShort(logType);
@@ -268,131 +269,133 @@ package com.ankamagames.jerakine.replay
          }
          catch(e:Error)
          {
-            _logEnable=false;
-            _self=null;
+            _logEnable = false;
+            _self = null;
             trace("Erreur lors de l\'encodage d\'un objet dans le fichier de log, arret des log.");
          }
          if(this._sendReplayInfo)
          {
-            if((o is INetworkMessage)||(o is Action))
+            if(o is INetworkMessage || o is Action)
             {
                this._sendindLc.send(REPLAY_LC_NAME,"process","message",getQualifiedClassName(o));
-               trace("Log "+getQualifiedClassName(o));
+               trace("Log " + getQualifiedClassName(o));
             }
          }
       }
-
-      private function writeObject(output:ByteArray, o:*) : uint {
-         var fieldName:String = null;
-         var fieldData:LogClassField = null;
-         if(o==null)
+      
+      private function writeObject(param1:ByteArray, param2:*) : uint {
+         var _loc4_:String = null;
+         var _loc5_:LogClassField = null;
+         if(param2 == null)
          {
-            output.writeInt(NULL_IDENTIFIER);
-            return output.length;
+            param1.writeInt(NULL_IDENTIFIER);
+            return param1.length;
          }
-         var field:Array = this.getClassField(o);
-         if((o is Array)||(o is Dictionary)||(o is Vector.<*>)||(o is Vector.<uint>)||(o is Vector.<Boolean>)||(o is Vector.<int>)||(o is Vector.<Number>))
+         var _loc3_:Array = this.getClassField(param2);
+         if(param2 is Array || param2 is Dictionary || param2 is Vector.<*> || param2 is Vector.<uint> || param2 is Vector.<Boolean> || param2 is Vector.<int> || param2 is Vector.<Number>)
          {
-            output.writeInt(this._arrayDef[o]);
+            param1.writeInt(this._arrayDef[param2]);
          }
          else
          {
-            output.writeInt(this.getClassIndex(getQualifiedClassName(o)));
+            param1.writeInt(this.getClassIndex(getQualifiedClassName(param2)));
          }
-         for each (fieldData in field)
+         for each (_loc5_ in _loc3_)
          {
-            fieldName=this._reverseStringRef[fieldData.fieldNameId];
-            switch(fieldData.type)
+            _loc4_ = this._reverseStringRef[_loc5_.fieldNameId];
+            switch(_loc5_.type)
             {
                case INT:
-                  if(!fieldData.transient)
+                  if(!_loc5_.transient)
                   {
-                     output.writeInt(o[fieldName]);
+                     param1.writeInt(param2[_loc4_]);
                   }
                   else
                   {
-                     output.writeInt(0);
+                     param1.writeInt(0);
                   }
-                  break;
+                  continue;
                case UINT:
-                  if(!fieldData.transient)
+                  if(!_loc5_.transient)
                   {
-                     output.writeUnsignedInt(o[fieldName]);
+                     param1.writeUnsignedInt(param2[_loc4_]);
                   }
                   else
                   {
-                     output.writeUnsignedInt(0);
+                     param1.writeUnsignedInt(0);
                   }
-                  break;
+                  continue;
                case NUMBER:
-                  if(!fieldData.transient)
+                  if(!_loc5_.transient)
                   {
-                     output.writeDouble(o[fieldName]);
+                     param1.writeDouble(param2[_loc4_]);
                   }
                   else
                   {
-                     output.writeDouble(o[fieldName]);
+                     param1.writeDouble(param2[_loc4_]);
                   }
-                  break;
+                  continue;
                case BOOLEAN:
-                  output.writeBoolean(o[fieldName]);
-                  break;
+                  param1.writeBoolean(param2[_loc4_]);
+                  continue;
                case STRING:
-                  output.writeBoolean(o[fieldName]==null);
-                  if(o[fieldName]!=null)
+                  param1.writeBoolean(param2[_loc4_] == null);
+                  if(param2[_loc4_] != null)
                   {
-                     if(!fieldData.transient)
+                     if(!_loc5_.transient)
                      {
-                        output.writeUnsignedInt(this.getStringIndex(o[fieldName]));
+                        param1.writeUnsignedInt(this.getStringIndex(param2[_loc4_]));
                      }
                      else
                      {
-                        output.writeUnsignedInt(this.getStringIndex(NO_LOG_STRING.substr(0,o[fieldName].length)));
+                        param1.writeUnsignedInt(this.getStringIndex(NO_LOG_STRING.substr(0,param2[_loc4_].length)));
                      }
                   }
-                  break;
+                  continue;
                default:
-                  this.writeObject(output,o[fieldName]);
+                  this.writeObject(param1,param2[_loc4_]);
+                  continue;
             }
          }
-         return output.length;
+         return param1.length;
       }
-
-      private function getClassField(o:*) : Array {
-         var fieldList:Array = null;
-         var varCount:uint = 0;
-         var fieldName:String = null;
-         var className:String = getQualifiedClassName(o);
-         if((o is Array)||(o is Dictionary)||(o is Vector.<*>)||(o is Vector.<uint>)||(o is Vector.<Boolean>)||(o is Vector.<int>)||(o is Vector.<Number>))
+      
+      private function getClassField(param1:*) : Array {
+         var _loc3_:Array = null;
+         var _loc4_:uint = 0;
+         var _loc5_:String = null;
+         var _loc2_:String = getQualifiedClassName(param1);
+         if(param1 is Array || param1 is Dictionary || param1 is Vector.<*> || param1 is Vector.<uint> || param1 is Vector.<Boolean> || param1 is Vector.<int> || param1 is Vector.<Number>)
          {
-            fieldList=new Array();
-            varCount=0;
-            for (fieldName in o)
+            _loc3_ = new Array();
+            _loc4_ = 0;
+            for (_loc5_ in param1)
             {
-               varCount++;
-               if(o[fieldName]!=null)
+               _loc4_++;
+               if(param1[_loc5_] != null)
                {
-                  fieldList[fieldList.length]=new LogClassField(this.getStringIndex(fieldName),this.getClassIndex(getQualifiedClassName(o[fieldName])),false);
+                  _loc3_[_loc3_.length] = new LogClassField(this.getStringIndex(_loc5_),this.getClassIndex(getQualifiedClassName(param1[_loc5_])),false);
                }
                else
                {
-                  fieldList[fieldList.length]=new LogClassField(NULL_IDENTIFIER,this.getClassIndex(getQualifiedClassName(o[fieldName])),false);
+                  _loc3_[_loc3_.length] = new LogClassField(NULL_IDENTIFIER,this.getClassIndex(getQualifiedClassName(param1[_loc5_])),false);
                }
             }
-            this.writeClassDefinition(++this._classCount,className,varCount,fieldList);
-            this._arrayDef[o]=this._classCount;
-            return fieldList;
+            this.writeClassDefinition(++this._classCount,_loc2_,_loc4_,_loc3_);
+            this._arrayDef[param1] = this._classCount;
+            return _loc3_;
          }
-         if(!this._classRef[className])
+         if(!this._classRef[_loc2_])
          {
-            this.getClassIndex(className);
+            this.getClassIndex(_loc2_);
          }
-         return this._classRef[className];
+         return this._classRef[_loc2_];
       }
-
-      private function getClassIndex(className:String) : int {
+      
+      private function getClassIndex(param1:String) : int {
          var varCount:uint = 0;
          var variable:XML = null;
+         var className:String = param1;
          if(this._classIndex[className])
          {
             return this._classIndex[className];
@@ -401,80 +404,46 @@ package com.ankamagames.jerakine.replay
          var desc:XML = DescribeTypeCache.typeDescription(getDefinitionByName(className) as Class);
          for each (variable in desc..factory..variable)
          {
-            for each (_loc9_ in variable..metadata)
-            {
-               with(_loc9_)
-               {
-                  
-                  if(@name=="Transient")
-                  {
-                     _loc5_[_loc6_]=_loc8_;
-                  }
-               }
-            }
-            fieldList[varCount]=new LogClassField(this.getStringIndex(variable.@name.toString()),this.getClassIndex(variable.@type.toString()),XMLList(_loc5_).length());
+            fieldList[varCount] = new LogClassField(this.getStringIndex(variable.@name.toString()),this.getClassIndex(variable.@type.toString()),XMLList(variable..metadata.(@name == "Transient")).length());
             varCount++;
          }
-         for each (_loc9_ in desc..accessor)
+         for each (variable in desc..accessor.(@access == "readwrite"))
          {
-            with(_loc8_)
-            {
-               
-               if(@access=="readwrite")
-               {
-                  _loc5_[_loc6_]=_loc8_;
-               }
-            }
-         }
-         for each (variable in _loc5_)
-         {
-            for each (_loc9_ in variable..metadata)
-            {
-               with(_loc8_)
-               {
-                  
-                  if(@name=="Transient")
-                  {
-                     _loc5_[_loc6_]=_loc8_;
-                  }
-               }
-            }
-            fieldList[varCount]=new LogClassField(this.getStringIndex(variable.@name.toString()),this.getClassIndex(variable.@type.toString()),XMLList(_loc5_).length());
+            fieldList[varCount] = new LogClassField(this.getStringIndex(variable.@name.toString()),this.getClassIndex(variable.@type.toString()),XMLList(variable..metadata.(@name == "Transient")).length());
             varCount++;
          }
-         this._classRef[className]=fieldList;
-         this._classIndex[className]=++this._classCount;
+         this._classRef[className] = fieldList;
+         this._classIndex[className] = ++this._classCount;
          this.writeClassDefinition(this._classCount,className,varCount,fieldList);
          return this._classCount;
       }
-
-      private function writeClassDefinition(classId:int, className:String, varCount:uint, fieldList:Array) : void {
-         var field:LogClassField = null;
-         var classNameId:uint = this.getStringIndex(className);
+      
+      private function writeClassDefinition(param1:int, param2:String, param3:uint, param4:Array) : void {
+         var _loc5_:LogClassField = null;
+         var _loc6_:uint = this.getStringIndex(param2);
          this._logStream.writeShort(1);
-         this._logStream.writeUnsignedInt(classId);
-         this._logStream.writeUnsignedInt(classNameId);
-         this._logStream.writeShort(varCount);
-         for each (field in fieldList)
+         this._logStream.writeUnsignedInt(param1);
+         this._logStream.writeUnsignedInt(_loc6_);
+         this._logStream.writeShort(param3);
+         for each (_loc5_ in param4)
          {
-            this._logStream.writeUnsignedInt(field.fieldNameId);
-            this._logStream.writeShort(field.type);
+            this._logStream.writeUnsignedInt(_loc5_.fieldNameId);
+            this._logStream.writeShort(_loc5_.type);
          }
       }
-
-      private function getStringIndex(str:String) : uint {
-         if(this._stringRef[str])
+      
+      private function getStringIndex(param1:String) : uint {
+         if(this._stringRef[param1])
          {
-            return this._stringRef[str];
+            return this._stringRef[param1];
          }
-         var newIndex:uint = ++this._stringCount;
-         this._stringRef[str]=newIndex;
-         this._reverseStringRef[this._stringCount]=str;
+         var _loc2_:uint = ++this._stringCount;
+         this._stringRef[param1] = _loc2_;
+         this._reverseStringRef[this._stringCount] = param1;
          this._logStream.writeShort(2);
-         this._logStream.writeUnsignedInt(newIndex);
-         this._logStream.writeUTF(str);
-         return newIndex;
+         this._logStream.writeUnsignedInt(_loc2_);
+         this._logStream.writeUTF(param1);
+         return _loc2_;
       }
    }
-
 }

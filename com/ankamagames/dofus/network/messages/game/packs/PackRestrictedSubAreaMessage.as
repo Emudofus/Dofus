@@ -5,76 +5,74 @@ package com.ankamagames.dofus.network.messages.game.packs
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class PackRestrictedSubAreaMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function PackRestrictedSubAreaMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6186;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var subAreaId:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 6186;
       }
-
-      public function initPackRestrictedSubAreaMessage(subAreaId:uint=0) : PackRestrictedSubAreaMessage {
-         this.subAreaId=subAreaId;
-         this._isInitialized=true;
+      
+      public function initPackRestrictedSubAreaMessage(param1:uint=0) : PackRestrictedSubAreaMessage {
+         this.subAreaId = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.subAreaId=0;
-         this._isInitialized=false;
+         this.subAreaId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_PackRestrictedSubAreaMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_PackRestrictedSubAreaMessage(param1);
       }
-
-      public function serializeAs_PackRestrictedSubAreaMessage(output:IDataOutput) : void {
-         if(this.subAreaId<0)
+      
+      public function serializeAs_PackRestrictedSubAreaMessage(param1:IDataOutput) : void {
+         if(this.subAreaId < 0)
          {
-            throw new Error("Forbidden value ("+this.subAreaId+") on element subAreaId.");
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
          }
          else
          {
-            output.writeInt(this.subAreaId);
+            param1.writeInt(this.subAreaId);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_PackRestrictedSubAreaMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_PackRestrictedSubAreaMessage(param1);
       }
-
-      public function deserializeAs_PackRestrictedSubAreaMessage(input:IDataInput) : void {
-         this.subAreaId=input.readInt();
-         if(this.subAreaId<0)
+      
+      public function deserializeAs_PackRestrictedSubAreaMessage(param1:IDataInput) : void {
+         this.subAreaId = param1.readInt();
+         if(this.subAreaId < 0)
          {
-            throw new Error("Forbidden value ("+this.subAreaId+") on element of PackRestrictedSubAreaMessage.subAreaId.");
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element of PackRestrictedSubAreaMessage.subAreaId.");
          }
          else
          {
@@ -82,5 +80,4 @@ package com.ankamagames.dofus.network.messages.game.packs
          }
       }
    }
-
 }

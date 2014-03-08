@@ -1,36 +1,23 @@
 package com.ankamagames.berilia.utils.web
 {
-
-
    public class MimeTypeHelper extends Object
    {
-         
-
+      
       public function MimeTypeHelper() {
          super();
       }
-
-      public static function getMimeType(fileExtension:String) : String {
+      
+      public static function getMimeType(param1:String) : String {
          var mimeNode:XML = null;
-         for each (_loc7_ in MimeTypeHelper.mimetypeXml.mimeType)
-         {
-            with(_loc7_)
-            {
-               
-               if(attribute("fileExtension")==fileExtension)
-               {
-                  _loc3_[_loc4_]=_loc6_;
-               }
-            }
-         }
-         mimeNode=_loc3_[0];
+         var fileExtension:String = param1;
+         mimeNode = MimeTypeHelper.mimetypeXml.mimeType.(attribute("fileExtension") == fileExtension)[0];
          if(mimeNode)
          {
             return mimeNode.@type;
          }
          return null;
       }
-
+      
       public static const mimetypeXml:XML = <mimeTypes>
   <mimeType fileExtension="3dm" type="x-world/x-3dmf"/>
   <mimeType fileExtension="3dmf" type="x-world/x-3dmf"/>
@@ -675,8 +662,5 @@ package com.ankamagames.berilia.utils.web
   <mimeType fileExtension="zoo" type="application/octet-stream"/>
   <mimeType fileExtension="zsh" type="text/x-script.zsh"/>
 </mimeTypes>;
-
-
    }
-
 }

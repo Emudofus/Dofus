@@ -7,237 +7,239 @@ package com.ankamagames.berilia.types.shortcut
    import com.ankamagames.jerakine.managers.StoreDataManager;
    import com.ankamagames.jerakine.types.enums.DataStoreEnum;
    import com.ankamagames.berilia.utils.errors.BeriliaError;
-
-
+   
    public class Shortcut extends Object implements IDataCenter
    {
-         
-
-      public function Shortcut(name:String, textfieldEnabled:Boolean=false, description:String=null, category:ShortcutCategory=null, bindable:Boolean=true, pVisible:Boolean=true, pRequired:Boolean=false) {
+      
+      public function Shortcut(param1:String, param2:Boolean=false, param3:String=null, param4:ShortcutCategory=null, param5:Boolean=true, param6:Boolean=true, param7:Boolean=false, param8:Boolean=false, param9:String=null) {
          super();
-         if(_shortcuts[name])
+         if(_shortcuts[param1])
          {
-            throw new BeriliaError("Shortcut name ["+name+"] is already use");
+            throw new BeriliaError("Shortcut name [" + param1 + "] is already use");
          }
          else
          {
-            _shortcuts[name]=this;
-            this._name=name;
-            this._description=description;
-            this._textfieldEnabled=textfieldEnabled;
-            this._category=category;
-            this._unicID=_idCount++;
-            this._bindable=bindable;
-            this._visible=pVisible;
-            this._required=pRequired;
-            this._disable=false;
+            _shortcuts[param1] = this;
+            this._name = param1;
+            this._description = param3;
+            this._textfieldEnabled = param2;
+            this._category = param4;
+            this._unicID = _idCount++;
+            this._bindable = param5;
+            this._visible = param6;
+            this._required = param7;
+            this._holdKeys = param8;
+            this._tooltipContent = param9;
+            this._disable = false;
             BindsManager.getInstance().newShortcut(this);
             return;
          }
       }
-
+      
       private static var _shortcuts:Array = new Array();
-
+      
       private static var _idCount:uint = 0;
-
+      
       private static var _datastoreType:DataStoreType = new DataStoreType("Module_Ankama_Config",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_CHARACTER);
-
+      
       public static function reset() : void {
          BindsManager.destroy();
-         _shortcuts=[];
-         _idCount=0;
+         _shortcuts = [];
+         _idCount = 0;
       }
-
+      
       public static function loadSavedData() : void {
-         var sc:Shortcut = null;
-         var newData:Dictionary = null;
-         var s:Shortcut = null;
-         var copy:Array = null;
-         var lastCat:String = null;
-         var i:uint = 0;
-         var len:* = 0;
-         var a:Array = null;
-         var copy2:Array = null;
-         var len3:* = 0;
-         var catIndex:* = 0;
-         var nbCategoryShortcuts:* = 0;
-         var j:* = 0;
-         var len2:* = 0;
-         var disabled:* = false;
-         var savedData:Object = StoreDataManager.getInstance().getData(_datastoreType,"openShortcutsCategory");
-         if(savedData)
+         var _loc2_:Shortcut = null;
+         var _loc3_:Dictionary = null;
+         var _loc4_:Shortcut = null;
+         var _loc5_:Array = null;
+         var _loc6_:String = null;
+         var _loc7_:uint = 0;
+         var _loc8_:* = 0;
+         var _loc9_:Array = null;
+         var _loc10_:Array = null;
+         var _loc11_:* = 0;
+         var _loc12_:* = 0;
+         var _loc13_:* = 0;
+         var _loc14_:* = 0;
+         var _loc15_:* = 0;
+         var _loc16_:* = false;
+         var _loc1_:Object = StoreDataManager.getInstance().getData(_datastoreType,"openShortcutsCategory");
+         if(_loc1_)
          {
-            if(savedData is Array)
+            if(_loc1_ is Array)
             {
-               newData=new Dictionary();
-               copy=new Array();
-               for each (s in _shortcuts)
+               _loc3_ = new Dictionary();
+               _loc5_ = new Array();
+               for each (_loc4_ in _shortcuts)
                {
-                  if(s.visible)
+                  if(_loc4_.visible)
                   {
-                     copy.push(s);
+                     _loc5_.push(_loc4_);
                   }
                }
-               copy.sortOn("unicID",Array.NUMERIC);
-               i=0;
-               len=copy.length;
-               a=savedData as Array;
-               copy2=new Array();
-               i=0;
-               loop0:
-               for(;i<len;copy2.splice(catIndex+nbCategoryShortcuts+1,0,s))
+               _loc5_.sortOn("unicID",Array.NUMERIC);
+               _loc7_ = 0;
+               _loc8_ = _loc5_.length;
+               _loc9_ = _loc1_ as Array;
+               _loc10_ = new Array();
+               _loc7_ = 0;
+               while(_loc7_ < _loc8_)
                {
-                  s=copy[i];
-                  if(s.category.name!=lastCat)
+                  _loc4_ = _loc5_[_loc7_];
+                  if(_loc4_.category.name != _loc6_)
                   {
-                     catIndex=copy2.indexOf(s.category.name);
-                     if(catIndex==-1)
+                     _loc12_ = _loc10_.indexOf(_loc4_.category.name);
+                     if(_loc12_ == -1)
                      {
-                        copy2.push(s.category.name);
-                        copy2.push(s);
-                        lastCat=s.category.name;
+                        _loc10_.push(_loc4_.category.name);
+                        _loc10_.push(_loc4_);
+                        _loc6_ = _loc4_.category.name;
                      }
                      else
                      {
-                        nbCategoryShortcuts=0;
-                        j=catIndex;
-                        len2=copy2.length;
-                        while(++j<len2)
+                        _loc13_ = 0;
+                        _loc14_ = _loc12_;
+                        _loc15_ = _loc10_.length;
+                        while(++_loc14_ < _loc15_)
                         {
-                           if(!(copy2[j] is String))
+                           if(!(_loc10_[_loc14_] is String))
                            {
-                              nbCategoryShortcuts++;
+                              _loc13_++;
                               continue;
                            }
-                           continue loop0;
+                           break;
                         }
-                        continue;
-                     }
-                     while(true)
-                     {
+                        _loc10_.splice(_loc12_ + _loc13_ + 1,0,_loc4_);
                      }
                   }
                   else
                   {
-                     do
-                     {
-                        copy2.push(s);
-                     }
-                     while(true);
+                     _loc10_.push(_loc4_);
                   }
-                  i++;
-                  continue loop2;
+                  _loc7_++;
                }
-               len3=copy2.length;
-               i=0;
-               while(i<len3)
+               _loc11_ = _loc10_.length;
+               _loc7_ = 0;
+               while(_loc7_ < _loc11_)
                {
-                  if(copy2[i] is String)
+                  if(_loc10_[_loc7_] is String)
                   {
-                     if(a[i]!=undefined)
+                     if(_loc9_[_loc7_] != undefined)
                      {
-                        newData[copy2[i]]=a[i];
+                        _loc3_[_loc10_[_loc7_]] = _loc9_[_loc7_];
                      }
                      else
                      {
-                        newData[copy2[i]]=true;
+                        _loc3_[_loc10_[_loc7_]] = true;
                      }
                   }
-                  i++;
+                  _loc7_++;
                }
-               savedData=newData;
-               StoreDataManager.getInstance().setData(_datastoreType,"openShortcutsCategory",savedData);
+               _loc1_ = _loc3_;
+               StoreDataManager.getInstance().setData(_datastoreType,"openShortcutsCategory",_loc1_);
             }
-            for each (sc in _shortcuts)
+            for each (_loc2_ in _shortcuts)
             {
-               if(sc.visible)
+               if(_loc2_.visible)
                {
-                  if(savedData[sc.category.name]!=undefined)
+                  if(_loc1_[_loc2_.category.name] != undefined)
                   {
-                     disabled=!savedData[sc.category.name];
+                     _loc16_ = !_loc1_[_loc2_.category.name];
                   }
                   else
                   {
-                     savedData[sc.category.name]=true;
-                     disabled=false;
+                     _loc1_[_loc2_.category.name] = true;
+                     _loc16_ = false;
                   }
-                  sc.disable=disabled;
+                  _loc2_.disable = _loc16_;
                }
             }
          }
       }
-
-      public static function getShortcutByName(name:String) : Shortcut {
-         return _shortcuts[name];
+      
+      public static function getShortcutByName(param1:String) : Shortcut {
+         return _shortcuts[param1];
       }
-
+      
       public static function getShortcuts() : Array {
          return _shortcuts;
       }
-
+      
       private var _name:String;
-
+      
       private var _description:String;
-
+      
+      private var _tooltipContent:String;
+      
       private var _textfieldEnabled:Boolean;
-
+      
       private var _bindable:Boolean;
-
+      
       private var _category:ShortcutCategory;
-
+      
       private var _unicID:uint = 0;
-
+      
       private var _visible:Boolean;
-
+      
       private var _disable:Boolean;
-
+      
       private var _required:Boolean;
-
+      
+      private var _holdKeys:Boolean;
+      
       public var defaultBind:Bind;
-
+      
       public function get unicID() : uint {
          return this._unicID;
       }
-
+      
       public function get name() : String {
          return this._name;
       }
-
+      
       public function get description() : String {
          return this._description;
       }
-
+      
+      public function get tooltipContent() : String {
+         return this._tooltipContent;
+      }
+      
       public function get textfieldEnabled() : Boolean {
          return this._textfieldEnabled;
       }
-
+      
       public function get bindable() : Boolean {
          return this._bindable;
       }
-
+      
       public function get category() : ShortcutCategory {
          return this._category;
       }
-
+      
       public function get visible() : Boolean {
          return this._visible;
       }
-
-      public function set visible(value:Boolean) : void {
-         this._visible=value;
+      
+      public function set visible(param1:Boolean) : void {
+         this._visible = param1;
       }
-
+      
       public function get required() : Boolean {
          return this._required;
       }
-
+      
+      public function get holdKeys() : Boolean {
+         return this._holdKeys;
+      }
+      
       public function get disable() : Boolean {
          return this._disable;
       }
-
-      public function set disable(value:Boolean) : void {
-         this._disable=value;
+      
+      public function set disable(param1:Boolean) : void {
+         this._disable = param1;
       }
    }
-
 }

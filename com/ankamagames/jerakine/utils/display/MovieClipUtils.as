@@ -5,115 +5,110 @@ package com.ankamagames.jerakine.utils.display
    import flash.display.MovieClip;
    import flash.display.DisplayObject;
    import flash.events.Event;
-
-
+   
    public class MovieClipUtils extends Object
    {
-         
-
+      
       public function MovieClipUtils() {
          super();
       }
-
+      
       private static var _asynchClip:Dictionary = new Dictionary(true);
-
+      
       private static var _isAsync:Boolean;
-
+      
       public static var asynchStopCount:uint;
-
+      
       public static var asynchStopDoneCount:uint;
-
-      public static function isSingleFrame(mc:DisplayObjectContainer) : Boolean {
-         var i:* = 0;
-         var num:* = 0;
-         var child:DisplayObjectContainer = null;
-         var movieClip:MovieClip = mc as MovieClip;
-         if((movieClip)&&(movieClip.totalFrames<1))
+      
+      public static function isSingleFrame(param1:DisplayObjectContainer) : Boolean {
+         var _loc3_:* = 0;
+         var _loc4_:* = 0;
+         var _loc5_:DisplayObjectContainer = null;
+         var _loc2_:MovieClip = param1 as MovieClip;
+         if((_loc2_) && _loc2_.totalFrames > 1)
          {
             return false;
          }
-         i=-1;
-         num=mc.numChildren;
-         while(++i<num)
+         _loc3_ = -1;
+         _loc4_ = param1.numChildren;
+         while(++_loc3_ < _loc4_)
          {
-            child=mc.getChildAt(i) as DisplayObjectContainer;
-            if((child)&&(!isSingleFrame(child)))
+            _loc5_ = param1.getChildAt(_loc3_) as DisplayObjectContainer;
+            if((_loc5_) && !isSingleFrame(_loc5_))
             {
                return false;
             }
          }
          return true;
       }
-
-      public static function stopMovieClip(clip:DisplayObjectContainer) : void {
-         var child:DisplayObject = null;
-         if(clip is MovieClip)
+      
+      public static function stopMovieClip(param1:DisplayObjectContainer) : void {
+         var _loc4_:DisplayObject = null;
+         if(param1 is MovieClip)
          {
-            MovieClip(clip).stop();
-            if((_isAsync)&&(MovieClip(clip).totalFrames<1))
+            MovieClip(param1).stop();
+            if((_isAsync) && MovieClip(param1).totalFrames > 1)
             {
                asynchStopDoneCount++;
             }
          }
-         var i:int = -1;
-         var num:int = clip.numChildren;
-         while(++i<num)
+         var _loc2_:* = -1;
+         var _loc3_:int = param1.numChildren;
+         while(++_loc2_ < _loc3_)
          {
-            child=clip.getChildAt(i);
-            if(child is DisplayObjectContainer)
+            _loc4_ = param1.getChildAt(_loc2_);
+            if(_loc4_ is DisplayObjectContainer)
             {
-               stopMovieClip(child as DisplayObjectContainer);
+               stopMovieClip(_loc4_ as DisplayObjectContainer);
             }
          }
       }
-
-      private static function stopMovieClipASynch(e:Event) : void {
-         var clip:Object = null;
-         var missing:* = false;
-         var frame:* = undefined;
-         var clipToStop:DisplayObject = null;
-         var allDone:Boolean = true;
-         for (clip in _asynchClip)
+      
+      private static function stopMovieClipASynch(param1:Event) : void {
+         var _loc3_:Object = null;
+         var _loc4_:* = false;
+         var _loc5_:* = undefined;
+         var _loc6_:DisplayObject = null;
+         var _loc2_:* = true;
+         for (_loc3_ in _asynchClip)
          {
-            if(clip)
+            if(_loc3_)
             {
-               for (frame in _asynchClip[clip])
+               for (_loc5_ in _asynchClip[_loc3_])
                {
-                  if(!_asynchClip[clip][frame])
+                  if(!_asynchClip[_loc3_][_loc5_])
                   {
-                     clipToStop=clip.getChildAt(frame);
-                     if(!clipToStop)
+                     _loc6_ = _loc3_.getChildAt(_loc5_);
+                     if(!_loc6_)
                      {
-                        missing=true;
+                        _loc4_ = true;
                      }
                      else
                      {
-                        if(clipToStop is DisplayObjectContainer)
+                        if(_loc6_ is DisplayObjectContainer)
                         {
-                           _isAsync=true;
-                           stopMovieClip(clipToStop as DisplayObjectContainer);
-                           _isAsync=false;
+                           _isAsync = true;
+                           stopMovieClip(_loc6_ as DisplayObjectContainer);
+                           _isAsync = false;
                         }
                      }
                   }
                }
-               if(!missing)
+               if(!_loc4_)
                {
-                  delete _asynchClip[[clip]];
+                  delete _asynchClip[[_loc3_]];
                }
                else
                {
-                  allDone=false;
+                  _loc2_ = false;
                }
             }
          }
-         if(allDone)
+         if(_loc2_)
          {
             EnterFrameDispatcher.removeEventListener(stopMovieClipASynch);
          }
       }
-
-
    }
-
 }

@@ -16,22 +16,21 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    import com.ankamagames.jerakine.managers.OptionManager;
    import com.ankamagames.jerakine.types.events.PropertyChangeEvent;
+   import com.ankamagames.dofus.logic.game.common.managers.EntitiesLooksManager;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.jerakine.utils.errors.AbstractMethodCallError;
    import com.ankamagames.atouin.Atouin;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    import com.ankamagames.dofus.network.types.game.look.EntityLook;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayHumanoidInformations;
-   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
-   import com.ankamagames.dofus.misc.EntityLookAdapter;
-   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMerchantInformations;
-   import com.ankamagames.dofus.network.types.game.context.GameRolePlayTaxCollectorInformations;
-   import com.ankamagames.dofus.network.types.game.context.fight.GameFightCharacterInformations;
-   import com.ankamagames.dofus.network.types.game.context.fight.GameFightMonsterInformations;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.dofus.misc.EntityLookAdapter;
    import com.ankamagames.tiphon.events.TiphonEvent;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightMonsterInformations;
+   import com.ankamagames.dofus.datacenter.monsters.Monster;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMerchantInformations;
    import com.ankamagames.dofus.network.enums.SubEntityBindingPointCategoryEnum;
    import com.ankamagames.dofus.types.entities.RiderBehavior;
    import com.ankamagames.dofus.types.entities.AnimStatiqueSubEntityBehavior;
@@ -39,755 +38,507 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.atouin.enums.PlacementStrataEnums;
    import com.ankamagames.dofus.kernel.sound.SoundManager;
    import flash.geom.Point;
+   import com.ankamagames.jerakine.enum.OptionEnum;
    import com.ankamagames.jerakine.sequencer.SerialSequencer;
    import com.ankamagames.dofus.types.sequences.AddGfxEntityStep;
-   import com.ankamagames.dofus.datacenter.monsters.Monster;
-   import com.ankamagames.tiphon.display.TiphonSprite;
-   import com.ankamagames.dofus.network.types.game.context.fight.GameFightTaxCollectorInformations;
-   import com.ankamagames.tiphon.types.TiphonUtility;
-   import com.ankamagames.dofus.logic.game.fight.miscs.CarrierAnimationModifier;
-   import com.ankamagames.dofus.network.types.game.context.fight.GameFightMutantInformations;
    import com.ankamagames.dofus.types.enums.AnimationEnum;
    import com.ankamagames.dofus.misc.utils.LookCleaner;
    import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import com.ankamagames.jerakine.entities.interfaces.IMovable;
+   import com.ankamagames.tiphon.display.TiphonSprite;
    import com.ankamagames.jerakine.entities.interfaces.IAnimated;
    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
    import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
    import com.ankamagames.dofus.logic.game.common.actions.roleplay.SwitchCreatureModeAction;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
-   import com.ankamagames.dofus.datacenter.mounts.MountBone;
-   import com.ankamagames.dofus.datacenter.breeds.Breed;
    import com.ankamagames.atouin.managers.EntitiesManager;
    import com.ankamagames.dofus.datacenter.items.Incarnation;
    import com.ankamagames.dofus.logic.game.fight.miscs.CustomAnimStatiqueAnimationModifier;
    import com.ankamagames.dofus.types.entities.BreedSkinModifier;
-
-
+   
    public class AbstractEntitiesFrame extends Object implements Frame
    {
-         
-
+      
       public function AbstractEntitiesFrame() {
-         this._customAnimModifier=new CustomAnimStatiqueAnimationModifier();
-         this._skinModifier=new BreedSkinModifier();
+         this._customAnimModifier = new CustomAnimStatiqueAnimationModifier();
+         this._skinModifier = new BreedSkinModifier();
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AbstractEntitiesFrame));
-
+      
       protected var _entities:Dictionary;
-
+      
       protected var _creaturesMode:Boolean = false;
-
+      
       protected var _creaturesLimit:int = -1;
-
+      
       protected var _humanNumber:uint = 0;
-
+      
       protected var _playerIsOnRide:Boolean = false;
-
+      
       protected var _customAnimModifier:IAnimationModifier;
-
+      
       protected var _skinModifier:ISkinModifier;
-
+      
       protected var _untargetableEntities:Boolean = false;
-
+      
       protected var _interactiveElements:Vector.<InteractiveElement>;
-
+      
       protected var _currentSubAreaId:uint;
-
-      protected var _currentSubAreaSide:int;
-
+      
       protected var _worldPoint:WorldPointWrapper;
-
+      
       protected var _creaturesFightMode:Boolean = false;
-
+      
+      protected var _justSwitchingCreaturesFightMode:Boolean = false;
+      
       public function get playerIsOnRide() : Boolean {
          return this._playerIsOnRide;
       }
-
+      
       public function get priority() : int {
          return Priority.NORMAL;
       }
-
-      public function set untargetableEntities(enabled:Boolean) : void {
-         var infos:GameContextActorInformations = null;
-         var entity:AnimatedCharacter = null;
-         this._untargetableEntities=enabled;
-         for each (infos in this._entities)
+      
+      public function set untargetableEntities(param1:Boolean) : void {
+         var _loc2_:GameContextActorInformations = null;
+         var _loc3_:AnimatedCharacter = null;
+         this._untargetableEntities = param1;
+         for each (_loc2_ in this._entities)
          {
-            entity=DofusEntities.getEntity(infos.contextualId) as AnimatedCharacter;
-            if(entity)
+            _loc3_ = DofusEntities.getEntity(_loc2_.contextualId) as AnimatedCharacter;
+            if(_loc3_)
             {
-               entity.mouseEnabled=!enabled;
+               _loc3_.mouseEnabled = !param1;
             }
          }
       }
-
+      
       public function get untargetableEntities() : Boolean {
          return this._untargetableEntities;
       }
-
+      
       public function get interactiveElements() : Vector.<InteractiveElement> {
          return this._interactiveElements;
       }
-
+      
+      public function get justSwitchingCreaturesFightMode() : Boolean {
+         return this._justSwitchingCreaturesFightMode;
+      }
+      
       public function pushed() : Boolean {
-         this._entities=new Dictionary();
+         this._entities = new Dictionary();
          OptionManager.getOptionManager("atouin").addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onAtouinOptionChange);
+         EntitiesLooksManager.getInstance().entitiesFrame = this;
          return true;
       }
-
-      public function process(msg:Message) : Boolean {
+      
+      public function process(param1:Message) : Boolean {
          throw new AbstractMethodCallError();
       }
-
+      
       public function pulled() : Boolean {
-         this._entities=null;
+         this._entities = null;
          Atouin.getInstance().clearEntities();
          OptionManager.getOptionManager("atouin").removeEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onAtouinOptionChange);
          return true;
       }
-
-      public function getEntityInfos(entityId:int) : GameContextActorInformations {
+      
+      public function getEntityInfos(param1:int) : GameContextActorInformations {
          if(!this._entities)
          {
             return null;
          }
-         return this._entities[entityId];
+         return this._entities[param1];
       }
-
+      
       public function getEntitiesIdsList() : Vector.<int> {
-         var gcai:GameContextActorInformations = null;
-         var entitiesList:Vector.<int> = new Vector.<int>(0,false);
-         for each (gcai in this._entities)
+         var _loc2_:GameContextActorInformations = null;
+         var _loc1_:Vector.<int> = new Vector.<int>(0,false);
+         for each (_loc2_ in this._entities)
          {
-            entitiesList.push(gcai.contextualId);
+            _loc1_.push(_loc2_.contextualId);
          }
-         return entitiesList;
+         return _loc1_;
       }
-
+      
       public function getEntitiesDictionnary() : Dictionary {
          return this._entities;
       }
-
-      public function registerActor(infos:GameContextActorInformations) : void {
-         if(this._entities==null)
+      
+      public function registerActor(param1:GameContextActorInformations) : void {
+         if(this._entities == null)
          {
-            this._entities=new Dictionary();
+            this._entities = new Dictionary();
          }
-         this._entities[infos.contextualId]=infos;
+         this._entities[param1.contextualId] = param1;
       }
-
-      public function addOrUpdateActor(infos:GameContextActorInformations, animationModifier:IAnimationModifier=null) : AnimatedCharacter {
-         var newLook:TiphonEntityLook = null;
-         var entitylookNew:EntityLook = null;
-         var entitylook:EntityLook = null;
-         var humanoid:GameRolePlayHumanoidInformations = null;
-         var characterEntity:AnimatedCharacter = DofusEntities.getEntity(infos.contextualId) as AnimatedCharacter;
-         var justCreated:Boolean = true;
-         if((!(infos is GameRolePlayNpcInformations))&&(infos is GameRolePlayHumanoidInformations))
+      
+      public function addOrUpdateActor(param1:GameContextActorInformations, param2:IAnimationModifier=null) : AnimatedCharacter {
+         var _loc5_:TiphonEntityLook = null;
+         var _loc6_:TiphonEntityLook = null;
+         var _loc7_:EntityLook = null;
+         var _loc8_:EntityLook = null;
+         var _loc9_:GameRolePlayHumanoidInformations = null;
+         var _loc3_:AnimatedCharacter = DofusEntities.getEntity(param1.contextualId) as AnimatedCharacter;
+         var _loc4_:* = true;
+         _loc5_ = EntitiesLooksManager.getInstance().getLookFromContextInfos(param1);
+         if(param1.contextualId == PlayedCharacterManager.getInstance().id)
          {
-            if((this._creaturesMode)&&(this.isIncarnation(EntityLookAdapter.fromNetwork(infos.look).toString())))
+            if((this._creaturesMode) || (this._creaturesFightMode))
             {
-               newLook=this.getFightPokemonLook(infos.look,false,false,true,false);
-            }
-            else
-            {
-               newLook=this.getLook(infos.look);
-            }
-         }
-         else
-         {
-            if((this._creaturesMode)&&(infos is GameRolePlayMerchantInformations))
-            {
-               newLook=this.getDealerPokemonLook(infos.look);
-            }
-            else
-            {
-               if((this._creaturesMode)&&(infos is GameRolePlayTaxCollectorInformations))
+               _loc7_ = EntityLookAdapter.toNetwork(_loc5_);
+               if(PlayedCharacterManager.getInstance().infos.entityLook.bonesId != _loc7_.bonesId)
                {
-                  newLook=this.getPercoPokemonLook(infos.look);
-               }
-               else
-               {
-                  if((this._creaturesFightMode)&&(infos is GameFightCharacterInformations))
-                  {
-                     newLook=this.getLook(infos.look);
-                  }
-                  else
-                  {
-                     if((this._creaturesFightMode)&&(infos is GameFightMonsterInformations))
-                     {
-                        newLook=this.getFightPokemonLook(infos.look,true,(infos as GameFightMonsterInformations).stats.summoned,false,false);
-                     }
-                     else
-                     {
-                        newLook=EntityLookAdapter.fromNetwork(infos.look);
-                     }
-                  }
+                  PlayedCharacterManager.getInstance().realEntityLook = PlayedCharacterManager.getInstance().infos.entityLook;
                }
             }
          }
-         if(infos.contextualId==PlayedCharacterManager.getInstance().id)
+         if(_loc3_ == null)
          {
-            if((this._creaturesMode)||(this._creaturesFightMode))
-            {
-               entitylookNew=EntityLookAdapter.toNetwork(newLook);
-               if(PlayedCharacterManager.getInstance().infos.entityLook.bonesId!=entitylookNew.bonesId)
-               {
-                  PlayedCharacterManager.getInstance().realEntityLook=PlayedCharacterManager.getInstance().infos.entityLook;
-               }
-            }
-         }
-         if(characterEntity==null)
-         {
-            characterEntity=new AnimatedCharacter(infos.contextualId,newLook);
-            characterEntity.addEventListener(TiphonEvent.PLAYANIM_EVENT,this.onPlayAnim);
+            _loc3_ = new AnimatedCharacter(param1.contextualId,_loc5_);
+            _loc3_.addEventListener(TiphonEvent.PLAYANIM_EVENT,this.onPlayAnim);
             if(OptionManager.getOptionManager("atouin").useLowDefSkin)
             {
-               characterEntity.setAlternativeSkinIndex(0,true);
+               _loc3_.setAlternativeSkinIndex(0,true);
             }
-            if(newLook.getBone()==1)
+            if(_loc5_.getBone() == 1)
             {
-               if(animationModifier)
+               if(param2)
                {
-                  characterEntity.addAnimationModifier(animationModifier);
+                  _loc3_.addAnimationModifier(param2);
                }
                else
                {
-                  characterEntity.addAnimationModifier(this._customAnimModifier);
+                  _loc3_.addAnimationModifier(this._customAnimModifier);
                }
             }
-            characterEntity.skinModifier=this._skinModifier;
-            if(infos.contextualId==PlayedCharacterManager.getInstance().id)
+            _loc3_.skinModifier = this._skinModifier;
+            if(param1 is GameFightMonsterInformations)
             {
-               entitylook=EntityLookAdapter.toNetwork(newLook);
-               if(PlayedCharacterManager.getInstance().infos.entityLook!=entitylook)
+               _loc3_.speedAdjust = Monster.getMonsterById(GameFightMonsterInformations(param1).creatureGenericId).speedAdjust;
+            }
+            if(param1.contextualId == PlayedCharacterManager.getInstance().id)
+            {
+               _loc8_ = EntityLookAdapter.toNetwork(_loc5_);
+               if(!EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().infos.entityLook).equals(_loc5_))
                {
-                  PlayedCharacterManager.getInstance().infos.entityLook=entitylook;
-                  KernelEventsManager.getInstance().processCallback(HookList.PlayedCharacterLookChange,newLook);
+                  PlayedCharacterManager.getInstance().infos.entityLook = _loc8_;
+                  KernelEventsManager.getInstance().processCallback(HookList.PlayedCharacterLookChange,_loc5_);
                }
             }
          }
          else
          {
-            justCreated=false;
-            if(this._humanNumber>0)
+            _loc4_ = false;
+            if(this._humanNumber > 0)
             {
                this._humanNumber--;
             }
-            if((this._creaturesMode)&&(infos is GameRolePlayMerchantInformations))
+            if((this._creaturesMode) && param1 is GameRolePlayMerchantInformations)
             {
-               characterEntity.look.updateFrom(newLook);
+               _loc3_.look.updateFrom(_loc5_);
             }
             else
             {
-               this.updateActorLook(infos.contextualId,infos.look,true);
+               this.updateActorLook(param1.contextualId,param1.look,true);
             }
          }
-         if(infos is GameRolePlayHumanoidInformations)
+         if(param1 is GameRolePlayHumanoidInformations)
          {
-            humanoid=infos as GameRolePlayHumanoidInformations;
-            if(infos.contextualId==PlayedCharacterManager.getInstance().id)
+            _loc9_ = param1 as GameRolePlayHumanoidInformations;
+            if(param1.contextualId == PlayedCharacterManager.getInstance().id)
             {
-               PlayedCharacterManager.getInstance().restrictions=humanoid.humanoidInfo.restrictions;
+               PlayedCharacterManager.getInstance().restrictions = _loc9_.humanoidInfo.restrictions;
             }
          }
-         if((!this._creaturesFightMode&&!this._creaturesMode)&&(characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER))&&(characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER).length))
+         if((!this._creaturesFightMode && !this._creaturesMode) && (_loc3_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER)) && (_loc3_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER).length))
          {
-            characterEntity.setSubEntityBehaviour(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,new RiderBehavior());
+            _loc3_.setSubEntityBehaviour(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,new RiderBehavior());
          }
-         if(characterEntity.id==PlayedCharacterManager.getInstance().infos.id)
+         if(_loc3_.id == PlayedCharacterManager.getInstance().id)
          {
-            if((characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER))&&(characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER).length))
+            if((_loc3_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER)) && (_loc3_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER).length))
             {
-               this._playerIsOnRide=true;
+               this._playerIsOnRide = true;
             }
             else
             {
-               this._playerIsOnRide=false;
+               this._playerIsOnRide = false;
             }
          }
-         if((!this._creaturesFightMode&&!this._creaturesMode)&&(characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET))&&(characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET).length))
+         if((!this._creaturesFightMode && !this._creaturesMode) && (_loc3_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET)) && (_loc3_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET).length))
          {
-            characterEntity.setSubEntityBehaviour(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET,new AnimStatiqueSubEntityBehavior());
+            _loc3_.setSubEntityBehaviour(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET,new AnimStatiqueSubEntityBehavior());
          }
-         if(infos.disposition.cellId!=-1)
+         if(param1.disposition.cellId != -1)
          {
-            characterEntity.position=MapPoint.fromCellId(infos.disposition.cellId);
+            _loc3_.position = MapPoint.fromCellId(param1.disposition.cellId);
          }
-         if(justCreated)
+         if(_loc4_)
          {
-            characterEntity.setDirection(infos.disposition.direction);
-            characterEntity.display(PlacementStrataEnums.STRATA_PLAYER);
+            _loc3_.setDirection(param1.disposition.direction);
+            _loc3_.display(PlacementStrataEnums.STRATA_PLAYER);
          }
-         this.registerActor(infos);
-         if(PlayedCharacterManager.getInstance().id==characterEntity.id)
+         this.registerActor(param1);
+         if(PlayedCharacterManager.getInstance().id == _loc3_.id)
          {
-            SoundManager.getInstance().manager.setSoundSourcePosition(characterEntity.id,new Point(characterEntity.x,characterEntity.y));
+            SoundManager.getInstance().manager.setSoundSourcePosition(_loc3_.id,new Point(_loc3_.x,_loc3_.y));
          }
-         characterEntity.mouseEnabled=!this.untargetableEntities;
-         return characterEntity;
+         _loc3_.visibleAura = OptionManager.getOptionManager("tiphon").auraMode >= OptionEnum.AURA_ALWAYS;
+         _loc3_.mouseEnabled = !this.untargetableEntities;
+         return _loc3_;
       }
-
-      protected function updateActorLook(actorId:int, newLook:EntityLook, smoke:Boolean=false) : void {
-         var tel:TiphonEntityLook = null;
-         var entity:GameContextActorInformations = null;
-         var oldBone:* = 0;
-         var sequencer:SerialSequencer = null;
-         var addGfxStep:AddGfxEntityStep = null;
-         var m:Monster = null;
-         var rider:TiphonSprite = null;
-         if(this._entities[actorId])
+      
+      protected function updateActorLook(param1:int, param2:EntityLook, param3:Boolean=false) : AnimatedCharacter {
+         var _loc5_:TiphonEntityLook = null;
+         var _loc6_:GameContextActorInformations = null;
+         var _loc7_:* = 0;
+         var _loc8_:SerialSequencer = null;
+         var _loc9_:AddGfxEntityStep = null;
+         if(this._entities[param1])
          {
-            entity=this._entities[actorId] as GameContextActorInformations;
-            oldBone=entity.look.bonesId;
-            entity.look=newLook;
-            if((smoke)&&(!(newLook.bonesId==oldBone)))
+            _loc6_ = this._entities[param1] as GameContextActorInformations;
+            _loc7_ = _loc6_.look.bonesId;
+            _loc6_.look = param2;
+            if((param3) && !(param2.bonesId == _loc7_))
             {
-               sequencer=new SerialSequencer();
-               addGfxStep=new AddGfxEntityStep(1165,DofusEntities.getEntity(actorId).position.cellId);
-               sequencer.addStep(addGfxStep);
-               sequencer.start();
+               _loc8_ = new SerialSequencer();
+               _loc9_ = new AddGfxEntityStep(1165,DofusEntities.getEntity(param1).position.cellId);
+               _loc8_.addStep(_loc9_);
+               _loc8_.start();
             }
          }
          else
          {
-            _log.warn("Cannot update unknown actor look ("+actorId+") in informations.");
+            _log.warn("Cannot update unknown actor look (" + param1 + ") in informations.");
          }
-         var ac:AnimatedCharacter = DofusEntities.getEntity(actorId) as AnimatedCharacter;
-         if(ac)
+         var _loc4_:AnimatedCharacter = DofusEntities.getEntity(param1) as AnimatedCharacter;
+         if(_loc4_)
          {
-            ac.addEventListener(TiphonEvent.RENDER_FAILED,this.onUpdateEntityFail,false,0,false);
-            ac.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onUpdateEntitySuccess,false,0,false);
-            if(newLook.bonesId!=1)
+            _loc4_.addEventListener(TiphonEvent.RENDER_FAILED,this.onUpdateEntityFail,false,0,false);
+            _loc4_.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onUpdateEntitySuccess,false,0,false);
+            if(param2.bonesId != 1)
             {
-               ac.removeAnimationModifier(this._customAnimModifier);
+               _loc4_.removeAnimationModifier(this._customAnimModifier);
             }
             else
             {
-               ac.addAnimationModifier(this._customAnimModifier);
+               _loc4_.addAnimationModifier(this._customAnimModifier);
             }
-            if((!this._creaturesFightMode)&&(!(this._entities[actorId] is GameRolePlayNpcInformations))&&((this._entities[actorId] is GameRolePlayHumanoidInformations)||(this._entities[actorId] as GameFightCharacterInformations)))
+            _loc5_ = EntitiesLooksManager.getInstance().getLookFromContextInfos(this._entities[param1]);
+            _loc4_.enableSubCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,!this._creaturesFightMode);
+            _loc4_.look.updateFrom(_loc5_);
+            if((this._creaturesMode) || (this._creaturesFightMode))
             {
-               if((this.isIncarnation(EntityLookAdapter.fromNetwork(newLook).toString()))&&(this._creaturesMode))
+               _loc4_.setAnimation(AnimationEnum.ANIM_STATIQUE);
+            }
+            else
+            {
+               _loc4_.setAnimation(_loc4_.getAnimation());
+            }
+            if((_loc4_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET)) && (_loc4_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET).length))
+            {
+               _loc4_.setSubEntityBehaviour(1,new AnimStatiqueSubEntityBehavior());
+            }
+         }
+         else
+         {
+            _log.warn("Cannot update unknown actor look (" + param1 + ") in the game world.");
+         }
+         if(param1 == PlayedCharacterManager.getInstance().id && (_loc5_))
+         {
+            if((this._creaturesMode) || (this._creaturesFightMode))
+            {
+               if(PlayedCharacterManager.getInstance().infos.entityLook.bonesId != param2.bonesId)
                {
-                  tel=this.getFightPokemonLook(newLook,false,false,true,false);
+                  PlayedCharacterManager.getInstance().realEntityLook = PlayedCharacterManager.getInstance().infos.entityLook;
+               }
+            }
+            PlayedCharacterManager.getInstance().infos.entityLook = param2;
+            KernelEventsManager.getInstance().processCallback(HookList.PlayedCharacterLookChange,LookCleaner.clean(_loc5_));
+         }
+         return _loc4_;
+      }
+      
+      protected function updateActorDisposition(param1:int, param2:EntityDispositionInformations) : void {
+         if(this._entities[param1])
+         {
+            (this._entities[param1] as GameContextActorInformations).disposition = param2;
+         }
+         else
+         {
+            _log.warn("Cannot update unknown actor disposition (" + param1 + ") in informations.");
+         }
+         var _loc3_:IEntity = DofusEntities.getEntity(param1);
+         if(_loc3_)
+         {
+            if(_loc3_ is IMovable && param2.cellId >= 0)
+            {
+               if((_loc3_ is TiphonSprite) && ((_loc3_ as TiphonSprite).rootEntity) && !((_loc3_ as TiphonSprite).rootEntity == _loc3_))
+               {
+                  _log.debug("PAS DE SYNCHRO pour " + (_loc3_ as TiphonSprite).name + " car entitÃ© portÃ©e");
                }
                else
                {
-                  tel=this.getLook(newLook,actorId);
+                  IMovable(_loc3_).jump(MapPoint.fromCellId(param2.cellId));
                }
             }
-            else
+            if(_loc3_ is IAnimated)
             {
-               if((this._creaturesFightMode)&&(entity is GameFightTaxCollectorInformations))
-               {
-                  tel=this.getPercoPokemonLook(newLook);
-               }
-               else
-               {
-                  if((this._entities[actorId] is GameFightMonsterInformations)&&(this._creaturesFightMode))
-                  {
-                     if((this._entities[actorId] as GameFightMonsterInformations).stats.summoned)
-                     {
-                        tel=this.getFightPokemonLook(newLook,true,true,false,false);
-                     }
-                     else
-                     {
-                        m=Monster.getMonsterById((this._entities[actorId] as GameFightMonsterInformations).creatureGenericId);
-                        tel=this.getFightPokemonLook(newLook,true,false,false,m==null?false:m.isBoss);
-                     }
-                  }
-                  else
-                  {
-                     if((this._creaturesFightMode)&&(this._entities[actorId] is GameFightCharacterInformations))
-                     {
-                        rider=TiphonUtility.getEntityWithoutMount(ac) as TiphonSprite;
-                        if(rider.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_LIFTED_ENTITY,0))
-                        {
-                           rider.removeAnimationModifierByClass(CarrierAnimationModifier);
-                        }
-                        if((this._entities[actorId] as GameFightCharacterInformations).stats.summoned)
-                        {
-                           tel=this.getFightPokemonLook(newLook,false,true,false,false);
-                        }
-                        else
-                        {
-                           if(this.isIncarnation(EntityLookAdapter.fromNetwork(newLook).toString()))
-                           {
-                              tel=this.getFightPokemonLook(newLook,false,false,true,false);
-                           }
-                           else
-                           {
-                              tel=this.getLook(newLook,actorId);
-                           }
-                        }
-                     }
-                     else
-                     {
-                        if((this._creaturesFightMode)&&(this._entities[actorId] is GameFightMutantInformations))
-                        {
-                           tel=this.getFightPokemonLook(newLook,true);
-                        }
-                        else
-                        {
-                           tel=EntityLookAdapter.fromNetwork(newLook);
-                        }
-                     }
-                  }
-               }
-            }
-            ac.enableSubCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,!this._creaturesFightMode);
-            ac.look.updateFrom(tel);
-            if((this._creaturesMode)||(this._creaturesFightMode))
-            {
-               ac.setAnimation(AnimationEnum.ANIM_STATIQUE);
-            }
-            else
-            {
-               ac.setAnimation(ac.getAnimation());
-            }
-            if((ac.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET))&&(ac.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET).length))
-            {
-               ac.setSubEntityBehaviour(1,new AnimStatiqueSubEntityBehavior());
+               IAnimated(_loc3_).setDirection(param2.direction);
             }
          }
          else
          {
-            _log.warn("Cannot update unknown actor look ("+actorId+") in the game world.");
-         }
-         if((actorId==PlayedCharacterManager.getInstance().id)&&(tel))
-         {
-            if((this._creaturesMode)||(this._creaturesFightMode))
-            {
-               if(PlayedCharacterManager.getInstance().infos.entityLook.bonesId!=newLook.bonesId)
-               {
-                  PlayedCharacterManager.getInstance().realEntityLook=PlayedCharacterManager.getInstance().infos.entityLook;
-               }
-            }
-            PlayedCharacterManager.getInstance().infos.entityLook=newLook;
-            KernelEventsManager.getInstance().processCallback(HookList.PlayedCharacterLookChange,LookCleaner.clean(tel));
+            _log.warn("Cannot update unknown actor disposition (" + param1 + ") in the game world.");
          }
       }
-
-      protected function updateActorDisposition(actorId:int, newDisposition:EntityDispositionInformations) : void {
-         if(this._entities[actorId])
+      
+      protected function updateActorOrientation(param1:int, param2:uint) : void {
+         var _loc4_:* = false;
+         if(this._entities[param1])
          {
-            (this._entities[actorId] as GameContextActorInformations).disposition=newDisposition;
+            (this._entities[param1] as GameContextActorInformations).disposition.direction = param2;
          }
          else
          {
-            _log.warn("Cannot update unknown actor disposition ("+actorId+") in informations.");
+            _log.warn("Cannot update unknown actor orientation (" + param1 + ") in informations.");
          }
-         var actor:IEntity = DofusEntities.getEntity(actorId);
-         if(actor)
+         var _loc3_:AnimatedCharacter = DofusEntities.getEntity(param1) as AnimatedCharacter;
+         if(_loc3_)
          {
-            if((actor is IMovable)&&(newDisposition.cellId>=0))
+            _loc4_ = false;
+            if((OptionManager.getOptionManager("tiphon").auraMode >= OptionEnum.AURA_ALWAYS) && (OptionManager.getOptionManager("tiphon").alwaysShowAuraOnFront) && param2 == DirectionsEnum.DOWN)
             {
-               if((actor is TiphonSprite)&&((actor as TiphonSprite).rootEntity)&&(!((actor as TiphonSprite).rootEntity==actor)))
-               {
-                  _log.debug("PAS DE SYNCHRO pour "+(actor as TiphonSprite).name+" car entité portée");
-               }
-               else
-               {
-                  IMovable(actor).jump(MapPoint.fromCellId(newDisposition.cellId));
-               }
+               _loc4_ = true;
             }
-            if(actor is IAnimated)
-            {
-               IAnimated(actor).setDirection(newDisposition.direction);
-            }
+            _loc3_.visibleAura = _loc4_;
+            _loc3_.setDirection(param2);
          }
          else
          {
-            _log.warn("Cannot update unknown actor disposition ("+actorId+") in the game world.");
+            _log.warn("Cannot update unknown actor orientation (" + param1 + ") in the game world.");
          }
       }
-
-      protected function updateActorOrientation(actorId:int, newOrientation:uint) : void {
-         if(this._entities[actorId])
+      
+      protected function hideActor(param1:int) : void {
+         var _loc2_:IDisplayable = DofusEntities.getEntity(param1) as IDisplayable;
+         if(_loc2_)
          {
-            (this._entities[actorId] as GameContextActorInformations).disposition.direction=newOrientation;
+            _loc2_.remove();
          }
          else
          {
-            _log.warn("Cannot update unknown actor orientation ("+actorId+") in informations.");
-         }
-         var ac:AnimatedCharacter = DofusEntities.getEntity(actorId) as AnimatedCharacter;
-         if(ac)
-         {
-            if((actorId==PlayedCharacterManager.getInstance().id&&!(newOrientation==DirectionsEnum.DOWN))&&(ac.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND,0))&&(OptionManager.getOptionManager("tiphon").aura))
-            {
-               ac.look.removeSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND);
-            }
-            ac.setDirection(newOrientation);
-         }
-         else
-         {
-            _log.warn("Cannot update unknown actor orientation ("+actorId+") in the game world.");
+            _log.warn("Cannot remove an unknown actor (" + param1 + ").");
          }
       }
-
-      protected function hideActor(actorId:int) : void {
-         var disp:IDisplayable = DofusEntities.getEntity(actorId) as IDisplayable;
-         if(disp)
+      
+      protected function removeActor(param1:int) : void {
+         this.hideActor(param1);
+         var _loc2_:TiphonSprite = DofusEntities.getEntity(param1) as TiphonSprite;
+         if(_loc2_)
          {
-            disp.remove();
-         }
-         else
-         {
-            _log.warn("Cannot remove an unknown actor ("+actorId+").");
-         }
-      }
-
-      protected function removeActor(actorId:int) : void {
-         this.hideActor(actorId);
-         var tiphonSprite:TiphonSprite = DofusEntities.getEntity(actorId) as TiphonSprite;
-         if(tiphonSprite)
-         {
-            tiphonSprite.destroy();
+            _loc2_.destroy();
          }
          this.updateCreaturesLimit();
-         if(this._humanNumber>0)
+         if(this._humanNumber > 0)
          {
             this._humanNumber--;
          }
-         delete this._entities[[actorId]];
+         delete this._entities[[param1]];
          if(this.switchPokemonMode())
          {
             _log.debug("switch pokemon/normal mode");
          }
       }
-
+      
       protected function switchPokemonMode() : Boolean {
-         var action:SwitchCreatureModeAction = null;
-         if((this._creaturesLimit<-1)&&(!(this._creaturesMode==(!Kernel.getWorker().getFrame(FightEntitiesFrame)&&this._creaturesLimit>50&&this._humanNumber>=this._creaturesLimit))))
+         var _loc1_:SwitchCreatureModeAction = null;
+         if(this._creaturesLimit > -1 && !(this._creaturesMode == (!Kernel.getWorker().getFrame(FightEntitiesFrame) && this._creaturesLimit < 50 && this._humanNumber >= this._creaturesLimit)))
          {
-            _log.debug("human number: "+this._humanNumber+", creature limit: "+this._creaturesLimit+" => "+this._creaturesMode);
-            action=SwitchCreatureModeAction.create(!this._creaturesMode);
-            Kernel.getWorker().process(action);
+            _log.debug("human number: " + this._humanNumber + ", creature limit: " + this._creaturesLimit + " => " + this._creaturesMode);
+            _loc1_ = SwitchCreatureModeAction.create(!this._creaturesMode);
+            Kernel.getWorker().process(_loc1_);
             return true;
          }
          return false;
       }
-
-      protected function getLook(look:EntityLook, entityId:int=-1) : TiphonEntityLook {
-         var lookWithoutMount:TiphonEntityLook = null;
-         var breedId:uint = 0;
-         var mountBonesIds:Array = null;
-         var boneToCheck:* = 0;
-         var oldLook:TiphonEntityLook = EntityLookAdapter.fromNetwork(look);
-         var newLook:TiphonEntityLook = oldLook;
-         if((this._creaturesMode)||(this._creaturesFightMode))
-         {
-            breedId=0;
-            mountBonesIds=MountBone.getMountBonesIds();
-            if(this.isBoneCorrect(oldLook.getBone()))
-            {
-               if((!(entityId==-1))&&(this._entities[entityId].hasOwnProperty("breed")))
-               {
-                  breedId=this._entities[entityId].breed;
-               }
-               else
-               {
-                  breedId=Breed.getBreedFromSkin(oldLook.firstSkin).id;
-               }
-            }
-            else
-            {
-               if(mountBonesIds.indexOf(oldLook.getBone())!=-1)
-               {
-                  lookWithoutMount=TiphonUtility.getLookWithoutMount(oldLook);
-                  if(lookWithoutMount!=oldLook)
-                  {
-                     if(this.isBoneCorrect(lookWithoutMount.getBone()))
-                     {
-                        if((!(entityId==-1))&&(this._entities[entityId].hasOwnProperty("breed")))
-                        {
-                           breedId=this._entities[entityId].breed;
-                        }
-                        else
-                        {
-                           breedId=Breed.getBreedFromSkin(lookWithoutMount.firstSkin).id;
-                        }
-                     }
-                  }
-               }
-            }
-            if(breedId==0)
-            {
-               if((!(entityId==-1))&&(this._entities[entityId].hasOwnProperty("breed")))
-               {
-                  breedId=this._entities[entityId].breed;
-               }
-               else
-               {
-                  boneToCheck=lookWithoutMount?lookWithoutMount.getBone():oldLook.getBone();
-                  switch(boneToCheck)
-                  {
-                     case 453:
-                        breedId=12;
-                        break;
-                     case 706:
-                     case 1504:
-                     case 1509:
-                        return this.getFightPokemonLook(look,false,false,true,false);
-                        break;
-                     case 923:
-                  }
-                  return lookWithoutMount?lookWithoutMount:oldLook;
-               }
-            }
-            newLook.setBone(Breed.getBreedById(breedId).creatureBonesId);
-            newLook.setScales(0.9,0.9);
-         }
-         else
-         {
-            if(!OptionManager.getOptionManager("tiphon").aura)
-            {
-               newLook.removeSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND);
-            }
-         }
-         return newLook;
-      }
-
-      private function isBoneCorrect(boneId:int) : Boolean {
-         if((boneId==1)||(boneId==113)||(boneId==44)||(boneId==1575)||(boneId==1576))
-         {
-            return true;
-         }
-         return false;
-      }
-
-      protected function getFightPokemonLook(look:EntityLook, isMonstre:Boolean=false, isInvocation:Boolean=false, isIncarnation:Boolean=false, isBoss:Boolean=false) : TiphonEntityLook {
-         var idBone:* = 0;
-         var oldLook:TiphonEntityLook = EntityLookAdapter.fromNetwork(look);
-         var newLook:TiphonEntityLook = oldLook;
-         switch(isMonstre)
-         {
-            case true:
-               if(isInvocation)
-               {
-                  idBone=1765;
-               }
-               else
-               {
-                  if(isBoss)
-                  {
-                     idBone=1748;
-                  }
-                  else
-                  {
-                     idBone=1747;
-                  }
-               }
-               break;
-            case false:
-               if(isInvocation)
-               {
-                  idBone=1765;
-               }
-               else
-               {
-                  if(isIncarnation)
-                  {
-                     idBone=1749;
-                  }
-                  else
-                  {
-                     idBone=oldLook.getBone();
-                  }
-               }
-               break;
-         }
-         newLook.setBone(idBone);
-         newLook.setScales(0.9,0.9);
-         return newLook;
-      }
-
-      private function getPercoPokemonLook(look:EntityLook) : TiphonEntityLook {
-         var newLook:TiphonEntityLook = EntityLookAdapter.fromNetwork(look);
-         newLook.setBone(1813);
-         newLook.setScales(0.9,0.9);
-         return newLook;
-      }
-
-      private function getDealerPokemonLook(look:EntityLook) : TiphonEntityLook {
-         var newLook:TiphonEntityLook = EntityLookAdapter.fromNetwork(look);
-         newLook.setBone(1965);
-         newLook.setScales(0.9,0.9);
-         return newLook;
-      }
-
+      
       protected function updateCreaturesLimit() : void {
-         var vingtpourcent:* = NaN;
-         this._creaturesLimit=OptionManager.getOptionManager("tiphon").creaturesMode;
-         if((this._creaturesMode)&&(this._creaturesLimit<0))
+         var _loc1_:* = NaN;
+         this._creaturesLimit = OptionManager.getOptionManager("tiphon").creaturesMode;
+         if((this._creaturesMode) && this._creaturesLimit > 0)
          {
-            vingtpourcent=this._creaturesLimit*20/100;
-            this._creaturesLimit=Math.ceil(this._creaturesLimit-vingtpourcent);
+            _loc1_ = this._creaturesLimit * 20 / 100;
+            this._creaturesLimit = Math.ceil(this._creaturesLimit - _loc1_);
          }
       }
-
-      public function onPlayAnim(e:TiphonEvent) : void {
-         var animsRandom:Array = new Array();
-         var tempStr:String = e.params.substring(6,e.params.length-1);
-         animsRandom=tempStr.split(",");
-         e.sprite.setAnimation(animsRandom[int(animsRandom.length*Math.random())]);
+      
+      public function onPlayAnim(param1:TiphonEvent) : void {
+         var _loc2_:Array = new Array();
+         var _loc3_:String = param1.params.substring(6,param1.params.length-1);
+         _loc2_ = _loc3_.split(",");
+         param1.sprite.setAnimation(_loc2_[int(_loc2_.length * Math.random())]);
       }
-
-      private function onAtouinOptionChange(e:PropertyChangeEvent) : void {
-         var entities:Array = null;
-         var entitie:* = undefined;
-         if(e.propertyName=="useLowDefSkin")
+      
+      private function onAtouinOptionChange(param1:PropertyChangeEvent) : void {
+         var _loc2_:Array = null;
+         var _loc3_:* = undefined;
+         if(param1.propertyName == "useLowDefSkin")
          {
-            entities=EntitiesManager.getInstance().entities;
-            for each (entitie in entities)
+            _loc2_ = EntitiesManager.getInstance().entities;
+            for each (_loc3_ in _loc2_)
             {
-               if(entitie is TiphonSprite)
+               if(_loc3_ is TiphonSprite)
                {
-                  TiphonSprite(entitie).setAlternativeSkinIndex(e.propertyValue?0:-1,true);
+                  TiphonSprite(_loc3_).setAlternativeSkinIndex(param1.propertyValue?0:-1,true);
                }
             }
          }
       }
-
+      
       public function isInCreaturesFightMode() : Boolean {
          return this._creaturesFightMode;
       }
-
-      private function onUpdateEntitySuccess(e:TiphonEvent) : void {
-         e.sprite.removeEventListener(TiphonEvent.RENDER_FAILED,this.onUpdateEntityFail);
-         e.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onUpdateEntitySuccess);
+      
+      private function onUpdateEntitySuccess(param1:TiphonEvent) : void {
+         param1.sprite.removeEventListener(TiphonEvent.RENDER_FAILED,this.onUpdateEntityFail);
+         param1.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onUpdateEntitySuccess);
       }
-
-      private function onUpdateEntityFail(e:TiphonEvent) : void {
-         e.sprite.removeEventListener(TiphonEvent.RENDER_FAILED,this.onUpdateEntityFail);
-         e.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onUpdateEntitySuccess);
-         TiphonSprite(e.sprite).setAnimation("AnimStatique");
+      
+      private function onUpdateEntityFail(param1:TiphonEvent) : void {
+         param1.sprite.removeEventListener(TiphonEvent.RENDER_FAILED,this.onUpdateEntityFail);
+         param1.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onUpdateEntitySuccess);
+         TiphonSprite(param1.sprite).setAnimation("AnimStatique");
       }
-
-      private function isIncarnation(entity:String) : Boolean {
-         var incarnation:Incarnation = null;
-         var boneIdMale:String = null;
-         var boneIdFemale:String = null;
-         var incarnations:Array = Incarnation.getAllIncarnation();
-         var boneId:String = entity.slice(1,entity.indexOf("|"));
-         for each (incarnation in incarnations)
+      
+      private function isIncarnation(param1:String) : Boolean {
+         var _loc3_:Incarnation = null;
+         var _loc5_:String = null;
+         var _loc6_:String = null;
+         var _loc2_:Array = Incarnation.getAllIncarnation();
+         var _loc4_:String = param1.slice(1,param1.indexOf("|"));
+         for each (_loc3_ in _loc2_)
          {
-            boneIdMale=incarnation.lookMale.slice(1,incarnation.lookMale.indexOf("|"));
-            boneIdFemale=incarnation.lookFemale.slice(1,incarnation.lookFemale.indexOf("|"));
-            if((boneId==boneIdMale)||(boneId==boneIdFemale))
+            _loc5_ = _loc3_.lookMale.slice(1,_loc3_.lookMale.indexOf("|"));
+            _loc6_ = _loc3_.lookFemale.slice(1,_loc3_.lookFemale.indexOf("|"));
+            if(_loc4_ == _loc5_ || _loc4_ == _loc6_)
             {
                return true;
             }
          }
          return false;
       }
+      
+      protected function onPropertyChanged(param1:PropertyChangeEvent) : void {
+         if(param1.propertyName == "mapCoordinates")
+         {
+            KernelEventsManager.getInstance().processCallback(HookList.MapComplementaryInformationsData,this._worldPoint,this._currentSubAreaId,param1.propertyValue);
+         }
+      }
    }
-
 }

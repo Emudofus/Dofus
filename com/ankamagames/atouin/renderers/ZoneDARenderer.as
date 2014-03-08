@@ -9,27 +9,27 @@ package com.ankamagames.atouin.renderers
    import com.ankamagames.jerakine.types.Color;
    import com.ankamagames.atouin.types.DataMapContainer;
    import flash.geom.ColorTransform;
-   import com.ankamagames.jerakine.types.events.PropertyChangeEvent;
+   import com.ankamagames.atouin.managers.EntitiesDisplayManager;
    import com.ankamagames.atouin.Atouin;
-
-
+   import com.ankamagames.atouin.enums.PlacementStrataEnums;
+   
    public class ZoneDARenderer extends Object implements IZoneRenderer
    {
-         
-
-      public function ZoneDARenderer(nStrata:uint=0, alpha:Number=1) {
+      
+      public function ZoneDARenderer(param1:uint=0, param2:Number=1, param3:Boolean=false) {
          super();
-         this._aZoneTile=new Array();
-         this._aCellTile=new Array();
-         this.strata=nStrata;
-         this._alpha=alpha;
-         Atouin.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
+         this._aZoneTile = new Array();
+         this._aCellTile = new Array();
+         this._strata = param1;
+         this._fixedStrata = param3;
+         this.currentStrata = !this._fixedStrata && (Atouin.getInstance().options.transparentOverlayMode)?PlacementStrataEnums.STRATA_NO_Z_ORDER:this._strata;
+         this._alpha = param2;
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ZoneDARenderer));
-
+      
       private static var zoneTileCache:Array = new Array();
-
+      
       private static function getZoneTile() : ZoneTile {
          if(zoneTileCache.length)
          {
@@ -37,101 +37,112 @@ package com.ankamagames.atouin.renderers
          }
          return new ZoneTile();
       }
-
-      private static function destroyZoneTile(zt:ZoneTile) : void {
-         zt.remove();
-         zoneTileCache.push(zt);
+      
+      private static function destroyZoneTile(param1:ZoneTile) : void {
+         param1.remove();
+         zoneTileCache.push(param1);
       }
-
+      
       protected var _cells:Vector.<uint>;
-
+      
       protected var _aZoneTile:Array;
-
+      
       protected var _aCellTile:Array;
-
+      
       private var _alpha:Number = 0.7;
-
-      public var strata:uint = 0;
-
-      public function render(cells:Vector.<uint>, oColor:Color, mapContainer:DataMapContainer, bAlpha:Boolean=false) : void {
-         var j:* = 0;
-         var zt:ZoneTile = null;
-         var ct:ColorTransform = null;
-         this._cells=cells;
-         var num:int = cells.length;
-         j=0;
-         while(j<num)
+      
+      protected var _fixedStrata:Boolean;
+      
+      protected var _strata:uint;
+      
+      public var currentStrata:uint = 0;
+      
+      public function render(param1:Vector.<uint>, param2:Color, param3:DataMapContainer, param4:Boolean=false, param5:Boolean=false) : void {
+         var _loc6_:* = 0;
+         var _loc7_:ZoneTile = null;
+         var _loc9_:ColorTransform = null;
+         this._cells = param1;
+         var _loc8_:int = param1.length;
+         _loc6_ = 0;
+         while(_loc6_ < _loc8_)
          {
-            zt=this._aZoneTile[j];
-            if(!zt)
+            _loc7_ = this._aZoneTile[_loc6_];
+            if(!_loc7_)
             {
-               zt=getZoneTile();
-               this._aZoneTile[j]=zt;
-               zt.strata=this.strata;
-               ct=new ColorTransform();
-               zt.color=oColor.color;
+               _loc7_ = getZoneTile();
+               this._aZoneTile[_loc6_] = _loc7_;
+               _loc7_.strata = this.currentStrata;
+               _loc9_ = new ColorTransform();
+               _loc7_.color = param2.color;
             }
-            this._aCellTile[j]=cells[j];
-            zt.cellId=cells[j];
-            zt.text=this.getText(j);
-            zt.display();
-            j++;
+            this._aCellTile[_loc6_] = param1[_loc6_];
+            _loc7_.cellId = param1[_loc6_];
+            _loc7_.text = this.getText(_loc6_);
+            if((param5) || !(EntitiesDisplayManager.getInstance()._dStrataRef[_loc7_] == this.currentStrata))
+            {
+               _loc7_.strata = EntitiesDisplayManager.getInstance()._dStrataRef[_loc7_] = this.currentStrata;
+            }
+            _loc7_.display();
+            _loc6_++;
          }
-         while(j<num)
+         while(_loc6_ < _loc8_)
          {
-            zt=this._aZoneTile[j];
-            if(zt)
+            _loc7_ = this._aZoneTile[_loc6_];
+            if(_loc7_)
             {
-               destroyZoneTile(zt);
+               destroyZoneTile(_loc7_);
             }
-            j++;
+            _loc6_++;
          }
       }
-
-      protected function getText(count:int) : String {
+      
+      protected function getText(param1:int) : String {
          return null;
       }
-
-      public function remove(cells:Vector.<uint>, mapContainer:DataMapContainer) : void {
-         var j:* = 0;
-         var zt:ZoneTile = null;
-         if(!cells)
+      
+      public function remove(param1:Vector.<uint>, param2:DataMapContainer) : void {
+         var _loc4_:* = 0;
+         var _loc8_:ZoneTile = null;
+         if(!param1)
          {
             return;
          }
-         var count:int = 0;
-         var mapping:Array = new Array();
-         var num:int = cells.length;
-         j=0;
-         while(j<num)
+         var _loc3_:* = 0;
+         var _loc5_:Array = new Array();
+         var _loc6_:int = param1.length;
+         _loc4_ = 0;
+         while(_loc4_ < _loc6_)
          {
-            mapping[cells[j]]=true;
-            j++;
+            _loc5_[param1[_loc4_]] = true;
+            _loc4_++;
          }
-         num=this._aCellTile.length;
-         var i:int = 0;
-         while(i<num)
+         _loc6_ = this._aCellTile.length;
+         var _loc7_:* = 0;
+         while(_loc7_ < _loc6_)
          {
-            if(mapping[this._aCellTile[i]])
+            if(_loc5_[this._aCellTile[_loc7_]])
             {
-               count++;
-               zt=this._aZoneTile[i];
-               if(zt)
+               _loc3_++;
+               _loc8_ = this._aZoneTile[_loc7_];
+               if(_loc8_)
                {
-                  destroyZoneTile(zt);
+                  destroyZoneTile(_loc8_);
                }
-               this._aCellTile.splice(i,1);
-               this._aZoneTile.splice(i,1);
-               i--;
-               num--;
+               this._aCellTile.splice(_loc7_,1);
+               this._aZoneTile.splice(_loc7_,1);
+               _loc7_--;
+               _loc6_--;
             }
-            i++;
+            _loc7_++;
          }
       }
-
-      private function onPropertyChanged(e:PropertyChangeEvent) : void {
-         
+      
+      public function get fixedStrata() : Boolean {
+         return this._fixedStrata;
+      }
+      
+      public function restoreStrata() : void {
+         this.currentStrata = this._strata;
       }
    }
-
 }

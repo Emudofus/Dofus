@@ -6,74 +6,71 @@ package com.ankamagames.dofus.network.messages.game.guild
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class GuildModificationValidMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function GuildModificationValidMessage() {
-         this.guildEmblem=new GuildEmblem();
+         this.guildEmblem = new GuildEmblem();
          super();
       }
-
+      
       public static const protocolId:uint = 6323;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var guildName:String = "";
-
+      
       public var guildEmblem:GuildEmblem;
-
+      
       override public function getMessageId() : uint {
          return 6323;
       }
-
-      public function initGuildModificationValidMessage(guildName:String="", guildEmblem:GuildEmblem=null) : GuildModificationValidMessage {
-         this.guildName=guildName;
-         this.guildEmblem=guildEmblem;
-         this._isInitialized=true;
+      
+      public function initGuildModificationValidMessage(param1:String="", param2:GuildEmblem=null) : GuildModificationValidMessage {
+         this.guildName = param1;
+         this.guildEmblem = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.guildName="";
-         this.guildEmblem=new GuildEmblem();
-         this._isInitialized=false;
+         this.guildName = "";
+         this.guildEmblem = new GuildEmblem();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_GuildModificationValidMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_GuildModificationValidMessage(param1);
       }
-
-      public function serializeAs_GuildModificationValidMessage(output:IDataOutput) : void {
-         output.writeUTF(this.guildName);
-         this.guildEmblem.serializeAs_GuildEmblem(output);
+      
+      public function serializeAs_GuildModificationValidMessage(param1:IDataOutput) : void {
+         param1.writeUTF(this.guildName);
+         this.guildEmblem.serializeAs_GuildEmblem(param1);
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_GuildModificationValidMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_GuildModificationValidMessage(param1);
       }
-
-      public function deserializeAs_GuildModificationValidMessage(input:IDataInput) : void {
-         this.guildName=input.readUTF();
-         this.guildEmblem=new GuildEmblem();
-         this.guildEmblem.deserialize(input);
+      
+      public function deserializeAs_GuildModificationValidMessage(param1:IDataInput) : void {
+         this.guildName = param1.readUTF();
+         this.guildEmblem = new GuildEmblem();
+         this.guildEmblem.deserialize(param1);
       }
    }
-
 }

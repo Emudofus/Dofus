@@ -6,179 +6,172 @@ package com.ankamagames.berilia.types.graphic
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.berilia.enums.StatesEnum;
    import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
-
-
+   
    public class StateContainer extends GraphicContainer implements UIComponent
    {
-         
-
+      
       public function StateContainer() {
-         this._describeType=DescribeTypeCache.typeDescription;
+         this._describeType = DescribeTypeCache.typeDescription;
          super();
-         this._state=StatesEnum.STATE_NORMAL;
-         this._snapshot=new Array();
-         this._lockedProperties=new Array();
-         this._lockedPropertiesStr="";
-         this.lockedProperties="x,y,width,height,selected";
+         this._state = StatesEnum.STATE_NORMAL;
+         this._snapshot = new Array();
+         this._lockedProperties = new Array();
+         this._lockedPropertiesStr = "";
+         this.lockedProperties = "x,y,width,height,selected,greyedOut";
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StateContainer));
-
+      
       protected var _state;
-
+      
       protected var _snapshot:Array;
-
+      
       protected var _describeType:Function;
-
+      
       protected var _lockedProperties:Array;
-
+      
       protected var _lockedPropertiesStr:String;
-
+      
       private var _changingStateData:Array;
-
+      
       public function get changingStateData() : Array {
          return this._changingStateData;
       }
-
-      public function set changingStateData(value:Array) : void {
-         this._changingStateData=value;
+      
+      public function set changingStateData(param1:Array) : void {
+         this._changingStateData = param1;
       }
-
-      public function set state(newState:*) : void {
-         if(this._state==newState)
+      
+      public function set state(param1:*) : void {
+         if(this._state == param1)
          {
             return;
          }
-         if(newState==null)
+         if(param1 == null)
          {
-            newState=StatesEnum.STATE_NORMAL;
+            param1 = StatesEnum.STATE_NORMAL;
          }
-         this.changeState(newState);
-         this._state=newState;
+         this.changeState(param1);
+         this._state = param1;
       }
-
+      
       public function get state() : * {
          return this._state;
       }
-
+      
       override public function free() : void {
          super.free();
-         this._state=null;
-         this._snapshot=null;
+         this._state = null;
+         this._snapshot = null;
       }
-
+      
       override public function remove() : void {
          super.remove();
-         this._snapshot=null;
-         this._state=null;
+         this._snapshot = null;
+         this._state = null;
       }
-
+      
       public function get lockedProperties() : String {
          return this._lockedPropertiesStr;
       }
-
-      public function set lockedProperties(s:String) : void {
-         var tmp:Array = null;
-         var propName:String = null;
-         this._lockedPropertiesStr=s;
-         this._lockedProperties=[];
+      
+      public function set lockedProperties(param1:String) : void {
+         var _loc2_:Array = null;
+         var _loc3_:String = null;
+         this._lockedPropertiesStr = param1;
+         this._lockedProperties = [];
          if(this._lockedPropertiesStr)
          {
-            tmp=s.split(",");
-            for each (propName in tmp)
+            _loc2_ = param1.split(",");
+            for each (_loc3_ in _loc2_)
             {
-               this._lockedProperties[propName]=true;
+               this._lockedProperties[_loc3_] = true;
             }
          }
       }
-
-      protected function changeState(newState:*) : void {
-         var target:GraphicContainer = null;
-         var properties:Array = null;
-         var ui:UiRootContainer = null;
-         var key:String = null;
-         var property:String = null;
+      
+      protected function changeState(param1:*) : void {
+         var _loc2_:GraphicContainer = null;
+         var _loc3_:Array = null;
+         var _loc4_:UiRootContainer = null;
+         var _loc5_:String = null;
+         var _loc6_:String = null;
          if(!this._snapshot)
          {
             return;
          }
-         if(newState==StatesEnum.STATE_NORMAL)
+         if(param1 == StatesEnum.STATE_NORMAL)
          {
-            this._state=newState;
+            this._state = param1;
             this.restoreSnapshot(StatesEnum.STATE_NORMAL);
          }
          else
          {
-            if((!(this.changingStateData==null))&&(this.changingStateData[newState]))
+            if(!(this.changingStateData == null) && (this.changingStateData[param1]))
             {
-               this._snapshot[this._state]=new Array();
-               if(this._state!=StatesEnum.STATE_NORMAL)
+               this._snapshot[this._state] = new Array();
+               if(this._state != StatesEnum.STATE_NORMAL)
                {
                   this.restoreSnapshot(StatesEnum.STATE_NORMAL);
                }
-               for (key in this.changingStateData[newState])
+               for (_loc5_ in this.changingStateData[param1])
                {
-                  ui=getUi();
-                  if(!ui)
+                  _loc4_ = getUi();
+                  if(!_loc4_)
                   {
                      break;
                   }
-                  target=ui.getElement(key);
-                  if(target)
+                  _loc2_ = _loc4_.getElement(_loc5_);
+                  if(_loc2_)
                   {
-                     if(this._state==StatesEnum.STATE_NORMAL)
+                     if(this._state == StatesEnum.STATE_NORMAL)
                      {
-                        this.makeSnapshot(StatesEnum.STATE_NORMAL,target);
+                        this.makeSnapshot(StatesEnum.STATE_NORMAL,_loc2_);
                      }
-                     properties=this.changingStateData[newState][key];
-                     for (property in properties)
+                     _loc3_ = this.changingStateData[param1][_loc5_];
+                     for (_loc6_ in _loc3_)
                      {
-                        target[property]=properties[property];
+                        _loc2_[_loc6_] = _loc3_[_loc6_];
                      }
-                     this.makeSnapshot(this._state,target);
+                     this.makeSnapshot(this._state,_loc2_);
                   }
                }
             }
             else
             {
-               _log.warn(name+" : No data for state \'"+newState+"\' ("+this.changingStateData.length+" states)");
+               _log.warn(name + " : No data for state \'" + param1 + "\' (" + this.changingStateData.length + " states)");
             }
          }
       }
-
-      protected function makeSnapshot(currentState:*, target:GraphicContainer) : void {
-         var property:String = null;
-         var propertyXml:XML = null;
-         if(!this._snapshot[currentState])
+      
+      protected function makeSnapshot(param1:*, param2:GraphicContainer) : void {
+         var _loc4_:String = null;
+         var _loc5_:XML = null;
+         if(!this._snapshot[param1])
          {
-            this._snapshot[currentState]=new Object();
+            this._snapshot[param1] = new Object();
          }
-         if(!this._snapshot[currentState][target.name])
+         if(!this._snapshot[param1][param2.name])
          {
-            this._snapshot[currentState][target.name]=new Object();
-            def=this._describeType(target);
-            for each (propertyXml in def..accessor)
+            this._snapshot[param1][param2.name] = new Object();
+            _loc3_ = this._describeType(param2);
+            for each (_loc5_ in _loc3_..accessor)
             {
-               if(propertyXml.@access!="readwrite")
+               if(_loc5_.@access == "readwrite")
                {
-               }
-               else
-               {
-                  property=propertyXml.@name;
-                  if(this._lockedProperties[property])
-                  {
-                  }
-                  else
+                  _loc4_ = _loc5_.@name;
+                  if(!this._lockedProperties[_loc4_])
                   {
                      switch(true)
                      {
-                        case target[property] is Boolean:
-                        case target[property] is uint:
-                        case target[property] is int:
-                        case target[property] is Number:
-                        case target[property] is String:
-                        case target[property]==null:
-                           this._snapshot[currentState][target.name][property]=target[property];
+                        case param2[_loc4_] is Boolean:
+                        case param2[_loc4_] is uint:
+                        case param2[_loc4_] is int:
+                        case param2[_loc4_] is Number:
+                        case param2[_loc4_] is String:
+                        case param2[_loc4_] == null:
+                           this._snapshot[param1][param2.name][_loc4_] = param2[_loc4_];
+                           break;
                      }
                   }
                }
@@ -186,41 +179,35 @@ package com.ankamagames.berilia.types.graphic
             return;
          }
       }
-
-      protected function restoreSnapshot(currentState:*) : void {
-         var component:GraphicContainer = null;
-         var ui:UiRootContainer = null;
-         var target:String = null;
-         var property:String = null;
+      
+      protected function restoreSnapshot(param1:*) : void {
+         var _loc2_:GraphicContainer = null;
+         var _loc3_:UiRootContainer = null;
+         var _loc4_:String = null;
+         var _loc5_:String = null;
          if(!this._snapshot)
          {
             return;
          }
-         for (target in this._snapshot[currentState])
+         for (_loc4_ in this._snapshot[param1])
          {
-            ui=getUi();
-            if(!ui)
+            _loc3_ = getUi();
+            if(!_loc3_)
             {
                break;
             }
-            component=ui.getElement(target);
-            if(!component)
+            _loc2_ = _loc3_.getElement(_loc4_);
+            if(_loc2_)
             {
-            }
-            else
-            {
-               for (property in this._snapshot[currentState][target])
+               for (_loc5_ in this._snapshot[param1][_loc4_])
                {
-                  if(component[property]!==this._snapshot[currentState][target][property])
+                  if(_loc2_[_loc5_] !== this._snapshot[param1][_loc4_][_loc5_])
                   {
-                     if((!(component is ButtonContainer))||(!(property=="selected")))
+                     if(!(_loc2_ is ButtonContainer) || !(_loc5_ == "selected"))
                      {
-                        if(this._lockedProperties[property])
+                        if(!this._lockedProperties[_loc5_])
                         {
-                        }
-                        else
-                        {
-                           component[property]=this._snapshot[currentState][target][property];
+                           _loc2_[_loc5_] = this._snapshot[param1][_loc4_][_loc5_];
                         }
                      }
                   }
@@ -229,5 +216,4 @@ package com.ankamagames.berilia.types.graphic
          }
       }
    }
-
 }

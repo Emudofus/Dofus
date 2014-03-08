@@ -5,95 +5,93 @@ package com.ankamagames.dofus.network.messages.game.basic
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class BasicAckMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function BasicAckMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6362;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var seq:uint = 0;
-
+      
       public var lastPacketId:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 6362;
       }
-
-      public function initBasicAckMessage(seq:uint=0, lastPacketId:uint=0) : BasicAckMessage {
-         this.seq=seq;
-         this.lastPacketId=lastPacketId;
-         this._isInitialized=true;
+      
+      public function initBasicAckMessage(param1:uint=0, param2:uint=0) : BasicAckMessage {
+         this.seq = param1;
+         this.lastPacketId = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.seq=0;
-         this.lastPacketId=0;
-         this._isInitialized=false;
+         this.seq = 0;
+         this.lastPacketId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_BasicAckMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_BasicAckMessage(param1);
       }
-
-      public function serializeAs_BasicAckMessage(output:IDataOutput) : void {
-         if(this.seq<0)
+      
+      public function serializeAs_BasicAckMessage(param1:IDataOutput) : void {
+         if(this.seq < 0)
          {
-            throw new Error("Forbidden value ("+this.seq+") on element seq.");
+            throw new Error("Forbidden value (" + this.seq + ") on element seq.");
          }
          else
          {
-            output.writeInt(this.seq);
-            if(this.lastPacketId<0)
+            param1.writeInt(this.seq);
+            if(this.lastPacketId < 0)
             {
-               throw new Error("Forbidden value ("+this.lastPacketId+") on element lastPacketId.");
+               throw new Error("Forbidden value (" + this.lastPacketId + ") on element lastPacketId.");
             }
             else
             {
-               output.writeShort(this.lastPacketId);
+               param1.writeShort(this.lastPacketId);
                return;
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_BasicAckMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_BasicAckMessage(param1);
       }
-
-      public function deserializeAs_BasicAckMessage(input:IDataInput) : void {
-         this.seq=input.readInt();
-         if(this.seq<0)
+      
+      public function deserializeAs_BasicAckMessage(param1:IDataInput) : void {
+         this.seq = param1.readInt();
+         if(this.seq < 0)
          {
-            throw new Error("Forbidden value ("+this.seq+") on element of BasicAckMessage.seq.");
+            throw new Error("Forbidden value (" + this.seq + ") on element of BasicAckMessage.seq.");
          }
          else
          {
-            this.lastPacketId=input.readShort();
-            if(this.lastPacketId<0)
+            this.lastPacketId = param1.readShort();
+            if(this.lastPacketId < 0)
             {
-               throw new Error("Forbidden value ("+this.lastPacketId+") on element of BasicAckMessage.lastPacketId.");
+               throw new Error("Forbidden value (" + this.lastPacketId + ") on element of BasicAckMessage.lastPacketId.");
             }
             else
             {
@@ -102,5 +100,4 @@ package com.ankamagames.dofus.network.messages.game.basic
          }
       }
    }
-
 }

@@ -1,105 +1,101 @@
 package com.ankamagames.jerakine.logger
 {
-
-
    public class LogLogger extends Object implements Logger
    {
-         
-
-      public function LogLogger(category:String) {
+      
+      public function LogLogger(param1:String) {
          super();
-         this._category=category;
+         this._category = param1;
       }
-
+      
       private static var _enabled:Boolean = true;
-
+      
       private static var _useModuleLoggerHasOutputLog:Boolean = false;
-
-      public static function useModuleLoggerHasOutputLog(value:Boolean) : void {
-         _useModuleLoggerHasOutputLog=value;
+      
+      public static function useModuleLoggerHasOutputLog(param1:Boolean) : void {
+         _useModuleLoggerHasOutputLog = param1;
       }
-
-      public static function activeLog(active:Boolean) : void {
-         _enabled=active;
+      
+      public static function activeLog(param1:Boolean) : void {
+         _enabled = param1;
       }
-
+      
       public static function logIsActive() : Boolean {
          return _enabled;
       }
-
+      
       private var _category:String;
-
+      
       public function get category() : String {
          return this._category;
       }
-
-      public function trace(message:Object) : void {
-         this.log(LogLevel.TRACE,message);
+      
+      public function trace(param1:Object) : void {
+         this.log(LogLevel.TRACE,param1);
       }
-
-      public function debug(message:Object) : void {
-         this.log(LogLevel.DEBUG,message);
+      
+      public function debug(param1:Object) : void {
+         this.log(LogLevel.DEBUG,param1);
       }
-
-      public function info(message:Object) : void {
-         this.log(LogLevel.INFO,message);
+      
+      public function info(param1:Object) : void {
+         this.log(LogLevel.INFO,param1);
       }
-
-      public function warn(message:Object) : void {
-         this.log(LogLevel.WARN,message);
+      
+      public function warn(param1:Object) : void {
+         this.log(LogLevel.WARN,param1);
       }
-
-      public function error(message:Object) : void {
-         this.log(LogLevel.ERROR,message);
+      
+      public function error(param1:Object) : void {
+         this.log(LogLevel.ERROR,param1);
       }
-
-      public function fatal(message:Object) : void {
-         this.log(LogLevel.FATAL,message);
+      
+      public function fatal(param1:Object) : void {
+         this.log(LogLevel.FATAL,param1);
       }
-
-      public function logDirectly(logEvent:LogEvent) : void {
+      
+      public function logDirectly(param1:LogEvent) : void {
          if(_enabled)
          {
-            Log.broadcastToTargets(logEvent);
+            Log.broadcastToTargets(param1);
          }
       }
-
-      public function log(level:uint, object:Object) : void {
-         var message:String = null;
-         var formatedMessage:String = null;
+      
+      public function log(param1:uint, param2:Object) : void {
+         var _loc3_:String = null;
+         var _loc4_:String = null;
          if(_enabled)
          {
-            message=object.toString();
-            formatedMessage=this.getFormatedMessage(message);
-            Log.broadcastToTargets(new TextLogEvent(this._category,!(level==LogLevel.COMMANDS)?formatedMessage:message,level));
+            _loc3_ = param2.toString();
+            _loc4_ = this.getFormatedMessage(_loc3_);
+            Log.broadcastToTargets(new TextLogEvent(this._category,param1 != LogLevel.COMMANDS?_loc4_:_loc3_,param1));
             if(_useModuleLoggerHasOutputLog)
             {
-               ModuleLogger.log(formatedMessage,level);
+               ModuleLogger.log(_loc4_,param1);
             }
          }
       }
-
-      private function getFormatedMessage(message:String) : String {
-         if(!message)
+      
+      private function getFormatedMessage(param1:String) : String {
+         if(!param1)
          {
-            message="";
+            param1 = "";
          }
-         var catSplit:Array = this._category.split("::");
-         var head:String = "["+catSplit[catSplit.length-1]+"] ";
-         var indent:String = "";
-         var i:uint = 0;
-         while(i<head.length)
+         var _loc2_:Array = this._category.split("::");
+         var _loc3_:* = "[" + _loc2_[_loc2_.length-1] + "] ";
+         var _loc4_:* = "";
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc3_.length)
          {
-            indent=indent+" ";
-            i++;
+            _loc4_ = _loc4_ + " ";
+            _loc5_++;
          }
-         var message:String = message.replace("\n","\n"+indent);
-         return head+message;
+         var param1:String = param1.replace("\n","\n" + _loc4_);
+         return _loc3_ + param1;
       }
-
+      
       public function clear() : void {
          this.log(LogLevel.COMMANDS,"clear");
       }
    }
-
 }

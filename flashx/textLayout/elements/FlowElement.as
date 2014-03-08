@@ -11,13 +11,12 @@ package flashx.textLayout.elements
    import flash.events.IEventDispatcher;
    import flashx.textLayout.container.ContainerController;
    import flashx.textLayout.compose.IFlowComposer;
-
+   
    use namespace tlf_internal;
-
+   
    public class FlowElement extends Object implements ITextLayoutFormat
    {
-         
-
+      
       public function FlowElement() {
          super();
          if(this.abstract)
@@ -29,210 +28,210 @@ package flashx.textLayout.elements
             return;
          }
       }
-
+      
       private static const idString:String = "id";
-
+      
       private static const typeNameString:String = "typeName";
-
+      
       private static const impliedElementString:String = "impliedElement";
-
+      
       tlf_internal  static var _scratchTextLayoutFormat:TextLayoutFormat = new TextLayoutFormat();
-
-      tlf_internal  static function createTextLayoutFormatPrototype(localStyles:ITextLayoutFormat, parentPrototype:TextLayoutFormat) : TextLayoutFormat {
-         var parentStylesPrototype:Object = null;
-         var key:String = null;
-         var val:* = undefined;
-         var prop:Property = null;
-         var rslt:TextLayoutFormat = null;
-         var noInheritParentStylesPrototype:Object = null;
-         var lvh:TextLayoutFormat = null;
-         var coreStyles:Object = null;
-         var parentPrototypeUsable:Boolean = true;
-         var hasStylesSet:Boolean = false;
-         if(parentPrototype)
+      
+      tlf_internal  static function createTextLayoutFormatPrototype(param1:ITextLayoutFormat, param2:TextLayoutFormat) : TextLayoutFormat {
+         var _loc5_:Object = null;
+         var _loc7_:String = null;
+         var _loc8_:* = undefined;
+         var _loc9_:Property = null;
+         var _loc11_:TextLayoutFormat = null;
+         var _loc12_:Object = null;
+         var _loc13_:TextLayoutFormat = null;
+         var _loc14_:Object = null;
+         var _loc3_:* = true;
+         var _loc4_:* = false;
+         if(param2)
          {
-            parentStylesPrototype=parentPrototype.getStyles();
-            if(parentStylesPrototype.hasNonInheritedStyles!==undefined)
+            _loc5_ = param2.getStyles();
+            if(_loc5_.hasNonInheritedStyles !== undefined)
             {
-               if(parentStylesPrototype.hasNonInheritedStyles===true)
+               if(_loc5_.hasNonInheritedStyles === true)
                {
-                  noInheritParentStylesPrototype=Property.createObjectWithPrototype(parentStylesPrototype);
-                  TextLayoutFormat.resetModifiedNoninheritedStyles(noInheritParentStylesPrototype);
-                  parentStylesPrototype.hasNonInheritedStyles=noInheritParentStylesPrototype;
-                  parentStylesPrototype=noInheritParentStylesPrototype;
+                  _loc12_ = Property.createObjectWithPrototype(_loc5_);
+                  TextLayoutFormat.resetModifiedNoninheritedStyles(_loc12_);
+                  _loc5_.hasNonInheritedStyles = _loc12_;
+                  _loc5_ = _loc12_;
                }
                else
                {
-                  parentStylesPrototype=parentStylesPrototype.hasNonInheritedStyles;
+                  _loc5_ = _loc5_.hasNonInheritedStyles;
                }
-               parentPrototypeUsable=false;
+               _loc3_ = false;
             }
          }
          else
          {
-            parentPrototype=TextLayoutFormat.defaultFormat as TextLayoutFormat;
-            parentStylesPrototype=parentPrototype.getStyles();
+            param2 = TextLayoutFormat.defaultFormat as TextLayoutFormat;
+            _loc5_ = param2.getStyles();
          }
-         var stylesObject:Object = Property.createObjectWithPrototype(parentStylesPrototype);
-         var hasNonInheritedStyles:Boolean = false;
-         if(localStyles!=null)
+         var _loc6_:Object = Property.createObjectWithPrototype(_loc5_);
+         var _loc10_:* = false;
+         if(param1 != null)
          {
-            lvh=localStyles as TextLayoutFormat;
-            if(lvh)
+            _loc13_ = param1 as TextLayoutFormat;
+            if(_loc13_)
             {
-               coreStyles=lvh.getStyles();
-               for (key in coreStyles)
+               _loc14_ = _loc13_.getStyles();
+               for (_loc7_ in _loc14_)
                {
-                  val=coreStyles[key];
-                  if(val==FormatValue.INHERIT)
+                  _loc8_ = _loc14_[_loc7_];
+                  if(_loc8_ == FormatValue.INHERIT)
                   {
-                     if(parentPrototype)
+                     if(param2)
                      {
-                        prop=TextLayoutFormat.description[key];
-                        if((prop)&&(!prop.inherited))
+                        _loc9_ = TextLayoutFormat.description[_loc7_];
+                        if((_loc9_) && !_loc9_.inherited)
                         {
-                           val=parentPrototype[key];
-                           if(stylesObject[key]!=val)
+                           _loc8_ = param2[_loc7_];
+                           if(_loc6_[_loc7_] != _loc8_)
                            {
-                              stylesObject[key]=val;
-                              hasNonInheritedStyles=true;
-                              hasStylesSet=true;
+                              _loc6_[_loc7_] = _loc8_;
+                              _loc10_ = true;
+                              _loc4_ = true;
                            }
                         }
                      }
                   }
                   else
                   {
-                     if(stylesObject[key]!=val)
+                     if(_loc6_[_loc7_] != _loc8_)
                      {
-                        prop=TextLayoutFormat.description[key];
-                        if((prop)&&(!prop.inherited))
+                        _loc9_ = TextLayoutFormat.description[_loc7_];
+                        if((_loc9_) && !_loc9_.inherited)
                         {
-                           hasNonInheritedStyles=true;
+                           _loc10_ = true;
                         }
-                        stylesObject[key]=val;
-                        hasStylesSet=true;
+                        _loc6_[_loc7_] = _loc8_;
+                        _loc4_ = true;
                      }
                   }
                }
             }
             else
             {
-               for each (prop in TextLayoutFormat.description)
+               for each (_loc9_ in TextLayoutFormat.description)
                {
-                  key=prop.name;
-                  val=localStyles[key];
-                  if(val!==undefined)
+                  _loc7_ = _loc9_.name;
+                  _loc8_ = param1[_loc7_];
+                  if(_loc8_ !== undefined)
                   {
-                     if(val==FormatValue.INHERIT)
+                     if(_loc8_ == FormatValue.INHERIT)
                      {
-                        if(parentPrototype)
+                        if(param2)
                         {
-                           if(!prop.inherited)
+                           if(!_loc9_.inherited)
                            {
-                              val=parentPrototype[key];
-                              if(stylesObject[key]!=val)
+                              _loc8_ = param2[_loc7_];
+                              if(_loc6_[_loc7_] != _loc8_)
                               {
-                                 stylesObject[key]=val;
-                                 hasNonInheritedStyles=true;
-                                 hasStylesSet=true;
+                                 _loc6_[_loc7_] = _loc8_;
+                                 _loc10_ = true;
+                                 _loc4_ = true;
                               }
                            }
                         }
                      }
                      else
                      {
-                        if(stylesObject[key]!=val)
+                        if(_loc6_[_loc7_] != _loc8_)
                         {
-                           if(!prop.inherited)
+                           if(!_loc9_.inherited)
                            {
-                              hasNonInheritedStyles=true;
+                              _loc10_ = true;
                            }
-                           stylesObject[key]=val;
-                           hasStylesSet=true;
+                           _loc6_[_loc7_] = _loc8_;
+                           _loc4_ = true;
                         }
                      }
                   }
                }
             }
          }
-         if(!hasStylesSet)
+         if(!_loc4_)
          {
-            if(parentPrototypeUsable)
+            if(_loc3_)
             {
-               return parentPrototype;
+               return param2;
             }
-            rslt=new TextLayoutFormat();
-            rslt.setStyles(stylesObject,true);
-            return rslt;
+            _loc11_ = new TextLayoutFormat();
+            _loc11_.setStyles(_loc6_,true);
+            return _loc11_;
          }
-         if(hasNonInheritedStyles)
+         if(_loc10_)
          {
-            stylesObject.hasNonInheritedStyles=true;
-            stylesObject.setPropertyIsEnumerable("hasNonInheritedStyles",false);
+            _loc6_.hasNonInheritedStyles = true;
+            _loc6_.setPropertyIsEnumerable("hasNonInheritedStyles",false);
          }
          else
          {
-            if(stylesObject.hasNonInheritedStyles!==undefined)
+            if(_loc6_.hasNonInheritedStyles !== undefined)
             {
-               stylesObject.hasNonInheritedStyles=undefined;
-               stylesObject.setPropertyIsEnumerable("hasNonInheritedStyles",false);
+               _loc6_.hasNonInheritedStyles = undefined;
+               _loc6_.setPropertyIsEnumerable("hasNonInheritedStyles",false);
             }
          }
-         rslt=new TextLayoutFormat();
-         rslt.setStyles(stylesObject,false);
-         return rslt;
+         _loc11_ = new TextLayoutFormat();
+         _loc11_.setStyles(_loc6_,false);
+         return _loc11_;
       }
-
+      
       private var _parent:FlowGroupElement;
-
+      
       private var _format:FlowValueHolder;
-
+      
       protected var _computedFormat:TextLayoutFormat;
-
+      
       private var _parentRelativeStart:int = 0;
-
+      
       private var _textLength:int = 0;
-
-      public function initialized(document:Object, id:String) : void {
-         this.id=id;
+      
+      public function initialized(param1:Object, param2:String) : void {
+         this.id = param2;
       }
-
+      
       protected function get abstract() : Boolean {
          return true;
       }
-
+      
       public function get userStyles() : Object {
          return this._format?this._format.userStyles:null;
       }
-
-      public function set userStyles(styles:Object) : void {
-         var val:String = null;
-         for (val in this.userStyles)
+      
+      public function set userStyles(param1:Object) : void {
+         var _loc2_:String = null;
+         for (_loc2_ in this.userStyles)
          {
-            this.setStyle(val,undefined);
+            this.setStyle(_loc2_,undefined);
          }
-         for (val in styles)
+         for (_loc2_ in param1)
          {
-            if(!TextLayoutFormat.description.hasOwnProperty(val))
+            if(!TextLayoutFormat.description.hasOwnProperty(_loc2_))
             {
-               this.setStyle(val,styles[val]);
+               this.setStyle(_loc2_,param1[_loc2_]);
             }
          }
       }
-
+      
       public function get coreStyles() : Object {
          return this._format?this._format.coreStyles:null;
       }
-
+      
       public function get styles() : Object {
          return this._format?this._format.styles:null;
       }
-
-      tlf_internal function setStylesInternal(styles:Object) : void {
-         if(styles)
+      
+      tlf_internal function setStylesInternal(param1:Object) : void {
+         if(param1)
          {
-            this.writableTextLayoutFormat().setStyles(Property.shallowCopy(styles),false);
+            this.writableTextLayoutFormat().setStyles(Property.shallowCopy(param1),false);
          }
          else
          {
@@ -243,38 +242,38 @@ package flashx.textLayout.elements
          }
          this.formatChanged();
       }
-
-      public function equalUserStyles(otherElement:FlowElement) : Boolean {
-         return Property.equalStyles(this.userStyles,otherElement.userStyles,null);
+      
+      public function equalUserStyles(param1:FlowElement) : Boolean {
+         return Property.equalStyles(this.userStyles,param1.userStyles,null);
       }
-
-      tlf_internal function equalStylesForMerge(elem:FlowElement) : Boolean {
-         return (this.id==elem.id)&&(this.typeName==elem.typeName)&&(TextLayoutFormat.isEqual(elem.format,this.format));
+      
+      tlf_internal function equalStylesForMerge(param1:FlowElement) : Boolean {
+         return this.id == param1.id && this.typeName == param1.typeName && (TextLayoutFormat.isEqual(param1.format,this.format));
       }
-
-      public function shallowCopy(relativeStart:int=0, relativeEnd:int=-1) : FlowElement {
-         var retFlow:FlowElement = new getDefinitionByName(getQualifiedClassName(this)) as Class();
-         if(this._format!=null)
+      
+      public function shallowCopy(param1:int=0, param2:int=-1) : FlowElement {
+         var _loc3_:FlowElement = new getDefinitionByName(getQualifiedClassName(this)) as Class();
+         if(this._format != null)
          {
-            retFlow._format=new FlowValueHolder(this._format);
+            _loc3_._format = new FlowValueHolder(this._format);
          }
-         return retFlow;
+         return _loc3_;
       }
-
-      public function deepCopy(relativeStart:int=0, relativeEnd:int=-1) : FlowElement {
-         if(relativeEnd==-1)
+      
+      public function deepCopy(param1:int=0, param2:int=-1) : FlowElement {
+         if(param2 == -1)
          {
-            relativeEnd=this._textLength;
+            param2 = this._textLength;
          }
-         return this.shallowCopy(relativeStart,relativeEnd);
+         return this.shallowCopy(param1,param2);
       }
-
-      public function getText(relativeStart:int=0, relativeEnd:int=-1, paragraphSeparator:String="\n") : String {
+      
+      public function getText(param1:int=0, param2:int=-1, param3:String="\n") : String {
          return "";
       }
-
-      public function splitAtPosition(relativePosition:int) : FlowElement {
-         if((relativePosition>0)||(relativePosition<this._textLength))
+      
+      public function splitAtPosition(param1:int) : FlowElement {
+         if(param1 < 0 || param1 > this._textLength)
          {
             throw RangeError(GlobalSettings.resourceStringFunction("invalidSplitAtPosition"));
          }
@@ -283,1100 +282,1081 @@ package flashx.textLayout.elements
             return this;
          }
       }
-
+      
       tlf_internal function get bindableElement() : Boolean {
-         return this.getPrivateStyle("bindable")==true;
+         return this.getPrivateStyle("bindable") == true;
       }
-
-      tlf_internal function set bindableElement(value:Boolean) : void {
-         this.setPrivateStyle("bindable",value);
+      
+      tlf_internal function set bindableElement(param1:Boolean) : void {
+         this.setPrivateStyle("bindable",param1);
       }
-
+      
       tlf_internal function mergeToPreviousIfPossible() : Boolean {
          return false;
       }
-
+      
       tlf_internal function createContentElement() : void {
-         
       }
-
+      
       tlf_internal function releaseContentElement() : void {
-         
       }
-
+      
       public function get parent() : FlowGroupElement {
          return this._parent;
       }
-
-      tlf_internal function setParentAndRelativeStart(newParent:FlowGroupElement, newStart:int) : void {
-         this._parent=newParent;
-         this._parentRelativeStart=newStart;
+      
+      tlf_internal function setParentAndRelativeStart(param1:FlowGroupElement, param2:int) : void {
+         this._parent = param1;
+         this._parentRelativeStart = param2;
          this.attributesChanged(false);
       }
-
-      tlf_internal function setParentAndRelativeStartOnly(newParent:FlowGroupElement, newStart:int) : void {
-         this._parent=newParent;
-         this._parentRelativeStart=newStart;
+      
+      tlf_internal function setParentAndRelativeStartOnly(param1:FlowGroupElement, param2:int) : void {
+         this._parent = param1;
+         this._parentRelativeStart = param2;
       }
-
+      
       public function get textLength() : int {
          return this._textLength;
       }
-
-      tlf_internal function setTextLength(newLength:int) : void {
-         this._textLength=newLength;
+      
+      tlf_internal function setTextLength(param1:int) : void {
+         this._textLength = param1;
       }
-
+      
       public function get parentRelativeStart() : int {
          return this._parentRelativeStart;
       }
-
-      tlf_internal function setParentRelativeStart(newStart:int) : void {
-         this._parentRelativeStart=newStart;
+      
+      tlf_internal function setParentRelativeStart(param1:int) : void {
+         this._parentRelativeStart = param1;
       }
-
+      
       public function get parentRelativeEnd() : int {
-         return this._parentRelativeStart+this._textLength;
+         return this._parentRelativeStart + this._textLength;
       }
-
+      
       tlf_internal function getAncestorWithContainer() : ContainerFormattedElement {
-         var contElement:ContainerFormattedElement = null;
-         var elem:FlowElement = this;
-         while(elem)
+         var _loc2_:ContainerFormattedElement = null;
+         var _loc1_:FlowElement = this;
+         while(_loc1_)
          {
-            contElement=elem as ContainerFormattedElement;
-            if(contElement)
+            _loc2_ = _loc1_ as ContainerFormattedElement;
+            if(_loc2_)
             {
-               if((!contElement._parent)||(contElement.flowComposer))
+               if(!_loc2_._parent || (_loc2_.flowComposer))
                {
-                  return contElement;
+                  return _loc2_;
                }
             }
-            elem=elem._parent;
+            _loc1_ = _loc1_._parent;
          }
          return null;
       }
-
-      tlf_internal function getPrivateStyle(styleName:String) : * {
-         return this._format?this._format.getPrivateData(styleName):undefined;
+      
+      tlf_internal function getPrivateStyle(param1:String) : * {
+         return this._format?this._format.getPrivateData(param1):undefined;
       }
-
-      tlf_internal function setPrivateStyle(styleName:String, val:*) : void {
-         if(this.getPrivateStyle(styleName)!=val)
+      
+      tlf_internal function setPrivateStyle(param1:String, param2:*) : void {
+         if(this.getPrivateStyle(param1) != param2)
          {
-            this.writableTextLayoutFormat().setPrivateData(styleName,val);
+            this.writableTextLayoutFormat().setPrivateData(param1,param2);
             this.modelChanged(ModelChange.STYLE_SELECTOR_CHANGED,this,0,this._textLength);
          }
       }
-
+      
       public function get id() : String {
          return this.getPrivateStyle(idString);
       }
-
-      public function set id(val:String) : void {
-         return this.setPrivateStyle(idString,val);
+      
+      public function set id(param1:String) : void {
+         return this.setPrivateStyle(idString,param1);
       }
-
+      
       public function get typeName() : String {
-         var typeName:String = this.getPrivateStyle(typeNameString);
-         return typeName?typeName:this.defaultTypeName;
+         var _loc1_:String = this.getPrivateStyle(typeNameString);
+         return _loc1_?_loc1_:this.defaultTypeName;
       }
-
-      public function set typeName(val:String) : void {
-         if(val!=this.typeName)
+      
+      public function set typeName(param1:String) : void {
+         if(param1 != this.typeName)
          {
-            this.setPrivateStyle(typeNameString,val==this.defaultTypeName?undefined:val);
+            this.setPrivateStyle(typeNameString,param1 == this.defaultTypeName?undefined:param1);
          }
       }
-
+      
       tlf_internal function get defaultTypeName() : String {
          return null;
       }
-
+      
       tlf_internal function get impliedElement() : Boolean {
-         return !(this.getPrivateStyle(impliedElementString)===undefined);
+         return !(this.getPrivateStyle(impliedElementString) === undefined);
       }
-
-      tlf_internal function set impliedElement(value:*) : void {
-         this.setPrivateStyle(impliedElementString,value);
+      
+      tlf_internal function set impliedElement(param1:*) : void {
+         this.setPrivateStyle(impliedElementString,param1);
       }
-
+      
       public function get color() : * {
          return this._format?this._format.color:undefined;
       }
-
-      public function set color(colorValue:*) : void {
-         this.writableTextLayoutFormat().color=colorValue;
+      
+      public function set color(param1:*) : void {
+         this.writableTextLayoutFormat().color = param1;
          this.formatChanged();
       }
-
+      
       public function get backgroundColor() : * {
          return this._format?this._format.backgroundColor:undefined;
       }
-
-      public function set backgroundColor(backgroundColorValue:*) : void {
-         this.writableTextLayoutFormat().backgroundColor=backgroundColorValue;
+      
+      public function set backgroundColor(param1:*) : void {
+         this.writableTextLayoutFormat().backgroundColor = param1;
          this.formatChanged();
       }
-
+      
       public function get lineThrough() : * {
          return this._format?this._format.lineThrough:undefined;
       }
-
-      public function set lineThrough(lineThroughValue:*) : void {
-         this.writableTextLayoutFormat().lineThrough=lineThroughValue;
+      
+      public function set lineThrough(param1:*) : void {
+         this.writableTextLayoutFormat().lineThrough = param1;
          this.formatChanged();
       }
-
+      
       public function get textAlpha() : * {
          return this._format?this._format.textAlpha:undefined;
       }
-
-      public function set textAlpha(textAlphaValue:*) : void {
-         this.writableTextLayoutFormat().textAlpha=textAlphaValue;
+      
+      public function set textAlpha(param1:*) : void {
+         this.writableTextLayoutFormat().textAlpha = param1;
          this.formatChanged();
       }
-
+      
       public function get backgroundAlpha() : * {
          return this._format?this._format.backgroundAlpha:undefined;
       }
-
-      public function set backgroundAlpha(backgroundAlphaValue:*) : void {
-         this.writableTextLayoutFormat().backgroundAlpha=backgroundAlphaValue;
+      
+      public function set backgroundAlpha(param1:*) : void {
+         this.writableTextLayoutFormat().backgroundAlpha = param1;
          this.formatChanged();
       }
-
+      
       public function get fontSize() : * {
          return this._format?this._format.fontSize:undefined;
       }
-
-      public function set fontSize(fontSizeValue:*) : void {
-         this.writableTextLayoutFormat().fontSize=fontSizeValue;
+      
+      public function set fontSize(param1:*) : void {
+         this.writableTextLayoutFormat().fontSize = param1;
          this.formatChanged();
       }
-
+      
       public function get baselineShift() : * {
          return this._format?this._format.baselineShift:undefined;
       }
-
-      public function set baselineShift(baselineShiftValue:*) : void {
-         this.writableTextLayoutFormat().baselineShift=baselineShiftValue;
+      
+      public function set baselineShift(param1:*) : void {
+         this.writableTextLayoutFormat().baselineShift = param1;
          this.formatChanged();
       }
-
+      
       public function get trackingLeft() : * {
          return this._format?this._format.trackingLeft:undefined;
       }
-
-      public function set trackingLeft(trackingLeftValue:*) : void {
-         this.writableTextLayoutFormat().trackingLeft=trackingLeftValue;
+      
+      public function set trackingLeft(param1:*) : void {
+         this.writableTextLayoutFormat().trackingLeft = param1;
          this.formatChanged();
       }
-
+      
       public function get trackingRight() : * {
          return this._format?this._format.trackingRight:undefined;
       }
-
-      public function set trackingRight(trackingRightValue:*) : void {
-         this.writableTextLayoutFormat().trackingRight=trackingRightValue;
+      
+      public function set trackingRight(param1:*) : void {
+         this.writableTextLayoutFormat().trackingRight = param1;
          this.formatChanged();
       }
-
+      
       public function get lineHeight() : * {
          return this._format?this._format.lineHeight:undefined;
       }
-
-      public function set lineHeight(lineHeightValue:*) : void {
-         this.writableTextLayoutFormat().lineHeight=lineHeightValue;
+      
+      public function set lineHeight(param1:*) : void {
+         this.writableTextLayoutFormat().lineHeight = param1;
          this.formatChanged();
       }
-
+      
       public function get breakOpportunity() : * {
          return this._format?this._format.breakOpportunity:undefined;
       }
-
-      public function set breakOpportunity(breakOpportunityValue:*) : void {
-         this.writableTextLayoutFormat().breakOpportunity=breakOpportunityValue;
+      
+      public function set breakOpportunity(param1:*) : void {
+         this.writableTextLayoutFormat().breakOpportunity = param1;
          this.formatChanged();
       }
-
+      
       public function get digitCase() : * {
          return this._format?this._format.digitCase:undefined;
       }
-
-      public function set digitCase(digitCaseValue:*) : void {
-         this.writableTextLayoutFormat().digitCase=digitCaseValue;
+      
+      public function set digitCase(param1:*) : void {
+         this.writableTextLayoutFormat().digitCase = param1;
          this.formatChanged();
       }
-
+      
       public function get digitWidth() : * {
          return this._format?this._format.digitWidth:undefined;
       }
-
-      public function set digitWidth(digitWidthValue:*) : void {
-         this.writableTextLayoutFormat().digitWidth=digitWidthValue;
+      
+      public function set digitWidth(param1:*) : void {
+         this.writableTextLayoutFormat().digitWidth = param1;
          this.formatChanged();
       }
-
+      
       public function get dominantBaseline() : * {
          return this._format?this._format.dominantBaseline:undefined;
       }
-
-      public function set dominantBaseline(dominantBaselineValue:*) : void {
-         this.writableTextLayoutFormat().dominantBaseline=dominantBaselineValue;
+      
+      public function set dominantBaseline(param1:*) : void {
+         this.writableTextLayoutFormat().dominantBaseline = param1;
          this.formatChanged();
       }
-
+      
       public function get kerning() : * {
          return this._format?this._format.kerning:undefined;
       }
-
-      public function set kerning(kerningValue:*) : void {
-         this.writableTextLayoutFormat().kerning=kerningValue;
+      
+      public function set kerning(param1:*) : void {
+         this.writableTextLayoutFormat().kerning = param1;
          this.formatChanged();
       }
-
+      
       public function get ligatureLevel() : * {
          return this._format?this._format.ligatureLevel:undefined;
       }
-
-      public function set ligatureLevel(ligatureLevelValue:*) : void {
-         this.writableTextLayoutFormat().ligatureLevel=ligatureLevelValue;
+      
+      public function set ligatureLevel(param1:*) : void {
+         this.writableTextLayoutFormat().ligatureLevel = param1;
          this.formatChanged();
       }
-
+      
       public function get alignmentBaseline() : * {
          return this._format?this._format.alignmentBaseline:undefined;
       }
-
-      public function set alignmentBaseline(alignmentBaselineValue:*) : void {
-         this.writableTextLayoutFormat().alignmentBaseline=alignmentBaselineValue;
+      
+      public function set alignmentBaseline(param1:*) : void {
+         this.writableTextLayoutFormat().alignmentBaseline = param1;
          this.formatChanged();
       }
-
+      
       public function get locale() : * {
          return this._format?this._format.locale:undefined;
       }
-
-      public function set locale(localeValue:*) : void {
-         this.writableTextLayoutFormat().locale=localeValue;
+      
+      public function set locale(param1:*) : void {
+         this.writableTextLayoutFormat().locale = param1;
          this.formatChanged();
       }
-
+      
       public function get typographicCase() : * {
          return this._format?this._format.typographicCase:undefined;
       }
-
-      public function set typographicCase(typographicCaseValue:*) : void {
-         this.writableTextLayoutFormat().typographicCase=typographicCaseValue;
+      
+      public function set typographicCase(param1:*) : void {
+         this.writableTextLayoutFormat().typographicCase = param1;
          this.formatChanged();
       }
-
+      
       public function get fontFamily() : * {
          return this._format?this._format.fontFamily:undefined;
       }
-
-      public function set fontFamily(fontFamilyValue:*) : void {
-         this.writableTextLayoutFormat().fontFamily=fontFamilyValue;
+      
+      public function set fontFamily(param1:*) : void {
+         this.writableTextLayoutFormat().fontFamily = param1;
          this.formatChanged();
       }
-
+      
       public function get textDecoration() : * {
          return this._format?this._format.textDecoration:undefined;
       }
-
-      public function set textDecoration(textDecorationValue:*) : void {
-         this.writableTextLayoutFormat().textDecoration=textDecorationValue;
+      
+      public function set textDecoration(param1:*) : void {
+         this.writableTextLayoutFormat().textDecoration = param1;
          this.formatChanged();
       }
-
+      
       public function get fontWeight() : * {
          return this._format?this._format.fontWeight:undefined;
       }
-
-      public function set fontWeight(fontWeightValue:*) : void {
-         this.writableTextLayoutFormat().fontWeight=fontWeightValue;
+      
+      public function set fontWeight(param1:*) : void {
+         this.writableTextLayoutFormat().fontWeight = param1;
          this.formatChanged();
       }
-
+      
       public function get fontStyle() : * {
          return this._format?this._format.fontStyle:undefined;
       }
-
-      public function set fontStyle(fontStyleValue:*) : void {
-         this.writableTextLayoutFormat().fontStyle=fontStyleValue;
+      
+      public function set fontStyle(param1:*) : void {
+         this.writableTextLayoutFormat().fontStyle = param1;
          this.formatChanged();
       }
-
+      
       public function get whiteSpaceCollapse() : * {
          return this._format?this._format.whiteSpaceCollapse:undefined;
       }
-
-      public function set whiteSpaceCollapse(whiteSpaceCollapseValue:*) : void {
-         this.writableTextLayoutFormat().whiteSpaceCollapse=whiteSpaceCollapseValue;
+      
+      public function set whiteSpaceCollapse(param1:*) : void {
+         this.writableTextLayoutFormat().whiteSpaceCollapse = param1;
          this.formatChanged();
       }
-
+      
       public function get renderingMode() : * {
          return this._format?this._format.renderingMode:undefined;
       }
-
-      public function set renderingMode(renderingModeValue:*) : void {
-         this.writableTextLayoutFormat().renderingMode=renderingModeValue;
+      
+      public function set renderingMode(param1:*) : void {
+         this.writableTextLayoutFormat().renderingMode = param1;
          this.formatChanged();
       }
-
+      
       public function get cffHinting() : * {
          return this._format?this._format.cffHinting:undefined;
       }
-
-      public function set cffHinting(cffHintingValue:*) : void {
-         this.writableTextLayoutFormat().cffHinting=cffHintingValue;
+      
+      public function set cffHinting(param1:*) : void {
+         this.writableTextLayoutFormat().cffHinting = param1;
          this.formatChanged();
       }
-
+      
       public function get fontLookup() : * {
          return this._format?this._format.fontLookup:undefined;
       }
-
-      public function set fontLookup(fontLookupValue:*) : void {
-         this.writableTextLayoutFormat().fontLookup=fontLookupValue;
+      
+      public function set fontLookup(param1:*) : void {
+         this.writableTextLayoutFormat().fontLookup = param1;
          this.formatChanged();
       }
-
+      
       public function get textRotation() : * {
          return this._format?this._format.textRotation:undefined;
       }
-
-      public function set textRotation(textRotationValue:*) : void {
-         this.writableTextLayoutFormat().textRotation=textRotationValue;
+      
+      public function set textRotation(param1:*) : void {
+         this.writableTextLayoutFormat().textRotation = param1;
          this.formatChanged();
       }
-
+      
       public function get textIndent() : * {
          return this._format?this._format.textIndent:undefined;
       }
-
-      public function set textIndent(textIndentValue:*) : void {
-         this.writableTextLayoutFormat().textIndent=textIndentValue;
+      
+      public function set textIndent(param1:*) : void {
+         this.writableTextLayoutFormat().textIndent = param1;
          this.formatChanged();
       }
-
+      
       public function get paragraphStartIndent() : * {
          return this._format?this._format.paragraphStartIndent:undefined;
       }
-
-      public function set paragraphStartIndent(paragraphStartIndentValue:*) : void {
-         this.writableTextLayoutFormat().paragraphStartIndent=paragraphStartIndentValue;
+      
+      public function set paragraphStartIndent(param1:*) : void {
+         this.writableTextLayoutFormat().paragraphStartIndent = param1;
          this.formatChanged();
       }
-
+      
       public function get paragraphEndIndent() : * {
          return this._format?this._format.paragraphEndIndent:undefined;
       }
-
-      public function set paragraphEndIndent(paragraphEndIndentValue:*) : void {
-         this.writableTextLayoutFormat().paragraphEndIndent=paragraphEndIndentValue;
+      
+      public function set paragraphEndIndent(param1:*) : void {
+         this.writableTextLayoutFormat().paragraphEndIndent = param1;
          this.formatChanged();
       }
-
+      
       public function get paragraphSpaceBefore() : * {
          return this._format?this._format.paragraphSpaceBefore:undefined;
       }
-
-      public function set paragraphSpaceBefore(paragraphSpaceBeforeValue:*) : void {
-         this.writableTextLayoutFormat().paragraphSpaceBefore=paragraphSpaceBeforeValue;
+      
+      public function set paragraphSpaceBefore(param1:*) : void {
+         this.writableTextLayoutFormat().paragraphSpaceBefore = param1;
          this.formatChanged();
       }
-
+      
       public function get paragraphSpaceAfter() : * {
          return this._format?this._format.paragraphSpaceAfter:undefined;
       }
-
-      public function set paragraphSpaceAfter(paragraphSpaceAfterValue:*) : void {
-         this.writableTextLayoutFormat().paragraphSpaceAfter=paragraphSpaceAfterValue;
+      
+      public function set paragraphSpaceAfter(param1:*) : void {
+         this.writableTextLayoutFormat().paragraphSpaceAfter = param1;
          this.formatChanged();
       }
-
+      
       public function get textAlign() : * {
          return this._format?this._format.textAlign:undefined;
       }
-
-      public function set textAlign(textAlignValue:*) : void {
-         this.writableTextLayoutFormat().textAlign=textAlignValue;
+      
+      public function set textAlign(param1:*) : void {
+         this.writableTextLayoutFormat().textAlign = param1;
          this.formatChanged();
       }
-
+      
       public function get textAlignLast() : * {
          return this._format?this._format.textAlignLast:undefined;
       }
-
-      public function set textAlignLast(textAlignLastValue:*) : void {
-         this.writableTextLayoutFormat().textAlignLast=textAlignLastValue;
+      
+      public function set textAlignLast(param1:*) : void {
+         this.writableTextLayoutFormat().textAlignLast = param1;
          this.formatChanged();
       }
-
+      
       public function get textJustify() : * {
          return this._format?this._format.textJustify:undefined;
       }
-
-      public function set textJustify(textJustifyValue:*) : void {
-         this.writableTextLayoutFormat().textJustify=textJustifyValue;
+      
+      public function set textJustify(param1:*) : void {
+         this.writableTextLayoutFormat().textJustify = param1;
          this.formatChanged();
       }
-
+      
       public function get justificationRule() : * {
          return this._format?this._format.justificationRule:undefined;
       }
-
-      public function set justificationRule(justificationRuleValue:*) : void {
-         this.writableTextLayoutFormat().justificationRule=justificationRuleValue;
+      
+      public function set justificationRule(param1:*) : void {
+         this.writableTextLayoutFormat().justificationRule = param1;
          this.formatChanged();
       }
-
+      
       public function get justificationStyle() : * {
          return this._format?this._format.justificationStyle:undefined;
       }
-
-      public function set justificationStyle(justificationStyleValue:*) : void {
-         this.writableTextLayoutFormat().justificationStyle=justificationStyleValue;
+      
+      public function set justificationStyle(param1:*) : void {
+         this.writableTextLayoutFormat().justificationStyle = param1;
          this.formatChanged();
       }
-
+      
       public function get direction() : * {
          return this._format?this._format.direction:undefined;
       }
-
-      public function set direction(directionValue:*) : void {
-         this.writableTextLayoutFormat().direction=directionValue;
+      
+      public function set direction(param1:*) : void {
+         this.writableTextLayoutFormat().direction = param1;
          this.formatChanged();
       }
-
+      
       public function get wordSpacing() : * {
          return this._format?this._format.wordSpacing:undefined;
       }
-
-      public function set wordSpacing(wordSpacingValue:*) : void {
-         this.writableTextLayoutFormat().wordSpacing=wordSpacingValue;
+      
+      public function set wordSpacing(param1:*) : void {
+         this.writableTextLayoutFormat().wordSpacing = param1;
          this.formatChanged();
       }
-
+      
       public function get tabStops() : * {
          return this._format?this._format.tabStops:undefined;
       }
-
-      public function set tabStops(tabStopsValue:*) : void {
-         this.writableTextLayoutFormat().tabStops=tabStopsValue;
+      
+      public function set tabStops(param1:*) : void {
+         this.writableTextLayoutFormat().tabStops = param1;
          this.formatChanged();
       }
-
+      
       public function get leadingModel() : * {
          return this._format?this._format.leadingModel:undefined;
       }
-
-      public function set leadingModel(leadingModelValue:*) : void {
-         this.writableTextLayoutFormat().leadingModel=leadingModelValue;
+      
+      public function set leadingModel(param1:*) : void {
+         this.writableTextLayoutFormat().leadingModel = param1;
          this.formatChanged();
       }
-
+      
       public function get columnGap() : * {
          return this._format?this._format.columnGap:undefined;
       }
-
-      public function set columnGap(columnGapValue:*) : void {
-         this.writableTextLayoutFormat().columnGap=columnGapValue;
+      
+      public function set columnGap(param1:*) : void {
+         this.writableTextLayoutFormat().columnGap = param1;
          this.formatChanged();
       }
-
+      
       public function get paddingLeft() : * {
          return this._format?this._format.paddingLeft:undefined;
       }
-
-      public function set paddingLeft(paddingLeftValue:*) : void {
-         this.writableTextLayoutFormat().paddingLeft=paddingLeftValue;
+      
+      public function set paddingLeft(param1:*) : void {
+         this.writableTextLayoutFormat().paddingLeft = param1;
          this.formatChanged();
       }
-
+      
       public function get paddingTop() : * {
          return this._format?this._format.paddingTop:undefined;
       }
-
-      public function set paddingTop(paddingTopValue:*) : void {
-         this.writableTextLayoutFormat().paddingTop=paddingTopValue;
+      
+      public function set paddingTop(param1:*) : void {
+         this.writableTextLayoutFormat().paddingTop = param1;
          this.formatChanged();
       }
-
+      
       public function get paddingRight() : * {
          return this._format?this._format.paddingRight:undefined;
       }
-
-      public function set paddingRight(paddingRightValue:*) : void {
-         this.writableTextLayoutFormat().paddingRight=paddingRightValue;
+      
+      public function set paddingRight(param1:*) : void {
+         this.writableTextLayoutFormat().paddingRight = param1;
          this.formatChanged();
       }
-
+      
       public function get paddingBottom() : * {
          return this._format?this._format.paddingBottom:undefined;
       }
-
-      public function set paddingBottom(paddingBottomValue:*) : void {
-         this.writableTextLayoutFormat().paddingBottom=paddingBottomValue;
+      
+      public function set paddingBottom(param1:*) : void {
+         this.writableTextLayoutFormat().paddingBottom = param1;
          this.formatChanged();
       }
-
+      
       public function get columnCount() : * {
          return this._format?this._format.columnCount:undefined;
       }
-
-      public function set columnCount(columnCountValue:*) : void {
-         this.writableTextLayoutFormat().columnCount=columnCountValue;
+      
+      public function set columnCount(param1:*) : void {
+         this.writableTextLayoutFormat().columnCount = param1;
          this.formatChanged();
       }
-
+      
       public function get columnWidth() : * {
          return this._format?this._format.columnWidth:undefined;
       }
-
-      public function set columnWidth(columnWidthValue:*) : void {
-         this.writableTextLayoutFormat().columnWidth=columnWidthValue;
+      
+      public function set columnWidth(param1:*) : void {
+         this.writableTextLayoutFormat().columnWidth = param1;
          this.formatChanged();
       }
-
+      
       public function get firstBaselineOffset() : * {
          return this._format?this._format.firstBaselineOffset:undefined;
       }
-
-      public function set firstBaselineOffset(firstBaselineOffsetValue:*) : void {
-         this.writableTextLayoutFormat().firstBaselineOffset=firstBaselineOffsetValue;
+      
+      public function set firstBaselineOffset(param1:*) : void {
+         this.writableTextLayoutFormat().firstBaselineOffset = param1;
          this.formatChanged();
       }
-
+      
       public function get verticalAlign() : * {
          return this._format?this._format.verticalAlign:undefined;
       }
-
-      public function set verticalAlign(verticalAlignValue:*) : void {
-         this.writableTextLayoutFormat().verticalAlign=verticalAlignValue;
+      
+      public function set verticalAlign(param1:*) : void {
+         this.writableTextLayoutFormat().verticalAlign = param1;
          this.formatChanged();
       }
-
+      
       public function get blockProgression() : * {
          return this._format?this._format.blockProgression:undefined;
       }
-
-      public function set blockProgression(blockProgressionValue:*) : void {
-         this.writableTextLayoutFormat().blockProgression=blockProgressionValue;
+      
+      public function set blockProgression(param1:*) : void {
+         this.writableTextLayoutFormat().blockProgression = param1;
          this.formatChanged();
       }
-
+      
       public function get lineBreak() : * {
          return this._format?this._format.lineBreak:undefined;
       }
-
-      public function set lineBreak(lineBreakValue:*) : void {
-         this.writableTextLayoutFormat().lineBreak=lineBreakValue;
+      
+      public function set lineBreak(param1:*) : void {
+         this.writableTextLayoutFormat().lineBreak = param1;
          this.formatChanged();
       }
-
+      
       public function get listStyleType() : * {
          return this._format?this._format.listStyleType:undefined;
       }
-
-      public function set listStyleType(listStyleTypeValue:*) : void {
-         this.writableTextLayoutFormat().listStyleType=listStyleTypeValue;
+      
+      public function set listStyleType(param1:*) : void {
+         this.writableTextLayoutFormat().listStyleType = param1;
          this.formatChanged();
       }
-
+      
       public function get listStylePosition() : * {
          return this._format?this._format.listStylePosition:undefined;
       }
-
-      public function set listStylePosition(listStylePositionValue:*) : void {
-         this.writableTextLayoutFormat().listStylePosition=listStylePositionValue;
+      
+      public function set listStylePosition(param1:*) : void {
+         this.writableTextLayoutFormat().listStylePosition = param1;
          this.formatChanged();
       }
-
+      
       public function get listAutoPadding() : * {
          return this._format?this._format.listAutoPadding:undefined;
       }
-
-      public function set listAutoPadding(listAutoPaddingValue:*) : void {
-         this.writableTextLayoutFormat().listAutoPadding=listAutoPaddingValue;
+      
+      public function set listAutoPadding(param1:*) : void {
+         this.writableTextLayoutFormat().listAutoPadding = param1;
          this.formatChanged();
       }
-
+      
       public function get clearFloats() : * {
          return this._format?this._format.clearFloats:undefined;
       }
-
-      public function set clearFloats(clearFloatsValue:*) : void {
-         this.writableTextLayoutFormat().clearFloats=clearFloatsValue;
+      
+      public function set clearFloats(param1:*) : void {
+         this.writableTextLayoutFormat().clearFloats = param1;
          this.formatChanged();
       }
-
+      
       public function get styleName() : * {
          return this._format?this._format.styleName:undefined;
       }
-
-      public function set styleName(styleNameValue:*) : void {
-         this.writableTextLayoutFormat().styleName=styleNameValue;
+      
+      public function set styleName(param1:*) : void {
+         this.writableTextLayoutFormat().styleName = param1;
          this.styleSelectorChanged();
       }
-
+      
       public function get linkNormalFormat() : * {
          return this._format?this._format.linkNormalFormat:undefined;
       }
-
-      public function set linkNormalFormat(linkNormalFormatValue:*) : void {
-         this.writableTextLayoutFormat().linkNormalFormat=linkNormalFormatValue;
+      
+      public function set linkNormalFormat(param1:*) : void {
+         this.writableTextLayoutFormat().linkNormalFormat = param1;
          this.formatChanged();
       }
-
+      
       public function get linkActiveFormat() : * {
          return this._format?this._format.linkActiveFormat:undefined;
       }
-
-      public function set linkActiveFormat(linkActiveFormatValue:*) : void {
-         this.writableTextLayoutFormat().linkActiveFormat=linkActiveFormatValue;
+      
+      public function set linkActiveFormat(param1:*) : void {
+         this.writableTextLayoutFormat().linkActiveFormat = param1;
          this.formatChanged();
       }
-
+      
       public function get linkHoverFormat() : * {
          return this._format?this._format.linkHoverFormat:undefined;
       }
-
-      public function set linkHoverFormat(linkHoverFormatValue:*) : void {
-         this.writableTextLayoutFormat().linkHoverFormat=linkHoverFormatValue;
+      
+      public function set linkHoverFormat(param1:*) : void {
+         this.writableTextLayoutFormat().linkHoverFormat = param1;
          this.formatChanged();
       }
-
+      
       public function get listMarkerFormat() : * {
          return this._format?this._format.listMarkerFormat:undefined;
       }
-
-      public function set listMarkerFormat(listMarkerFormatValue:*) : void {
-         this.writableTextLayoutFormat().listMarkerFormat=listMarkerFormatValue;
+      
+      public function set listMarkerFormat(param1:*) : void {
+         this.writableTextLayoutFormat().listMarkerFormat = param1;
          this.formatChanged();
       }
-
+      
       public function get format() : ITextLayoutFormat {
          return this._format;
       }
-
-      public function set format(value:ITextLayoutFormat) : void {
-         if(value==this._format)
+      
+      public function set format(param1:ITextLayoutFormat) : void {
+         if(param1 == this._format)
          {
             return;
          }
-         var oldStyleName:String = this.styleName;
-         if(value==null)
+         var _loc2_:String = this.styleName;
+         if(param1 == null)
          {
             this._format.clearStyles();
          }
          else
          {
-            this.writableTextLayoutFormat().copy(value);
+            this.writableTextLayoutFormat().copy(param1);
          }
          this.formatChanged();
-         if(oldStyleName!=this.styleName)
+         if(_loc2_ != this.styleName)
          {
             this.styleSelectorChanged();
          }
       }
-
+      
       tlf_internal function writableTextLayoutFormat() : FlowValueHolder {
-         if(this._format==null)
+         if(this._format == null)
          {
-            this._format=new FlowValueHolder();
+            this._format = new FlowValueHolder();
          }
          return this._format;
       }
-
-      tlf_internal function formatChanged(notifyModelChanged:Boolean=true) : void {
-         if(notifyModelChanged)
+      
+      tlf_internal function formatChanged(param1:Boolean=true) : void {
+         if(param1)
          {
             this.modelChanged(ModelChange.TEXTLAYOUT_FORMAT_CHANGED,this,0,this._textLength);
          }
-         this._computedFormat=null;
+         this._computedFormat = null;
       }
-
+      
       tlf_internal function styleSelectorChanged() : void {
          this.modelChanged(ModelChange.STYLE_SELECTOR_CHANGED,this,0,this._textLength);
-         this._computedFormat=null;
+         this._computedFormat = null;
       }
-
+      
       tlf_internal function get formatForCascade() : ITextLayoutFormat {
-         var elemStyle:TextLayoutFormat = null;
-         var localFormat:ITextLayoutFormat = null;
-         var rslt:TextLayoutFormat = null;
-         var tf:TextFlow = this.getTextFlow();
-         if(tf)
+         var _loc2_:TextLayoutFormat = null;
+         var _loc3_:ITextLayoutFormat = null;
+         var _loc4_:TextLayoutFormat = null;
+         var _loc1_:TextFlow = this.getTextFlow();
+         if(_loc1_)
          {
-            elemStyle=tf.getTextLayoutFormatStyle(this);
-            if(elemStyle)
+            _loc2_ = _loc1_.getTextLayoutFormatStyle(this);
+            if(_loc2_)
             {
-               localFormat=this.format;
-               if(localFormat==null)
+               _loc3_ = this.format;
+               if(_loc3_ == null)
                {
-                  return elemStyle;
+                  return _loc2_;
                }
-               rslt=new TextLayoutFormat();
-               rslt.apply(elemStyle);
-               rslt.apply(localFormat);
-               return rslt;
+               _loc4_ = new TextLayoutFormat();
+               _loc4_.apply(_loc2_);
+               _loc4_.apply(_loc3_);
+               return _loc4_;
             }
          }
          return this._format;
       }
-
+      
       public function get computedFormat() : ITextLayoutFormat {
-         if(this._computedFormat==null)
+         if(this._computedFormat == null)
          {
-            this._computedFormat=this.doComputeTextLayoutFormat();
+            this._computedFormat = this.doComputeTextLayoutFormat();
          }
          return this._computedFormat;
       }
-
+      
       tlf_internal function doComputeTextLayoutFormat() : TextLayoutFormat {
-         var parentPrototype:TextLayoutFormat = this._parent?TextLayoutFormat(this._parent.computedFormat):null;
-         return FlowElement.createTextLayoutFormatPrototype(this.formatForCascade,parentPrototype);
+         var _loc1_:TextLayoutFormat = this._parent?TextLayoutFormat(this._parent.computedFormat):null;
+         return FlowElement.createTextLayoutFormatPrototype(this.formatForCascade,_loc1_);
       }
-
-      tlf_internal function attributesChanged(notifyModelChanged:Boolean=true) : void {
-         this.formatChanged(notifyModelChanged);
+      
+      tlf_internal function attributesChanged(param1:Boolean=true) : void {
+         this.formatChanged(param1);
       }
-
-      public function getStyle(styleProp:String) : * {
-         if(TextLayoutFormat.description.hasOwnProperty(styleProp))
+      
+      public function getStyle(param1:String) : * {
+         if(TextLayoutFormat.description.hasOwnProperty(param1))
          {
-            return this.computedFormat.getStyle(styleProp);
+            return this.computedFormat.getStyle(param1);
          }
-         var tf:TextFlow = this.getTextFlow();
-         if((!tf)||(!tf.formatResolver))
+         var _loc2_:TextFlow = this.getTextFlow();
+         if(!_loc2_ || !_loc2_.formatResolver)
          {
-            return this.computedFormat.getStyle(styleProp);
+            return this.computedFormat.getStyle(param1);
          }
-         return this.getUserStyleWorker(styleProp);
+         return this.getUserStyleWorker(param1);
       }
-
-      tlf_internal function getUserStyleWorker(styleProp:String) : * {
-         var userStyle:* = undefined;
-         if(this._format!=null)
+      
+      tlf_internal function getUserStyleWorker(param1:String) : * {
+         var _loc3_:* = undefined;
+         if(this._format != null)
          {
-            userStyle=this._format.getStyle(styleProp);
-            if(userStyle!==undefined)
+            _loc3_ = this._format.getStyle(param1);
+            if(_loc3_ !== undefined)
             {
-               return userStyle;
+               return _loc3_;
             }
          }
-         var tf:TextFlow = this.getTextFlow();
-         if((tf)&&(tf.formatResolver))
+         var _loc2_:TextFlow = this.getTextFlow();
+         if((_loc2_) && (_loc2_.formatResolver))
          {
-            userStyle=tf.formatResolver.resolveUserFormat(this,styleProp);
-            if(userStyle!==undefined)
+            _loc3_ = _loc2_.formatResolver.resolveUserFormat(this,param1);
+            if(_loc3_ !== undefined)
             {
-               return userStyle;
+               return _loc3_;
             }
          }
-         return this._parent?this._parent.getUserStyleWorker(styleProp):undefined;
+         return this._parent?this._parent.getUserStyleWorker(param1):undefined;
       }
-
-      public function setStyle(styleProp:String, newValue:*) : void {
-         if(TextLayoutFormat.description[styleProp])
+      
+      public function setStyle(param1:String, param2:*) : void {
+         if(TextLayoutFormat.description[param1])
          {
-            this[styleProp]=newValue;
+            this[param1] = param2;
          }
          else
          {
-            this.writableTextLayoutFormat().setStyle(styleProp,newValue);
+            this.writableTextLayoutFormat().setStyle(param1,param2);
             this.formatChanged();
          }
       }
-
-      public function clearStyle(styleProp:String) : void {
-         this.setStyle(styleProp,undefined);
+      
+      public function clearStyle(param1:String) : void {
+         this.setStyle(param1,undefined);
       }
-
-      tlf_internal function modelChanged(changeType:String, element:FlowElement, changeStart:int, changeLen:int, needNormalize:Boolean=true, bumpGeneration:Boolean=true) : void {
-         var tf:TextFlow = this.getTextFlow();
-         if(tf)
+      
+      tlf_internal function modelChanged(param1:String, param2:FlowElement, param3:int, param4:int, param5:Boolean=true, param6:Boolean=true) : void {
+         var _loc7_:TextFlow = this.getTextFlow();
+         if(_loc7_)
          {
-            tf.processModelChanged(changeType,element,this.getAbsoluteStart()+changeStart,changeLen,needNormalize,bumpGeneration);
+            _loc7_.processModelChanged(param1,param2,this.getAbsoluteStart() + param3,param4,param5,param6);
          }
       }
-
-      tlf_internal function appendElementsForDelayedUpdate(tf:TextFlow, changeType:String) : void {
-         
+      
+      tlf_internal function appendElementsForDelayedUpdate(param1:TextFlow, param2:String) : void {
       }
-
-      tlf_internal function applyDelayedElementUpdate(textFlow:TextFlow, okToUnloadGraphics:Boolean, hasController:Boolean) : void {
-         
+      
+      tlf_internal function applyDelayedElementUpdate(param1:TextFlow, param2:Boolean, param3:Boolean) : void {
       }
-
+      
       tlf_internal function getEffectivePaddingLeft() : Number {
-         return this.computedFormat.paddingLeft==FormatValue.AUTO?0:this.computedFormat.paddingLeft;
+         return this.computedFormat.paddingLeft == FormatValue.AUTO?0:this.computedFormat.paddingLeft;
       }
-
+      
       tlf_internal function getEffectivePaddingRight() : Number {
-         return this.computedFormat.paddingRight==FormatValue.AUTO?0:this.computedFormat.paddingRight;
+         return this.computedFormat.paddingRight == FormatValue.AUTO?0:this.computedFormat.paddingRight;
       }
-
+      
       tlf_internal function getEffectivePaddingTop() : Number {
-         return this.computedFormat.paddingTop==FormatValue.AUTO?0:this.computedFormat.paddingTop;
+         return this.computedFormat.paddingTop == FormatValue.AUTO?0:this.computedFormat.paddingTop;
       }
-
+      
       tlf_internal function getEffectivePaddingBottom() : Number {
-         return this.computedFormat.paddingBottom==FormatValue.AUTO?0:this.computedFormat.paddingBottom;
+         return this.computedFormat.paddingBottom == FormatValue.AUTO?0:this.computedFormat.paddingBottom;
       }
-
-      public function set tracking(trackingValue:Object) : void {
-         this.trackingRight=trackingValue;
+      
+      public function set tracking(param1:Object) : void {
+         this.trackingRight = param1;
       }
-
-      tlf_internal function applyWhiteSpaceCollapse(collapse:String) : void {
-         if(this.whiteSpaceCollapse!==undefined)
+      
+      tlf_internal function applyWhiteSpaceCollapse(param1:String) : void {
+         if(this.whiteSpaceCollapse !== undefined)
          {
-            this.whiteSpaceCollapse=undefined;
+            this.whiteSpaceCollapse = undefined;
          }
          this.setPrivateStyle(impliedElementString,undefined);
       }
-
+      
       public function getAbsoluteStart() : int {
-         var rslt:int = this._parentRelativeStart;
-         var elem:FlowElement = this._parent;
-         while(elem)
+         var _loc1_:int = this._parentRelativeStart;
+         var _loc2_:FlowElement = this._parent;
+         while(_loc2_)
          {
-            rslt=rslt+elem._parentRelativeStart;
-            elem=elem._parent;
+            _loc1_ = _loc1_ + _loc2_._parentRelativeStart;
+            _loc2_ = _loc2_._parent;
          }
-         return rslt;
+         return _loc1_;
       }
-
-      public function getElementRelativeStart(ancestorElement:FlowElement) : int {
-         var rslt:int = this._parentRelativeStart;
-         var elem:FlowElement = this._parent;
-         while((elem)&&(!(elem==ancestorElement)))
+      
+      public function getElementRelativeStart(param1:FlowElement) : int {
+         var _loc2_:int = this._parentRelativeStart;
+         var _loc3_:FlowElement = this._parent;
+         while((_loc3_) && !(_loc3_ == param1))
          {
-            rslt=rslt+elem._parentRelativeStart;
-            elem=elem._parent;
+            _loc2_ = _loc2_ + _loc3_._parentRelativeStart;
+            _loc3_ = _loc3_._parent;
          }
-         return rslt;
+         return _loc2_;
       }
-
+      
       public function getTextFlow() : TextFlow {
-         var elem:FlowElement = this;
-         while(elem._parent!=null)
+         var _loc1_:FlowElement = this;
+         while(_loc1_._parent != null)
          {
-            elem=elem._parent;
+            _loc1_ = _loc1_._parent;
          }
-         return elem as TextFlow;
+         return _loc1_ as TextFlow;
       }
-
+      
       public function getParagraph() : ParagraphElement {
-         var para:ParagraphElement = null;
-         var rslt:FlowElement = this;
-         while(rslt)
+         var _loc1_:ParagraphElement = null;
+         var _loc2_:FlowElement = this;
+         while(_loc2_)
          {
-            para=rslt as ParagraphElement;
-            if(para)
+            _loc1_ = _loc2_ as ParagraphElement;
+            if(_loc1_)
             {
+               break;
             }
-            else
-            {
-               rslt=rslt._parent;
-               continue;
-            }
+            _loc2_ = _loc2_._parent;
          }
+         return _loc1_;
       }
-
-      public function getParentByType(elementType:Class) : FlowElement {
-         var curElement:FlowElement = this._parent;
-         while(curElement)
+      
+      public function getParentByType(param1:Class) : FlowElement {
+         var _loc2_:FlowElement = this._parent;
+         while(_loc2_)
          {
-            if(curElement is elementType)
+            if(_loc2_ is param1)
             {
-               return curElement;
+               return _loc2_;
             }
-            curElement=curElement._parent;
+            _loc2_ = _loc2_._parent;
          }
          return null;
       }
-
+      
       public function getPreviousSibling() : FlowElement {
          if(!this._parent)
          {
             return null;
          }
-         var idx:int = this._parent.getChildIndex(this);
-         return idx==0?null:this._parent.getChildAt(idx-1);
+         var _loc1_:int = this._parent.getChildIndex(this);
+         return _loc1_ == 0?null:this._parent.getChildAt(_loc1_-1);
       }
-
+      
       public function getNextSibling() : FlowElement {
          if(!this._parent)
          {
             return null;
          }
-         var idx:int = this._parent.getChildIndex(this);
-         return idx==this._parent.numChildren-1?null:this._parent.getChildAt(idx+1);
+         var _loc1_:int = this._parent.getChildIndex(this);
+         return _loc1_ == this._parent.numChildren-1?null:this._parent.getChildAt(_loc1_ + 1);
       }
-
-      public function getCharAtPosition(relativePosition:int) : String {
+      
+      public function getCharAtPosition(param1:int) : String {
          return null;
       }
-
-      public function getCharCodeAtPosition(relativePosition:int) : int {
-         var str:String = this.getCharAtPosition(relativePosition);
-         return (str)&&(str.length<0)?str.charCodeAt(0):0;
+      
+      public function getCharCodeAtPosition(param1:int) : int {
+         var _loc2_:String = this.getCharAtPosition(param1);
+         return (_loc2_) && _loc2_.length > 0?_loc2_.charCodeAt(0):0;
       }
-
-      tlf_internal function applyFunctionToElements(func:Function) : Boolean {
-         return func(this);
+      
+      tlf_internal function applyFunctionToElements(param1:Function) : Boolean {
+         return param1(this);
       }
-
+      
       tlf_internal function getEventMirror() : IEventDispatcher {
          return null;
       }
-
+      
       tlf_internal function hasActiveEventMirror() : Boolean {
          return false;
       }
-
-      private function updateRange(len:int) : void {
-         this.setParentRelativeStart(this._parentRelativeStart+len);
+      
+      private function updateRange(param1:int) : void {
+         this.setParentRelativeStart(this._parentRelativeStart + param1);
       }
-
-      tlf_internal function updateLengths(startIdx:int, len:int, updateLines:Boolean) : void {
-         var idx:* = 0;
-         var pElementCount:* = 0;
-         var child:FlowElement = null;
-         this.setTextLength(this._textLength+len);
-         var p:FlowGroupElement = this._parent;
-         if(p)
+      
+      tlf_internal function updateLengths(param1:int, param2:int, param3:Boolean) : void {
+         var _loc5_:* = 0;
+         var _loc6_:* = 0;
+         var _loc7_:FlowElement = null;
+         this.setTextLength(this._textLength + param2);
+         var _loc4_:FlowGroupElement = this._parent;
+         if(_loc4_)
          {
-            idx=p.getChildIndex(this)+1;
-            pElementCount=p.numChildren;
-            while(idx<pElementCount)
+            _loc5_ = _loc4_.getChildIndex(this) + 1;
+            _loc6_ = _loc4_.numChildren;
+            while(_loc5_ < _loc6_)
             {
-               child=p.getChildAt(idx++);
-               child.updateRange(len);
+               _loc7_ = _loc4_.getChildAt(_loc5_++);
+               _loc7_.updateRange(param2);
             }
-            p.updateLengths(startIdx,len,updateLines);
+            _loc4_.updateLengths(param1,param2,param3);
          }
       }
-
-      tlf_internal function getEnclosingController(relativePos:int) : ContainerController {
-         var textFlow:TextFlow = this.getTextFlow();
-         if((textFlow==null)||(textFlow.flowComposer==null))
+      
+      tlf_internal function getEnclosingController(param1:int) : ContainerController {
+         var _loc2_:TextFlow = this.getTextFlow();
+         if(_loc2_ == null || _loc2_.flowComposer == null)
          {
             return null;
          }
-         var curItem:FlowElement = this;
-         loop1:
-         while((curItem)&&((!(curItem is ContainerFormattedElement))||(ContainerFormattedElement(curItem).flowComposer==null)))
+         var _loc3_:FlowElement = this;
+         while((_loc3_) && (!(_loc3_ is ContainerFormattedElement) || ContainerFormattedElement(_loc3_).flowComposer == null))
          {
-            do
-            {
-               curItem=curItem._parent;
-               continue loop1;
-            }
-            while(true);
+            _loc3_ = _loc3_._parent;
          }
-         var flowComposer:IFlowComposer = ContainerFormattedElement(curItem).flowComposer;
-         if(!flowComposer)
+         var _loc4_:IFlowComposer = ContainerFormattedElement(_loc3_).flowComposer;
+         if(!_loc4_)
          {
             return null;
          }
-         var controllerIndex:int = ContainerFormattedElement(curItem).flowComposer.findControllerIndexAtPosition(this.getAbsoluteStart()+relativePos,false);
-         return !(controllerIndex==-1)?flowComposer.getControllerAt(controllerIndex):null;
+         var _loc5_:int = ContainerFormattedElement(_loc3_).flowComposer.findControllerIndexAtPosition(this.getAbsoluteStart() + param1,false);
+         return _loc5_ != -1?_loc4_.getControllerAt(_loc5_):null;
       }
-
-      tlf_internal function deleteContainerText(endPos:int, deleteTotal:int) : void {
-         var absoluteEndPos:* = 0;
-         var absStartIdx:* = 0;
-         var charsDeletedFromCurContainer:* = 0;
-         var enclosingController:ContainerController = null;
-         var enclosingControllerBeginningPos:* = 0;
-         var containerTextLengthDelta:* = 0;
-         var flowComposer:IFlowComposer = null;
-         var myIdx:* = 0;
-         var previousEnclosingWithContent:ContainerController = null;
+      
+      tlf_internal function deleteContainerText(param1:int, param2:int) : void {
+         var _loc3_:* = 0;
+         var _loc4_:* = 0;
+         var _loc5_:* = 0;
+         var _loc6_:ContainerController = null;
+         var _loc7_:* = 0;
+         var _loc8_:* = 0;
+         var _loc9_:IFlowComposer = null;
+         var _loc10_:* = 0;
+         var _loc11_:ContainerController = null;
          if(this.getTextFlow())
          {
-            absoluteEndPos=this.getAbsoluteStart()+endPos;
-            absStartIdx=absoluteEndPos-deleteTotal;
-            while(deleteTotal>0)
+            _loc3_ = this.getAbsoluteStart() + param1;
+            _loc4_ = _loc3_ - param2;
+            while(param2 > 0)
             {
-               enclosingController=this.getEnclosingController(endPos-1);
-               if(!enclosingController)
+               _loc6_ = this.getEnclosingController(param1-1);
+               if(!_loc6_)
                {
-                  enclosingController=this.getEnclosingController(endPos-deleteTotal);
-                  if(enclosingController)
+                  _loc6_ = this.getEnclosingController(param1 - param2);
+                  if(_loc6_)
                   {
-                     flowComposer=enclosingController.flowComposer;
-                     myIdx=flowComposer.getControllerIndex(enclosingController);
-                     previousEnclosingWithContent=enclosingController;
-                     while((myIdx+1>flowComposer.numControllers)&&(enclosingController.absoluteStart+enclosingController.textLength>endPos))
+                     _loc9_ = _loc6_.flowComposer;
+                     _loc10_ = _loc9_.getControllerIndex(_loc6_);
+                     _loc11_ = _loc6_;
+                     while(_loc10_ + 1 < _loc9_.numControllers && _loc6_.absoluteStart + _loc6_.textLength < param1)
                      {
-                        enclosingController=flowComposer.getControllerAt(myIdx+1);
-                        if(enclosingController.textLength)
+                        _loc6_ = _loc9_.getControllerAt(_loc10_ + 1);
+                        if(_loc6_.textLength)
                         {
-                           previousEnclosingWithContent=enclosingController;
+                           _loc11_ = _loc6_;
+                           break;
                         }
-                        else
-                        {
-                           myIdx++;
-                           continue;
-                        }
+                        _loc10_++;
                      }
                   }
-                  if((!enclosingController)||(!enclosingController.textLength))
+                  if(!_loc6_ || !_loc6_.textLength)
                   {
-                     enclosingController=previousEnclosingWithContent;
+                     _loc6_ = _loc11_;
                   }
-                  if(!enclosingController)
+                  if(!_loc6_)
                   {
+                     break;
                   }
                }
-               enclosingControllerBeginningPos=enclosingController.absoluteStart;
-               if(absStartIdx<enclosingControllerBeginningPos)
+               _loc7_ = _loc6_.absoluteStart;
+               if(_loc4_ < _loc7_)
                {
-                  charsDeletedFromCurContainer=absoluteEndPos-enclosingControllerBeginningPos+1;
+                  _loc5_ = _loc3_ - _loc7_ + 1;
                }
                else
                {
-                  if(absStartIdx<enclosingControllerBeginningPos+enclosingController.textLength)
+                  if(_loc4_ < _loc7_ + _loc6_.textLength)
                   {
-                     charsDeletedFromCurContainer=deleteTotal;
+                     _loc5_ = param2;
                   }
                }
-               containerTextLengthDelta=enclosingController.textLength>charsDeletedFromCurContainer?enclosingController.textLength:charsDeletedFromCurContainer;
-               if(containerTextLengthDelta<=0)
+               _loc8_ = _loc6_.textLength < _loc5_?_loc6_.textLength:_loc5_;
+               if(_loc8_ <= 0)
                {
+                  break;
                }
-               else
-               {
-                  ContainerController(enclosingController).setTextLengthOnly(enclosingController.textLength-containerTextLengthDelta);
-                  deleteTotal=deleteTotal-containerTextLengthDelta;
-                  absoluteEndPos=absoluteEndPos-containerTextLengthDelta;
-                  endPos=endPos-containerTextLengthDelta;
-                  continue;
-               }
+               ContainerController(_loc6_).setTextLengthOnly(_loc6_.textLength - _loc8_);
+               param2 = param2 - _loc8_;
+               _loc3_ = _loc3_ - _loc8_;
+               param1 = param1 - _loc8_;
             }
          }
       }
-
-      tlf_internal function normalizeRange(normalizeStart:uint, normalizeEnd:uint) : void {
-         
+      
+      tlf_internal function normalizeRange(param1:uint, param2:uint) : void {
       }
-
-      tlf_internal function quickCloneTextLayoutFormat(sibling:FlowElement) : void {
-         this._format=sibling._format?new FlowValueHolder(sibling._format):null;
-         this._computedFormat=null;
+      
+      tlf_internal function quickCloneTextLayoutFormat(param1:FlowElement) : void {
+         this._format = param1._format?new FlowValueHolder(param1._format):null;
+         this._computedFormat = null;
       }
-
-      tlf_internal function updateForMustUseComposer(textFlow:TextFlow) : Boolean {
+      
+      tlf_internal function updateForMustUseComposer(param1:TextFlow) : Boolean {
          return false;
       }
    }
-
 }

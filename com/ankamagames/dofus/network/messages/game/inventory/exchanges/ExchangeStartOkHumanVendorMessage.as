@@ -7,104 +7,101 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ExchangeStartOkHumanVendorMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ExchangeStartOkHumanVendorMessage() {
-         this.objectsInfos=new Vector.<ObjectItemToSellInHumanVendorShop>();
+         this.objectsInfos = new Vector.<ObjectItemToSellInHumanVendorShop>();
          super();
       }
-
+      
       public static const protocolId:uint = 5767;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var sellerId:uint = 0;
-
+      
       public var objectsInfos:Vector.<ObjectItemToSellInHumanVendorShop>;
-
+      
       override public function getMessageId() : uint {
          return 5767;
       }
-
-      public function initExchangeStartOkHumanVendorMessage(sellerId:uint=0, objectsInfos:Vector.<ObjectItemToSellInHumanVendorShop>=null) : ExchangeStartOkHumanVendorMessage {
-         this.sellerId=sellerId;
-         this.objectsInfos=objectsInfos;
-         this._isInitialized=true;
+      
+      public function initExchangeStartOkHumanVendorMessage(param1:uint=0, param2:Vector.<ObjectItemToSellInHumanVendorShop>=null) : ExchangeStartOkHumanVendorMessage {
+         this.sellerId = param1;
+         this.objectsInfos = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.sellerId=0;
-         this.objectsInfos=new Vector.<ObjectItemToSellInHumanVendorShop>();
-         this._isInitialized=false;
+         this.sellerId = 0;
+         this.objectsInfos = new Vector.<ObjectItemToSellInHumanVendorShop>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ExchangeStartOkHumanVendorMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ExchangeStartOkHumanVendorMessage(param1);
       }
-
-      public function serializeAs_ExchangeStartOkHumanVendorMessage(output:IDataOutput) : void {
-         if(this.sellerId<0)
+      
+      public function serializeAs_ExchangeStartOkHumanVendorMessage(param1:IDataOutput) : void {
+         if(this.sellerId < 0)
          {
-            throw new Error("Forbidden value ("+this.sellerId+") on element sellerId.");
+            throw new Error("Forbidden value (" + this.sellerId + ") on element sellerId.");
          }
          else
          {
-            output.writeInt(this.sellerId);
-            output.writeShort(this.objectsInfos.length);
-            _i2=0;
-            while(_i2<this.objectsInfos.length)
+            param1.writeInt(this.sellerId);
+            param1.writeShort(this.objectsInfos.length);
+            _loc2_ = 0;
+            while(_loc2_ < this.objectsInfos.length)
             {
-               (this.objectsInfos[_i2] as ObjectItemToSellInHumanVendorShop).serializeAs_ObjectItemToSellInHumanVendorShop(output);
-               _i2++;
+               (this.objectsInfos[_loc2_] as ObjectItemToSellInHumanVendorShop).serializeAs_ObjectItemToSellInHumanVendorShop(param1);
+               _loc2_++;
             }
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ExchangeStartOkHumanVendorMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ExchangeStartOkHumanVendorMessage(param1);
       }
-
-      public function deserializeAs_ExchangeStartOkHumanVendorMessage(input:IDataInput) : void {
-         var _item2:ObjectItemToSellInHumanVendorShop = null;
-         this.sellerId=input.readInt();
-         if(this.sellerId<0)
+      
+      public function deserializeAs_ExchangeStartOkHumanVendorMessage(param1:IDataInput) : void {
+         var _loc4_:ObjectItemToSellInHumanVendorShop = null;
+         this.sellerId = param1.readInt();
+         if(this.sellerId < 0)
          {
-            throw new Error("Forbidden value ("+this.sellerId+") on element of ExchangeStartOkHumanVendorMessage.sellerId.");
+            throw new Error("Forbidden value (" + this.sellerId + ") on element of ExchangeStartOkHumanVendorMessage.sellerId.");
          }
          else
          {
-            _objectsInfosLen=input.readUnsignedShort();
-            _i2=0;
-            while(_i2<_objectsInfosLen)
+            _loc2_ = param1.readUnsignedShort();
+            _loc3_ = 0;
+            while(_loc3_ < _loc2_)
             {
-               _item2=new ObjectItemToSellInHumanVendorShop();
-               _item2.deserialize(input);
-               this.objectsInfos.push(_item2);
-               _i2++;
+               _loc4_ = new ObjectItemToSellInHumanVendorShop();
+               _loc4_.deserialize(param1);
+               this.objectsInfos.push(_loc4_);
+               _loc3_++;
             }
             return;
          }
       }
    }
-
 }

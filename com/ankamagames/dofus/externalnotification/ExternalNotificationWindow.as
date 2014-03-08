@@ -11,101 +11,98 @@ package com.ankamagames.dofus.externalnotification
    import flash.display.StageAlign;
    import flash.display.Sprite;
    import flash.display.DisplayObject;
-
-
+   
    public class ExternalNotificationWindow extends NativeWindow
    {
-         
-
-      public function ExternalNotificationWindow(pNotificationType:int, pClientId:String, pId:String, pContent:Object, pWinOpts:NativeWindowInitOptions, pHookName:String=null, pHookParams:Array=null) {
-         this._notificationType=pNotificationType;
-         this._id=pId;
-         this._clientId=pClientId;
-         this._hookName=pHookName;
-         this._hookParams=pHookParams;
-         super(pWinOpts);
-         visible=false;
-         alwaysInFront=true;
-         stage.scaleMode=StageScaleMode.NO_SCALE;
-         stage.align=StageAlign.TOP_LEFT;
-         this._contentWidth=pContent.contentWidth;
-         this._contentHeight=pContent.contentHeight;
+      
+      public function ExternalNotificationWindow(param1:int, param2:String, param3:String, param4:Object, param5:NativeWindowInitOptions, param6:String=null, param7:Array=null) {
+         this._notificationType = param1;
+         this._id = param3;
+         this._clientId = param2;
+         this._hookName = param6;
+         this._hookParams = param7;
+         super(param5);
+         visible = false;
+         alwaysInFront = true;
+         stage.scaleMode = StageScaleMode.NO_SCALE;
+         stage.align = StageAlign.TOP_LEFT;
+         this._contentWidth = param4.contentWidth;
+         this._contentHeight = param4.contentHeight;
          HumanInputHandler.getInstance().registerListeners(stage);
-         var notifCtr:Sprite = new Sprite();
-         notifCtr.addChild(pContent as DisplayObject);
-         stage.addChild(notifCtr);
+         var _loc8_:Sprite = new Sprite();
+         _loc8_.addChild(param4 as DisplayObject);
+         stage.addChild(_loc8_);
       }
-
+      
       private static const DEBUG:Boolean = false;
-
+      
       private static const _log:Logger = Log.getLogger(getQualifiedClassName(ExternalNotificationWindow));
-
-      private static function log(pMsg:Object) : void {
+      
+      private static function log(param1:Object) : void {
          if(DEBUG)
          {
-            _log.debug(pMsg);
+            _log.debug(param1);
          }
       }
-
+      
       private var _notificationType:int;
-
+      
       private var _id:String;
-
+      
       private var _clientId:String;
-
+      
       private var _contentWidth:Number;
-
+      
       private var _contentHeight:Number;
-
+      
       private var _hookName:String;
-
+      
       private var _hookParams:Array;
-
+      
       public var timeoutId:uint;
-
+      
       public function get notificationType() : int {
          return this._notificationType;
       }
-
+      
       public function get id() : String {
          return this._id;
       }
-
+      
       public function get clientId() : String {
          return this._clientId;
       }
-
+      
       public function get instanceId() : String {
-         return this._clientId+"#"+this._id;
+         return this._clientId + "#" + this._id;
       }
-
+      
       public function get contentWidth() : Number {
          return this._contentWidth;
       }
-
+      
       public function get contentHeight() : Number {
          return this._contentHeight;
       }
-
+      
       public function get hookName() : String {
          return this._hookName;
       }
-
+      
       public function get hookParams() : Array {
          return this._hookParams;
       }
-
+      
       public function show() : void {
-         visible=true;
+         visible = true;
       }
-
+      
       public function destroy() : void {
          HumanInputHandler.getInstance().unregisterListeners(stage);
-         visible=false;
+         visible = false;
          Berilia.getInstance().unloadUi(this.instanceId);
          stage.removeChildAt(0);
          close();
       }
    }
-
 }

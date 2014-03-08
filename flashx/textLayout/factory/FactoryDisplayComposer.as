@@ -5,64 +5,55 @@ package flashx.textLayout.factory
    import flashx.textLayout.container.ContainerController;
    import flashx.textLayout.compose.SimpleCompose;
    import flashx.textLayout.elements.BackgroundManager;
-
+   
    use namespace tlf_internal;
-
+   
    public class FactoryDisplayComposer extends StandardFlowComposer
    {
-         
-
+      
       public function FactoryDisplayComposer() {
          super();
       }
-
-
-
-      override tlf_internal function callTheComposer(absoluteEndPosition:int, controllerEndIndex:int) : ContainerController {
+      
+      override tlf_internal function callTheComposer(param1:int, param2:int) : ContainerController {
          clearCompositionResults();
-         var state:SimpleCompose = TextLineFactoryBase._factoryComposer;
-         state.composeTextFlow(textFlow,-1,-1);
-         state.releaseAnyReferences();
+         var _loc3_:SimpleCompose = TextLineFactoryBase._factoryComposer;
+         _loc3_.composeTextFlow(textFlow,-1,-1);
+         _loc3_.releaseAnyReferences();
          return getControllerAt(0);
       }
-
+      
       override protected function preCompose() : Boolean {
          return true;
       }
-
+      
       override tlf_internal function createBackgroundManager() : BackgroundManager {
          return new FactoryBackgroundManager();
       }
    }
-
 }
+import flashx.textLayout.elements.BackgroundManager;
+import flashx.textLayout.compose.TextFlowLine;
+import flash.text.engine.TextLine;
 
-   import flashx.textLayout.elements.BackgroundManager;
-   import flashx.textLayout.compose.TextFlowLine;
-   import flash.text.engine.TextLine;
-
-
-   class FactoryBackgroundManager extends BackgroundManager
-   {
-         
-
-      function FactoryBackgroundManager() {
-         super();
-      }
-
-
-
-      override public function finalizeLine(line:TextFlowLine) : void {
-         var obj:Object = null;
-         var textLine:TextLine = line.getTextLine();
-         var array:Array = _lineDict[textLine];
-         if(array)
+class FactoryBackgroundManager extends BackgroundManager
+{
+   
+   function FactoryBackgroundManager() {
+      super();
+   }
+   
+   override public function finalizeLine(param1:TextFlowLine) : void {
+      var _loc4_:Object = null;
+      var _loc2_:TextLine = param1.getTextLine();
+      var _loc3_:Array = _lineDict[_loc2_];
+      if(_loc3_)
+      {
+         _loc4_ = _loc3_[0];
+         if(_loc4_)
          {
-            obj=array[0];
-            if(obj)
-            {
-               obj.columnRect=line.controller.columnState.getColumnAt(line.columnIndex);
-            }
+            _loc4_.columnRect = param1.controller.columnState.getColumnAt(param1.columnIndex);
          }
       }
    }
+}

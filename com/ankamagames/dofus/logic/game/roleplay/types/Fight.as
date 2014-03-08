@@ -4,47 +4,44 @@ package com.ankamagames.dofus.logic.game.roleplay.types
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import __AS3__.vec.Vector;
-
-
+   
    public class Fight extends Object
    {
-         
-
-      public function Fight(fightId:uint, teams:Vector.<FightTeam>) {
+      
+      public function Fight(param1:uint, param2:Vector.<FightTeam>) {
          super();
-         this.fightId=fightId;
-         this.teams=teams;
+         this.fightId = param1;
+         this.teams = param2;
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Fight));
-
+      
       public var fightId:uint;
-
+      
       public var teams:Vector.<FightTeam>;
-
-      public function getTeamByType(teamType:uint) : FightTeam {
-         var team:FightTeam = null;
-         for each (team in this.teams)
+      
+      public function getTeamByType(param1:uint) : FightTeam {
+         var _loc2_:FightTeam = null;
+         for each (_loc2_ in this.teams)
          {
-            if(team.teamType==teamType)
+            if(_loc2_.teamType == param1)
             {
-               return team;
+               return _loc2_;
             }
          }
          return null;
       }
-
-      public function getTeamById(teamId:uint) : FightTeam {
-         var team:FightTeam = null;
-         for each (team in this.teams)
+      
+      public function getTeamById(param1:uint) : FightTeam {
+         var _loc2_:FightTeam = null;
+         for each (_loc2_ in this.teams)
          {
-            if(team.teamInfos.teamId==teamId)
+            if(_loc2_.teamInfos.teamId == param1)
             {
-               return team;
+               return _loc2_;
             }
          }
          return null;
       }
    }
-
 }

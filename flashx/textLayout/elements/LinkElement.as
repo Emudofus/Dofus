@@ -5,137 +5,135 @@ package flashx.textLayout.elements
    import flash.events.Event;
    import flashx.textLayout.events.ModelChange;
    import flashx.textLayout.formats.ITextLayoutFormat;
+   import flash.net.*;
    import flashx.textLayout.formats.TextLayoutFormat;
    import flashx.textLayout.events.FlowElementMouseEventManager;
    import flash.events.MouseEvent;
-   import flash.net.URLRequest;
-   import flash.net.navigateToURL;
-
+   
    use namespace tlf_internal;
-
+   
    public final class LinkElement extends SubParagraphGroupElementBase implements IEventDispatcher
    {
-         
-
+      
       public function LinkElement() {
          super();
-         this._linkState=LinkState.LINK;
+         this._linkState = LinkState.LINK;
       }
-
+      
       tlf_internal  static const LINK_NORMAL_FORMAT_NAME:String = "linkNormalFormat";
-
+      
       tlf_internal  static const LINK_ACTIVE_FORMAT_NAME:String = "linkActiveFormat";
-
+      
       tlf_internal  static const LINK_HOVER_FORMAT_NAME:String = "linkHoverFormat";
-
+      
       private var _uriString:String;
-
+      
       private var _targetString:String;
-
+      
       private var _linkState:String;
-
+      
       override tlf_internal function get precedence() : uint {
          return 800;
       }
-
-      public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false) : void {
-         getEventMirror().addEventListener(type,listener,useCapture,priority,useWeakReference);
+      
+      public function addEventListener(param1:String, param2:Function, param3:Boolean=false, param4:int=0, param5:Boolean=false) : void {
+         getEventMirror().addEventListener(param1,param2,param3,param4,param5);
       }
-
-      public function dispatchEvent(evt:Event) : Boolean {
+      
+      public function dispatchEvent(param1:Event) : Boolean {
          if(!hasActiveEventMirror())
          {
             return false;
          }
-         return _eventMirror.dispatchEvent(evt);
+         return _eventMirror.dispatchEvent(param1);
       }
-
-      public function hasEventListener(type:String) : Boolean {
+      
+      public function hasEventListener(param1:String) : Boolean {
          if(!hasActiveEventMirror())
          {
             return false;
          }
-         return _eventMirror.hasEventListener(type);
+         return _eventMirror.hasEventListener(param1);
       }
-
-      public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false) : void {
+      
+      public function removeEventListener(param1:String, param2:Function, param3:Boolean=false) : void {
          if(hasActiveEventMirror())
          {
-            _eventMirror.removeEventListener(type,listener,useCapture);
+            _eventMirror.removeEventListener(param1,param2,param3);
          }
       }
-
-      public function willTrigger(type:String) : Boolean {
+      
+      public function willTrigger(param1:String) : Boolean {
          if(!hasActiveEventMirror())
          {
             return false;
          }
-         return _eventMirror.willTrigger(type);
+         return _eventMirror.willTrigger(param1);
       }
-
+      
       override protected function get abstract() : Boolean {
          return false;
       }
-
+      
       override tlf_internal function get defaultTypeName() : String {
          return "a";
       }
-
+      
       public function get href() : String {
          return this._uriString;
       }
-
-      public function set href(newUriString:String) : void {
-         this._uriString=newUriString;
+      
+      public function set href(param1:String) : void {
+         this._uriString = param1;
          modelChanged(ModelChange.ELEMENT_MODIFIED,this,0,textLength);
       }
-
+      
       public function get target() : String {
          return this._targetString;
       }
-
-      public function set target(newTargetString:String) : void {
-         this._targetString=newTargetString;
+      
+      public function set target(param1:String) : void {
+         this._targetString = param1;
          modelChanged(ModelChange.ELEMENT_MODIFIED,this,0,textLength);
       }
-
+      
       public function get linkState() : String {
          return this._linkState;
       }
-
-      override public function shallowCopy(startPos:int=0, endPos:int=-1) : FlowElement {
-         if(endPos==-1)
+      
+      override public function shallowCopy(param1:int=0, param2:int=-1) : FlowElement {
+         if(param2 == -1)
          {
-            endPos=textLength;
+            param2 = textLength;
          }
-         var retFlow:LinkElement = super.shallowCopy(startPos,endPos) as LinkElement;
-         retFlow.href=this.href;
-         retFlow.target=this.target;
-         return retFlow;
+         var _loc3_:LinkElement = super.shallowCopy(param1,param2) as LinkElement;
+         _loc3_.href = this.href;
+         _loc3_.target = this.target;
+         return _loc3_;
       }
-
+      
       override tlf_internal function mergeToPreviousIfPossible() : Boolean {
-         var myidx:* = 0;
-         var sib:LinkElement = null;
-         if((parent)&&(!bindableElement))
+         var _loc1_:* = 0;
+         var _loc2_:LinkElement = null;
+         if((parent) && !bindableElement)
          {
-            myidx=parent.getChildIndex(this);
-            if(textLength==0)
+            _loc1_ = parent.getChildIndex(this);
+            if(textLength == 0)
             {
-               parent.replaceChildren(myidx,myidx+1,null);
+               parent.replaceChildren(_loc1_,_loc1_ + 1,null);
                return true;
             }
-            if((!(myidx==0))&&(!hasActiveEventMirror()))
+            if(!(_loc1_ == 0) && !hasActiveEventMirror())
             {
-               sib=parent.getChildAt(myidx-1) as LinkElement;
-               if((!(sib==null))&&(!sib.hasActiveEventMirror()))
+               _loc2_ = parent.getChildAt(_loc1_-1) as LinkElement;
+               if(!(_loc2_ == null) && !_loc2_.hasActiveEventMirror())
                {
-                  if((this.href==sib.href)&&(this.target==sib.target)&&(equalStylesForMerge(sib)))
+                  if(this.href == _loc2_.href && this.target == _loc2_.target && (equalStylesForMerge(_loc2_)))
                   {
-                     parent.removeChildAt(myidx);
-                     if(numChildren>0)
+                     parent.removeChildAt(_loc1_);
+                     if(numChildren > 0)
                      {
-                        sib.replaceChildren(sib.numChildren,sib.numChildren,this.mxmlChildren);
+                        _loc2_.replaceChildren(_loc2_.numChildren,_loc2_.numChildren,this.mxmlChildren);
                      }
                      return true;
                   }
@@ -144,168 +142,167 @@ package flashx.textLayout.elements
          }
          return false;
       }
-
-      private function computeLinkFormat(formatName:String) : ITextLayoutFormat {
-         var tf:TextFlow = null;
-         var linkStyle:ITextLayoutFormat = getUserStyleWorker(formatName) as ITextLayoutFormat;
-         if(linkStyle==null)
+      
+      private function computeLinkFormat(param1:String) : ITextLayoutFormat {
+         var _loc3_:TextFlow = null;
+         var _loc2_:ITextLayoutFormat = getUserStyleWorker(param1) as ITextLayoutFormat;
+         if(_loc2_ == null)
          {
-            tf=getTextFlow();
-            if(tf)
+            _loc3_ = getTextFlow();
+            if(_loc3_)
             {
-               linkStyle=tf.configuration["defaultL"+formatName.substr(1)];
+               _loc2_ = _loc3_.configuration["defaultL" + param1.substr(1)];
             }
          }
-         return linkStyle;
+         return _loc2_;
       }
-
+      
       tlf_internal function get effectiveLinkElementTextLayoutFormat() : ITextLayoutFormat {
-         var cf:ITextLayoutFormat = null;
-         if(this._linkState==LinkState.SUPPRESSED)
+         var _loc1_:ITextLayoutFormat = null;
+         if(this._linkState == LinkState.SUPPRESSED)
          {
             return null;
          }
-         if(this._linkState==LinkState.ACTIVE)
+         if(this._linkState == LinkState.ACTIVE)
          {
-            cf=this.computeLinkFormat(LINK_ACTIVE_FORMAT_NAME);
-            if(cf)
+            _loc1_ = this.computeLinkFormat(LINK_ACTIVE_FORMAT_NAME);
+            if(_loc1_)
             {
-               return cf;
+               return _loc1_;
             }
          }
          else
          {
-            if(this._linkState==LinkState.HOVER)
+            if(this._linkState == LinkState.HOVER)
             {
-               cf=this.computeLinkFormat(LINK_HOVER_FORMAT_NAME);
-               if(cf)
+               _loc1_ = this.computeLinkFormat(LINK_HOVER_FORMAT_NAME);
+               if(_loc1_)
                {
-                  return cf;
+                  return _loc1_;
                }
             }
          }
          return this.computeLinkFormat(LINK_NORMAL_FORMAT_NAME);
       }
-
+      
       override tlf_internal function get formatForCascade() : ITextLayoutFormat {
-         var resultingTextLayoutFormat:TextLayoutFormat = null;
-         var superFormat:TextLayoutFormat = TextLayoutFormat(format);
-         var effectiveFormat:ITextLayoutFormat = this.effectiveLinkElementTextLayoutFormat;
-         if((effectiveFormat)||(superFormat))
+         var _loc3_:TextLayoutFormat = null;
+         var _loc1_:TextLayoutFormat = TextLayoutFormat(format);
+         var _loc2_:ITextLayoutFormat = this.effectiveLinkElementTextLayoutFormat;
+         if((_loc2_) || (_loc1_))
          {
-            if((effectiveFormat)&&(superFormat))
+            if((_loc2_) && (_loc1_))
             {
-               resultingTextLayoutFormat=new TextLayoutFormat(effectiveFormat);
-               if(superFormat)
+               _loc3_ = new TextLayoutFormat(_loc2_);
+               if(_loc1_)
                {
-                  resultingTextLayoutFormat.concatInheritOnly(superFormat);
+                  _loc3_.concatInheritOnly(_loc1_);
                }
-               return resultingTextLayoutFormat;
+               return _loc3_;
             }
-            return superFormat?superFormat:effectiveFormat;
+            return _loc1_?_loc1_:_loc2_;
          }
          return null;
       }
-
-      private function setToState(linkState:String) : void {
-         var oldCharAttrs:ITextLayoutFormat = null;
-         var newCharAttrs:ITextLayoutFormat = null;
-         var tf:TextFlow = null;
-         if(this._linkState!=linkState)
+      
+      private function setToState(param1:String) : void {
+         var _loc2_:ITextLayoutFormat = null;
+         var _loc3_:ITextLayoutFormat = null;
+         var _loc4_:TextFlow = null;
+         if(this._linkState != param1)
          {
-            oldCharAttrs=this.effectiveLinkElementTextLayoutFormat;
-            this._linkState=linkState;
-            newCharAttrs=this.effectiveLinkElementTextLayoutFormat;
-            if(!TextLayoutFormat.isEqual(oldCharAttrs,newCharAttrs))
+            _loc2_ = this.effectiveLinkElementTextLayoutFormat;
+            this._linkState = param1;
+            _loc3_ = this.effectiveLinkElementTextLayoutFormat;
+            if(!TextLayoutFormat.isEqual(_loc2_,_loc3_))
             {
                formatChanged(true);
-               tf=getTextFlow();
-               if((tf)&&(tf.flowComposer))
+               _loc4_ = getTextFlow();
+               if((_loc4_) && (_loc4_.flowComposer))
                {
-                  tf.flowComposer.updateAllControllers();
+                  _loc4_.flowComposer.updateAllControllers();
                }
             }
          }
       }
-
-      tlf_internal function chgLinkState(linkState:String) : void {
-         if(this._linkState!=linkState)
+      
+      tlf_internal function chgLinkState(param1:String) : void {
+         if(this._linkState != param1)
          {
-            this._linkState=linkState;
+            this._linkState = param1;
             formatChanged(false);
          }
       }
-
-      tlf_internal function mouseDownHandler(mgr:FlowElementMouseEventManager, evt:MouseEvent) : void {
-         mgr.setHandCursor(true);
+      
+      tlf_internal function mouseDownHandler(param1:FlowElementMouseEventManager, param2:MouseEvent) : void {
+         param1.setHandCursor(true);
          this.setToState(LinkState.ACTIVE);
-         evt.stopImmediatePropagation();
+         param2.stopImmediatePropagation();
       }
-
-      tlf_internal function mouseMoveHandler(mgr:FlowElementMouseEventManager, evt:MouseEvent) : void {
-         mgr.setHandCursor(true);
-         this.setToState(evt.buttonDown?LinkState.ACTIVE:LinkState.HOVER);
+      
+      tlf_internal function mouseMoveHandler(param1:FlowElementMouseEventManager, param2:MouseEvent) : void {
+         param1.setHandCursor(true);
+         this.setToState(param2.buttonDown?LinkState.ACTIVE:LinkState.HOVER);
       }
-
-      tlf_internal function mouseOutHandler(mgr:FlowElementMouseEventManager, evt:MouseEvent) : void {
-         mgr.setHandCursor(false);
+      
+      tlf_internal function mouseOutHandler(param1:FlowElementMouseEventManager, param2:MouseEvent) : void {
+         param1.setHandCursor(false);
          this.setToState(LinkState.LINK);
       }
-
-      tlf_internal function mouseOverHandler(mgr:FlowElementMouseEventManager, evt:MouseEvent) : void {
-         mgr.setHandCursor(true);
-         this.setToState(evt.buttonDown?LinkState.ACTIVE:LinkState.HOVER);
+      
+      tlf_internal function mouseOverHandler(param1:FlowElementMouseEventManager, param2:MouseEvent) : void {
+         param1.setHandCursor(true);
+         this.setToState(param2.buttonDown?LinkState.ACTIVE:LinkState.HOVER);
       }
-
-      tlf_internal function mouseUpHandler(mgr:FlowElementMouseEventManager, evt:MouseEvent) : void {
-         mgr.setHandCursor(true);
+      
+      tlf_internal function mouseUpHandler(param1:FlowElementMouseEventManager, param2:MouseEvent) : void {
+         param1.setHandCursor(true);
          this.setToState(LinkState.HOVER);
-         evt.stopImmediatePropagation();
+         param2.stopImmediatePropagation();
       }
-
-      tlf_internal function mouseClickHandler(mgr:FlowElementMouseEventManager, evt:MouseEvent) : void {
-         var u:URLRequest = null;
-         if(this._uriString!=null)
+      
+      tlf_internal function mouseClickHandler(param1:FlowElementMouseEventManager, param2:MouseEvent) : void {
+         var _loc3_:URLRequest = null;
+         if(this._uriString != null)
          {
-            if((this._uriString.length<6)&&(this._uriString.substr(0,6)=="event:"))
+            if(this._uriString.length > 6 && this._uriString.substr(0,6) == "event:")
             {
-               mgr.dispatchFlowElementMouseEvent(this._uriString.substring(6,this._uriString.length),evt);
+               param1.dispatchFlowElementMouseEvent(this._uriString.substring(6,this._uriString.length),param2);
             }
             else
             {
-               u=new URLRequest(encodeURI(this._uriString));
-               navigateToURL(u,this.target);
+               _loc3_ = new URLRequest(encodeURI(this._uriString));
+               navigateToURL(_loc3_,this.target);
             }
          }
-         evt.stopImmediatePropagation();
+         param2.stopImmediatePropagation();
       }
-
+      
       override tlf_internal function acceptTextBefore() : Boolean {
          return false;
       }
-
+      
       override tlf_internal function acceptTextAfter() : Boolean {
          return false;
       }
-
-      override tlf_internal function appendElementsForDelayedUpdate(tf:TextFlow, changeType:String) : void {
-         if(changeType==ModelChange.ELEMENT_ADDED)
+      
+      override tlf_internal function appendElementsForDelayedUpdate(param1:TextFlow, param2:String) : void {
+         if(param2 == ModelChange.ELEMENT_ADDED)
          {
-            tf.incInteractiveObjectCount();
+            param1.incInteractiveObjectCount();
          }
          else
          {
-            if(changeType==ModelChange.ELEMENT_REMOVAL)
+            if(param2 == ModelChange.ELEMENT_REMOVAL)
             {
-               tf.decInteractiveObjectCount();
+               param1.decInteractiveObjectCount();
             }
          }
-         super.appendElementsForDelayedUpdate(tf,changeType);
+         super.appendElementsForDelayedUpdate(param1,param2);
       }
-
-      override tlf_internal function updateForMustUseComposer(textFlow:TextFlow) : Boolean {
+      
+      override tlf_internal function updateForMustUseComposer(param1:TextFlow) : Boolean {
          return true;
       }
    }
-
 }

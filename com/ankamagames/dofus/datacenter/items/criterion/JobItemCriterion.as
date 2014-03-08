@@ -5,105 +5,96 @@ package com.ankamagames.dofus.datacenter.items.criterion
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.datacenter.jobs.Job;
    import com.ankamagames.jerakine.data.I18n;
-
-
+   
    public class JobItemCriterion extends ItemCriterion implements IDataCenter
    {
-         
-
-      public function JobItemCriterion(pCriterion:String) {
-         super(pCriterion);
-         var arrayParams:Array = String(_criterionValueText).split(",");
-         if((arrayParams)&&(arrayParams.length<0))
+      
+      public function JobItemCriterion(param1:String) {
+         super(param1);
+         var _loc2_:Array = String(_criterionValueText).split(",");
+         if((_loc2_) && _loc2_.length > 0)
          {
-            if(arrayParams.length>2)
+            if(_loc2_.length <= 2)
             {
-               trace("Les paramètres pour le job sont mauvais ! ("+_serverCriterionForm+")");
-            }
-            else
-            {
-               this._jobId=uint(arrayParams[0]);
-               this._jobLevel=int(arrayParams[1]);
+               this._jobId = uint(_loc2_[0]);
+               this._jobLevel = int(_loc2_[1]);
             }
          }
          else
          {
-            this._jobId=uint(_criterionValue);
-            this._jobLevel=-1;
+            this._jobId = uint(_criterionValue);
+            this._jobLevel = -1;
          }
       }
-
-
-
+      
       private var _jobId:uint;
-
+      
       private var _jobLevel:int = -1;
-
+      
       override public function get isRespected() : Boolean {
-         var knownJob:KnownJob = null;
-         var kj:KnownJob = null;
-         for each (kj in PlayedCharacterManager.getInstance().jobs)
+         var _loc1_:KnownJob = null;
+         var _loc2_:KnownJob = null;
+         for each (_loc2_ in PlayedCharacterManager.getInstance().jobs)
          {
-            if(kj.jobDescription.jobId==this._jobId)
+            if(_loc2_.jobDescription.jobId == this._jobId)
             {
-               knownJob=kj;
+               _loc1_ = _loc2_;
             }
          }
-         if(this._jobLevel!=-1)
+         if(this._jobLevel != -1)
          {
-            if((knownJob)&&(knownJob.jobExperience.jobLevel<this._jobLevel))
+            if((_loc1_) && _loc1_.jobExperience.jobLevel > this._jobLevel)
             {
                return true;
             }
          }
          else
          {
-            if(knownJob)
+            if(_loc1_)
             {
                return true;
             }
          }
          return false;
       }
-
+      
       override public function get text() : String {
-         var readableCriterionRef:String = "";
-         var readableCriterion:String = "";
-         var job:Job = Job.getJobById(this._jobId);
-         if(!job)
+         var _loc1_:* = "";
+         var _loc2_:* = "";
+         var _loc3_:Job = Job.getJobById(this._jobId);
+         if(!_loc3_)
          {
-            return readableCriterion;
+            return _loc2_;
          }
-         var readableCriterionValue:String = job.name;
-         var optionalJobLevel:String = "";
-         if(this._jobLevel>=0)
+         var _loc4_:String = _loc3_.name;
+         var _loc5_:* = "";
+         if(this._jobLevel >= 0)
          {
-            optionalJobLevel=" "+I18n.getUiText("ui.common.short.level")+" "+String(this._jobLevel);
+            _loc5_ = " " + I18n.getUiText("ui.common.short.level") + " " + String(this._jobLevel);
          }
          switch(_operator.text)
          {
             case ItemCriterionOperator.EQUAL:
-               readableCriterion=readableCriterionValue+optionalJobLevel;
+               _loc2_ = _loc4_ + _loc5_;
                break;
             case ItemCriterionOperator.DIFFERENT:
-               readableCriterion=I18n.getUiText("ui.common.dontBe")+readableCriterionValue+optionalJobLevel;
+               _loc2_ = I18n.getUiText("ui.common.dontBe") + _loc4_ + _loc5_;
                break;
             case ItemCriterionOperator.SUPERIOR:
-               readableCriterionRef=" >";
-               readableCriterion=readableCriterionValue+readableCriterionRef+optionalJobLevel;
+               _loc1_ = " >";
+               _loc2_ = _loc4_ + _loc1_ + _loc5_;
                break;
             case ItemCriterionOperator.INFERIOR:
-               readableCriterionRef=" <";
-               readableCriterion=readableCriterionValue+readableCriterionRef+optionalJobLevel;
+               _loc1_ = " <";
+               _loc2_ = _loc4_ + _loc1_ + _loc5_;
                break;
          }
-         return readableCriterion;
+         return _loc2_;
       }
-
+      
       override public function clone() : IItemCriterion {
-         var clonedCriterion:JobItemCriterion = new JobItemCriterion(this.basicText);
-         return clonedCriterion;
+         var _loc1_:JobItemCriterion = new JobItemCriterion(this.basicText);
+         return _loc1_;
       }
    }
-
 }

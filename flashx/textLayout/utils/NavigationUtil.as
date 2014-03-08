@@ -15,1187 +15,1172 @@ package flashx.textLayout.utils
    import flashx.textLayout.elements.FlowLeafElement;
    import flashx.textLayout.compose.IFlowComposer;
    import flashx.textLayout.container.ScrollPolicy;
-
+   
    use namespace tlf_internal;
-
+   
    public final class NavigationUtil extends Object
    {
-         
-
+      
       public function NavigationUtil() {
          super();
       }
-
-      private static function validateTextRange(range:TextRange) : Boolean {
-         return (!(range.textFlow==null))&&(!(range.anchorPosition==-1))&&(!(range.activePosition==-1));
+      
+      private static function validateTextRange(param1:TextRange) : Boolean {
+         return !(param1.textFlow == null) && !(param1.anchorPosition == -1) && !(param1.activePosition == -1);
       }
-
-      private static function doIncrement(flowRoot:TextFlow, pos:int, incrementer:Function) : int {
-         var para:ParagraphElement = flowRoot.findAbsoluteParagraph(pos);
-         return incrementer(flowRoot,para,pos,para.getAbsoluteStart());
+      
+      private static function doIncrement(param1:TextFlow, param2:int, param3:Function) : int {
+         var _loc4_:ParagraphElement = param1.findAbsoluteParagraph(param2);
+         return param3(param1,_loc4_,param2,_loc4_.getAbsoluteStart());
       }
-
-      private static function previousAtomHelper(flowRoot:TextFlow, para:ParagraphElement, pos:int, paraStart:int) : int {
-         if(pos-paraStart==0)
+      
+      private static function previousAtomHelper(param1:TextFlow, param2:ParagraphElement, param3:int, param4:int) : int {
+         if(param3 - param4 == 0)
          {
-            return pos>0?pos-1:0;
+            return param3 > 0?param3-1:0;
          }
-         return para.findPreviousAtomBoundary(pos-paraStart)+paraStart;
+         return param2.findPreviousAtomBoundary(param3 - param4) + param4;
       }
-
-      public static function previousAtomPosition(flowRoot:TextFlow, absolutePos:int) : int {
-         return doIncrement(flowRoot,absolutePos,previousAtomHelper);
+      
+      public static function previousAtomPosition(param1:TextFlow, param2:int) : int {
+         return doIncrement(param1,param2,previousAtomHelper);
       }
-
-      private static function nextAtomHelper(flowRoot:TextFlow, para:ParagraphElement, pos:int, paraStart:int) : int {
-         if(pos-paraStart==para.textLength-1)
+      
+      private static function nextAtomHelper(param1:TextFlow, param2:ParagraphElement, param3:int, param4:int) : int {
+         if(param3 - param4 == param2.textLength-1)
          {
-            return Math.min(flowRoot.textLength,pos+1);
+            return Math.min(param1.textLength,param3 + 1);
          }
-         return para.findNextAtomBoundary(pos-paraStart)+paraStart;
+         return param2.findNextAtomBoundary(param3 - param4) + param4;
       }
-
-      public static function nextAtomPosition(flowRoot:TextFlow, absolutePos:int) : int {
-         return doIncrement(flowRoot,absolutePos,nextAtomHelper);
+      
+      public static function nextAtomPosition(param1:TextFlow, param2:int) : int {
+         return doIncrement(param1,param2,nextAtomHelper);
       }
-
-      public static function previousWordPosition(flowRoot:TextFlow, absolutePos:int) : int {
-         if(isOverset(flowRoot,absolutePos))
+      
+      public static function previousWordPosition(param1:TextFlow, param2:int) : int {
+         if(isOverset(param1,param2))
          {
-            return endOfLastController(flowRoot);
+            return endOfLastController(param1);
          }
-         var para:ParagraphElement = flowRoot.findAbsoluteParagraph(absolutePos);
-         var paraStart:int = para.getAbsoluteStart();
-         var prevWordPos:int = absolutePos-paraStart;
-         var nextWordPos:int = 0;
-         if(absolutePos-paraStart==0)
+         var _loc3_:ParagraphElement = param1.findAbsoluteParagraph(param2);
+         var _loc4_:int = _loc3_.getAbsoluteStart();
+         var _loc5_:int = param2 - _loc4_;
+         var _loc6_:* = 0;
+         if(param2 - _loc4_ == 0)
          {
-            return absolutePos>0?absolutePos-1:0;
+            return param2 > 0?param2-1:0;
          }
          do
          {
-            nextWordPos=para.findPreviousWordBoundary(prevWordPos);
-            if(prevWordPos==nextWordPos)
-            {
-               prevWordPos=para.findPreviousWordBoundary(prevWordPos-1);
-            }
-            else
-            {
-               prevWordPos=nextWordPos;
-            }
-         }
-         while((prevWordPos<0)&&(CharacterUtil.isWhitespace(para.getCharCodeAtPosition(prevWordPos))));
-         return prevWordPos+paraStart;
-      }
-
-      public static function nextWordPosition(flowRoot:TextFlow, absolutePos:int) : int {
-         var para:ParagraphElement = flowRoot.findAbsoluteParagraph(absolutePos);
-         var paraStart:int = para.getAbsoluteStart();
-         var nextWordPos:int = absolutePos-paraStart;
-         if(absolutePos-paraStart==para.textLength-1)
-         {
-            return Math.min(flowRoot.textLength,absolutePos+1);
-         }
-         nextWordPos=para.findNextWordBoundary(nextWordPos);
-         while((nextWordPos>para.textLength-1)&&(CharacterUtil.isWhitespace(para.getCharCodeAtPosition(nextWordPos))))
-         {
-         }
-         return nextWordPos+paraStart;
-      }
-
-      tlf_internal  static function updateStartIfInReadOnlyElement(textFlow:TextFlow, idx:int) : int {
-         return idx;
-      }
-
-      tlf_internal  static function updateEndIfInReadOnlyElement(textFlow:TextFlow, idx:int) : int {
-         return idx;
-      }
-
-      private static function moveForwardHelper(range:TextRange, extendSelection:Boolean, incrementor:Function) : Boolean {
-         var textFlow:TextFlow = range.textFlow;
-         var begIdx:int = range.anchorPosition;
-         var endIdx:int = range.activePosition;
-         if(extendSelection)
-         {
-            endIdx=incrementor(textFlow,endIdx);
-         }
-         else
-         {
-            if(begIdx==endIdx)
-            {
-               begIdx=incrementor(textFlow,begIdx);
-               endIdx=begIdx;
-            }
-            else
-            {
-               if(endIdx>begIdx)
+               _loc6_ = _loc3_.findPreviousWordBoundary(_loc5_);
+               if(_loc5_ == _loc6_)
                {
-                  begIdx=endIdx;
+                  _loc5_ = _loc3_.findPreviousWordBoundary(_loc5_-1);
                }
                else
                {
-                  endIdx=begIdx;
+                  _loc5_ = _loc6_;
                }
-            }
+            }while(_loc5_ > 0 && (CharacterUtil.isWhitespace(_loc3_.getCharCodeAtPosition(_loc5_))));
+            
+            return _loc5_ + _loc4_;
          }
-         if(begIdx==endIdx)
-         {
-            begIdx=updateStartIfInReadOnlyElement(textFlow,begIdx);
-            endIdx=updateEndIfInReadOnlyElement(textFlow,endIdx);
-         }
-         else
-         {
-            endIdx=updateEndIfInReadOnlyElement(textFlow,endIdx);
-         }
-         if((!extendSelection)&&(range.anchorPosition==begIdx)&&(range.activePosition==endIdx))
-         {
-            if(begIdx<endIdx)
+         
+         public static function nextWordPosition(param1:TextFlow, param2:int) : int {
+            var _loc3_:ParagraphElement = param1.findAbsoluteParagraph(param2);
+            var _loc4_:int = _loc3_.getAbsoluteStart();
+            var _loc5_:int = param2 - _loc4_;
+            if(param2 - _loc4_ == _loc3_.textLength-1)
             {
-               begIdx=Math.min(endIdx+1,textFlow.textLength-1);
-               endIdx=begIdx;
+               return Math.min(param1.textLength,param2 + 1);
             }
-            else
+            do
             {
-               endIdx=Math.min(begIdx+1,textFlow.textLength-1);
-               begIdx=endIdx;
+                  _loc5_ = _loc3_.findNextWordBoundary(_loc5_);
+               }while(_loc5_ < _loc3_.textLength-1 && (CharacterUtil.isWhitespace(_loc3_.getCharCodeAtPosition(_loc5_))));
+               
+               return _loc5_ + _loc4_;
             }
-         }
-         return range.updateRange(begIdx,endIdx);
-      }
-
-      private static function moveBackwardHelper(range:TextRange, extendSelection:Boolean, incrementor:Function) : Boolean {
-         var textFlow:TextFlow = range.textFlow;
-         var begIdx:int = range.anchorPosition;
-         var endIdx:int = range.activePosition;
-         if(extendSelection)
-         {
-            endIdx=incrementor(textFlow,endIdx);
-         }
-         else
-         {
-            if(begIdx==endIdx)
-            {
-               begIdx=incrementor(textFlow,begIdx);
-               endIdx=begIdx;
+            
+            tlf_internal  static function updateStartIfInReadOnlyElement(param1:TextFlow, param2:int) : int {
+               return param2;
             }
-            else
-            {
-               if(endIdx>begIdx)
+            
+            tlf_internal  static function updateEndIfInReadOnlyElement(param1:TextFlow, param2:int) : int {
+               return param2;
+            }
+            
+            private static function moveForwardHelper(param1:TextRange, param2:Boolean, param3:Function) : Boolean {
+               var _loc4_:TextFlow = param1.textFlow;
+               var _loc5_:int = param1.anchorPosition;
+               var _loc6_:int = param1.activePosition;
+               if(param2)
                {
-                  endIdx=begIdx;
+                  _loc6_ = param3(_loc4_,_loc6_);
                }
                else
                {
-                  begIdx=endIdx;
-               }
-            }
-         }
-         if(begIdx==endIdx)
-         {
-            begIdx=updateEndIfInReadOnlyElement(textFlow,begIdx);
-            endIdx=updateStartIfInReadOnlyElement(textFlow,endIdx);
-         }
-         else
-         {
-            endIdx=updateStartIfInReadOnlyElement(textFlow,endIdx);
-         }
-         if((!extendSelection)&&(range.anchorPosition==begIdx)&&(range.activePosition==endIdx))
-         {
-            if(begIdx<endIdx)
-            {
-               endIdx=Math.max(begIdx-1,0);
-               begIdx=endIdx;
-            }
-            else
-            {
-               begIdx=Math.max(endIdx-1,0);
-               endIdx=begIdx;
-            }
-         }
-         return range.updateRange(begIdx,endIdx);
-      }
-
-      public static function nextCharacter(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         if(validateTextRange(range))
-         {
-            if(!adjustForOversetForward(range))
-            {
-               moveForwardHelper(range,extendSelection,nextAtomPosition);
-            }
-            return true;
-         }
-         return false;
-      }
-
-      public static function previousCharacter(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         if(validateTextRange(range))
-         {
-            if(!adjustForOversetBack(range))
-            {
-               moveBackwardHelper(range,extendSelection,previousAtomPosition);
-            }
-            return true;
-         }
-         return false;
-      }
-
-      public static function nextWord(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         if(validateTextRange(range))
-         {
-            if(!adjustForOversetForward(range))
-            {
-               moveForwardHelper(range,extendSelection,nextWordPosition);
-            }
-            return true;
-         }
-         return false;
-      }
-
-      public static function previousWord(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         if(validateTextRange(range))
-         {
-            if(!adjustForOversetBack(range))
-            {
-               moveBackwardHelper(range,extendSelection,previousWordPosition);
-            }
-            return true;
-         }
-         return false;
-      }
-
-      tlf_internal  static function computeEndIdx(targetFlowLine:TextFlowLine, curTextFlowLine:TextFlowLine, blockProgression:String, isRTLDirection:Boolean, globalPoint:Point) : int {
-         var endIdx:* = 0;
-         var atomIndex:* = 0;
-         var firstAtomRect:Rectangle = null;
-         var firstAtomPoint:Point = null;
-         var glyphRect:Rectangle = null;
-         var leanRight:* = false;
-         var paraSelectionIdx:* = 0;
-         var glyphGlobalPoint:Point = null;
-         var targetTextLine:TextLine = targetFlowLine.getTextLine(true);
-         var currentTextLine:TextLine = curTextFlowLine.getTextLine(true);
-         var bidiRightToLeft:Boolean = !(currentTextLine.getAtomBidiLevel(atomIndex)%2==0);
-         if(targetFlowLine.controller==curTextFlowLine.controller)
-         {
-            if(blockProgression!=BlockProgression.RL)
-            {
-               globalPoint.y=globalPoint.y-currentTextLine.y-targetTextLine.y;
-            }
-            else
-            {
-               globalPoint.x=globalPoint.x+(targetTextLine.x-currentTextLine.x);
-            }
-         }
-         else
-         {
-            firstAtomRect=targetTextLine.getAtomBounds(0);
-            firstAtomPoint=new Point();
-            firstAtomPoint.x=firstAtomRect.left;
-            firstAtomPoint.y=0;
-            firstAtomPoint=targetTextLine.localToGlobal(firstAtomPoint);
-            if(blockProgression!=BlockProgression.RL)
-            {
-               globalPoint.x=globalPoint.x-curTextFlowLine.controller.container.x;
-               globalPoint.y=firstAtomPoint.y;
-            }
-            else
-            {
-               globalPoint.x=firstAtomPoint.x;
-               globalPoint.y=globalPoint.y-curTextFlowLine.controller.container.y;
-            }
-         }
-         atomIndex=targetTextLine.getAtomIndexAtPoint(globalPoint.x,globalPoint.y);
-         if(atomIndex==-1)
-         {
-            if(blockProgression!=BlockProgression.RL)
-            {
-               if(!bidiRightToLeft)
-               {
-                  endIdx=globalPoint.x<=targetTextLine.x?targetFlowLine.absoluteStart:targetFlowLine.absoluteStart+targetFlowLine.textLength-1;
-               }
-               else
-               {
-                  endIdx=globalPoint.x<=targetTextLine.x?targetFlowLine.absoluteStart+targetFlowLine.textLength-1:targetFlowLine.absoluteStart;
-               }
-            }
-            else
-            {
-               if(!bidiRightToLeft)
-               {
-                  endIdx=globalPoint.y<=targetTextLine.y?targetFlowLine.absoluteStart:targetFlowLine.absoluteStart+targetFlowLine.textLength-1;
-               }
-               else
-               {
-                  endIdx=globalPoint.y<=targetTextLine.y?targetFlowLine.absoluteStart+targetFlowLine.textLength-1:targetFlowLine.absoluteStart;
-               }
-            }
-         }
-         else
-         {
-            glyphRect=targetTextLine.getAtomBounds(atomIndex);
-            leanRight=false;
-            if(glyphRect)
-            {
-               glyphGlobalPoint=new Point();
-               glyphGlobalPoint.x=glyphRect.x;
-               glyphGlobalPoint.y=glyphRect.y;
-               glyphGlobalPoint=targetTextLine.localToGlobal(glyphGlobalPoint);
-               if((blockProgression==BlockProgression.RL)&&(!(targetTextLine.getAtomTextRotation(atomIndex)==TextRotation.ROTATE_0)))
-               {
-                  leanRight=globalPoint.y<glyphGlobalPoint.y+glyphRect.height/2;
-               }
-               else
-               {
-                  leanRight=globalPoint.x<glyphGlobalPoint.x+glyphRect.width/2;
-               }
-            }
-            if(targetTextLine.getAtomBidiLevel(atomIndex)%2!=0)
-            {
-               paraSelectionIdx=leanRight?targetTextLine.getAtomTextBlockBeginIndex(atomIndex):targetTextLine.getAtomTextBlockEndIndex(atomIndex);
-            }
-            else
-            {
-               if(isRTLDirection)
-               {
-                  if((leanRight==false)&&(atomIndex<0))
+                  if(_loc5_ == _loc6_)
                   {
-                     paraSelectionIdx=targetTextLine.getAtomTextBlockBeginIndex(atomIndex-1);
+                     _loc5_ = param3(_loc4_,_loc5_);
+                     _loc6_ = _loc5_;
                   }
                   else
                   {
-                     paraSelectionIdx=targetTextLine.getAtomTextBlockBeginIndex(atomIndex);
+                     if(_loc6_ > _loc5_)
+                     {
+                        _loc5_ = _loc6_;
+                     }
+                     else
+                     {
+                        _loc6_ = _loc5_;
+                     }
+                  }
+               }
+               if(_loc5_ == _loc6_)
+               {
+                  _loc5_ = updateStartIfInReadOnlyElement(_loc4_,_loc5_);
+                  _loc6_ = updateEndIfInReadOnlyElement(_loc4_,_loc6_);
+               }
+               else
+               {
+                  _loc6_ = updateEndIfInReadOnlyElement(_loc4_,_loc6_);
+               }
+               if(!param2 && param1.anchorPosition == _loc5_ && param1.activePosition == _loc6_)
+               {
+                  if(_loc5_ < _loc6_)
+                  {
+                     _loc5_ = Math.min(_loc6_ + 1,_loc4_.textLength-1);
+                     _loc6_ = _loc5_;
+                  }
+                  else
+                  {
+                     _loc6_ = Math.min(_loc5_ + 1,_loc4_.textLength-1);
+                     _loc5_ = _loc6_;
+                  }
+               }
+               return param1.updateRange(_loc5_,_loc6_);
+            }
+            
+            private static function moveBackwardHelper(param1:TextRange, param2:Boolean, param3:Function) : Boolean {
+               var _loc4_:TextFlow = param1.textFlow;
+               var _loc5_:int = param1.anchorPosition;
+               var _loc6_:int = param1.activePosition;
+               if(param2)
+               {
+                  _loc6_ = param3(_loc4_,_loc6_);
+               }
+               else
+               {
+                  if(_loc5_ == _loc6_)
+                  {
+                     _loc5_ = param3(_loc4_,_loc5_);
+                     _loc6_ = _loc5_;
+                  }
+                  else
+                  {
+                     if(_loc6_ > _loc5_)
+                     {
+                        _loc6_ = _loc5_;
+                     }
+                     else
+                     {
+                        _loc5_ = _loc6_;
+                     }
+                  }
+               }
+               if(_loc5_ == _loc6_)
+               {
+                  _loc5_ = updateEndIfInReadOnlyElement(_loc4_,_loc5_);
+                  _loc6_ = updateStartIfInReadOnlyElement(_loc4_,_loc6_);
+               }
+               else
+               {
+                  _loc6_ = updateStartIfInReadOnlyElement(_loc4_,_loc6_);
+               }
+               if(!param2 && param1.anchorPosition == _loc5_ && param1.activePosition == _loc6_)
+               {
+                  if(_loc5_ < _loc6_)
+                  {
+                     _loc6_ = Math.max(_loc5_-1,0);
+                     _loc5_ = _loc6_;
+                  }
+                  else
+                  {
+                     _loc5_ = Math.max(_loc6_-1,0);
+                     _loc6_ = _loc5_;
+                  }
+               }
+               return param1.updateRange(_loc5_,_loc6_);
+            }
+            
+            public static function nextCharacter(param1:TextRange, param2:Boolean=false) : Boolean {
+               if(validateTextRange(param1))
+               {
+                  if(!adjustForOversetForward(param1))
+                  {
+                     moveForwardHelper(param1,param2,nextAtomPosition);
+                  }
+                  return true;
+               }
+               return false;
+            }
+            
+            public static function previousCharacter(param1:TextRange, param2:Boolean=false) : Boolean {
+               if(validateTextRange(param1))
+               {
+                  if(!adjustForOversetBack(param1))
+                  {
+                     moveBackwardHelper(param1,param2,previousAtomPosition);
+                  }
+                  return true;
+               }
+               return false;
+            }
+            
+            public static function nextWord(param1:TextRange, param2:Boolean=false) : Boolean {
+               if(validateTextRange(param1))
+               {
+                  if(!adjustForOversetForward(param1))
+                  {
+                     moveForwardHelper(param1,param2,nextWordPosition);
+                  }
+                  return true;
+               }
+               return false;
+            }
+            
+            public static function previousWord(param1:TextRange, param2:Boolean=false) : Boolean {
+               if(validateTextRange(param1))
+               {
+                  if(!adjustForOversetBack(param1))
+                  {
+                     moveBackwardHelper(param1,param2,previousWordPosition);
+                  }
+                  return true;
+               }
+               return false;
+            }
+            
+            tlf_internal  static function computeEndIdx(param1:TextFlowLine, param2:TextFlowLine, param3:String, param4:Boolean, param5:Point) : int {
+               var _loc6_:* = 0;
+               var _loc10_:* = 0;
+               var _loc11_:Rectangle = null;
+               var _loc12_:Point = null;
+               var _loc13_:Rectangle = null;
+               var _loc14_:* = false;
+               var _loc15_:* = 0;
+               var _loc16_:Point = null;
+               var _loc7_:TextLine = param1.getTextLine(true);
+               var _loc8_:TextLine = param2.getTextLine(true);
+               var _loc9_:* = !(_loc8_.getAtomBidiLevel(_loc10_) % 2 == 0);
+               if(param1.controller == param2.controller)
+               {
+                  if(param3 != BlockProgression.RL)
+                  {
+                     param5.y = param5.y - (_loc8_.y - _loc7_.y);
+                  }
+                  else
+                  {
+                     param5.x = param5.x + (_loc7_.x - _loc8_.x);
                   }
                }
                else
                {
-                  paraSelectionIdx=leanRight?targetTextLine.getAtomTextBlockEndIndex(atomIndex):targetTextLine.getAtomTextBlockBeginIndex(atomIndex);
+                  _loc11_ = _loc7_.getAtomBounds(0);
+                  _loc12_ = new Point();
+                  _loc12_.x = _loc11_.left;
+                  _loc12_.y = 0;
+                  _loc12_ = _loc7_.localToGlobal(_loc12_);
+                  if(param3 != BlockProgression.RL)
+                  {
+                     param5.x = param5.x - param2.controller.container.x;
+                     param5.y = _loc12_.y;
+                  }
+                  else
+                  {
+                     param5.x = _loc12_.x;
+                     param5.y = param5.y - param2.controller.container.y;
+                  }
                }
-            }
-            endIdx=targetFlowLine.paragraph.getAbsoluteStart()+paraSelectionIdx;
-         }
-         return endIdx;
-      }
-
-      public static function nextLine(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         var curTextFlowLine:TextFlowLine = null;
-         var lineStart:* = 0;
-         var lineDelta:* = 0;
-         var currentTextLine:TextLine = null;
-         var para:ParagraphElement = null;
-         var atomIndex:* = 0;
-         var bidiRightToLeft:* = false;
-         var curPosRect:Rectangle = null;
-         var currentTextLineX:* = NaN;
-         var curPosRectLeft:* = NaN;
-         var curPosRectRight:* = NaN;
-         var globalPoint:Point = null;
-         var nextFlowLine:TextFlowLine = null;
-         var controller:ContainerController = null;
-         var firstPosInContainer:* = 0;
-         var lastPosInContainer:* = 0;
-         var curLogicalHorizontalScrollPos:* = NaN;
-         if(!validateTextRange(range))
-         {
-            return false;
-         }
-         if(adjustForOversetForward(range))
-         {
-            return true;
-         }
-         var textFlow:TextFlow = range.textFlow;
-         var blockProgression:String = textFlow.computedFormat.blockProgression;
-         var begIdx:int = range.anchorPosition;
-         var endIdx:int = range.activePosition;
-         var limitIdx:int = endOfLastController(textFlow);
-         var curLine:int = textFlow.flowComposer.findLineIndexAtPosition(endIdx);
-         var isRTLDirection:Boolean = textFlow.computedFormat.direction==Direction.RTL;
-         if(curLine<textFlow.flowComposer.numLines-1)
-         {
-            curTextFlowLine=textFlow.flowComposer.getLineAt(curLine);
-            lineStart=curTextFlowLine.absoluteStart;
-            lineDelta=endIdx-lineStart;
-            currentTextLine=curTextFlowLine.getTextLine(true);
-            para=curTextFlowLine.paragraph;
-            atomIndex=currentTextLine.getAtomIndexAtCharIndex(endIdx-para.getAbsoluteStart());
-            bidiRightToLeft=!(currentTextLine.getAtomBidiLevel(atomIndex)%2==0);
-            curPosRect=currentTextLine.getAtomBounds(atomIndex);
-            currentTextLineX=currentTextLine.x;
-            curPosRectLeft=curPosRect.left;
-            curPosRectRight=curPosRect.right;
-            if(blockProgression==BlockProgression.RL)
-            {
-               currentTextLineX=currentTextLine.y;
-               curPosRectLeft=curPosRect.top;
-               curPosRectRight=curPosRect.bottom;
-            }
-            globalPoint=new Point();
-            if(blockProgression!=BlockProgression.RL)
-            {
-               if(!isRTLDirection)
+               _loc10_ = _loc7_.getAtomIndexAtPoint(param5.x,param5.y);
+               if(_loc10_ == -1)
                {
-                  globalPoint.x=curPosRect.left;
+                  if(param3 != BlockProgression.RL)
+                  {
+                     if(!_loc9_)
+                     {
+                        _loc6_ = param5.x <= _loc7_.x?param1.absoluteStart:param1.absoluteStart + param1.textLength-1;
+                     }
+                     else
+                     {
+                        _loc6_ = param5.x <= _loc7_.x?param1.absoluteStart + param1.textLength-1:param1.absoluteStart;
+                     }
+                  }
+                  else
+                  {
+                     if(!_loc9_)
+                     {
+                        _loc6_ = param5.y <= _loc7_.y?param1.absoluteStart:param1.absoluteStart + param1.textLength-1;
+                     }
+                     else
+                     {
+                        _loc6_ = param5.y <= _loc7_.y?param1.absoluteStart + param1.textLength-1:param1.absoluteStart;
+                     }
+                  }
                }
                else
                {
-                  globalPoint.x=curPosRect.right;
+                  _loc13_ = _loc7_.getAtomBounds(_loc10_);
+                  _loc14_ = false;
+                  if(_loc13_)
+                  {
+                     _loc16_ = new Point();
+                     _loc16_.x = _loc13_.x;
+                     _loc16_.y = _loc13_.y;
+                     _loc16_ = _loc7_.localToGlobal(_loc16_);
+                     if(param3 == BlockProgression.RL && !(_loc7_.getAtomTextRotation(_loc10_) == TextRotation.ROTATE_0))
+                     {
+                        _loc14_ = param5.y > _loc16_.y + _loc13_.height / 2;
+                     }
+                     else
+                     {
+                        _loc14_ = param5.x > _loc16_.x + _loc13_.width / 2;
+                     }
+                  }
+                  if(_loc7_.getAtomBidiLevel(_loc10_) % 2 != 0)
+                  {
+                     _loc15_ = _loc14_?_loc7_.getAtomTextBlockBeginIndex(_loc10_):_loc7_.getAtomTextBlockEndIndex(_loc10_);
+                  }
+                  else
+                  {
+                     if(param4)
+                     {
+                        if(_loc14_ == false && _loc10_ > 0)
+                        {
+                           _loc15_ = _loc7_.getAtomTextBlockBeginIndex(_loc10_-1);
+                        }
+                        else
+                        {
+                           _loc15_ = _loc7_.getAtomTextBlockBeginIndex(_loc10_);
+                        }
+                     }
+                     else
+                     {
+                        _loc15_ = _loc14_?_loc7_.getAtomTextBlockEndIndex(_loc10_):_loc7_.getAtomTextBlockBeginIndex(_loc10_);
+                     }
+                  }
+                  _loc6_ = param1.paragraph.getAbsoluteStart() + _loc15_;
                }
-               globalPoint.y=0;
+               return _loc6_;
             }
-            else
-            {
-               globalPoint.x=0;
-               if(!isRTLDirection)
+            
+            public static function nextLine(param1:TextRange, param2:Boolean=false) : Boolean {
+               var _loc10_:TextFlowLine = null;
+               var _loc11_:* = 0;
+               var _loc12_:* = 0;
+               var _loc13_:TextLine = null;
+               var _loc14_:ParagraphElement = null;
+               var _loc15_:* = 0;
+               var _loc16_:* = false;
+               var _loc17_:Rectangle = null;
+               var _loc18_:* = NaN;
+               var _loc19_:* = NaN;
+               var _loc20_:* = NaN;
+               var _loc21_:Point = null;
+               var _loc22_:TextFlowLine = null;
+               var _loc23_:ContainerController = null;
+               var _loc24_:* = 0;
+               var _loc25_:* = 0;
+               var _loc26_:* = NaN;
+               if(!validateTextRange(param1))
                {
-                  globalPoint.y=curPosRect.top;
+                  return false;
+               }
+               if(adjustForOversetForward(param1))
+               {
+                  return true;
+               }
+               var _loc3_:TextFlow = param1.textFlow;
+               var _loc4_:String = _loc3_.computedFormat.blockProgression;
+               var _loc5_:int = param1.anchorPosition;
+               var _loc6_:int = param1.activePosition;
+               var _loc7_:int = endOfLastController(_loc3_);
+               var _loc8_:int = _loc3_.flowComposer.findLineIndexAtPosition(_loc6_);
+               var _loc9_:* = _loc3_.computedFormat.direction == Direction.RTL;
+               if(_loc8_ < _loc3_.flowComposer.numLines-1)
+               {
+                  _loc10_ = _loc3_.flowComposer.getLineAt(_loc8_);
+                  _loc11_ = _loc10_.absoluteStart;
+                  _loc12_ = _loc6_ - _loc11_;
+                  _loc13_ = _loc10_.getTextLine(true);
+                  _loc14_ = _loc10_.paragraph;
+                  _loc15_ = _loc13_.getAtomIndexAtCharIndex(_loc6_ - _loc14_.getAbsoluteStart());
+                  _loc16_ = !(_loc13_.getAtomBidiLevel(_loc15_) % 2 == 0);
+                  _loc17_ = _loc13_.getAtomBounds(_loc15_);
+                  _loc18_ = _loc13_.x;
+                  _loc19_ = _loc17_.left;
+                  _loc20_ = _loc17_.right;
+                  if(_loc4_ == BlockProgression.RL)
+                  {
+                     _loc18_ = _loc13_.y;
+                     _loc19_ = _loc17_.top;
+                     _loc20_ = _loc17_.bottom;
+                  }
+                  _loc21_ = new Point();
+                  if(_loc4_ != BlockProgression.RL)
+                  {
+                     if(!_loc9_)
+                     {
+                        _loc21_.x = _loc17_.left;
+                     }
+                     else
+                     {
+                        _loc21_.x = _loc17_.right;
+                     }
+                     _loc21_.y = 0;
+                  }
+                  else
+                  {
+                     _loc21_.x = 0;
+                     if(!_loc9_)
+                     {
+                        _loc21_.y = _loc17_.top;
+                     }
+                     else
+                     {
+                        _loc21_.y = _loc17_.bottom;
+                     }
+                  }
+                  _loc21_ = _loc13_.localToGlobal(_loc21_);
+                  _loc22_ = _loc3_.flowComposer.getLineAt(_loc8_ + 1);
+                  if(_loc22_.absoluteStart >= _loc7_)
+                  {
+                     if(!param2)
+                     {
+                        param1.activePosition = param1.anchorPosition = _loc3_.textLength-1;
+                     }
+                     else
+                     {
+                        param1.activePosition = _loc3_.textLength;
+                     }
+                     return true;
+                  }
+                  _loc23_ = _loc3_.flowComposer.getControllerAt(_loc3_.flowComposer.numControllers-1);
+                  _loc24_ = _loc23_.absoluteStart;
+                  _loc25_ = _loc24_ + _loc23_.textLength;
+                  if(_loc22_.absoluteStart >= _loc24_ && _loc22_.absoluteStart < _loc25_)
+                  {
+                     if(_loc22_.isDamaged())
+                     {
+                        _loc3_.flowComposer.composeToPosition(_loc22_.absoluteStart + 1);
+                        _loc22_ = _loc3_.flowComposer.getLineAt(_loc8_ + 1);
+                        if(_loc22_.isDamaged())
+                        {
+                           return false;
+                        }
+                     }
+                     _loc26_ = _loc4_ == BlockProgression.TB?_loc23_.horizontalScrollPosition:_loc23_.verticalScrollPosition;
+                     _loc23_.scrollToRange(_loc22_.absoluteStart,_loc22_.absoluteStart + _loc22_.textLength-1);
+                     if(_loc4_ == BlockProgression.TB)
+                     {
+                        _loc23_.horizontalScrollPosition = _loc26_;
+                     }
+                     else
+                     {
+                        _loc23_.verticalScrollPosition = _loc26_;
+                     }
+                  }
+                  _loc6_ = computeEndIdx(_loc22_,_loc10_,_loc4_,_loc9_,_loc21_);
+                  if(_loc6_ >= _loc3_.textLength)
+                  {
+                     _loc6_ = _loc3_.textLength;
+                  }
                }
                else
                {
-                  globalPoint.y=curPosRect.bottom;
+                  _loc6_ = _loc3_.textLength;
                }
-            }
-            globalPoint=currentTextLine.localToGlobal(globalPoint);
-            nextFlowLine=textFlow.flowComposer.getLineAt(curLine+1);
-            if(nextFlowLine.absoluteStart>=limitIdx)
-            {
-               if(!extendSelection)
+               if(!param2)
                {
-                  range.activePosition=range.anchorPosition=textFlow.textLength-1;
+                  _loc5_ = _loc6_;
+               }
+               if(_loc5_ == _loc6_)
+               {
+                  _loc5_ = updateStartIfInReadOnlyElement(_loc3_,_loc5_);
+                  _loc6_ = updateEndIfInReadOnlyElement(_loc3_,_loc6_);
                }
                else
                {
-                  range.activePosition=textFlow.textLength;
+                  _loc6_ = updateEndIfInReadOnlyElement(_loc3_,_loc6_);
                }
-               return true;
+               return param1.updateRange(_loc5_,_loc6_);
             }
-            controller=textFlow.flowComposer.getControllerAt(textFlow.flowComposer.numControllers-1);
-            firstPosInContainer=controller.absoluteStart;
-            lastPosInContainer=firstPosInContainer+controller.textLength;
-            if((nextFlowLine.absoluteStart>=firstPosInContainer)&&(nextFlowLine.absoluteStart>lastPosInContainer))
-            {
-               if(nextFlowLine.isDamaged())
+            
+            public static function previousLine(param1:TextRange, param2:Boolean=false) : Boolean {
+               var _loc9_:TextFlowLine = null;
+               var _loc10_:* = 0;
+               var _loc11_:* = 0;
+               var _loc12_:TextLine = null;
+               var _loc13_:ParagraphElement = null;
+               var _loc14_:* = 0;
+               var _loc15_:Rectangle = null;
+               var _loc16_:* = NaN;
+               var _loc17_:* = NaN;
+               var _loc18_:* = NaN;
+               var _loc19_:Point = null;
+               var _loc20_:TextFlowLine = null;
+               var _loc21_:ContainerController = null;
+               var _loc22_:* = 0;
+               var _loc23_:* = 0;
+               var _loc24_:* = NaN;
+               if(!validateTextRange(param1))
                {
-                  textFlow.flowComposer.composeToPosition(nextFlowLine.absoluteStart+1);
-                  nextFlowLine=textFlow.flowComposer.getLineAt(curLine+1);
-                  if(nextFlowLine.isDamaged())
+                  return false;
+               }
+               if(adjustForOversetBack(param1))
+               {
+                  return true;
+               }
+               var _loc3_:TextFlow = param1.textFlow;
+               var _loc4_:String = _loc3_.computedFormat.blockProgression;
+               var _loc5_:int = param1.anchorPosition;
+               var _loc6_:int = param1.activePosition;
+               var _loc7_:int = _loc3_.flowComposer.findLineIndexAtPosition(_loc6_);
+               var _loc8_:* = _loc3_.computedFormat.direction == Direction.RTL;
+               if(_loc7_ > 0)
+               {
+                  _loc9_ = _loc3_.flowComposer.getLineAt(_loc7_);
+                  _loc10_ = _loc9_.absoluteStart;
+                  _loc11_ = _loc6_ - _loc10_;
+                  _loc12_ = _loc9_.getTextLine(true);
+                  _loc13_ = _loc9_.paragraph;
+                  _loc14_ = _loc12_.getAtomIndexAtCharIndex(_loc6_ - _loc13_.getAbsoluteStart());
+                  _loc15_ = _loc12_.getAtomBounds(_loc14_);
+                  _loc16_ = _loc12_.x;
+                  _loc17_ = _loc15_.left;
+                  _loc18_ = _loc15_.right;
+                  if(_loc4_ == BlockProgression.RL)
+                  {
+                     _loc16_ = _loc12_.y;
+                     _loc17_ = _loc15_.top;
+                     _loc18_ = _loc15_.bottom;
+                  }
+                  _loc19_ = new Point();
+                  if(_loc4_ != BlockProgression.RL)
+                  {
+                     if(!_loc8_)
+                     {
+                        _loc19_.x = _loc15_.left;
+                     }
+                     else
+                     {
+                        _loc19_.x = _loc15_.right;
+                     }
+                     _loc19_.y = 0;
+                  }
+                  else
+                  {
+                     _loc19_.x = 0;
+                     if(!_loc8_)
+                     {
+                        _loc19_.y = _loc15_.top;
+                     }
+                     else
+                     {
+                        _loc19_.y = _loc15_.bottom;
+                     }
+                  }
+                  _loc19_ = _loc12_.localToGlobal(_loc19_);
+                  _loc20_ = _loc3_.flowComposer.getLineAt(_loc7_-1);
+                  _loc21_ = _loc3_.flowComposer.getControllerAt(_loc3_.flowComposer.numControllers-1);
+                  _loc22_ = _loc21_.absoluteStart;
+                  _loc23_ = _loc22_ + _loc21_.textLength;
+                  if(_loc20_.absoluteStart >= _loc22_ && _loc20_.absoluteStart < _loc23_)
+                  {
+                     _loc24_ = _loc4_ == BlockProgression.TB?_loc21_.horizontalScrollPosition:_loc21_.verticalScrollPosition;
+                     _loc21_.scrollToRange(_loc20_.absoluteStart,_loc20_.absoluteStart + _loc20_.textLength-1);
+                     if(_loc4_ == BlockProgression.TB)
+                     {
+                        _loc21_.horizontalScrollPosition = _loc24_;
+                     }
+                     else
+                     {
+                        _loc21_.verticalScrollPosition = _loc24_;
+                     }
+                  }
+                  _loc6_ = computeEndIdx(_loc20_,_loc9_,_loc4_,_loc8_,_loc19_);
+               }
+               else
+               {
+                  _loc6_ = 0;
+               }
+               if(!param2)
+               {
+                  _loc5_ = _loc6_;
+               }
+               if(_loc5_ == _loc6_)
+               {
+                  _loc5_ = updateStartIfInReadOnlyElement(_loc3_,_loc5_);
+                  _loc6_ = updateEndIfInReadOnlyElement(_loc3_,_loc6_);
+               }
+               else
+               {
+                  _loc6_ = updateEndIfInReadOnlyElement(_loc3_,_loc6_);
+               }
+               return param1.updateRange(_loc5_,_loc6_);
+            }
+            
+            public static function nextPage(param1:TextRange, param2:Boolean=false) : Boolean {
+               var _loc3_:ContainerController = null;
+               var _loc12_:* = 0;
+               var _loc15_:* = NaN;
+               var _loc17_:* = NaN;
+               var _loc18_:* = NaN;
+               var _loc19_:* = NaN;
+               var _loc20_:* = NaN;
+               var _loc21_:* = NaN;
+               var _loc22_:* = NaN;
+               if(!validateTextRange(param1))
+               {
+                  return false;
+               }
+               var _loc4_:TextFlow = param1.textFlow;
+               var _loc5_:int = _loc4_.flowComposer.findControllerIndexAtPosition(param1.activePosition);
+               if(_loc5_ != _loc4_.flowComposer.numControllers-1)
+               {
+                  param1.activePosition = _loc4_.flowComposer.getControllerAt(_loc5_ + 1).absoluteStart;
+                  if(!param2)
+                  {
+                     param1.anchorPosition = param1.activePosition;
+                  }
+                  return true;
+               }
+               if(!isScrollable(_loc4_,param1.activePosition))
+               {
+                  return false;
+               }
+               if(adjustForOversetForward(param1))
+               {
+                  return true;
+               }
+               var _loc6_:int = param1.absoluteStart;
+               var _loc7_:int = param1.absoluteEnd;
+               var _loc8_:int = _loc4_.flowComposer.findLineIndexAtPosition(_loc7_);
+               var _loc9_:TextFlowLine = _loc4_.flowComposer.getLineAt(_loc8_);
+               var _loc10_:int = _loc4_.flowComposer.getLineAt(_loc8_).absoluteStart;
+               var _loc11_:int = _loc7_ - _loc10_;
+               var _loc13_:TextFlowLine = _loc9_;
+               var _loc14_:* = _loc4_.computedFormat.blockProgression == BlockProgression.RL;
+               _loc3_ = _loc4_.flowComposer.getControllerAt(_loc4_.flowComposer.numControllers-1);
+               if(_loc14_)
+               {
+                  _loc15_ = _loc3_.compositionWidth * _loc4_.configuration.scrollPagePercentage;
+               }
+               else
+               {
+                  _loc15_ = _loc3_.compositionHeight * _loc4_.configuration.scrollPagePercentage;
+               }
+               if(_loc14_)
+               {
+                  _loc17_ = _loc3_.contentWidth;
+                  if(_loc3_.horizontalScrollPosition - _loc15_ < -_loc17_)
+                  {
+                     _loc3_.horizontalScrollPosition = -_loc17_;
+                     _loc12_ = _loc4_.flowComposer.numLines-1;
+                     _loc13_ = _loc4_.flowComposer.getLineAt(_loc12_);
+                  }
+                  else
+                  {
+                     _loc18_ = _loc3_.horizontalScrollPosition;
+                     _loc3_.horizontalScrollPosition = _loc3_.horizontalScrollPosition - _loc15_;
+                     _loc19_ = _loc3_.horizontalScrollPosition;
+                     if(_loc18_ == _loc19_)
+                     {
+                        _loc12_ = _loc4_.flowComposer.numLines-1;
+                        _loc13_ = _loc4_.flowComposer.getLineAt(_loc12_);
+                     }
+                     else
+                     {
+                        _loc12_ = _loc8_;
+                        while(_loc12_ < _loc4_.flowComposer.numLines-1)
+                        {
+                           _loc12_++;
+                           _loc13_ = _loc4_.flowComposer.getLineAt(_loc12_);
+                           if(_loc9_.x - _loc13_.x >= _loc18_ - _loc19_)
+                           {
+                              break;
+                           }
+                        }
+                     }
+                  }
+               }
+               else
+               {
+                  _loc20_ = _loc3_.contentHeight;
+                  if(_loc3_.verticalScrollPosition + _loc15_ > _loc20_)
+                  {
+                     _loc3_.verticalScrollPosition = _loc20_;
+                     _loc12_ = _loc4_.flowComposer.numLines-1;
+                     _loc13_ = _loc4_.flowComposer.getLineAt(_loc12_);
+                  }
+                  else
+                  {
+                     _loc21_ = _loc3_.verticalScrollPosition;
+                     _loc3_.verticalScrollPosition = _loc3_.verticalScrollPosition + _loc15_;
+                     _loc22_ = _loc3_.verticalScrollPosition;
+                     if(_loc22_ == _loc21_)
+                     {
+                        _loc12_ = _loc4_.flowComposer.numLines-1;
+                        _loc13_ = _loc4_.flowComposer.getLineAt(_loc12_);
+                     }
+                     else
+                     {
+                        _loc12_ = _loc8_;
+                        while(_loc12_ < _loc4_.flowComposer.numLines-1)
+                        {
+                           _loc12_++;
+                           _loc13_ = _loc4_.flowComposer.getLineAt(_loc12_);
+                           if(_loc13_.y - _loc9_.y >= _loc22_ - _loc21_)
+                           {
+                              break;
+                           }
+                        }
+                     }
+                  }
+               }
+               _loc7_ = _loc13_.absoluteStart + _loc11_;
+               var _loc16_:int = _loc13_.absoluteStart + _loc13_.textLength-1;
+               if(_loc7_ > _loc16_)
+               {
+                  _loc7_ = _loc16_;
+               }
+               if(!param2)
+               {
+                  _loc6_ = _loc7_;
+               }
+               if(_loc6_ == _loc7_)
+               {
+                  _loc6_ = updateEndIfInReadOnlyElement(_loc4_,_loc6_);
+                  _loc7_ = updateStartIfInReadOnlyElement(_loc4_,_loc7_);
+               }
+               else
+               {
+                  _loc7_ = updateStartIfInReadOnlyElement(_loc4_,_loc7_);
+               }
+               return param1.updateRange(_loc6_,_loc7_);
+            }
+            
+            public static function previousPage(param1:TextRange, param2:Boolean=false) : Boolean {
+               var _loc13_:* = 0;
+               var _loc16_:* = NaN;
+               var _loc18_:* = NaN;
+               var _loc19_:* = NaN;
+               var _loc20_:* = NaN;
+               var _loc21_:* = NaN;
+               if(!validateTextRange(param1))
+               {
+                  return false;
+               }
+               var _loc3_:TextFlow = param1.textFlow;
+               var _loc4_:int = _loc3_.flowComposer.findControllerIndexAtPosition(param1.activePosition);
+               var _loc5_:ContainerController = _loc3_.flowComposer.getControllerAt(_loc4_);
+               var _loc6_:TextFlowLine = _loc3_.flowComposer.findLineAtPosition(_loc5_.absoluteStart);
+               if(param1.activePosition <= _loc5_.absoluteStart + _loc6_.textLength)
+               {
+                  if(_loc4_ == 0)
                   {
                      return false;
                   }
-               }
-               curLogicalHorizontalScrollPos=blockProgression==BlockProgression.TB?controller.horizontalScrollPosition:controller.verticalScrollPosition;
-               controller.scrollToRange(nextFlowLine.absoluteStart,nextFlowLine.absoluteStart+nextFlowLine.textLength-1);
-               if(blockProgression==BlockProgression.TB)
-               {
-                  controller.horizontalScrollPosition=curLogicalHorizontalScrollPos;
-               }
-               else
-               {
-                  controller.verticalScrollPosition=curLogicalHorizontalScrollPos;
-               }
-            }
-            endIdx=computeEndIdx(nextFlowLine,curTextFlowLine,blockProgression,isRTLDirection,globalPoint);
-            if(endIdx>=textFlow.textLength)
-            {
-               endIdx=textFlow.textLength;
-            }
-         }
-         else
-         {
-            endIdx=textFlow.textLength;
-         }
-         if(!extendSelection)
-         {
-            begIdx=endIdx;
-         }
-         if(begIdx==endIdx)
-         {
-            begIdx=updateStartIfInReadOnlyElement(textFlow,begIdx);
-            endIdx=updateEndIfInReadOnlyElement(textFlow,endIdx);
-         }
-         else
-         {
-            endIdx=updateEndIfInReadOnlyElement(textFlow,endIdx);
-         }
-         return range.updateRange(begIdx,endIdx);
-      }
-
-      public static function previousLine(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         var curTextFlowLine:TextFlowLine = null;
-         var lineStart:* = 0;
-         var lineDelta:* = 0;
-         var currentTextLine:TextLine = null;
-         var para:ParagraphElement = null;
-         var atomIndex:* = 0;
-         var curPosRect:Rectangle = null;
-         var currentTextLineX:* = NaN;
-         var curPosRectLeft:* = NaN;
-         var curPosRectRight:* = NaN;
-         var globalPoint:Point = null;
-         var prevFlowLine:TextFlowLine = null;
-         var controller:ContainerController = null;
-         var firstPosInContainer:* = 0;
-         var lastPosInContainer:* = 0;
-         var curLogicalHorizontalScrollPos:* = NaN;
-         if(!validateTextRange(range))
-         {
-            return false;
-         }
-         if(adjustForOversetBack(range))
-         {
-            return true;
-         }
-         var textFlow:TextFlow = range.textFlow;
-         var blockProgression:String = textFlow.computedFormat.blockProgression;
-         var begIdx:int = range.anchorPosition;
-         var endIdx:int = range.activePosition;
-         var curLine:int = textFlow.flowComposer.findLineIndexAtPosition(endIdx);
-         var isRTLDirection:Boolean = textFlow.computedFormat.direction==Direction.RTL;
-         if(curLine>0)
-         {
-            curTextFlowLine=textFlow.flowComposer.getLineAt(curLine);
-            lineStart=curTextFlowLine.absoluteStart;
-            lineDelta=endIdx-lineStart;
-            currentTextLine=curTextFlowLine.getTextLine(true);
-            para=curTextFlowLine.paragraph;
-            atomIndex=currentTextLine.getAtomIndexAtCharIndex(endIdx-para.getAbsoluteStart());
-            curPosRect=currentTextLine.getAtomBounds(atomIndex);
-            currentTextLineX=currentTextLine.x;
-            curPosRectLeft=curPosRect.left;
-            curPosRectRight=curPosRect.right;
-            if(blockProgression==BlockProgression.RL)
-            {
-               currentTextLineX=currentTextLine.y;
-               curPosRectLeft=curPosRect.top;
-               curPosRectRight=curPosRect.bottom;
-            }
-            globalPoint=new Point();
-            if(blockProgression!=BlockProgression.RL)
-            {
-               if(!isRTLDirection)
-               {
-                  globalPoint.x=curPosRect.left;
-               }
-               else
-               {
-                  globalPoint.x=curPosRect.right;
-               }
-               globalPoint.y=0;
-            }
-            else
-            {
-               globalPoint.x=0;
-               if(!isRTLDirection)
-               {
-                  globalPoint.y=curPosRect.top;
-               }
-               else
-               {
-                  globalPoint.y=curPosRect.bottom;
-               }
-            }
-            globalPoint=currentTextLine.localToGlobal(globalPoint);
-            prevFlowLine=textFlow.flowComposer.getLineAt(curLine-1);
-            controller=textFlow.flowComposer.getControllerAt(textFlow.flowComposer.numControllers-1);
-            firstPosInContainer=controller.absoluteStart;
-            lastPosInContainer=firstPosInContainer+controller.textLength;
-            if((prevFlowLine.absoluteStart>=firstPosInContainer)&&(prevFlowLine.absoluteStart>lastPosInContainer))
-            {
-               curLogicalHorizontalScrollPos=blockProgression==BlockProgression.TB?controller.horizontalScrollPosition:controller.verticalScrollPosition;
-               controller.scrollToRange(prevFlowLine.absoluteStart,prevFlowLine.absoluteStart+prevFlowLine.textLength-1);
-               if(blockProgression==BlockProgression.TB)
-               {
-                  controller.horizontalScrollPosition=curLogicalHorizontalScrollPos;
-               }
-               else
-               {
-                  controller.verticalScrollPosition=curLogicalHorizontalScrollPos;
-               }
-            }
-            endIdx=computeEndIdx(prevFlowLine,curTextFlowLine,blockProgression,isRTLDirection,globalPoint);
-         }
-         else
-         {
-            endIdx=0;
-         }
-         if(!extendSelection)
-         {
-            begIdx=endIdx;
-         }
-         if(begIdx==endIdx)
-         {
-            begIdx=updateStartIfInReadOnlyElement(textFlow,begIdx);
-            endIdx=updateEndIfInReadOnlyElement(textFlow,endIdx);
-         }
-         else
-         {
-            endIdx=updateEndIfInReadOnlyElement(textFlow,endIdx);
-         }
-         return range.updateRange(begIdx,endIdx);
-      }
-
-      public static function nextPage(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         var controller:ContainerController = null;
-         var nextLine:* = 0;
-         var amount:* = NaN;
-         var contentWidth:* = NaN;
-         var oldHorzScrollPos:* = NaN;
-         var newHorzScrollPos:* = NaN;
-         var contentHeight:* = NaN;
-         var oldVertScrollPos:* = NaN;
-         var newVertScrollPos:* = NaN;
-         if(!validateTextRange(range))
-         {
-            return false;
-         }
-         var textFlow:TextFlow = range.textFlow;
-         var controllerIndex:int = textFlow.flowComposer.findControllerIndexAtPosition(range.activePosition);
-         if(controllerIndex!=textFlow.flowComposer.numControllers-1)
-         {
-            range.activePosition=textFlow.flowComposer.getControllerAt(controllerIndex+1).absoluteStart;
-            if(!extendSelection)
-            {
-               range.anchorPosition=range.activePosition;
-            }
-            return true;
-         }
-         if(!isScrollable(textFlow,range.activePosition))
-         {
-            return false;
-         }
-         if(adjustForOversetForward(range))
-         {
-            return true;
-         }
-         var begIdx:int = range.absoluteStart;
-         var endIdx:int = range.absoluteEnd;
-         var curLine:int = textFlow.flowComposer.findLineIndexAtPosition(endIdx);
-         var curTextFlowLine:TextFlowLine = textFlow.flowComposer.getLineAt(curLine);
-         var lineStart:int = textFlow.flowComposer.getLineAt(curLine).absoluteStart;
-         var linePos:int = endIdx-lineStart;
-         var nextTextFlowLine:TextFlowLine = curTextFlowLine;
-         var isTTB:Boolean = textFlow.computedFormat.blockProgression==BlockProgression.RL;
-         controller=textFlow.flowComposer.getControllerAt(textFlow.flowComposer.numControllers-1);
-         if(isTTB)
-         {
-            amount=controller.compositionWidth*textFlow.configuration.scrollPagePercentage;
-         }
-         else
-         {
-            amount=controller.compositionHeight*textFlow.configuration.scrollPagePercentage;
-         }
-         if(isTTB)
-         {
-            contentWidth=controller.contentWidth;
-            if(controller.horizontalScrollPosition-amount<-contentWidth)
-            {
-               controller.horizontalScrollPosition=-contentWidth;
-               nextLine=textFlow.flowComposer.numLines-1;
-               nextTextFlowLine=textFlow.flowComposer.getLineAt(nextLine);
-            }
-            else
-            {
-               oldHorzScrollPos=controller.horizontalScrollPosition;
-               controller.horizontalScrollPosition=controller.horizontalScrollPosition-amount;
-               newHorzScrollPos=controller.horizontalScrollPosition;
-               if(oldHorzScrollPos==newHorzScrollPos)
-               {
-                  nextLine=textFlow.flowComposer.numLines-1;
-                  nextTextFlowLine=textFlow.flowComposer.getLineAt(nextLine);
-               }
-               else
-               {
-                  nextLine=curLine;
-                  while(nextLine<textFlow.flowComposer.numLines-1)
+                  param1.activePosition = _loc3_.flowComposer.getControllerAt(_loc4_-1).absoluteStart;
+                  if(!param2)
                   {
-                     nextLine++;
-                     nextTextFlowLine=textFlow.flowComposer.getLineAt(nextLine);
-                     if(curTextFlowLine.x-nextTextFlowLine.x>=oldHorzScrollPos-newHorzScrollPos)
+                     param1.anchorPosition = param1.activePosition;
+                  }
+                  return true;
+               }
+               if(_loc4_ != _loc3_.flowComposer.numControllers-1)
+               {
+                  param1.activePosition = _loc5_.absoluteStart;
+                  if(!param2)
+                  {
+                     param1.anchorPosition = param1.activePosition;
+                  }
+                  return true;
+               }
+               if(!isScrollable(_loc3_,param1.activePosition))
+               {
+                  return false;
+               }
+               if(adjustForOversetBack(param1))
+               {
+                  return true;
+               }
+               var _loc7_:int = param1.absoluteStart;
+               var _loc8_:int = param1.absoluteEnd;
+               var _loc9_:int = _loc3_.flowComposer.findLineIndexAtPosition(_loc8_);
+               var _loc10_:TextFlowLine = _loc3_.flowComposer.getLineAt(_loc9_);
+               var _loc11_:int = _loc3_.flowComposer.getLineAt(_loc9_).absoluteStart;
+               var _loc12_:int = _loc8_ - _loc11_;
+               var _loc14_:TextFlowLine = _loc10_;
+               var _loc15_:* = _loc3_.computedFormat.blockProgression == BlockProgression.RL;
+               _loc5_ = _loc3_.flowComposer.getControllerAt(_loc3_.flowComposer.numControllers-1);
+               if(_loc15_)
+               {
+                  _loc16_ = _loc5_.compositionWidth * _loc3_.configuration.scrollPagePercentage;
+               }
+               else
+               {
+                  _loc16_ = _loc5_.compositionHeight * _loc3_.configuration.scrollPagePercentage;
+               }
+               if(_loc15_)
+               {
+                  if(_loc5_.horizontalScrollPosition + _loc16_ + _loc5_.compositionWidth > 0)
+                  {
+                     _loc5_.horizontalScrollPosition = 0;
+                     _loc13_ = _loc3_.flowComposer.findLineIndexAtPosition(_loc5_.absoluteStart);
+                     _loc14_ = _loc3_.flowComposer.getLineAt(_loc13_);
+                  }
+                  else
+                  {
+                     _loc18_ = _loc5_.horizontalScrollPosition;
+                     _loc5_.horizontalScrollPosition = _loc5_.horizontalScrollPosition + _loc16_;
+                     _loc19_ = _loc5_.horizontalScrollPosition;
+                     if(_loc18_ == _loc19_)
                      {
+                        _loc13_ = _loc3_.flowComposer.findLineIndexAtPosition(_loc5_.absoluteStart);
+                        _loc14_ = _loc3_.flowComposer.getLineAt(_loc13_);
                      }
                      else
                      {
-                        continue;
+                        _loc13_ = _loc9_;
+                        while(_loc13_ > 0)
+                        {
+                           _loc13_--;
+                           _loc14_ = _loc3_.flowComposer.getLineAt(_loc13_);
+                           if(_loc14_.x - _loc10_.x >= _loc19_ - _loc18_ || _loc14_.absoluteStart < _loc5_.absoluteStart)
+                           {
+                              break;
+                           }
+                        }
                      }
                   }
-               }
-            }
-         }
-         else
-         {
-            contentHeight=controller.contentHeight;
-            if(controller.verticalScrollPosition+amount>contentHeight)
-            {
-               controller.verticalScrollPosition=contentHeight;
-               nextLine=textFlow.flowComposer.numLines-1;
-               nextTextFlowLine=textFlow.flowComposer.getLineAt(nextLine);
-            }
-            else
-            {
-               oldVertScrollPos=controller.verticalScrollPosition;
-               controller.verticalScrollPosition=controller.verticalScrollPosition+amount;
-               newVertScrollPos=controller.verticalScrollPosition;
-               if(newVertScrollPos==oldVertScrollPos)
-               {
-                  nextLine=textFlow.flowComposer.numLines-1;
-                  nextTextFlowLine=textFlow.flowComposer.getLineAt(nextLine);
                }
                else
                {
-                  nextLine=curLine;
-                  while(nextLine<textFlow.flowComposer.numLines-1)
+                  if(_loc5_.verticalScrollPosition - _loc16_ + _loc5_.compositionHeight < 0)
                   {
-                     nextLine++;
-                     nextTextFlowLine=textFlow.flowComposer.getLineAt(nextLine);
-                     if(nextTextFlowLine.y-curTextFlowLine.y>=newVertScrollPos-oldVertScrollPos)
+                     _loc5_.verticalScrollPosition = 0;
+                     _loc13_ = _loc3_.flowComposer.findLineIndexAtPosition(_loc5_.absoluteStart);
+                     _loc14_ = _loc3_.flowComposer.getLineAt(_loc13_);
+                  }
+                  else
+                  {
+                     _loc20_ = _loc5_.verticalScrollPosition;
+                     _loc5_.verticalScrollPosition = _loc5_.verticalScrollPosition - _loc16_;
+                     _loc21_ = _loc5_.verticalScrollPosition;
+                     if(_loc20_ == _loc21_)
                      {
+                        _loc13_ = _loc3_.flowComposer.findLineIndexAtPosition(_loc5_.absoluteStart);
+                        _loc14_ = _loc3_.flowComposer.getLineAt(_loc13_);
                      }
                      else
                      {
-                        continue;
+                        _loc13_ = _loc9_;
+                        while(_loc13_ > 0)
+                        {
+                           _loc13_--;
+                           _loc14_ = _loc3_.flowComposer.getLineAt(_loc13_);
+                           if(_loc10_.y - _loc14_.y >= _loc20_ - _loc21_ || _loc14_.absoluteStart < _loc5_.absoluteStart)
+                           {
+                              break;
+                           }
+                        }
                      }
                   }
                }
+               _loc8_ = _loc14_.absoluteStart + _loc12_;
+               var _loc17_:int = _loc14_.absoluteStart + _loc14_.textLength-1;
+               if(_loc8_ > _loc17_)
+               {
+                  _loc8_ = _loc17_;
+               }
+               if(!param2)
+               {
+                  _loc7_ = _loc8_;
+               }
+               if(_loc7_ == _loc8_)
+               {
+                  _loc7_ = updateEndIfInReadOnlyElement(_loc3_,_loc7_);
+                  _loc8_ = updateStartIfInReadOnlyElement(_loc3_,_loc8_);
+               }
+               else
+               {
+                  _loc8_ = updateStartIfInReadOnlyElement(_loc3_,_loc8_);
+               }
+               return param1.updateRange(_loc7_,_loc8_);
             }
-         }
-         endIdx=nextTextFlowLine.absoluteStart+linePos;
-         var nextLineEnd:int = nextTextFlowLine.absoluteStart+nextTextFlowLine.textLength-1;
-         if(endIdx>nextLineEnd)
-         {
-            endIdx=nextLineEnd;
-         }
-         if(!extendSelection)
-         {
-            begIdx=endIdx;
-         }
-         if(begIdx==endIdx)
-         {
-            begIdx=updateEndIfInReadOnlyElement(textFlow,begIdx);
-            endIdx=updateStartIfInReadOnlyElement(textFlow,endIdx);
-         }
-         else
-         {
-            endIdx=updateStartIfInReadOnlyElement(textFlow,endIdx);
-         }
-         return range.updateRange(begIdx,endIdx);
-      }
-
-      public static function previousPage(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         var nextLine:* = 0;
-         var amount:* = NaN;
-         var oldHorzPos:* = NaN;
-         var newHorzPos:* = NaN;
-         var oldVertPos:* = NaN;
-         var newVertPos:* = NaN;
-         if(!validateTextRange(range))
-         {
-            return false;
-         }
-         var textFlow:TextFlow = range.textFlow;
-         var controllerIndex:int = textFlow.flowComposer.findControllerIndexAtPosition(range.activePosition);
-         var controller:ContainerController = textFlow.flowComposer.getControllerAt(controllerIndex);
-         var controllerFirstLine:TextFlowLine = textFlow.flowComposer.findLineAtPosition(controller.absoluteStart);
-         if(range.activePosition<=controller.absoluteStart+controllerFirstLine.textLength)
-         {
-            if(controllerIndex==0)
-            {
+            
+            public static function endOfLine(param1:TextRange, param2:Boolean=false) : Boolean {
+               if(!validateTextRange(param1))
+               {
+                  return false;
+               }
+               var _loc3_:TextFlow = param1.textFlow;
+               checkCompose(_loc3_.flowComposer,param1.absoluteEnd);
+               var _loc4_:int = param1.anchorPosition;
+               var _loc5_:int = param1.activePosition;
+               var _loc6_:int = _loc3_.flowComposer.findLineIndexAtPosition(_loc5_);
+               var _loc7_:int = _loc3_.flowComposer.getLineAt(_loc6_).absoluteStart;
+               var _loc8_:int = _loc7_ + _loc3_.flowComposer.getLineAt(_loc6_).textLength-1;
+               var _loc9_:FlowLeafElement = _loc3_.findLeaf(_loc5_);
+               var _loc10_:ParagraphElement = _loc9_.getParagraph();
+               if(CharacterUtil.isWhitespace(_loc10_.getCharCodeAtPosition(_loc8_ - _loc10_.getAbsoluteStart())))
+               {
+                  _loc5_ = _loc8_;
+               }
+               else
+               {
+                  _loc5_ = _loc8_ + 1;
+               }
+               if(!param2)
+               {
+                  _loc4_ = _loc5_;
+               }
+               if(_loc4_ == _loc5_)
+               {
+                  _loc4_ = updateEndIfInReadOnlyElement(_loc3_,_loc4_);
+                  _loc5_ = updateStartIfInReadOnlyElement(_loc3_,_loc5_);
+               }
+               else
+               {
+                  _loc5_ = updateStartIfInReadOnlyElement(_loc3_,_loc5_);
+               }
+               return param1.updateRange(_loc4_,_loc5_);
+            }
+            
+            public static function startOfLine(param1:TextRange, param2:Boolean=false) : Boolean {
+               if(!validateTextRange(param1))
+               {
+                  return false;
+               }
+               var _loc3_:TextFlow = param1.textFlow;
+               checkCompose(_loc3_.flowComposer,param1.absoluteEnd);
+               var _loc4_:int = param1.anchorPosition;
+               var _loc5_:int = param1.activePosition;
+               var _loc6_:int = _loc3_.flowComposer.findLineIndexAtPosition(_loc5_);
+               var _loc7_:int = _loc3_.flowComposer.getLineAt(_loc6_).absoluteStart;
+               _loc5_ = _loc7_;
+               if(!param2)
+               {
+                  _loc4_ = _loc5_;
+               }
+               if(_loc4_ == _loc5_)
+               {
+                  _loc4_ = updateEndIfInReadOnlyElement(_loc3_,_loc4_);
+                  _loc5_ = updateStartIfInReadOnlyElement(_loc3_,_loc5_);
+               }
+               else
+               {
+                  _loc5_ = updateStartIfInReadOnlyElement(_loc3_,_loc5_);
+               }
+               return param1.updateRange(_loc4_,_loc5_);
+            }
+            
+            public static function endOfDocument(param1:TextRange, param2:Boolean=false) : Boolean {
+               if(!validateTextRange(param1))
+               {
+                  return false;
+               }
+               var _loc3_:TextFlow = param1.textFlow;
+               var _loc4_:int = param1.anchorPosition;
+               var _loc5_:int = param1.activePosition;
+               _loc5_ = _loc3_.textLength;
+               if(!param2)
+               {
+                  _loc4_ = _loc5_;
+               }
+               if(_loc4_ == _loc5_)
+               {
+                  _loc4_ = updateEndIfInReadOnlyElement(_loc3_,_loc4_);
+                  _loc5_ = updateStartIfInReadOnlyElement(_loc3_,_loc5_);
+               }
+               else
+               {
+                  _loc5_ = updateStartIfInReadOnlyElement(_loc3_,_loc5_);
+               }
+               return param1.updateRange(_loc4_,_loc5_);
+            }
+            
+            public static function startOfDocument(param1:TextRange, param2:Boolean=false) : Boolean {
+               var _loc3_:int = param1.anchorPosition;
+               var _loc4_:* = 0;
+               if(!param2)
+               {
+                  _loc3_ = _loc4_;
+               }
+               if(_loc3_ == _loc4_)
+               {
+                  _loc3_ = updateEndIfInReadOnlyElement(param1.textFlow,_loc3_);
+                  _loc4_ = updateStartIfInReadOnlyElement(param1.textFlow,_loc4_);
+               }
+               else
+               {
+                  _loc4_ = updateStartIfInReadOnlyElement(param1.textFlow,_loc4_);
+               }
+               return param1.updateRange(_loc3_,_loc4_);
+            }
+            
+            public static function startOfParagraph(param1:TextRange, param2:Boolean=false) : Boolean {
+               var _loc3_:int = param1.anchorPosition;
+               var _loc4_:int = param1.activePosition;
+               var _loc5_:FlowLeafElement = param1.textFlow.findLeaf(_loc4_);
+               var _loc6_:ParagraphElement = _loc5_.getParagraph();
+               _loc4_ = _loc6_.getAbsoluteStart();
+               if(!param2)
+               {
+                  _loc3_ = _loc4_;
+               }
+               if(_loc3_ == _loc4_)
+               {
+                  _loc3_ = updateStartIfInReadOnlyElement(param1.textFlow,_loc3_);
+                  _loc4_ = updateEndIfInReadOnlyElement(param1.textFlow,_loc4_);
+               }
+               else
+               {
+                  _loc4_ = updateEndIfInReadOnlyElement(param1.textFlow,_loc4_);
+               }
+               return param1.updateRange(_loc3_,_loc4_);
+            }
+            
+            public static function endOfParagraph(param1:TextRange, param2:Boolean=false) : Boolean {
+               if(!validateTextRange(param1))
+               {
+                  return false;
+               }
+               var _loc3_:int = param1.anchorPosition;
+               var _loc4_:int = param1.activePosition;
+               var _loc5_:FlowLeafElement = param1.textFlow.findLeaf(_loc4_);
+               var _loc6_:ParagraphElement = _loc5_.getParagraph();
+               _loc4_ = _loc6_.getAbsoluteStart() + _loc6_.textLength-1;
+               if(!param2)
+               {
+                  _loc3_ = _loc4_;
+               }
+               if(_loc3_ == _loc4_)
+               {
+                  _loc3_ = updateStartIfInReadOnlyElement(param1.textFlow,_loc3_);
+                  _loc4_ = updateEndIfInReadOnlyElement(param1.textFlow,_loc4_);
+               }
+               else
+               {
+                  _loc4_ = updateEndIfInReadOnlyElement(param1.textFlow,_loc4_);
+               }
+               return param1.updateRange(_loc3_,_loc4_);
+            }
+            
+            private static function adjustForOversetForward(param1:TextRange) : Boolean {
+               var _loc4_:* = 0;
+               var _loc2_:IFlowComposer = param1.textFlow.flowComposer;
+               var _loc3_:ContainerController = null;
+               checkCompose(_loc2_,param1.absoluteEnd);
+               if(param1.absoluteEnd > _loc2_.damageAbsoluteStart-1)
+               {
+                  clampToFit(param1,_loc2_.damageAbsoluteStart-1);
+                  return true;
+               }
+               if((_loc2_) && (_loc2_.numControllers))
+               {
+                  _loc4_ = _loc2_.findControllerIndexAtPosition(param1.absoluteEnd);
+                  if(_loc4_ >= 0)
+                  {
+                     _loc3_ = _loc2_.getControllerAt(_loc4_);
+                  }
+                  if(_loc4_ == _loc2_.numControllers-1)
+                  {
+                     if(_loc3_.absoluteStart + _loc3_.textLength <= param1.absoluteEnd && !(_loc3_.absoluteStart + _loc3_.textLength == param1.textFlow.textLength))
+                     {
+                        _loc3_ = null;
+                     }
+                  }
+               }
+               if(!_loc3_)
+               {
+                  param1.anchorPosition = param1.textFlow.textLength;
+                  param1.activePosition = param1.anchorPosition;
+                  return true;
+               }
                return false;
             }
-            range.activePosition=textFlow.flowComposer.getControllerAt(controllerIndex-1).absoluteStart;
-            if(!extendSelection)
-            {
-               range.anchorPosition=range.activePosition;
-            }
-            return true;
-         }
-         if(controllerIndex!=textFlow.flowComposer.numControllers-1)
-         {
-            range.activePosition=controller.absoluteStart;
-            if(!extendSelection)
-            {
-               range.anchorPosition=range.activePosition;
-            }
-            return true;
-         }
-         if(!isScrollable(textFlow,range.activePosition))
-         {
-            return false;
-         }
-         if(adjustForOversetBack(range))
-         {
-            return true;
-         }
-         var begIdx:int = range.absoluteStart;
-         var endIdx:int = range.absoluteEnd;
-         var curLine:int = textFlow.flowComposer.findLineIndexAtPosition(endIdx);
-         var curTextFlowLine:TextFlowLine = textFlow.flowComposer.getLineAt(curLine);
-         var lineStart:int = textFlow.flowComposer.getLineAt(curLine).absoluteStart;
-         var linePos:int = endIdx-lineStart;
-         var nextTextFlowLine:TextFlowLine = curTextFlowLine;
-         var isTTB:Boolean = textFlow.computedFormat.blockProgression==BlockProgression.RL;
-         controller=textFlow.flowComposer.getControllerAt(textFlow.flowComposer.numControllers-1);
-         if(isTTB)
-         {
-            amount=controller.compositionWidth*textFlow.configuration.scrollPagePercentage;
-         }
-         else
-         {
-            amount=controller.compositionHeight*textFlow.configuration.scrollPagePercentage;
-         }
-         if(isTTB)
-         {
-            if(controller.horizontalScrollPosition+amount+controller.compositionWidth>0)
-            {
-               controller.horizontalScrollPosition=0;
-               nextLine=textFlow.flowComposer.findLineIndexAtPosition(controller.absoluteStart);
-               nextTextFlowLine=textFlow.flowComposer.getLineAt(nextLine);
-            }
-            else
-            {
-               oldHorzPos=controller.horizontalScrollPosition;
-               controller.horizontalScrollPosition=controller.horizontalScrollPosition+amount;
-               newHorzPos=controller.horizontalScrollPosition;
-               if(oldHorzPos==newHorzPos)
+            
+            private static function clampToFit(param1:TextRange, param2:int) : void {
+               if(param2 < 0)
                {
-                  nextLine=textFlow.flowComposer.findLineIndexAtPosition(controller.absoluteStart);
-                  nextTextFlowLine=textFlow.flowComposer.getLineAt(nextLine);
+                  param2 = 0;
                }
-               else
+               param1.anchorPosition = Math.min(param1.anchorPosition,param2);
+               param1.activePosition = Math.min(param1.activePosition,param2);
+            }
+            
+            private static function adjustForOversetBack(param1:TextRange) : Boolean {
+               var _loc2_:IFlowComposer = param1.textFlow.flowComposer;
+               if(_loc2_)
                {
-                  nextLine=curLine;
-                  while(nextLine>0)
+                  checkCompose(_loc2_,param1.absoluteEnd);
+                  if(param1.absoluteEnd > _loc2_.damageAbsoluteStart-1)
                   {
-                     nextLine--;
-                     nextTextFlowLine=textFlow.flowComposer.getLineAt(nextLine);
-                     if((nextTextFlowLine.x-curTextFlowLine.x>=newHorzPos-oldHorzPos)||(nextTextFlowLine.absoluteStart>controller.absoluteStart))
-                     {
-                     }
-                     else
-                     {
-                        continue;
-                     }
+                     clampToFit(param1,_loc2_.damageAbsoluteStart-1);
+                     return true;
+                  }
+                  if(_loc2_.findControllerIndexAtPosition(param1.absoluteEnd) == -1)
+                  {
+                     param1.anchorPosition = endOfLastController(param1.textFlow);
+                     param1.activePosition = param1.anchorPosition;
+                     return true;
                   }
                }
+               return false;
             }
-         }
-         else
-         {
-            if(controller.verticalScrollPosition-amount+controller.compositionHeight<0)
-            {
-               controller.verticalScrollPosition=0;
-               nextLine=textFlow.flowComposer.findLineIndexAtPosition(controller.absoluteStart);
-               nextTextFlowLine=textFlow.flowComposer.getLineAt(nextLine);
-            }
-            else
-            {
-               oldVertPos=controller.verticalScrollPosition;
-               controller.verticalScrollPosition=controller.verticalScrollPosition-amount;
-               newVertPos=controller.verticalScrollPosition;
-               if(oldVertPos==newVertPos)
+            
+            private static function checkCompose(param1:IFlowComposer, param2:int) : void {
+               if(param1.damageAbsoluteStart <= param2)
                {
-                  nextLine=textFlow.flowComposer.findLineIndexAtPosition(controller.absoluteStart);
-                  nextTextFlowLine=textFlow.flowComposer.getLineAt(nextLine);
-               }
-               else
-               {
-                  nextLine=curLine;
-                  while(nextLine>0)
-                  {
-                     nextLine--;
-                     nextTextFlowLine=textFlow.flowComposer.getLineAt(nextLine);
-                     if((curTextFlowLine.y-nextTextFlowLine.y>=oldVertPos-newVertPos)||(nextTextFlowLine.absoluteStart>controller.absoluteStart))
-                     {
-                     }
-                     else
-                     {
-                        continue;
-                     }
-                  }
+                  param1.composeToPosition(param2);
                }
             }
-         }
-         endIdx=nextTextFlowLine.absoluteStart+linePos;
-         var nextLineEnd:int = nextTextFlowLine.absoluteStart+nextTextFlowLine.textLength-1;
-         if(endIdx>nextLineEnd)
-         {
-            endIdx=nextLineEnd;
-         }
-         if(!extendSelection)
-         {
-            begIdx=endIdx;
-         }
-         if(begIdx==endIdx)
-         {
-            begIdx=updateEndIfInReadOnlyElement(textFlow,begIdx);
-            endIdx=updateStartIfInReadOnlyElement(textFlow,endIdx);
-         }
-         else
-         {
-            endIdx=updateStartIfInReadOnlyElement(textFlow,endIdx);
-         }
-         return range.updateRange(begIdx,endIdx);
-      }
-
-      public static function endOfLine(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         if(!validateTextRange(range))
-         {
-            return false;
-         }
-         var textFlow:TextFlow = range.textFlow;
-         checkCompose(textFlow.flowComposer,range.absoluteEnd);
-         var begIdx:int = range.anchorPosition;
-         var endIdx:int = range.activePosition;
-         var curLine:int = textFlow.flowComposer.findLineIndexAtPosition(endIdx);
-         var lineStart:int = textFlow.flowComposer.getLineAt(curLine).absoluteStart;
-         var lineEnd:int = lineStart+textFlow.flowComposer.getLineAt(curLine).textLength-1;
-         var leaf:FlowLeafElement = textFlow.findLeaf(endIdx);
-         var para:ParagraphElement = leaf.getParagraph();
-         if(CharacterUtil.isWhitespace(para.getCharCodeAtPosition(lineEnd-para.getAbsoluteStart())))
-         {
-            endIdx=lineEnd;
-         }
-         else
-         {
-            endIdx=lineEnd+1;
-         }
-         if(!extendSelection)
-         {
-            begIdx=endIdx;
-         }
-         if(begIdx==endIdx)
-         {
-            begIdx=updateEndIfInReadOnlyElement(textFlow,begIdx);
-            endIdx=updateStartIfInReadOnlyElement(textFlow,endIdx);
-         }
-         else
-         {
-            endIdx=updateStartIfInReadOnlyElement(textFlow,endIdx);
-         }
-         return range.updateRange(begIdx,endIdx);
-      }
-
-      public static function startOfLine(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         if(!validateTextRange(range))
-         {
-            return false;
-         }
-         var textFlow:TextFlow = range.textFlow;
-         checkCompose(textFlow.flowComposer,range.absoluteEnd);
-         var begIdx:int = range.anchorPosition;
-         var endIdx:int = range.activePosition;
-         var curLine:int = textFlow.flowComposer.findLineIndexAtPosition(endIdx);
-         var lineStart:int = textFlow.flowComposer.getLineAt(curLine).absoluteStart;
-         endIdx=lineStart;
-         if(!extendSelection)
-         {
-            begIdx=endIdx;
-         }
-         if(begIdx==endIdx)
-         {
-            begIdx=updateEndIfInReadOnlyElement(textFlow,begIdx);
-            endIdx=updateStartIfInReadOnlyElement(textFlow,endIdx);
-         }
-         else
-         {
-            endIdx=updateStartIfInReadOnlyElement(textFlow,endIdx);
-         }
-         return range.updateRange(begIdx,endIdx);
-      }
-
-      public static function endOfDocument(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         if(!validateTextRange(range))
-         {
-            return false;
-         }
-         var textFlow:TextFlow = range.textFlow;
-         var begIdx:int = range.anchorPosition;
-         var endIdx:int = range.activePosition;
-         endIdx=textFlow.textLength;
-         if(!extendSelection)
-         {
-            begIdx=endIdx;
-         }
-         if(begIdx==endIdx)
-         {
-            begIdx=updateEndIfInReadOnlyElement(textFlow,begIdx);
-            endIdx=updateStartIfInReadOnlyElement(textFlow,endIdx);
-         }
-         else
-         {
-            endIdx=updateStartIfInReadOnlyElement(textFlow,endIdx);
-         }
-         return range.updateRange(begIdx,endIdx);
-      }
-
-      public static function startOfDocument(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         var begIdx:int = range.anchorPosition;
-         var endIdx:int = 0;
-         if(!extendSelection)
-         {
-            begIdx=endIdx;
-         }
-         if(begIdx==endIdx)
-         {
-            begIdx=updateEndIfInReadOnlyElement(range.textFlow,begIdx);
-            endIdx=updateStartIfInReadOnlyElement(range.textFlow,endIdx);
-         }
-         else
-         {
-            endIdx=updateStartIfInReadOnlyElement(range.textFlow,endIdx);
-         }
-         return range.updateRange(begIdx,endIdx);
-      }
-
-      public static function startOfParagraph(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         var begIdx:int = range.anchorPosition;
-         var endIdx:int = range.activePosition;
-         var leaf:FlowLeafElement = range.textFlow.findLeaf(endIdx);
-         var para:ParagraphElement = leaf.getParagraph();
-         endIdx=para.getAbsoluteStart();
-         if(!extendSelection)
-         {
-            begIdx=endIdx;
-         }
-         if(begIdx==endIdx)
-         {
-            begIdx=updateStartIfInReadOnlyElement(range.textFlow,begIdx);
-            endIdx=updateEndIfInReadOnlyElement(range.textFlow,endIdx);
-         }
-         else
-         {
-            endIdx=updateEndIfInReadOnlyElement(range.textFlow,endIdx);
-         }
-         return range.updateRange(begIdx,endIdx);
-      }
-
-      public static function endOfParagraph(range:TextRange, extendSelection:Boolean=false) : Boolean {
-         if(!validateTextRange(range))
-         {
-            return false;
-         }
-         var begIdx:int = range.anchorPosition;
-         var endIdx:int = range.activePosition;
-         var leaf:FlowLeafElement = range.textFlow.findLeaf(endIdx);
-         var para:ParagraphElement = leaf.getParagraph();
-         endIdx=para.getAbsoluteStart()+para.textLength-1;
-         if(!extendSelection)
-         {
-            begIdx=endIdx;
-         }
-         if(begIdx==endIdx)
-         {
-            begIdx=updateStartIfInReadOnlyElement(range.textFlow,begIdx);
-            endIdx=updateEndIfInReadOnlyElement(range.textFlow,endIdx);
-         }
-         else
-         {
-            endIdx=updateEndIfInReadOnlyElement(range.textFlow,endIdx);
-         }
-         return range.updateRange(begIdx,endIdx);
-      }
-
-      private static function adjustForOversetForward(range:TextRange) : Boolean {
-         var controllerIndex:* = 0;
-         var flowComposer:IFlowComposer = range.textFlow.flowComposer;
-         var controller:ContainerController = null;
-         checkCompose(flowComposer,range.absoluteEnd);
-         if(range.absoluteEnd>flowComposer.damageAbsoluteStart-1)
-         {
-            clampToFit(range,flowComposer.damageAbsoluteStart-1);
-            return true;
-         }
-         if((flowComposer)&&(flowComposer.numControllers))
-         {
-            controllerIndex=flowComposer.findControllerIndexAtPosition(range.absoluteEnd);
-            if(controllerIndex>=0)
-            {
-               controller=flowComposer.getControllerAt(controllerIndex);
-            }
-            if(controllerIndex==flowComposer.numControllers-1)
-            {
-               if((controller.absoluteStart+controller.textLength<=range.absoluteEnd)&&(!(controller.absoluteStart+controller.textLength==range.textFlow.textLength)))
+            
+            private static function endOfLastController(param1:TextFlow) : int {
+               var _loc2_:IFlowComposer = param1.flowComposer;
+               if(!_loc2_ || _loc2_.numControllers <= 0)
                {
-                  controller=null;
+                  return 0;
                }
+               var _loc3_:ContainerController = _loc2_.getControllerAt(_loc2_.numControllers-1);
+               return _loc3_.absoluteStart + Math.max(_loc3_.textLength-1,0);
+            }
+            
+            private static function isOverset(param1:TextFlow, param2:int) : Boolean {
+               var _loc3_:IFlowComposer = param1.flowComposer;
+               return !_loc3_ || _loc3_.findControllerIndexAtPosition(param2) == -1;
+            }
+            
+            private static function isScrollable(param1:TextFlow, param2:int) : Boolean {
+               var _loc5_:ContainerController = null;
+               var _loc6_:String = null;
+               var _loc3_:IFlowComposer = param1.flowComposer;
+               if(!_loc3_)
+               {
+                  return false;
+               }
+               var _loc4_:int = _loc3_.findControllerIndexAtPosition(param2);
+               if(_loc4_ >= 0)
+               {
+                  _loc5_ = _loc3_.getControllerAt(_loc4_);
+                  _loc6_ = _loc5_.rootElement.computedFormat.blockProgression;
+                  return _loc6_ == BlockProgression.TB && !(_loc5_.verticalScrollPolicy == ScrollPolicy.OFF) || _loc6_ == BlockProgression.RL && !(_loc5_.horizontalScrollPolicy == ScrollPolicy.OFF);
+               }
+               return false;
             }
          }
-         if(!controller)
-         {
-            range.anchorPosition=range.textFlow.textLength;
-            range.activePosition=range.anchorPosition;
-            return true;
-         }
-         return false;
       }
-
-      private static function clampToFit(range:TextRange, endPos:int) : void {
-         if(endPos<0)
-         {
-            endPos=0;
-         }
-         range.anchorPosition=Math.min(range.anchorPosition,endPos);
-         range.activePosition=Math.min(range.activePosition,endPos);
-      }
-
-      private static function adjustForOversetBack(range:TextRange) : Boolean {
-         var flowComposer:IFlowComposer = range.textFlow.flowComposer;
-         if(flowComposer)
-         {
-            checkCompose(flowComposer,range.absoluteEnd);
-            if(range.absoluteEnd>flowComposer.damageAbsoluteStart-1)
-            {
-               clampToFit(range,flowComposer.damageAbsoluteStart-1);
-               return true;
-            }
-            if(flowComposer.findControllerIndexAtPosition(range.absoluteEnd)==-1)
-            {
-               range.anchorPosition=endOfLastController(range.textFlow);
-               range.activePosition=range.anchorPosition;
-               return true;
-            }
-         }
-         return false;
-      }
-
-      private static function checkCompose(flowComposer:IFlowComposer, pos:int) : void {
-         if(flowComposer.damageAbsoluteStart<=pos)
-         {
-            flowComposer.composeToPosition(pos);
-         }
-      }
-
-      private static function endOfLastController(flowRoot:TextFlow) : int {
-         var flowComposer:IFlowComposer = flowRoot.flowComposer;
-         if((!flowComposer)||(flowComposer.numControllers<=0))
-         {
-            return 0;
-         }
-         var controller:ContainerController = flowComposer.getControllerAt(flowComposer.numControllers-1);
-         return controller.absoluteStart+Math.max(controller.textLength-1,0);
-      }
-
-      private static function isOverset(flowRoot:TextFlow, absolutePos:int) : Boolean {
-         var flowComposer:IFlowComposer = flowRoot.flowComposer;
-         return (!flowComposer)||(flowComposer.findControllerIndexAtPosition(absolutePos)==-1);
-      }
-
-      private static function isScrollable(flowRoot:TextFlow, absolutePos:int) : Boolean {
-         var controller:ContainerController = null;
-         var blockProgression:String = null;
-         var flowComposer:IFlowComposer = flowRoot.flowComposer;
-         if(!flowComposer)
-         {
-            return false;
-         }
-         var controllerIndex:int = flowComposer.findControllerIndexAtPosition(absolutePos);
-         if(controllerIndex>=0)
-         {
-            controller=flowComposer.getControllerAt(controllerIndex);
-            blockProgression=controller.rootElement.computedFormat.blockProgression;
-            return (blockProgression==BlockProgression.TB)&&(!(controller.verticalScrollPolicy==ScrollPolicy.OFF))||(blockProgression==BlockProgression.RL)&&(!(controller.horizontalScrollPolicy==ScrollPolicy.OFF));
-         }
-         return false;
-      }
-
-
-   }
-
-}

@@ -5,95 +5,93 @@ package com.ankamagames.dofus.network.messages.web.ankabox
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class MailStatusMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function MailStatusMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6275;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var unread:uint = 0;
-
+      
       public var total:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 6275;
       }
-
-      public function initMailStatusMessage(unread:uint=0, total:uint=0) : MailStatusMessage {
-         this.unread=unread;
-         this.total=total;
-         this._isInitialized=true;
+      
+      public function initMailStatusMessage(param1:uint=0, param2:uint=0) : MailStatusMessage {
+         this.unread = param1;
+         this.total = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.unread=0;
-         this.total=0;
-         this._isInitialized=false;
+         this.unread = 0;
+         this.total = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_MailStatusMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_MailStatusMessage(param1);
       }
-
-      public function serializeAs_MailStatusMessage(output:IDataOutput) : void {
-         if(this.unread<0)
+      
+      public function serializeAs_MailStatusMessage(param1:IDataOutput) : void {
+         if(this.unread < 0)
          {
-            throw new Error("Forbidden value ("+this.unread+") on element unread.");
+            throw new Error("Forbidden value (" + this.unread + ") on element unread.");
          }
          else
          {
-            output.writeShort(this.unread);
-            if(this.total<0)
+            param1.writeShort(this.unread);
+            if(this.total < 0)
             {
-               throw new Error("Forbidden value ("+this.total+") on element total.");
+               throw new Error("Forbidden value (" + this.total + ") on element total.");
             }
             else
             {
-               output.writeShort(this.total);
+               param1.writeShort(this.total);
                return;
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_MailStatusMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_MailStatusMessage(param1);
       }
-
-      public function deserializeAs_MailStatusMessage(input:IDataInput) : void {
-         this.unread=input.readShort();
-         if(this.unread<0)
+      
+      public function deserializeAs_MailStatusMessage(param1:IDataInput) : void {
+         this.unread = param1.readShort();
+         if(this.unread < 0)
          {
-            throw new Error("Forbidden value ("+this.unread+") on element of MailStatusMessage.unread.");
+            throw new Error("Forbidden value (" + this.unread + ") on element of MailStatusMessage.unread.");
          }
          else
          {
-            this.total=input.readShort();
-            if(this.total<0)
+            this.total = param1.readShort();
+            if(this.total < 0)
             {
-               throw new Error("Forbidden value ("+this.total+") on element of MailStatusMessage.total.");
+               throw new Error("Forbidden value (" + this.total + ") on element of MailStatusMessage.total.");
             }
             else
             {
@@ -102,5 +100,4 @@ package com.ankamagames.dofus.network.messages.web.ankabox
          }
       }
    }
-
 }

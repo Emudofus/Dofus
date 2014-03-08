@@ -2,16 +2,14 @@ package com.hurlant.util
 {
    import flash.net.LocalConnection;
    import flash.system.System;
-
-
+   
    public class Memory extends Object
    {
-         
-
+      
       public function Memory() {
          super();
       }
-
+      
       public static function gc() : void {
          try
          {
@@ -22,12 +20,9 @@ package com.hurlant.util
          {
          }
       }
-
+      
       public static function get used() : uint {
          return System.totalMemory;
       }
-
-
    }
-
 }

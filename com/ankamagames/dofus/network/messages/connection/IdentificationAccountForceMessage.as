@@ -6,70 +6,67 @@ package com.ankamagames.dofus.network.messages.connection
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class IdentificationAccountForceMessage extends IdentificationMessage implements INetworkMessage
    {
-         
-
+      
       public function IdentificationAccountForceMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6119;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
-         return (super.isInitialized)&&(this._isInitialized);
+         return (super.isInitialized) && (this._isInitialized);
       }
-
+      
       public var forcedAccountLogin:String = "";
-
+      
       override public function getMessageId() : uint {
          return 6119;
       }
-
-      public function initIdentificationAccountForceMessage(version:VersionExtended=null, lang:String="", credentials:Vector.<int>=null, serverId:int=0, autoconnect:Boolean=false, useCertificate:Boolean=false, useLoginToken:Boolean=false, forcedAccountLogin:String="") : IdentificationAccountForceMessage {
-         super.initIdentificationMessage(version,lang,credentials,serverId,autoconnect,useCertificate,useLoginToken);
-         this.forcedAccountLogin=forcedAccountLogin;
-         this._isInitialized=true;
+      
+      public function initIdentificationAccountForceMessage(param1:VersionExtended=null, param2:String="", param3:Vector.<int>=null, param4:int=0, param5:Boolean=false, param6:Boolean=false, param7:Boolean=false, param8:Number=0, param9:String="") : IdentificationAccountForceMessage {
+         super.initIdentificationMessage(param1,param2,param3,param4,param5,param6,param7,param8);
+         this.forcedAccountLogin = param9;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
          super.reset();
-         this.forcedAccountLogin="";
-         this._isInitialized=false;
+         this.forcedAccountLogin = "";
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      override public function serialize(output:IDataOutput) : void {
-         this.serializeAs_IdentificationAccountForceMessage(output);
+      
+      override public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_IdentificationAccountForceMessage(param1);
       }
-
-      public function serializeAs_IdentificationAccountForceMessage(output:IDataOutput) : void {
-         super.serializeAs_IdentificationMessage(output);
-         output.writeUTF(this.forcedAccountLogin);
+      
+      public function serializeAs_IdentificationAccountForceMessage(param1:IDataOutput) : void {
+         super.serializeAs_IdentificationMessage(param1);
+         param1.writeUTF(this.forcedAccountLogin);
       }
-
-      override public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_IdentificationAccountForceMessage(input);
+      
+      override public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_IdentificationAccountForceMessage(param1);
       }
-
-      public function deserializeAs_IdentificationAccountForceMessage(input:IDataInput) : void {
-         super.deserialize(input);
-         this.forcedAccountLogin=input.readUTF();
+      
+      public function deserializeAs_IdentificationAccountForceMessage(param1:IDataInput) : void {
+         super.deserialize(param1);
+         this.forcedAccountLogin = param1.readUTF();
       }
    }
-
 }

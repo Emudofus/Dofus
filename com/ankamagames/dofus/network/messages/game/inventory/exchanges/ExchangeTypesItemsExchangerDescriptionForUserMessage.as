@@ -7,82 +7,79 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ExchangeTypesItemsExchangerDescriptionForUserMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ExchangeTypesItemsExchangerDescriptionForUserMessage() {
-         this.itemTypeDescriptions=new Vector.<BidExchangerObjectInfo>();
+         this.itemTypeDescriptions = new Vector.<BidExchangerObjectInfo>();
          super();
       }
-
+      
       public static const protocolId:uint = 5752;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var itemTypeDescriptions:Vector.<BidExchangerObjectInfo>;
-
+      
       override public function getMessageId() : uint {
          return 5752;
       }
-
-      public function initExchangeTypesItemsExchangerDescriptionForUserMessage(itemTypeDescriptions:Vector.<BidExchangerObjectInfo>=null) : ExchangeTypesItemsExchangerDescriptionForUserMessage {
-         this.itemTypeDescriptions=itemTypeDescriptions;
-         this._isInitialized=true;
+      
+      public function initExchangeTypesItemsExchangerDescriptionForUserMessage(param1:Vector.<BidExchangerObjectInfo>=null) : ExchangeTypesItemsExchangerDescriptionForUserMessage {
+         this.itemTypeDescriptions = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.itemTypeDescriptions=new Vector.<BidExchangerObjectInfo>();
-         this._isInitialized=false;
+         this.itemTypeDescriptions = new Vector.<BidExchangerObjectInfo>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ExchangeTypesItemsExchangerDescriptionForUserMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ExchangeTypesItemsExchangerDescriptionForUserMessage(param1);
       }
-
-      public function serializeAs_ExchangeTypesItemsExchangerDescriptionForUserMessage(output:IDataOutput) : void {
-         output.writeShort(this.itemTypeDescriptions.length);
-         var _i1:uint = 0;
-         while(_i1<this.itemTypeDescriptions.length)
+      
+      public function serializeAs_ExchangeTypesItemsExchangerDescriptionForUserMessage(param1:IDataOutput) : void {
+         param1.writeShort(this.itemTypeDescriptions.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.itemTypeDescriptions.length)
          {
-            (this.itemTypeDescriptions[_i1] as BidExchangerObjectInfo).serializeAs_BidExchangerObjectInfo(output);
-            _i1++;
+            (this.itemTypeDescriptions[_loc2_] as BidExchangerObjectInfo).serializeAs_BidExchangerObjectInfo(param1);
+            _loc2_++;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ExchangeTypesItemsExchangerDescriptionForUserMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ExchangeTypesItemsExchangerDescriptionForUserMessage(param1);
       }
-
-      public function deserializeAs_ExchangeTypesItemsExchangerDescriptionForUserMessage(input:IDataInput) : void {
-         var _item1:BidExchangerObjectInfo = null;
-         var _itemTypeDescriptionsLen:uint = input.readUnsignedShort();
-         var _i1:uint = 0;
-         while(_i1<_itemTypeDescriptionsLen)
+      
+      public function deserializeAs_ExchangeTypesItemsExchangerDescriptionForUserMessage(param1:IDataInput) : void {
+         var _loc4_:BidExchangerObjectInfo = null;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            _item1=new BidExchangerObjectInfo();
-            _item1.deserialize(input);
-            this.itemTypeDescriptions.push(_item1);
-            _i1++;
+            _loc4_ = new BidExchangerObjectInfo();
+            _loc4_.deserialize(param1);
+            this.itemTypeDescriptions.push(_loc4_);
+            _loc3_++;
          }
       }
    }
-
 }

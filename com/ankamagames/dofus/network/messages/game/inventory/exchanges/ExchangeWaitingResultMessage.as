@@ -5,66 +5,63 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ExchangeWaitingResultMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ExchangeWaitingResultMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 5786;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var bwait:Boolean = false;
-
+      
       override public function getMessageId() : uint {
          return 5786;
       }
-
-      public function initExchangeWaitingResultMessage(bwait:Boolean=false) : ExchangeWaitingResultMessage {
-         this.bwait=bwait;
-         this._isInitialized=true;
+      
+      public function initExchangeWaitingResultMessage(param1:Boolean=false) : ExchangeWaitingResultMessage {
+         this.bwait = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.bwait=false;
-         this._isInitialized=false;
+         this.bwait = false;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ExchangeWaitingResultMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ExchangeWaitingResultMessage(param1);
       }
-
-      public function serializeAs_ExchangeWaitingResultMessage(output:IDataOutput) : void {
-         output.writeBoolean(this.bwait);
+      
+      public function serializeAs_ExchangeWaitingResultMessage(param1:IDataOutput) : void {
+         param1.writeBoolean(this.bwait);
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ExchangeWaitingResultMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ExchangeWaitingResultMessage(param1);
       }
-
-      public function deserializeAs_ExchangeWaitingResultMessage(input:IDataInput) : void {
-         this.bwait=input.readBoolean();
+      
+      public function deserializeAs_ExchangeWaitingResultMessage(param1:IDataInput) : void {
+         this.bwait = param1.readBoolean();
       }
    }
-
 }

@@ -10,47 +10,44 @@ package com.ankamagames.dofus.logic.common.frames
    import com.ankamagames.dofus.network.messages.queues.QueueStatusMessage;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
-
-
+   
    public class QueueFrame extends Object implements Frame
    {
-         
-
+      
       public function QueueFrame() {
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(QueueFrame));
-
+      
       public function get priority() : int {
          return Priority.NORMAL;
       }
-
+      
       public function pushed() : Boolean {
          return true;
       }
-
-      public function process(msg:Message) : Boolean {
-         var lqsMsg:LoginQueueStatusMessage = null;
-         var qsMsg:QueueStatusMessage = null;
+      
+      public function process(param1:Message) : Boolean {
+         var _loc2_:LoginQueueStatusMessage = null;
+         var _loc3_:QueueStatusMessage = null;
          switch(true)
          {
-            case msg is LoginQueueStatusMessage:
-               lqsMsg=msg as LoginQueueStatusMessage;
-               KernelEventsManager.getInstance().processCallback(HookList.LoginQueueStatus,lqsMsg.position,lqsMsg.total);
+            case param1 is LoginQueueStatusMessage:
+               _loc2_ = param1 as LoginQueueStatusMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.LoginQueueStatus,_loc2_.position,_loc2_.total);
                return true;
-            case msg is QueueStatusMessage:
-               qsMsg=msg as QueueStatusMessage;
-               KernelEventsManager.getInstance().processCallback(HookList.QueueStatus,qsMsg.position,qsMsg.total);
+            case param1 is QueueStatusMessage:
+               _loc3_ = param1 as QueueStatusMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.QueueStatus,_loc3_.position,_loc3_.total);
                return true;
             default:
                return false;
          }
       }
-
+      
       public function pulled() : Boolean {
          return true;
       }
    }
-
 }

@@ -6,13 +6,18 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import com.ankamagames.atouin.types.Selection;
    import flash.utils.Timer;
    import com.ankamagames.berilia.types.data.LinkedCursorData;
    import com.ankamagames.jerakine.types.enums.Priority;
+   import flash.utils.Dictionary;
+   import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
+   import com.ankamagames.dofus.types.entities.AnimatedCharacter;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
+   import com.ankamagames.dofus.network.enums.GameActionFightInvisibilityStateEnum;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
-   import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
    import com.ankamagames.jerakine.messages.Message;
@@ -23,7 +28,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.atouin.messages.CellClickMessage;
    import com.ankamagames.jerakine.entities.messages.EntityClickMessage;
    import com.ankamagames.dofus.logic.game.fight.actions.TimelineEntityClickAction;
-   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    import com.ankamagames.jerakine.entities.messages.EntityMouseOutMessage;
    import com.ankamagames.atouin.messages.CellOutMessage;
    import com.ankamagames.atouin.messages.AdjacentMapClickMessage;
@@ -31,236 +35,279 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.logic.game.fight.actions.BannerEmptySlotClickAction;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseUpMessage;
    import com.ankamagames.berilia.managers.LinkedCursorSpriteManager;
-   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
-   import com.ankamagames.atouin.renderers.ZoneDARenderer;
+   import com.ankamagames.jerakine.types.zones.IZone;
    import com.ankamagames.atouin.enums.PlacementStrataEnums;
-   import com.ankamagames.atouin.managers.SelectionManager;
+   import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
    import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.atouin.Atouin;
+   import com.ankamagames.atouin.managers.*;
+   import com.ankamagames.atouin.renderers.*;
+   import com.ankamagames.atouin.types.*;
+   import com.ankamagames.jerakine.map.*;
    import com.ankamagames.jerakine.types.zones.Cross;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterBaseCharacteristic;
    import com.ankamagames.atouin.AtouinConstants;
    import com.ankamagames.atouin.utils.DataMapProvider;
    import com.ankamagames.jerakine.types.zones.Lozenge;
    import com.ankamagames.jerakine.types.zones.Custom;
+   import __AS3__.vec.*;
+   import com.ankamagames.berilia.managers.TooltipManager;
+   import com.ankamagames.berilia.types.tooltip.TooltipPlacer;
    import flash.events.TimerEvent;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightCastOnTargetRequestMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightCastRequestMessage;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
-   import com.ankamagames.jerakine.map.LosDetector;
-   import com.ankamagames.jerakine.types.zones.IZone;
-   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
-   import com.ankamagames.jerakine.types.zones.Square;
-   import com.ankamagames.jerakine.types.zones.Line;
-   import com.ankamagames.jerakine.types.zones.Cone;
-   import com.ankamagames.jerakine.types.zones.HalfLozenge;
-   import com.ankamagames.jerakine.utils.display.spellZone.SpellShapeEnum;
    import com.ankamagames.dofus.datacenter.spells.SpellLevel;
-   import com.ankamagames.atouin.managers.EntitiesManager;
    import com.ankamagames.dofus.types.entities.Glyph;
    import com.ankamagames.dofus.network.enums.GameActionMarkTypeEnum;
    import flash.geom.Point;
-
-
+   
    public class FightSpellCastFrame extends Object implements Frame
    {
-         
-
-      public function FightSpellCastFrame(spellId:uint) {
-         var i:SpellWrapper = null;
-         var weapon:* = undefined;
+      
+      public function FightSpellCastFrame(param1:uint) {
+         var _loc2_:SpellWrapper = null;
+         var _loc3_:* = undefined;
          super();
-         this._spellId=spellId;
-         this._cursorData=new LinkedCursorData();
-         this._cursorData.sprite=new FORBIDDEN_CURSOR();
-         this._cursorData.sprite.cacheAsBitmap=true;
-         this._cursorData.offset=new Point(14,14);
-         this._cancelTimer=new Timer(50);
+         this._spellId = param1;
+         this._cursorData = new LinkedCursorData();
+         this._cursorData.sprite = new FORBIDDEN_CURSOR();
+         this._cursorData.sprite.cacheAsBitmap = true;
+         this._cursorData.offset = new Point(14,14);
+         this._cancelTimer = new Timer(50);
          this._cancelTimer.addEventListener(TimerEvent.TIMER,this.cancelCast);
-         if((spellId)||(!PlayedCharacterManager.getInstance().currentWeapon))
+         if((param1) || !PlayedCharacterManager.getInstance().currentWeapon)
          {
-            for each (i in PlayedCharacterManager.getInstance().spellsInventory)
+            for each (_loc2_ in PlayedCharacterManager.getInstance().spellsInventory)
             {
-               if(i.spellId==this._spellId)
+               if(_loc2_.spellId == this._spellId)
                {
-                  this._spellLevel=i;
+                  this._spellLevel = _loc2_;
                }
             }
          }
          else
          {
-            weapon=PlayedCharacterManager.getInstance().currentWeapon;
-            this._spellLevel=
+            _loc3_ = PlayedCharacterManager.getInstance().currentWeapon;
+            this._spellLevel = 
                {
-                  effects:weapon.effects,
-                  castTestLos:weapon.castTestLos,
-                  castInLine:weapon.castInLine,
-                  castInDiagonal:weapon.castInDiagonal,
-                  minRange:weapon.minRange,
-                  range:weapon.range,
-                  apCost:weapon.apCost,
-                  needFreeCell:false,
-                  needTakenCell:false,
-                  needFreeTrapCell:false
-               }
-            ;
+                  "effects":_loc3_.effects,
+                  "castTestLos":_loc3_.castTestLos,
+                  "castInLine":_loc3_.castInLine,
+                  "castInDiagonal":_loc3_.castInDiagonal,
+                  "minRange":_loc3_.minRange,
+                  "range":_loc3_.range,
+                  "apCost":_loc3_.apCost,
+                  "needFreeCell":false,
+                  "needTakenCell":false,
+                  "needFreeTrapCell":false
+               };
          }
-         this._clearTargetTimer=new Timer(50,1);
+         this._clearTargetTimer = new Timer(50,1);
          this._clearTargetTimer.addEventListener(TimerEvent.TIMER,this.onClearTarget);
       }
-
+      
       private static const FORBIDDEN_CURSOR:Class = FightSpellCastFrame_FORBIDDEN_CURSOR;
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FightSpellCastFrame));
-
+      
       private static const RANGE_COLOR:Color = new Color(5533093);
-
+      
       private static const LOS_COLOR:Color = new Color(2241433);
-
+      
       private static const TARGET_COLOR:Color = new Color(14487842);
-
+      
       private static const SELECTION_RANGE:String = "SpellCastRange";
-
+      
       private static const SELECTION_LOS:String = "SpellCastLos";
-
+      
       private static const SELECTION_TARGET:String = "SpellCastTarget";
-
+      
       private static const FORBIDDEN_CURSOR_NAME:String = "SpellCastForbiddenCusror";
-
+      
       public static function updateRangeAndTarget() : void {
-         var castFrame:FightSpellCastFrame = Kernel.getWorker().getFrame(FightSpellCastFrame) as FightSpellCastFrame;
-         if(castFrame)
+         var _loc1_:FightSpellCastFrame = Kernel.getWorker().getFrame(FightSpellCastFrame) as FightSpellCastFrame;
+         if(_loc1_)
          {
-            castFrame.removeRange();
-            castFrame.drawRange();
-            castFrame.refreshTarget(true);
+            _loc1_.removeRange();
+            _loc1_.drawRange();
+            _loc1_.refreshTarget(true);
          }
       }
-
+      
       private var _spellLevel:Object;
-
+      
       private var _spellId:uint;
-
+      
       private var _rangeSelection:Selection;
-
+      
       private var _losSelection:Selection;
-
+      
       private var _targetSelection:Selection;
-
+      
       private var _currentCell:int = -1;
-
+      
       private var _virtualCast:Boolean;
-
+      
       private var _cancelTimer:Timer;
-
+      
       private var _cursorData:LinkedCursorData;
-
+      
       private var _lastTargetStatus:Boolean = true;
-
+      
       private var _isInfiniteTarget:Boolean;
-
+      
       private var _usedWrapper;
-
+      
       private var _currentTargetIsTargetable:Boolean;
-
+      
       private var _clearTargetTimer:Timer;
-
+      
+      private var _spellmaximumRange:uint;
+      
       public function get priority() : int {
          return Priority.HIGHEST;
       }
-
+      
       public function get currentTargetIsTargetable() : Boolean {
          return this._currentTargetIsTargetable;
       }
-
+      
+      public function get currentSpell() : Object {
+         return this._spellLevel;
+      }
+      
+      public function get currentCellEntityInTargetSelection() : Boolean {
+         return SelectionManager.getInstance().isInside(FightContextFrame.currentCell,SELECTION_TARGET);
+      }
+      
       public function pushed() : Boolean {
+         var _loc2_:FightEntitiesFrame = null;
+         var _loc3_:Dictionary = null;
+         var _loc4_:GameContextActorInformations = null;
+         var _loc5_:GameFightFighterInformations = null;
+         var _loc6_:AnimatedCharacter = null;
+         var _loc1_:FightBattleFrame = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
+         if(_loc1_.playingSlaveEntity)
+         {
+            _loc2_ = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+            _loc3_ = _loc2_.getEntitiesDictionnary();
+            for each (_loc4_ in _loc3_)
+            {
+               _loc5_ = _loc4_ as GameFightFighterInformations;
+               _loc6_ = DofusEntities.getEntity(_loc5_.contextualId) as AnimatedCharacter;
+               if((_loc6_) && (!(_loc5_.contextualId == CurrentPlayedFighterManager.getInstance().currentFighterId)) && _loc5_.stats.invisibilityState == GameActionFightInvisibilityStateEnum.DETECTED)
+               {
+                  _loc6_.setCanSeeThrough(true);
+               }
+            }
+         }
          this._cancelTimer.reset();
-         this._lastTargetStatus=true;
-         if(this._spellId==0)
+         this._lastTargetStatus = true;
+         if(this._spellId == 0)
          {
             if(PlayedCharacterManager.getInstance().currentWeapon)
             {
-               this._usedWrapper=PlayedCharacterManager.getInstance().currentWeapon;
+               this._usedWrapper = PlayedCharacterManager.getInstance().currentWeapon;
             }
             else
             {
-               this._usedWrapper=SpellWrapper.create(-1,0,1,false,PlayedCharacterManager.getInstance().id);
+               this._usedWrapper = SpellWrapper.create(-1,0,1,false,PlayedCharacterManager.getInstance().id);
             }
          }
          else
          {
-            this._usedWrapper=SpellWrapper.getFirstSpellWrapperById(this._spellId,CurrentPlayedFighterManager.getInstance().currentFighterId);
+            this._usedWrapper = SpellWrapper.getFirstSpellWrapperById(this._spellId,CurrentPlayedFighterManager.getInstance().currentFighterId);
          }
          KernelEventsManager.getInstance().processCallback(HookList.CastSpellMode,this._usedWrapper);
          this.drawRange();
          this.refreshTarget();
          return true;
       }
-
-      public function process(msg:Message) : Boolean {
-         var conmsg:CellOverMessage = null;
-         var emomsg:EntityMouseOverMessage = null;
-         var teoa:TimelineEntityOverAction = null;
-         var timelineEntity:IEntity = null;
-         var ccmsg:CellClickMessage = null;
-         var ecmsg:EntityClickMessage = null;
-         var teica:TimelineEntityClickAction = null;
+      
+      public function process(param1:Message) : Boolean {
+         var _loc2_:CellOverMessage = null;
+         var _loc3_:EntityMouseOverMessage = null;
+         var _loc4_:TimelineEntityOverAction = null;
+         var _loc5_:IEntity = null;
+         var _loc6_:CellClickMessage = null;
+         var _loc7_:EntityClickMessage = null;
+         var _loc8_:TimelineEntityClickAction = null;
          switch(true)
          {
-            case msg is CellOverMessage:
-               conmsg=msg as CellOverMessage;
-               FightContextFrame.currentCell=conmsg.cellId;
+            case param1 is CellOverMessage:
+               _loc2_ = param1 as CellOverMessage;
+               FightContextFrame.currentCell = _loc2_.cellId;
                this.refreshTarget();
                return false;
-            case msg is EntityMouseOutMessage:
+            case param1 is EntityMouseOutMessage:
                this.clearTarget();
                return false;
-            case msg is CellOutMessage:
+            case param1 is CellOutMessage:
                this.clearTarget();
                return false;
-            case msg is EntityMouseOverMessage:
-               emomsg=msg as EntityMouseOverMessage;
-               FightContextFrame.currentCell=emomsg.entity.position.cellId;
+            case param1 is EntityMouseOverMessage:
+               _loc3_ = param1 as EntityMouseOverMessage;
+               FightContextFrame.currentCell = _loc3_.entity.position.cellId;
                this.refreshTarget();
                return false;
-            case msg is TimelineEntityOverAction:
-               teoa=msg as TimelineEntityOverAction;
-               timelineEntity=DofusEntities.getEntity(teoa.targetId);
-               if((timelineEntity)&&(timelineEntity.position)&&(timelineEntity.position.cellId<-1))
+            case param1 is TimelineEntityOverAction:
+               _loc4_ = param1 as TimelineEntityOverAction;
+               _loc5_ = DofusEntities.getEntity(_loc4_.targetId);
+               if((_loc5_) && (_loc5_.position) && _loc5_.position.cellId > -1)
                {
-                  FightContextFrame.currentCell=timelineEntity.position.cellId;
+                  FightContextFrame.currentCell = _loc5_.position.cellId;
                   this.refreshTarget();
                }
                return false;
-            case msg is CellClickMessage:
-               ccmsg=msg as CellClickMessage;
-               this.castSpell(ccmsg.cellId);
+            case param1 is CellClickMessage:
+               _loc6_ = param1 as CellClickMessage;
+               this.castSpell(_loc6_.cellId);
                return true;
-            case msg is EntityClickMessage:
-               ecmsg=msg as EntityClickMessage;
-               this.castSpell(ecmsg.entity.position.cellId,ecmsg.entity.id);
+            case param1 is EntityClickMessage:
+               _loc7_ = param1 as EntityClickMessage;
+               this.castSpell(_loc7_.entity.position.cellId,_loc7_.entity.id);
                return true;
-            case msg is TimelineEntityClickAction:
-               teica=msg as TimelineEntityClickAction;
-               this.castSpell(0,teica.fighterId);
+            case param1 is TimelineEntityClickAction:
+               _loc8_ = param1 as TimelineEntityClickAction;
+               this.castSpell(0,_loc8_.fighterId);
                return true;
-            case msg is AdjacentMapClickMessage:
-            case msg is MouseRightClickMessage:
+            case param1 is AdjacentMapClickMessage:
+            case param1 is MouseRightClickMessage:
                this.cancelCast();
                return true;
-            case msg is BannerEmptySlotClickAction:
+            case param1 is BannerEmptySlotClickAction:
                this.cancelCast();
                return true;
-            case msg is MouseUpMessage:
+            case param1 is MouseUpMessage:
                this._cancelTimer.start();
                return false;
             default:
                return false;
          }
       }
-
+      
       public function pulled() : Boolean {
+         var _loc2_:FightEntitiesFrame = null;
+         var _loc3_:Dictionary = null;
+         var _loc4_:GameContextActorInformations = null;
+         var _loc5_:AnimatedCharacter = null;
+         var _loc1_:FightBattleFrame = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
+         if((_loc1_) && (_loc1_.playingSlaveEntity))
+         {
+            _loc2_ = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+            _loc3_ = _loc2_.getEntitiesDictionnary();
+            for each (_loc4_ in _loc3_)
+            {
+               _loc5_ = DofusEntities.getEntity(_loc4_.contextualId) as AnimatedCharacter;
+               if((_loc5_) && !(_loc4_.contextualId == CurrentPlayedFighterManager.getInstance().currentFighterId))
+               {
+                  _loc5_.setCanSeeThrough(false);
+               }
+            }
+         }
          this._cancelTimer.reset();
+         this.hideTargetsTooltips();
          this.removeRange();
          this.removeTarget();
          LinkedCursorSpriteManager.getInstance().removeItem(FORBIDDEN_CURSOR_NAME);
@@ -273,48 +320,71 @@ package com.ankamagames.dofus.logic.game.fight.frames
          }
          return true;
       }
-
-      public function refreshTarget(force:Boolean=false) : void {
-         var currentFighterId:* = 0;
-         var entityInfos:GameFightFighterInformations = null;
+      
+      public function refreshTarget(param1:Boolean=false) : void {
+         var _loc5_:* = 0;
+         var _loc6_:GameFightFighterInformations = null;
+         var _loc7_:ZoneDARenderer = null;
+         var _loc8_:IZone = null;
+         var _loc9_:* = false;
          if(this._clearTargetTimer.running)
          {
             this._clearTargetTimer.reset();
          }
-         var target:int = FightContextFrame.currentCell;
-         if((!force)&&(this._currentCell==target))
+         var _loc2_:int = FightContextFrame.currentCell;
+         if(!param1 && this._currentCell == _loc2_)
+         {
+            if((this._targetSelection) && (this.isValidCell(_loc2_)))
+            {
+               this.showTargetsTooltips(this._targetSelection);
+            }
+            return;
+         }
+         this._currentCell = _loc2_;
+         var _loc3_:FightTurnFrame = Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
+         if(!_loc3_)
          {
             return;
          }
-         this._currentCell=target;
-         var fightTurnFrame:FightTurnFrame = Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
-         if(!fightTurnFrame)
-         {
-            return;
-         }
-         var myTurn:Boolean = fightTurnFrame.myTurn;
-         this._currentTargetIsTargetable=this.isValidCell(target);
-         if((!(target==-1))&&(this._currentTargetIsTargetable))
+         var _loc4_:Boolean = _loc3_.myTurn;
+         this._currentTargetIsTargetable = this.isValidCell(_loc2_);
+         if(!(_loc2_ == -1) && (this._currentTargetIsTargetable))
          {
             if(!this._targetSelection)
             {
-               this._targetSelection=new Selection();
-               this._targetSelection.renderer=new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA);
-               this._targetSelection.color=TARGET_COLOR;
-               this._targetSelection.zone=this.getSpellZone();
+               this._targetSelection = new Selection();
+               this._targetSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA,1,true);
+               this._targetSelection.color = TARGET_COLOR;
+               _loc8_ = SpellZoneManager.getInstance().getSpellZone(this._spellLevel,true);
+               this._spellmaximumRange = _loc8_.radius;
+               this._targetSelection.zone = _loc8_;
                SelectionManager.getInstance().addSelection(this._targetSelection,SELECTION_TARGET);
             }
-            currentFighterId=CurrentPlayedFighterManager.getInstance().currentFighterId;
-            entityInfos=FightEntitiesFrame.getCurrentInstance().getEntityInfos(currentFighterId) as GameFightFighterInformations;
-            if(entityInfos)
+            _loc5_ = CurrentPlayedFighterManager.getInstance().currentFighterId;
+            _loc6_ = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_loc5_) as GameFightFighterInformations;
+            if(_loc6_)
             {
-               this._targetSelection.zone.direction=MapPoint(MapPoint.fromCellId(entityInfos.disposition.cellId)).advancedOrientationTo(MapPoint.fromCellId(target),false);
+               this._targetSelection.zone.direction = MapPoint(MapPoint.fromCellId(_loc6_.disposition.cellId)).advancedOrientationTo(MapPoint.fromCellId(_loc2_),false);
             }
-            SelectionManager.getInstance().update(SELECTION_TARGET,target);
-            if(myTurn)
+            _loc7_ = this._targetSelection.renderer as ZoneDARenderer;
+            if((Atouin.getInstance().options.transparentOverlayMode) && !(this._spellmaximumRange == 63))
+            {
+               _loc7_.currentStrata = PlacementStrataEnums.STRATA_NO_Z_ORDER;
+               SelectionManager.getInstance().update(SELECTION_TARGET,_loc2_,true);
+            }
+            else
+            {
+               if(_loc7_.currentStrata == PlacementStrataEnums.STRATA_NO_Z_ORDER)
+               {
+                  _loc7_.currentStrata = PlacementStrataEnums.STRATA_AREA;
+                  _loc9_ = true;
+               }
+               SelectionManager.getInstance().update(SELECTION_TARGET,_loc2_,_loc9_);
+            }
+            if(_loc4_)
             {
                LinkedCursorSpriteManager.getInstance().removeItem(FORBIDDEN_CURSOR_NAME);
-               this._lastTargetStatus=true;
+               this._lastTargetStatus = true;
             }
             else
             {
@@ -322,8 +392,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
                {
                   LinkedCursorSpriteManager.getInstance().addItem(FORBIDDEN_CURSOR_NAME,this._cursorData,true);
                }
-               this._lastTargetStatus=false;
+               this._lastTargetStatus = false;
             }
+            this.showTargetsTooltips(this._targetSelection);
          }
          else
          {
@@ -332,317 +403,273 @@ package com.ankamagames.dofus.logic.game.fight.frames
                LinkedCursorSpriteManager.getInstance().addItem(FORBIDDEN_CURSOR_NAME,this._cursorData,true);
             }
             this.removeTarget();
-            this._lastTargetStatus=false;
+            this._lastTargetStatus = false;
+            this.hideTargetsTooltips();
          }
       }
-
+      
       public function drawRange() : void {
-         var shapePlus:Cross = null;
-         var rangeCell:Vector.<uint> = null;
-         var noLosRangeCell:Vector.<uint> = null;
-         var num:* = 0;
-         var i:* = 0;
-         var cellId:uint = 0;
-         var currentFighterId:int = CurrentPlayedFighterManager.getInstance().currentFighterId;
-         var entityInfos:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(currentFighterId) as GameFightFighterInformations;
-         var origin:uint = entityInfos.disposition.cellId;
-         var playerRange:CharacterBaseCharacteristic = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().range;
-         var range:int = this._spellLevel.range;
-         if((!this._spellLevel.castInLine)&&(!this._spellLevel.castInDiagonal)&&(!this._spellLevel.castTestLos)&&(range==63))
+         var _loc7_:Cross = null;
+         var _loc8_:Vector.<uint> = null;
+         var _loc9_:Vector.<uint> = null;
+         var _loc10_:* = 0;
+         var _loc11_:* = 0;
+         var _loc12_:uint = 0;
+         var _loc1_:int = CurrentPlayedFighterManager.getInstance().currentFighterId;
+         var _loc2_:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_loc1_) as GameFightFighterInformations;
+         var _loc3_:uint = _loc2_.disposition.cellId;
+         var _loc4_:CharacterBaseCharacteristic = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().range;
+         var _loc5_:int = this._spellLevel.range;
+         if(!this._spellLevel.castInLine && !this._spellLevel.castInDiagonal && !this._spellLevel.castTestLos && _loc5_ == 63)
          {
-            this._isInfiniteTarget=true;
+            this._isInfiniteTarget = true;
             return;
          }
-         this._isInfiniteTarget=false;
+         this._isInfiniteTarget = false;
          if(this._spellLevel["rangeCanBeBoosted"])
          {
-            range=range+(playerRange.base+playerRange.objectsAndMountBonus+playerRange.alignGiftBonus+playerRange.contextModif);
-            if(range<this._spellLevel.minRange)
+            _loc5_ = _loc5_ + (_loc4_.base + _loc4_.objectsAndMountBonus + _loc4_.alignGiftBonus + _loc4_.contextModif);
+            if(_loc5_ < this._spellLevel.minRange)
             {
-               range=this._spellLevel.minRange;
+               _loc5_ = this._spellLevel.minRange;
             }
          }
-         range=Math.min(range,AtouinConstants.MAP_WIDTH*AtouinConstants.MAP_HEIGHT);
-         if(range<0)
+         _loc5_ = Math.min(_loc5_,AtouinConstants.MAP_WIDTH * AtouinConstants.MAP_HEIGHT);
+         if(_loc5_ < 0)
          {
-            range=0;
+            _loc5_ = 0;
          }
-         var testLos:Boolean = (this._spellLevel.castTestLos)&&(Dofus.getInstance().options.showLineOfSight);
-         this._rangeSelection=new Selection();
-         this._rangeSelection.renderer=new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA);
-         this._rangeSelection.color=testLos?RANGE_COLOR:LOS_COLOR;
-         this._rangeSelection.alpha=true;
-         if((this._spellLevel.castInLine)&&(this._spellLevel.castInDiagonal))
+         var _loc6_:Boolean = (this._spellLevel.castTestLos) && (Dofus.getInstance().options.showLineOfSight);
+         this._rangeSelection = new Selection();
+         this._rangeSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA);
+         this._rangeSelection.color = _loc6_?RANGE_COLOR:LOS_COLOR;
+         this._rangeSelection.alpha = true;
+         if((this._spellLevel.castInLine) && (this._spellLevel.castInDiagonal))
          {
-            shapePlus=new Cross(this._spellLevel.minRange,range,DataMapProvider.getInstance());
-            shapePlus.allDirections=true;
-            this._rangeSelection.zone=shapePlus;
+            _loc7_ = new Cross(this._spellLevel.minRange,_loc5_,DataMapProvider.getInstance());
+            _loc7_.allDirections = true;
+            this._rangeSelection.zone = _loc7_;
          }
          else
          {
             if(this._spellLevel.castInLine)
             {
-               this._rangeSelection.zone=new Cross(this._spellLevel.minRange,range,DataMapProvider.getInstance());
+               this._rangeSelection.zone = new Cross(this._spellLevel.minRange,_loc5_,DataMapProvider.getInstance());
             }
             else
             {
                if(this._spellLevel.castInDiagonal)
                {
-                  shapePlus=new Cross(this._spellLevel.minRange,range,DataMapProvider.getInstance());
-                  shapePlus.diagonal=true;
-                  this._rangeSelection.zone=shapePlus;
+                  _loc7_ = new Cross(this._spellLevel.minRange,_loc5_,DataMapProvider.getInstance());
+                  _loc7_.diagonal = true;
+                  this._rangeSelection.zone = _loc7_;
                }
                else
                {
-                  this._rangeSelection.zone=new Lozenge(this._spellLevel.minRange,range,DataMapProvider.getInstance());
+                  this._rangeSelection.zone = new Lozenge(this._spellLevel.minRange,_loc5_,DataMapProvider.getInstance());
                }
             }
          }
-         this._losSelection=null;
-         if(testLos)
+         this._losSelection = null;
+         if(_loc6_)
          {
-            this.drawLos(origin);
+            this.drawLos(_loc3_);
          }
          if(this._losSelection)
          {
-            this._rangeSelection.renderer=new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA,0.5);
-            rangeCell=new Vector.<uint>();
-            noLosRangeCell=this._rangeSelection.zone.getCells(origin);
-            num=noLosRangeCell.length;
-            while(i<num)
+            this._rangeSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA,0.5);
+            _loc8_ = new Vector.<uint>();
+            _loc9_ = this._rangeSelection.zone.getCells(_loc3_);
+            _loc10_ = _loc9_.length;
+            while(_loc11_ < _loc10_)
             {
-               cellId=noLosRangeCell[i];
-               if(this._losSelection.cells.indexOf(cellId)==-1)
+               _loc12_ = _loc9_[_loc11_];
+               if(this._losSelection.cells.indexOf(_loc12_) == -1)
                {
-                  rangeCell.push(cellId);
+                  _loc8_.push(_loc12_);
                }
-               i++;
+               _loc11_++;
             }
-            this._rangeSelection.zone=new Custom(rangeCell);
+            this._rangeSelection.zone = new Custom(_loc8_);
          }
-         SelectionManager.getInstance().addSelection(this._rangeSelection,SELECTION_RANGE,origin);
+         SelectionManager.getInstance().addSelection(this._rangeSelection,SELECTION_RANGE,_loc3_);
       }
-
+      
+      private function showTargetsTooltips(param1:Selection) : void {
+         var _loc4_:* = 0;
+         var _loc7_:GameFightFighterInformations = null;
+         var _loc2_:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
+         var _loc3_:Vector.<int> = _loc2_.entitiesFrame.getEntitiesIdsList();
+         var _loc5_:Vector.<uint> = param1.zone.getCells(this._currentCell);
+         var _loc6_:Vector.<int> = new Vector.<int>(0);
+         for each (_loc4_ in _loc3_)
+         {
+            _loc7_ = _loc2_.entitiesFrame.getEntityInfos(_loc4_) as GameFightFighterInformations;
+            if(!(_loc5_.indexOf(_loc7_.disposition.cellId) == -1) && (DofusEntities.getEntity(_loc4_)))
+            {
+               if(_loc7_.disposition.cellId == FightContextFrame.currentCell)
+               {
+                  if(TooltipManager.isVisible("tooltip_tooltipOverEntity_" + _loc4_))
+                  {
+                     continue;
+                  }
+               }
+               _loc6_.push(_loc4_);
+               TooltipPlacer.waitBeforeOrder("tooltip_tooltipOverEntity_" + _loc4_);
+            }
+            else
+            {
+               if(!_loc2_.showPermanentTooltips || (_loc2_.showPermanentTooltips) && _loc2_.battleFrame.targetedEntities.indexOf(_loc4_) == -1)
+               {
+                  TooltipManager.hide("tooltipOverEntity_" + _loc4_);
+               }
+            }
+         }
+         for each (_loc4_ in _loc6_)
+         {
+            _loc7_ = _loc2_.entitiesFrame.getEntityInfos(_loc4_) as GameFightFighterInformations;
+            if(_loc7_.alive)
+            {
+               _loc2_.displayEntityTooltip(_loc4_,this._spellLevel);
+            }
+         }
+      }
+      
+      private function hideTargetsTooltips() : void {
+         var _loc3_:* = 0;
+         var _loc1_:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
+         var _loc2_:Vector.<int> = _loc1_.entitiesFrame.getEntitiesIdsList();
+         for each (_loc3_ in _loc2_)
+         {
+            if(!_loc1_.showPermanentTooltips || (_loc1_.showPermanentTooltips) && _loc1_.battleFrame.targetedEntities.indexOf(_loc3_) == -1)
+            {
+               TooltipManager.hide("tooltipOverEntity_" + _loc3_);
+            }
+         }
+         if((_loc1_.showPermanentTooltips) && _loc1_.battleFrame.targetedEntities.length > 0)
+         {
+            for each (_loc3_ in _loc1_.battleFrame.targetedEntities)
+            {
+               _loc1_.displayEntityTooltip(_loc3_);
+            }
+         }
+      }
+      
       private function clearTarget() : void {
          if(!this._clearTargetTimer.running)
          {
             this._clearTargetTimer.start();
          }
       }
-
-      private function onClearTarget(event:TimerEvent) : void {
+      
+      private function onClearTarget(param1:TimerEvent) : void {
          this.refreshTarget();
       }
-
-      private function castSpell(cell:uint, targetId:int=0) : void {
-         var gafcotrmsg:GameActionFightCastOnTargetRequestMessage = null;
-         var gafcrmsg:GameActionFightCastRequestMessage = null;
-         var fightTurnFrame:FightTurnFrame = Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
-         if((!fightTurnFrame)||(!fightTurnFrame.myTurn))
+      
+      private function castSpell(param1:uint, param2:int=0) : void {
+         var _loc4_:GameActionFightCastOnTargetRequestMessage = null;
+         var _loc5_:GameActionFightCastRequestMessage = null;
+         var _loc3_:FightTurnFrame = Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
+         if(!_loc3_ || !_loc3_.myTurn)
          {
             return;
          }
-         if(CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent<this._spellLevel.apCost)
+         if(CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent < this._spellLevel.apCost)
          {
             return;
          }
-         if((!(targetId==0))&&(!FightEntitiesFrame.getCurrentInstance().entityIsIllusion(targetId)))
+         if(!(param2 == 0) && !FightEntitiesFrame.getCurrentInstance().entityIsIllusion(param2))
          {
-            CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent=CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent-this._spellLevel.apCost;
-            gafcotrmsg=new GameActionFightCastOnTargetRequestMessage();
-            gafcotrmsg.initGameActionFightCastOnTargetRequestMessage(this._spellId,targetId);
-            ConnectionsHandler.getConnection().send(gafcotrmsg);
+            CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent - this._spellLevel.apCost;
+            _loc4_ = new GameActionFightCastOnTargetRequestMessage();
+            _loc4_.initGameActionFightCastOnTargetRequestMessage(this._spellId,param2);
+            ConnectionsHandler.getConnection().send(_loc4_);
          }
          else
          {
-            if(this.isValidCell(cell))
+            if(this.isValidCell(param1))
             {
-               CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent=CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent-this._spellLevel.apCost;
-               gafcrmsg=new GameActionFightCastRequestMessage();
-               gafcrmsg.initGameActionFightCastRequestMessage(this._spellId,cell);
-               ConnectionsHandler.getConnection().send(gafcrmsg);
+               CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent - this._spellLevel.apCost;
+               _loc5_ = new GameActionFightCastRequestMessage();
+               _loc5_.initGameActionFightCastRequestMessage(this._spellId,param1);
+               ConnectionsHandler.getConnection().send(_loc5_);
             }
          }
          this.cancelCast();
       }
-
-      private function cancelCast(... args) : void {
+      
+      private function cancelCast(... rest) : void {
          this._cancelTimer.reset();
          Kernel.getWorker().removeFrame(this);
       }
-
-      private function drawLos(origin:uint) : void {
-         this._losSelection=new Selection();
-         this._losSelection.renderer=new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA);
-         this._losSelection.color=LOS_COLOR;
-         var cells:Vector.<uint> = this._rangeSelection.zone.getCells(origin);
-         this._losSelection.zone=new Custom(LosDetector.getCell(DataMapProvider.getInstance(),cells,MapPoint.fromCellId(origin)));
-         SelectionManager.getInstance().addSelection(this._losSelection,SELECTION_LOS,origin);
+      
+      private function drawLos(param1:uint) : void {
+         this._losSelection = new Selection();
+         this._losSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA);
+         this._losSelection.color = LOS_COLOR;
+         var _loc2_:Vector.<uint> = this._rangeSelection.zone.getCells(param1);
+         this._losSelection.zone = new Custom(LosDetector.getCell(DataMapProvider.getInstance(),_loc2_,MapPoint.fromCellId(param1)));
+         SelectionManager.getInstance().addSelection(this._losSelection,SELECTION_LOS,param1);
       }
-
+      
       private function removeRange() : void {
-         var s:Selection = SelectionManager.getInstance().getSelection(SELECTION_RANGE);
-         if(s)
+         var _loc1_:Selection = SelectionManager.getInstance().getSelection(SELECTION_RANGE);
+         if(_loc1_)
          {
-            s.remove();
-            this._rangeSelection=null;
+            _loc1_.remove();
+            this._rangeSelection = null;
          }
-         var los:Selection = SelectionManager.getInstance().getSelection(SELECTION_LOS);
-         if(los)
+         var _loc2_:Selection = SelectionManager.getInstance().getSelection(SELECTION_LOS);
+         if(_loc2_)
          {
-            los.remove();
-            this._losSelection=null;
+            _loc2_.remove();
+            this._losSelection = null;
          }
-         this._isInfiniteTarget=false;
+         this._isInfiniteTarget = false;
       }
-
+      
       private function removeTarget() : void {
-         var s:Selection = SelectionManager.getInstance().getSelection(SELECTION_TARGET);
-         if(s)
+         var _loc1_:Selection = SelectionManager.getInstance().getSelection(SELECTION_TARGET);
+         if(_loc1_)
          {
-            s.remove();
-            this._rangeSelection=null;
+            _loc1_.remove();
+            this._rangeSelection = null;
          }
       }
-
-      private function getSpellZone() : IZone {
-         var ray:uint = 0;
-         var i:EffectInstance = null;
-         var shapeT:Cross = null;
-         var shapeW:Square = null;
-         var shapePlus:Cross = null;
-         var shapeSharp:Cross = null;
-         var shapeStar:Cross = null;
-         var shapeMinus:Cross = null;
-         var shape:uint = 88;
-         ray=666;
-         var minRay:uint = 0;
-         if(!this._spellLevel.hasOwnProperty("shape"))
-         {
-            for each (i in this._spellLevel["effects"])
-            {
-               if((!(i.zoneShape==0))&&(i.zoneSize<0))
-               {
-                  ray=i.zoneSize;
-                  shape=i.zoneShape;
-                  minRay=i.zoneMinSize;
-               }
-            }
-         }
-         else
-         {
-            shape=this._spellLevel.shape;
-            ray=this._spellLevel.ray;
-         }
-         if(ray==666)
-         {
-            ray=0;
-         }
-         switch(shape)
-         {
-            case SpellShapeEnum.X:
-               return new Cross(0,ray,DataMapProvider.getInstance());
-               break;
-            case SpellShapeEnum.L:
-               return new Line(ray,DataMapProvider.getInstance());
-               break;
-            case SpellShapeEnum.T:
-               shapeT=new Cross(0,ray,DataMapProvider.getInstance());
-               shapeT.onlyPerpendicular=true;
-               return shapeT;
-               break;
-            case SpellShapeEnum.D:
-               return new Cross(0,ray,DataMapProvider.getInstance());
-               break;
-            case SpellShapeEnum.C:
-               return new Lozenge(0,ray,DataMapProvider.getInstance());
-               break;
-            case SpellShapeEnum.I:
-               return new Lozenge(ray,63,DataMapProvider.getInstance());
-               break;
-            case SpellShapeEnum.O:
-               return new Lozenge(ray,ray,DataMapProvider.getInstance());
-               break;
-            case SpellShapeEnum.Q:
-               return new Cross(minRay?minRay:1,ray,DataMapProvider.getInstance());
-               break;
-            case SpellShapeEnum.G:
-               return new Square(0,ray,DataMapProvider.getInstance());
-               break;
-            case SpellShapeEnum.V:
-               return new Cone(0,ray,DataMapProvider.getInstance());
-               break;
-            case SpellShapeEnum.W:
-               shapeW=new Square(0,ray,DataMapProvider.getInstance());
-               shapeW.diagonalFree=true;
-               return shapeW;
-               break;
-            case SpellShapeEnum.plus:
-               shapePlus=new Cross(0,ray,DataMapProvider.getInstance());
-               shapePlus.diagonal=true;
-               return shapePlus;
-               break;
-            case SpellShapeEnum.sharp:
-               shapeSharp=new Cross(1,ray,DataMapProvider.getInstance());
-               shapeSharp.diagonal=true;
-               return shapeSharp;
-               break;
-            case SpellShapeEnum.star:
-               shapeStar=new Cross(0,ray,DataMapProvider.getInstance());
-               shapeStar.allDirections=true;
-               return shapeStar;
-               break;
-            case SpellShapeEnum.slash:
-               return new Line(ray,DataMapProvider.getInstance());
-               break;
-            case SpellShapeEnum.minus:
-               shapeMinus=new Cross(0,ray,DataMapProvider.getInstance());
-               shapeMinus.onlyPerpendicular=true;
-               shapeMinus.diagonal=true;
-               return shapeMinus;
-               break;
-            case SpellShapeEnum.U:
-               return new HalfLozenge(0,ray,DataMapProvider.getInstance());
-               break;
-            case SpellShapeEnum.P:
-         }
-         return new Cross(0,0,DataMapProvider.getInstance());
-      }
-
-      private function isValidCell(cell:uint) : Boolean {
-         var spellLevel:SpellLevel = null;
-         var entity:IEntity = null;
-         var isGlyph:* = false;
+      
+      private function isValidCell(param1:uint) : Boolean {
+         var _loc2_:SpellLevel = null;
+         var _loc3_:IEntity = null;
+         var _loc4_:* = false;
          if(this._isInfiniteTarget)
          {
             return true;
          }
          if(this._spellId)
          {
-            spellLevel=this._spellLevel.spellLevelInfos;
-            for each (entity in EntitiesManager.getInstance().getEntitiesOnCell(cell))
+            _loc2_ = this._spellLevel.spellLevelInfos;
+            for each (_loc3_ in EntitiesManager.getInstance().getEntitiesOnCell(param1))
             {
-               if(!CurrentPlayedFighterManager.getInstance().canCastThisSpell(this._spellLevel.spellId,this._spellLevel.spellLevel,entity.id))
+               if(!CurrentPlayedFighterManager.getInstance().canCastThisSpell(this._spellLevel.spellId,this._spellLevel.spellLevel,_loc3_.id))
                {
                   return false;
                }
-               isGlyph=entity is Glyph;
-               if((spellLevel.needFreeTrapCell)&&(isGlyph)&&((entity as Glyph).glyphType==GameActionMarkTypeEnum.TRAP))
+               _loc4_ = _loc3_ is Glyph;
+               if((_loc2_.needFreeTrapCell) && (_loc4_) && (_loc3_ as Glyph).glyphType == GameActionMarkTypeEnum.TRAP)
                {
                   return false;
                }
-               if((this._spellLevel.needFreeCell)&&(!isGlyph))
+               if((this._spellLevel.needFreeCell) && !_loc4_)
                {
                   return false;
                }
             }
          }
-         if((this._spellLevel.castTestLos)&&(Dofus.getInstance().options.showLineOfSight))
+         if((this._spellLevel.castTestLos) && (Dofus.getInstance().options.showLineOfSight))
          {
-            return SelectionManager.getInstance().isInside(cell,SELECTION_LOS);
+            return SelectionManager.getInstance().isInside(param1,SELECTION_LOS);
          }
-         return SelectionManager.getInstance().isInside(cell,SELECTION_RANGE);
+         return SelectionManager.getInstance().isInside(param1,SELECTION_RANGE);
       }
    }
-
 }

@@ -11,215 +11,211 @@ package flashx.textLayout.edit
    import flashx.textLayout.formats.TextLayoutFormat;
    import flashx.textLayout.property.Property;
    import flashx.textLayout.formats.Category;
-
+   
    use namespace tlf_internal;
-
+   
    public class ElementRange extends Object
    {
-         
-
+      
       public function ElementRange() {
          super();
       }
-
-      public static function createElementRange(textFlow:TextFlow, absoluteStart:int, absoluteEnd:int) : ElementRange {
-         var rslt:ElementRange = new ElementRange();
-         if(absoluteStart==absoluteEnd)
+      
+      public static function createElementRange(param1:TextFlow, param2:int, param3:int) : ElementRange {
+         var _loc4_:ElementRange = new ElementRange();
+         if(param2 == param3)
          {
-            rslt.absoluteStart=rslt.absoluteEnd=absoluteStart;
-            rslt.firstLeaf=textFlow.findLeaf(rslt.absoluteStart);
-            rslt.firstParagraph=rslt.firstLeaf.getParagraph();
-            adjustForLeanLeft(rslt);
-            rslt.lastLeaf=rslt.firstLeaf;
-            rslt.lastParagraph=rslt.firstParagraph;
+            _loc4_.absoluteStart = _loc4_.absoluteEnd = param2;
+            _loc4_.firstLeaf = param1.findLeaf(_loc4_.absoluteStart);
+            _loc4_.firstParagraph = _loc4_.firstLeaf.getParagraph();
+            adjustForLeanLeft(_loc4_);
+            _loc4_.lastLeaf = _loc4_.firstLeaf;
+            _loc4_.lastParagraph = _loc4_.firstParagraph;
          }
          else
          {
-            if(absoluteStart<absoluteEnd)
+            if(param2 < param3)
             {
-               rslt.absoluteStart=absoluteStart;
-               rslt.absoluteEnd=absoluteEnd;
+               _loc4_.absoluteStart = param2;
+               _loc4_.absoluteEnd = param3;
             }
             else
             {
-               rslt.absoluteStart=absoluteEnd;
-               rslt.absoluteEnd=absoluteStart;
+               _loc4_.absoluteStart = param3;
+               _loc4_.absoluteEnd = param2;
             }
-            rslt.firstLeaf=textFlow.findLeaf(rslt.absoluteStart);
-            rslt.lastLeaf=textFlow.findLeaf(rslt.absoluteEnd);
-            if((rslt.lastLeaf==null)&&(rslt.absoluteEnd==textFlow.textLength)||(rslt.absoluteEnd==rslt.lastLeaf.getAbsoluteStart()))
+            _loc4_.firstLeaf = param1.findLeaf(_loc4_.absoluteStart);
+            _loc4_.lastLeaf = param1.findLeaf(_loc4_.absoluteEnd);
+            if(_loc4_.lastLeaf == null && _loc4_.absoluteEnd == param1.textLength || _loc4_.absoluteEnd == _loc4_.lastLeaf.getAbsoluteStart())
             {
-               rslt.lastLeaf=textFlow.findLeaf(rslt.absoluteEnd-1);
+               _loc4_.lastLeaf = param1.findLeaf(_loc4_.absoluteEnd-1);
             }
-            rslt.firstParagraph=rslt.firstLeaf.getParagraph();
-            rslt.lastParagraph=rslt.lastLeaf.getParagraph();
-            if(rslt.absoluteEnd==rslt.lastParagraph.getAbsoluteStart()+rslt.lastParagraph.textLength-1)
+            _loc4_.firstParagraph = _loc4_.firstLeaf.getParagraph();
+            _loc4_.lastParagraph = _loc4_.lastLeaf.getParagraph();
+            if(_loc4_.absoluteEnd == _loc4_.lastParagraph.getAbsoluteStart() + _loc4_.lastParagraph.textLength-1)
             {
-               rslt.absoluteEnd++;
-               rslt.lastLeaf=rslt.lastParagraph.getLastLeaf();
+               _loc4_.absoluteEnd++;
+               _loc4_.lastLeaf = _loc4_.lastParagraph.getLastLeaf();
             }
          }
-         rslt.textFlow=textFlow;
-         return rslt;
+         _loc4_.textFlow = param1;
+         return _loc4_;
       }
-
-      private static function adjustForLeanLeft(rslt:ElementRange) : void {
-         var previousNode:FlowLeafElement = null;
-         if(rslt.firstLeaf.getAbsoluteStart()==rslt.absoluteStart)
+      
+      private static function adjustForLeanLeft(param1:ElementRange) : void {
+         var _loc2_:FlowLeafElement = null;
+         if(param1.firstLeaf.getAbsoluteStart() == param1.absoluteStart)
          {
-            previousNode=rslt.firstLeaf.getPreviousLeaf(rslt.firstParagraph);
-            if((previousNode)&&(previousNode.getParagraph()==rslt.firstLeaf.getParagraph()))
+            _loc2_ = param1.firstLeaf.getPreviousLeaf(param1.firstParagraph);
+            if((_loc2_) && _loc2_.getParagraph() == param1.firstLeaf.getParagraph())
             {
-               if(((!(previousNode.parent is SubParagraphGroupElementBase))||((previousNode.parent as SubParagraphGroupElementBase).acceptTextAfter()))&&((!(rslt.firstLeaf.parent is SubParagraphGroupElementBase))||(previousNode.parent===rslt.firstLeaf.parent)))
+               if((!(_loc2_.parent is SubParagraphGroupElementBase) || ((_loc2_.parent as SubParagraphGroupElementBase).acceptTextAfter())) && (!(param1.firstLeaf.parent is SubParagraphGroupElementBase) || _loc2_.parent === param1.firstLeaf.parent))
                {
-                  rslt.firstLeaf=previousNode;
+                  param1.firstLeaf = _loc2_;
                }
             }
          }
       }
-
+      
       private var _absoluteStart:int;
-
+      
       private var _absoluteEnd:int;
-
+      
       private var _firstLeaf:FlowLeafElement;
-
+      
       private var _lastLeaf:FlowLeafElement;
-
+      
       private var _firstParagraph:ParagraphElement;
-
+      
       private var _lastParagraph:ParagraphElement;
-
+      
       private var _textFlow:TextFlow;
-
+      
       public function get absoluteStart() : int {
          return this._absoluteStart;
       }
-
-      public function set absoluteStart(value:int) : void {
-         this._absoluteStart=value;
+      
+      public function set absoluteStart(param1:int) : void {
+         this._absoluteStart = param1;
       }
-
+      
       public function get absoluteEnd() : int {
          return this._absoluteEnd;
       }
-
-      public function set absoluteEnd(value:int) : void {
-         this._absoluteEnd=value;
+      
+      public function set absoluteEnd(param1:int) : void {
+         this._absoluteEnd = param1;
       }
-
+      
       public function get firstLeaf() : FlowLeafElement {
          return this._firstLeaf;
       }
-
-      public function set firstLeaf(value:FlowLeafElement) : void {
-         this._firstLeaf=value;
+      
+      public function set firstLeaf(param1:FlowLeafElement) : void {
+         this._firstLeaf = param1;
       }
-
+      
       public function get lastLeaf() : FlowLeafElement {
          return this._lastLeaf;
       }
-
-      public function set lastLeaf(value:FlowLeafElement) : void {
-         this._lastLeaf=value;
+      
+      public function set lastLeaf(param1:FlowLeafElement) : void {
+         this._lastLeaf = param1;
       }
-
+      
       public function get firstParagraph() : ParagraphElement {
          return this._firstParagraph;
       }
-
-      public function set firstParagraph(value:ParagraphElement) : void {
-         this._firstParagraph=value;
+      
+      public function set firstParagraph(param1:ParagraphElement) : void {
+         this._firstParagraph = param1;
       }
-
+      
       public function get lastParagraph() : ParagraphElement {
          return this._lastParagraph;
       }
-
-      public function set lastParagraph(value:ParagraphElement) : void {
-         this._lastParagraph=value;
+      
+      public function set lastParagraph(param1:ParagraphElement) : void {
+         this._lastParagraph = param1;
       }
-
+      
       public function get textFlow() : TextFlow {
          return this._textFlow;
       }
-
-      public function set textFlow(value:TextFlow) : void {
-         this._textFlow=value;
+      
+      public function set textFlow(param1:TextFlow) : void {
+         this._textFlow = param1;
       }
-
+      
       public function get containerFormat() : ITextLayoutFormat {
-         var container:ContainerController = null;
-         var idx:* = 0;
-         var flowComposer:IFlowComposer = this._textFlow.flowComposer;
-         if(flowComposer)
+         var _loc1_:ContainerController = null;
+         var _loc3_:* = 0;
+         var _loc2_:IFlowComposer = this._textFlow.flowComposer;
+         if(_loc2_)
          {
-            idx=flowComposer.findControllerIndexAtPosition(this.absoluteStart);
-            if(idx!=-1)
+            _loc3_ = _loc2_.findControllerIndexAtPosition(this.absoluteStart);
+            if(_loc3_ != -1)
             {
-               container=flowComposer.getControllerAt(idx);
+               _loc1_ = _loc2_.getControllerAt(_loc3_);
             }
          }
-         return container?container.computedFormat:this._textFlow.computedFormat;
+         return _loc1_?_loc1_.computedFormat:this._textFlow.computedFormat;
       }
-
+      
       public function get paragraphFormat() : ITextLayoutFormat {
          return this.firstParagraph.computedFormat;
       }
-
+      
       public function get characterFormat() : ITextLayoutFormat {
          return this.firstLeaf.computedFormat;
       }
-
+      
       public function getCommonCharacterFormat() : TextLayoutFormat {
-         var leaf:FlowLeafElement = this.firstLeaf;
-         var attr:TextLayoutFormat = new TextLayoutFormat(leaf.computedFormat);
-         while(leaf!=this.lastLeaf)
+         var _loc1_:FlowLeafElement = this.firstLeaf;
+         var _loc2_:TextLayoutFormat = new TextLayoutFormat(_loc1_.computedFormat);
+         while(_loc1_ != this.lastLeaf)
          {
-            leaf=leaf.getNextLeaf();
-            attr.removeClashing(leaf.computedFormat);
+            _loc1_ = _loc1_.getNextLeaf();
+            _loc2_.removeClashing(_loc1_.computedFormat);
          }
-         return Property.extractInCategory(TextLayoutFormat,TextLayoutFormat.description,attr,Category.CHARACTER,false) as TextLayoutFormat;
+         return Property.extractInCategory(TextLayoutFormat,TextLayoutFormat.description,_loc2_,Category.CHARACTER,false) as TextLayoutFormat;
       }
-
+      
       public function getCommonParagraphFormat() : TextLayoutFormat {
-         var para:ParagraphElement = this.firstParagraph;
-         var attr:TextLayoutFormat = new TextLayoutFormat(para.computedFormat);
-         while(para!=this.lastParagraph)
+         var _loc1_:ParagraphElement = this.firstParagraph;
+         var _loc2_:TextLayoutFormat = new TextLayoutFormat(_loc1_.computedFormat);
+         while(_loc1_ != this.lastParagraph)
          {
-            para=this._textFlow.findAbsoluteParagraph(para.getAbsoluteStart()+para.textLength);
-            attr.removeClashing(para.computedFormat);
+            _loc1_ = this._textFlow.findAbsoluteParagraph(_loc1_.getAbsoluteStart() + _loc1_.textLength);
+            _loc2_.removeClashing(_loc1_.computedFormat);
          }
-         return Property.extractInCategory(TextLayoutFormat,TextLayoutFormat.description,attr,Category.PARAGRAPH,false) as TextLayoutFormat;
+         return Property.extractInCategory(TextLayoutFormat,TextLayoutFormat.description,_loc2_,Category.PARAGRAPH,false) as TextLayoutFormat;
       }
-
+      
       public function getCommonContainerFormat() : TextLayoutFormat {
-         var flowComposer:IFlowComposer = this._textFlow.flowComposer;
-         if(!flowComposer)
+         var _loc1_:IFlowComposer = this._textFlow.flowComposer;
+         if(!_loc1_)
          {
             return null;
          }
-         var index:int = flowComposer.findControllerIndexAtPosition(this.absoluteStart);
-         if(index==-1)
+         var _loc2_:int = _loc1_.findControllerIndexAtPosition(this.absoluteStart);
+         if(_loc2_ == -1)
          {
             return null;
          }
-         var controller:ContainerController = flowComposer.getControllerAt(index);
-         var attr:TextLayoutFormat = new TextLayoutFormat(controller.computedFormat);
-         while(controller.absoluteStart+controller.textLength<this.absoluteEnd)
+         var _loc3_:ContainerController = _loc1_.getControllerAt(_loc2_);
+         var _loc4_:TextLayoutFormat = new TextLayoutFormat(_loc3_.computedFormat);
+         while(_loc3_.absoluteStart + _loc3_.textLength < this.absoluteEnd)
          {
-            index++;
-            if(index==flowComposer.numControllers)
+            _loc2_++;
+            if(_loc2_ == _loc1_.numControllers)
             {
+               break;
             }
-            else
-            {
-               controller=flowComposer.getControllerAt(index);
-               attr.removeClashing(controller.computedFormat);
-               continue;
-            }
+            _loc3_ = _loc1_.getControllerAt(_loc2_);
+            _loc4_.removeClashing(_loc3_.computedFormat);
          }
+         return Property.extractInCategory(TextLayoutFormat,TextLayoutFormat.description,_loc4_,Category.CONTAINER,false) as TextLayoutFormat;
       }
    }
-
 }

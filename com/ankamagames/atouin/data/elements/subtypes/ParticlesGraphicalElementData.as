@@ -6,27 +6,24 @@ package com.ankamagames.atouin.data.elements.subtypes
    import flash.utils.getQualifiedClassName;
    import flash.utils.IDataInput;
    import com.ankamagames.atouin.AtouinConstants;
-
-
+   
    public class ParticlesGraphicalElementData extends GraphicalElementData
    {
-         
-
-      public function ParticlesGraphicalElementData(elementId:int, elementType:int) {
-         super(elementId,elementType);
+      
+      public function ParticlesGraphicalElementData(param1:int, param2:int) {
+         super(param1,param2);
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ParticlesGraphicalElementData));
-
+      
       public var scriptId:int;
-
-      override public function fromRaw(raw:IDataInput, version:int) : void {
-         this.scriptId=raw.readShort();
+      
+      override public function fromRaw(param1:IDataInput, param2:int) : void {
+         this.scriptId = param1.readShort();
          if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
          {
-            _log.debug("  (ParticlesGraphicalElementData) Script id : "+this.scriptId);
+            _log.debug("  (ParticlesGraphicalElementData) Script id : " + this.scriptId);
          }
       }
    }
-
 }

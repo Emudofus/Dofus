@@ -4,143 +4,144 @@ package com.ankamagames.dofus.network.types.game.context.fight
    import __AS3__.vec.Vector;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
-
-
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
+   
    public class FightCommonInformations extends Object implements INetworkType
    {
-         
-
+      
       public function FightCommonInformations() {
-         this.fightTeams=new Vector.<FightTeamInformations>();
-         this.fightTeamsPositions=new Vector.<uint>();
-         this.fightTeamsOptions=new Vector.<FightOptionsInformations>();
+         this.fightTeams = new Vector.<FightTeamInformations>();
+         this.fightTeamsPositions = new Vector.<uint>();
+         this.fightTeamsOptions = new Vector.<FightOptionsInformations>();
          super();
       }
-
+      
       public static const protocolId:uint = 43;
-
+      
       public var fightId:int = 0;
-
+      
       public var fightType:uint = 0;
-
+      
       public var fightTeams:Vector.<FightTeamInformations>;
-
+      
       public var fightTeamsPositions:Vector.<uint>;
-
+      
       public var fightTeamsOptions:Vector.<FightOptionsInformations>;
-
+      
       public function getTypeId() : uint {
          return 43;
       }
-
-      public function initFightCommonInformations(fightId:int=0, fightType:uint=0, fightTeams:Vector.<FightTeamInformations>=null, fightTeamsPositions:Vector.<uint>=null, fightTeamsOptions:Vector.<FightOptionsInformations>=null) : FightCommonInformations {
-         this.fightId=fightId;
-         this.fightType=fightType;
-         this.fightTeams=fightTeams;
-         this.fightTeamsPositions=fightTeamsPositions;
-         this.fightTeamsOptions=fightTeamsOptions;
+      
+      public function initFightCommonInformations(param1:int=0, param2:uint=0, param3:Vector.<FightTeamInformations>=null, param4:Vector.<uint>=null, param5:Vector.<FightOptionsInformations>=null) : FightCommonInformations {
+         this.fightId = param1;
+         this.fightType = param2;
+         this.fightTeams = param3;
+         this.fightTeamsPositions = param4;
+         this.fightTeamsOptions = param5;
          return this;
       }
-
+      
       public function reset() : void {
-         this.fightId=0;
-         this.fightType=0;
-         this.fightTeams=new Vector.<FightTeamInformations>();
-         this.fightTeamsPositions=new Vector.<uint>();
-         this.fightTeamsOptions=new Vector.<FightOptionsInformations>();
+         this.fightId = 0;
+         this.fightType = 0;
+         this.fightTeams = new Vector.<FightTeamInformations>();
+         this.fightTeamsPositions = new Vector.<uint>();
+         this.fightTeamsOptions = new Vector.<FightOptionsInformations>();
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_FightCommonInformations(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_FightCommonInformations(param1);
       }
-
-      public function serializeAs_FightCommonInformations(output:IDataOutput) : void {
-         output.writeInt(this.fightId);
-         output.writeByte(this.fightType);
-         output.writeShort(this.fightTeams.length);
-         var _i3:uint = 0;
-         while(_i3<this.fightTeams.length)
+      
+      public function serializeAs_FightCommonInformations(param1:IDataOutput) : void {
+         param1.writeInt(this.fightId);
+         param1.writeByte(this.fightType);
+         param1.writeShort(this.fightTeams.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.fightTeams.length)
          {
-            (this.fightTeams[_i3] as FightTeamInformations).serializeAs_FightTeamInformations(output);
-            _i3++;
+            param1.writeShort((this.fightTeams[_loc2_] as FightTeamInformations).getTypeId());
+            (this.fightTeams[_loc2_] as FightTeamInformations).serialize(param1);
+            _loc2_++;
          }
-         output.writeShort(this.fightTeamsPositions.length);
-         var _i4:uint = 0;
-         while(_i4<this.fightTeamsPositions.length)
+         param1.writeShort(this.fightTeamsPositions.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.fightTeamsPositions.length)
          {
-            if((this.fightTeamsPositions[_i4]>0)||(this.fightTeamsPositions[_i4]<559))
+            if(this.fightTeamsPositions[_loc3_] < 0 || this.fightTeamsPositions[_loc3_] > 559)
             {
-               throw new Error("Forbidden value ("+this.fightTeamsPositions[_i4]+") on element 4 (starting at 1) of fightTeamsPositions.");
+               throw new Error("Forbidden value (" + this.fightTeamsPositions[_loc3_] + ") on element 4 (starting at 1) of fightTeamsPositions.");
             }
             else
             {
-               output.writeShort(this.fightTeamsPositions[_i4]);
-               _i4++;
+               param1.writeShort(this.fightTeamsPositions[_loc3_]);
+               _loc3_++;
                continue;
             }
          }
-         output.writeShort(this.fightTeamsOptions.length);
-         var _i5:uint = 0;
-         while(_i5<this.fightTeamsOptions.length)
+         param1.writeShort(this.fightTeamsOptions.length);
+         var _loc4_:uint = 0;
+         while(_loc4_ < this.fightTeamsOptions.length)
          {
-            (this.fightTeamsOptions[_i5] as FightOptionsInformations).serializeAs_FightOptionsInformations(output);
-            _i5++;
+            (this.fightTeamsOptions[_loc4_] as FightOptionsInformations).serializeAs_FightOptionsInformations(param1);
+            _loc4_++;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_FightCommonInformations(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_FightCommonInformations(param1);
       }
-
-      public function deserializeAs_FightCommonInformations(input:IDataInput) : void {
-         var _item3:FightTeamInformations = null;
-         var _val4:uint = 0;
-         var _item5:FightOptionsInformations = null;
-         this.fightId=input.readInt();
-         this.fightType=input.readByte();
-         if(this.fightType<0)
+      
+      public function deserializeAs_FightCommonInformations(param1:IDataInput) : void {
+         var _loc8_:uint = 0;
+         var _loc9_:FightTeamInformations = null;
+         var _loc10_:uint = 0;
+         var _loc11_:FightOptionsInformations = null;
+         this.fightId = param1.readInt();
+         this.fightType = param1.readByte();
+         if(this.fightType < 0)
          {
-            throw new Error("Forbidden value ("+this.fightType+") on element of FightCommonInformations.fightType.");
+            throw new Error("Forbidden value (" + this.fightType + ") on element of FightCommonInformations.fightType.");
          }
          else
          {
-            _fightTeamsLen=input.readUnsignedShort();
-            _i3=0;
-            while(_i3<_fightTeamsLen)
+            _loc2_ = param1.readUnsignedShort();
+            _loc3_ = 0;
+            while(_loc3_ < _loc2_)
             {
-               _item3=new FightTeamInformations();
-               _item3.deserialize(input);
-               this.fightTeams.push(_item3);
-               _i3++;
+               _loc8_ = param1.readUnsignedShort();
+               _loc9_ = ProtocolTypeManager.getInstance(FightTeamInformations,_loc8_);
+               _loc9_.deserialize(param1);
+               this.fightTeams.push(_loc9_);
+               _loc3_++;
             }
-            _fightTeamsPositionsLen=input.readUnsignedShort();
-            _i4=0;
-            while(_i4<_fightTeamsPositionsLen)
+            _loc4_ = param1.readUnsignedShort();
+            _loc5_ = 0;
+            while(_loc5_ < _loc4_)
             {
-               _val4=input.readShort();
-               if((_val4>0)||(_val4<559))
+               _loc10_ = param1.readShort();
+               if(_loc10_ < 0 || _loc10_ > 559)
                {
-                  throw new Error("Forbidden value ("+_val4+") on elements of fightTeamsPositions.");
+                  throw new Error("Forbidden value (" + _loc10_ + ") on elements of fightTeamsPositions.");
                }
                else
                {
-                  this.fightTeamsPositions.push(_val4);
-                  _i4++;
+                  this.fightTeamsPositions.push(_loc10_);
+                  _loc5_++;
                   continue;
                }
             }
-            _fightTeamsOptionsLen=input.readUnsignedShort();
-            _i5=0;
-            while(_i5<_fightTeamsOptionsLen)
+            _loc6_ = param1.readUnsignedShort();
+            _loc7_ = 0;
+            while(_loc7_ < _loc6_)
             {
-               _item5=new FightOptionsInformations();
-               _item5.deserialize(input);
-               this.fightTeamsOptions.push(_item5);
-               _i5++;
+               _loc11_ = new FightOptionsInformations();
+               _loc11_.deserialize(param1);
+               this.fightTeamsOptions.push(_loc11_);
+               _loc7_++;
             }
             return;
          }
       }
    }
-
 }

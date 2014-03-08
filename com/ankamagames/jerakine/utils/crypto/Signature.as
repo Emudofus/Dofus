@@ -5,99 +5,102 @@ package com.ankamagames.jerakine.utils.crypto
    import flash.utils.getTimer;
    import by.blooddy.crypto.MD5;
    import com.ankamagames.jerakine.utils.errors.SignatureError;
-
-
+   
    public class Signature extends Object
    {
-         
-
-      public function Signature(key:SignatureKey) {
+      
+      public function Signature(param1:SignatureKey) {
          super();
-         if(!key)
+         if(!param1)
          {
             throw ArgumentError("Key must be not null");
          }
          else
          {
-            this._key=key;
+            this._key = param1;
             return;
          }
       }
-
+      
       public static const ANKAMA_SIGNED_FILE_HEADER:String = "AKSF";
-
+      
       private var _key:SignatureKey;
-
-      public function sign(data:IDataInput) : ByteArray {
-         var adaptedData:ByteArray = null;
+      
+      public function sign(param1:IDataInput, param2:Boolean=true) : ByteArray {
+         var _loc3_:ByteArray = null;
          if(!this._key.canSign)
          {
-            throw new Error("La clef fournit ne permet pas de signer des données");
+            throw new Error("La clef fournit ne permet pas de signer des donnÃ©es");
          }
          else
          {
-            if(data is ByteArray)
+            if(param1 is ByteArray)
             {
-               adaptedData=data as ByteArray;
+               _loc3_ = param1 as ByteArray;
             }
             else
             {
-               adaptedData=new ByteArray();
-               data.readBytes(adaptedData);
-               adaptedData.position=0;
+               _loc3_ = new ByteArray();
+               param1.readBytes(_loc3_);
+               _loc3_.position = 0;
             }
-            startPos=adaptedData["position"];
-            hash=new ByteArray();
-            random=Math.random()*255;
-            hash.writeByte(random);
-            hash.writeUnsignedInt(adaptedData.bytesAvailable);
-            tH=getTimer();
-            hash.writeUTFBytes(MD5.hash(adaptedData.readUTFBytes(adaptedData.bytesAvailable)));
-            trace("Temps de hash pour signature : "+(getTimer()-tH)+" ms");
-            i=2;
-            while(i<hash.length)
+            _loc4_ = _loc3_["position"];
+            _loc5_ = new ByteArray();
+            _loc6_ = Math.random() * 255;
+            _loc5_.writeByte(_loc6_);
+            _loc5_.writeUnsignedInt(_loc3_.bytesAvailable);
+            _loc7_ = getTimer();
+            _loc5_.writeUTFBytes(MD5.hash(_loc3_.readUTFBytes(_loc3_.bytesAvailable)));
+            trace("Temps de hash pour signature : " + (getTimer() - _loc7_) + " ms");
+            _loc8_ = 2;
+            while(_loc8_ < _loc5_.length)
             {
-               hash[i]=hash[i]^random;
-               i++;
+               _loc5_[_loc8_] = _loc5_[_loc8_] ^ _loc6_;
+               _loc8_++;
             }
-            output=new ByteArray();
-            hash.position=0;
-            this._key.sign(hash,output,hash.length);
-            result=new ByteArray();
-            result.writeUTF(ANKAMA_SIGNED_FILE_HEADER);
-            result.writeShort(1);
-            result.writeInt(output.length);
-            output.position=0;
-            result.writeBytes(output);
-            adaptedData.position=startPos;
-            result.writeBytes(adaptedData);
-            return result;
+            _loc9_ = new ByteArray();
+            _loc5_.position = 0;
+            this._key.sign(_loc5_,_loc9_,_loc5_.length);
+            _loc10_ = new ByteArray();
+            _loc10_.writeUTF(ANKAMA_SIGNED_FILE_HEADER);
+            _loc10_.writeShort(1);
+            _loc10_.writeInt(_loc9_.length);
+            _loc9_.position = 0;
+            _loc10_.writeBytes(_loc9_);
+            if(param2)
+            {
+               _loc3_.position = _loc4_;
+               _loc10_.writeBytes(_loc3_);
+            }
+            return _loc10_;
          }
       }
-
-      public function verify(input:IDataInput, output:ByteArray) : Boolean {
+      
+      public function verify(param1:IDataInput, param2:ByteArray) : Boolean {
          var header:String = null;
          var len:uint = 0;
+         var input:IDataInput = param1;
+         var output:ByteArray = param2;
          try
          {
-            header=input.readUTF();
+            header = input.readUTF();
          }
          catch(e:Error)
          {
             throw new SignatureError("Invalid file format (can\'t read header)",SignatureError.INVALID_HEADER);
          }
-         if(header!=ANKAMA_SIGNED_FILE_HEADER)
+         if(header != ANKAMA_SIGNED_FILE_HEADER)
          {
             throw new SignatureError("Invalid header",SignatureError.INVALID_HEADER);
          }
          else
          {
-            formatVersion=input.readShort();
-            sigData=new ByteArray();
-            decryptedHash=new ByteArray();
+            formatVersion = input.readShort();
+            sigData = new ByteArray();
+            decryptedHash = new ByteArray();
             try
             {
-               len=input.readInt();
+               len = input.readInt();
                input.readBytes(sigData,0,len);
             }
             catch(e:Error)
@@ -112,37 +115,36 @@ package com.ankamagames.jerakine.utils.crypto
             {
                return false;
             }
-            decryptedHash.position=0;
-            ramdomPart=decryptedHash.readByte();
-            hash=new ByteArray();
-            i=2;
-            while(i<decryptedHash.length)
+            decryptedHash.position = 0;
+            ramdomPart = decryptedHash.readByte();
+            hash = new ByteArray();
+            i = 2;
+            while(i < decryptedHash.length)
             {
-               decryptedHash[i]=decryptedHash[i]^ramdomPart;
+               decryptedHash[i] = decryptedHash[i] ^ ramdomPart;
                i++;
             }
-            contentLen=decryptedHash.readUnsignedInt();
-            testedContentLen=input.bytesAvailable;
-            signHash=decryptedHash.readUTFBytes(decryptedHash.bytesAvailable).substr(1);
+            contentLen = decryptedHash.readUnsignedInt();
+            testedContentLen = input.bytesAvailable;
+            signHash = decryptedHash.readUTFBytes(decryptedHash.bytesAvailable).substr(1);
             input.readBytes(output);
-            tH=getTimer();
-            contentHash=MD5.hash(output.readUTFBytes(output.bytesAvailable)).substr(1);
-            trace("Temps de hash pour validation de signature : "+(getTimer()-tH)+" ms");
-            output.position=0;
-            return (signHash)&&(signHash==contentHash)&&(contentLen==testedContentLen);
+            tH = getTimer();
+            contentHash = MD5.hash(output.readUTFBytes(output.bytesAvailable)).substr(1);
+            trace("Temps de hash pour validation de signature : " + (getTimer() - tH) + " ms");
+            output.position = 0;
+            return (signHash) && signHash == contentHash && contentLen == testedContentLen;
          }
       }
-
-      private function traceData(d:ByteArray) : void {
-         var tmp:Array = [];
-         var i:uint = 0;
-         while(i<d.length)
+      
+      private function traceData(param1:ByteArray) : void {
+         var _loc2_:Array = [];
+         var _loc3_:uint = 0;
+         while(_loc3_ < param1.length)
          {
-            tmp[i]=d[i];
-            i++;
+            _loc2_[_loc3_] = param1[_loc3_];
+            _loc3_++;
          }
-         trace(tmp.join(","));
+         trace(_loc2_.join(","));
       }
    }
-
 }

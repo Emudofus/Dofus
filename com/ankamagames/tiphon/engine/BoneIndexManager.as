@@ -17,15 +17,13 @@ package com.ankamagames.tiphon.engine
    import com.ankamagames.jerakine.utils.files.FileUtils;
    import flash.events.Event;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
-
-
+   
    public class BoneIndexManager extends EventDispatcher
    {
-         
-
+      
       public function BoneIndexManager() {
-         this._index=new Dictionary();
-         this._transitions=new Dictionary();
+         this._index = new Dictionary();
+         this._transitions = new Dictionary();
          super();
          if(_self)
          {
@@ -36,157 +34,128 @@ package com.ankamagames.tiphon.engine
             return;
          }
       }
-
+      
       private static const _log:Logger = Log.getLogger(getQualifiedClassName(BoneIndexManager));
-
+      
       private static var _self:BoneIndexManager;
-
+      
       public static function getInstance() : BoneIndexManager {
          if(!_self)
          {
-            _self=new BoneIndexManager();
+            _self = new BoneIndexManager();
          }
          return _self;
       }
-
+      
       private var _loader:IResourceLoader;
-
+      
       private var _index:Dictionary;
-
+      
       private var _transitions:Dictionary;
-
+      
       private var _animNameModifier:Function;
-
-      public function init(boneIndexPath:String) : void {
-         this._loader=ResourceLoaderFactory.getLoader(ResourceLoaderType.PARALLEL_LOADER);
+      
+      public function init(param1:String) : void {
+         this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.PARALLEL_LOADER);
          this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onXmlLoaded);
          this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onXmlFailed);
-         this._loader.load(new Uri(boneIndexPath));
+         this._loader.load(new Uri(param1));
       }
-
-      public function setAnimNameModifier(fct:Function) : void {
-         this._animNameModifier=fct;
+      
+      public function setAnimNameModifier(param1:Function) : void {
+         this._animNameModifier = param1;
       }
-
-      public function addTransition(boneId:uint, startAnim:String, endAnim:String, direction:uint, transitionalAnim:String) : void {
-         if(!this._transitions[boneId])
+      
+      public function addTransition(param1:uint, param2:String, param3:String, param4:uint, param5:String) : void {
+         if(!this._transitions[param1])
          {
-            this._transitions[boneId]=new Dictionary();
+            this._transitions[param1] = new Dictionary();
          }
-         this._transitions[boneId][startAnim+"_"+endAnim+"_"+direction]=transitionalAnim;
+         this._transitions[param1][param2 + "_" + param3 + "_" + param4] = param5;
       }
-
-      public function hasTransition(boneId:uint, startAnim:String, endAnim:String, direction:uint) : Boolean {
-         if(this._animNameModifier!=null)
+      
+      public function hasTransition(param1:uint, param2:String, param3:String, param4:uint) : Boolean {
+         if(this._animNameModifier != null)
          {
-            startAnim=this._animNameModifier(boneId,startAnim);
-            endAnim=this._animNameModifier(boneId,endAnim);
+            param2 = this._animNameModifier(param1,param2);
+            param3 = this._animNameModifier(param1,param3);
          }
-         return (this._transitions[boneId])&&((!(this._transitions[boneId][startAnim+"_"+endAnim+"_"+direction]==null))||(!(this._transitions[boneId][startAnim+"_"+endAnim+"_"+TiphonUtility.getFlipDirection(direction)]==null)));
+         return (this._transitions[param1]) && (!(this._transitions[param1][param2 + "_" + param3 + "_" + param4] == null) || !(this._transitions[param1][param2 + "_" + param3 + "_" + TiphonUtility.getFlipDirection(param4)] == null));
       }
-
-      public function getTransition(boneId:uint, startAnim:String, endAnim:String, direction:uint) : String {
-         if(this._animNameModifier!=null)
+      
+      public function getTransition(param1:uint, param2:String, param3:String, param4:uint) : String {
+         if(this._animNameModifier != null)
          {
-            startAnim=this._animNameModifier(boneId,startAnim);
-            endAnim=this._animNameModifier(boneId,endAnim);
+            param2 = this._animNameModifier(param1,param2);
+            param3 = this._animNameModifier(param1,param3);
          }
-         if(!this._transitions[boneId])
-         {
-            return null;
-         }
-         if(this._transitions[boneId][startAnim+"_"+endAnim+"_"+direction])
-         {
-            return this._transitions[boneId][startAnim+"_"+endAnim+"_"+direction];
-         }
-         return this._transitions[boneId][startAnim+"_"+endAnim+"_"+TiphonUtility.getFlipDirection(direction)];
-      }
-
-      public function getBoneFile(boneId:uint, animName:String) : Uri {
-         if((!this._index[boneId])||(!this._index[boneId][animName]))
-         {
-            return new Uri(TiphonConstants.SWF_SKULL_PATH+boneId+".swl");
-         }
-         return new Uri(TiphonConstants.SWF_SKULL_PATH+this._index[boneId][animName]);
-      }
-
-      public function hasAnim(boneId:uint, animName:String, direction:int) : Boolean {
-         return (this._index[boneId])&&(this._index[boneId][animName]);
-      }
-
-      public function hasCustomBone(boneId:uint) : Boolean {
-         return this._index[boneId];
-      }
-
-      public function getAllCustomAnimations(boneId:int) : Array {
-         var anim:String = null;
-         var animationsList:Dictionary = this._index[boneId];
-         if(!animationsList)
+         if(!this._transitions[param1])
          {
             return null;
          }
-         var list:Array = new Array();
-         for (anim in animationsList)
+         if(this._transitions[param1][param2 + "_" + param3 + "_" + param4])
          {
-            list.push(anim);
+            return this._transitions[param1][param2 + "_" + param3 + "_" + param4];
          }
-         return list;
+         return this._transitions[param1][param2 + "_" + param3 + "_" + TiphonUtility.getFlipDirection(param4)];
       }
-
-      private function onXmlLoaded(e:ResourceLoadedEvent) : void {
-         var group:XML = null;
-         var uri:Uri = null;
-         this._loader.removeEventListener(ResourceLoadedEvent.LOADED,this.onXmlLoaded);
-         this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onSubXmlLoaded);
-         this._loader.addEventListener(ResourceLoaderProgressEvent.LOADER_COMPLETE,this.onAllSubXmlLoaded);
-         var folder:String = FileUtils.getFilePath(e.uri.uri);
-         var xml:XML = e.resource as XML;
-         var subXml:Array = new Array();
-         for each (group in xml..group)
+      
+      public function getBoneFile(param1:uint, param2:String) : Uri {
+         if(!this._index[param1] || !this._index[param1][param2])
          {
-            uri=new Uri(folder+"/"+group.@id.toString()+".xml");
-            uri.tag=parseInt(group.@id.toString());
-            subXml.push(uri);
+            return new Uri(TiphonConstants.SWF_SKULL_PATH + param1 + ".swl");
          }
-         this._loader.load(subXml);
+         return new Uri(TiphonConstants.SWF_SKULL_PATH + this._index[param1][param2]);
       }
-
-      private function onSubXmlLoaded(e:ResourceLoadedEvent) : void {
-         var className:String = null;
-         var file:XML = null;
-         var animClass:XML = null;
-         var animInfo:Array = null;
-         var xml:XML = e.resource as XML;
-         for each (file in xml..file)
+      
+      public function hasAnim(param1:uint, param2:String, param3:int) : Boolean {
+         return (this._index[param1]) && (this._index[param1][param2]);
+      }
+      
+      public function hasCustomBone(param1:uint) : Boolean {
+         return this._index[param1];
+      }
+      
+      public function getAllCustomAnimations(param1:int) : Array {
+         var _loc4_:String = null;
+         var _loc2_:Dictionary = this._index[param1];
+         if(!_loc2_)
          {
-            for each (animClass in file..resource)
-            {
-               className=animClass.@name.toString();
-               if(className.indexOf("Anim")!=-1)
-               {
-                  if(!this._index[e.uri.tag])
-                  {
-                     this._index[e.uri.tag]=new Dictionary();
-                  }
-                  this._index[e.uri.tag][className]=file.@name.toString();
-                  if(className.indexOf("_to_")!=-1)
-                  {
-                     animInfo=className.split("_");
-                     _self.addTransition(e.uri.tag,animInfo[0],animInfo[2],parseInt(animInfo[3]),animInfo[0]+"_to_"+animInfo[2]);
-                  }
-               }
-            }
+            return null;
          }
+         var _loc3_:Array = new Array();
+         for (_loc4_ in _loc2_)
+         {
+            _loc3_.push(_loc4_);
+         }
+         return _loc3_;
       }
-
-      private function onXmlFailed(e:ResourceErrorEvent) : void {
-         _log.error("Impossible de charger ou parser le fichier d\'index d\'animation : "+e.uri);
+      
+      private function onXmlLoaded(param1:ResourceLoadedEvent) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
-
-      private function onAllSubXmlLoaded(e:ResourceLoaderProgressEvent) : void {
-         this._loader=null;
+      
+      private function onSubXmlLoaded(param1:ResourceLoadedEvent) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
+      }
+      
+      private function onXmlFailed(param1:ResourceErrorEvent) : void {
+         _log.error("Impossible de charger ou parser le fichier d\'index d\'animation : " + param1.uri);
+      }
+      
+      private function onAllSubXmlLoaded(param1:ResourceLoaderProgressEvent) : void {
+         this._loader = null;
          dispatchEvent(new Event(Event.INIT));
       }
    }
-
 }

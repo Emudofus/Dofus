@@ -7,82 +7,79 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ExchangeStartOkMountWithOutPaddockMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ExchangeStartOkMountWithOutPaddockMessage() {
-         this.stabledMountsDescription=new Vector.<MountClientData>();
+         this.stabledMountsDescription = new Vector.<MountClientData>();
          super();
       }
-
+      
       public static const protocolId:uint = 5991;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var stabledMountsDescription:Vector.<MountClientData>;
-
+      
       override public function getMessageId() : uint {
          return 5991;
       }
-
-      public function initExchangeStartOkMountWithOutPaddockMessage(stabledMountsDescription:Vector.<MountClientData>=null) : ExchangeStartOkMountWithOutPaddockMessage {
-         this.stabledMountsDescription=stabledMountsDescription;
-         this._isInitialized=true;
+      
+      public function initExchangeStartOkMountWithOutPaddockMessage(param1:Vector.<MountClientData>=null) : ExchangeStartOkMountWithOutPaddockMessage {
+         this.stabledMountsDescription = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.stabledMountsDescription=new Vector.<MountClientData>();
-         this._isInitialized=false;
+         this.stabledMountsDescription = new Vector.<MountClientData>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ExchangeStartOkMountWithOutPaddockMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ExchangeStartOkMountWithOutPaddockMessage(param1);
       }
-
-      public function serializeAs_ExchangeStartOkMountWithOutPaddockMessage(output:IDataOutput) : void {
-         output.writeShort(this.stabledMountsDescription.length);
-         var _i1:uint = 0;
-         while(_i1<this.stabledMountsDescription.length)
+      
+      public function serializeAs_ExchangeStartOkMountWithOutPaddockMessage(param1:IDataOutput) : void {
+         param1.writeShort(this.stabledMountsDescription.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.stabledMountsDescription.length)
          {
-            (this.stabledMountsDescription[_i1] as MountClientData).serializeAs_MountClientData(output);
-            _i1++;
+            (this.stabledMountsDescription[_loc2_] as MountClientData).serializeAs_MountClientData(param1);
+            _loc2_++;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ExchangeStartOkMountWithOutPaddockMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ExchangeStartOkMountWithOutPaddockMessage(param1);
       }
-
-      public function deserializeAs_ExchangeStartOkMountWithOutPaddockMessage(input:IDataInput) : void {
-         var _item1:MountClientData = null;
-         var _stabledMountsDescriptionLen:uint = input.readUnsignedShort();
-         var _i1:uint = 0;
-         while(_i1<_stabledMountsDescriptionLen)
+      
+      public function deserializeAs_ExchangeStartOkMountWithOutPaddockMessage(param1:IDataInput) : void {
+         var _loc4_:MountClientData = null;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            _item1=new MountClientData();
-            _item1.deserialize(input);
-            this.stabledMountsDescription.push(_item1);
-            _i1++;
+            _loc4_ = new MountClientData();
+            _loc4_.deserialize(param1);
+            this.stabledMountsDescription.push(_loc4_);
+            _loc3_++;
          }
       }
    }
-
 }

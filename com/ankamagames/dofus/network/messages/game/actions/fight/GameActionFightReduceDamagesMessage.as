@@ -5,86 +5,84 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class GameActionFightReduceDamagesMessage extends AbstractGameActionMessage implements INetworkMessage
    {
-         
-
+      
       public function GameActionFightReduceDamagesMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 5526;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
-         return (super.isInitialized)&&(this._isInitialized);
+         return (super.isInitialized) && (this._isInitialized);
       }
-
+      
       public var targetId:int = 0;
-
+      
       public var amount:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 5526;
       }
-
-      public function initGameActionFightReduceDamagesMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, amount:uint=0) : GameActionFightReduceDamagesMessage {
-         super.initAbstractGameActionMessage(actionId,sourceId);
-         this.targetId=targetId;
-         this.amount=amount;
-         this._isInitialized=true;
+      
+      public function initGameActionFightReduceDamagesMessage(param1:uint=0, param2:int=0, param3:int=0, param4:uint=0) : GameActionFightReduceDamagesMessage {
+         super.initAbstractGameActionMessage(param1,param2);
+         this.targetId = param3;
+         this.amount = param4;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
          super.reset();
-         this.targetId=0;
-         this.amount=0;
-         this._isInitialized=false;
+         this.targetId = 0;
+         this.amount = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      override public function serialize(output:IDataOutput) : void {
-         this.serializeAs_GameActionFightReduceDamagesMessage(output);
+      
+      override public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_GameActionFightReduceDamagesMessage(param1);
       }
-
-      public function serializeAs_GameActionFightReduceDamagesMessage(output:IDataOutput) : void {
-         super.serializeAs_AbstractGameActionMessage(output);
-         output.writeInt(this.targetId);
-         if(this.amount<0)
+      
+      public function serializeAs_GameActionFightReduceDamagesMessage(param1:IDataOutput) : void {
+         super.serializeAs_AbstractGameActionMessage(param1);
+         param1.writeInt(this.targetId);
+         if(this.amount < 0)
          {
-            throw new Error("Forbidden value ("+this.amount+") on element amount.");
+            throw new Error("Forbidden value (" + this.amount + ") on element amount.");
          }
          else
          {
-            output.writeInt(this.amount);
+            param1.writeInt(this.amount);
             return;
          }
       }
-
-      override public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_GameActionFightReduceDamagesMessage(input);
+      
+      override public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_GameActionFightReduceDamagesMessage(param1);
       }
-
-      public function deserializeAs_GameActionFightReduceDamagesMessage(input:IDataInput) : void {
-         super.deserialize(input);
-         this.targetId=input.readInt();
-         this.amount=input.readInt();
-         if(this.amount<0)
+      
+      public function deserializeAs_GameActionFightReduceDamagesMessage(param1:IDataInput) : void {
+         super.deserialize(param1);
+         this.targetId = param1.readInt();
+         this.amount = param1.readInt();
+         if(this.amount < 0)
          {
-            throw new Error("Forbidden value ("+this.amount+") on element of GameActionFightReduceDamagesMessage.amount.");
+            throw new Error("Forbidden value (" + this.amount + ") on element of GameActionFightReduceDamagesMessage.amount.");
          }
          else
          {
@@ -92,5 +90,4 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          }
       }
    }
-
 }

@@ -13,104 +13,100 @@ package com.ankamagames.jerakine.utils.files
    import flash.events.ProgressEvent;
    import flash.utils.ByteArray;
    import nochump.util.zip.ZipEntry;
-
-
+   
    public class ZipLoader extends EventDispatcher implements ICachable
    {
-         
-
-      public function ZipLoader(fileRequest:URLRequest=null, oExtraData:*=null) {
+      
+      public function ZipLoader(param1:URLRequest=null, param2:*=null) {
          super();
-         if(fileRequest)
+         if(param1)
          {
-            this._name="ZIP_"+fileRequest.url;
+            this._name = "ZIP_" + param1.url;
          }
-         this._oExtraData=oExtraData;
-         if(fileRequest!=null)
+         this._oExtraData = param2;
+         if(param1 != null)
          {
-            this.load(fileRequest);
+            this.load(param1);
          }
       }
-
-
-
+      
       private var _zipFile:ZipFile;
-
+      
       private var _files:Array;
-
+      
       private var _filesNames:Array;
-
+      
       private var _oExtraData;
-
+      
       private var _inUse:Boolean;
-
+      
       private var _name:String;
-
+      
       private var _loader:URLLoader;
-
+      
       public var url:String;
-
+      
       public var loaded:Boolean;
-
+      
       public function get inUse() : Boolean {
          return this._inUse;
       }
-
-      public function set inUse(value:Boolean) : void {
-         this._inUse=value;
+      
+      public function set inUse(param1:Boolean) : void {
+         this._inUse = param1;
       }
-
+      
       public function get name() : String {
          return this._name;
       }
-
-      public function set name(value:String) : void {
-         this._name=value;
+      
+      public function set name(param1:String) : void {
+         this._name = param1;
       }
-
+      
       public function get extraData() : * {
          return this._oExtraData;
       }
-
-      public function load(request:URLRequest) : void {
-         this.loaded=false;
-         this._files=new Array();
-         this._filesNames=new Array();
-         this._name="ZIP_"+request.url;
-         this._zipFile=null;
-         this._loader=new URLLoader();
-         this._loader.dataFormat=URLLoaderDataFormat.BINARY;
+      
+      public function load(param1:URLRequest) : void {
+         this.loaded = false;
+         this._files = new Array();
+         this._filesNames = new Array();
+         this._name = "ZIP_" + param1.url;
+         this._zipFile = null;
+         this._loader = new URLLoader();
+         this._loader.dataFormat = URLLoaderDataFormat.BINARY;
          this._loader.addEventListener(Event.COMPLETE,this.onLoadComplete);
          this._loader.addEventListener(HTTPStatusEvent.HTTP_STATUS,this.onHttpStatus);
          this._loader.addEventListener(IOErrorEvent.IO_ERROR,this.onIOError);
          this._loader.addEventListener(Event.OPEN,this.onOpen);
          this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onSecurityError);
          this._loader.addEventListener(ProgressEvent.PROGRESS,this.onProgress);
-         this._loader.load(request);
-         this.url=request.url;
+         this._loader.load(param1);
+         this.url = param1.url;
       }
-
+      
       public function getFilesList() : Array {
          return this._filesNames;
       }
-
-      public function getFileDatas(fileName:String) : ByteArray {
-         return this._zipFile.getInput(this._files[fileName]);
+      
+      public function getFileDatas(param1:String) : ByteArray {
+         return this._zipFile.getInput(this._files[param1]);
       }
-
-      public function fileExists(fileName:String) : Boolean {
-         var i:uint = 0;
-         while(i<this._filesNames.length)
+      
+      public function fileExists(param1:String) : Boolean {
+         var _loc2_:uint = 0;
+         while(_loc2_ < this._filesNames.length)
          {
-            if(this._filesNames[i]==fileName)
+            if(this._filesNames[_loc2_] == param1)
             {
                return true;
             }
-            i++;
+            _loc2_++;
          }
          return false;
       }
-
+      
       public function destroy() : void {
          try
          {
@@ -123,41 +119,40 @@ package com.ankamagames.jerakine.utils.files
          {
          }
       }
-
-      private function onLoadComplete(e:Event) : void {
-         var entry:ZipEntry = null;
-         var zipData:ByteArray = ByteArray(URLLoader(e.target).data);
-         this._zipFile=new ZipFile(zipData);
-         var i:uint = 0;
-         while(i<this._zipFile.entries.length)
+      
+      private function onLoadComplete(param1:Event) : void {
+         var _loc4_:ZipEntry = null;
+         var _loc2_:ByteArray = ByteArray(URLLoader(param1.target).data);
+         this._zipFile = new ZipFile(_loc2_);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this._zipFile.entries.length)
          {
-            entry=this._zipFile.entries[i];
-            this._files[entry.name]=entry;
-            this._filesNames.push(entry.name);
-            i++;
+            _loc4_ = this._zipFile.entries[_loc3_];
+            this._files[_loc4_.name] = _loc4_;
+            this._filesNames.push(_loc4_.name);
+            _loc3_++;
          }
-         dispatchEvent(e);
+         dispatchEvent(param1);
       }
-
-      private function onHttpStatus(httpse:HTTPStatusEvent) : void {
-         dispatchEvent(httpse);
+      
+      private function onHttpStatus(param1:HTTPStatusEvent) : void {
+         dispatchEvent(param1);
       }
-
-      private function onIOError(ioe:IOErrorEvent) : void {
-         dispatchEvent(ioe);
+      
+      private function onIOError(param1:IOErrorEvent) : void {
+         dispatchEvent(param1);
       }
-
-      private function onOpen(e:Event) : void {
-         dispatchEvent(e);
+      
+      private function onOpen(param1:Event) : void {
+         dispatchEvent(param1);
       }
-
-      private function onSecurityError(se:SecurityErrorEvent) : void {
-         dispatchEvent(se);
+      
+      private function onSecurityError(param1:SecurityErrorEvent) : void {
+         dispatchEvent(param1);
       }
-
-      private function onProgress(pe:ProgressEvent) : void {
-         dispatchEvent(pe);
+      
+      private function onProgress(param1:ProgressEvent) : void {
+         dispatchEvent(param1);
       }
    }
-
 }

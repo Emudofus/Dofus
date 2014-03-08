@@ -1,102 +1,95 @@
 package com.ankamagames.dofus.types.data
 {
-
-
    public class ServerCommand extends Object
    {
-         
-
-      public function ServerCommand(name:String, help:String) {
+      
+      public function ServerCommand(param1:String, param2:String) {
          super();
-         this.name=name;
-         this.help=help;
-         if(!_cmdByName[name])
+         this.name = param1;
+         this.help = param2;
+         if(!_cmdByName[param1])
          {
-            _cmdByName[name]=this;
-            _cmdList.push(name);
+            _cmdByName[param1] = this;
+            _cmdList.push(param1);
          }
       }
-
+      
       private static var _cmdList:Array = [];
-
+      
       private static var _cmdByName:Array = [];
-
+      
       public static function get commandList() : Array {
          return _cmdList;
       }
-
-      public static function autoComplete(cmd:String) : String {
-         var sCmd:String = null;
-         var newCmd:String = null;
-         var bMatch:* = false;
-         var i:uint = 0;
-         var aMatch:Array = new Array();
-         for (sCmd in _cmdByName)
+      
+      public static function autoComplete(param1:String) : String {
+         var _loc3_:String = null;
+         var _loc4_:String = null;
+         var _loc5_:* = false;
+         var _loc6_:uint = 0;
+         var _loc2_:Array = new Array();
+         for (_loc3_ in _cmdByName)
          {
-            if(sCmd.indexOf(cmd)==0)
+            if(_loc3_.indexOf(param1) == 0)
             {
-               aMatch.push(sCmd);
+               _loc2_.push(_loc3_);
             }
          }
-         if(aMatch.length>1)
+         if(_loc2_.length > 1)
          {
-            newCmd="";
-            bMatch=true;
-            i=1;
-            while(i<30)
+            _loc4_ = "";
+            _loc5_ = true;
+            _loc6_ = 1;
+            while(_loc6_ < 30)
             {
-               if(i>aMatch[0].length)
+               if(_loc6_ > _loc2_[0].length)
                {
+                  break;
                }
-               else
+               for each (_loc3_ in _loc2_)
                {
-                  for each (sCmd in aMatch)
+                  _loc5_ = (_loc5_) && _loc3_.indexOf(_loc2_[0].substr(0,_loc6_)) == 0;
+                  if(!_loc5_)
                   {
-                     bMatch=(bMatch)&&(sCmd.indexOf(aMatch[0].substr(0,i))==0);
-                     if(!bMatch)
-                     {
-                        break;
-                     }
-                  }
-                  if(bMatch)
-                  {
-                     newCmd=aMatch[0].substr(0,i);
-                     i++;
-                     continue;
+                     break;
                   }
                }
+               if(_loc5_)
+               {
+                  _loc4_ = _loc2_[0].substr(0,_loc6_);
+                  _loc6_++;
+                  continue;
+               }
+               break;
             }
+            return _loc4_;
          }
-         else
-         {
-            return aMatch[0];
-         }
+         return _loc2_[0];
       }
-
-      public static function getAutoCompletePossibilities(cmd:String) : Array {
-         var sCmd:String = null;
-         var aMatch:Array = new Array();
-         for (sCmd in _cmdByName)
+      
+      public static function getAutoCompletePossibilities(param1:String) : Array {
+         var _loc3_:String = null;
+         var _loc2_:Array = new Array();
+         for (_loc3_ in _cmdByName)
          {
-            if(sCmd.indexOf(cmd)==0)
+            if(_loc3_.indexOf(param1) == 0)
             {
-               aMatch.push(sCmd);
+               _loc2_.push(_loc3_);
             }
          }
-         return aMatch;
+         return _loc2_;
       }
-
-      public static function getHelp(cmd:String) : String {
-         return _cmdByName[cmd]?_cmdByName[cmd].help:null;
+      
+      public static function getHelp(param1:String) : String {
+         return _cmdByName[param1]?_cmdByName[param1].help:null;
       }
-
-      public static function hasCommand(cmd:String) : Boolean {
-         return _cmdByName.hasOwnProperty(cmd);
+      
+      public static function hasCommand(param1:String) : Boolean {
+         return _cmdByName.hasOwnProperty(param1);
       }
-
+      
       public var name:String;
-
+      
       public var help:String;
    }
-
 }

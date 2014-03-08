@@ -5,66 +5,63 @@ package com.ankamagames.dofus.network.messages.game.context.mount
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class MountReleasedMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function MountReleasedMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6308;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var mountId:Number = 0;
-
+      
       override public function getMessageId() : uint {
          return 6308;
       }
-
-      public function initMountReleasedMessage(mountId:Number=0) : MountReleasedMessage {
-         this.mountId=mountId;
-         this._isInitialized=true;
+      
+      public function initMountReleasedMessage(param1:Number=0) : MountReleasedMessage {
+         this.mountId = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.mountId=0;
-         this._isInitialized=false;
+         this.mountId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_MountReleasedMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_MountReleasedMessage(param1);
       }
-
-      public function serializeAs_MountReleasedMessage(output:IDataOutput) : void {
-         output.writeDouble(this.mountId);
+      
+      public function serializeAs_MountReleasedMessage(param1:IDataOutput) : void {
+         param1.writeDouble(this.mountId);
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_MountReleasedMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_MountReleasedMessage(param1);
       }
-
-      public function deserializeAs_MountReleasedMessage(input:IDataInput) : void {
-         this.mountId=input.readDouble();
+      
+      public function deserializeAs_MountReleasedMessage(param1:IDataInput) : void {
+         this.mountId = param1.readDouble();
       }
    }
-
 }

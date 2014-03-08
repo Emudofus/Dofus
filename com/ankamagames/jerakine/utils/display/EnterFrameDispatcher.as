@@ -7,136 +7,123 @@ package com.ankamagames.jerakine.utils.display
    import flash.utils.getTimer;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-
-
+   
    public class EnterFrameDispatcher extends Object
    {
-         
-
+      
       public function EnterFrameDispatcher() {
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EnterFrameDispatcher));
-
+      
       private static var _listenerUp:Boolean;
-
+      
       private static var _currentTime:uint;
-
+      
       private static var _controledListeners:Dictionary = new Dictionary(true);
-
+      
       private static var _realTimeListeners:Dictionary = new Dictionary();
-
+      
       private static var _listenersCount:uint;
-
+      
       public static function get enterFrameListenerCount() : uint {
          return _listenersCount;
       }
-
+      
       public static function get controledEnterFrameListeners() : Dictionary {
          return _controledListeners;
       }
-
+      
       public static function get realTimeEnterFrameListeners() : Dictionary {
          return _realTimeListeners;
       }
-
-      public static function addEventListener(listener:Function, name:String, frameRate:uint=4.294967295E9) : void {
-         var s:Stage = null;
-         if((frameRate==uint.MAX_VALUE)||(frameRate>=StageShareManager.stage.frameRate))
+      
+      public static function addEventListener(param1:Function, param2:String, param3:uint=4.294967295E9) : void {
+         var _loc4_:Stage = null;
+         if(param3 == uint.MAX_VALUE || param3 >= StageShareManager.stage.frameRate)
          {
-            _realTimeListeners[listener]=name;
-            StageShareManager.stage.addEventListener(Event.ENTER_FRAME,listener,false,0,true);
+            _realTimeListeners[param1] = param2;
+            StageShareManager.stage.addEventListener(Event.ENTER_FRAME,param1,false,0,true);
          }
          else
          {
-            if(!_controledListeners[listener])
+            if(!_controledListeners[param1])
             {
-               _controledListeners[listener]=new ControledEnterFrameListener(name,listener,frameRate<0?1000/frameRate:0,_listenerUp?_currentTime:getTimer());
+               _controledListeners[param1] = new ControledEnterFrameListener(param2,param1,param3 > 0?1000 / param3:0,_listenerUp?_currentTime:getTimer());
                if(!_listenerUp)
                {
                   StageShareManager.stage.addEventListener(Event.ENTER_FRAME,onEnterFrame);
-                  s=StageShareManager.stage;
-                  _listenerUp=true;
+                  _loc4_ = StageShareManager.stage;
+                  _listenerUp = true;
                }
             }
          }
          _listenersCount++;
       }
-
-      public static function hasEventListener(listener:Function) : Boolean {
-         return !(_controledListeners[listener]==null);
+      
+      public static function hasEventListener(param1:Function) : Boolean {
+         return !(_controledListeners[param1] == null);
       }
-
-      public static function removeEventListener(listener:Function) : void {
-         var k:* = undefined;
-         if(_controledListeners[listener])
+      
+      public static function removeEventListener(param1:Function) : void {
+         var _loc2_:* = undefined;
+         if(_controledListeners[param1])
          {
-            delete _controledListeners[[listener]];
+            delete _controledListeners[[param1]];
             _listenersCount--;
          }
-         if(_realTimeListeners[listener])
+         if(_realTimeListeners[param1])
          {
-            delete _realTimeListeners[[listener]];
-            StageShareManager.stage.removeEventListener(Event.ENTER_FRAME,listener,false);
+            delete _realTimeListeners[[param1]];
+            StageShareManager.stage.removeEventListener(Event.ENTER_FRAME,param1,false);
             _listenersCount--;
          }
-         if(!(_controledListeners hasNext _loc3_))
+         for each (_loc2_ in _controledListeners)
          {
-            if(StageShareManager.stage)
-            {
-               StageShareManager.stage.removeEventListener(Event.ENTER_FRAME,onEnterFrame);
-            }
-            _listenerUp=false;
-            return;
          }
-         k=nextValue(_loc3_,_loc4_);
-      }
-
-      private static function onEnterFrame(e:Event) : void {
-         var cefl:ControledEnterFrameListener = null;
-         var diff:uint = 0;
-         _currentTime=getTimer();
-         for each (cefl in _controledListeners)
+         if(StageShareManager.stage)
          {
-            diff=_currentTime-cefl.latestChange;
-            if(diff>cefl.wantedGap-cefl.overhead)
+            StageShareManager.stage.removeEventListener(Event.ENTER_FRAME,onEnterFrame);
+         }
+         _listenerUp = false;
+      }
+      
+      private static function onEnterFrame(param1:Event) : void {
+         var _loc2_:ControledEnterFrameListener = null;
+         var _loc3_:uint = 0;
+         _currentTime = getTimer();
+         for each (_loc2_ in _controledListeners)
+         {
+            _loc3_ = _currentTime - _loc2_.latestChange;
+            if(_loc3_ > _loc2_.wantedGap - _loc2_.overhead)
             {
-               cefl.listener(e);
-               cefl.latestChange=_currentTime;
-               cefl.overhead=diff-cefl.wantedGap+cefl.overhead;
+               _loc2_.listener(param1);
+               _loc2_.latestChange = _currentTime;
+               _loc2_.overhead = _loc3_ - _loc2_.wantedGap + _loc2_.overhead;
             }
          }
       }
-
-
    }
-
 }
-
-
-
-   class ControledEnterFrameListener extends Object
-   {
-         
-
-      function ControledEnterFrameListener(name:String, listener:Function, wantedGap:uint, latestChange:uint) {
-         super();
-         this.name=name;
-         this.listener=listener;
-         this.wantedGap=wantedGap;
-         this.latestChange=latestChange;
-      }
-
-
-
-      public var name:String;
-
-      public var listener:Function;
-
-      public var wantedGap:uint;
-
-      public var overhead:uint;
-
-      public var latestChange:uint;
+class ControledEnterFrameListener extends Object
+{
+   
+   function ControledEnterFrameListener(param1:String, param2:Function, param3:uint, param4:uint) {
+      super();
+      this.name = param1;
+      this.listener = param2;
+      this.wantedGap = param3;
+      this.latestChange = param4;
    }
+   
+   public var name:String;
+   
+   public var listener:Function;
+   
+   public var wantedGap:uint;
+   
+   public var overhead:uint;
+   
+   public var latestChange:uint;
+}

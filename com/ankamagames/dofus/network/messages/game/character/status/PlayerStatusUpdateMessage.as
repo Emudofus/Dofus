@@ -7,112 +7,109 @@ package com.ankamagames.dofus.network.messages.game.character.status
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
-
-
+   
    public class PlayerStatusUpdateMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function PlayerStatusUpdateMessage() {
-         this.status=new PlayerStatus();
+         this.status = new PlayerStatus();
          super();
       }
-
+      
       public static const protocolId:uint = 6386;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var accountId:uint = 0;
-
+      
       public var playerId:uint = 0;
-
+      
       public var status:PlayerStatus;
-
+      
       override public function getMessageId() : uint {
          return 6386;
       }
-
-      public function initPlayerStatusUpdateMessage(accountId:uint=0, playerId:uint=0, status:PlayerStatus=null) : PlayerStatusUpdateMessage {
-         this.accountId=accountId;
-         this.playerId=playerId;
-         this.status=status;
-         this._isInitialized=true;
+      
+      public function initPlayerStatusUpdateMessage(param1:uint=0, param2:uint=0, param3:PlayerStatus=null) : PlayerStatusUpdateMessage {
+         this.accountId = param1;
+         this.playerId = param2;
+         this.status = param3;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.accountId=0;
-         this.playerId=0;
-         this.status=new PlayerStatus();
-         this._isInitialized=false;
+         this.accountId = 0;
+         this.playerId = 0;
+         this.status = new PlayerStatus();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_PlayerStatusUpdateMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_PlayerStatusUpdateMessage(param1);
       }
-
-      public function serializeAs_PlayerStatusUpdateMessage(output:IDataOutput) : void {
-         if(this.accountId<0)
+      
+      public function serializeAs_PlayerStatusUpdateMessage(param1:IDataOutput) : void {
+         if(this.accountId < 0)
          {
-            throw new Error("Forbidden value ("+this.accountId+") on element accountId.");
+            throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
          }
          else
          {
-            output.writeInt(this.accountId);
-            if(this.playerId<0)
+            param1.writeInt(this.accountId);
+            if(this.playerId < 0)
             {
-               throw new Error("Forbidden value ("+this.playerId+") on element playerId.");
+               throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
             }
             else
             {
-               output.writeInt(this.playerId);
-               output.writeShort(this.status.getTypeId());
-               this.status.serialize(output);
+               param1.writeInt(this.playerId);
+               param1.writeShort(this.status.getTypeId());
+               this.status.serialize(param1);
                return;
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_PlayerStatusUpdateMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_PlayerStatusUpdateMessage(param1);
       }
-
-      public function deserializeAs_PlayerStatusUpdateMessage(input:IDataInput) : void {
-         this.accountId=input.readInt();
-         if(this.accountId<0)
+      
+      public function deserializeAs_PlayerStatusUpdateMessage(param1:IDataInput) : void {
+         this.accountId = param1.readInt();
+         if(this.accountId < 0)
          {
-            throw new Error("Forbidden value ("+this.accountId+") on element of PlayerStatusUpdateMessage.accountId.");
+            throw new Error("Forbidden value (" + this.accountId + ") on element of PlayerStatusUpdateMessage.accountId.");
          }
          else
          {
-            this.playerId=input.readInt();
-            if(this.playerId<0)
+            this.playerId = param1.readInt();
+            if(this.playerId < 0)
             {
-               throw new Error("Forbidden value ("+this.playerId+") on element of PlayerStatusUpdateMessage.playerId.");
+               throw new Error("Forbidden value (" + this.playerId + ") on element of PlayerStatusUpdateMessage.playerId.");
             }
             else
             {
-               _id3=input.readUnsignedShort();
-               this.status=ProtocolTypeManager.getInstance(PlayerStatus,_id3);
-               this.status.deserialize(input);
+               _loc2_ = param1.readUnsignedShort();
+               this.status = ProtocolTypeManager.getInstance(PlayerStatus,_loc2_);
+               this.status.deserialize(param1);
                return;
             }
          }
       }
    }
-
 }

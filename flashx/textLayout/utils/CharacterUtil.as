@@ -1,61 +1,55 @@
 package flashx.textLayout.utils
 {
-
-
    public final class CharacterUtil extends Object
    {
-         
-
+      
       public function CharacterUtil() {
          super();
       }
-
-      public static function isHighSurrogate(charCode:int) : Boolean {
-         return (charCode>=55296)&&(charCode<=56319);
+      
+      public static function isHighSurrogate(param1:int) : Boolean {
+         return param1 >= 55296 && param1 <= 56319;
       }
-
-      public static function isLowSurrogate(charCode:int) : Boolean {
-         return (charCode>=56320)&&(charCode<=57343);
+      
+      public static function isLowSurrogate(param1:int) : Boolean {
+         return param1 >= 56320 && param1 <= 57343;
       }
-
+      
       private static var whiteSpaceObject:Object = createWhiteSpaceObject();
-
+      
       private static function createWhiteSpaceObject() : Object {
-         var rslt:Object = new Object();
-         rslt[32]=true;
-         rslt[5760]=true;
-         rslt[6158]=true;
-         rslt[8192]=true;
-         rslt[8193]=true;
-         rslt[8194]=true;
-         rslt[8195]=true;
-         rslt[8196]=true;
-         rslt[8197]=true;
-         rslt[8198]=true;
-         rslt[8199]=true;
-         rslt[8200]=true;
-         rslt[8201]=true;
-         rslt[8202]=true;
-         rslt[8239]=true;
-         rslt[8287]=true;
-         rslt[12288]=true;
-         rslt[8232]=true;
-         rslt[8233]=true;
-         rslt[9]=true;
-         rslt[10]=true;
-         rslt[11]=true;
-         rslt[12]=true;
-         rslt[13]=true;
-         rslt[133]=true;
-         rslt[160]=true;
-         return rslt;
+         var _loc1_:Object = new Object();
+         _loc1_[32] = true;
+         _loc1_[5760] = true;
+         _loc1_[6158] = true;
+         _loc1_[8192] = true;
+         _loc1_[8193] = true;
+         _loc1_[8194] = true;
+         _loc1_[8195] = true;
+         _loc1_[8196] = true;
+         _loc1_[8197] = true;
+         _loc1_[8198] = true;
+         _loc1_[8199] = true;
+         _loc1_[8200] = true;
+         _loc1_[8201] = true;
+         _loc1_[8202] = true;
+         _loc1_[8239] = true;
+         _loc1_[8287] = true;
+         _loc1_[12288] = true;
+         _loc1_[8232] = true;
+         _loc1_[8233] = true;
+         _loc1_[9] = true;
+         _loc1_[10] = true;
+         _loc1_[11] = true;
+         _loc1_[12] = true;
+         _loc1_[13] = true;
+         _loc1_[133] = true;
+         _loc1_[160] = true;
+         return _loc1_;
       }
-
-      public static function isWhitespace(charCode:int) : Boolean {
-         return whiteSpaceObject[charCode];
+      
+      public static function isWhitespace(param1:int) : Boolean {
+         return whiteSpaceObject[param1];
       }
-
-
    }
-
 }

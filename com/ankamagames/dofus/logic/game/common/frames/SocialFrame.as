@@ -11,11 +11,15 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.internalDatacenter.guild.GuildHouseWrapper;
    import com.ankamagames.dofus.network.types.game.paddock.PaddockContentInformations;
    import com.ankamagames.dofus.internalDatacenter.guild.EmblemWrapper;
+   import flash.utils.Dictionary;
    import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.dofus.internalDatacenter.guild.GuildFactSheetWrapper;
+   import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.dofus.network.messages.game.friend.FriendsGetListMessage;
    import com.ankamagames.dofus.network.messages.game.friend.IgnoredGetListMessage;
    import com.ankamagames.dofus.network.messages.game.friend.SpouseGetInformationsMessage;
+   import com.ankamagames.dofus.logic.game.common.managers.TaxCollectorsManager;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.network.messages.game.guild.GuildMembershipMessage;
    import com.ankamagames.dofus.network.messages.game.friend.FriendsListMessage;
@@ -69,7 +73,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.guild.GuildInvitationStateRecruterMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildInvitationStateRecrutedMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildJoinedMessage;
-   import com.ankamagames.dofus.network.messages.game.guild.GuildUIOpenedMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildInformationsGeneralMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildInformationsMemberUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildMemberLeavingMessage;
@@ -86,12 +89,15 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.guild.tax.TaxCollectorListMessage;
    import com.ankamagames.dofus.network.messages.game.guild.tax.TaxCollectorMovementAddMessage;
    import com.ankamagames.dofus.network.messages.game.guild.tax.TaxCollectorMovementRemoveMessage;
+   import com.ankamagames.dofus.network.messages.game.guild.tax.TaxCollectorStateUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildInformationsPaddocksMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildPaddockBoughtMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildPaddockRemovedMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.AllianceTaxCollectorDialogQuestionExtendedMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.TaxCollectorDialogQuestionExtendedMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.TaxCollectorDialogQuestionBasicMessage;
    import com.ankamagames.dofus.network.messages.game.social.ContactLookMessage;
+   import com.ankamagames.dofus.network.messages.game.social.ContactLookErrorMessage;
    import com.ankamagames.dofus.logic.game.common.actions.guild.GuildGetInformationsAction;
    import com.ankamagames.dofus.logic.game.common.actions.guild.GuildInvitationAction;
    import com.ankamagames.dofus.network.messages.game.guild.GuildInvitationMessage;
@@ -115,7 +121,10 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.guild.tax.GuildFightTakePlaceRequestMessage;
    import com.ankamagames.dofus.logic.game.common.actions.guild.GuildFightLeaveRequestAction;
    import com.ankamagames.dofus.network.messages.game.guild.tax.GuildFightLeaveRequestMessage;
-   import com.ankamagames.dofus.logic.game.common.actions.taxCollector.TaxCollectorHireRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.guild.GuildFactsRequestAction;
+   import com.ankamagames.dofus.network.messages.game.guild.GuildFactsRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.guild.GuildFactsMessage;
+   import com.ankamagames.dofus.network.messages.game.guild.GuildFactsErrorMessage;
    import com.ankamagames.dofus.logic.game.common.actions.social.CharacterReportAction;
    import com.ankamagames.dofus.network.messages.game.report.CharacterReportMessage;
    import com.ankamagames.dofus.logic.game.common.actions.social.ChatReportAction;
@@ -124,6 +133,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.actions.social.PlayerStatusUpdateRequestAction;
    import com.ankamagames.dofus.network.types.game.character.status.PlayerStatus;
    import com.ankamagames.dofus.network.messages.game.character.status.PlayerStatusUpdateRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.ContactLookRequestByIdAction;
    import com.ankamagames.dofus.network.types.game.friend.FriendInformations;
    import com.ankamagames.dofus.network.types.game.friend.FriendOnlineInformations;
    import com.ankamagames.dofus.internalDatacenter.people.EnemyWrapper;
@@ -132,398 +142,232 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.friend.IgnoredAddRequestMessage;
    import com.ankamagames.dofus.network.types.game.house.HouseInformationsForGuild;
    import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
+   import com.ankamagames.dofus.datacenter.world.SubArea;
    import com.ankamagames.dofus.network.messages.game.guild.GuildGetInformationsMessage;
    import com.ankamagames.dofus.internalDatacenter.guild.TaxCollectorWrapper;
-   import com.ankamagames.dofus.internalDatacenter.guild.TaxCollectorInFightWrapper;
-   import com.ankamagames.dofus.internalDatacenter.guild.TaxCollectorFightersWrapper;
-   import com.ankamagames.dofus.network.messages.game.guild.tax.TaxCollectorHireRequestMessage;
+   import com.ankamagames.dofus.internalDatacenter.guild.SocialEntityInFightWrapper;
+   import com.ankamagames.dofus.internalDatacenter.guild.SocialFightersWrapper;
    import com.ankamagames.dofus.network.messages.game.guild.GuildHouseUpdateInformationMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildHouseRemoveMessage;
+   import com.ankamagames.dofus.network.messages.game.guild.GuildInAllianceFactsMessage;
+   import com.ankamagames.dofus.network.messages.game.social.ContactLookRequestByIdMessage;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.SocialHookList;
    import com.ankamagames.dofus.logic.common.managers.AccountManager;
    import com.ankamagames.dofus.logic.game.common.managers.ChatAutocompleteNameManager;
-   import com.ankamagames.dofus.logic.game.common.managers.TaxCollectorsManager;
    import com.ankamagames.dofus.internalDatacenter.people.IgnoredWrapper;
-
-
+   
    public class SocialFrame extends Object implements Frame
    {
-         
-
+      
       public function SocialFrame() {
-         this._guildHouses=new Vector.<GuildHouseWrapper>();
-         this._guildPaddocks=new Vector.<PaddockContentInformations>();
+         this._guildHouses = new Vector.<GuildHouseWrapper>();
+         this._guildPaddocks = new Vector.<PaddockContentInformations>();
+         this._allGuilds = new Dictionary(true);
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SocialFrame));
-
+      
+      private static var _instance:SocialFrame;
+      
+      public static function getInstance() : SocialFrame {
+         return _instance;
+      }
+      
       private var _guildDialogFrame:GuildDialogFrame;
-
+      
       private var _friendsList:Array;
-
+      
       private var _enemiesList:Array;
-
+      
       private var _ignoredList:Array;
-
+      
       private var _spouse:SpouseWrapper;
-
+      
       private var _hasGuild:Boolean = false;
-
+      
       private var _hasSpouse:Boolean = false;
-
+      
       private var _guild:GuildWrapper;
-
+      
       private var _guildMembers:Vector.<GuildMember>;
-
+      
       private var _guildHouses:Vector.<GuildHouseWrapper>;
-
+      
       private var _guildHousesList:Boolean = false;
-
+      
       private var _guildHousesListUpdate:Boolean = false;
-
+      
       private var _guildPaddocks:Vector.<PaddockContentInformations>;
-
+      
       private var _guildPaddocksMax:int = 1;
-
+      
       private var _upGuildEmblem:EmblemWrapper;
-
+      
       private var _backGuildEmblem:EmblemWrapper;
-
+      
       private var _warnOnFrienConnec:Boolean;
-
+      
       private var _warnOnMemberConnec:Boolean;
-
+      
       private var _warnWhenFriendOrGuildMemberLvlUp:Boolean;
-
+      
       private var _warnWhenFriendOrGuildMemberAchieve:Boolean;
-
+      
       private var _autoLeaveHelpers:Boolean;
-
+      
+      private var _allGuilds:Dictionary;
+      
+      private var _socialDatFrame:SocialDataFrame;
+      
       public function get priority() : int {
          return Priority.NORMAL;
       }
-
+      
       public function get friendsList() : Array {
          return this._friendsList;
       }
-
+      
       public function get enemiesList() : Array {
          return this._enemiesList;
       }
-
+      
       public function get ignoredList() : Array {
          return this._ignoredList;
       }
-
+      
       public function get spouse() : SpouseWrapper {
          return this._spouse;
       }
-
+      
       public function get hasGuild() : Boolean {
          return this._hasGuild;
       }
-
+      
       public function get hasSpouse() : Boolean {
          return this._hasSpouse;
       }
-
+      
       public function get guild() : GuildWrapper {
          return this._guild;
       }
-
+      
       public function get guildmembers() : Vector.<GuildMember> {
          return this._guildMembers;
       }
-
+      
       public function get guildHouses() : Vector.<GuildHouseWrapper> {
          return this._guildHouses;
       }
-
+      
       public function get guildPaddocks() : Vector.<PaddockContentInformations> {
          return this._guildPaddocks;
       }
-
+      
       public function get maxGuildPaddocks() : int {
          return this._guildPaddocksMax;
       }
-
+      
       public function get warnFriendConnec() : Boolean {
          return this._warnOnFrienConnec;
       }
-
+      
       public function get warnMemberConnec() : Boolean {
          return this._warnOnMemberConnec;
       }
-
+      
       public function get warnWhenFriendOrGuildMemberLvlUp() : Boolean {
          return this._warnWhenFriendOrGuildMemberLvlUp;
       }
-
+      
       public function get warnWhenFriendOrGuildMemberAchieve() : Boolean {
          return this._warnWhenFriendOrGuildMemberAchieve;
       }
-
+      
+      public function get guildHousesUpdateNeeded() : Boolean {
+         return this._guildHousesListUpdate;
+      }
+      
+      public function getGuildById(param1:int) : GuildFactSheetWrapper {
+         return this._allGuilds[param1];
+      }
+      
+      public function updateGuildById(param1:int, param2:GuildFactSheetWrapper) : void {
+         this._allGuilds[param1] = param2;
+      }
+      
       public function pushed() : Boolean {
-         this._enemiesList=new Array();
-         this._ignoredList=new Array();
-         this._guildDialogFrame=new GuildDialogFrame();
+         _instance = this;
+         this._enemiesList = new Array();
+         this._ignoredList = new Array();
+         this._socialDatFrame = new SocialDataFrame();
+         this._guildDialogFrame = new GuildDialogFrame();
+         Kernel.getWorker().addFrame(this._socialDatFrame);
          ConnectionsHandler.getConnection().send(new FriendsGetListMessage());
          ConnectionsHandler.getConnection().send(new IgnoredGetListMessage());
          ConnectionsHandler.getConnection().send(new SpouseGetInformationsMessage());
          return true;
       }
-
-      public function process(msg:Message) : Boolean {
-         var gmmsg:GuildMembershipMessage = null;
-         var flmsg:FriendsListMessage = null;
-         var sra:SpouseRequestAction = null;
-         var simsg:SpouseInformationsMessage = null;
-         var ilmsg:IgnoredListMessage = null;
-         var osa:OpenSocialAction = null;
-         var flra:FriendsListRequestAction = null;
-         var elra:EnemiesListRequestAction = null;
-         var afa:AddFriendAction = null;
-         var famsg:FriendAddedMessage = null;
-         var friendToAdd:FriendWrapper = null;
-         var fafmsg:FriendAddFailureMessage = null;
-         var reason:String = null;
-         var aea:AddEnemyAction = null;
-         var iamsg:IgnoredAddedMessage = null;
-         var iafmsg:IgnoredAddFailureMessage = null;
-         var reason2:String = null;
-         var rfa:RemoveFriendAction = null;
-         var fdrqmsg:FriendDeleteRequestMessage = null;
-         var fdrmsg:FriendDeleteResultMessage = null;
-         var output:String = null;
-         var fumsg:FriendUpdateMessage = null;
-         var friendToUpdate:FriendWrapper = null;
-         var friendAlreadyInGame:* = false;
-         var rea:RemoveEnemyAction = null;
-         var idrqmsg:IgnoredDeleteRequestMessage = null;
-         var idrmsg:IgnoredDeleteResultMessage = null;
-         var aia:AddIgnoredAction = null;
-         var ria:RemoveIgnoredAction = null;
-         var idrq2msg:IgnoredDeleteRequestMessage = null;
-         var jfa:JoinFriendAction = null;
-         var fjrmsg:FriendJoinRequestMessage = null;
-         var jsa:JoinSpouseAction = null;
-         var fsfa:FriendSpouseFollowAction = null;
-         var fsfwcmsg:FriendSpouseFollowWithCompassRequestMessage = null;
-         var fwsa:FriendWarningSetAction = null;
-         var fsocmsg:FriendSetWarnOnConnectionMessage = null;
-         var mwsa:MemberWarningSetAction = null;
-         var gmswocmsg:GuildMemberSetWarnOnConnectionMessage = null;
-         var fogmwsa:FriendOrGuildMemberLevelUpWarningSetAction = null;
-         var fswolgmsg:FriendSetWarnOnLevelGainMessage = null;
-         var fgswoaca:FriendGuildSetWarnOnAchievementCompleteAction = null;
-         var fgswoacmsg:FriendGuildSetWarnOnAchievementCompleteMessage = null;
-         var ssmsg:SpouseStatusMessage = null;
-         var msumsg:MoodSmileyUpdateMessage = null;
-         var fwocsmsg:FriendWarnOnConnectionStateMessage = null;
-         var gmwocsmsg:GuildMemberWarnOnConnectionStateMessage = null;
-         var gmosm:GuildMemberOnlineStatusMessage = null;
-         var fwolgsmsg:FriendWarnOnLevelGainStateMessage = null;
-         var fgwoacsmsg:FriendGuildWarnOnAchievementCompleteStateMessage = null;
-         var gimmsg:GuildInformationsMembersMessage = null;
-         var ghimsg:GuildHousesInformationMessage = null;
-         var gmsmsg:GuildModificationStartedMessage = null;
-         var gcrmsg:GuildCreationResultMessage = null;
-         var errorMessage:String = null;
-         var gimsg:GuildInvitedMessage = null;
-         var gisrermsg:GuildInvitationStateRecruterMessage = null;
-         var gisredmsg:GuildInvitationStateRecrutedMessage = null;
-         var gjmsg:GuildJoinedMessage = null;
-         var joinMessage:String = null;
-         var guiomsg:GuildUIOpenedMessage = null;
-         var gigmsg:GuildInformationsGeneralMessage = null;
-         var gimumsg:GuildInformationsMemberUpdateMessage = null;
-         var member:GuildMember = null;
-         var gmlmsg:GuildMemberLeavingMessage = null;
-         var comptgm:uint = 0;
-         var gipmsg:GuildInfosUpgradeMessage = null;
-         var gfphjmsg:GuildFightPlayersHelpersJoinMessage = null;
-         var gfphlmsg:GuildFightPlayersHelpersLeaveMessage = null;
-         var gfpelmsg:GuildFightPlayersEnemiesListMessage = null;
-         var gfpermsg:GuildFightPlayersEnemyRemoveMessage = null;
-         var tcmmsg:TaxCollectorMovementMessage = null;
-         var infoText:String = null;
-         var taxCollectorName:String = null;
-         var point:WorldPointWrapper = null;
-         var positionX:String = null;
-         var positionY:String = null;
-         var worldPoint:String = null;
-         var tcamsg:TaxCollectorAttackedMessage = null;
-         var taxCollectorN:String = null;
-         var sentenceToDisplatch:String = null;
-         var tcarmsg:TaxCollectorAttackedResultMessage = null;
-         var sentenceToDisplatchResultAttack:String = null;
-         var taxCName:String = null;
-         var pointAttacked:WorldPointWrapper = null;
-         var worldPosX:* = 0;
-         var worldPosY:* = 0;
-         var tcemsg:TaxCollectorErrorMessage = null;
-         var errorTaxCollectorMessage:String = null;
-         var tclmamsg:TaxCollectorListMessage = null;
-         var tcmamsg:TaxCollectorMovementAddMessage = null;
-         var newTC:* = false;
-         var tcmrmsg:TaxCollectorMovementRemoveMessage = null;
-         var gifmsg:GuildInformationsPaddocksMessage = null;
-         var gpbmsg:GuildPaddockBoughtMessage = null;
-         var gprmsg:GuildPaddockRemovedMessage = null;
-         var tcdqemsg:TaxCollectorDialogQuestionExtendedMessage = null;
-         var tcdqbmsg:TaxCollectorDialogQuestionBasicMessage = null;
-         var guildw:GuildWrapper = null;
-         var clmsg:ContactLookMessage = null;
-         var ggia:GuildGetInformationsAction = null;
-         var askInformation:* = false;
-         var gia:GuildInvitationAction = null;
-         var ginvitationmsg:GuildInvitationMessage = null;
-         var gibna:GuildInvitationByNameAction = null;
-         var gibnmsg:GuildInvitationByNameMessage = null;
-         var gkra:GuildKickRequestAction = null;
-         var gkrmsg:GuildKickRequestMessage = null;
-         var gcmpa:GuildChangeMemberParametersAction = null;
-         var newRights:* = NaN;
-         var gcmpmsg:GuildChangeMemberParametersMessage = null;
-         var gsura:GuildSpellUpgradeRequestAction = null;
-         var gsurmsg:GuildSpellUpgradeRequestMessage = null;
-         var gcura:GuildCharacsUpgradeRequestAction = null;
-         var gcurmsg:GuildCharacsUpgradeRequestMessage = null;
-         var gftra:GuildFarmTeleportRequestAction = null;
-         var gftrmsg:GuildPaddockTeleportRequestMessage = null;
-         var ghtra:GuildHouseTeleportRequestAction = null;
-         var ghtrmsg:GuildHouseTeleportRequestMessage = null;
-         var gfjra:GuildFightJoinRequestAction = null;
-         var gfjrmsg:GuildFightJoinRequestMessage = null;
-         var gftpra:GuildFightTakePlaceRequestAction = null;
-         var gftprmsg:GuildFightTakePlaceRequestMessage = null;
-         var gflra:GuildFightLeaveRequestAction = null;
-         var gflrmsg:GuildFightLeaveRequestMessage = null;
-         var tchra:TaxCollectorHireRequestAction = null;
-         var cra:CharacterReportAction = null;
-         var crm:CharacterReportMessage = null;
-         var chra:ChatReportAction = null;
-         var cmr:ChatMessageReportMessage = null;
-         var chatFrame:ChatFrame = null;
-         var timeStamp:uint = 0;
-         var psum:PlayerStatusUpdateMessage = null;
-         var psura:PlayerStatusUpdateRequestAction = null;
-         var status:PlayerStatus = null;
-         var psurmsg:PlayerStatusUpdateRequestMessage = null;
-         var f:FriendInformations = null;
-         var fw:FriendWrapper = null;
-         var foi:FriendOnlineInformations = null;
-         var _loc141_:* = undefined;
-         var _loc142_:EnemyWrapper = null;
-         var _loc143_:IgnoredOnlineInformations = null;
-         var _loc144_:FriendAddRequestMessage = null;
-         var _loc145_:IgnoredAddRequestMessage = null;
-         var _loc146_:EnemyWrapper = null;
-         var _loc147_:* = undefined;
-         var _loc148_:* = undefined;
-         var _loc149_:* = undefined;
-         var _loc150_:* = undefined;
-         var _loc151_:* = undefined;
-         var _loc152_:* = undefined;
-         var _loc153_:IgnoredAddRequestMessage = null;
-         var _loc154_:GuildMember = null;
-         var _loc155_:* = 0;
-         var _loc156_:* = 0;
-         var _loc157_:FriendWrapper = null;
-         var _loc158_:String = null;
-         var _loc159_:GuildMember = null;
-         var _loc160_:* = false;
-         var _loc161_:FriendWrapper = null;
-         var _loc162_:GuildMember = null;
-         var _loc163_:HouseInformationsForGuild = null;
-         var _loc164_:GuildHouseWrapper = null;
-         var _loc165_:* = 0;
-         var _loc166_:* = 0;
-         var _loc167_:GuildMember = null;
-         var _loc168_:String = null;
-         var _loc169_:CharacterMinimalPlusLookInformations = null;
-         var _loc170_:GuildGetInformationsMessage = null;
-         var _loc171_:TaxCollectorWrapper = null;
-         var _loc172_:TaxCollectorInFightWrapper = null;
-         var _loc173_:TaxCollectorFightersWrapper = null;
-         var _loc174_:TaxCollectorHireRequestMessage = null;
-         var _loc175_:GuildHouseUpdateInformationMessage = null;
-         var _loc176_:* = false;
-         var _loc177_:GuildHouseWrapper = null;
-         var _loc178_:GuildHouseWrapper = null;
-         var _loc179_:GuildHouseRemoveMessage = null;
-         var _loc180_:* = false;
-         var _loc181_:* = 0;
-         var _loc182_:GuildMember = null;
-         var _loc183_:* = 0;
-         var _loc184_:* = 0;
-         var _loc185_:FriendWrapper = null;
-         gmmsg=msg as GuildMembershipMessage;
-         if(this._guild!=null)
-         {
-            this._guild.update(gmmsg.guildInfo.guildId,gmmsg.guildInfo.guildName,gmmsg.guildInfo.guildEmblem,gmmsg.memberRights,gmmsg.enabled);
-         }
-         else
-         {
-            this._guild=GuildWrapper.create(gmmsg.guildInfo.guildId,gmmsg.guildInfo.guildName,gmmsg.guildInfo.guildEmblem,gmmsg.memberRights,gmmsg.enabled);
-         }
-         this._hasGuild=true;
-         KernelEventsManager.getInstance().processCallback(SocialHookList.GuildMembership);
-         KernelEventsManager.getInstance().processCallback(SocialHookList.GuildMembershipUpdated,true);
-         return true;
-      }
-
+      
       public function pulled() : Boolean {
+         _instance = null;
          TaxCollectorsManager.getInstance().destroy();
          return true;
       }
-
-      public function isIgnored(name:String, accountId:int=0) : Boolean {
-         var loser:IgnoredWrapper = null;
-         var accountName:String = AccountManager.getInstance().getAccountName(name);
-         for each (loser in this._ignoredList)
+      
+      public function process(param1:Message) : Boolean {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ConvertException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
+      }
+      
+      public function isIgnored(param1:String, param2:int=0) : Boolean {
+         var _loc4_:IgnoredWrapper = null;
+         var _loc3_:String = AccountManager.getInstance().getAccountName(param1);
+         for each (_loc4_ in this._ignoredList)
          {
-            if((!(accountId==0))&&(loser.accountId==accountId)||(accountName)&&(loser.name.toLowerCase()==accountName.toLowerCase()))
+            if(!(param2 == 0) && _loc4_.accountId == param2 || (_loc3_) && (_loc4_.name.toLowerCase() == _loc3_.toLowerCase()))
             {
                return true;
             }
          }
          return false;
       }
-
-      public function isFriend(playerName:String) : Boolean {
-         var fw:FriendWrapper = null;
-         var n:int = this._friendsList.length;
-         var i:int = 0;
-         while(i<n)
+      
+      public function isFriend(param1:String) : Boolean {
+         var _loc4_:FriendWrapper = null;
+         var _loc2_:int = this._friendsList.length;
+         var _loc3_:* = 0;
+         while(_loc3_ < _loc2_)
          {
-            fw=this._friendsList[i];
-            if(fw.playerName==playerName)
+            _loc4_ = this._friendsList[_loc3_];
+            if(_loc4_.playerName == param1)
             {
                return true;
             }
-            i++;
+            _loc3_++;
          }
          return false;
       }
-
-      public function isEnemy(playerName:String) : Boolean {
-         var ew:EnemyWrapper = null;
-         var n:int = this._enemiesList.length;
-         var i:int = 0;
-         while(i<n)
+      
+      public function isEnemy(param1:String) : Boolean {
+         var _loc4_:EnemyWrapper = null;
+         var _loc2_:int = this._enemiesList.length;
+         var _loc3_:* = 0;
+         while(_loc3_ < _loc2_)
          {
-            ew=this._enemiesList[i];
-            if(ew.playerName==playerName)
+            _loc4_ = this._enemiesList[_loc3_];
+            if(_loc4_.playerName == param1)
             {
                return true;
             }
-            i++;
+            _loc3_++;
          }
          return false;
       }
    }
-
 }

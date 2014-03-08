@@ -6,102 +6,98 @@ package com.ankamagames.jerakine.network
    import com.ankamagames.jerakine.utils.errors.AbstractMethodCallError;
    import flash.utils.IDataInput;
    import flash.utils.getQualifiedClassName;
-
-
+   
    public class NetworkMessage extends ScramblableElement implements INetworkMessage
    {
-         
-
+      
       public function NetworkMessage() {
-         this._instance_id=++GLOBAL_INSTANCE_ID;
+         this._instance_id = ++GLOBAL_INSTANCE_ID;
          super();
       }
-
+      
       private static var GLOBAL_INSTANCE_ID:uint = 0;
-
+      
       public static const BIT_RIGHT_SHIFT_LEN_PACKET_ID:uint = 2;
-
+      
       public static const BIT_MASK:uint = 3;
-
-      public static function writePacket(output:IDataOutput, id:int, data:ByteArray) : void {
-         var high:uint = 0;
-         var low:uint = 0;
-         var typeLen:uint = computeTypeLen(data.length);
-         output.writeShort(subComputeStaticHeader(id,typeLen));
-         switch(typeLen)
+      
+      public static function writePacket(param1:IDataOutput, param2:int, param3:ByteArray) : void {
+         var _loc5_:uint = 0;
+         var _loc6_:uint = 0;
+         var _loc4_:uint = computeTypeLen(param3.length);
+         param1.writeShort(subComputeStaticHeader(param2,_loc4_));
+         switch(_loc4_)
          {
             case 0:
                return;
-               break;
             case 1:
-               output.writeByte(data.length);
+               param1.writeByte(param3.length);
                break;
             case 2:
-               output.writeShort(data.length);
+               param1.writeShort(param3.length);
                break;
             case 3:
-               high=data.length>>16&255;
-               low=data.length&65535;
-               output.writeByte(high);
-               output.writeShort(low);
+               _loc5_ = param3.length >> 16 & 255;
+               _loc6_ = param3.length & 65535;
+               param1.writeByte(_loc5_);
+               param1.writeShort(_loc6_);
                break;
          }
-         output.writeBytes(data,0,data.length);
+         param1.writeBytes(param3,0,param3.length);
       }
-
-      private static function computeTypeLen(len:uint) : uint {
-         if(len>65535)
+      
+      private static function computeTypeLen(param1:uint) : uint {
+         if(param1 > 65535)
          {
             return 3;
          }
-         if(len>255)
+         if(param1 > 255)
          {
             return 2;
          }
-         if(len>0)
+         if(param1 > 0)
          {
             return 1;
          }
          return 0;
       }
-
-      private static function subComputeStaticHeader(msgId:uint, typeLen:uint) : uint {
-         return msgId<<BIT_RIGHT_SHIFT_LEN_PACKET_ID|typeLen;
+      
+      private static function subComputeStaticHeader(param1:uint, param2:uint) : uint {
+         return param1 << BIT_RIGHT_SHIFT_LEN_PACKET_ID | param2;
       }
-
+      
       private var _instance_id:uint;
-
+      
       public function get isInitialized() : Boolean {
          throw new AbstractMethodCallError();
       }
-
+      
       public function getMessageId() : uint {
          throw new AbstractMethodCallError();
       }
-
+      
       public function reset() : void {
          throw new AbstractMethodCallError();
       }
-
-      public function pack(output:IDataOutput) : void {
+      
+      public function pack(param1:IDataOutput) : void {
          throw new AbstractMethodCallError();
       }
-
-      public function unpack(input:IDataInput, length:uint) : void {
+      
+      public function unpack(param1:IDataInput, param2:uint) : void {
          throw new AbstractMethodCallError();
       }
-
-      public function readExternal(input:IDataInput) : void {
+      
+      public function readExternal(param1:IDataInput) : void {
          throw new AbstractMethodCallError();
       }
-
-      public function writeExternal(output:IDataOutput) : void {
+      
+      public function writeExternal(param1:IDataOutput) : void {
          throw new AbstractMethodCallError();
       }
-
+      
       public function toString() : String {
-         return getQualifiedClassName(this).split("::")[1]+" @"+this._instance_id;
+         return getQualifiedClassName(this).split("::")[1] + " @" + this._instance_id;
       }
    }
-
 }

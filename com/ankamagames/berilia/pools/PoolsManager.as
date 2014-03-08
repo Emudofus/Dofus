@@ -3,12 +3,10 @@ package com.ankamagames.berilia.pools
    import com.ankamagames.jerakine.pools.Pool;
    import com.ankamagames.jerakine.pools.PoolableLoader;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
-
-
+   
    public class PoolsManager extends Object
    {
-         
-
+      
       public function PoolsManager() {
          super();
          if(_self)
@@ -20,46 +18,45 @@ package com.ankamagames.berilia.pools
             return;
          }
       }
-
+      
       private static var _self:PoolsManager;
-
+      
       public static function getInstance() : PoolsManager {
-         if(_self==null)
+         if(_self == null)
          {
-            _self=new PoolsManager();
+            _self = new PoolsManager();
          }
          return _self;
       }
-
+      
       private var _loadersPool:Pool;
-
+      
       private var _xmlParsorPool:Pool;
-
+      
       private var _uiRendererPool:Pool;
-
+      
       public function getLoadersPool() : Pool {
-         if(this._loadersPool==null)
+         if(this._loadersPool == null)
          {
-            this._loadersPool=new Pool(PoolableLoader,1,1,1);
+            this._loadersPool = new Pool(PoolableLoader,1,1,1);
          }
          return this._loadersPool;
       }
-
+      
       public function getXmlParsorPool() : Pool {
-         if(this._xmlParsorPool==null)
+         if(this._xmlParsorPool == null)
          {
-            this._xmlParsorPool=new Pool(PoolableXmlParsor,10,5,25);
+            this._xmlParsorPool = new Pool(PoolableXmlParsor,10,5,25);
          }
          return this._xmlParsorPool;
       }
-
+      
       public function getUiRendererPool() : Pool {
-         if(this._uiRendererPool==null)
+         if(this._uiRendererPool == null)
          {
-            this._uiRendererPool=new Pool(PoolableUiRenderer,10,5,25);
+            this._uiRendererPool = new Pool(PoolableUiRenderer,10,5,25);
          }
          return this._uiRendererPool;
       }
    }
-
 }

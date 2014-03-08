@@ -5,76 +5,74 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ExchangeBidHouseTypeMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ExchangeBidHouseTypeMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 5803;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var type:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 5803;
       }
-
-      public function initExchangeBidHouseTypeMessage(type:uint=0) : ExchangeBidHouseTypeMessage {
-         this.type=type;
-         this._isInitialized=true;
+      
+      public function initExchangeBidHouseTypeMessage(param1:uint=0) : ExchangeBidHouseTypeMessage {
+         this.type = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.type=0;
-         this._isInitialized=false;
+         this.type = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ExchangeBidHouseTypeMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ExchangeBidHouseTypeMessage(param1);
       }
-
-      public function serializeAs_ExchangeBidHouseTypeMessage(output:IDataOutput) : void {
-         if(this.type<0)
+      
+      public function serializeAs_ExchangeBidHouseTypeMessage(param1:IDataOutput) : void {
+         if(this.type < 0)
          {
-            throw new Error("Forbidden value ("+this.type+") on element type.");
+            throw new Error("Forbidden value (" + this.type + ") on element type.");
          }
          else
          {
-            output.writeInt(this.type);
+            param1.writeInt(this.type);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ExchangeBidHouseTypeMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ExchangeBidHouseTypeMessage(param1);
       }
-
-      public function deserializeAs_ExchangeBidHouseTypeMessage(input:IDataInput) : void {
-         this.type=input.readInt();
-         if(this.type<0)
+      
+      public function deserializeAs_ExchangeBidHouseTypeMessage(param1:IDataInput) : void {
+         this.type = param1.readInt();
+         if(this.type < 0)
          {
-            throw new Error("Forbidden value ("+this.type+") on element of ExchangeBidHouseTypeMessage.type.");
+            throw new Error("Forbidden value (" + this.type + ") on element of ExchangeBidHouseTypeMessage.type.");
          }
          else
          {
@@ -82,5 +80,4 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          }
       }
    }
-
 }

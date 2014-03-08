@@ -6,134 +6,131 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.objects
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ObjectGroundListAddedMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ObjectGroundListAddedMessage() {
-         this.cells=new Vector.<uint>();
-         this.referenceIds=new Vector.<uint>();
+         this.cells = new Vector.<uint>();
+         this.referenceIds = new Vector.<uint>();
          super();
       }
-
+      
       public static const protocolId:uint = 5925;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var cells:Vector.<uint>;
-
+      
       public var referenceIds:Vector.<uint>;
-
+      
       override public function getMessageId() : uint {
          return 5925;
       }
-
-      public function initObjectGroundListAddedMessage(cells:Vector.<uint>=null, referenceIds:Vector.<uint>=null) : ObjectGroundListAddedMessage {
-         this.cells=cells;
-         this.referenceIds=referenceIds;
-         this._isInitialized=true;
+      
+      public function initObjectGroundListAddedMessage(param1:Vector.<uint>=null, param2:Vector.<uint>=null) : ObjectGroundListAddedMessage {
+         this.cells = param1;
+         this.referenceIds = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.cells=new Vector.<uint>();
-         this.referenceIds=new Vector.<uint>();
-         this._isInitialized=false;
+         this.cells = new Vector.<uint>();
+         this.referenceIds = new Vector.<uint>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ObjectGroundListAddedMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ObjectGroundListAddedMessage(param1);
       }
-
-      public function serializeAs_ObjectGroundListAddedMessage(output:IDataOutput) : void {
-         output.writeShort(this.cells.length);
-         var _i1:uint = 0;
-         while(_i1<this.cells.length)
+      
+      public function serializeAs_ObjectGroundListAddedMessage(param1:IDataOutput) : void {
+         param1.writeShort(this.cells.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.cells.length)
          {
-            if((this.cells[_i1]>0)||(this.cells[_i1]<559))
+            if(this.cells[_loc2_] < 0 || this.cells[_loc2_] > 559)
             {
-               throw new Error("Forbidden value ("+this.cells[_i1]+") on element 1 (starting at 1) of cells.");
+               throw new Error("Forbidden value (" + this.cells[_loc2_] + ") on element 1 (starting at 1) of cells.");
             }
             else
             {
-               output.writeShort(this.cells[_i1]);
-               _i1++;
+               param1.writeShort(this.cells[_loc2_]);
+               _loc2_++;
                continue;
             }
          }
-         output.writeShort(this.referenceIds.length);
-         var _i2:uint = 0;
-         while(_i2<this.referenceIds.length)
+         param1.writeShort(this.referenceIds.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.referenceIds.length)
          {
-            if(this.referenceIds[_i2]<0)
+            if(this.referenceIds[_loc3_] < 0)
             {
-               throw new Error("Forbidden value ("+this.referenceIds[_i2]+") on element 2 (starting at 1) of referenceIds.");
+               throw new Error("Forbidden value (" + this.referenceIds[_loc3_] + ") on element 2 (starting at 1) of referenceIds.");
             }
             else
             {
-               output.writeInt(this.referenceIds[_i2]);
-               _i2++;
+               param1.writeInt(this.referenceIds[_loc3_]);
+               _loc3_++;
                continue;
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ObjectGroundListAddedMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ObjectGroundListAddedMessage(param1);
       }
-
-      public function deserializeAs_ObjectGroundListAddedMessage(input:IDataInput) : void {
-         var _val1:uint = 0;
-         var _val2:uint = 0;
-         var _cellsLen:uint = input.readUnsignedShort();
-         var _i1:uint = 0;
-         while(_i1<_cellsLen)
+      
+      public function deserializeAs_ObjectGroundListAddedMessage(param1:IDataInput) : void {
+         var _loc6_:uint = 0;
+         var _loc7_:uint = 0;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            _val1=input.readShort();
-            if((_val1>0)||(_val1<559))
+            _loc6_ = param1.readShort();
+            if(_loc6_ < 0 || _loc6_ > 559)
             {
-               throw new Error("Forbidden value ("+_val1+") on elements of cells.");
+               throw new Error("Forbidden value (" + _loc6_ + ") on elements of cells.");
             }
             else
             {
-               this.cells.push(_val1);
-               _i1++;
+               this.cells.push(_loc6_);
+               _loc3_++;
                continue;
             }
          }
-         var _referenceIdsLen:uint = input.readUnsignedShort();
-         var _i2:uint = 0;
-         while(_i2<_referenceIdsLen)
+         var _loc4_:uint = param1.readUnsignedShort();
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc4_)
          {
-            _val2=input.readInt();
-            if(_val2<0)
+            _loc7_ = param1.readInt();
+            if(_loc7_ < 0)
             {
-               throw new Error("Forbidden value ("+_val2+") on elements of referenceIds.");
+               throw new Error("Forbidden value (" + _loc7_ + ") on elements of referenceIds.");
             }
             else
             {
-               this.referenceIds.push(_val2);
-               _i2++;
+               this.referenceIds.push(_loc7_);
+               _loc5_++;
                continue;
             }
          }
       }
    }
-
 }

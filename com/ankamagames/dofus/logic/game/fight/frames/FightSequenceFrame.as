@@ -19,7 +19,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.network.messages.game.context.GameMapMovementMessage;
-   import com.ankamagames.dofus.network.messages.game.character.stats.FighterStatsListMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightPointsVariationMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightLifeAndShieldPointsLostMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightLifePointsGainMessage;
@@ -58,10 +57,17 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightThrowCharacterMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightDropCharacterMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightInvisibleDetectedMessage;
+   import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnListMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightCloseCombatMessage;
    import com.ankamagames.dofus.datacenter.spells.SpellLevel;
    import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
    import com.ankamagames.dofus.datacenter.spells.Spell;
+   import com.ankamagames.dofus.logic.game.common.frames.SpellInventoryManagementFrame;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightSpellCooldown;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+   import com.ankamagames.tiphon.display.TiphonSprite;
+   import com.ankamagames.atouin.types.GraphicCell;
+   import flash.geom.Point;
    import com.ankamagames.dofus.network.messages.game.context.fight.character.GameFightShowFighterRandomStaticPoseMessage;
    import flash.display.Sprite;
    import com.ankamagames.dofus.network.messages.game.context.fight.character.GameFightShowFighterMessage;
@@ -74,9 +80,13 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.TriggerHookList;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightCompanionInformations;
    import com.ankamagames.dofus.logic.game.common.managers.SpeakingItemManager;
-   import com.ankamagames.dofus.logic.game.common.managers.MapMovementAdapter;
+   import com.ankamagames.jerakine.utils.display.spellZone.SpellShapeEnum;
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import com.ankamagames.atouin.managers.InteractiveCellManager;
+   import com.ankamagames.dofus.logic.game.common.managers.MapMovementAdapter;
+   import com.ankamagames.dofus.logic.game.fight.miscs.TackleUtil;
    import com.ankamagames.dofus.network.messages.game.actions.sequence.SequenceEndMessage;
    import com.ankamagames.dofus.network.messages.game.actions.sequence.SequenceStartMessage;
    import com.ankamagames.dofus.logic.game.fight.miscs.ActionIdConverter;
@@ -103,12 +113,12 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.types.enums.AnimationEnum;
    import com.ankamagames.atouin.managers.EntitiesManager;
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import com.ankamagames.berilia.managers.TooltipManager;
    import com.ankamagames.dofus.types.sequences.AddGfxEntityStep;
    import com.ankamagames.dofus.types.sequences.AddGfxInLineStep;
    import com.ankamagames.atouin.types.sequences.ParableGfxMovementStep;
    import com.ankamagames.atouin.types.sequences.AddWorldEntityStep;
    import com.ankamagames.dofus.logic.game.fight.steps.FightLossAnimStep;
-   import com.ankamagames.tiphon.display.TiphonSprite;
    import com.ankamagames.jerakine.types.events.SequencerEvent;
    import com.ankamagames.jerakine.types.positions.MovementPath;
    import com.ankamagames.jerakine.sequencer.CallbackStep;
@@ -127,8 +137,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.logic.game.fight.steps.FightChangeVisibilityStep;
    import com.ankamagames.dofus.logic.game.fight.steps.IFightStep;
    import com.ankamagames.dofus.logic.game.fight.steps.FightMovementPointsVariationStep;
-   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
-   import com.ankamagames.dofus.logic.game.fight.steps.FightFighterStatsUpdateStep;
    import com.ankamagames.dofus.logic.game.fight.steps.FightTemporaryBoostStep;
    import com.ankamagames.dofus.logic.game.fight.steps.FightActionPointsLossDodgeStep;
    import com.ankamagames.dofus.logic.game.fight.steps.FightMovementPointsLossDodgeStep;
@@ -153,485 +161,525 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.logic.game.fight.steps.FightThrowCharacterStep;
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
    import com.ankamagames.dofus.logic.game.fight.steps.FightInvisibleTemporarilyDetectedStep;
-
-
+   import com.ankamagames.dofus.logic.game.fight.steps.FightTurnListStep;
+   
    public class FightSequenceFrame extends Object implements Frame, ISpellCastProvider
    {
-         
-
-      public function FightSequenceFrame(pFightBattleFrame:FightBattleFrame, parent:FightSequenceFrame=null) {
+      
+      public function FightSequenceFrame(param1:FightBattleFrame, param2:FightSequenceFrame=null) {
          super();
-         this._instanceId=_currentInstanceId++;
-         this._fightBattleFrame=pFightBattleFrame;
-         this._parent=parent;
+         this._instanceId = _currentInstanceId++;
+         this._fightBattleFrame = param1;
+         this._parent = param2;
          this.clearBuffer();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FightSequenceFrame));
-
+      
       private static var _lastCastingSpell:CastingSpell;
-
+      
       private static var _currentInstanceId:uint;
-
+      
       public static const FIGHT_SEQUENCERS_CATEGORY:String = "FightSequencer";
-
+      
       public static function get lastCastingSpell() : CastingSpell {
          return _lastCastingSpell;
       }
-
+      
       public static function get currentInstanceId() : uint {
          return _currentInstanceId;
       }
-
-      private static function deleteTooltip(fighterId:int) : void {
-         var fightContextFrame:FightContextFrame = null;
-         if((FightContextFrame.fighterEntityTooltipId==fighterId)&&(!(FightContextFrame.fighterEntityTooltipId==FightContextFrame.timelineOverEntityId)))
+      
+      private static function deleteTooltip(param1:int) : void {
+         var _loc2_:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
+         if(FightContextFrame.fighterEntityTooltipId == param1 && !(FightContextFrame.fighterEntityTooltipId == _loc2_.timelineOverEntityId))
          {
-            fightContextFrame=Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
-            if(fightContextFrame)
+            if(_loc2_)
             {
-               fightContextFrame.outEntity(fighterId);
+               _loc2_.outEntity(param1);
             }
          }
       }
-
+      
       private var _fxScriptId:uint;
-
+      
       private var _scriptStarted:uint;
-
+      
       private var _castingSpell:CastingSpell;
-
+      
       private var _stepsBuffer:Vector.<ISequencable>;
-
+      
       public var mustAck:Boolean;
-
+      
       public var ackIdent:int;
-
+      
       private var _sequenceEndCallback:Function;
-
+      
       private var _subSequenceWaitingCount:uint = 0;
-
+      
       private var _scriptInit:Boolean;
-
+      
       private var _sequencer:SerialSequencer;
-
+      
       private var _parent:FightSequenceFrame;
-
+      
       private var _fightBattleFrame:FightBattleFrame;
-
+      
       private var _fightEntitiesFrame:FightEntitiesFrame;
-
+      
       private var _instanceId:uint;
-
+      
       public function get priority() : int {
          return Priority.HIGHEST;
       }
-
+      
       public function get castingSpell() : CastingSpell {
          return this._castingSpell;
       }
-
+      
       public function get stepsBuffer() : Vector.<ISequencable> {
          return this._stepsBuffer;
       }
-
+      
       public function get parent() : FightSequenceFrame {
          return this._parent;
       }
-
+      
       public function get isWaiting() : Boolean {
-         return (!(this._subSequenceWaitingCount==0))||(!this._scriptInit);
+         return !(this._subSequenceWaitingCount == 0) || !this._scriptInit;
       }
-
+      
       public function get instanceId() : uint {
          return this._instanceId;
       }
-
+      
       public function pushed() : Boolean {
-         this._scriptInit=false;
+         this._scriptInit = false;
          return true;
       }
-
+      
       public function pulled() : Boolean {
-         this._stepsBuffer=null;
-         this._castingSpell=null;
-         _lastCastingSpell=null;
-         this._sequenceEndCallback=null;
-         this._parent=null;
-         this._fightBattleFrame=null;
-         this._fightEntitiesFrame=null;
+         this._stepsBuffer = null;
+         this._castingSpell = null;
+         _lastCastingSpell = null;
+         this._sequenceEndCallback = null;
+         this._parent = null;
+         this._fightBattleFrame = null;
+         this._fightEntitiesFrame = null;
          this._sequencer.clear();
          return true;
       }
-
+      
       public function get fightEntitiesFrame() : FightEntitiesFrame {
          if(!this._fightEntitiesFrame)
          {
-            this._fightEntitiesFrame=Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+            this._fightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
          }
          return this._fightEntitiesFrame;
       }
-
-      public function addSubSequence(sequence:ISequencer) : void {
+      
+      public function addSubSequence(param1:ISequencer) : void {
          this._subSequenceWaitingCount++;
-         this._stepsBuffer.push(new ParallelStartSequenceStep([sequence],false));
+         this._stepsBuffer.push(new ParallelStartSequenceStep([param1],false));
       }
-
-      public function process(msg:Message) : Boolean {
-         var gafscmsg:GameActionFightSpellCastMessage = null;
-         var isCloseCombat:* = false;
-         var closeCombatWeaponId:uint = 0;
-         var sourceCellId:* = 0;
-         var critical:* = false;
-         var entities:Dictionary = null;
-         var fighter:GameFightFighterInformations = null;
-         var playerManager:PlayedCharacterManager = null;
-         var isAlly:* = false;
-         var gmmmsg:GameMapMovementMessage = null;
-         var fslmsg:FighterStatsListMessage = null;
-         var gafpvmsg:GameActionFightPointsVariationMessage = null;
-         var gaflasplmsg:GameActionFightLifeAndShieldPointsLostMessage = null;
-         var gaflpgmsg:GameActionFightLifePointsGainMessage = null;
-         var gaflplmsg:GameActionFightLifePointsLostMessage = null;
-         var gaftosmmsg:GameActionFightTeleportOnSameMapMessage = null;
-         var gafepmsg:GameActionFightExchangePositionsMessage = null;
-         var gafsmsg:GameActionFightSlideMessage = null;
-         var gafsnmsg:GameActionFightSummonMessage = null;
-         var gafmcmsg:GameActionFightMarkCellsMessage = null;
-         var gafucmsg:GameActionFightUnmarkCellsMessage = null;
-         var gafclmsg:GameActionFightChangeLookMessage = null;
-         var gafimsg:GameActionFightInvisibilityMessage = null;
-         var inviInfo:GameContextActorInformations = null;
-         var gaflmsg:GameActionFightLeaveMessage = null;
-         var entitiesL:Dictionary = null;
-         var entityInfosL:GameContextActorInformations = null;
-         var gafdmsg:GameActionFightDeathMessage = null;
-         var entitiesDictionnary:Dictionary = null;
-         var playerId:* = 0;
-         var sourceInfos:GameFightFighterInformations = null;
-         var targetInfos:GameFightFighterInformations = null;
-         var playerInfos:GameFightFighterInformations = null;
-         var entityInfos:GameContextActorInformations = null;
-         var fightContextFrame:FightContextFrame = null;
-         var gafvmsg:GameActionFightVanishMessage = null;
-         var entityInfosv:GameContextActorInformations = null;
-         var fightContextFramev:FightContextFrame = null;
-         var gafdiemsg:GameActionFightDispellEffectMessage = null;
-         var gafdsmsg:GameActionFightDispellSpellMessage = null;
-         var gafdimsg:GameActionFightDispellMessage = null;
-         var gafdplmsg:GameActionFightDodgePointLossMessage = null;
-         var gafscvmsg:GameActionFightSpellCooldownVariationMessage = null;
-         var gafsimsg:GameActionFightSpellImmunityMessage = null;
-         var gafiomsg:GameActionFightInvisibleObstacleMessage = null;
-         var gafkmsg:GameActionFightKillMessage = null;
-         var gafredmsg:GameActionFightReduceDamagesMessage = null;
-         var gafrfdmsg:GameActionFightReflectDamagesMessage = null;
-         var gafrsmsg:GameActionFightReflectSpellMessage = null;
-         var gafskmsg:GameActionFightStealKamaMessage = null;
-         var gaftmsg:GameActionFightTackledMessage = null;
-         var gaftgtmsg:GameActionFightTriggerGlyphTrapMessage = null;
-         var triggeredCellId:* = 0;
-         var gaftbmsg:GameActionFightDispellableEffectMessage = null;
-         var castingSpell:CastingSpell = null;
-         var buffEffect:AbstractFightDispellableEffect = null;
-         var buff:BasicBuff = null;
-         var gafmedmsg:GameActionFightModifyEffectsDurationMessage = null;
-         var gafccmsg:GameActionFightCarryCharacterMessage = null;
-         var gaftcmsg:GameActionFightThrowCharacterMessage = null;
-         var gafdcmsg:GameActionFightDropCharacterMessage = null;
-         var gafidMsg:GameActionFightInvisibleDetectedMessage = null;
-         var gafccmsg2:GameActionFightCloseCombatMessage = null;
-         var spellTargetEntities:Array = null;
-         var isSpellKnown:* = false;
-         var playerSpellLevel:SpellLevel = null;
-         var spellKnown:SpellWrapper = null;
-         var spell:Spell = null;
-         var castSpellLevel:SpellLevel = null;
-         var gcdValue:* = 0;
-         var gfsfrsmsg:GameFightShowFighterRandomStaticPoseMessage = null;
-         var illusionCreature:Sprite = null;
-         var gfsgmsg:GameFightShowFighterMessage = null;
-         var summonedCreature:Sprite = null;
-         var isBomb:* = false;
-         var isCreature:* = false;
-         var entityInfosS:GameContextActorInformations = null;
-         var summonedEntityInfosS:GameFightMonsterInformations = null;
-         var monsterS:Monster = null;
-         var summonedCharacterInfoS:GameFightCharacterInformations = null;
-         var gcaiL:GameContextActorInformations = null;
-         var summonerIdL:* = 0;
-         var summonedEntityInfosL:GameFightMonsterInformations = null;
-         var monster:Monster = null;
-         var gcai:GameContextActorInformations = null;
-         var summonerId:* = 0;
-         var summonedEntityInfos:GameFightMonsterInformations = null;
-         var summonedFighterEntityInfos:GameFightFighterInformations = null;
-         var sb:StateBuff = null;
-         var step:Object = null;
-         var actionId:* = 0;
+      
+      public function process(param1:Message) : Boolean {
+         var _loc2_:GameActionFightSpellCastMessage = null;
+         var _loc3_:* = false;
+         var _loc4_:uint = 0;
+         var _loc5_:* = 0;
+         var _loc6_:* = false;
+         var _loc7_:Dictionary = null;
+         var _loc8_:GameFightFighterInformations = null;
+         var _loc9_:PlayedCharacterManager = null;
+         var _loc10_:* = false;
+         var _loc11_:GameFightFighterInformations = null;
+         var _loc12_:GameMapMovementMessage = null;
+         var _loc13_:GameActionFightPointsVariationMessage = null;
+         var _loc14_:GameActionFightLifeAndShieldPointsLostMessage = null;
+         var _loc15_:GameActionFightLifePointsGainMessage = null;
+         var _loc16_:GameActionFightLifePointsLostMessage = null;
+         var _loc17_:GameActionFightTeleportOnSameMapMessage = null;
+         var _loc18_:GameActionFightExchangePositionsMessage = null;
+         var _loc19_:GameActionFightSlideMessage = null;
+         var _loc20_:GameActionFightSummonMessage = null;
+         var _loc21_:GameActionFightMarkCellsMessage = null;
+         var _loc22_:GameActionFightUnmarkCellsMessage = null;
+         var _loc23_:GameActionFightChangeLookMessage = null;
+         var _loc24_:GameActionFightInvisibilityMessage = null;
+         var _loc25_:GameContextActorInformations = null;
+         var _loc26_:GameActionFightLeaveMessage = null;
+         var _loc27_:Dictionary = null;
+         var _loc28_:GameContextActorInformations = null;
+         var _loc29_:GameActionFightDeathMessage = null;
+         var _loc30_:Dictionary = null;
+         var _loc31_:* = 0;
+         var _loc32_:GameFightFighterInformations = null;
+         var _loc33_:GameFightFighterInformations = null;
+         var _loc34_:GameFightFighterInformations = null;
+         var _loc35_:GameContextActorInformations = null;
+         var _loc36_:FightTurnFrame = null;
+         var _loc37_:* = false;
+         var _loc38_:FightContextFrame = null;
+         var _loc39_:GameActionFightVanishMessage = null;
+         var _loc40_:GameContextActorInformations = null;
+         var _loc41_:FightContextFrame = null;
+         var _loc42_:GameActionFightDispellEffectMessage = null;
+         var _loc43_:GameActionFightDispellSpellMessage = null;
+         var _loc44_:GameActionFightDispellMessage = null;
+         var _loc45_:GameActionFightDodgePointLossMessage = null;
+         var _loc46_:GameActionFightSpellCooldownVariationMessage = null;
+         var _loc47_:GameActionFightSpellImmunityMessage = null;
+         var _loc48_:GameActionFightInvisibleObstacleMessage = null;
+         var _loc49_:GameActionFightKillMessage = null;
+         var _loc50_:GameActionFightReduceDamagesMessage = null;
+         var _loc51_:GameActionFightReflectDamagesMessage = null;
+         var _loc52_:GameActionFightReflectSpellMessage = null;
+         var _loc53_:GameActionFightStealKamaMessage = null;
+         var _loc54_:GameActionFightTackledMessage = null;
+         var _loc55_:GameActionFightTriggerGlyphTrapMessage = null;
+         var _loc56_:* = 0;
+         var _loc57_:GameActionFightDispellableEffectMessage = null;
+         var _loc58_:CastingSpell = null;
+         var _loc59_:AbstractFightDispellableEffect = null;
+         var _loc60_:BasicBuff = null;
+         var _loc61_:GameActionFightModifyEffectsDurationMessage = null;
+         var _loc62_:GameActionFightCarryCharacterMessage = null;
+         var _loc63_:GameActionFightThrowCharacterMessage = null;
+         var _loc64_:uint = 0;
+         var _loc65_:GameActionFightDropCharacterMessage = null;
+         var _loc66_:uint = 0;
+         var _loc67_:GameActionFightInvisibleDetectedMessage = null;
+         var _loc68_:GameFightTurnListMessage = null;
+         var _loc69_:GameActionFightCloseCombatMessage = null;
+         var _loc70_:Array = null;
+         var _loc71_:* = false;
+         var _loc72_:SpellLevel = null;
+         var _loc73_:SpellWrapper = null;
+         var _loc74_:Spell = null;
+         var _loc75_:SpellLevel = null;
+         var _loc76_:Dictionary = null;
+         var _loc77_:GameFightFighterInformations = null;
+         var _loc78_:SpellInventoryManagementFrame = null;
+         var _loc79_:* = 0;
+         var _loc80_:GameFightSpellCooldown = null;
+         var _loc81_:uint = 0;
+         var _loc82_:EffectInstance = null;
+         var _loc83_:TiphonSprite = null;
+         var _loc84_:GraphicCell = null;
+         var _loc85_:Point = null;
+         var _loc86_:GameFightShowFighterRandomStaticPoseMessage = null;
+         var _loc87_:Sprite = null;
+         var _loc88_:GameFightShowFighterMessage = null;
+         var _loc89_:Sprite = null;
+         var _loc90_:* = false;
+         var _loc91_:* = false;
+         var _loc92_:GameContextActorInformations = null;
+         var _loc93_:GameFightMonsterInformations = null;
+         var _loc94_:Monster = null;
+         var _loc95_:GameFightCharacterInformations = null;
+         var _loc96_:GameContextActorInformations = null;
+         var _loc97_:* = 0;
+         var _loc98_:GameFightMonsterInformations = null;
+         var _loc99_:Monster = null;
+         var _loc100_:GameContextActorInformations = null;
+         var _loc101_:* = 0;
+         var _loc102_:GameFightMonsterInformations = null;
+         var _loc103_:GameFightFighterInformations = null;
+         var _loc104_:StateBuff = null;
+         var _loc105_:Object = null;
+         var _loc106_:* = 0;
          switch(true)
          {
-            case msg is GameActionFightCloseCombatMessage:
-            case msg is GameActionFightSpellCastMessage:
-               if(msg is GameActionFightSpellCastMessage)
+            case param1 is GameActionFightCloseCombatMessage:
+            case param1 is GameActionFightSpellCastMessage:
+               if(param1 is GameActionFightSpellCastMessage)
                {
-                  gafscmsg=msg as GameActionFightSpellCastMessage;
+                  _loc2_ = param1 as GameActionFightSpellCastMessage;
                }
                else
                {
-                  gafccmsg2=msg as GameActionFightCloseCombatMessage;
-                  isCloseCombat=true;
-                  closeCombatWeaponId=gafccmsg2.weaponGenericId;
-                  gafscmsg=new GameActionFightSpellCastMessage();
-                  gafscmsg.initGameActionFightSpellCastMessage(gafccmsg2.actionId,gafccmsg2.sourceId,gafccmsg2.targetId,gafccmsg2.destinationCellId,gafccmsg2.critical,gafccmsg2.silentCast,0,1);
+                  _loc69_ = param1 as GameActionFightCloseCombatMessage;
+                  _loc3_ = true;
+                  _loc4_ = _loc69_.weaponGenericId;
+                  _loc2_ = new GameActionFightSpellCastMessage();
+                  _loc2_.initGameActionFightSpellCastMessage(_loc69_.actionId,_loc69_.sourceId,_loc69_.targetId,_loc69_.destinationCellId,_loc69_.critical,_loc69_.silentCast,0,1);
                }
-               sourceCellId=this.fightEntitiesFrame.getEntityInfos(gafscmsg.sourceId).disposition.cellId;
+               _loc5_ = this.fightEntitiesFrame.getEntityInfos(_loc2_.sourceId).disposition.cellId;
                if(this._castingSpell)
                {
-                  if((isCloseCombat)&&(!(closeCombatWeaponId==0)))
+                  if((_loc3_) && !(_loc4_ == 0))
                   {
-                     this.pushCloseCombatStep(gafscmsg.sourceId,closeCombatWeaponId,gafscmsg.critical);
+                     this.pushCloseCombatStep(_loc2_.sourceId,_loc4_,_loc2_.critical);
                   }
                   else
                   {
-                     this.pushSpellCastStep(gafscmsg.sourceId,gafscmsg.destinationCellId,sourceCellId,gafscmsg.spellId,gafscmsg.spellLevel,gafscmsg.critical);
+                     this.pushSpellCastStep(_loc2_.sourceId,_loc2_.destinationCellId,_loc5_,_loc2_.spellId,_loc2_.spellLevel,_loc2_.critical);
                   }
-                  _log.error("Il ne peut y avoir qu\'un seul cast de sort par séquence ("+msg+")");
+                  _log.error("Il ne peut y avoir qu\'un seul cast de sort par sÃ©quence (" + param1 + ")");
+                  break;
+               }
+               this._castingSpell = new CastingSpell();
+               this._castingSpell.casterId = _loc2_.sourceId;
+               this._castingSpell.spell = Spell.getSpellById(_loc2_.spellId);
+               this._castingSpell.spellRank = this._castingSpell.spell.getSpellLevel(_loc2_.spellLevel);
+               this._castingSpell.isCriticalFail = _loc2_.critical == FightSpellCastCriticalEnum.CRITICAL_FAIL;
+               this._castingSpell.isCriticalHit = _loc2_.critical == FightSpellCastCriticalEnum.CRITICAL_HIT;
+               this._castingSpell.silentCast = _loc2_.silentCast;
+               if(_loc2_.destinationCellId != -1)
+               {
+                  this._castingSpell.targetedCell = MapPoint.fromCellId(_loc2_.destinationCellId);
                }
                else
                {
-                  this._castingSpell=new CastingSpell();
-                  this._castingSpell.casterId=gafscmsg.sourceId;
-                  this._castingSpell.spell=Spell.getSpellById(gafscmsg.spellId);
-                  this._castingSpell.spellRank=this._castingSpell.spell.getSpellLevel(gafscmsg.spellLevel);
-                  this._castingSpell.isCriticalFail=gafscmsg.critical==FightSpellCastCriticalEnum.CRITICAL_FAIL;
-                  this._castingSpell.isCriticalHit=gafscmsg.critical==FightSpellCastCriticalEnum.CRITICAL_HIT;
-                  this._castingSpell.silentCast=gafscmsg.silentCast;
-                  if(gafscmsg.destinationCellId!=-1)
+                  _log.error("PAS D\'INFO");
+               }
+               if(this._castingSpell.isCriticalFail)
+               {
+                  this._fxScriptId = 0;
+               }
+               else
+               {
+                  this._fxScriptId = this._castingSpell.spell.getScriptId(this._castingSpell.isCriticalHit);
+               }
+               if(param1 is GameActionFightCloseCombatMessage)
+               {
+                  this._fxScriptId = 7;
+                  this._castingSpell.weaponId = GameActionFightCloseCombatMessage(param1).weaponGenericId;
+               }
+               if(_loc2_.sourceId == CurrentPlayedFighterManager.getInstance().currentFighterId && !(_loc2_.critical == FightSpellCastCriticalEnum.CRITICAL_FAIL))
+               {
+                  _loc70_ = new Array();
+                  _loc70_.push(_loc2_.targetId);
+                  CurrentPlayedFighterManager.getInstance().getSpellCastManager().castSpell(_loc2_.spellId,_loc2_.spellLevel,_loc70_);
+               }
+               _loc6_ = _loc2_.critical == FightSpellCastCriticalEnum.CRITICAL_HIT;
+               _loc7_ = FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
+               _loc8_ = _loc7_[_loc2_.sourceId];
+               if((_loc3_) && !(_loc4_ == 0))
+               {
+                  this.pushCloseCombatStep(_loc2_.sourceId,_loc4_,_loc2_.critical);
+               }
+               else
+               {
+                  this.pushSpellCastStep(_loc2_.sourceId,_loc2_.destinationCellId,_loc5_,_loc2_.spellId,_loc2_.spellLevel,_loc2_.critical);
+               }
+               if(_loc2_.sourceId == CurrentPlayedFighterManager.getInstance().currentFighterId)
+               {
+                  KernelEventsManager.getInstance().processCallback(TriggerHookList.FightSpellCast);
+               }
+               _loc9_ = PlayedCharacterManager.getInstance();
+               _loc10_ = false;
+               if((_loc7_[_loc9_.id]) && (_loc8_) && (_loc7_[_loc9_.id] as GameFightFighterInformations).teamId == _loc8_.teamId)
+               {
+                  _loc10_ = true;
+               }
+               if(!(_loc2_.sourceId == _loc9_.id) && (_loc10_) && !this._castingSpell.isCriticalFail)
+               {
+                  _loc71_ = false;
+                  for each (_loc73_ in _loc9_.spellsInventory)
                   {
-                     this._castingSpell.targetedCell=MapPoint.fromCellId(gafscmsg.destinationCellId);
+                     if(_loc73_.id == _loc2_.spellId)
+                     {
+                        _loc71_ = true;
+                        _loc72_ = _loc73_.spellLevelInfos;
+                        break;
+                     }
                   }
-                  if(this._castingSpell.isCriticalFail)
+                  _loc74_ = Spell.getSpellById(_loc2_.spellId);
+                  _loc75_ = _loc74_.getSpellLevel(_loc2_.spellLevel);
+                  if(_loc75_.globalCooldown)
                   {
-                     this._fxScriptId=0;
+                     if(_loc71_)
+                     {
+                        if(_loc75_.globalCooldown == -1)
+                        {
+                           _loc79_ = _loc72_.minCastInterval;
+                        }
+                        else
+                        {
+                           _loc79_ = _loc75_.globalCooldown;
+                        }
+                        this.pushSpellCooldownVariationStep(_loc9_.id,0,_loc2_.spellId,_loc79_);
+                     }
+                     _loc76_ = this.fightEntitiesFrame.getEntitiesDictionnary();
+                     _loc78_ = Kernel.getWorker().getFrame(SpellInventoryManagementFrame) as SpellInventoryManagementFrame;
+                     for each (_loc77_ in _loc76_)
+                     {
+                        if(_loc77_ is GameFightCompanionInformations && !(_loc2_.sourceId == _loc77_.contextualId) && (_loc77_ as GameFightCompanionInformations).masterId == _loc9_.id)
+                        {
+                           _loc80_ = new GameFightSpellCooldown();
+                           _loc80_.initGameFightSpellCooldown(_loc2_.spellId,_loc75_.globalCooldown);
+                           _loc78_.addSpellGlobalCoolDownInfo(_loc77_.contextualId,_loc80_);
+                        }
+                     }
+                  }
+               }
+               _loc31_ = PlayedCharacterManager.getInstance().id;
+               _loc32_ = this.fightEntitiesFrame.getEntityInfos(_loc2_.sourceId) as GameFightFighterInformations;
+               _loc34_ = this.fightEntitiesFrame.getEntityInfos(_loc31_) as GameFightFighterInformations;
+               if(_loc6_)
+               {
+                  if(_loc2_.sourceId == _loc31_)
+                  {
+                     SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_CC_OWNER);
                   }
                   else
                   {
-                     this._fxScriptId=this._castingSpell.spell.getScriptId(this._castingSpell.isCriticalHit);
-                  }
-                  if(msg is GameActionFightCloseCombatMessage)
-                  {
-                     this._fxScriptId=7;
-                     this._castingSpell.weaponId=GameActionFightCloseCombatMessage(msg).weaponGenericId;
-                  }
-                  if((gafscmsg.sourceId==CurrentPlayedFighterManager.getInstance().currentFighterId)&&(!(gafscmsg.critical==FightSpellCastCriticalEnum.CRITICAL_FAIL)))
-                  {
-                     spellTargetEntities=new Array();
-                     spellTargetEntities.push(gafscmsg.targetId);
-                     CurrentPlayedFighterManager.getInstance().getSpellCastManager().castSpell(gafscmsg.spellId,gafscmsg.spellLevel,spellTargetEntities);
-                  }
-                  critical=gafscmsg.critical==FightSpellCastCriticalEnum.CRITICAL_HIT;
-                  entities=FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
-                  fighter=entities[gafscmsg.sourceId];
-                  if((isCloseCombat)&&(!(closeCombatWeaponId==0)))
-                  {
-                     this.pushCloseCombatStep(gafscmsg.sourceId,closeCombatWeaponId,gafscmsg.critical);
-                  }
-                  else
-                  {
-                     this.pushSpellCastStep(gafscmsg.sourceId,gafscmsg.destinationCellId,sourceCellId,gafscmsg.spellId,gafscmsg.spellLevel,gafscmsg.critical);
-                  }
-                  if(gafscmsg.sourceId==CurrentPlayedFighterManager.getInstance().currentFighterId)
-                  {
-                     KernelEventsManager.getInstance().processCallback(TriggerHookList.FightSpellCast);
-                  }
-                  playerManager=PlayedCharacterManager.getInstance();
-                  isAlly=false;
-                  if((entities[playerManager.id])&&(fighter)&&((entities[playerManager.id] as GameFightFighterInformations).teamId==fighter.teamId))
-                  {
-                     isAlly=true;
-                  }
-                  if((!(gafscmsg.sourceId==playerManager.id))&&(isAlly)&&(!this._castingSpell.isCriticalFail))
-                  {
-                     isSpellKnown=false;
-                     for each (spellKnown in playerManager.spellsInventory)
+                     if((_loc34_) && _loc32_.teamId == _loc34_.teamId)
                      {
-                        if(spellKnown.id==gafscmsg.spellId)
-                        {
-                           isSpellKnown=true;
-                           playerSpellLevel=spellKnown.spellLevelInfos;
-                           break;
-                        }
-                     }
-                     if(isSpellKnown)
-                     {
-                        spell=Spell.getSpellById(gafscmsg.spellId);
-                        castSpellLevel=spell.getSpellLevel(gafscmsg.spellLevel);
-                        if(castSpellLevel.globalCooldown)
-                        {
-                           if(castSpellLevel.globalCooldown==-1)
-                           {
-                              gcdValue=playerSpellLevel.minCastInterval;
-                           }
-                           else
-                           {
-                              gcdValue=castSpellLevel.globalCooldown;
-                           }
-                           this.pushSpellCooldownVariationStep(playerManager.id,0,gafscmsg.spellId,gcdValue);
-                        }
-                     }
-                  }
-                  playerId=PlayedCharacterManager.getInstance().infos.id;
-                  sourceInfos=this.fightEntitiesFrame.getEntityInfos(gafscmsg.sourceId) as GameFightFighterInformations;
-                  playerInfos=this.fightEntitiesFrame.getEntityInfos(playerId) as GameFightFighterInformations;
-                  if(critical)
-                  {
-                     if(gafscmsg.sourceId==playerId)
-                     {
-                        SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_CC_OWNER);
+                        SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_CC_ALLIED);
                      }
                      else
                      {
-                        if((playerInfos)&&(sourceInfos.teamId==playerInfos.teamId))
-                        {
-                           SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_CC_ALLIED);
-                        }
-                        else
-                        {
-                           SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_CC_ENEMY);
-                        }
+                        SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_CC_ENEMY);
                      }
                   }
-                  else
-                  {
-                     if(gafscmsg.critical==FightSpellCastCriticalEnum.CRITICAL_FAIL)
-                     {
-                        if(gafscmsg.sourceId==playerId)
-                        {
-                           SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_OWNER);
-                        }
-                        else
-                        {
-                           if((playerInfos)&&(sourceInfos.teamId==playerInfos.teamId))
-                           {
-                              SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_ALLIED);
-                           }
-                           else
-                           {
-                              SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_ENEMY);
-                           }
-                        }
-                     }
-                  }
-                  return true;
                }
-               break;
-            case msg is GameMapMovementMessage:
-               gmmmsg=msg as GameMapMovementMessage;
-               if(gmmmsg.actorId==CurrentPlayedFighterManager.getInstance().currentFighterId)
+               else
+               {
+                  if(_loc2_.critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
+                  {
+                     if(_loc2_.sourceId == _loc31_)
+                     {
+                        SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_OWNER);
+                     }
+                     else
+                     {
+                        if((_loc34_) && _loc32_.teamId == _loc34_.teamId)
+                        {
+                           SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_ALLIED);
+                        }
+                        else
+                        {
+                           SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_ENEMY);
+                        }
+                     }
+                  }
+               }
+               _loc11_ = this.fightEntitiesFrame.getEntityInfos(_loc2_.targetId) as GameFightFighterInformations;
+               if((_loc11_) && _loc11_.disposition.cellId == -1)
+               {
+                  for each (_loc82_ in this._castingSpell.spellRank.effects)
+                  {
+                     if(_loc82_.hasOwnProperty("zoneShape"))
+                     {
+                        _loc81_ = _loc82_.zoneShape;
+                        break;
+                     }
+                  }
+                  if(_loc81_ == SpellShapeEnum.P)
+                  {
+                     _loc83_ = DofusEntities.getEntity(_loc2_.targetId) as TiphonSprite;
+                     if((_loc83_) && (this._castingSpell) && (this._castingSpell.targetedCell))
+                     {
+                        _loc84_ = InteractiveCellManager.getInstance().getCell(this._castingSpell.targetedCell.cellId);
+                        _loc85_ = _loc84_.parent.localToGlobal(new Point(_loc84_.x + _loc84_.width / 2,_loc84_.y + _loc84_.height / 2));
+                        _loc83_.x = _loc85_.x;
+                        _loc83_.y = _loc85_.y;
+                     }
+                  }
+               }
+               return true;
+            case param1 is GameMapMovementMessage:
+               _loc12_ = param1 as GameMapMovementMessage;
+               if(_loc12_.actorId == CurrentPlayedFighterManager.getInstance().currentFighterId)
                {
                   KernelEventsManager.getInstance().processCallback(TriggerHookList.PlayerFightMove);
                }
-               this.pushMovementStep(gmmmsg.actorId,MapMovementAdapter.getClientMovement(gmmmsg.keyMovements));
+               this.pushMovementStep(_loc12_.actorId,MapMovementAdapter.getClientMovement(_loc12_.keyMovements));
                return true;
-               break;
-            case msg is FighterStatsListMessage:
-               fslmsg=msg as FighterStatsListMessage;
-               this.pushUpdateFighterStatsStep(fslmsg.stats);
+            case param1 is GameActionFightPointsVariationMessage:
+               _loc13_ = param1 as GameActionFightPointsVariationMessage;
+               this.pushPointsVariationStep(_loc13_.targetId,_loc13_.actionId,_loc13_.delta);
                return true;
-               break;
-            case msg is GameActionFightPointsVariationMessage:
-               gafpvmsg=msg as GameActionFightPointsVariationMessage;
-               this.pushPointsVariationStep(gafpvmsg.targetId,gafpvmsg.actionId,gafpvmsg.delta);
-               return false;
-               break;
-            case msg is GameActionFightLifeAndShieldPointsLostMessage:
-               gaflasplmsg=msg as GameActionFightLifeAndShieldPointsLostMessage;
-               this.pushShieldPointsVariationStep(gaflasplmsg.targetId,-gaflasplmsg.shieldLoss,gaflasplmsg.actionId);
-               this.pushLifePointsVariationStep(gaflasplmsg.targetId,-gaflasplmsg.loss,-gaflasplmsg.permanentDamages,gaflasplmsg.actionId);
+            case param1 is GameActionFightLifeAndShieldPointsLostMessage:
+               _loc14_ = param1 as GameActionFightLifeAndShieldPointsLostMessage;
+               this.pushShieldPointsVariationStep(_loc14_.targetId,-_loc14_.shieldLoss,_loc14_.actionId);
+               this.pushLifePointsVariationStep(_loc14_.targetId,-_loc14_.loss,-_loc14_.permanentDamages,_loc14_.actionId);
                return true;
-               break;
-            case msg is GameActionFightLifePointsGainMessage:
-               gaflpgmsg=msg as GameActionFightLifePointsGainMessage;
-               this.pushLifePointsVariationStep(gaflpgmsg.targetId,gaflpgmsg.delta,0,gaflpgmsg.actionId);
+            case param1 is GameActionFightLifePointsGainMessage:
+               _loc15_ = param1 as GameActionFightLifePointsGainMessage;
+               this.pushLifePointsVariationStep(_loc15_.targetId,_loc15_.delta,0,_loc15_.actionId);
                return true;
-               break;
-            case msg is GameActionFightLifePointsLostMessage:
-               gaflplmsg=msg as GameActionFightLifePointsLostMessage;
-               this.pushLifePointsVariationStep(gaflplmsg.targetId,-gaflplmsg.loss,-gaflplmsg.permanentDamages,gaflplmsg.actionId);
+            case param1 is GameActionFightLifePointsLostMessage:
+               _loc16_ = param1 as GameActionFightLifePointsLostMessage;
+               this.pushLifePointsVariationStep(_loc16_.targetId,-_loc16_.loss,-_loc16_.permanentDamages,_loc16_.actionId);
                return true;
-               break;
-            case msg is GameActionFightTeleportOnSameMapMessage:
-               gaftosmmsg=msg as GameActionFightTeleportOnSameMapMessage;
-               this.pushTeleportStep(gaftosmmsg.targetId,gaftosmmsg.cellId);
+            case param1 is GameActionFightTeleportOnSameMapMessage:
+               _loc17_ = param1 as GameActionFightTeleportOnSameMapMessage;
+               this.pushTeleportStep(_loc17_.targetId,_loc17_.cellId);
                return true;
-               break;
-            case msg is GameActionFightExchangePositionsMessage:
-               gafepmsg=msg as GameActionFightExchangePositionsMessage;
-               this.pushExchangePositionsStep(gafepmsg.sourceId,gafepmsg.casterCellId,gafepmsg.targetId,gafepmsg.targetCellId);
+            case param1 is GameActionFightExchangePositionsMessage:
+               _loc18_ = param1 as GameActionFightExchangePositionsMessage;
+               this.pushExchangePositionsStep(_loc18_.sourceId,_loc18_.casterCellId,_loc18_.targetId,_loc18_.targetCellId);
                return true;
-               break;
-            case msg is GameActionFightSlideMessage:
-               gafsmsg=msg as GameActionFightSlideMessage;
-               this.pushSlideStep(gafsmsg.targetId,gafsmsg.startCellId,gafsmsg.endCellId);
+            case param1 is GameActionFightSlideMessage:
+               _loc19_ = param1 as GameActionFightSlideMessage;
+               this.pushSlideStep(_loc19_.targetId,_loc19_.startCellId,_loc19_.endCellId);
                return true;
-               break;
-            case msg is GameActionFightSummonMessage:
-               gafsnmsg=msg as GameActionFightSummonMessage;
-               if((gafsnmsg.actionId==1024)||(gafsnmsg.actionId==1097))
+            case param1 is GameActionFightSummonMessage:
+               _loc20_ = param1 as GameActionFightSummonMessage;
+               if(_loc20_.actionId == 1024 || _loc20_.actionId == 1097)
                {
-                  gfsfrsmsg=new GameFightShowFighterRandomStaticPoseMessage();
-                  gfsfrsmsg.initGameFightShowFighterRandomStaticPoseMessage(gafsnmsg.summon);
-                  Kernel.getWorker().getFrame(FightEntitiesFrame).process(gfsfrsmsg);
-                  illusionCreature=DofusEntities.getEntity(gafsnmsg.summon.contextualId) as Sprite;
-                  illusionCreature.visible=false;
-                  this.pushVisibilityStep(gafsnmsg.summon.contextualId,true);
+                  _loc86_ = new GameFightShowFighterRandomStaticPoseMessage();
+                  _loc86_.initGameFightShowFighterRandomStaticPoseMessage(_loc20_.summon);
+                  Kernel.getWorker().getFrame(FightEntitiesFrame).process(_loc86_);
+                  _loc87_ = DofusEntities.getEntity(_loc20_.summon.contextualId) as Sprite;
+                  if(_loc87_)
+                  {
+                     _loc87_.visible = false;
+                  }
+                  this.pushVisibilityStep(_loc20_.summon.contextualId,true);
                }
                else
                {
-                  gfsgmsg=new GameFightShowFighterMessage();
-                  gfsgmsg.initGameFightShowFighterMessage(gafsnmsg.summon);
-                  Kernel.getWorker().getFrame(FightEntitiesFrame).process(gfsgmsg);
-                  summonedCreature=DofusEntities.getEntity(gafsnmsg.summon.contextualId) as Sprite;
-                  summonedCreature.visible=false;
-                  this.pushSummonStep(gafsnmsg.sourceId,gafsnmsg.summon);
-                  if((gafsnmsg.sourceId==PlayedCharacterManager.getInstance().id)&&(!(gafsnmsg.actionId==185)))
+                  _loc88_ = new GameFightShowFighterMessage();
+                  _loc88_.initGameFightShowFighterMessage(_loc20_.summon);
+                  Kernel.getWorker().getFrame(FightEntitiesFrame).process(_loc88_);
+                  _loc89_ = DofusEntities.getEntity(_loc20_.summon.contextualId) as Sprite;
+                  if(_loc89_)
                   {
-                     isBomb=false;
-                     isCreature=false;
-                     if(gafsnmsg.actionId==1008)
+                     _loc89_.visible = false;
+                  }
+                  this.pushSummonStep(_loc20_.sourceId,_loc20_.summon);
+                  if(_loc20_.sourceId == PlayedCharacterManager.getInstance().id && !(_loc20_.actionId == 185))
+                  {
+                     _loc90_ = false;
+                     _loc91_ = false;
+                     if(_loc20_.actionId == 1008)
                      {
-                        isBomb=true;
+                        _loc90_ = true;
                      }
                      else
                      {
-                        entityInfosS=FightEntitiesFrame.getCurrentInstance().getEntityInfos(gafsnmsg.summon.contextualId);
-                        isBomb=false;
-                        summonedEntityInfosS=entityInfosS as GameFightMonsterInformations;
-                        if(summonedEntityInfosS)
+                        _loc92_ = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_loc20_.summon.contextualId);
+                        _loc90_ = false;
+                        _loc93_ = _loc92_ as GameFightMonsterInformations;
+                        if(_loc93_)
                         {
-                           monsterS=Monster.getMonsterById(summonedEntityInfosS.creatureGenericId);
-                           if((monsterS)&&(monsterS.useBombSlot))
+                           _loc94_ = Monster.getMonsterById(_loc93_.creatureGenericId);
+                           if((_loc94_) && (_loc94_.useBombSlot))
                            {
-                              isBomb=true;
+                              _loc90_ = true;
                            }
-                           if((monsterS)&&(monsterS.useSummonSlot))
+                           if((_loc94_) && (_loc94_.useSummonSlot))
                            {
-                              isCreature=true;
+                              _loc91_ = true;
                            }
                         }
                         else
                         {
-                           summonedCharacterInfoS=entityInfosS as GameFightCharacterInformations;
+                           _loc95_ = _loc92_ as GameFightCharacterInformations;
                         }
                      }
-                     if((isCreature)||(summonedCharacterInfoS))
+                     if((_loc91_) || (_loc95_))
                      {
                         PlayedCharacterManager.getInstance().addSummonedCreature();
                      }
                      else
                      {
-                        if(isBomb)
+                        if(_loc90_)
                         {
                            PlayedCharacterManager.getInstance().addSummonedBomb();
                         }
@@ -639,97 +687,94 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   }
                }
                return true;
-               break;
-            case msg is GameActionFightMarkCellsMessage:
-               gafmcmsg=msg as GameActionFightMarkCellsMessage;
+            case param1 is GameActionFightMarkCellsMessage:
+               _loc21_ = param1 as GameActionFightMarkCellsMessage;
                if(this._castingSpell)
                {
-                  this._castingSpell.markId=gafmcmsg.mark.markId;
-                  this._castingSpell.markType=gafmcmsg.mark.markType;
-                  this.pushMarkCellsStep(gafmcmsg.mark.markId,gafmcmsg.mark.markType,gafmcmsg.mark.cells,gafmcmsg.mark.markSpellId);
+                  this._castingSpell.markId = _loc21_.mark.markId;
+                  this._castingSpell.markType = _loc21_.mark.markType;
+                  this.pushMarkCellsStep(_loc21_.mark.markId,_loc21_.mark.markType,_loc21_.mark.cells,_loc21_.mark.markSpellId);
                }
                return true;
-               break;
-            case msg is GameActionFightUnmarkCellsMessage:
-               gafucmsg=msg as GameActionFightUnmarkCellsMessage;
-               this.pushUnmarkCellsStep(gafucmsg.markId);
+            case param1 is GameActionFightUnmarkCellsMessage:
+               _loc22_ = param1 as GameActionFightUnmarkCellsMessage;
+               this.pushUnmarkCellsStep(_loc22_.markId);
                return true;
-               break;
-            case msg is GameActionFightChangeLookMessage:
-               gafclmsg=msg as GameActionFightChangeLookMessage;
-               this.pushChangeLookStep(gafclmsg.targetId,gafclmsg.entityLook);
+            case param1 is GameActionFightChangeLookMessage:
+               _loc23_ = param1 as GameActionFightChangeLookMessage;
+               this.pushChangeLookStep(_loc23_.targetId,_loc23_.entityLook);
                return true;
-               break;
-            case msg is GameActionFightInvisibilityMessage:
-               gafimsg=msg as GameActionFightInvisibilityMessage;
-               inviInfo=this.fightEntitiesFrame.getEntityInfos(gafimsg.targetId);
-               FightEntitiesFrame.getCurrentInstance().setLastKnownEntityPosition(gafimsg.targetId,inviInfo.disposition.cellId);
-               FightEntitiesFrame.getCurrentInstance().setLastKnownEntityMovementPoint(gafimsg.targetId,0,true);
-               this.pushChangeVisibilityStep(gafimsg.targetId,gafimsg.state);
+            case param1 is GameActionFightInvisibilityMessage:
+               _loc24_ = param1 as GameActionFightInvisibilityMessage;
+               _loc25_ = this.fightEntitiesFrame.getEntityInfos(_loc24_.targetId);
+               FightEntitiesFrame.getCurrentInstance().setLastKnownEntityPosition(_loc24_.targetId,_loc25_.disposition.cellId);
+               FightEntitiesFrame.getCurrentInstance().setLastKnownEntityMovementPoint(_loc24_.targetId,0,true);
+               this.pushChangeVisibilityStep(_loc24_.targetId,_loc24_.state);
                return true;
-               break;
-            case msg is GameActionFightLeaveMessage:
-               gaflmsg=msg as GameActionFightLeaveMessage;
-               entitiesL=FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
-               for each (gcaiL in entitiesL)
+            case param1 is GameActionFightLeaveMessage:
+               _loc26_ = param1 as GameActionFightLeaveMessage;
+               _loc27_ = FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
+               for each (_loc96_ in _loc27_)
                {
-                  if(gcaiL is GameFightFighterInformations)
+                  if(_loc96_ is GameFightFighterInformations)
                   {
-                     summonerIdL=(gcaiL as GameFightFighterInformations).stats.summoner;
-                     if(summonerIdL==gaflmsg.targetId)
+                     _loc97_ = (_loc96_ as GameFightFighterInformations).stats.summoner;
+                     if(_loc97_ == _loc26_.targetId)
                      {
-                        this.pushDeathStep(gcaiL.contextualId);
+                        this.pushDeathStep(_loc96_.contextualId);
                      }
                   }
                }
-               this.pushDeathStep(gaflmsg.targetId,false);
-               entityInfosL=FightEntitiesFrame.getCurrentInstance().getEntityInfos(gaflmsg.targetId);
-               if(entityInfosL is GameFightMonsterInformations)
+               this.pushDeathStep(_loc26_.targetId,false);
+               _loc28_ = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_loc26_.targetId);
+               if(_loc28_ is GameFightMonsterInformations)
                {
-                  summonedEntityInfosL=entityInfosL as GameFightMonsterInformations;
-                  if(summonedEntityInfosL.stats.summoner==PlayedCharacterManager.getInstance().id)
+                  _loc98_ = _loc28_ as GameFightMonsterInformations;
+                  if(_loc98_.stats.summoner == PlayedCharacterManager.getInstance().id)
                   {
-                     monster=Monster.getMonsterById(summonedEntityInfosL.creatureGenericId);
-                     if(monster.useSummonSlot)
+                     _loc99_ = Monster.getMonsterById(_loc98_.creatureGenericId);
+                     if(_loc99_.useSummonSlot)
                      {
                         PlayedCharacterManager.getInstance().removeSummonedCreature();
                      }
-                     if(monster.useBombSlot)
+                     if(_loc99_.useBombSlot)
                      {
                         PlayedCharacterManager.getInstance().removeSummonedBomb();
                      }
                   }
                }
                return true;
-               break;
-            case msg is GameActionFightDeathMessage:
-               gafdmsg=msg as GameActionFightDeathMessage;
-               _log.fatal("GameActionFightDeathMessage");
-               entitiesDictionnary=FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
-               for each (gcai in entitiesDictionnary)
+            case param1 is GameActionFightDeathMessage:
+               _loc29_ = param1 as GameActionFightDeathMessage;
+               _loc30_ = FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
+               for each (_loc100_ in _loc30_)
                {
-                  if(gcai is GameFightFighterInformations)
+                  if(_loc100_ is GameFightFighterInformations)
                   {
-                     summonerId=(gcai as GameFightFighterInformations).stats.summoner;
-                     if(summonerId==gafdmsg.targetId)
+                     _loc101_ = (_loc100_ as GameFightFighterInformations).stats.summoner;
+                     if(_loc101_ == _loc29_.targetId)
                      {
-                        this.pushDeathStep(gcai.contextualId);
+                        this.pushDeathStep(_loc100_.contextualId);
                      }
                   }
                }
-               playerId=PlayedCharacterManager.getInstance().infos.id;
-               sourceInfos=this.fightEntitiesFrame.getEntityInfos(gafdmsg.sourceId) as GameFightFighterInformations;
-               targetInfos=this.fightEntitiesFrame.getEntityInfos(gafdmsg.targetId) as GameFightFighterInformations;
-               playerInfos=this.fightEntitiesFrame.getEntityInfos(playerId) as GameFightFighterInformations;
-               if(gafdmsg.targetId==playerId)
+               _loc31_ = PlayedCharacterManager.getInstance().id;
+               _loc32_ = this.fightEntitiesFrame.getEntityInfos(_loc29_.sourceId) as GameFightFighterInformations;
+               _loc33_ = this.fightEntitiesFrame.getEntityInfos(_loc29_.targetId) as GameFightFighterInformations;
+               _loc34_ = this.fightEntitiesFrame.getEntityInfos(_loc31_) as GameFightFighterInformations;
+               if(this._fightBattleFrame.slaveId == _loc29_.targetId || this._fightBattleFrame.masterId == _loc29_.targetId)
                {
-                  if(gafdmsg.sourceId==gafdmsg.targetId)
+                  this._fightBattleFrame.prepareNextPlayableCharacter(_loc29_.targetId);
+               }
+               if(_loc29_.targetId == _loc31_)
+               {
+                  if(_loc29_.sourceId == _loc29_.targetId)
                   {
                      SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILLED_HIMSELF);
                   }
                   else
                   {
-                     if(sourceInfos.teamId!=playerInfos.teamId)
+                     if(_loc32_.teamId != _loc34_.teamId)
                      {
                         SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILLED_BY_ENEMY);
                      }
@@ -741,9 +786,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
                }
                else
                {
-                  if(gafdmsg.sourceId==playerId)
+                  if(_loc29_.sourceId == _loc31_)
                   {
-                     if(targetInfos.teamId!=playerInfos.teamId)
+                     if(_loc33_.teamId != _loc34_.teamId)
                      {
                         SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILL_ENEMY);
                      }
@@ -753,20 +798,22 @@ package com.ankamagames.dofus.logic.game.fight.frames
                      }
                   }
                }
-               this.pushDeathStep(gafdmsg.targetId);
-               entityInfos=FightEntitiesFrame.getCurrentInstance().getEntityInfos(gafdmsg.targetId);
-               if(entityInfos is GameFightMonsterInformations)
+               this.pushDeathStep(_loc29_.targetId);
+               _loc35_ = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_loc29_.targetId);
+               _loc36_ = Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
+               _loc37_ = ((_loc36_) && (_loc36_.myTurn)) && !(_loc29_.targetId == _loc31_) && (TackleUtil.isTackling(_loc34_,_loc33_,_loc36_.lastPath));
+               if(_loc35_ is GameFightMonsterInformations)
                {
-                  summonedEntityInfos=entityInfos as GameFightMonsterInformations;
-                  summonedEntityInfos.alive=false;
-                  if(summonedEntityInfos.stats.summoner==PlayedCharacterManager.getInstance().id)
+                  _loc102_ = _loc35_ as GameFightMonsterInformations;
+                  _loc102_.alive = false;
+                  if(_loc102_.stats.summoner == PlayedCharacterManager.getInstance().id)
                   {
-                     monster=Monster.getMonsterById(summonedEntityInfos.creatureGenericId);
-                     if(monster.useSummonSlot)
+                     _loc99_ = Monster.getMonsterById(_loc102_.creatureGenericId);
+                     if(_loc99_.useSummonSlot)
                      {
                         PlayedCharacterManager.getInstance().removeSummonedCreature();
                      }
-                     if(monster.useBombSlot)
+                     if(_loc99_.useBombSlot)
                      {
                         PlayedCharacterManager.getInstance().removeSummonedBomb();
                      }
@@ -775,13 +822,13 @@ package com.ankamagames.dofus.logic.game.fight.frames
                }
                else
                {
-                  if(entityInfos is GameFightFighterInformations)
+                  if(_loc35_ is GameFightFighterInformations)
                   {
-                     (entityInfos as GameFightFighterInformations).alive=false;
-                     if((entityInfos as GameFightFighterInformations).stats.summoner!=0)
+                     (_loc35_ as GameFightFighterInformations).alive = false;
+                     if((_loc35_ as GameFightFighterInformations).stats.summoner != 0)
                      {
-                        summonedFighterEntityInfos=entityInfos as GameFightFighterInformations;
-                        if(summonedFighterEntityInfos.stats.summoner==PlayedCharacterManager.getInstance().id)
+                        _loc103_ = _loc35_ as GameFightFighterInformations;
+                        if(_loc103_.stats.summoner == PlayedCharacterManager.getInstance().id)
                         {
                            PlayedCharacterManager.getInstance().removeSummonedCreature();
                            SpellWrapper.refreshAllPlayerSpellHolder(PlayedCharacterManager.getInstance().id);
@@ -789,210 +836,206 @@ package com.ankamagames.dofus.logic.game.fight.frames
                      }
                   }
                }
-               fightContextFrame=Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
-               if(fightContextFrame)
+               _loc38_ = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
+               if(_loc38_)
                {
-                  fightContextFrame.outEntity(gafdmsg.targetId);
+                  _loc38_.outEntity(_loc29_.targetId);
                }
-               FightEntitiesFrame.getCurrentInstance().updateRemovedEntity(gafdmsg.targetId);
-               return true;
-               break;
-            case msg is GameActionFightVanishMessage:
-               gafvmsg=msg as GameActionFightVanishMessage;
-               this.pushVanishStep(gafvmsg.targetId,gafvmsg.sourceId);
-               entityInfosv=FightEntitiesFrame.getCurrentInstance().getEntityInfos(gafvmsg.targetId);
-               if(entityInfosv is GameFightFighterInformations)
+               FightEntitiesFrame.getCurrentInstance().updateRemovedEntity(_loc29_.targetId);
+               if(_loc37_)
                {
-                  (entityInfosv as GameFightFighterInformations).alive=false;
+                  _loc36_.updatePath();
                }
-               fightContextFramev=Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
-               if(fightContextFramev)
+               return true;
+            case param1 is GameActionFightVanishMessage:
+               _loc39_ = param1 as GameActionFightVanishMessage;
+               this.pushVanishStep(_loc39_.targetId,_loc39_.sourceId);
+               _loc40_ = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_loc39_.targetId);
+               if(_loc40_ is GameFightFighterInformations)
                {
-                  fightContextFramev.outEntity(gafvmsg.targetId);
+                  (_loc40_ as GameFightFighterInformations).alive = false;
                }
-               FightEntitiesFrame.getCurrentInstance().updateRemovedEntity(gafvmsg.targetId);
+               _loc41_ = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
+               if(_loc41_)
+               {
+                  _loc41_.outEntity(_loc39_.targetId);
+               }
+               FightEntitiesFrame.getCurrentInstance().updateRemovedEntity(_loc39_.targetId);
                return true;
-               break;
-            case msg is GameActionFightTriggerEffectMessage:
+            case param1 is GameActionFightTriggerEffectMessage:
                return true;
-               break;
-            case msg is GameActionFightDispellEffectMessage:
-               gafdiemsg=msg as GameActionFightDispellEffectMessage;
-               this.pushDispellEffectStep(gafdiemsg.targetId,gafdiemsg.boostUID);
+            case param1 is GameActionFightDispellEffectMessage:
+               _loc42_ = param1 as GameActionFightDispellEffectMessage;
+               this.pushDispellEffectStep(_loc42_.targetId,_loc42_.boostUID);
                return true;
-               break;
-            case msg is GameActionFightDispellSpellMessage:
-               gafdsmsg=msg as GameActionFightDispellSpellMessage;
-               this.pushDispellSpellStep(gafdsmsg.targetId,gafdsmsg.spellId);
+            case param1 is GameActionFightDispellSpellMessage:
+               _loc43_ = param1 as GameActionFightDispellSpellMessage;
+               this.pushDispellSpellStep(_loc43_.targetId,_loc43_.spellId);
                return true;
-               break;
-            case msg is GameActionFightDispellMessage:
-               gafdimsg=msg as GameActionFightDispellMessage;
-               this.pushDispellStep(gafdimsg.targetId);
+            case param1 is GameActionFightDispellMessage:
+               _loc44_ = param1 as GameActionFightDispellMessage;
+               this.pushDispellStep(_loc44_.targetId);
                return true;
-               break;
-            case msg is GameActionFightDodgePointLossMessage:
-               gafdplmsg=msg as GameActionFightDodgePointLossMessage;
-               this.pushPointsLossDodgeStep(gafdplmsg.targetId,gafdplmsg.actionId,gafdplmsg.amount);
+            case param1 is GameActionFightDodgePointLossMessage:
+               _loc45_ = param1 as GameActionFightDodgePointLossMessage;
+               this.pushPointsLossDodgeStep(_loc45_.targetId,_loc45_.actionId,_loc45_.amount);
                return true;
-               break;
-            case msg is GameActionFightSpellCooldownVariationMessage:
-               gafscvmsg=msg as GameActionFightSpellCooldownVariationMessage;
-               this.pushSpellCooldownVariationStep(gafscvmsg.targetId,gafscvmsg.actionId,gafscvmsg.spellId,gafscvmsg.value);
+            case param1 is GameActionFightSpellCooldownVariationMessage:
+               _loc46_ = param1 as GameActionFightSpellCooldownVariationMessage;
+               this.pushSpellCooldownVariationStep(_loc46_.targetId,_loc46_.actionId,_loc46_.spellId,_loc46_.value);
                return true;
-               break;
-            case msg is GameActionFightSpellImmunityMessage:
-               gafsimsg=msg as GameActionFightSpellImmunityMessage;
-               this.pushSpellImmunityStep(gafsimsg.targetId);
+            case param1 is GameActionFightSpellImmunityMessage:
+               _loc47_ = param1 as GameActionFightSpellImmunityMessage;
+               this.pushSpellImmunityStep(_loc47_.targetId);
                return true;
-               break;
-            case msg is GameActionFightInvisibleObstacleMessage:
-               gafiomsg=msg as GameActionFightInvisibleObstacleMessage;
-               this.pushInvisibleObstacleStep(gafiomsg.sourceId,gafiomsg.sourceSpellId);
+            case param1 is GameActionFightInvisibleObstacleMessage:
+               _loc48_ = param1 as GameActionFightInvisibleObstacleMessage;
+               this.pushInvisibleObstacleStep(_loc48_.sourceId,_loc48_.sourceSpellId);
                return true;
-               break;
-            case msg is GameActionFightKillMessage:
-               gafkmsg=msg as GameActionFightKillMessage;
-               this.pushKillStep(gafkmsg.targetId,gafkmsg.sourceId);
+            case param1 is GameActionFightKillMessage:
+               _loc49_ = param1 as GameActionFightKillMessage;
+               this.pushKillStep(_loc49_.targetId,_loc49_.sourceId);
                return true;
-               break;
-            case msg is GameActionFightReduceDamagesMessage:
-               gafredmsg=msg as GameActionFightReduceDamagesMessage;
-               this.pushReducedDamagesStep(gafredmsg.targetId,gafredmsg.amount);
+            case param1 is GameActionFightReduceDamagesMessage:
+               _loc50_ = param1 as GameActionFightReduceDamagesMessage;
+               this.pushReducedDamagesStep(_loc50_.targetId,_loc50_.amount);
                return true;
-               break;
-            case msg is GameActionFightReflectDamagesMessage:
-               gafrfdmsg=msg as GameActionFightReflectDamagesMessage;
-               this.pushReflectedDamagesStep(gafrfdmsg.sourceId);
+            case param1 is GameActionFightReflectDamagesMessage:
+               _loc51_ = param1 as GameActionFightReflectDamagesMessage;
+               this.pushReflectedDamagesStep(_loc51_.sourceId);
                return true;
-               break;
-            case msg is GameActionFightReflectSpellMessage:
-               gafrsmsg=msg as GameActionFightReflectSpellMessage;
-               this.pushReflectedSpellStep(gafrsmsg.targetId);
+            case param1 is GameActionFightReflectSpellMessage:
+               _loc52_ = param1 as GameActionFightReflectSpellMessage;
+               this.pushReflectedSpellStep(_loc52_.targetId);
                return true;
-               break;
-            case msg is GameActionFightStealKamaMessage:
-               gafskmsg=msg as GameActionFightStealKamaMessage;
-               this.pushStealKamasStep(gafskmsg.sourceId,gafskmsg.targetId,gafskmsg.amount);
+            case param1 is GameActionFightStealKamaMessage:
+               _loc53_ = param1 as GameActionFightStealKamaMessage;
+               this.pushStealKamasStep(_loc53_.sourceId,_loc53_.targetId,_loc53_.amount);
                return true;
-               break;
-            case msg is GameActionFightTackledMessage:
-               gaftmsg=msg as GameActionFightTackledMessage;
-               this.pushTackledStep(gaftmsg.sourceId);
+            case param1 is GameActionFightTackledMessage:
+               _loc54_ = param1 as GameActionFightTackledMessage;
+               this.pushTackledStep(_loc54_.sourceId);
                return true;
-               break;
-            case msg is GameActionFightTriggerGlyphTrapMessage:
+            case param1 is GameActionFightTriggerGlyphTrapMessage:
                if(this._castingSpell)
                {
                   this._fightBattleFrame.process(new SequenceEndMessage());
                   this._fightBattleFrame.process(new SequenceStartMessage());
-                  this._fightBattleFrame.currentSequenceFrame.process(msg);
+                  this._fightBattleFrame.currentSequenceFrame.process(param1);
                   return true;
                }
-               gaftgtmsg=msg as GameActionFightTriggerGlyphTrapMessage;
-               this.pushMarkTriggeredStep(gaftgtmsg.triggeringCharacterId,gaftgtmsg.sourceId,gaftgtmsg.markId);
-               this._fxScriptId=1;
-               this._castingSpell=new CastingSpell();
-               this._castingSpell.casterId=gaftgtmsg.sourceId;
-               triggeredCellId=FightEntitiesFrame.getCurrentInstance().getEntityInfos(gaftgtmsg.triggeringCharacterId).disposition.cellId;
-               if(triggeredCellId!=-1)
+               _loc55_ = param1 as GameActionFightTriggerGlyphTrapMessage;
+               this.pushMarkTriggeredStep(_loc55_.triggeringCharacterId,_loc55_.sourceId,_loc55_.markId);
+               this._fxScriptId = 1;
+               this._castingSpell = new CastingSpell();
+               this._castingSpell.casterId = _loc55_.sourceId;
+               _loc56_ = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_loc55_.triggeringCharacterId).disposition.cellId;
+               if(_loc56_ != -1)
                {
-                  this._castingSpell.targetedCell=MapPoint.fromCellId(triggeredCellId);
-                  this._castingSpell.spell=Spell.getSpellById(1750);
-                  this._castingSpell.spellRank=this._castingSpell.spell.getSpellLevel(1);
-               }
-               return true;
-               break;
-            case msg is GameActionFightDispellableEffectMessage:
-               gaftbmsg=msg as GameActionFightDispellableEffectMessage;
-               if(gaftbmsg.actionId==ActionIdConverter.ACTION_CHARACTER_UPDATE_BOOST)
-               {
-                  castingSpell=new CastingSpell(false);
+                  this._castingSpell.targetedCell = MapPoint.fromCellId(_loc56_);
+                  this._castingSpell.spell = Spell.getSpellById(1750);
+                  this._castingSpell.spellRank = this._castingSpell.spell.getSpellLevel(1);
                }
                else
                {
-                  castingSpell=new CastingSpell(this._castingSpell==null);
+                  _log.error("PAS D\'INFO");
+               }
+               return true;
+            case param1 is GameActionFightDispellableEffectMessage:
+               _loc57_ = param1 as GameActionFightDispellableEffectMessage;
+               if(_loc57_.actionId == ActionIdConverter.ACTION_CHARACTER_UPDATE_BOOST)
+               {
+                  _loc58_ = new CastingSpell(false);
+               }
+               else
+               {
+                  _loc58_ = new CastingSpell(this._castingSpell == null);
                }
                if(this._castingSpell)
                {
-                  castingSpell.castingSpellId=this._castingSpell.castingSpellId;
-               }
-               castingSpell.spell=Spell.getSpellById(gaftbmsg.effect.spellId);
-               castingSpell.casterId=gaftbmsg.sourceId;
-               buffEffect=gaftbmsg.effect;
-               buff=BuffManager.makeBuffFromEffect(buffEffect,castingSpell,gaftbmsg.actionId);
-               if(buff is StateBuff)
-               {
-                  sb=buff as StateBuff;
-                  if(sb.actionId==952)
+                  _loc58_.castingSpellId = this._castingSpell.castingSpellId;
+                  if(this._castingSpell.spell.id == _loc57_.effect.spellId)
                   {
-                     step=new FightLeavingStateStep(sb.targetId,sb.stateId);
+                     _loc58_.spellRank = this._castingSpell.spellRank;
+                  }
+               }
+               _loc58_.spell = Spell.getSpellById(_loc57_.effect.spellId);
+               _loc58_.casterId = _loc57_.sourceId;
+               _loc59_ = _loc57_.effect;
+               _loc60_ = BuffManager.makeBuffFromEffect(_loc59_,_loc58_,_loc57_.actionId);
+               if(_loc60_ is StateBuff)
+               {
+                  _loc104_ = _loc60_ as StateBuff;
+                  if(_loc104_.actionId == 952)
+                  {
+                     _loc105_ = new FightLeavingStateStep(_loc104_.targetId,_loc104_.stateId);
                   }
                   else
                   {
-                     step=new FightEnteringStateStep(sb.targetId,sb.stateId,sb.effects.durationString);
+                     _loc105_ = new FightEnteringStateStep(_loc104_.targetId,_loc104_.stateId,_loc104_.effects.durationString);
                   }
-                  if(castingSpell!=null)
+                  if(_loc58_ != null)
                   {
-                     step.castingSpellId=castingSpell.castingSpellId;
+                     _loc105_.castingSpellId = _loc58_.castingSpellId;
                   }
-                  this._stepsBuffer.push(step);
+                  this._stepsBuffer.push(_loc105_);
                }
-               switch(true)
+               if(_loc59_ is FightTemporaryBoostEffect)
                {
-                  case buffEffect is FightTemporaryBoostEffect:
-                     actionId=gaftbmsg.actionId;
-                     if((!(actionId==ActionIdConverter.ACTION_CHARACTER_MAKE_INVISIBLE))&&(!(actionId==ActionIdConverter.ACTION_CHARACTER_UPDATE_BOOST))&&(!(actionId==ActionIdConverter.ACTION_CHARACTER_CHANGE_LOOK))&&(!(actionId==ActionIdConverter.ACTION_CHARACTER_CHANGE_COLOR))&&(!(actionId==ActionIdConverter.ACTION_CHARACTER_ADD_APPEARANCE))&&(!(actionId==ActionIdConverter.ACTION_FIGHT_SET_STATE)))
-                     {
-                        this.pushTemporaryBoostStep(gaftbmsg.effect.targetId,buff.effects.description,buff.effects.duration,buff.effects.durationString);
-                     }
-                     break;
+                  _loc106_ = _loc57_.actionId;
+                  if(!(_loc106_ == ActionIdConverter.ACTION_CHARACTER_MAKE_INVISIBLE) && !(_loc106_ == ActionIdConverter.ACTION_CHARACTER_UPDATE_BOOST) && !(_loc106_ == ActionIdConverter.ACTION_CHARACTER_CHANGE_LOOK) && !(_loc106_ == ActionIdConverter.ACTION_CHARACTER_CHANGE_COLOR) && !(_loc106_ == ActionIdConverter.ACTION_CHARACTER_ADD_APPEARANCE) && !(_loc106_ == ActionIdConverter.ACTION_FIGHT_SET_STATE))
+                  {
+                     this.pushTemporaryBoostStep(_loc57_.effect.targetId,_loc60_.effects.description,_loc60_.effects.duration,_loc60_.effects.durationString);
+                  }
                }
-               this.pushDisplayBuffStep(buff);
+               this.pushDisplayBuffStep(_loc60_);
                return true;
-               break;
-            case msg is GameActionFightModifyEffectsDurationMessage:
-               gafmedmsg=msg as GameActionFightModifyEffectsDurationMessage;
-               this.pushModifyEffectsDurationStep(gafmedmsg.sourceId,gafmedmsg.targetId,gafmedmsg.delta);
+            case param1 is GameActionFightModifyEffectsDurationMessage:
+               _loc61_ = param1 as GameActionFightModifyEffectsDurationMessage;
+               this.pushModifyEffectsDurationStep(_loc61_.sourceId,_loc61_.targetId,_loc61_.delta);
                return false;
-               break;
-            case msg is GameActionFightCarryCharacterMessage:
-               gafccmsg=msg as GameActionFightCarryCharacterMessage;
-               if(gafccmsg.cellId!=-1)
+            case param1 is GameActionFightCarryCharacterMessage:
+               _loc62_ = param1 as GameActionFightCarryCharacterMessage;
+               if(_loc62_.cellId != -1)
                {
-                  this.pushCarryCharacterStep(gafccmsg.sourceId,gafccmsg.targetId,gafccmsg.cellId);
+                  this.pushCarryCharacterStep(_loc62_.sourceId,_loc62_.targetId,_loc62_.cellId);
                }
                return false;
-               break;
-            case msg is GameActionFightThrowCharacterMessage:
-               gaftcmsg=msg as GameActionFightThrowCharacterMessage;
-               this.pushThrowCharacterStep(gaftcmsg.sourceId,gaftcmsg.targetId,gaftcmsg.cellId);
+            case param1 is GameActionFightThrowCharacterMessage:
+               _loc63_ = param1 as GameActionFightThrowCharacterMessage;
+               _loc64_ = this._castingSpell?this._castingSpell.targetedCell.cellId:_loc63_.cellId;
+               this.pushThrowCharacterStep(_loc63_.sourceId,_loc63_.targetId,_loc64_);
                return false;
-               break;
-            case msg is GameActionFightDropCharacterMessage:
-               gafdcmsg=msg as GameActionFightDropCharacterMessage;
-               this.pushThrowCharacterStep(gafdcmsg.sourceId,gafdcmsg.targetId,gafdcmsg.cellId);
+            case param1 is GameActionFightDropCharacterMessage:
+               _loc65_ = param1 as GameActionFightDropCharacterMessage;
+               _loc66_ = _loc65_.cellId;
+               if(_loc66_ == -1 && (this._castingSpell))
+               {
+                  _loc66_ = this._castingSpell.targetedCell.cellId;
+               }
+               this.pushThrowCharacterStep(_loc65_.sourceId,_loc65_.targetId,_loc66_);
                return false;
-               break;
-            case msg is GameActionFightInvisibleDetectedMessage:
-               gafidMsg=msg as GameActionFightInvisibleDetectedMessage;
-               this.pushFightInvisibleTemporarilyDetectedStep(gafidMsg.sourceId,gafidMsg.cellId);
-               FightEntitiesFrame.getCurrentInstance().setLastKnownEntityPosition(gafidMsg.targetId,gafidMsg.cellId);
-               FightEntitiesFrame.getCurrentInstance().setLastKnownEntityMovementPoint(gafidMsg.targetId,0);
+            case param1 is GameActionFightInvisibleDetectedMessage:
+               _loc67_ = param1 as GameActionFightInvisibleDetectedMessage;
+               this.pushFightInvisibleTemporarilyDetectedStep(_loc67_.sourceId,_loc67_.cellId);
+               FightEntitiesFrame.getCurrentInstance().setLastKnownEntityPosition(_loc67_.targetId,_loc67_.cellId);
+               FightEntitiesFrame.getCurrentInstance().setLastKnownEntityMovementPoint(_loc67_.targetId,0);
                return true;
-               break;
-            case msg is AbstractGameActionMessage:
-               _log.error("Unsupported game action "+msg+" ! This action was discarded.");
+            case param1 is GameFightTurnListMessage:
+               _loc68_ = param1 as GameFightTurnListMessage;
+               this.pushTurnListStep(_loc68_.ids,_loc68_.deadsIds);
                return true;
-               break;
+            case param1 is AbstractGameActionMessage:
+               _log.error("Unsupported game action " + param1 + " ! This action was discarded.");
+               return true;
          }
          return false;
       }
-
-      public function execute(callback:Function=null) : void {
-         var script:BinaryScript = null;
-         var scriptRunner:SpellFxRunner = null;
-         this._sequencer=new SerialSequencer(FIGHT_SEQUENCERS_CATEGORY);
+      
+      public function execute(param1:Function=null) : void {
+         var _loc2_:BinaryScript = null;
+         var _loc3_:SpellFxRunner = null;
+         this._sequencer = new SerialSequencer(FIGHT_SEQUENCERS_CATEGORY);
          if(this._parent)
          {
             _log.info("Process sub sequence");
@@ -1002,239 +1045,253 @@ package com.ankamagames.dofus.logic.game.fight.frames
          {
             _log.info("Execute sequence");
          }
-         if(this._fxScriptId>0)
+         if(this._fxScriptId > 0)
          {
-            script=DofusEmbedScript.getScript(this._fxScriptId);
-            scriptRunner=new SpellFxRunner(this);
-            this._scriptStarted=getTimer();
-            ScriptExec.exec(script,scriptRunner,true,new Callback(this.executeBuffer,callback,true,true),new Callback(this.executeBuffer,callback,true,false));
+            _loc2_ = DofusEmbedScript.getScript(this._fxScriptId);
+            _loc3_ = new SpellFxRunner(this);
+            this._scriptStarted = getTimer();
+            ScriptExec.exec(_loc2_,_loc3_,true,new Callback(this.executeBuffer,param1,true,true),new Callback(this.executeBuffer,param1,true,false));
          }
          else
          {
-            this.executeBuffer(callback,false);
+            this.executeBuffer(param1,false);
          }
       }
-
-      private function executeBuffer(callback:Function, hadScript:Boolean, scriptSuccess:Boolean=false) : void {
-         var step:ISequencable = null;
-         var allowHitAnim:* = false;
-         var allowSpellEffects:* = false;
-         var startStep:Array = null;
-         var endStep:Array = null;
-         var removed:* = false;
-         var entityAttaqueAnimWait:Dictionary = null;
-         var lifeLoseSum:Dictionary = null;
-         var lifeLoseLastStep:Dictionary = null;
-         var shieldLoseSum:Dictionary = null;
-         var shieldLoseLastStep:Dictionary = null;
-         var i:* = 0;
-         var b:* = undefined;
-         var index:* = undefined;
-         var waitStep:WaitAnimationEventStep = null;
-         var scriptTook:uint = 0;
-         var animStep:PlayAnimationStep = null;
-         var deathStep:FightDeathStep = null;
-         var fapvs:FightActionPointsVariationStep = null;
-         var fspvs:FightShieldPointsVariationStep = null;
-         var flvs:FightLifeVariationStep = null;
-         var idx:* = 0;
-         var idx2:* = 0;
-         var loseLifeTarget:* = undefined;
-         var j:uint = 0;
-         if(hadScript)
+      
+      private function executeBuffer(param1:Function, param2:Boolean, param3:Boolean=false) : void {
+         var _loc8_:ISequencable = null;
+         var _loc10_:* = false;
+         var _loc11_:* = false;
+         var _loc12_:Array = null;
+         var _loc13_:Array = null;
+         var _loc14_:* = false;
+         var _loc15_:Dictionary = null;
+         var _loc16_:Dictionary = null;
+         var _loc17_:Dictionary = null;
+         var _loc18_:Dictionary = null;
+         var _loc19_:Dictionary = null;
+         var _loc20_:* = 0;
+         var _loc21_:* = undefined;
+         var _loc22_:* = undefined;
+         var _loc23_:WaitAnimationEventStep = null;
+         var _loc24_:uint = 0;
+         var _loc25_:PlayAnimationStep = null;
+         var _loc26_:FightDeathStep = null;
+         var _loc27_:* = 0;
+         var _loc28_:FightActionPointsVariationStep = null;
+         var _loc29_:FightShieldPointsVariationStep = null;
+         var _loc30_:FightLifeVariationStep = null;
+         var _loc31_:* = 0;
+         var _loc32_:* = 0;
+         var _loc33_:* = undefined;
+         var _loc34_:uint = 0;
+         if(param2)
          {
-            scriptTook=getTimer()-this._scriptStarted;
-            if(!scriptSuccess)
+            _loc24_ = getTimer() - this._scriptStarted;
+            if(!param3)
             {
-               _log.warn("Script failed during a fight sequence, but still took "+scriptTook+"ms.");
+               _log.warn("Script failed during a fight sequence, but still took " + _loc24_ + "ms.");
             }
             else
             {
-               _log.info("Script successfuly executed in "+scriptTook+"ms.");
+               _log.info("Script successfuly executed in " + _loc24_ + "ms.");
             }
          }
-         var cleanedBuffer:Array = [];
-         var deathStepRef:Dictionary = new Dictionary(true);
-         var hitStep:Dictionary = new Dictionary(true);
-         var loseLifeStep:Dictionary = new Dictionary(true);
-         var waitHitEnd:Boolean = false;
-         for each (step in this._stepsBuffer)
+         var _loc4_:Array = [];
+         var _loc5_:Dictionary = new Dictionary(true);
+         var _loc6_:Dictionary = new Dictionary(true);
+         var _loc7_:Dictionary = new Dictionary(true);
+         var _loc9_:* = false;
+         for each (_loc8_ in this._stepsBuffer)
          {
             switch(true)
             {
-               case step is FightMarkTriggeredStep:
-                  waitHitEnd=true;
-                  break;
+               case _loc8_ is FightMarkTriggeredStep:
+                  _loc9_ = true;
+                  continue;
+               default:
+                  continue;
             }
          }
-         allowHitAnim=OptionManager.getOptionManager("dofus")["allowHitAnim"];
-         allowSpellEffects=OptionManager.getOptionManager("dofus")["allowSpellEffects"];
-         startStep=[];
-         endStep=[];
-         entityAttaqueAnimWait=new Dictionary();
-         lifeLoseSum=new Dictionary(true);
-         lifeLoseLastStep=new Dictionary(true);
-         shieldLoseSum=new Dictionary(true);
-         shieldLoseLastStep=new Dictionary(true);
-         i=this._stepsBuffer.length;
-         while(--i>=0)
+         _loc10_ = OptionManager.getOptionManager("dofus")["allowHitAnim"];
+         _loc11_ = OptionManager.getOptionManager("dofus")["allowSpellEffects"];
+         _loc12_ = [];
+         _loc13_ = [];
+         _loc15_ = new Dictionary();
+         _loc16_ = new Dictionary(true);
+         _loc17_ = new Dictionary(true);
+         _loc18_ = new Dictionary(true);
+         _loc19_ = new Dictionary(true);
+         _loc20_ = this._stepsBuffer.length;
+         while(--_loc20_ >= 0)
          {
-            if((removed)&&(step))
+            if((_loc14_) && (_loc8_))
             {
-               step.clear();
+               _loc8_.clear();
             }
-            removed=true;
-            step=this._stepsBuffer[i];
+            _loc14_ = true;
+            _loc8_ = this._stepsBuffer[_loc20_];
             switch(true)
             {
-               case step is PlayAnimationStep:
-                  animStep=step as PlayAnimationStep;
-                  if(animStep.animation.indexOf(AnimationEnum.ANIM_HIT)!=-1)
+               case _loc8_ is PlayAnimationStep:
+                  _loc25_ = _loc8_ as PlayAnimationStep;
+                  if(_loc25_.animation.indexOf(AnimationEnum.ANIM_HIT) != -1)
                   {
-                     if(!allowHitAnim)
+                     if(!_loc10_)
                      {
                         continue;
                      }
-                     animStep.waitEvent=waitHitEnd;
-                     if(animStep.target==null)
+                     _loc25_.waitEvent = _loc9_;
+                     if(_loc25_.target == null)
                      {
                         continue;
                      }
-                     if(deathStepRef[EntitiesManager.getInstance().getEntityID(animStep.target as IEntity)])
+                     if(_loc5_[EntitiesManager.getInstance().getEntityID(_loc25_.target as IEntity)])
                      {
                         continue;
                      }
-                     if(hitStep[animStep.target])
+                     if(_loc6_[_loc25_.target])
                      {
                         continue;
                      }
-                     hitStep[animStep.target]=true;
+                     if(!(_loc25_.animation == AnimationEnum.ANIM_HIT) && !(_loc25_.animation == AnimationEnum.ANIM_HIT_CARRYING) && !_loc25_.target.hasAnimation(_loc25_.animation,1))
+                     {
+                        _loc25_.animation = AnimationEnum.ANIM_HIT;
+                     }
+                     _loc6_[_loc25_.target] = true;
                   }
-                  if(this._castingSpell.casterId<0)
+                  if(this._castingSpell.casterId < 0)
                   {
-                     if(entityAttaqueAnimWait[animStep.target])
+                     if(_loc15_[_loc25_.target])
                      {
-                        cleanedBuffer.unshift(entityAttaqueAnimWait[animStep.target]);
-                        delete entityAttaqueAnimWait[[animStep.target]];
+                        _loc4_.unshift(_loc15_[_loc25_.target]);
+                        delete _loc15_[[_loc25_.target]];
                      }
-                     if(animStep.animation.indexOf(AnimationEnum.ANIM_ATTAQUE_BASE)!=-1)
+                     if(_loc25_.animation.indexOf(AnimationEnum.ANIM_ATTAQUE_BASE) != -1)
                      {
-                        entityAttaqueAnimWait[animStep.target]=new WaitAnimationEventStep(animStep);
+                        _loc15_[_loc25_.target] = new WaitAnimationEventStep(_loc25_);
                      }
                   }
                   break;
-               case step is FightDeathStep:
-                  deathStep=step as FightDeathStep;
-                  deathStepRef[deathStep.entityId]=true;
-                  break;
-               case step is FightActionPointsVariationStep:
-                  fapvs=step as FightActionPointsVariationStep;
-                  if(fapvs.voluntarlyUsed)
+               case _loc8_ is FightDeathStep:
+                  _loc26_ = _loc8_ as FightDeathStep;
+                  _loc5_[_loc26_.entityId] = true;
+                  _loc27_ = this._fightBattleFrame.targetedEntities.indexOf(_loc26_.entityId);
+                  if(_loc27_ != -1)
                   {
-                     startStep.push(fapvs);
-                     removed=false;
+                     this._fightBattleFrame.targetedEntities.splice(_loc27_,1);
+                     TooltipManager.hide("tooltipOverEntity_" + _loc26_.entityId);
+                  }
+                  break;
+               case _loc8_ is FightActionPointsVariationStep:
+                  _loc28_ = _loc8_ as FightActionPointsVariationStep;
+                  if(_loc28_.voluntarlyUsed)
+                  {
+                     _loc12_.push(_loc28_);
+                     _loc14_ = false;
                      continue;
                   }
                   break;
-               case step is FightShieldPointsVariationStep:
-                  fspvs=step as FightShieldPointsVariationStep;
-                  if(shieldLoseSum[fspvs.target]==null)
+               case _loc8_ is FightShieldPointsVariationStep:
+                  _loc29_ = _loc8_ as FightShieldPointsVariationStep;
+                  if(_loc18_[_loc29_.target] == null)
                   {
-                     shieldLoseSum[fspvs.target]=0;
+                     _loc18_[_loc29_.target] = 0;
                   }
-                  shieldLoseSum[fspvs.target]=shieldLoseSum[fspvs.target]+fspvs.value;
-                  shieldLoseLastStep[fspvs.target]=fspvs;
+                  _loc18_[_loc29_.target] = _loc18_[_loc29_.target] + _loc29_.value;
+                  _loc19_[_loc29_.target] = _loc29_;
+                  this.showTargetTooltip(_loc29_.target.id);
                   break;
-               case step is FightLifeVariationStep:
-                  flvs=step as FightLifeVariationStep;
-                  if(flvs.delta<0)
+               case _loc8_ is FightLifeVariationStep:
+                  _loc30_ = _loc8_ as FightLifeVariationStep;
+                  if(_loc30_.delta < 0)
                   {
-                     loseLifeStep[flvs.target]=flvs;
+                     _loc7_[_loc30_.target] = _loc30_;
                   }
-                  if(lifeLoseSum[flvs.target]==null)
+                  if(_loc16_[_loc30_.target] == null)
                   {
-                     lifeLoseSum[flvs.target]=0;
+                     _loc16_[_loc30_.target] = 0;
                   }
-                  lifeLoseSum[flvs.target]=lifeLoseSum[flvs.target]+flvs.delta;
-                  lifeLoseLastStep[flvs.target]=flvs;
+                  _loc16_[_loc30_.target] = _loc16_[_loc30_.target] + _loc30_.delta;
+                  _loc17_[_loc30_.target] = _loc30_;
+                  this.showTargetTooltip(_loc30_.target.id);
                   break;
-               case step is AddGfxEntityStep:
-               case step is AddGfxInLineStep:
-               case step is ParableGfxMovementStep:
-               case step is AddWorldEntityStep:
-                  if(!allowSpellEffects)
+               case _loc8_ is AddGfxEntityStep:
+               case _loc8_ is AddGfxInLineStep:
+               case _loc8_ is ParableGfxMovementStep:
+               case _loc8_ is AddWorldEntityStep:
+                  if(!_loc11_)
                   {
                      continue;
                   }
                   break;
             }
-            removed=false;
-            cleanedBuffer.unshift(step);
+            _loc14_ = false;
+            _loc4_.unshift(_loc8_);
          }
-         for each (b in cleanedBuffer)
+         for each (_loc21_ in _loc4_)
          {
-            if((b is FightLifeVariationStep)&&(lifeLoseSum[b.target]==0)&&(!(shieldLoseSum[b.target]==null)))
+            if(_loc21_ is FightLifeVariationStep && _loc16_[_loc21_.target] == 0 && !(_loc18_[_loc21_.target] == null))
             {
-               b.skipTextEvent=true;
+               _loc21_.skipTextEvent = true;
             }
          }
-         for (index in lifeLoseSum)
+         for (_loc22_ in _loc16_)
          {
-            if((!(index=="null"))&&(!(lifeLoseSum[index]==0)))
+            if(!(_loc22_ == "null") && !(_loc16_[_loc22_] == 0))
             {
-               idx=cleanedBuffer.indexOf(lifeLoseLastStep[index]);
-               cleanedBuffer.splice(idx,0,new FightLossAnimStep(index,lifeLoseSum[index],FightLifeVariationStep.COLOR));
+               _loc31_ = _loc4_.indexOf(_loc17_[_loc22_]);
+               _loc4_.splice(_loc31_,0,new FightLossAnimStep(_loc22_,_loc16_[_loc22_],FightLifeVariationStep.COLOR));
             }
-            lifeLoseLastStep[index]=-1;
-            lifeLoseSum[index]=0;
+            _loc17_[_loc22_] = -1;
+            _loc16_[_loc22_] = 0;
          }
-         for (index in shieldLoseSum)
+         for (_loc22_ in _loc18_)
          {
-            if((!(index=="null"))&&(!(shieldLoseSum[index]==0)))
+            if(!(_loc22_ == "null") && !(_loc18_[_loc22_] == 0))
             {
-               idx2=cleanedBuffer.indexOf(shieldLoseLastStep[index]);
-               cleanedBuffer.splice(idx2,0,new FightLossAnimStep(index,shieldLoseSum[index],FightShieldPointsVariationStep.COLOR));
+               _loc32_ = _loc4_.indexOf(_loc19_[_loc22_]);
+               _loc4_.splice(_loc32_,0,new FightLossAnimStep(_loc22_,_loc18_[_loc22_],FightShieldPointsVariationStep.COLOR));
             }
-            shieldLoseLastStep[index]=-1;
-            shieldLoseSum[index]=0;
+            _loc19_[_loc22_] = -1;
+            _loc18_[_loc22_] = 0;
          }
-         for each (waitStep in entityAttaqueAnimWait)
+         for each (_loc23_ in _loc15_)
          {
-            endStep.push(waitStep);
+            _loc13_.push(_loc23_);
          }
-         if(allowHitAnim)
+         if(_loc10_)
          {
-            loop0:
-            for (loseLifeTarget in loseLifeStep)
+            for (_loc33_ in _loc7_)
             {
-               if(!hitStep[loseLifeTarget])
+               if(!_loc6_[_loc33_])
                {
-                  j=0;
-                  while(j<cleanedBuffer.length)
+                  _loc34_ = 0;
+                  while(_loc34_ < _loc4_.length)
                   {
-                     if(cleanedBuffer[j]==loseLifeStep[loseLifeTarget])
+                     if(_loc4_[_loc34_] == _loc7_[_loc33_])
                      {
-                        cleanedBuffer.splice(j,0,new PlayAnimationStep(loseLifeTarget as TiphonSprite,AnimationEnum.ANIM_HIT,true,false));
-                        continue loop0;
+                        _loc4_.splice(_loc34_,0,new PlayAnimationStep(_loc33_ as TiphonSprite,AnimationEnum.ANIM_HIT,true,false));
+                        break;
                      }
-                     j++;
+                     _loc34_++;
                   }
                }
             }
          }
-         cleanedBuffer=startStep.concat(cleanedBuffer).concat(endStep);
-         for each (step in cleanedBuffer)
+         _loc4_ = _loc12_.concat(_loc4_).concat(_loc13_);
+         for each (_loc8_ in _loc4_)
          {
-            this._sequencer.addStep(step);
+            this._sequencer.addStep(_loc8_);
          }
          this.clearBuffer();
-         if((!(callback==null))&&(!this._parent))
+         if(!(param1 == null) && !this._parent)
          {
-            this._sequenceEndCallback=callback;
+            this._sequenceEndCallback = param1;
             this._sequencer.addEventListener(SequencerEvent.SEQUENCE_END,this.onSequenceEnd);
          }
-         _lastCastingSpell=this._castingSpell;
-         this._scriptInit=true;
+         _lastCastingSpell = this._castingSpell;
+         this._scriptInit = true;
          if(!this._parent)
          {
             if(!this._subSequenceWaitingCount)
@@ -1243,425 +1300,437 @@ package com.ankamagames.dofus.logic.game.fight.frames
             }
             else
             {
-               _log.warn("Waiting sub sequence init end ("+this._subSequenceWaitingCount+" seq)");
+               _log.warn("Waiting sub sequence init end (" + this._subSequenceWaitingCount + " seq)");
             }
          }
          else
          {
-            if(callback!=null)
+            if(param1 != null)
             {
-               callback();
+               param1();
             }
             this._parent.subSequenceInitDone();
          }
       }
-
-      private function onSequenceEnd(e:SequencerEvent) : void {
+      
+      private function onSequenceEnd(param1:SequencerEvent) : void {
          this._sequencer.removeEventListener(SequencerEvent.SEQUENCE_END,this.onSequenceEnd);
          this._sequenceEndCallback();
       }
-
+      
       private function subSequenceInitDone() : void {
          this._subSequenceWaitingCount--;
-         if((!this.isWaiting)&&(this._sequencer)&&(!this._sequencer.running))
+         if((!this.isWaiting) && (this._sequencer) && !this._sequencer.running)
          {
             _log.warn("Sub sequence init end -- Run main sequence");
             this._sequencer.start();
          }
       }
-
-      private function pushMovementStep(fighterId:int, path:MovementPath) : void {
-         this._stepsBuffer.push(new CallbackStep(new Callback(deleteTooltip,fighterId)));
-         var step:FightEntityMovementStep = new FightEntityMovementStep(fighterId,path);
-         if(this.castingSpell!=null)
+      
+      private function pushMovementStep(param1:int, param2:MovementPath) : void {
+         this._stepsBuffer.push(new CallbackStep(new Callback(deleteTooltip,param1)));
+         var _loc3_:FightEntityMovementStep = new FightEntityMovementStep(param1,param2);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc3_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc3_);
       }
-
-      private function pushTeleportStep(fighterId:int, destinationCell:int) : void {
-         var step:FightTeleportStep = null;
-         this._stepsBuffer.push(new CallbackStep(new Callback(deleteTooltip,fighterId)));
-         if(destinationCell!=-1)
+      
+      private function pushTeleportStep(param1:int, param2:int) : void {
+         var _loc3_:FightTeleportStep = null;
+         this._stepsBuffer.push(new CallbackStep(new Callback(deleteTooltip,param1)));
+         if(param2 != -1)
          {
-            step=new FightTeleportStep(fighterId,MapPoint.fromCellId(destinationCell));
-            if(this.castingSpell!=null)
+            _loc3_ = new FightTeleportStep(param1,MapPoint.fromCellId(param2));
+            if(this.castingSpell != null)
             {
-               step.castingSpellId=this.castingSpell.castingSpellId;
+               _loc3_.castingSpellId = this.castingSpell.castingSpellId;
             }
-            this._stepsBuffer.push(step);
+            this._stepsBuffer.push(_loc3_);
          }
       }
-
-      private function pushExchangePositionsStep(fighterOneId:int, fighterOneNewCell:int, fighterTwoId:int, fighterTwoNewCell:int) : void {
-         this._stepsBuffer.push(new CallbackStep(new Callback(deleteTooltip,fighterOneId)));
-         this._stepsBuffer.push(new CallbackStep(new Callback(deleteTooltip,fighterTwoId)));
-         var step:FightExchangePositionsStep = new FightExchangePositionsStep(fighterOneId,fighterOneNewCell,fighterTwoId,fighterTwoNewCell);
-         if(this.castingSpell!=null)
+      
+      private function pushExchangePositionsStep(param1:int, param2:int, param3:int, param4:int) : void {
+         this._stepsBuffer.push(new CallbackStep(new Callback(deleteTooltip,param1)));
+         this._stepsBuffer.push(new CallbackStep(new Callback(deleteTooltip,param3)));
+         var _loc5_:FightExchangePositionsStep = new FightExchangePositionsStep(param1,param2,param3,param4);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc5_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc5_);
       }
-
-      private function pushSlideStep(fighterId:int, startCell:int, endCell:int) : void {
-         if((startCell>0)||(endCell>0))
+      
+      private function pushSlideStep(param1:int, param2:int, param3:int) : void {
+         if(param2 < 0 || param3 < 0)
          {
             return;
          }
-         this._stepsBuffer.push(new CallbackStep(new Callback(deleteTooltip,fighterId)));
-         var step:FightEntitySlideStep = new FightEntitySlideStep(fighterId,MapPoint.fromCellId(startCell),MapPoint.fromCellId(endCell));
-         if(this.castingSpell!=null)
+         this._stepsBuffer.push(new CallbackStep(new Callback(deleteTooltip,param1)));
+         var _loc4_:FightEntitySlideStep = new FightEntitySlideStep(param1,MapPoint.fromCellId(param2),MapPoint.fromCellId(param3));
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc4_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc4_);
       }
-
-      private function pushSummonStep(summonerId:int, summonInfos:GameFightFighterInformations) : void {
-         var step:FightSummonStep = new FightSummonStep(summonerId,summonInfos);
-         if(this.castingSpell!=null)
+      
+      private function pushSummonStep(param1:int, param2:GameFightFighterInformations) : void {
+         var _loc3_:FightSummonStep = new FightSummonStep(param1,param2);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc3_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc3_);
       }
-
-      private function pushVisibilityStep(fighterId:int, visibility:Boolean) : void {
-         var step:FightVisibilityStep = new FightVisibilityStep(fighterId,visibility);
-         if(this.castingSpell!=null)
+      
+      private function pushVisibilityStep(param1:int, param2:Boolean) : void {
+         var _loc3_:FightVisibilityStep = new FightVisibilityStep(param1,param2);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc3_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc3_);
       }
-
-      private function pushMarkCellsStep(markId:int, markType:int, cells:Vector.<GameActionMarkedCell>, markSpellId:int) : void {
-         var step:FightMarkCellsStep = new FightMarkCellsStep(markId,markType,this._castingSpell.spellRank,cells,markSpellId);
-         if(this.castingSpell!=null)
+      
+      private function pushMarkCellsStep(param1:int, param2:int, param3:Vector.<GameActionMarkedCell>, param4:int) : void {
+         var _loc5_:FightMarkCellsStep = new FightMarkCellsStep(param1,param2,this._castingSpell.spellRank,param3,param4);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc5_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc5_);
       }
-
-      private function pushUnmarkCellsStep(markId:int) : void {
-         var step:FightUnmarkCellsStep = new FightUnmarkCellsStep(markId);
-         if(this.castingSpell!=null)
+      
+      private function pushUnmarkCellsStep(param1:int) : void {
+         var _loc2_:FightUnmarkCellsStep = new FightUnmarkCellsStep(param1);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc2_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc2_);
       }
-
-      private function pushChangeLookStep(fighterId:int, newLook:EntityLook) : void {
-         var step:FightChangeLookStep = new FightChangeLookStep(fighterId,EntityLookAdapter.fromNetwork(newLook));
-         if(this.castingSpell!=null)
+      
+      private function pushChangeLookStep(param1:int, param2:EntityLook) : void {
+         var _loc3_:FightChangeLookStep = new FightChangeLookStep(param1,EntityLookAdapter.fromNetwork(param2));
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc3_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc3_);
       }
-
-      private function pushChangeVisibilityStep(fighterId:int, visibilityState:int) : void {
-         var step:FightChangeVisibilityStep = new FightChangeVisibilityStep(fighterId,visibilityState);
-         if(this.castingSpell!=null)
+      
+      private function pushChangeVisibilityStep(param1:int, param2:int) : void {
+         var _loc3_:FightChangeVisibilityStep = new FightChangeVisibilityStep(param1,param2);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc3_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc3_);
       }
-
-      private function pushPointsVariationStep(fighterId:int, actionId:uint, delta:int) : void {
-         var step:IFightStep = null;
-         switch(actionId)
+      
+      private function pushPointsVariationStep(param1:int, param2:uint, param3:int) : void {
+         var _loc4_:IFightStep = null;
+         switch(param2)
          {
             case ActionIdConverter.ACTION_CHARACTER_ACTION_POINTS_USE:
-               step=new FightActionPointsVariationStep(fighterId,delta,true);
+               _loc4_ = new FightActionPointsVariationStep(param1,param3,true);
                break;
             case ActionIdConverter.ACTION_CHARACTER_ACTION_POINTS_LOST:
             case ActionIdConverter.ACTION_CHARACTER_ACTION_POINTS_WIN:
-               step=new FightActionPointsVariationStep(fighterId,delta,false);
+               _loc4_ = new FightActionPointsVariationStep(param1,param3,false);
                break;
             case ActionIdConverter.ACTION_CHARACTER_MOVEMENT_POINTS_USE:
-               step=new FightMovementPointsVariationStep(fighterId,delta,true);
+               _loc4_ = new FightMovementPointsVariationStep(param1,param3,true);
                break;
             case ActionIdConverter.ACTION_CHARACTER_MOVEMENT_POINTS_LOST:
             case ActionIdConverter.ACTION_CHARACTER_MOVEMENT_POINTS_WIN:
-               step=new FightMovementPointsVariationStep(fighterId,delta,false);
+               _loc4_ = new FightMovementPointsVariationStep(param1,param3,false);
                break;
             default:
-               _log.warn("Points variation with unsupported action ("+actionId+"), skipping.");
+               _log.warn("Points variation with unsupported action (" + param2 + "), skipping.");
                return;
          }
-         if(this.castingSpell!=null)
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc4_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc4_);
       }
-
-      private function pushUpdateFighterStatsStep(fighterStats:CharacterCharacteristicsInformations) : void {
-         var step:FightFighterStatsUpdateStep = new FightFighterStatsUpdateStep(fighterStats);
-         if(this.castingSpell!=null)
+      
+      private function pushShieldPointsVariationStep(param1:int, param2:int, param3:int) : void {
+         var _loc4_:FightShieldPointsVariationStep = new FightShieldPointsVariationStep(param1,param2,param3);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc4_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc4_);
       }
-
-      private function pushShieldPointsVariationStep(fighterId:int, delta:int, actionId:int) : void {
-         var step:FightShieldPointsVariationStep = new FightShieldPointsVariationStep(fighterId,delta,actionId);
-         if(this.castingSpell!=null)
+      
+      private function pushTemporaryBoostStep(param1:int, param2:String, param3:int, param4:String) : void {
+         var _loc5_:FightTemporaryBoostStep = new FightTemporaryBoostStep(param1,param2,param3,param4);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc5_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc5_);
       }
-
-      private function pushTemporaryBoostStep(fighterId:int, statName:String, duration:int, durationText:String) : void {
-         var step:FightTemporaryBoostStep = new FightTemporaryBoostStep(fighterId,statName,duration,durationText);
-         if(this.castingSpell!=null)
-         {
-            step.castingSpellId=this.castingSpell.castingSpellId;
-         }
-         this._stepsBuffer.push(step);
-      }
-
-      private function pushPointsLossDodgeStep(fighterId:int, actionId:uint, amount:int) : void {
-         var step:IFightStep = null;
-         switch(actionId)
+      
+      private function pushPointsLossDodgeStep(param1:int, param2:uint, param3:int) : void {
+         var _loc4_:IFightStep = null;
+         switch(param2)
          {
             case ActionIdConverter.ACTION_FIGHT_SPELL_DODGED_PA:
-               step=new FightActionPointsLossDodgeStep(fighterId,amount);
+               _loc4_ = new FightActionPointsLossDodgeStep(param1,param3);
                break;
             case ActionIdConverter.ACTION_FIGHT_SPELL_DODGED_PM:
-               step=new FightMovementPointsLossDodgeStep(fighterId,amount);
+               _loc4_ = new FightMovementPointsLossDodgeStep(param1,param3);
                break;
             default:
-               _log.warn("Points dodge with unsupported action ("+actionId+"), skipping.");
+               _log.warn("Points dodge with unsupported action (" + param2 + "), skipping.");
                return;
          }
-         if(this.castingSpell!=null)
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc4_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc4_);
       }
-
-      private function pushLifePointsVariationStep(fighterId:int, delta:int, permanentDamages:int, action:int) : void {
-         var step:FightLifeVariationStep = new FightLifeVariationStep(fighterId,delta,permanentDamages,action);
-         if(this.castingSpell!=null)
+      
+      private function pushLifePointsVariationStep(param1:int, param2:int, param3:int, param4:int) : void {
+         var _loc5_:FightLifeVariationStep = new FightLifeVariationStep(param1,param2,param3,param4);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc5_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc5_);
       }
-
-      private function pushDeathStep(fighterId:int, naturalDeath:Boolean=true) : void {
-         var step:FightDeathStep = new FightDeathStep(fighterId,naturalDeath);
-         if(this.castingSpell!=null)
+      
+      private function pushDeathStep(param1:int, param2:Boolean=true) : void {
+         var _loc3_:FightDeathStep = new FightDeathStep(param1,param2);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc3_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc3_);
       }
-
-      private function pushVanishStep(fighterId:int, sourceId:int) : void {
-         var step:FightVanishStep = new FightVanishStep(fighterId,sourceId);
-         if(this.castingSpell!=null)
+      
+      private function pushVanishStep(param1:int, param2:int) : void {
+         var _loc3_:FightVanishStep = new FightVanishStep(param1,param2);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc3_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc3_);
       }
-
-      private function pushDispellStep(fighterId:int) : void {
-         var step:FightDispellStep = new FightDispellStep(fighterId);
-         if(this.castingSpell!=null)
+      
+      private function pushDispellStep(param1:int) : void {
+         var _loc2_:FightDispellStep = new FightDispellStep(param1);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc2_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc2_);
       }
-
-      private function pushDispellEffectStep(fighterId:int, boostUID:int) : void {
-         var step:FightDispellEffectStep = new FightDispellEffectStep(fighterId,boostUID);
-         if(this.castingSpell!=null)
+      
+      private function pushDispellEffectStep(param1:int, param2:int) : void {
+         var _loc3_:FightDispellEffectStep = new FightDispellEffectStep(param1,param2);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc3_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc3_);
       }
-
-      private function pushDispellSpellStep(fighterId:int, spellId:int) : void {
-         var step:FightDispellSpellStep = new FightDispellSpellStep(fighterId,spellId);
-         if(this.castingSpell!=null)
+      
+      private function pushDispellSpellStep(param1:int, param2:int) : void {
+         var _loc3_:FightDispellSpellStep = new FightDispellSpellStep(param1,param2);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc3_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc3_);
       }
-
-      private function pushSpellCooldownVariationStep(targetId:int, actionId:int, spellId:int, delta:int) : void {
-         var step:FightSpellCooldownVariationStep = new FightSpellCooldownVariationStep(targetId,actionId,spellId,delta);
-         if(this.castingSpell!=null)
+      
+      private function pushSpellCooldownVariationStep(param1:int, param2:int, param3:int, param4:int) : void {
+         var _loc5_:FightSpellCooldownVariationStep = new FightSpellCooldownVariationStep(param1,param2,param3,param4);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc5_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc5_);
       }
-
-      private function pushSpellImmunityStep(targetId:int) : void {
-         var step:FightSpellImmunityStep = new FightSpellImmunityStep(targetId);
-         if(this.castingSpell!=null)
+      
+      private function pushSpellImmunityStep(param1:int) : void {
+         var _loc2_:FightSpellImmunityStep = new FightSpellImmunityStep(param1);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc2_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc2_);
       }
-
-      private function pushInvisibleObstacleStep(fighterId:int, spellLevelId:int) : void {
-         var step:FightInvisibleObstacleStep = new FightInvisibleObstacleStep(fighterId,spellLevelId);
-         if(this.castingSpell!=null)
+      
+      private function pushInvisibleObstacleStep(param1:int, param2:int) : void {
+         var _loc3_:FightInvisibleObstacleStep = new FightInvisibleObstacleStep(param1,param2);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc3_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc3_);
       }
-
-      private function pushKillStep(fighterId:int, killerId:int) : void {
-         var step:FightKillStep = new FightKillStep(fighterId,killerId);
-         if(this.castingSpell!=null)
+      
+      private function pushKillStep(param1:int, param2:int) : void {
+         var _loc3_:FightKillStep = new FightKillStep(param1,param2);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc3_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc3_);
       }
-
-      private function pushReducedDamagesStep(fighterId:int, amount:int) : void {
-         var step:FightReducedDamagesStep = new FightReducedDamagesStep(fighterId,amount);
-         if(this.castingSpell!=null)
+      
+      private function pushReducedDamagesStep(param1:int, param2:int) : void {
+         var _loc3_:FightReducedDamagesStep = new FightReducedDamagesStep(param1,param2);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc3_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc3_);
       }
-
-      private function pushReflectedDamagesStep(fighterId:int) : void {
-         var step:FightReflectedDamagesStep = new FightReflectedDamagesStep(fighterId);
-         if(this.castingSpell!=null)
+      
+      private function pushReflectedDamagesStep(param1:int) : void {
+         var _loc2_:FightReflectedDamagesStep = new FightReflectedDamagesStep(param1);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc2_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc2_);
       }
-
-      private function pushReflectedSpellStep(fighterId:int) : void {
-         var step:FightReflectedSpellStep = new FightReflectedSpellStep(fighterId);
-         if(this.castingSpell!=null)
+      
+      private function pushReflectedSpellStep(param1:int) : void {
+         var _loc2_:FightReflectedSpellStep = new FightReflectedSpellStep(param1);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc2_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc2_);
       }
-
-      private function pushSpellCastStep(fighterId:int, cellId:int, sourceCellId:int, spellId:int, spellRank:uint, critical:uint) : void {
-         var step:FightSpellCastStep = new FightSpellCastStep(fighterId,cellId,sourceCellId,spellId,spellRank,critical);
-         if(this.castingSpell!=null)
+      
+      private function pushSpellCastStep(param1:int, param2:int, param3:int, param4:int, param5:uint, param6:uint) : void {
+         var _loc7_:FightSpellCastStep = new FightSpellCastStep(param1,param2,param3,param4,param5,param6);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc7_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc7_);
       }
-
-      private function pushCloseCombatStep(fighterId:int, closeCombatWeaponId:uint, critical:uint) : void {
-         var step:FightCloseCombatStep = new FightCloseCombatStep(fighterId,closeCombatWeaponId,critical);
-         if(this.castingSpell!=null)
+      
+      private function pushCloseCombatStep(param1:int, param2:uint, param3:uint) : void {
+         var _loc4_:FightCloseCombatStep = new FightCloseCombatStep(param1,param2,param3);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc4_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc4_);
       }
-
-      private function pushStealKamasStep(robberId:int, victimId:int, amount:uint) : void {
-         var step:FightStealingKamasStep = new FightStealingKamasStep(robberId,victimId,amount);
-         if(this.castingSpell!=null)
+      
+      private function pushStealKamasStep(param1:int, param2:int, param3:uint) : void {
+         var _loc4_:FightStealingKamasStep = new FightStealingKamasStep(param1,param2,param3);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc4_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc4_);
       }
-
-      private function pushTackledStep(fighterId:int) : void {
-         var step:FightTackledStep = new FightTackledStep(fighterId);
-         if(this.castingSpell!=null)
+      
+      private function pushTackledStep(param1:int) : void {
+         var _loc2_:FightTackledStep = new FightTackledStep(param1);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc2_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc2_);
       }
-
-      private function pushMarkTriggeredStep(fighterId:int, casterId:int, markId:int) : void {
-         var step:FightMarkTriggeredStep = new FightMarkTriggeredStep(fighterId,casterId,markId);
-         if(this.castingSpell!=null)
+      
+      private function pushMarkTriggeredStep(param1:int, param2:int, param3:int) : void {
+         var _loc4_:FightMarkTriggeredStep = new FightMarkTriggeredStep(param1,param2,param3);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc4_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc4_);
       }
-
-      private function pushDisplayBuffStep(buff:BasicBuff) : void {
-         var step:FightDisplayBuffStep = new FightDisplayBuffStep(buff);
-         if(this.castingSpell!=null)
+      
+      private function pushDisplayBuffStep(param1:BasicBuff) : void {
+         var _loc2_:FightDisplayBuffStep = new FightDisplayBuffStep(param1);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc2_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc2_);
       }
-
-      private function pushModifyEffectsDurationStep(sourceId:int, targetId:int, delta:int) : void {
-         var step:FightModifyEffectsDurationStep = new FightModifyEffectsDurationStep(sourceId,targetId,delta);
-         if(this.castingSpell!=null)
+      
+      private function pushModifyEffectsDurationStep(param1:int, param2:int, param3:int) : void {
+         var _loc4_:FightModifyEffectsDurationStep = new FightModifyEffectsDurationStep(param1,param2,param3);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc4_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc4_);
       }
-
-      private function pushCarryCharacterStep(fighterId:int, carriedId:int, cellId:int) : void {
-         var step:FightCarryCharacterStep = new FightCarryCharacterStep(fighterId,carriedId,cellId);
-         if(this.castingSpell!=null)
+      
+      private function pushCarryCharacterStep(param1:int, param2:int, param3:int) : void {
+         var _loc4_:FightCarryCharacterStep = new FightCarryCharacterStep(param1,param2,param3);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc4_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
-         this._stepsBuffer.push(new CallbackStep(new Callback(deleteTooltip,carriedId)));
+         this._stepsBuffer.push(_loc4_);
+         this._stepsBuffer.push(new CallbackStep(new Callback(deleteTooltip,param2)));
       }
-
-      private function pushThrowCharacterStep(fighterId:int, carriedId:int, cellId:int) : void {
-         var step:FightThrowCharacterStep = new FightThrowCharacterStep(fighterId,carriedId,cellId);
-         if(this.castingSpell!=null)
+      
+      private function pushThrowCharacterStep(param1:int, param2:int, param3:int) : void {
+         var _loc4_:FightThrowCharacterStep = new FightThrowCharacterStep(param1,param2,param3);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc4_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc4_);
       }
-
-      private function pushFightInvisibleTemporarilyDetectedStep(targetId:int, cellId:uint) : void {
-         var targetSprite:AnimatedCharacter = DofusEntities.getEntity(targetId) as AnimatedCharacter;
-         var step:FightInvisibleTemporarilyDetectedStep = new FightInvisibleTemporarilyDetectedStep(targetSprite,cellId);
-         if(this.castingSpell!=null)
+      
+      private function pushFightInvisibleTemporarilyDetectedStep(param1:int, param2:uint) : void {
+         var _loc3_:AnimatedCharacter = DofusEntities.getEntity(param1) as AnimatedCharacter;
+         var _loc4_:FightInvisibleTemporarilyDetectedStep = new FightInvisibleTemporarilyDetectedStep(_loc3_,param2);
+         if(this.castingSpell != null)
          {
-            step.castingSpellId=this.castingSpell.castingSpellId;
+            _loc4_.castingSpellId = this.castingSpell.castingSpellId;
          }
-         this._stepsBuffer.push(step);
+         this._stepsBuffer.push(_loc4_);
       }
-
+      
+      private function pushTurnListStep(param1:Vector.<int>, param2:Vector.<int>) : void {
+         var _loc3_:FightTurnListStep = new FightTurnListStep(param1,param2);
+         if(this.castingSpell != null)
+         {
+            _loc3_.castingSpellId = this.castingSpell.castingSpellId;
+         }
+         this._stepsBuffer.push(_loc3_);
+      }
+      
       private function clearBuffer() : void {
-         this._stepsBuffer=new Vector.<ISequencable>(0,false);
+         this._stepsBuffer = new Vector.<ISequencable>(0,false);
+      }
+      
+      private function showTargetTooltip(param1:int) : void {
+         var _loc2_:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
+         var _loc3_:GameFightFighterInformations = this.fightEntitiesFrame.getEntityInfos(param1) as GameFightFighterInformations;
+         if((((_loc3_.alive) && (this._castingSpell)) && (this._castingSpell.casterId == PlayedCharacterManager.getInstance().id || _loc2_.battleFrame.playingSlaveEntity)) && (!(param1 == this.castingSpell.casterId)) && this._fightBattleFrame.targetedEntities.indexOf(param1) == -1)
+         {
+            this._fightBattleFrame.targetedEntities.push(param1);
+            if(OptionManager.getOptionManager("dofus")["showPermanentTargetsTooltips"] == true)
+            {
+               _loc2_.displayEntityTooltip(param1);
+            }
+         }
       }
    }
-
 }

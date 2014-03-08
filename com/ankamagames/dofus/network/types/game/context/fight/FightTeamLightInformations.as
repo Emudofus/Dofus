@@ -4,108 +4,112 @@ package com.ankamagames.dofus.network.types.game.context.fight
    import flash.utils.IDataOutput;
    import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
    import flash.utils.IDataInput;
-
-
+   
    public class FightTeamLightInformations extends AbstractFightTeamInformations implements INetworkType
    {
-         
-
+      
       public function FightTeamLightInformations() {
          super();
       }
-
+      
       public static const protocolId:uint = 115;
-
+      
       public var teamMembersCount:uint = 0;
-
+      
       public var meanLevel:uint = 0;
-
+      
       public var hasFriend:Boolean = false;
-
+      
       public var hasGuildMember:Boolean = false;
-
+      
+      public var hasAllianceMember:Boolean = false;
+      
       public var hasGroupMember:Boolean = false;
-
+      
       public var hasMyTaxCollector:Boolean = false;
-
+      
       override public function getTypeId() : uint {
          return 115;
       }
-
-      public function initFightTeamLightInformations(teamId:uint=2, leaderId:int=0, teamSide:int=0, teamTypeId:uint=0, teamMembersCount:uint=0, meanLevel:uint=0, hasFriend:Boolean=false, hasGuildMember:Boolean=false, hasGroupMember:Boolean=false, hasMyTaxCollector:Boolean=false) : FightTeamLightInformations {
-         super.initAbstractFightTeamInformations(teamId,leaderId,teamSide,teamTypeId);
-         this.teamMembersCount=teamMembersCount;
-         this.meanLevel=meanLevel;
-         this.hasFriend=hasFriend;
-         this.hasGuildMember=hasGuildMember;
-         this.hasGroupMember=hasGroupMember;
-         this.hasMyTaxCollector=hasMyTaxCollector;
+      
+      public function initFightTeamLightInformations(param1:uint=2, param2:int=0, param3:int=0, param4:uint=0, param5:uint=0, param6:uint=0, param7:Boolean=false, param8:Boolean=false, param9:Boolean=false, param10:Boolean=false, param11:Boolean=false) : FightTeamLightInformations {
+         super.initAbstractFightTeamInformations(param1,param2,param3,param4);
+         this.teamMembersCount = param5;
+         this.meanLevel = param6;
+         this.hasFriend = param7;
+         this.hasGuildMember = param8;
+         this.hasAllianceMember = param9;
+         this.hasGroupMember = param10;
+         this.hasMyTaxCollector = param11;
          return this;
       }
-
+      
       override public function reset() : void {
          super.reset();
-         this.teamMembersCount=0;
-         this.meanLevel=0;
-         this.hasFriend=false;
-         this.hasGuildMember=false;
-         this.hasGroupMember=false;
-         this.hasMyTaxCollector=false;
+         this.teamMembersCount = 0;
+         this.meanLevel = 0;
+         this.hasFriend = false;
+         this.hasGuildMember = false;
+         this.hasAllianceMember = false;
+         this.hasGroupMember = false;
+         this.hasMyTaxCollector = false;
       }
-
-      override public function serialize(output:IDataOutput) : void {
-         this.serializeAs_FightTeamLightInformations(output);
+      
+      override public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_FightTeamLightInformations(param1);
       }
-
-      public function serializeAs_FightTeamLightInformations(output:IDataOutput) : void {
-         super.serializeAs_AbstractFightTeamInformations(output);
-         var _box0:uint = 0;
-         _box0=BooleanByteWrapper.setFlag(_box0,0,this.hasFriend);
-         _box0=BooleanByteWrapper.setFlag(_box0,1,this.hasGuildMember);
-         _box0=BooleanByteWrapper.setFlag(_box0,2,this.hasGroupMember);
-         _box0=BooleanByteWrapper.setFlag(_box0,3,this.hasMyTaxCollector);
-         output.writeByte(_box0);
-         if(this.teamMembersCount<0)
+      
+      public function serializeAs_FightTeamLightInformations(param1:IDataOutput) : void {
+         super.serializeAs_AbstractFightTeamInformations(param1);
+         var _loc2_:uint = 0;
+         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,0,this.hasFriend);
+         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,1,this.hasGuildMember);
+         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,2,this.hasAllianceMember);
+         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,3,this.hasGroupMember);
+         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,4,this.hasMyTaxCollector);
+         param1.writeByte(_loc2_);
+         if(this.teamMembersCount < 0)
          {
-            throw new Error("Forbidden value ("+this.teamMembersCount+") on element teamMembersCount.");
+            throw new Error("Forbidden value (" + this.teamMembersCount + ") on element teamMembersCount.");
          }
          else
          {
-            output.writeByte(this.teamMembersCount);
-            if(this.meanLevel<0)
+            param1.writeByte(this.teamMembersCount);
+            if(this.meanLevel < 0)
             {
-               throw new Error("Forbidden value ("+this.meanLevel+") on element meanLevel.");
+               throw new Error("Forbidden value (" + this.meanLevel + ") on element meanLevel.");
             }
             else
             {
-               output.writeInt(this.meanLevel);
+               param1.writeInt(this.meanLevel);
                return;
             }
          }
       }
-
-      override public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_FightTeamLightInformations(input);
+      
+      override public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_FightTeamLightInformations(param1);
       }
-
-      public function deserializeAs_FightTeamLightInformations(input:IDataInput) : void {
-         super.deserialize(input);
-         var _box0:uint = input.readByte();
-         this.hasFriend=BooleanByteWrapper.getFlag(_box0,0);
-         this.hasGuildMember=BooleanByteWrapper.getFlag(_box0,1);
-         this.hasGroupMember=BooleanByteWrapper.getFlag(_box0,2);
-         this.hasMyTaxCollector=BooleanByteWrapper.getFlag(_box0,3);
-         this.teamMembersCount=input.readByte();
-         if(this.teamMembersCount<0)
+      
+      public function deserializeAs_FightTeamLightInformations(param1:IDataInput) : void {
+         super.deserialize(param1);
+         var _loc2_:uint = param1.readByte();
+         this.hasFriend = BooleanByteWrapper.getFlag(_loc2_,0);
+         this.hasGuildMember = BooleanByteWrapper.getFlag(_loc2_,1);
+         this.hasAllianceMember = BooleanByteWrapper.getFlag(_loc2_,2);
+         this.hasGroupMember = BooleanByteWrapper.getFlag(_loc2_,3);
+         this.hasMyTaxCollector = BooleanByteWrapper.getFlag(_loc2_,4);
+         this.teamMembersCount = param1.readByte();
+         if(this.teamMembersCount < 0)
          {
-            throw new Error("Forbidden value ("+this.teamMembersCount+") on element of FightTeamLightInformations.teamMembersCount.");
+            throw new Error("Forbidden value (" + this.teamMembersCount + ") on element of FightTeamLightInformations.teamMembersCount.");
          }
          else
          {
-            this.meanLevel=input.readInt();
-            if(this.meanLevel<0)
+            this.meanLevel = param1.readInt();
+            if(this.meanLevel < 0)
             {
-               throw new Error("Forbidden value ("+this.meanLevel+") on element of FightTeamLightInformations.meanLevel.");
+               throw new Error("Forbidden value (" + this.meanLevel + ") on element of FightTeamLightInformations.meanLevel.");
             }
             else
             {
@@ -114,5 +118,4 @@ package com.ankamagames.dofus.network.types.game.context.fight
          }
       }
    }
-
 }

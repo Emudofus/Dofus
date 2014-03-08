@@ -8,9 +8,9 @@ package com.ankamagames.berilia.components.gridRenderer
    import com.ankamagames.berilia.types.graphic.UiRootContainer;
    import flash.display.DisplayObject;
    import com.ankamagames.berilia.types.graphic.GraphicContainer;
+   import com.ankamagames.berilia.managers.SecureCenter;
    import flash.display.Sprite;
    import com.ankamagames.berilia.utils.errors.BeriliaError;
-   import com.ankamagames.berilia.managers.SecureCenter;
    import flash.display.DisplayObjectContainer;
    import com.ankamagames.berilia.types.uiDefinition.ContainerElement;
    import com.ankamagames.jerakine.messages.Message;
@@ -20,300 +20,297 @@ package com.ankamagames.berilia.components.gridRenderer
    import flash.utils.getDefinitionByName;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.berilia.types.uiDefinition.ButtonElement;
-
-
+   
    public class MultiGridRenderer extends Object implements IGridRenderer
    {
-         
-
-      public function MultiGridRenderer(args:String) {
-         var params:Array = null;
+      
+      public function MultiGridRenderer(param1:String) {
+         var _loc2_:Array = null;
          super();
-         if(args)
+         if(param1)
          {
-            params=args.split(",");
-            this._updateFunctionName=params[0];
-            this._getLineTypeFunctionName=params[1];
-            this._getDataLengthFunctionName=params[2];
-            if(params[3])
+            _loc2_ = param1.split(",");
+            this._updateFunctionName = _loc2_[0];
+            this._getLineTypeFunctionName = _loc2_[1];
+            this._getDataLengthFunctionName = _loc2_[2];
+            if(_loc2_[3])
             {
-               this._bgColor1=new ColorTransform();
-               this._color1=parseInt(params[3],16);
-               this._bgColor1.color=this._color1;
+               this._bgColor1 = new ColorTransform();
+               this._color1 = parseInt(_loc2_[3],16);
+               this._bgColor1.color = this._color1;
             }
-            if(params[4])
+            if(_loc2_[4])
             {
-               this._bgColor2=new ColorTransform();
-               this._color2=parseInt(params[4],16);
-               this._bgColor2.color=this._color2;
+               this._bgColor2 = new ColorTransform();
+               this._color2 = parseInt(_loc2_[4],16);
+               this._bgColor2.color = this._color2;
             }
          }
-         this._cptNameReferences=new Dictionary();
-         this._componentReferences=new Dictionary();
-         this._containerDefinition=new Dictionary();
-         this._componentReferencesByInstance=new Dictionary(true);
-         this._uiRenderer=new UiRenderer();
-         this._containerCache=new Dictionary();
+         this._cptNameReferences = new Dictionary();
+         this._componentReferences = new Dictionary();
+         this._containerDefinition = new Dictionary();
+         this._componentReferencesByInstance = new Dictionary(true);
+         this._uiRenderer = new UiRenderer();
+         this._containerCache = new Dictionary();
       }
-
-
-
+      
       protected var _grid:Grid;
-
+      
       protected var _cptNameReferences:Dictionary;
-
+      
       protected var _componentReferences:Dictionary;
-
+      
       protected var _componentReferencesByInstance:Dictionary;
-
+      
       protected var _elemID:uint;
-
+      
       protected var _containerCache:Dictionary;
-
+      
       protected var _uiRenderer:UiRenderer;
-
+      
       protected var _containerDefinition:Dictionary;
-
+      
       protected var _bgColor1:ColorTransform;
-
+      
       protected var _bgColor2:ColorTransform;
-
+      
       protected var _color1:Number = -1;
-
+      
       protected var _color2:Number = -1;
-
+      
       protected var _updateFunctionName:String;
-
+      
       protected var _getLineTypeFunctionName:String;
-
+      
       protected var _defaultLineType:String;
-
+      
       protected var _getDataLengthFunctionName:String;
-
-      public function set grid(g:Grid) : void {
+      
+      public function set grid(param1:Grid) : void {
          if(!this._grid)
          {
-            this._grid=g;
+            this._grid = param1;
          }
-         g.mouseEnabled=true;
-         var ui:UiRootContainer = this._grid.getUi();
-         this._uiRenderer.postInit(ui);
+         param1.mouseEnabled = true;
+         var _loc2_:UiRootContainer = this._grid.getUi();
+         this._uiRenderer.postInit(_loc2_);
       }
-
-      public function render(data:*, index:uint, selected:Boolean, subIndex:uint=0) : DisplayObject {
-         var container:GraphicContainer = new GraphicContainer();
-         this.update(data,index,container,selected,subIndex);
-         return container;
+      
+      public function render(param1:*, param2:uint, param3:Boolean, param4:uint=0) : DisplayObject {
+         var _loc5_:GraphicContainer = new GraphicContainer();
+         _loc5_.setUi(this._grid.getUi(),SecureCenter.ACCESS_KEY);
+         this.update(param1,param2,_loc5_,param3,param4);
+         return _loc5_;
       }
-
-      public function update(data:*, index:uint, target:DisplayObject, selected:Boolean, subIndex:uint=0) : void {
-         var s:Sprite = null;
-         var ui:UiRootContainer = this._grid.getUi();
-         if((!ui.uiClass.hasOwnProperty(this._getLineTypeFunctionName))&&(!this._defaultLineType)||(!ui.uiClass.hasOwnProperty(this._updateFunctionName)))
+      
+      public function update(param1:*, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint=0) : void {
+         var _loc8_:Sprite = null;
+         var _loc6_:UiRootContainer = this._grid.getUi();
+         if(!_loc6_.uiClass.hasOwnProperty(this._getLineTypeFunctionName) && !this._defaultLineType || !_loc6_.uiClass.hasOwnProperty(this._updateFunctionName))
          {
             throw new BeriliaError("GetLineType function or update function is not define.");
          }
          else
          {
-            containerName=this._defaultLineType?this._defaultLineType:ui.uiClass[this._getLineTypeFunctionName](SecureCenter.secure(data),subIndex);
-            if(target.name!=containerName)
+            _loc7_ = this._defaultLineType?this._defaultLineType:_loc6_.uiClass[this._getLineTypeFunctionName](SecureCenter.secure(param1),param5);
+            if(param3.name != _loc7_)
             {
-               this.buildLine(target as Sprite,containerName);
+               this.buildLine(param3 as Sprite,_loc7_);
             }
-            if(target is Sprite)
+            if(param3 is Sprite)
             {
-               s=target as Sprite;
-               if(index%2==0)
+               _loc8_ = param3 as Sprite;
+               if(param2 % 2 == 0)
                {
-                  s.graphics.clear();
+                  _loc8_.graphics.clear();
                   if(this._color1)
                   {
-                     s.graphics.beginFill(this._color1);
-                     s.graphics.drawRect(0,0,this._grid.slotWidth,this._grid.slotHeight);
-                     s.graphics.endFill();
+                     _loc8_.graphics.beginFill(this._color1);
+                     _loc8_.graphics.drawRect(0,0,this._grid.slotWidth,this._grid.slotHeight);
+                     _loc8_.graphics.endFill();
                   }
                }
-               if(index%2==1)
+               if(param2 % 2 == 1)
                {
-                  s.graphics.clear();
+                  _loc8_.graphics.clear();
                   if(this._color2)
                   {
-                     s.graphics.beginFill(this._color2);
-                     s.graphics.drawRect(0,0,this._grid.slotWidth,this._grid.slotHeight);
-                     s.graphics.endFill();
+                     _loc8_.graphics.beginFill(this._color2);
+                     _loc8_.graphics.drawRect(0,0,this._grid.slotWidth,this._grid.slotHeight);
+                     _loc8_.graphics.endFill();
                   }
                }
             }
-            this.uiUpdate(ui,target,data,selected,subIndex);
+            this.uiUpdate(_loc6_,param3,param1,param4,param5);
             return;
          }
       }
-
-      protected function uiUpdate(ui:UiRootContainer, target:DisplayObject, data:*, selected:Boolean, subIndex:uint) : void {
-         if(DisplayObjectContainer(target).numChildren)
+      
+      protected function uiUpdate(param1:UiRootContainer, param2:DisplayObject, param3:*, param4:Boolean, param5:uint) : void {
+         if(DisplayObjectContainer(param2).numChildren)
          {
-            ui.uiClass[this._updateFunctionName](SecureCenter.secure(data),this._cptNameReferences[DisplayObjectContainer(target).getChildAt(0)],selected,subIndex);
+            param1.uiClass[this._updateFunctionName](SecureCenter.secure(param3),this._cptNameReferences[DisplayObjectContainer(param2).getChildAt(0)],param4,param5);
          }
       }
-
-      public function remove(dispObj:DisplayObject) : void {
-         dispObj.visible=false;
+      
+      public function remove(param1:DisplayObject) : void {
+         param1.visible = false;
       }
-
+      
       public function destroy() : void {
-         var o:Object = null;
-         var o2:Object = null;
-         var o3:Object = null;
-         for each (o in this._componentReferences)
+         var _loc1_:Object = null;
+         var _loc2_:Object = null;
+         var _loc3_:Object = null;
+         for each (_loc1_ in this._componentReferences)
          {
-            o2=SecureCenter.unsecure(o);
-            for each (o3 in o2)
+            _loc2_ = SecureCenter.unsecure(_loc1_);
+            for each (_loc3_ in _loc2_)
             {
-               if(o3 is GraphicContainer)
+               if(_loc3_ is GraphicContainer)
                {
-                  o3.remove();
+                  _loc3_.remove();
                }
             }
          }
-         this._componentReferences=null;
-         this._componentReferencesByInstance=null;
-         this._grid=null;
+         this._componentReferences = null;
+         this._componentReferencesByInstance = null;
+         this._grid = null;
       }
-
-      public function getDataLength(data:*, selected:Boolean) : uint {
-         var ui:UiRootContainer = this._grid.getUi();
-         if(ui.uiClass.hasOwnProperty(this._getDataLengthFunctionName))
+      
+      public function getDataLength(param1:*, param2:Boolean) : uint {
+         var _loc3_:UiRootContainer = this._grid.getUi();
+         if(_loc3_.uiClass.hasOwnProperty(this._getDataLengthFunctionName))
          {
-            return ui.uiClass[this._getDataLengthFunctionName](data,selected);
+            return _loc3_.uiClass[this._getDataLengthFunctionName](param1,param2);
          }
          return 1;
       }
-
-      public function renderModificator(childs:Array) : Array {
-         var container:ContainerElement = null;
-         for each (this._containerDefinition[container.name] in childs)
+      
+      public function renderModificator(param1:Array) : Array {
+         var _loc2_:ContainerElement = null;
+         for each (this._containerDefinition[_loc2_.name] in param1)
          {
          }
          return [];
       }
-
-      public function eventModificator(msg:Message, functionName:String, args:Array, target:UIComponent) : String {
-         return functionName;
+      
+      public function eventModificator(param1:Message, param2:String, param3:Array, param4:UIComponent) : String {
+         return param2;
       }
-
-      protected function buildLine(container:Sprite, name:String) : void {
-         var key:String = null;
-         var multiGridMarkerIndex:* = 0;
-         var realElemName:String = null;
-         if(container.name==name)
+      
+      protected function buildLine(param1:Sprite, param2:String) : void {
+         var _loc7_:String = null;
+         var _loc8_:* = 0;
+         var _loc9_:String = null;
+         if(param1.name == param2)
          {
             return;
          }
-         if(!this._containerCache[name])
+         if(!this._containerCache[param2])
          {
-            this._containerCache[name]=[];
+            this._containerCache[param2] = [];
          }
-         if(this._containerDefinition[container.name])
+         if(this._containerDefinition[param1.name])
          {
-            if(!this._containerCache[container.name])
+            if(!this._containerCache[param1.name])
             {
-               this._containerCache[container.name]=[];
+               this._containerCache[param1.name] = [];
             }
-            if(container.numChildren)
+            if(param1.numChildren)
             {
-               this._containerCache[container.name].push(container.getChildAt(0));
-               container.removeChildAt(0);
+               this._containerCache[param1.name].push(param1.getChildAt(0));
+               param1.removeChildAt(0);
             }
          }
-         container.name=name?name:"#########EMPTY";
-         if(!name)
+         param1.name = param2?param2:"#########EMPTY";
+         if(!param2)
          {
             return;
          }
-         if(this._containerCache[name].length)
+         if(this._containerCache[param2].length)
          {
-            container.addChild(this._containerCache[name].pop());
+            param1.addChild(this._containerCache[param2].pop());
             return;
          }
-         var elemContainer:GraphicContainer = new GraphicContainer();
-         elemContainer.mouseEnabled=false;
-         container.addChild(elemContainer);
-         var cptNames:Array = [];
-         this._uiRenderer.makeChilds([this.copyElement(this._containerDefinition[name],cptNames)],elemContainer,true);
+         var _loc3_:GraphicContainer = new GraphicContainer();
+         _loc3_.setUi(this._grid.getUi(),SecureCenter.ACCESS_KEY);
+         _loc3_.mouseEnabled = false;
+         param1.addChild(_loc3_);
+         var _loc4_:Array = [];
+         this._uiRenderer.makeChilds([this.copyElement(this._containerDefinition[param2],_loc4_)],_loc3_,true);
          this._grid.getUi().render();
-         var components:Object = {};
-         var ui:UiRootContainer = this._grid.getUi();
-         for (key in cptNames)
+         var _loc5_:Object = {};
+         var _loc6_:UiRootContainer = this._grid.getUi();
+         for (_loc7_ in _loc4_)
          {
-            multiGridMarkerIndex=key.indexOf("_m_");
-            realElemName=key;
-            if(multiGridMarkerIndex!=-1)
+            _loc8_ = _loc7_.indexOf("_m_");
+            _loc9_ = _loc7_;
+            if(_loc8_ != -1)
             {
-               realElemName=realElemName.substr(0,multiGridMarkerIndex);
+               _loc9_ = _loc9_.substr(0,_loc8_);
             }
-            components[realElemName]=SecureCenter.secure(ui.getElement(cptNames[key]),SecureCenter.ACCESS_KEY);
+            _loc5_[_loc9_] = SecureCenter.secure(_loc6_.getElement(_loc4_[_loc7_]),SecureCenter.ACCESS_KEY);
          }
-         this._cptNameReferences[elemContainer]=components;
+         this._cptNameReferences[_loc3_] = _loc5_;
          this._elemID++;
       }
-
-      protected function copyElement(basicElement:BasicElement, names:Object) : BasicElement {
-         var childs:Array = null;
-         var elem:BasicElement = null;
-         var nsce:StateContainerElement = null;
-         var sce:StateContainerElement = null;
-         var stateChangingProperties:Array = null;
-         var state:uint = 0;
-         var stateStr:String = null;
-         var elemName:String = null;
-         var newElement:BasicElement = new getDefinitionByName(getQualifiedClassName(basicElement)) as Class();
-         basicElement.copy(newElement);
-         if(newElement.name)
+      
+      protected function copyElement(param1:BasicElement, param2:Object) : BasicElement {
+         var _loc4_:Array = null;
+         var _loc5_:BasicElement = null;
+         var _loc6_:StateContainerElement = null;
+         var _loc7_:StateContainerElement = null;
+         var _loc8_:Array = null;
+         var _loc9_:uint = 0;
+         var _loc10_:String = null;
+         var _loc11_:String = null;
+         var _loc3_:BasicElement = new getDefinitionByName(getQualifiedClassName(param1)) as Class();
+         param1.copy(_loc3_);
+         if(_loc3_.name)
          {
-            newElement.setName(newElement.name+"_m_"+this._grid.name+"_"+this._elemID);
-            names[basicElement.name]=newElement.name;
+            _loc3_.setName(_loc3_.name + "_m_" + this._grid.name + "_" + this._elemID);
+            param2[param1.name] = _loc3_.name;
          }
          else
          {
-            newElement.setName("elem_m_"+this._grid.name+"_"+Math.random()*1.0E10);
+            _loc3_.setName("elem_m_" + this._grid.name + "_" + Math.random() * 1.0E10);
          }
-         if(newElement is ContainerElement)
+         if(_loc3_ is ContainerElement)
          {
-            childs=new Array();
-            for each (elem in ContainerElement(basicElement).childs)
+            _loc4_ = new Array();
+            for each (_loc5_ in ContainerElement(param1).childs)
             {
-               childs.push(this.copyElement(elem,names));
+               _loc4_.push(this.copyElement(_loc5_,param2));
             }
-            ContainerElement(newElement).childs=childs;
+            ContainerElement(_loc3_).childs = _loc4_;
          }
-         if(newElement is StateContainerElement)
+         if(_loc3_ is StateContainerElement)
          {
-            nsce=newElement as StateContainerElement;
-            sce=basicElement as StateContainerElement;
-            stateChangingProperties=new Array();
-            for (stateStr in sce.stateChangingProperties)
+            _loc6_ = _loc3_ as StateContainerElement;
+            _loc7_ = param1 as StateContainerElement;
+            _loc8_ = new Array();
+            for (_loc10_ in _loc7_.stateChangingProperties)
             {
-               state=parseInt(stateStr);
-               for (elemName in sce.stateChangingProperties[state])
+               _loc9_ = parseInt(_loc10_);
+               for (_loc11_ in _loc7_.stateChangingProperties[_loc9_])
                {
-                  if(!stateChangingProperties[state])
+                  if(!_loc8_[_loc9_])
                   {
-                     stateChangingProperties[state]=[];
+                     _loc8_[_loc9_] = [];
                   }
-                  stateChangingProperties[state][elemName+"_m_"+this._grid.name+"_"+this._elemID]=sce.stateChangingProperties[state][elemName];
+                  _loc8_[_loc9_][_loc11_ + "_m_" + this._grid.name + "_" + this._elemID] = _loc7_.stateChangingProperties[_loc9_][_loc11_];
                }
             }
-            nsce.stateChangingProperties=stateChangingProperties;
+            _loc6_.stateChangingProperties = _loc8_;
          }
-         if(newElement is ButtonElement)
+         if(_loc3_ is ButtonElement)
          {
-            if(newElement.properties["linkedTo"])
+            if(_loc3_.properties["linkedTo"])
             {
-               newElement.properties["linkedTo"]=newElement.properties["linkedTo"]+"_m_"+this._grid.name+"_"+this._elemID;
+               _loc3_.properties["linkedTo"] = _loc3_.properties["linkedTo"] + "_m_" + this._grid.name + "_" + this._elemID;
             }
          }
-         return newElement;
+         return _loc3_;
       }
    }
-
 }

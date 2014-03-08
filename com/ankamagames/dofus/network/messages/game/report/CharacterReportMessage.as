@@ -5,95 +5,93 @@ package com.ankamagames.dofus.network.messages.game.report
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class CharacterReportMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function CharacterReportMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6079;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var reportedId:uint = 0;
-
+      
       public var reason:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 6079;
       }
-
-      public function initCharacterReportMessage(reportedId:uint=0, reason:uint=0) : CharacterReportMessage {
-         this.reportedId=reportedId;
-         this.reason=reason;
-         this._isInitialized=true;
+      
+      public function initCharacterReportMessage(param1:uint=0, param2:uint=0) : CharacterReportMessage {
+         this.reportedId = param1;
+         this.reason = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.reportedId=0;
-         this.reason=0;
-         this._isInitialized=false;
+         this.reportedId = 0;
+         this.reason = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_CharacterReportMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_CharacterReportMessage(param1);
       }
-
-      public function serializeAs_CharacterReportMessage(output:IDataOutput) : void {
-         if((this.reportedId>0)||(this.reportedId<4.294967295E9))
+      
+      public function serializeAs_CharacterReportMessage(param1:IDataOutput) : void {
+         if(this.reportedId < 0 || this.reportedId > 4.294967295E9)
          {
-            throw new Error("Forbidden value ("+this.reportedId+") on element reportedId.");
+            throw new Error("Forbidden value (" + this.reportedId + ") on element reportedId.");
          }
          else
          {
-            output.writeUnsignedInt(this.reportedId);
-            if(this.reason<0)
+            param1.writeUnsignedInt(this.reportedId);
+            if(this.reason < 0)
             {
-               throw new Error("Forbidden value ("+this.reason+") on element reason.");
+               throw new Error("Forbidden value (" + this.reason + ") on element reason.");
             }
             else
             {
-               output.writeByte(this.reason);
+               param1.writeByte(this.reason);
                return;
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_CharacterReportMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_CharacterReportMessage(param1);
       }
-
-      public function deserializeAs_CharacterReportMessage(input:IDataInput) : void {
-         this.reportedId=input.readUnsignedInt();
-         if((this.reportedId>0)||(this.reportedId<4.294967295E9))
+      
+      public function deserializeAs_CharacterReportMessage(param1:IDataInput) : void {
+         this.reportedId = param1.readUnsignedInt();
+         if(this.reportedId < 0 || this.reportedId > 4.294967295E9)
          {
-            throw new Error("Forbidden value ("+this.reportedId+") on element of CharacterReportMessage.reportedId.");
+            throw new Error("Forbidden value (" + this.reportedId + ") on element of CharacterReportMessage.reportedId.");
          }
          else
          {
-            this.reason=input.readByte();
-            if(this.reason<0)
+            this.reason = param1.readByte();
+            if(this.reason < 0)
             {
-               throw new Error("Forbidden value ("+this.reason+") on element of CharacterReportMessage.reason.");
+               throw new Error("Forbidden value (" + this.reason + ") on element of CharacterReportMessage.reason.");
             }
             else
             {
@@ -102,5 +100,4 @@ package com.ankamagames.dofus.network.messages.game.report
          }
       }
    }
-
 }

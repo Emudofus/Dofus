@@ -1,18 +1,16 @@
 package com.ankamagames.dofus.misc
 {
    import com.ankamagames.dofus.network.enums.BuildTypeEnum;
-
-
+   
    public class BuildTypeParser extends Object
    {
-         
-
+      
       public function BuildTypeParser() {
          super();
       }
-
-      public static function getTypeName(type:uint) : String {
-         switch(type)
+      
+      public static function getTypeName(param1:uint) : String {
+         switch(param1)
          {
             case BuildTypeEnum.RELEASE:
                return "RELEASE";
@@ -30,9 +28,9 @@ package com.ankamagames.dofus.misc
                return "UNKNOWN";
          }
       }
-
-      public static function getTypeColor(type:uint) : uint {
-         switch(type)
+      
+      public static function getTypeColor(param1:uint) : uint {
+         switch(param1)
          {
             case BuildTypeEnum.RELEASE:
                return 10079232;
@@ -50,8 +48,5 @@ package com.ankamagames.dofus.misc
                return 16777215;
          }
       }
-
-
    }
-
 }

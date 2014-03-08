@@ -21,149 +21,140 @@ package com.ankamagames.atouin.utils
    import com.ankamagames.atouin.data.map.elements.GraphicalElement;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-
-
+   
    public class VisibleCellDetection extends Object
    {
-         
-
+      
       public function VisibleCellDetection() {
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(VisibleCellDetection));
-
-      public static function detectCell(visible:Boolean, map:Map, pMap:WorldPoint, frustum:Frustum, currentMapPoint:WorldPoint) : PartialDataMap {
-         var p:Point = null;
-         var alt:* = 0;
-         var width:* = 0;
-         var i:uint = 0;
-         var left:* = 0;
-         var elementData:GraphicalElementData = null;
-         var bottom:* = 0;
-         var bottomTmp:* = 0;
-         var layer:Layer = null;
-         var s:String = null;
-         var cell:Cell = null;
-         var element:BasicElement = null;
-         var ged:NormalGraphicalElementData = null;
-         var j:uint = 0;
-         if(currentMapPoint==null)
+      
+      public static function detectCell(param1:Boolean, param2:Map, param3:WorldPoint, param4:Frustum, param5:WorldPoint) : PartialDataMap {
+         var _loc7_:Point = null;
+         var _loc8_:* = 0;
+         var _loc9_:* = 0;
+         var _loc10_:uint = 0;
+         var _loc11_:* = 0;
+         var _loc12_:GraphicalElementData = null;
+         var _loc19_:* = 0;
+         var _loc20_:* = 0;
+         var _loc23_:Layer = null;
+         var _loc24_:String = null;
+         var _loc25_:Cell = null;
+         var _loc26_:BasicElement = null;
+         var _loc27_:NormalGraphicalElementData = null;
+         var _loc28_:uint = 0;
+         if(param5 == null)
          {
             _log.error("Cannot detect visible cells with no current map point.");
             return null;
          }
-         var pdm:PartialDataMap = new PartialDataMap();
-         var ox:int = (pMap.x-currentMapPoint.x)*AtouinConstants.CELL_WIDTH*AtouinConstants.MAP_WIDTH;
-         var oy:int = (pMap.y-currentMapPoint.y)*AtouinConstants.CELL_HEIGHT*AtouinConstants.MAP_HEIGHT;
-         var rv:Rectangle = new Rectangle(-frustum.x/frustum.scale,-frustum.y/frustum.scale,StageShareManager.startHeight/frustum.scale,StageShareManager.stage.stageHeight/frustum.scale);
-         var rcv:Rectangle = new Rectangle();
-         var aCell:Array = new Array();
-         var aGfx:Array = new Array();
-         var spDebug:Sprite = Sprite(Atouin.getInstance().worldContainer.parent).addChild(new Sprite()) as Sprite;
-         spDebug.graphics.beginFill(0,0);
-         spDebug.graphics.lineStyle(1,16711680);
-         var ele:Elements = Elements.getInstance();
-         for each (layer in map.layers)
+         var _loc6_:PartialDataMap = new PartialDataMap();
+         var _loc13_:int = (param3.x - param5.x) * AtouinConstants.CELL_WIDTH * AtouinConstants.MAP_WIDTH;
+         var _loc14_:int = (param3.y - param5.y) * AtouinConstants.CELL_HEIGHT * AtouinConstants.MAP_HEIGHT;
+         var _loc15_:Rectangle = new Rectangle(-param4.x / param4.scale,-param4.y / param4.scale,StageShareManager.startHeight / param4.scale,StageShareManager.stage.stageHeight / param4.scale);
+         var _loc16_:Rectangle = new Rectangle();
+         var _loc17_:Array = new Array();
+         var _loc18_:Array = new Array();
+         var _loc21_:Sprite = Sprite(Atouin.getInstance().worldContainer.parent).addChild(new Sprite()) as Sprite;
+         _loc21_.graphics.beginFill(0,0);
+         _loc21_.graphics.lineStyle(1,16711680);
+         var _loc22_:Elements = Elements.getInstance();
+         for each (_loc23_ in param2.layers)
          {
-            for each (cell in layer.cells)
+            for each (_loc25_ in _loc23_.cells)
             {
-               alt=0;
-               width=0;
-               left=100000;
-               bottom=0;
-               aGfx=new Array();
-               for each (element in cell.elements)
+               _loc8_ = 0;
+               _loc9_ = 0;
+               _loc11_ = 100000;
+               _loc19_ = 0;
+               _loc18_ = new Array();
+               for each (_loc26_ in _loc25_.elements)
                {
-                  if(element.elementType==ElementTypesEnum.GRAPHICAL)
+                  if(_loc26_.elementType == ElementTypesEnum.GRAPHICAL)
                   {
-                     elementData=ele.getElementData(GraphicalElement(element).elementId);
-                     bottomTmp=GraphicalElement(element).altitude*AtouinConstants.ALTITUDE_PIXEL_UNIT;
-                     bottom=bottomTmp>bottom?bottomTmp:bottom;
-                     if((elementData)&&(elementData is NormalGraphicalElementData))
+                     _loc12_ = _loc22_.getElementData(GraphicalElement(_loc26_).elementId);
+                     _loc20_ = GraphicalElement(_loc26_).altitude * AtouinConstants.ALTITUDE_PIXEL_UNIT;
+                     _loc19_ = _loc20_ < _loc19_?_loc20_:_loc19_;
+                     if((_loc12_) && _loc12_ is NormalGraphicalElementData)
                      {
-                        ged=elementData as NormalGraphicalElementData;
-                        if(-ged.origin.x+AtouinConstants.CELL_WIDTH<left)
+                        _loc27_ = _loc12_ as NormalGraphicalElementData;
+                        if(-_loc27_.origin.x + AtouinConstants.CELL_WIDTH < _loc11_)
                         {
-                           left=-ged.origin.x+AtouinConstants.CELL_WIDTH;
+                           _loc11_ = -_loc27_.origin.x + AtouinConstants.CELL_WIDTH;
                         }
-                        if(ged.size.x>width)
+                        if(_loc27_.size.x > _loc9_)
                         {
-                           width=ged.size.x;
+                           _loc9_ = _loc27_.size.x;
                         }
-                        alt=alt+(ged.origin.y+ged.size.y);
-                        aGfx.push(ged.gfxId);
+                        _loc8_ = _loc8_ + (_loc27_.origin.y + _loc27_.size.y);
+                        _loc18_.push(_loc27_.gfxId);
                      }
                      else
                      {
-                        alt=alt+Math.abs(bottomTmp);
+                        _loc8_ = _loc8_ + Math.abs(_loc20_);
                      }
                   }
                }
-               if(!alt)
+               if(!_loc8_)
                {
-                  alt=AtouinConstants.CELL_HEIGHT;
+                  _loc8_ = AtouinConstants.CELL_HEIGHT;
                }
-               if(left==100000)
+               if(_loc11_ == 100000)
                {
-                  left=0;
+                  _loc11_ = 0;
                }
-               if(width<AtouinConstants.CELL_WIDTH)
+               if(_loc9_ < AtouinConstants.CELL_WIDTH)
                {
-                  width=AtouinConstants.CELL_WIDTH;
+                  _loc9_ = AtouinConstants.CELL_WIDTH;
                }
-               p=Cell.cellPixelCoords(cell.cellId);
-               rcv.left=p.x+ox+left-AtouinConstants.CELL_HALF_WIDTH;
-               rcv.top=p.y+oy-bottom-alt;
-               rcv.width=width;
-               rcv.height=alt+AtouinConstants.CELL_HEIGHT*2;
-               if(!aCell[cell.cellId])
+               _loc7_ = Cell.cellPixelCoords(_loc25_.cellId);
+               _loc16_.left = _loc7_.x + _loc13_ + _loc11_ - AtouinConstants.CELL_HALF_WIDTH;
+               _loc16_.top = _loc7_.y + _loc14_ - _loc19_ - _loc8_;
+               _loc16_.width = _loc9_;
+               _loc16_.height = _loc8_ + AtouinConstants.CELL_HEIGHT * 2;
+               if(!_loc17_[_loc25_.cellId])
                {
-                  aCell[cell.cellId]=
+                  _loc17_[_loc25_.cellId] = 
                      {
-                        r:rcv.clone(),
-                        gfx:aGfx
-                     }
-                  ;
+                        "r":_loc16_.clone(),
+                        "gfx":_loc18_
+                     };
                }
                else
                {
-                  aCell[cell.cellId].r=aCell[cell.cellId].r.union(rcv);
-                  aCell[cell.cellId].gfx=aCell[cell.cellId].gfx.concat(aGfx);
+                  _loc17_[_loc25_.cellId].r = _loc17_[_loc25_.cellId].r.union(_loc16_);
+                  _loc17_[_loc25_.cellId].gfx = _loc17_[_loc25_.cellId].gfx.concat(_loc18_);
                }
             }
          }
-         aGfx=new Array();
-         i=0;
-         while(i<aCell.length)
+         _loc18_ = new Array();
+         _loc10_ = 0;
+         while(_loc10_ < _loc17_.length)
          {
-            if(!aCell[i])
+            if(_loc17_[_loc10_])
             {
-            }
-            else
-            {
-               rcv=aCell[i].r;
-               if((rcv)&&(rcv.intersects(rv)==visible))
+               _loc16_ = _loc17_[_loc10_].r;
+               if((_loc16_) && _loc16_.intersects(_loc15_) == param1)
                {
-                  pdm.cell[i]=true;
-                  j=0;
-                  while(j<aCell[i].gfx.length)
+                  _loc6_.cell[_loc10_] = true;
+                  _loc28_ = 0;
+                  while(_loc28_ < _loc17_[_loc10_].gfx.length)
                   {
-                     aGfx[aCell[i].gfx[j]]=true;
-                     j++;
+                     _loc18_[_loc17_[_loc10_].gfx[_loc28_]] = true;
+                     _loc28_++;
                   }
                }
             }
-            i++;
+            _loc10_++;
          }
-         for (s in aGfx)
+         for (_loc24_ in _loc18_)
          {
-            pdm.gfx.push(s);
+            _loc6_.gfx.push(_loc24_);
          }
-         return pdm;
+         return _loc6_;
       }
-
-
    }
-
 }

@@ -20,23 +20,22 @@ package flashx.textLayout.conversion
    import flashx.textLayout.elements.GlobalSettings;
    import flashx.textLayout.elements.FlowElement;
    import flashx.textLayout.TextLayoutVersion;
-
+   
    use namespace tlf_internal;
-
+   
    public class TextLayoutImporter extends BaseTextLayoutImporter implements ITextLayoutImporter
    {
-         
-
+      
       public function TextLayoutImporter() {
          super(new Namespace("flow","http://ns.adobe.com/textLayout/2008"),defaultConfiguration);
       }
-
+      
       private static var _defaultConfiguration:ImportExportConfiguration;
-
+      
       public static function get defaultConfiguration() : ImportExportConfiguration {
          if(!_defaultConfiguration)
          {
-            _defaultConfiguration=new ImportExportConfiguration();
+            _defaultConfiguration = new ImportExportConfiguration();
             _defaultConfiguration.addIEInfo("TextFlow",TextFlow,BaseTextLayoutImporter.parseTextFlow,BaseTextLayoutExporter.exportTextFlow);
             _defaultConfiguration.addIEInfo("br",BreakElement,BaseTextLayoutImporter.parseBreak,BaseTextLayoutExporter.exportFlowElement);
             _defaultConfiguration.addIEInfo("p",ParagraphElement,BaseTextLayoutImporter.parsePara,BaseTextLayoutExporter.exportParagraphFormattedElement);
@@ -56,302 +55,303 @@ package flashx.textLayout.conversion
          }
          return _defaultConfiguration;
       }
-
+      
       public static function restoreDefaults() : void {
-         _defaultConfiguration=null;
+         _defaultConfiguration = null;
       }
-
+      
       private static const _formatImporter:TLFormatImporter = new TLFormatImporter(TextLayoutFormat,TextLayoutFormat.description);
-
+      
       private static const _idImporter:SingletonAttributeImporter = new SingletonAttributeImporter("id");
-
+      
       private static const _typeNameImporter:SingletonAttributeImporter = new SingletonAttributeImporter("typeName");
-
+      
       private static const _customFormatImporter:CustomFormatImporter = new CustomFormatImporter();
-
+      
       private static const _flowElementFormatImporters:Array = [_formatImporter,_idImporter,_typeNameImporter,_customFormatImporter];
-
-      static const _linkDescription:Object = {
-                                                   href:Property.NewStringProperty("href",null,false,null),
-                                                   target:Property.NewStringProperty("target",null,false,null)
-                                                   };
-
+      
+      static const _linkDescription:Object = 
+         {
+            "href":Property.NewStringProperty("href",null,false,null),
+            "target":Property.NewStringProperty("target",null,false,null)
+         };
+      
       private static const _linkFormatImporter:TLFormatImporter = new TLFormatImporter(Dictionary,_linkDescription);
-
+      
       private static const _linkElementFormatImporters:Array = [_linkFormatImporter,_formatImporter,_idImporter,_typeNameImporter,_customFormatImporter];
-
-      private static const _imageDescription:Object = {
-                                                            height:InlineGraphicElement.heightPropertyDefinition,
-                                                            width:InlineGraphicElement.widthPropertyDefinition,
-                                                            source:Property.NewStringProperty("source",null,false,null),
-                                                            float:Property.NewStringProperty("float",null,false,null),
-                                                            rotation:InlineGraphicElement.rotationPropertyDefinition
-                                                            };
-
+      
+      private static const _imageDescription:Object = 
+         {
+            "height":InlineGraphicElement.heightPropertyDefinition,
+            "width":InlineGraphicElement.widthPropertyDefinition,
+            "source":Property.NewStringProperty("source",null,false,null),
+            "float":Property.NewStringProperty("float",null,false,null),
+            "rotation":InlineGraphicElement.rotationPropertyDefinition
+         };
+      
       private static const _ilgFormatImporter:TLFormatImporter = new TLFormatImporter(Dictionary,_imageDescription);
-
+      
       private static const _ilgElementFormatImporters:Array = [_ilgFormatImporter,_formatImporter,_idImporter,_typeNameImporter,_customFormatImporter];
-
-      public static function parseSPGE(importFilter:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
-         var elem:SubParagraphGroupElement = TextLayoutImporter(importFilter).createSubParagraphGroupFromXML(xmlToParse);
-         if(importFilter.addChild(parent,elem))
+      
+      public static function parseSPGE(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void {
+         var _loc4_:SubParagraphGroupElement = TextLayoutImporter(param1).createSubParagraphGroupFromXML(param2);
+         if(param1.addChild(param3,_loc4_))
          {
-            importFilter.parseFlowGroupElementChildren(xmlToParse,elem);
-            if(elem.numChildren==0)
+            param1.parseFlowGroupElementChildren(param2,_loc4_);
+            if(_loc4_.numChildren == 0)
             {
-               elem.addChild(new SpanElement());
+               _loc4_.addChild(new SpanElement());
             }
          }
       }
-
-      public static function parseTCY(importFilter:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
-         var tcyElem:TCYElement = TextLayoutImporter(importFilter).createTCYFromXML(xmlToParse);
-         if(importFilter.addChild(parent,tcyElem))
+      
+      public static function parseTCY(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void {
+         var _loc4_:TCYElement = TextLayoutImporter(param1).createTCYFromXML(param2);
+         if(param1.addChild(param3,_loc4_))
          {
-            importFilter.parseFlowGroupElementChildren(xmlToParse,tcyElem);
-            if(tcyElem.numChildren==0)
+            param1.parseFlowGroupElementChildren(param2,_loc4_);
+            if(_loc4_.numChildren == 0)
             {
-               tcyElem.addChild(new SpanElement());
+               _loc4_.addChild(new SpanElement());
             }
          }
       }
-
-      public static function parseLink(importFilter:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
-         var linkElem:LinkElement = TextLayoutImporter(importFilter).createLinkFromXML(xmlToParse);
-         if(importFilter.addChild(parent,linkElem))
+      
+      public static function parseLink(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void {
+         var _loc4_:LinkElement = TextLayoutImporter(param1).createLinkFromXML(param2);
+         if(param1.addChild(param3,_loc4_))
          {
-            importFilter.parseFlowGroupElementChildren(xmlToParse,linkElem);
-            if(linkElem.numChildren==0)
+            param1.parseFlowGroupElementChildren(param2,_loc4_);
+            if(_loc4_.numChildren == 0)
             {
-               linkElem.addChild(new SpanElement());
+               _loc4_.addChild(new SpanElement());
             }
          }
       }
-
-      public static function parseLinkNormalFormat(importFilter:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
-         parent.linkNormalFormat=TextLayoutImporter(importFilter).createDictionaryFromXML(xmlToParse);
+      
+      public static function parseLinkNormalFormat(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void {
+         param3.linkNormalFormat = TextLayoutImporter(param1).createDictionaryFromXML(param2);
       }
-
-      public static function parseLinkActiveFormat(importFilter:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
-         parent.linkActiveFormat=TextLayoutImporter(importFilter).createDictionaryFromXML(xmlToParse);
+      
+      public static function parseLinkActiveFormat(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void {
+         param3.linkActiveFormat = TextLayoutImporter(param1).createDictionaryFromXML(param2);
       }
-
-      public static function parseLinkHoverFormat(importFilter:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
-         parent.linkHoverFormat=TextLayoutImporter(importFilter).createDictionaryFromXML(xmlToParse);
+      
+      public static function parseLinkHoverFormat(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void {
+         param3.linkHoverFormat = TextLayoutImporter(param1).createDictionaryFromXML(param2);
       }
-
-      public static function parseListMarkerFormat(importFilter:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
-         parent.listMarkerFormat=TextLayoutImporter(importFilter).createListMarkerFormatDictionaryFromXML(xmlToParse);
+      
+      public static function parseListMarkerFormat(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void {
+         param3.listMarkerFormat = TextLayoutImporter(param1).createListMarkerFormatDictionaryFromXML(param2);
       }
-
-      public static function parseDivElement(importFilter:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
-         var divElem:DivElement = TextLayoutImporter(importFilter).createDivFromXML(xmlToParse);
-         if(importFilter.addChild(parent,divElem))
+      
+      public static function parseDivElement(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void {
+         var _loc4_:DivElement = TextLayoutImporter(param1).createDivFromXML(param2);
+         if(param1.addChild(param3,_loc4_))
          {
-            importFilter.parseFlowGroupElementChildren(xmlToParse,divElem);
-            if(divElem.numChildren==0)
+            param1.parseFlowGroupElementChildren(param2,_loc4_);
+            if(_loc4_.numChildren == 0)
             {
-               divElem.addChild(new ParagraphElement());
+               _loc4_.addChild(new ParagraphElement());
             }
          }
       }
-
-      public static function parseInlineGraphic(importFilter:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
-         var ilg:InlineGraphicElement = TextLayoutImporter(importFilter).createInlineGraphicFromXML(xmlToParse);
-         importFilter.addChild(parent,ilg);
+      
+      public static function parseInlineGraphic(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void {
+         var _loc4_:InlineGraphicElement = TextLayoutImporter(param1).createInlineGraphicFromXML(param2);
+         param1.addChild(param3,_loc4_);
       }
-
+      
       private var _imageSourceResolveFunction:Function;
-
+      
       public function get imageSourceResolveFunction() : Function {
          return this._imageSourceResolveFunction;
       }
-
-      public function set imageSourceResolveFunction(resolver:Function) : void {
-         this._imageSourceResolveFunction=resolver;
+      
+      public function set imageSourceResolveFunction(param1:Function) : void {
+         this._imageSourceResolveFunction = param1;
       }
-
-      override protected function parseContent(rootStory:XML) : TextFlow {
-         var rootName:String = rootStory.name().localName;
-         var textFlowElement:XML = rootName=="TextFlow"?rootStory:rootStory..TextFlow[0];
-         if(!textFlowElement)
+      
+      override protected function parseContent(param1:XML) : TextFlow {
+         var _loc2_:String = param1.name().localName;
+         var _loc3_:XML = _loc2_ == "TextFlow"?param1:param1..TextFlow[0];
+         if(!_loc3_)
          {
             reportError(GlobalSettings.resourceStringFunction("missingTextFlow"));
             return null;
          }
-         if(!checkNamespace(textFlowElement))
+         if(!checkNamespace(_loc3_))
          {
             return null;
          }
-         return parseTextFlow(this,textFlowElement);
+         return parseTextFlow(this,_loc3_);
       }
-
-      private function parseStandardFlowElementAttributes(flowElem:FlowElement, xmlToParse:XML, importers:Array=null) : void {
-         var styleName:String = null;
-         if(importers==null)
+      
+      private function parseStandardFlowElementAttributes(param1:FlowElement, param2:XML, param3:Array=null) : void {
+         var _loc5_:String = null;
+         if(param3 == null)
          {
-            importers=_flowElementFormatImporters;
+            param3 = _flowElementFormatImporters;
          }
-         parseAttributes(xmlToParse,importers);
-         var textFormat:TextLayoutFormat = this.extractTextFormatAttributesHelper(flowElem.format,_formatImporter) as TextLayoutFormat;
-         if(textFormat)
+         parseAttributes(param2,param3);
+         var _loc4_:TextLayoutFormat = this.extractTextFormatAttributesHelper(param1.format,_formatImporter) as TextLayoutFormat;
+         if(_loc4_)
          {
-            flowElem.format=textFormat;
+            param1.format = _loc4_;
          }
          if(_idImporter.result)
          {
-            flowElem.id=_idImporter.result as String;
+            param1.id = _idImporter.result as String;
          }
          if(_typeNameImporter.result)
          {
-            flowElem.typeName=_typeNameImporter.result as String;
+            param1.typeName = _typeNameImporter.result as String;
          }
          if(_customFormatImporter.result)
          {
-            for (styleName in _customFormatImporter.result)
+            for (_loc5_ in _customFormatImporter.result)
             {
-               flowElem.setStyle(styleName,_customFormatImporter.result[styleName]);
+               param1.setStyle(_loc5_,_customFormatImporter.result[_loc5_]);
             }
          }
       }
-
-      override public function createTextFlowFromXML(xmlToParse:XML, textFlow:TextFlow=null) : TextFlow {
-         var version:String = null;
-         var newFlow:TextFlow = null;
-         if(!checkNamespace(xmlToParse))
+      
+      override public function createTextFlowFromXML(param1:XML, param2:TextFlow=null) : TextFlow {
+         var _loc4_:String = null;
+         var _loc3_:TextFlow = null;
+         if(!checkNamespace(param1))
          {
-            return newFlow;
+            return _loc3_;
          }
-         if(xmlToParse.hasOwnProperty("@version"))
+         if(param1.hasOwnProperty("@version"))
          {
-            version=xmlToParse["version"];
-            if(version=="2.0.0")
+            _loc4_ = param1["version"];
+            if(_loc4_ == "2.0.0")
             {
-               _importVersion=TextLayoutVersion.VERSION_2_0;
+               _importVersion = TextLayoutVersion.VERSION_2_0;
             }
             else
             {
-               if((version=="1.1.0")||(version=="1.0.0"))
+               if(_loc4_ == "1.1.0" || _loc4_ == "1.0.0")
                {
-                  _importVersion=TextLayoutVersion.VERSION_1_0;
+                  _importVersion = TextLayoutVersion.VERSION_1_0;
                }
                else
                {
-                  reportError(GlobalSettings.resourceStringFunction("unsupportedVersion",[xmlToParse["version"]]));
-                  _importVersion=TextLayoutVersion.CURRENT_VERSION;
+                  reportError(GlobalSettings.resourceStringFunction("unsupportedVersion",[param1["version"]]));
+                  _importVersion = TextLayoutVersion.CURRENT_VERSION;
                }
             }
          }
          else
          {
-            _importVersion=TextLayoutVersion.VERSION_1_0;
+            _importVersion = TextLayoutVersion.VERSION_1_0;
          }
-         if(!newFlow)
+         if(!_loc3_)
          {
-            newFlow=new TextFlow(_textFlowConfiguration);
+            _loc3_ = new TextFlow(_textFlowConfiguration);
          }
-         this.parseStandardFlowElementAttributes(newFlow,xmlToParse);
-         parseFlowGroupElementChildren(xmlToParse,newFlow);
-         newFlow.normalize();
-         newFlow.applyWhiteSpaceCollapse(null);
-         return newFlow;
+         this.parseStandardFlowElementAttributes(_loc3_,param1);
+         parseFlowGroupElementChildren(param1,_loc3_);
+         _loc3_.normalize();
+         _loc3_.applyWhiteSpaceCollapse(null);
+         return _loc3_;
       }
-
-      public function createDivFromXML(xmlToParse:XML) : DivElement {
-         var divElem:DivElement = new DivElement();
-         this.parseStandardFlowElementAttributes(divElem,xmlToParse);
-         return divElem;
+      
+      public function createDivFromXML(param1:XML) : DivElement {
+         var _loc2_:DivElement = new DivElement();
+         this.parseStandardFlowElementAttributes(_loc2_,param1);
+         return _loc2_;
       }
-
-      override public function createParagraphFromXML(xmlToParse:XML) : ParagraphElement {
-         var paraElem:ParagraphElement = new ParagraphElement();
-         this.parseStandardFlowElementAttributes(paraElem,xmlToParse);
-         return paraElem;
+      
+      override public function createParagraphFromXML(param1:XML) : ParagraphElement {
+         var _loc2_:ParagraphElement = new ParagraphElement();
+         this.parseStandardFlowElementAttributes(_loc2_,param1);
+         return _loc2_;
       }
-
-      public function createSubParagraphGroupFromXML(xmlToParse:XML) : SubParagraphGroupElement {
-         var elem:SubParagraphGroupElement = new SubParagraphGroupElement();
-         this.parseStandardFlowElementAttributes(elem,xmlToParse);
-         return elem;
+      
+      public function createSubParagraphGroupFromXML(param1:XML) : SubParagraphGroupElement {
+         var _loc2_:SubParagraphGroupElement = new SubParagraphGroupElement();
+         this.parseStandardFlowElementAttributes(_loc2_,param1);
+         return _loc2_;
       }
-
-      public function createTCYFromXML(xmlToParse:XML) : TCYElement {
-         var tcyElem:TCYElement = new TCYElement();
-         this.parseStandardFlowElementAttributes(tcyElem,xmlToParse);
-         return tcyElem;
+      
+      public function createTCYFromXML(param1:XML) : TCYElement {
+         var _loc2_:TCYElement = new TCYElement();
+         this.parseStandardFlowElementAttributes(_loc2_,param1);
+         return _loc2_;
       }
-
-      public function createLinkFromXML(xmlToParse:XML) : LinkElement {
-         var linkElem:LinkElement = new LinkElement();
-         this.parseStandardFlowElementAttributes(linkElem,xmlToParse,_linkElementFormatImporters);
+      
+      public function createLinkFromXML(param1:XML) : LinkElement {
+         var _loc2_:LinkElement = new LinkElement();
+         this.parseStandardFlowElementAttributes(_loc2_,param1,_linkElementFormatImporters);
          if(_linkFormatImporter.result)
          {
-            linkElem.href=_linkFormatImporter.result["href"] as String;
-            linkElem.target=_linkFormatImporter.result["target"] as String;
+            _loc2_.href = _linkFormatImporter.result["href"] as String;
+            _loc2_.target = _linkFormatImporter.result["target"] as String;
          }
-         return linkElem;
+         return _loc2_;
       }
-
-      override public function createSpanFromXML(xmlToParse:XML) : SpanElement {
-         var spanElem:SpanElement = new SpanElement();
-         this.parseStandardFlowElementAttributes(spanElem,xmlToParse);
-         return spanElem;
+      
+      override public function createSpanFromXML(param1:XML) : SpanElement {
+         var _loc2_:SpanElement = new SpanElement();
+         this.parseStandardFlowElementAttributes(_loc2_,param1);
+         return _loc2_;
       }
-
-      public function createInlineGraphicFromXML(xmlToParse:XML) : InlineGraphicElement {
-         var source:String = null;
-         var imgElem:InlineGraphicElement = new InlineGraphicElement();
-         this.parseStandardFlowElementAttributes(imgElem,xmlToParse,_ilgElementFormatImporters);
+      
+      public function createInlineGraphicFromXML(param1:XML) : InlineGraphicElement {
+         var _loc3_:String = null;
+         var _loc2_:InlineGraphicElement = new InlineGraphicElement();
+         this.parseStandardFlowElementAttributes(_loc2_,param1,_ilgElementFormatImporters);
          if(_ilgFormatImporter.result)
          {
-            source=_ilgFormatImporter.result["source"];
-            imgElem.source=!(this._imageSourceResolveFunction==null)?this._imageSourceResolveFunction(source):source;
-            imgElem.height=_ilgFormatImporter.result["height"];
-            imgElem.width=_ilgFormatImporter.result["width"];
-            imgElem.float=_ilgFormatImporter.result["float"];
+            _loc3_ = _ilgFormatImporter.result["source"];
+            _loc2_.source = this._imageSourceResolveFunction != null?this._imageSourceResolveFunction(_loc3_):_loc3_;
+            _loc2_.height = _ilgFormatImporter.result["height"];
+            _loc2_.width = _ilgFormatImporter.result["width"];
+            _loc2_.float = _ilgFormatImporter.result["float"];
          }
-         return imgElem;
+         return _loc2_;
       }
-
-      override public function createListFromXML(xmlToParse:XML) : ListElement {
-         var rslt:ListElement = new ListElement();
-         this.parseStandardFlowElementAttributes(rslt,xmlToParse);
-         return rslt;
+      
+      override public function createListFromXML(param1:XML) : ListElement {
+         var _loc2_:ListElement = new ListElement();
+         this.parseStandardFlowElementAttributes(_loc2_,param1);
+         return _loc2_;
       }
-
-      override public function createListItemFromXML(xmlToParse:XML) : ListItemElement {
-         var rslt:ListItemElement = new ListItemElement();
-         this.parseStandardFlowElementAttributes(rslt,xmlToParse);
-         return rslt;
+      
+      override public function createListItemFromXML(param1:XML) : ListItemElement {
+         var _loc2_:ListItemElement = new ListItemElement();
+         this.parseStandardFlowElementAttributes(_loc2_,param1);
+         return _loc2_;
       }
-
-      public function extractTextFormatAttributesHelper(curAttrs:Object, importer:TLFormatImporter) : Object {
-         return extractAttributesHelper(curAttrs,importer);
+      
+      public function extractTextFormatAttributesHelper(param1:Object, param2:TLFormatImporter) : Object {
+         return extractAttributesHelper(param1,param2);
       }
-
-      public function createDictionaryFromXML(xmlToParse:XML) : Dictionary {
-         var formatImporters:Array = [_customFormatImporter];
-         var formatList:XMLList = xmlToParse..TextLayoutFormat;
-         if(formatList.length()!=1)
+      
+      public function createDictionaryFromXML(param1:XML) : Dictionary {
+         var _loc2_:Array = [_customFormatImporter];
+         var _loc3_:XMLList = param1..TextLayoutFormat;
+         if(_loc3_.length() != 1)
          {
-            reportError(GlobalSettings.resourceStringFunction("expectedExactlyOneTextLayoutFormat",[xmlToParse.name()]));
+            reportError(GlobalSettings.resourceStringFunction("expectedExactlyOneTextLayoutFormat",[param1.name()]));
          }
-         var parseThis:XML = formatList.length()<0?formatList[0]:xmlToParse;
-         parseAttributes(parseThis,formatImporters);
+         var _loc4_:XML = _loc3_.length() > 0?_loc3_[0]:param1;
+         parseAttributes(_loc4_,_loc2_);
          return _customFormatImporter.result as Dictionary;
       }
-
-      public function createListMarkerFormatDictionaryFromXML(xmlToParse:XML) : Dictionary {
-         var formatImporters:Array = [_customFormatImporter];
-         var formatList:XMLList = xmlToParse..ListMarkerFormat;
-         if(formatList.length()!=1)
+      
+      public function createListMarkerFormatDictionaryFromXML(param1:XML) : Dictionary {
+         var _loc2_:Array = [_customFormatImporter];
+         var _loc3_:XMLList = param1..ListMarkerFormat;
+         if(_loc3_.length() != 1)
          {
-            reportError(GlobalSettings.resourceStringFunction("expectedExactlyOneListMarkerFormat",[xmlToParse.name()]));
+            reportError(GlobalSettings.resourceStringFunction("expectedExactlyOneListMarkerFormat",[param1.name()]));
          }
-         var parseThis:XML = formatList.length()<0?formatList[0]:xmlToParse;
-         parseAttributes(parseThis,formatImporters);
+         var _loc4_:XML = _loc3_.length() > 0?_loc3_[0]:param1;
+         parseAttributes(_loc4_,_loc2_);
          return _customFormatImporter.result as Dictionary;
       }
    }
-
 }

@@ -18,111 +18,106 @@ package com.ankamagames.dofus.scripts.api
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.tiphon.events.TiphonEvent;
-
-
+   
    public class FxApi extends Object
    {
-         
-
+      
       public function FxApi() {
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FxApi));
-
+      
       public static const ANIMEVENT_SHOT:String = TiphonEvent.ANIMATION_SHOT;
-
-      public static function GetCurrentTargetedCell(runner:FxRunner) : MapPoint {
-         return runner.target;
+      
+      public static function GetCurrentTargetedCell(param1:FxRunner) : MapPoint {
+         return param1.target;
       }
-
-      public static function GetCurrentCaster(runner:SpellFxRunner) : IEntity {
-         return runner.caster;
+      
+      public static function GetCurrentCaster(param1:SpellFxRunner) : IEntity {
+         return param1.caster;
       }
-
-      public static function IsCasterPlayer(runner:SpellFxRunner) : Boolean {
-         return runner.caster.id==PlayedCharacterManager.getInstance().id;
+      
+      public static function IsCasterPlayer(param1:SpellFxRunner) : Boolean {
+         return param1.caster.id == PlayedCharacterManager.getInstance().id;
       }
-
-      public static function GetOrientationTo(fromPoint:MapPoint, toPoint:MapPoint, use4Dir:Boolean=true) : uint {
-         return fromPoint.advancedOrientationTo(toPoint,use4Dir);
+      
+      public static function GetOrientationTo(param1:MapPoint, param2:MapPoint, param3:Boolean=true) : uint {
+         return param1.advancedOrientationTo(param2,param3);
       }
-
-      public static function GetAngleTo(fromPoint:MapPoint, toPoint:MapPoint) : Number {
-         var ac:int = CellUtil.getPixelXFromMapPoint(toPoint)-CellUtil.getPixelXFromMapPoint(fromPoint);
-         var bc:int = CellUtil.getPixelYFromMapPoint(fromPoint)-CellUtil.getPixelYFromMapPoint(toPoint);
-         return Math.acos(ac/Math.sqrt(Math.pow(ac,2)+Math.pow(bc,2)))*180/Math.PI*(CellUtil.getPixelYFromMapPoint(toPoint)<CellUtil.getPixelYFromMapPoint(fromPoint)?1:-1);
+      
+      public static function GetAngleTo(param1:MapPoint, param2:MapPoint) : Number {
+         var _loc3_:int = CellUtil.getPixelXFromMapPoint(param2) - CellUtil.getPixelXFromMapPoint(param1);
+         var _loc4_:int = CellUtil.getPixelYFromMapPoint(param1) - CellUtil.getPixelYFromMapPoint(param2);
+         return Math.acos(_loc3_ / Math.sqrt(Math.pow(_loc3_,2) + Math.pow(_loc4_,2))) * 180 / Math.PI * (CellUtil.getPixelYFromMapPoint(param2) > CellUtil.getPixelYFromMapPoint(param1)?1:-1);
       }
-
-      public static function SetGfxRotation(gfx:DisplayObject, angle:Number) : void {
-         gfx.rotation=angle;
+      
+      public static function SetGfxRotation(param1:DisplayObject, param2:Number) : void {
+         param1.rotation = param2;
       }
-
-      public static function GetEntityCell(entity:IEntity) : MapPoint {
-         return entity.position;
+      
+      public static function GetEntityCell(param1:IEntity) : MapPoint {
+         return param1.position;
       }
-
-      public static function IsPositionsEquals(pointOne:MapPoint, pointTwo:MapPoint) : Boolean {
-         if((!pointOne)||(!pointTwo))
+      
+      public static function IsPositionsEquals(param1:MapPoint, param2:MapPoint) : Boolean {
+         if(!param1 || !param2)
          {
             return false;
          }
-         return pointOne.cellId==pointTwo.cellId;
+         return param1.cellId == param2.cellId;
       }
-
-      public static function GetEntityOnCell(point:MapPoint) : IEntity {
-         return Atouin.getInstance().getEntityOnCell(point.cellId);
+      
+      public static function GetEntityOnCell(param1:MapPoint) : IEntity {
+         return Atouin.getInstance().getEntityOnCell(param1.cellId);
       }
-
-      public static function GetEntityId(entity:IEntity) : int {
-         return entity.id;
+      
+      public static function GetEntityId(param1:IEntity) : int {
+         return param1.id;
       }
-
-      public static function GetEntityPosition(entity:IEntity) : MapPoint {
-         return entity.position;
+      
+      public static function GetEntityPosition(param1:IEntity) : MapPoint {
+         return param1.position;
       }
-
-      public static function CreateGfxEntity(gfxId:uint, cell:MapPoint, randomRotationMin:Number=0, randomRotationMax:Number=0, randomFlip:Boolean=false, startPlayingOnlyWhenDisplayed:Boolean=true) : IEntity {
-         var id:int = -10000;
-         while(DofusEntities.getEntity(id))
+      
+      public static function CreateGfxEntity(param1:uint, param2:MapPoint, param3:Number=0, param4:Number=0, param5:Boolean=false, param6:Boolean=true) : IEntity {
+         var _loc7_:* = -10000;
+         while(DofusEntities.getEntity(_loc7_))
          {
-            id=-10000+Math.random()*10000;
+            _loc7_ = -10000 + Math.random() * 10000;
          }
-         var entity:Projectile = new Projectile(id,TiphonEntityLook.fromString("{"+gfxId+"}"),false);
-         entity.position=cell;
-         entity.rotation=Math.random()*(randomRotationMax-randomRotationMin)+randomRotationMin;
-         if((randomFlip)&&(Math.random()>0.5))
+         var _loc8_:Projectile = new Projectile(_loc7_,TiphonEntityLook.fromString("{" + param1 + "}"),false);
+         _loc8_.position = param2;
+         _loc8_.rotation = Math.random() * (param4 - param3) + param3;
+         if((param5) && Math.random() < 0.5)
          {
-            entity.scaleX=-1;
+            _loc8_.scaleX = -1;
          }
-         return entity;
+         return _loc8_;
       }
-
+      
       public static function CreateTailEntity() : TailEntity {
          return new TailEntity();
       }
-
-      public static function SetEntityAnimation(target:TiphonSprite, animName:String) : void {
-         target.setAnimation(animName);
+      
+      public static function SetEntityAnimation(param1:TiphonSprite, param2:String) : void {
+         param1.setAnimation(param2);
       }
-
-      public static function SetSubEntity(target:TiphonSprite, subentity:DisplayObject, category:uint, slot:uint) : void {
-         if(target)
+      
+      public static function SetSubEntity(param1:TiphonSprite, param2:DisplayObject, param3:uint, param4:uint) : void {
+         if(param1)
          {
-            target.addSubEntity(subentity,category,slot);
+            param1.addSubEntity(param2,param3,param4);
          }
       }
-
-      public static function CreateParticlesEntity(rendererType:uint) : ParticuleEmitterEntity {
-         var id:int = -10000;
-         while(DofusEntities.getEntity(id))
+      
+      public static function CreateParticlesEntity(param1:uint) : ParticuleEmitterEntity {
+         var _loc2_:* = -10000;
+         while(DofusEntities.getEntity(_loc2_))
          {
-            id=-10000+Math.random()*10000;
+            _loc2_ = -10000 + Math.random() * 10000;
          }
-         return new ParticuleEmitterEntity(id,rendererType);
+         return new ParticuleEmitterEntity(_loc2_,param1);
       }
-
-
    }
-
 }

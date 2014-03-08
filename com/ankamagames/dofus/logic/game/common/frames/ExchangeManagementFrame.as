@@ -38,6 +38,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.actions.exchange.ExchangeObjectTransfertAllToInvAction;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectTransfertAllToInvMessage;
    import com.ankamagames.dofus.logic.game.common.actions.exchange.ExchangeObjectTransfertListToInvAction;
+   import com.ankamagames.dofus.logic.game.common.actions.exchange.ExchangeObjectTransfertListWithQuantityToInvAction;
    import com.ankamagames.dofus.logic.game.common.actions.exchange.ExchangeObjectTransfertExistingToInvAction;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectTransfertExistingToInvMessage;
    import com.ankamagames.dofus.logic.game.common.actions.exchange.ExchangeObjectTransfertAllFromInvAction;
@@ -50,10 +51,12 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeLeaveMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeStartedWithPodsMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectTransfertListToInvMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectTransfertListWithQuantityToInvMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectTransfertListFromInvMessage;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItemToSellInNpcShop;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.InventoryHookList;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.dofus.network.ProtocolConstantsEnum;
    import com.ankamagames.dofus.misc.lists.ChatHookList;
    import com.ankamagames.jerakine.data.I18n;
@@ -61,360 +64,369 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
    import com.ankamagames.dofus.logic.common.actions.ChangeWorldInteractionAction;
    import com.ankamagames.dofus.datacenter.items.criterion.GroupItemCriterion;
-   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogRequestMessage;
    import com.ankamagames.dofus.network.enums.DialogTypeEnum;
    import com.ankamagames.dofus.logic.game.roleplay.actions.LeaveDialogRequestAction;
-   import com.ankamagames.jerakine.network.IServerConnection;
-
-
+   
    public class ExchangeManagementFrame extends Object implements Frame
    {
-         
-
+      
       public function ExchangeManagementFrame() {
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ExchangeManagementFrame));
-
+      
       private var _priority:int = 0;
-
+      
       private var _sourceInformations:GameRolePlayNamedActorInformations;
-
+      
       private var _targetInformations:GameRolePlayNamedActorInformations;
-
+      
       private var _meReady:Boolean = false;
-
+      
       private var _youReady:Boolean = false;
-
+      
       private var _exchangeInventory:Array;
-
+      
       private var _success:Boolean;
-
+      
       public function get priority() : int {
          return this._priority;
       }
-
-      public function set priority(p:int) : void {
-         this._priority=p;
+      
+      public function set priority(param1:int) : void {
+         this._priority = param1;
       }
-
+      
       private function get roleplayContextFrame() : RoleplayContextFrame {
          return Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
       }
-
+      
       private function get roleplayEntitiesFrame() : RoleplayEntitiesFrame {
          return Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
       }
-
+      
       private function get roleplayMovementFrame() : RoleplayMovementFrame {
          return Kernel.getWorker().getFrame(RoleplayMovementFrame) as RoleplayMovementFrame;
       }
-
-      public function initMountStock(objectsInfos:Vector.<ObjectItem>) : void {
-         InventoryManager.getInstance().bankInventory.initializeFromObjectItems(objectsInfos);
+      
+      public function initMountStock(param1:Vector.<ObjectItem>) : void {
+         InventoryManager.getInstance().bankInventory.initializeFromObjectItems(param1);
          InventoryManager.getInstance().bankInventory.releaseHooks();
       }
-
-      public function processExchangeRequestedTradeMessage(msg:ExchangeRequestedTradeMessage) : void {
-         var socialFrame:SocialFrame = null;
-         var lda:LeaveDialogAction = null;
-         if(msg.exchangeType!=ExchangeTypeEnum.PLAYER_TRADE)
+      
+      public function processExchangeRequestedTradeMessage(param1:ExchangeRequestedTradeMessage) : void {
+         var _loc4_:SocialFrame = null;
+         var _loc5_:LeaveDialogAction = null;
+         if(param1.exchangeType != ExchangeTypeEnum.PLAYER_TRADE)
          {
             return;
          }
-         this._sourceInformations=this.roleplayEntitiesFrame.getEntityInfos(msg.source) as GameRolePlayNamedActorInformations;
-         this._targetInformations=this.roleplayEntitiesFrame.getEntityInfos(msg.target) as GameRolePlayNamedActorInformations;
-         var sourceName:String = this._sourceInformations.name;
-         var targetName:String = this._targetInformations.name;
-         if(msg.source==PlayedCharacterManager.getInstance().id)
+         this._sourceInformations = this.roleplayEntitiesFrame.getEntityInfos(param1.source) as GameRolePlayNamedActorInformations;
+         this._targetInformations = this.roleplayEntitiesFrame.getEntityInfos(param1.target) as GameRolePlayNamedActorInformations;
+         var _loc2_:String = this._sourceInformations.name;
+         var _loc3_:String = this._targetInformations.name;
+         if(param1.source == PlayedCharacterManager.getInstance().id)
          {
-            this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeRequestCharacterFromMe,sourceName,targetName);
+            this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeRequestCharacterFromMe,_loc2_,_loc3_);
          }
          else
          {
-            socialFrame=Kernel.getWorker().getFrame(SocialFrame) as SocialFrame;
-            if((socialFrame)&&(socialFrame.isIgnored(sourceName)))
+            _loc4_ = Kernel.getWorker().getFrame(SocialFrame) as SocialFrame;
+            if((_loc4_) && (_loc4_.isIgnored(_loc2_)))
             {
-               lda=new LeaveDialogAction();
-               Kernel.getWorker().process(lda);
+               _loc5_ = new LeaveDialogAction();
+               Kernel.getWorker().process(_loc5_);
                return;
             }
-            this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeRequestCharacterToMe,targetName,sourceName);
+            this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeRequestCharacterToMe,_loc3_,_loc2_);
          }
       }
-
-      public function processExchangeStartOkNpcTradeMessage(msg:ExchangeStartOkNpcTradeMessage) : void {
-         var sourceName:String = PlayedCharacterManager.getInstance().infos.name;
-         var NPCId:int = this.roleplayEntitiesFrame.getEntityInfos(msg.npcId).contextualId;
-         var NPC:Npc = Npc.getNpcById(NPCId);
-         var targetName:String = Npc.getNpcById((this.roleplayEntitiesFrame.getEntityInfos(msg.npcId) as GameRolePlayNpcInformations).npcId).name;
-         var sourceLook:TiphonEntityLook = EntityLookAdapter.getRiderLook(PlayedCharacterManager.getInstance().infos.entityLook);
-         var targetLook:TiphonEntityLook = EntityLookAdapter.getRiderLook(this.roleplayContextFrame.entitiesFrame.getEntityInfos(msg.npcId).look);
-         var esonmsg:ExchangeStartOkNpcTradeMessage = msg as ExchangeStartOkNpcTradeMessage;
-         PlayedCharacterManager.getInstance().isInExchange=true;
-         this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartOkNpcTrade,esonmsg.npcId,sourceName,targetName,sourceLook,targetLook);
+      
+      public function processExchangeStartOkNpcTradeMessage(param1:ExchangeStartOkNpcTradeMessage) : void {
+         var _loc2_:String = PlayedCharacterManager.getInstance().infos.name;
+         var _loc3_:int = this.roleplayEntitiesFrame.getEntityInfos(param1.npcId).contextualId;
+         var _loc4_:Npc = Npc.getNpcById(_loc3_);
+         var _loc5_:String = Npc.getNpcById((this.roleplayEntitiesFrame.getEntityInfos(param1.npcId) as GameRolePlayNpcInformations).npcId).name;
+         var _loc6_:TiphonEntityLook = EntityLookAdapter.getRiderLook(PlayedCharacterManager.getInstance().infos.entityLook);
+         var _loc7_:TiphonEntityLook = EntityLookAdapter.getRiderLook(this.roleplayContextFrame.entitiesFrame.getEntityInfos(param1.npcId).look);
+         var _loc8_:ExchangeStartOkNpcTradeMessage = param1 as ExchangeStartOkNpcTradeMessage;
+         PlayedCharacterManager.getInstance().isInExchange = true;
+         this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartOkNpcTrade,_loc8_.npcId,_loc2_,_loc5_,_loc6_,_loc7_);
          this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType,ExchangeTypeEnum.NPC_TRADE);
       }
-
-      public function process(msg:Message) : Boolean {
-         var i:* = 0;
-         var inventorySize:* = 0;
-         var exwsmsg:ExchangeStartedWithStorageMessage = null;
-         var commonExchangeFrame:CommonExchangeManagementFrame = null;
-         var pods:* = 0;
-         var esmsg:ExchangeStartedMessage = null;
-         var commonExchangeFrame2:CommonExchangeManagementFrame = null;
-         var sicmsg:StorageInventoryContentMessage = null;
-         var esotcmsg:ExchangeStartOkTaxCollectorMessage = null;
-         var soumsg:StorageObjectUpdateMessage = null;
-         var object:ObjectItem = null;
-         var itemChanged:ItemWrapper = null;
-         var sormsg:StorageObjectRemoveMessage = null;
-         var sosumsg:StorageObjectsUpdateMessage = null;
-         var sosrmsg:StorageObjectsRemoveMessage = null;
-         var skumsg:StorageKamasUpdateMessage = null;
-         var eomka:ExchangeObjectMoveKamaAction = null;
-         var eomkmsg:ExchangeObjectMoveKamaMessage = null;
-         var eotatia:ExchangeObjectTransfertAllToInvAction = null;
-         var eotatimsg:ExchangeObjectTransfertAllToInvMessage = null;
-         var eotltia:ExchangeObjectTransfertListToInvAction = null;
-         var eotetia:ExchangeObjectTransfertExistingToInvAction = null;
-         var eotetimsg:ExchangeObjectTransfertExistingToInvMessage = null;
-         var eotafia:ExchangeObjectTransfertAllFromInvAction = null;
-         var eotafimsg:ExchangeObjectTransfertAllFromInvMessage = null;
-         var eotlfia:ExchangeObjectTransfertListFromInvAction = null;
-         var eotefia:ExchangeObjectTransfertExistingFromInvAction = null;
-         var eotefimsg:ExchangeObjectTransfertExistingFromInvMessage = null;
-         var esonmsg:ExchangeStartOkNpcShopMessage = null;
-         var merchant:GameContextActorInformations = null;
-         var merchantLook:TiphonEntityLook = null;
-         var NPCShopItems:Array = null;
-         var elm:ExchangeLeaveMessage = null;
-         var sourceName:String = null;
-         var targetName:String = null;
-         var sourceLook:TiphonEntityLook = null;
-         var targetLook:TiphonEntityLook = null;
-         var eswpmsg:ExchangeStartedWithPodsMessage = null;
-         var sourceCurrentPods:* = 0;
-         var targetCurrentPods:* = 0;
-         var sourceMaxPods:* = 0;
-         var targetMaxPods:* = 0;
-         var exchangeOtherCharacterId:* = 0;
-         var sosuit:ObjectItem = null;
-         var sosuobj:ObjectItem = null;
-         var sosuic:ItemWrapper = null;
-         var sosruid:uint = 0;
-         var eotltimsg:ExchangeObjectTransfertListToInvMessage = null;
-         var eotlfimsg:ExchangeObjectTransfertListFromInvMessage = null;
-         var oitsins:ObjectItemToSellInNpcShop = null;
-         var itemwra:ItemWrapper = null;
+      
+      public function process(param1:Message) : Boolean {
+         var _loc2_:* = 0;
+         var _loc3_:* = 0;
+         var _loc4_:ExchangeStartedWithStorageMessage = null;
+         var _loc5_:CommonExchangeManagementFrame = null;
+         var _loc6_:* = 0;
+         var _loc7_:ExchangeStartedMessage = null;
+         var _loc8_:CommonExchangeManagementFrame = null;
+         var _loc9_:StorageInventoryContentMessage = null;
+         var _loc10_:ExchangeStartOkTaxCollectorMessage = null;
+         var _loc11_:StorageObjectUpdateMessage = null;
+         var _loc12_:ObjectItem = null;
+         var _loc13_:ItemWrapper = null;
+         var _loc14_:StorageObjectRemoveMessage = null;
+         var _loc15_:StorageObjectsUpdateMessage = null;
+         var _loc16_:StorageObjectsRemoveMessage = null;
+         var _loc17_:StorageKamasUpdateMessage = null;
+         var _loc18_:ExchangeObjectMoveKamaAction = null;
+         var _loc19_:ExchangeObjectMoveKamaMessage = null;
+         var _loc20_:ExchangeObjectTransfertAllToInvAction = null;
+         var _loc21_:ExchangeObjectTransfertAllToInvMessage = null;
+         var _loc22_:ExchangeObjectTransfertListToInvAction = null;
+         var _loc23_:ExchangeObjectTransfertListWithQuantityToInvAction = null;
+         var _loc24_:ExchangeObjectTransfertExistingToInvAction = null;
+         var _loc25_:ExchangeObjectTransfertExistingToInvMessage = null;
+         var _loc26_:ExchangeObjectTransfertAllFromInvAction = null;
+         var _loc27_:ExchangeObjectTransfertAllFromInvMessage = null;
+         var _loc28_:ExchangeObjectTransfertListFromInvAction = null;
+         var _loc29_:ExchangeObjectTransfertExistingFromInvAction = null;
+         var _loc30_:ExchangeObjectTransfertExistingFromInvMessage = null;
+         var _loc31_:ExchangeStartOkNpcShopMessage = null;
+         var _loc32_:GameContextActorInformations = null;
+         var _loc33_:TiphonEntityLook = null;
+         var _loc34_:Array = null;
+         var _loc35_:ExchangeLeaveMessage = null;
+         var _loc36_:String = null;
+         var _loc37_:String = null;
+         var _loc38_:TiphonEntityLook = null;
+         var _loc39_:TiphonEntityLook = null;
+         var _loc40_:ExchangeStartedWithPodsMessage = null;
+         var _loc41_:* = 0;
+         var _loc42_:* = 0;
+         var _loc43_:* = 0;
+         var _loc44_:* = 0;
+         var _loc45_:* = 0;
+         var _loc46_:ObjectItem = null;
+         var _loc47_:ObjectItem = null;
+         var _loc48_:ItemWrapper = null;
+         var _loc49_:uint = 0;
+         var _loc50_:ExchangeObjectTransfertListToInvMessage = null;
+         var _loc51_:ExchangeObjectTransfertListWithQuantityToInvMessage = null;
+         var _loc52_:ExchangeObjectTransfertListFromInvMessage = null;
+         var _loc53_:ObjectItemToSellInNpcShop = null;
+         var _loc54_:ItemWrapper = null;
          switch(true)
          {
-            case msg is ExchangeStartedWithStorageMessage:
-               exwsmsg=msg as ExchangeStartedWithStorageMessage;
-               PlayedCharacterManager.getInstance().isInExchange=true;
-               commonExchangeFrame=Kernel.getWorker().getFrame(CommonExchangeManagementFrame) as CommonExchangeManagementFrame;
-               if(commonExchangeFrame)
+            case param1 is ExchangeStartedWithStorageMessage:
+               _loc4_ = param1 as ExchangeStartedWithStorageMessage;
+               PlayedCharacterManager.getInstance().isInExchange = true;
+               _loc5_ = Kernel.getWorker().getFrame(CommonExchangeManagementFrame) as CommonExchangeManagementFrame;
+               if(_loc5_)
                {
-                  commonExchangeFrame.resetEchangeSequence();
+                  _loc5_.resetEchangeSequence();
                }
-               pods=exwsmsg.storageMaxSlot;
-               this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeBankStartedWithStorage,ExchangeTypeEnum.STORAGE,pods);
-               return true;
-            case msg is ExchangeStartedMessage:
-               esmsg=msg as ExchangeStartedMessage;
-               PlayedCharacterManager.getInstance().isInExchange=true;
-               commonExchangeFrame2=Kernel.getWorker().getFrame(CommonExchangeManagementFrame) as CommonExchangeManagementFrame;
-               if(commonExchangeFrame2)
+               _loc6_ = _loc4_.storageMaxSlot;
+               this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeBankStartedWithStorage,ExchangeTypeEnum.STORAGE,_loc6_);
+               return false;
+            case param1 is ExchangeStartedMessage:
+               _loc7_ = param1 as ExchangeStartedMessage;
+               PlayedCharacterManager.getInstance().isInExchange = true;
+               _loc8_ = Kernel.getWorker().getFrame(CommonExchangeManagementFrame) as CommonExchangeManagementFrame;
+               if(_loc8_)
                {
-                  commonExchangeFrame2.resetEchangeSequence();
+                  _loc8_.resetEchangeSequence();
                }
-               switch(esmsg.exchangeType)
+               switch(_loc7_.exchangeType)
                {
                   case ExchangeTypeEnum.PLAYER_TRADE:
-                     sourceName=this._sourceInformations.name;
-                     targetName=this._targetInformations.name;
-                     sourceLook=EntityLookAdapter.getRiderLook(this._sourceInformations.look);
-                     targetLook=EntityLookAdapter.getRiderLook(this._targetInformations.look);
-                     if(esmsg.getMessageId()==ExchangeStartedWithPodsMessage.protocolId)
+                     _loc36_ = this._sourceInformations.name;
+                     _loc37_ = this._targetInformations.name;
+                     _loc38_ = EntityLookAdapter.getRiderLook(this._sourceInformations.look);
+                     _loc39_ = EntityLookAdapter.getRiderLook(this._targetInformations.look);
+                     if(_loc7_.getMessageId() == ExchangeStartedWithPodsMessage.protocolId)
                      {
-                        eswpmsg=msg as ExchangeStartedWithPodsMessage;
+                        _loc40_ = param1 as ExchangeStartedWithPodsMessage;
                      }
-                     sourceCurrentPods=-1;
-                     targetCurrentPods=-1;
-                     sourceMaxPods=-1;
-                     targetMaxPods=-1;
-                     if(eswpmsg!=null)
+                     _loc41_ = -1;
+                     _loc42_ = -1;
+                     _loc43_ = -1;
+                     _loc44_ = -1;
+                     if(_loc40_ != null)
                      {
-                        if(eswpmsg.firstCharacterId==this._sourceInformations.contextualId)
+                        if(_loc40_.firstCharacterId == this._sourceInformations.contextualId)
                         {
-                           sourceCurrentPods=eswpmsg.firstCharacterCurrentWeight;
-                           targetCurrentPods=eswpmsg.secondCharacterCurrentWeight;
-                           sourceMaxPods=eswpmsg.firstCharacterMaxWeight;
-                           targetMaxPods=eswpmsg.secondCharacterMaxWeight;
+                           _loc41_ = _loc40_.firstCharacterCurrentWeight;
+                           _loc42_ = _loc40_.secondCharacterCurrentWeight;
+                           _loc43_ = _loc40_.firstCharacterMaxWeight;
+                           _loc44_ = _loc40_.secondCharacterMaxWeight;
                         }
                         else
                         {
-                           targetCurrentPods=eswpmsg.firstCharacterCurrentWeight;
-                           sourceCurrentPods=eswpmsg.secondCharacterCurrentWeight;
-                           targetMaxPods=eswpmsg.firstCharacterMaxWeight;
-                           sourceMaxPods=eswpmsg.secondCharacterMaxWeight;
+                           _loc42_ = _loc40_.firstCharacterCurrentWeight;
+                           _loc41_ = _loc40_.secondCharacterCurrentWeight;
+                           _loc44_ = _loc40_.firstCharacterMaxWeight;
+                           _loc43_ = _loc40_.secondCharacterMaxWeight;
                         }
                      }
-                     if(PlayedCharacterManager.getInstance().id==eswpmsg.firstCharacterId)
+                     if(PlayedCharacterManager.getInstance().id == _loc40_.firstCharacterId)
                      {
-                        exchangeOtherCharacterId=eswpmsg.secondCharacterId;
+                        _loc45_ = _loc40_.secondCharacterId;
                      }
                      else
                      {
-                        exchangeOtherCharacterId=eswpmsg.firstCharacterId;
+                        _loc45_ = _loc40_.firstCharacterId;
                      }
-                     _log.debug("look : "+sourceLook.toString()+"    "+targetLook.toString());
-                     this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStarted,sourceName,targetName,sourceLook,targetLook,sourceCurrentPods,targetCurrentPods,sourceMaxPods,targetMaxPods,exchangeOtherCharacterId);
-                     this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType,esmsg.exchangeType);
+                     this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStarted,_loc36_,_loc37_,_loc38_,_loc39_,_loc41_,_loc42_,_loc43_,_loc44_,_loc45_);
+                     this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType,_loc7_.exchangeType);
                      return true;
                   case ExchangeTypeEnum.STORAGE:
-                     this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType,esmsg.exchangeType);
+                     this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType,_loc7_.exchangeType);
                      return true;
                   case ExchangeTypeEnum.TAXCOLLECTOR:
-                     this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType,esmsg.exchangeType);
+                     this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType,_loc7_.exchangeType);
                      return true;
                   default:
-                     return false;
+                     return true;
                }
-            case msg is StorageInventoryContentMessage:
-               sicmsg=msg as StorageInventoryContentMessage;
-               InventoryManager.getInstance().bankInventory.kamas=sicmsg.kamas;
-               InventoryManager.getInstance().bankInventory.initializeFromObjectItems(sicmsg.objects);
+            case param1 is StorageInventoryContentMessage:
+               _loc9_ = param1 as StorageInventoryContentMessage;
+               InventoryManager.getInstance().bankInventory.kamas = _loc9_.kamas;
+               InventoryManager.getInstance().bankInventory.initializeFromObjectItems(_loc9_.objects);
                InventoryManager.getInstance().bankInventory.releaseHooks();
-               return false;
-            case msg is ExchangeStartOkTaxCollectorMessage:
-               esotcmsg=msg as ExchangeStartOkTaxCollectorMessage;
-               InventoryManager.getInstance().bankInventory.kamas=esotcmsg.goldInfo;
-               InventoryManager.getInstance().bankInventory.initializeFromObjectItems(esotcmsg.objectsInfos);
+               return true;
+            case param1 is ExchangeStartOkTaxCollectorMessage:
+               _loc10_ = param1 as ExchangeStartOkTaxCollectorMessage;
+               InventoryManager.getInstance().bankInventory.kamas = _loc10_.goldInfo;
+               InventoryManager.getInstance().bankInventory.initializeFromObjectItems(_loc10_.objectsInfos);
                InventoryManager.getInstance().bankInventory.releaseHooks();
-               return false;
-            case msg is StorageObjectUpdateMessage:
-               soumsg=msg as StorageObjectUpdateMessage;
-               object=soumsg.object;
-               itemChanged=ItemWrapper.create(object.position,object.objectUID,object.objectGID,object.quantity,object.effects);
-               InventoryManager.getInstance().bankInventory.modifyItem(itemChanged);
+               return true;
+            case param1 is StorageObjectUpdateMessage:
+               _loc11_ = param1 as StorageObjectUpdateMessage;
+               _loc12_ = _loc11_.object;
+               _loc13_ = ItemWrapper.create(_loc12_.position,_loc12_.objectUID,_loc12_.objectGID,_loc12_.quantity,_loc12_.effects);
+               InventoryManager.getInstance().bankInventory.modifyItem(_loc13_);
                InventoryManager.getInstance().bankInventory.releaseHooks();
-               return false;
-            case msg is StorageObjectRemoveMessage:
-               sormsg=msg as StorageObjectRemoveMessage;
-               InventoryManager.getInstance().bankInventory.removeItem(sormsg.objectUID);
+               return true;
+            case param1 is StorageObjectRemoveMessage:
+               _loc14_ = param1 as StorageObjectRemoveMessage;
+               InventoryManager.getInstance().bankInventory.removeItem(_loc14_.objectUID);
                InventoryManager.getInstance().bankInventory.releaseHooks();
-               return false;
-            case msg is StorageObjectsUpdateMessage:
-               sosumsg=msg as StorageObjectsUpdateMessage;
-               for each (sosuobj in sosumsg.objectList)
+               return true;
+            case param1 is StorageObjectsUpdateMessage:
+               _loc15_ = param1 as StorageObjectsUpdateMessage;
+               for each (_loc47_ in _loc15_.objectList)
                {
-                  sosuic=ItemWrapper.create(sosuobj.position,sosuobj.objectUID,sosuobj.objectGID,sosuobj.quantity,sosuobj.effects);
-                  InventoryManager.getInstance().bankInventory.modifyItem(sosuic);
+                  _loc48_ = ItemWrapper.create(_loc47_.position,_loc47_.objectUID,_loc47_.objectGID,_loc47_.quantity,_loc47_.effects);
+                  InventoryManager.getInstance().bankInventory.modifyItem(_loc48_);
                }
                InventoryManager.getInstance().bankInventory.releaseHooks();
-               return false;
-            case msg is StorageObjectsRemoveMessage:
-               sosrmsg=msg as StorageObjectsRemoveMessage;
-               for each (sosruid in sosrmsg.objectUIDList)
+               return true;
+            case param1 is StorageObjectsRemoveMessage:
+               _loc16_ = param1 as StorageObjectsRemoveMessage;
+               for each (_loc49_ in _loc16_.objectUIDList)
                {
-                  InventoryManager.getInstance().bankInventory.removeItem(sosruid);
+                  InventoryManager.getInstance().bankInventory.removeItem(_loc49_);
                }
                InventoryManager.getInstance().bankInventory.releaseHooks();
-               return false;
-            case msg is StorageKamasUpdateMessage:
-               skumsg=msg as StorageKamasUpdateMessage;
-               InventoryManager.getInstance().bankInventory.kamas=skumsg.kamasTotal;
-               KernelEventsManager.getInstance().processCallback(InventoryHookList.StorageKamasUpdate,skumsg.kamasTotal);
-               return false;
-            case msg is ExchangeObjectMoveKamaAction:
-               eomka=msg as ExchangeObjectMoveKamaAction;
-               eomkmsg=new ExchangeObjectMoveKamaMessage();
-               eomkmsg.initExchangeObjectMoveKamaMessage(eomka.kamas);
-               this._serverConnection.send(eomkmsg);
                return true;
-            case msg is ExchangeObjectTransfertAllToInvAction:
-               eotatia=msg as ExchangeObjectTransfertAllToInvAction;
-               eotatimsg=new ExchangeObjectTransfertAllToInvMessage();
-               eotatimsg.initExchangeObjectTransfertAllToInvMessage();
-               this._serverConnection.send(eotatimsg);
+            case param1 is StorageKamasUpdateMessage:
+               _loc17_ = param1 as StorageKamasUpdateMessage;
+               InventoryManager.getInstance().bankInventory.kamas = _loc17_.kamasTotal;
+               KernelEventsManager.getInstance().processCallback(InventoryHookList.StorageKamasUpdate,_loc17_.kamasTotal);
                return true;
-            case msg is ExchangeObjectTransfertListToInvAction:
-               eotltia=msg as ExchangeObjectTransfertListToInvAction;
-               if(eotltia.ids.length>ProtocolConstantsEnum.MAX_OBJ_COUNT_BY_XFERT)
-               {
-                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,I18n.getUiText("ui.exchange.partialTransfert"),ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
-               }
-               if(eotltia.ids.length>=ProtocolConstantsEnum.MIN_OBJ_COUNT_BY_XFERT)
-               {
-                  eotltimsg=new ExchangeObjectTransfertListToInvMessage();
-                  eotltimsg.initExchangeObjectTransfertListToInvMessage(eotltia.ids.slice(0,ProtocolConstantsEnum.MAX_OBJ_COUNT_BY_XFERT));
-                  this._serverConnection.send(eotltimsg);
-               }
+            case param1 is ExchangeObjectMoveKamaAction:
+               _loc18_ = param1 as ExchangeObjectMoveKamaAction;
+               _loc19_ = new ExchangeObjectMoveKamaMessage();
+               _loc19_.initExchangeObjectMoveKamaMessage(_loc18_.kamas);
+               ConnectionsHandler.getConnection().send(_loc19_);
                return true;
-            case msg is ExchangeObjectTransfertExistingToInvAction:
-               eotetia=msg as ExchangeObjectTransfertExistingToInvAction;
-               eotetimsg=new ExchangeObjectTransfertExistingToInvMessage();
-               eotetimsg.initExchangeObjectTransfertExistingToInvMessage();
-               this._serverConnection.send(eotetimsg);
+            case param1 is ExchangeObjectTransfertAllToInvAction:
+               _loc20_ = param1 as ExchangeObjectTransfertAllToInvAction;
+               _loc21_ = new ExchangeObjectTransfertAllToInvMessage();
+               _loc21_.initExchangeObjectTransfertAllToInvMessage();
+               ConnectionsHandler.getConnection().send(_loc21_);
                return true;
-            case msg is ExchangeObjectTransfertAllFromInvAction:
-               eotafia=msg as ExchangeObjectTransfertAllFromInvAction;
-               eotafimsg=new ExchangeObjectTransfertAllFromInvMessage();
-               eotafimsg.initExchangeObjectTransfertAllFromInvMessage();
-               this._serverConnection.send(eotafimsg);
-               return true;
-            case msg is ExchangeObjectTransfertListFromInvAction:
-               eotlfia=msg as ExchangeObjectTransfertListFromInvAction;
-               if(eotlfia.ids.length>ProtocolConstantsEnum.MAX_OBJ_COUNT_BY_XFERT)
+            case param1 is ExchangeObjectTransfertListToInvAction:
+               _loc22_ = param1 as ExchangeObjectTransfertListToInvAction;
+               if(_loc22_.ids.length > ProtocolConstantsEnum.MAX_OBJ_COUNT_BY_XFERT)
                {
                   KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,I18n.getUiText("ui.exchange.partialTransfert"),ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                }
-               if(eotlfia.ids.length>=ProtocolConstantsEnum.MIN_OBJ_COUNT_BY_XFERT)
+               if(_loc22_.ids.length >= ProtocolConstantsEnum.MIN_OBJ_COUNT_BY_XFERT)
                {
-                  eotlfimsg=new ExchangeObjectTransfertListFromInvMessage();
-                  eotlfimsg.initExchangeObjectTransfertListFromInvMessage(eotlfia.ids.slice(0,ProtocolConstantsEnum.MAX_OBJ_COUNT_BY_XFERT));
-                  this._serverConnection.send(eotlfimsg);
+                  _loc50_ = new ExchangeObjectTransfertListToInvMessage();
+                  _loc50_.initExchangeObjectTransfertListToInvMessage(_loc22_.ids.slice(0,ProtocolConstantsEnum.MAX_OBJ_COUNT_BY_XFERT));
+                  ConnectionsHandler.getConnection().send(_loc50_);
                }
                return true;
-            case msg is ExchangeObjectTransfertExistingFromInvAction:
-               eotefia=msg as ExchangeObjectTransfertExistingFromInvAction;
-               eotefimsg=new ExchangeObjectTransfertExistingFromInvMessage();
-               eotefimsg.initExchangeObjectTransfertExistingFromInvMessage();
-               this._serverConnection.send(eotefimsg);
+            case param1 is ExchangeObjectTransfertListWithQuantityToInvAction:
+               _loc23_ = param1 as ExchangeObjectTransfertListWithQuantityToInvAction;
+               if(_loc23_.ids.length > ProtocolConstantsEnum.MAX_OBJ_COUNT_BY_XFERT / 2)
+               {
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,I18n.getUiText("ui.exchange.partialTransfert"),ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               }
+               if(_loc23_.ids.length >= ProtocolConstantsEnum.MIN_OBJ_COUNT_BY_XFERT && _loc23_.ids.length == _loc23_.qtys.length)
+               {
+                  _loc51_ = new ExchangeObjectTransfertListWithQuantityToInvMessage();
+                  _loc51_.initExchangeObjectTransfertListWithQuantityToInvMessage(_loc23_.ids.slice(0,ProtocolConstantsEnum.MAX_OBJ_COUNT_BY_XFERT / 2),_loc23_.qtys.slice(0,ProtocolConstantsEnum.MAX_OBJ_COUNT_BY_XFERT / 2));
+                  ConnectionsHandler.getConnection().send(_loc51_);
+               }
                return true;
-            case msg is ExchangeStartOkNpcShopMessage:
-               esonmsg=msg as ExchangeStartOkNpcShopMessage;
-               PlayedCharacterManager.getInstance().isInExchange=true;
+            case param1 is ExchangeObjectTransfertExistingToInvAction:
+               _loc24_ = param1 as ExchangeObjectTransfertExistingToInvAction;
+               _loc25_ = new ExchangeObjectTransfertExistingToInvMessage();
+               _loc25_.initExchangeObjectTransfertExistingToInvMessage();
+               ConnectionsHandler.getConnection().send(_loc25_);
+               return true;
+            case param1 is ExchangeObjectTransfertAllFromInvAction:
+               _loc26_ = param1 as ExchangeObjectTransfertAllFromInvAction;
+               _loc27_ = new ExchangeObjectTransfertAllFromInvMessage();
+               _loc27_.initExchangeObjectTransfertAllFromInvMessage();
+               ConnectionsHandler.getConnection().send(_loc27_);
+               return true;
+            case param1 is ExchangeObjectTransfertListFromInvAction:
+               _loc28_ = param1 as ExchangeObjectTransfertListFromInvAction;
+               if(_loc28_.ids.length > ProtocolConstantsEnum.MAX_OBJ_COUNT_BY_XFERT)
+               {
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,I18n.getUiText("ui.exchange.partialTransfert"),ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               }
+               if(_loc28_.ids.length >= ProtocolConstantsEnum.MIN_OBJ_COUNT_BY_XFERT)
+               {
+                  _loc52_ = new ExchangeObjectTransfertListFromInvMessage();
+                  _loc52_.initExchangeObjectTransfertListFromInvMessage(_loc28_.ids.slice(0,ProtocolConstantsEnum.MAX_OBJ_COUNT_BY_XFERT));
+                  ConnectionsHandler.getConnection().send(_loc52_);
+               }
+               return true;
+            case param1 is ExchangeObjectTransfertExistingFromInvAction:
+               _loc29_ = param1 as ExchangeObjectTransfertExistingFromInvAction;
+               _loc30_ = new ExchangeObjectTransfertExistingFromInvMessage();
+               _loc30_.initExchangeObjectTransfertExistingFromInvMessage();
+               ConnectionsHandler.getConnection().send(_loc30_);
+               return true;
+            case param1 is ExchangeStartOkNpcShopMessage:
+               _loc31_ = param1 as ExchangeStartOkNpcShopMessage;
+               PlayedCharacterManager.getInstance().isInExchange = true;
                Kernel.getWorker().process(ChangeWorldInteractionAction.create(false,true));
-               merchant=this.roleplayContextFrame.entitiesFrame.getEntityInfos(esonmsg.npcSellerId);
-               merchantLook=EntityLookAdapter.fromNetwork(merchant.look);
-               NPCShopItems=new Array();
-               for each (oitsins in esonmsg.objectsInfos)
+               _loc32_ = this.roleplayContextFrame.entitiesFrame.getEntityInfos(_loc31_.npcSellerId);
+               _loc33_ = EntityLookAdapter.fromNetwork(_loc32_.look);
+               _loc34_ = new Array();
+               for each (_loc53_ in _loc31_.objectsInfos)
                {
-                  itemwra=ItemWrapper.create(63,0,oitsins.objectGID,0,oitsins.effects,false);
-                  NPCShopItems.push(
+                  _loc54_ = ItemWrapper.create(63,0,_loc53_.objectGID,0,_loc53_.effects,false);
+                  _loc34_.push(
                      {
-                        item:itemwra,
-                        price:oitsins.objectPrice,
-                        criterion:new GroupItemCriterion(oitsins.buyCriterion)
-                     }
-                  );
+                        "item":_loc54_,
+                        "price":_loc53_.objectPrice,
+                        "criterion":new GroupItemCriterion(_loc53_.buyCriterion)
+                     });
                }
-               this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartOkNpcShop,esonmsg.npcSellerId,NPCShopItems,merchantLook,esonmsg.tokenId);
+               this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartOkNpcShop,_loc31_.npcSellerId,_loc34_,_loc33_,_loc31_.tokenId);
                return true;
-            case msg is LeaveDialogRequestAction:
+            case param1 is LeaveDialogRequestAction:
                ConnectionsHandler.getConnection().send(new LeaveDialogRequestMessage());
                return true;
-            case msg is ExchangeLeaveMessage:
-               elm=msg as ExchangeLeaveMessage;
-               if(elm.dialogType==DialogTypeEnum.DIALOG_EXCHANGE)
+            case param1 is ExchangeLeaveMessage:
+               _loc35_ = param1 as ExchangeLeaveMessage;
+               if(_loc35_.dialogType == DialogTypeEnum.DIALOG_EXCHANGE)
                {
-                  PlayedCharacterManager.getInstance().isInExchange=false;
-                  this._success=elm.success;
+                  PlayedCharacterManager.getInstance().isInExchange = false;
+                  this._success = _loc35_.success;
                   Kernel.getWorker().removeFrame(this);
                }
                return true;
@@ -422,33 +434,27 @@ package com.ankamagames.dofus.logic.game.common.frames
                return false;
          }
       }
-
+      
       private function proceedExchange() : void {
-         
       }
-
+      
       public function pushed() : Boolean {
-         this._success=false;
+         this._success = false;
          return true;
       }
-
+      
       public function pulled() : Boolean {
          if(Kernel.getWorker().contains(CommonExchangeManagementFrame))
          {
             Kernel.getWorker().removeFrame(Kernel.getWorker().getFrame(CommonExchangeManagementFrame));
          }
          KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeLeave,this._success);
-         this._exchangeInventory=null;
+         this._exchangeInventory = null;
          return true;
       }
-
+      
       private function get _kernelEventsManager() : KernelEventsManager {
          return KernelEventsManager.getInstance();
       }
-
-      private function get _serverConnection() : IServerConnection {
-         return ConnectionsHandler.getConnection();
-      }
    }
-
 }

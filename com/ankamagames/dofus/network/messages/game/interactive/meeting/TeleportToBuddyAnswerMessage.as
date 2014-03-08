@@ -5,108 +5,105 @@ package com.ankamagames.dofus.network.messages.game.interactive.meeting
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class TeleportToBuddyAnswerMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function TeleportToBuddyAnswerMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6293;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var dungeonId:uint = 0;
-
+      
       public var buddyId:uint = 0;
-
+      
       public var accept:Boolean = false;
-
+      
       override public function getMessageId() : uint {
          return 6293;
       }
-
-      public function initTeleportToBuddyAnswerMessage(dungeonId:uint=0, buddyId:uint=0, accept:Boolean=false) : TeleportToBuddyAnswerMessage {
-         this.dungeonId=dungeonId;
-         this.buddyId=buddyId;
-         this.accept=accept;
-         this._isInitialized=true;
+      
+      public function initTeleportToBuddyAnswerMessage(param1:uint=0, param2:uint=0, param3:Boolean=false) : TeleportToBuddyAnswerMessage {
+         this.dungeonId = param1;
+         this.buddyId = param2;
+         this.accept = param3;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.dungeonId=0;
-         this.buddyId=0;
-         this.accept=false;
-         this._isInitialized=false;
+         this.dungeonId = 0;
+         this.buddyId = 0;
+         this.accept = false;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_TeleportToBuddyAnswerMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_TeleportToBuddyAnswerMessage(param1);
       }
-
-      public function serializeAs_TeleportToBuddyAnswerMessage(output:IDataOutput) : void {
-         if(this.dungeonId<0)
+      
+      public function serializeAs_TeleportToBuddyAnswerMessage(param1:IDataOutput) : void {
+         if(this.dungeonId < 0)
          {
-            throw new Error("Forbidden value ("+this.dungeonId+") on element dungeonId.");
+            throw new Error("Forbidden value (" + this.dungeonId + ") on element dungeonId.");
          }
          else
          {
-            output.writeShort(this.dungeonId);
-            if(this.buddyId<0)
+            param1.writeShort(this.dungeonId);
+            if(this.buddyId < 0)
             {
-               throw new Error("Forbidden value ("+this.buddyId+") on element buddyId.");
+               throw new Error("Forbidden value (" + this.buddyId + ") on element buddyId.");
             }
             else
             {
-               output.writeInt(this.buddyId);
-               output.writeBoolean(this.accept);
+               param1.writeInt(this.buddyId);
+               param1.writeBoolean(this.accept);
                return;
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_TeleportToBuddyAnswerMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_TeleportToBuddyAnswerMessage(param1);
       }
-
-      public function deserializeAs_TeleportToBuddyAnswerMessage(input:IDataInput) : void {
-         this.dungeonId=input.readShort();
-         if(this.dungeonId<0)
+      
+      public function deserializeAs_TeleportToBuddyAnswerMessage(param1:IDataInput) : void {
+         this.dungeonId = param1.readShort();
+         if(this.dungeonId < 0)
          {
-            throw new Error("Forbidden value ("+this.dungeonId+") on element of TeleportToBuddyAnswerMessage.dungeonId.");
+            throw new Error("Forbidden value (" + this.dungeonId + ") on element of TeleportToBuddyAnswerMessage.dungeonId.");
          }
          else
          {
-            this.buddyId=input.readInt();
-            if(this.buddyId<0)
+            this.buddyId = param1.readInt();
+            if(this.buddyId < 0)
             {
-               throw new Error("Forbidden value ("+this.buddyId+") on element of TeleportToBuddyAnswerMessage.buddyId.");
+               throw new Error("Forbidden value (" + this.buddyId + ") on element of TeleportToBuddyAnswerMessage.buddyId.");
             }
             else
             {
-               this.accept=input.readBoolean();
+               this.accept = param1.readBoolean();
                return;
             }
          }
       }
    }
-
 }

@@ -15,15 +15,13 @@ package com.ankamagames.dofus.logic.game.common.managers
    import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
    import flash.events.TimerEvent;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
-
-
+   
    public class SpeakingItemManager extends Object implements IDestroyable
    {
-         
-
+      
       public function SpeakingItemManager() {
          super();
-         if(_self!=null)
+         if(_self != null)
          {
             throw new SingletonError("TimeManager is a singleton and should not be instanciated directly.");
          }
@@ -33,231 +31,218 @@ package com.ankamagames.dofus.logic.game.common.managers
             return;
          }
       }
-
+      
       private static const SPEAKING_ITEMS_MSG_COUNT:Number = 30;
-
+      
       private static const SPEAKING_ITEMS_MSG_COUNT_DELTA:Number = 0.2;
-
+      
       private static const SPEAKING_ITEMS_CHAT_PROBA:Number = 0.01;
-
+      
       private static var _timer:Timer;
-
-      public static const MINUTE_DELAY:int = 1000*60;
-
+      
+      public static const MINUTE_DELAY:int = 1000 * 60;
+      
       public static const GREAT_DROP_LIMIT:int = 10;
-
+      
       public static const SPEAK_TRIGGER_MINUTE:int = 1;
-
+      
       public static const SPEAK_TRIGGER_AGRESS:int = 2;
-
+      
       public static const SPEAK_TRIGGER_AGRESSED:int = 3;
-
+      
       public static const SPEAK_TRIGGER_KILL_ENEMY:int = 4;
-
+      
       public static const SPEAK_TRIGGER_KILLED_BY_ENEMY:int = 5;
-
+      
       public static const SPEAK_TRIGGER_CC_OWNER:int = 6;
-
+      
       public static const SPEAK_TRIGGER_EC_OWNER:int = 7;
-
+      
       public static const SPEAK_TRIGGER_FIGHT_WON:int = 8;
-
+      
       public static const SPEAK_TRIGGER_FIGHT_LOST:int = 9;
-
+      
       public static const SPEAK_TRIGGER_NEW_ENEMY_WEAK:int = 10;
-
+      
       public static const SPEAK_TRIGGER_NEW_ENEMY_STRONG:int = 11;
-
+      
       public static const SPEAK_TRIGGER_CC_ALLIED:int = 12;
-
+      
       public static const SPEAK_TRIGGER_EC_ALLIED:int = 13;
-
+      
       public static const SPEAK_TRIGGER_CC_ENEMY:int = 14;
-
+      
       public static const SPEAK_TRIGGER_EC_ENEMY:int = 15;
-
+      
       public static const SPEAK_TRIGGER_ON_CONNECT:int = 16;
-
+      
       public static const SPEAK_TRIGGER_KILL_ALLY:int = 17;
-
+      
       public static const SPEAK_TRIGGER_KILLED_BY_ALLY:int = 18;
-
+      
       public static const SPEAK_TRIGGER_GREAT_DROP:int = 19;
-
+      
       public static const SPEAK_TRIGGER_KILLED_HIMSELF:int = 20;
-
+      
       public static const SPEAK_TRIGGER_CRAFT_OK:int = 21;
-
+      
       public static const SPEAK_TRIGGER_CRAFT_KO:int = 22;
-
+      
       private static var _self:SpeakingItemManager;
-
+      
       public static function getInstance() : SpeakingItemManager {
-         if(_self==null)
+         if(_self == null)
          {
-            _self=new SpeakingItemManager();
+            _self = new SpeakingItemManager();
          }
          return _self;
       }
-
+      
       private var _nextMessageCount:int;
-
+      
       public function get speakTimerMinuteDelay() : int {
          return _timer.delay;
       }
-
-      public function set speakTimerMinuteDelay(delay:int) : void {
-         _timer.delay=delay;
+      
+      public function set speakTimerMinuteDelay(param1:int) : void {
+         _timer.delay = param1;
          _timer.stop();
          _timer.start();
       }
-
-      public function triggerEvent(nEvent:int) : void {
-         var item:ItemWrapper = null;
-         var strId:String = null;
-         var i:* = 0;
-         var msgId:* = NaN;
-         var ok:* = false;
-         var media:* = NaN;
-         var speakingText:SpeakingItemText = null;
-         var restriction:Array = null;
-         var msg:LivingObjectMessageRequestMessage = null;
+      
+      public function triggerEvent(param1:int) : void {
+         var _loc4_:ItemWrapper = null;
+         var _loc8_:String = null;
+         var _loc9_:* = 0;
+         var _loc10_:* = NaN;
+         var _loc11_:* = false;
+         var _loc12_:* = NaN;
+         var _loc13_:SpeakingItemText = null;
+         var _loc14_:Array = null;
+         var _loc15_:LivingObjectMessageRequestMessage = null;
          if(!Kernel.getWorker().getFrame(ChatFrame))
          {
             return;
          }
-         var opt:Boolean = OptionManager.getOptionManager("chat").letLivingObjectTalk;
-         if(!opt)
+         var _loc2_:Boolean = OptionManager.getOptionManager("chat").letLivingObjectTalk;
+         if(!_loc2_)
          {
             return;
          }
-         var items:Array = new Array();
-         for each (item in InventoryManager.getInstance().inventory.getView("equipment").content)
+         var _loc3_:Array = new Array();
+         for each (_loc4_ in InventoryManager.getInstance().inventory.getView("equipment").content)
          {
-            if((item)&&(item.isSpeakingObject))
+            if((_loc4_) && (_loc4_.isSpeakingObject))
             {
-               items.push(item);
+               _loc3_.push(_loc4_);
             }
          }
-         if(items.length==0)
+         if(_loc3_.length == 0)
          {
             return;
          }
          this._nextMessageCount--;
-         this._nextMessageCount=this._nextMessageCount-(items.length-1)/4;
-         if(this._nextMessageCount>0)
+         this._nextMessageCount = this._nextMessageCount - (_loc3_.length-1) / 4;
+         if(this._nextMessageCount > 0)
          {
             return;
          }
-         var triggersAssoc:SpeakingItemsTrigger = SpeakingItemsTrigger.getSpeakingItemsTriggerById(nEvent);
-         var itemWrapper:ItemWrapper = items[Math.floor(Math.random()*items.length)];
-         var tmpTriggersAssoc:Array = new Array();
-         if(triggersAssoc)
+         var _loc5_:SpeakingItemsTrigger = SpeakingItemsTrigger.getSpeakingItemsTriggerById(param1);
+         var _loc6_:ItemWrapper = _loc3_[Math.floor(Math.random() * _loc3_.length)];
+         var _loc7_:Array = new Array();
+         if(_loc5_)
          {
-            strId=itemWrapper.objectGID.toString();
-            i=0;
-            while(i<triggersAssoc.textIds.length)
+            _loc8_ = _loc6_.objectGID.toString();
+            _loc9_ = 0;
+            while(_loc9_ < _loc5_.textIds.length)
             {
-               if((itemWrapper.isLivingObject)&&(!(triggersAssoc.states[i]==itemWrapper.livingObjectMood)))
+               if(!((_loc6_.isLivingObject) && !(_loc5_.states[_loc9_] == _loc6_.livingObjectMood)))
                {
-               }
-               else
-               {
-                  speakingText=SpeakingItemText.getSpeakingItemTextById(triggersAssoc.textIds[i]);
-                  if(!speakingText)
+                  _loc13_ = SpeakingItemText.getSpeakingItemTextById(_loc5_.textIds[_loc9_]);
+                  if(_loc13_)
                   {
-                  }
-                  else
-                  {
-                     if((speakingText.textLevel<itemWrapper.livingObjectLevel)&&(itemWrapper.isLivingObject))
+                     if(!(_loc13_.textLevel > _loc6_.livingObjectLevel && (_loc6_.isLivingObject)))
                      {
-                     }
-                     else
-                     {
-                        restriction=speakingText.textRestriction.split(",");
-                        if((!(speakingText.textRestriction==""))&&(restriction.indexOf(strId)==-1))
+                        _loc14_ = _loc13_.textRestriction.split(",");
+                        if(!(!(_loc13_.textRestriction == "") && _loc14_.indexOf(_loc8_) == -1))
                         {
-                        }
-                        else
-                        {
-                           tmpTriggersAssoc.push(triggersAssoc.textIds[i]);
+                           _loc7_.push(_loc5_.textIds[_loc9_]);
                         }
                      }
                   }
                }
-               i++;
+               _loc9_++;
             }
-            if(tmpTriggersAssoc.length==0)
+            if(_loc7_.length == 0)
             {
                return;
             }
-            ok=false;
-            i=0;
-            while(i<10)
+            _loc11_ = false;
+            _loc9_ = 0;
+            while(_loc9_ < 10)
             {
-               msgId=tmpTriggersAssoc[Math.floor(Math.random()*tmpTriggersAssoc.length)];
-               speakingText=SpeakingItemText.getSpeakingItemTextById(msgId);
-               if(Math.random()<speakingText.textProba)
+               _loc10_ = _loc7_[Math.floor(Math.random() * _loc7_.length)];
+               _loc13_ = SpeakingItemText.getSpeakingItemTextById(_loc10_);
+               if(Math.random() < _loc13_.textProba)
                {
-                  ok=true;
+                  _loc11_ = true;
                }
-               i++;
+               _loc9_++;
             }
-            if(!ok)
+            if(!_loc11_)
             {
                return;
             }
-            if(speakingText.textSound!=-1)
+            if(_loc13_.textSound != -1)
             {
-               media=Math.floor(Math.random()*3);
+               _loc12_ = Math.floor(Math.random() * 3);
             }
             else
             {
-               media=1;
+               _loc12_ = 1;
             }
-            if(Math.random()<SPEAKING_ITEMS_CHAT_PROBA)
+            if(Math.random() < SPEAKING_ITEMS_CHAT_PROBA)
             {
-               msg=new LivingObjectMessageRequestMessage();
-               msg.msgId=speakingText.textId;
-               msg.livingObject=itemWrapper.objectUID;
-               ConnectionsHandler.getConnection().send(msg);
+               _loc15_ = new LivingObjectMessageRequestMessage();
+               _loc15_.msgId = _loc13_.textId;
+               _loc15_.livingObject = _loc6_.objectUID;
+               ConnectionsHandler.getConnection().send(_loc15_);
             }
             else
             {
-               KernelEventsManager.getInstance().processCallback(ChatHookList.ChatSpeakingItem,ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,itemWrapper,speakingText.textString,TimeManager.getInstance().getTimestamp());
+               KernelEventsManager.getInstance().processCallback(ChatHookList.ChatSpeakingItem,ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,_loc6_,_loc13_.textString,TimeManager.getInstance().getTimestamp());
             }
          }
          this.generateNextMsgCount(false);
       }
-
+      
       public function destroy() : void {
-         _self=null;
+         _self = null;
          _timer.removeEventListener("timer",this.onTimer);
       }
-
+      
       private function init() : void {
-         _timer=new Timer(MINUTE_DELAY);
+         _timer = new Timer(MINUTE_DELAY);
          _timer.addEventListener(TimerEvent.TIMER,this.onTimer);
          _timer.start();
          this.generateNextMsgCount(true);
       }
-
-      private function generateNextMsgCount(noMin:Boolean) : void {
-         var msgCount:Number = SPEAKING_ITEMS_MSG_COUNT;
-         var delta:Number = SPEAKING_ITEMS_MSG_COUNT_DELTA;
-         if(noMin)
+      
+      private function generateNextMsgCount(param1:Boolean) : void {
+         var _loc2_:Number = SPEAKING_ITEMS_MSG_COUNT;
+         var _loc3_:Number = SPEAKING_ITEMS_MSG_COUNT_DELTA;
+         if(param1)
          {
-            this._nextMessageCount=Math.floor(msgCount*Math.random());
+            this._nextMessageCount = Math.floor(_loc2_ * Math.random());
          }
          else
          {
-            this._nextMessageCount=msgCount+Math.floor(2*delta*Math.random());
+            this._nextMessageCount = _loc2_ + Math.floor(2 * _loc3_ * Math.random());
          }
       }
-
-      private function onTimer(event:TimerEvent) : void {
+      
+      private function onTimer(param1:TimerEvent) : void {
          this.triggerEvent(SPEAK_TRIGGER_MINUTE);
       }
    }
-
 }

@@ -14,6 +14,7 @@ package com.ankamagames.dofus.internalDatacenter.items
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.data.XmlConfig;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffectInteger;
    import com.ankamagames.jerakine.utils.display.spellZone.IZoneShape;
    import com.ankamagames.jerakine.utils.display.spellZone.ZoneEffect;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
@@ -26,659 +27,692 @@ package com.ankamagames.dofus.internalDatacenter.items
    import com.ankamagames.dofus.datacenter.livingObjects.LivingObjectSkinJntMood;
    import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
    import com.ankamagames.dofus.misc.ObjectEffectAdapter;
-
-
+   
    public class ItemWrapper extends Item implements ISlotData, ICellZoneProvider, IDataCenter
    {
-         
-
+      
       public function ItemWrapper() {
-         this.effects=new Vector.<EffectInstance>();
+         this.effects = new Vector.<EffectInstance>();
          super();
       }
-
+      
       private static const _log:Logger = Log.getLogger(getQualifiedClassName(ItemWrapper));
-
+      
       public static const ITEM_TYPE_CERTIFICATE:uint = 97;
-
+      
       public static const ITEM_TYPE_LIVING_OBJECT:uint = 113;
-
+      
       public static const ACTION_ID_LIVING_OBJECT_FOOD_DATE:uint = 808;
-
+      
       public static const ACTION_ID_LIVING_OBJECT_ID:uint = 970;
-
+      
       public static const ACTION_ID_LIVING_OBJECT_MOOD:uint = 971;
-
+      
       public static const ACTION_ID_LIVING_OBJECT_SKIN:uint = 972;
-
+      
       public static const ACTION_ID_LIVING_OBJECT_CATEGORY:uint = 973;
-
+      
       public static const ACTION_ID_LIVING_OBJECT_LEVEL:uint = 974;
-
+      
       public static const ACTION_ID_USE_PRESET:uint = 707;
-
+      
       public static const ACTION_ID_SPEAKING_OBJECT:uint = 1102;
-
+      
+      public static const ACTION_ITEM_SKIN_ITEM:uint = 1151;
+      
       public static const GID_PRESET_SHORTCUT_ITEM:int = 11589;
-
+      
       private static const LEVEL_STEP:Array = [0,10,21,33,46,60,75,91,108,126,145,165,186,208,231,255,280,306,333,361];
-
-      private static const EQUIPMENT_SUPER_TYPES:Array = [1,2,3,4,5,7,8,10,11,12,13];
-
+      
+      private static const EQUIPMENT_SUPER_TYPES:Array = [1,2,3,4,5,7,8,10,11,12,13,23];
+      
       private static const OBJECT_GID_SOULSTONE:uint = 7010;
-
+      
       private static const OBJECT_GID_SOULSTONE_BOSS:uint = 10417;
-
+      
       private static const OBJECT_GID_SOULSTONE_MINIBOSS:uint = 10418;
-
+      
       public static var MEMORY_LOG:Dictionary = new Dictionary(true);
-
+      
       private static var _cache:Array = new Array();
-
+      
       private static var _errorIconUri:Uri;
-
+      
       private static var _fullSizeErrorIconUri:Uri;
-
+      
       private static var _uriLoaderContext:LoaderContext;
-
+      
       private static var _uniqueIndex:int;
-
+      
       private static var _properties:Array;
-
-      public static function create(position:uint, objectUID:uint, objectGID:uint, quantity:uint, newEffects:Vector.<ObjectEffect>, useCache:Boolean=true) : ItemWrapper {
-         var item:ItemWrapper = null;
-         var refItem:Item = Item.getItemById(objectGID);
-         if((!_cache[objectUID])||(!useCache))
+      
+      public static function create(param1:uint, param2:uint, param3:uint, param4:uint, param5:Vector.<ObjectEffect>, param6:Boolean=true) : ItemWrapper {
+         var _loc7_:ItemWrapper = null;
+         var _loc8_:Item = Item.getItemById(param3);
+         if(!_cache[param2] || !param6)
          {
-            if(refItem.isWeapon)
+            if(_loc8_.isWeapon)
             {
-               item=new WeaponWrapper();
+               _loc7_ = new WeaponWrapper();
             }
             else
             {
-               item=new ItemWrapper();
+               _loc7_ = new ItemWrapper();
             }
-            item.objectUID=objectUID;
-            if(useCache)
+            _loc7_.objectUID = param2;
+            if(param6)
             {
-               _cache[objectUID]=item;
+               _cache[param2] = _loc7_;
             }
          }
          else
          {
-            item=_cache[objectUID];
+            _loc7_ = _cache[param2];
          }
-         MEMORY_LOG[item]=1;
-         item.effectsList=newEffects;
-         item.isPresetObject=objectGID==GID_PRESET_SHORTCUT_ITEM;
-         if(item.objectGID!=objectGID)
+         MEMORY_LOG[_loc7_] = 1;
+         _loc7_.effectsList = param5;
+         _loc7_.isPresetObject = param3 == GID_PRESET_SHORTCUT_ITEM;
+         if(_loc7_.objectGID != param3)
          {
-            item._uri=null;
-            item._uriPngMode=null;
+            _loc7_._uri = null;
+            _loc7_._uriPngMode = null;
          }
-         refItem.copy(refItem,item);
-         item.position=position;
-         item.objectGID=objectGID;
-         item.quantity=quantity;
+         _loc8_.copy(_loc8_,_loc7_);
+         _loc7_.position = param1;
+         _loc7_.objectGID = param3;
+         _loc7_.quantity = param4;
          _uniqueIndex++;
-         item.sortOrder=_uniqueIndex;
-         item.livingObjectCategory=0;
-         item.effects=new Vector.<EffectInstance>();
-         item.linked=false;
-         item.updateEffects(newEffects);
-         return item;
+         _loc7_.sortOrder = _uniqueIndex;
+         _loc7_.livingObjectCategory = 0;
+         _loc7_.effects = new Vector.<EffectInstance>();
+         _loc7_.exchangeAllowed = true;
+         _loc7_.updateEffects(param5);
+         return _loc7_;
       }
-
+      
       public static function clearCache() : void {
-         _cache=new Array();
+         _cache = new Array();
       }
-
-      public static function getItemFromUId(objectUID:uint) : ItemWrapper {
-         return _cache[objectUID];
+      
+      public static function getItemFromUId(param1:uint) : ItemWrapper {
+         return _cache[param1];
       }
-
+      
       private var _uriPngMode:Uri;
-
+      
       private var _backGroundIconUri:Uri;
-
+      
       private var _active:Boolean = true;
-
+      
       private var _uri:Uri;
-
+      
       private var _shortName:String;
-
+      
+      private var _mimicryItemSkinGID:int;
+      
       private var _setCount:int = 0;
-
+      
       public var position:uint = 63;
-
+      
       public var sortOrder:uint = 0;
-
+      
       public var objectUID:uint = 0;
-
+      
       public var objectGID:uint = 0;
-
+      
       public var quantity:uint = 0;
-
+      
       public var effects:Vector.<EffectInstance>;
-
+      
       public var effectsList:Vector.<ObjectEffect>;
-
+      
       public var livingObjectId:uint;
-
+      
       public var livingObjectMood:uint;
-
+      
       public var livingObjectSkin:uint;
-
+      
       public var livingObjectCategory:uint;
-
+      
       public var livingObjectXp:uint;
-
+      
       public var livingObjectMaxXp:uint;
-
+      
       public var livingObjectLevel:uint;
-
+      
       public var livingObjectFoodDate:String;
-
+      
       public var presetIcon:int = -1;
-
-      public var linked:Boolean;
-
+      
+      public var exchangeAllowed:Boolean;
+      
       public var isPresetObject:Boolean;
-
+      
       public var isOkForMultiUse:Boolean;
-
+      
       public function get iconUri() : Uri {
          return this.getIconUri(true);
       }
-
+      
       override public function get weight() : uint {
-         var i:EffectInstance = null;
-         for each (i in this.effects)
+         var _loc1_:EffectInstance = null;
+         for each (_loc1_ in this.effects)
          {
-            if(i.effectId==1081)
+            if(_loc1_.effectId == 1081)
             {
-               return realWeight+i.parameter0;
+               return realWeight + _loc1_.parameter0;
             }
          }
          return realWeight;
       }
-
+      
       public function get fullSizeIconUri() : Uri {
          return this.getIconUri(false);
       }
-
+      
       public function get backGroundIconUri() : Uri {
+         if(this.linked)
+         {
+            this._backGroundIconUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin").concat("bitmap/linkedSlot.png"));
+         }
          if(!this._backGroundIconUri)
          {
-            this._backGroundIconUri=new Uri(XmlConfig.getInstance().getEntry("config.ui.skin").concat("bitmap/emptySlot.png"));
+            this._backGroundIconUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin").concat("bitmap/emptySlot.png"));
          }
          return this._backGroundIconUri;
       }
-
-      public function set backGroundIconUri(bgUri:Uri) : void {
-         this._backGroundIconUri=bgUri;
+      
+      public function set backGroundIconUri(param1:Uri) : void {
+         this._backGroundIconUri = param1;
       }
-
+      
       public function get errorIconUri() : Uri {
          if(!_errorIconUri)
          {
-            _errorIconUri=new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.bitmap").concat("error.png"));
+            _errorIconUri = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.bitmap").concat("error.png"));
          }
          return _errorIconUri;
       }
-
+      
       public function get fullSizeErrorIconUri() : Uri {
          if(!_fullSizeErrorIconUri)
          {
-            _fullSizeErrorIconUri=new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.vector").concat("error.swf"));
+            _fullSizeErrorIconUri = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.vector").concat("error.swf"));
          }
          return _fullSizeErrorIconUri;
       }
-
+      
       public function get isSpeakingObject() : Boolean {
-         var effect:ObjectEffect = null;
+         var _loc1_:ObjectEffect = null;
          if(this.isLivingObject)
          {
             return true;
          }
-         for each (effect in this.effectsList)
+         for each (_loc1_ in this.effectsList)
          {
-            if(effect.actionId==ACTION_ID_SPEAKING_OBJECT)
+            if(_loc1_.actionId == ACTION_ID_SPEAKING_OBJECT)
             {
                return true;
             }
          }
          return false;
       }
-
+      
       public function get isLivingObject() : Boolean {
-         return !(this.livingObjectCategory==0);
+         return !(this.livingObjectCategory == 0);
       }
-
+      
+      public function get isMimicryObject() : Boolean {
+         var _loc1_:ObjectEffect = null;
+         if(this.isLivingObject)
+         {
+            return false;
+         }
+         for each (_loc1_ in this.effectsList)
+         {
+            if(_loc1_.actionId == ACTION_ITEM_SKIN_ITEM)
+            {
+               this._mimicryItemSkinGID = (_loc1_ as ObjectEffectInteger).value;
+               return true;
+            }
+         }
+         return false;
+      }
+      
       public function get info1() : String {
-         return this.quantity<1?this.quantity.toString():null;
+         return this.quantity > 1?this.quantity.toString():null;
       }
-
+      
+      public function get startTime() : int {
+         return 0;
+      }
+      
+      public function get endTime() : int {
+         return 0;
+      }
+      
+      public function set endTime(param1:int) : void {
+      }
+      
       public function get timer() : int {
          return 0;
       }
-
+      
       public function get active() : Boolean {
          return this._active;
       }
-
-      public function set active(b:Boolean) : void {
-         this._active=b;
+      
+      public function set active(param1:Boolean) : void {
+         this._active = param1;
       }
-
-      public function set minimalRange(pMinRange:uint) : void {
-         
+      
+      public function set minimalRange(param1:uint) : void {
       }
-
+      
       public function get minimalRange() : uint {
          return hasOwnProperty("minRange")?this["minRange"]:0;
       }
-
-      public function set maximalRange(pRange:uint) : void {
-         
+      
+      public function set maximalRange(param1:uint) : void {
       }
-
+      
       public function get maximalRange() : uint {
          return hasOwnProperty("range")?this["range"]:0;
       }
-
-      public function set castZoneInLine(pCastInLine:Boolean) : void {
-         
+      
+      public function set castZoneInLine(param1:Boolean) : void {
       }
-
+      
       public function get castZoneInLine() : Boolean {
          return hasOwnProperty("castInLine")?this["castInLine"]:0;
       }
-
-      public function set castZoneInDiagonal(pCastInDiagonal:Boolean) : void {
-         
+      
+      public function set castZoneInDiagonal(param1:Boolean) : void {
       }
-
+      
       public function get castZoneInDiagonal() : Boolean {
          return hasOwnProperty("castInDiagonal")?this["castInDiagonal"]:0;
       }
-
+      
       public function get spellZoneEffects() : Vector.<IZoneShape> {
-         var i:EffectInstance = null;
-         var zone:ZoneEffect = null;
-         var spellEffects:Vector.<IZoneShape> = new Vector.<IZoneShape>();
-         for each (i in this.effects)
+         var _loc2_:EffectInstance = null;
+         var _loc3_:ZoneEffect = null;
+         var _loc1_:Vector.<IZoneShape> = new Vector.<IZoneShape>();
+         for each (_loc2_ in this.effects)
          {
-            zone=new ZoneEffect(i.zoneSize,i.zoneShape);
-            spellEffects.push(zone);
+            _loc3_ = new ZoneEffect(_loc2_.zoneSize,_loc2_.zoneShape);
+            _loc1_.push(_loc3_);
          }
-         return spellEffects;
+         return _loc1_;
       }
-
+      
       public function toString() : String {
-         return "[ItemWrapper#"+this.objectUID+"_"+this.name+"]";
+         return "[ItemWrapper#" + this.objectUID + "_" + this.name + "]";
       }
-
+      
       public function get isCertificate() : Boolean {
-         var itbt:Item = Item.getItemById(this.objectGID);
-         return (itbt)&&(itbt.typeId==ITEM_TYPE_CERTIFICATE);
+         var _loc1_:Item = Item.getItemById(this.objectGID);
+         return (_loc1_) && _loc1_.typeId == ITEM_TYPE_CERTIFICATE;
       }
-
+      
       public function get isEquipment() : Boolean {
-         var itbt:Item = Item.getItemById(this.objectGID);
-         return (itbt)&&(!(EQUIPMENT_SUPER_TYPES.indexOf(itbt.type.superTypeId)==-1));
+         var _loc1_:Item = Item.getItemById(this.objectGID);
+         return (_loc1_) && !(EQUIPMENT_SUPER_TYPES.indexOf(_loc1_.type.superTypeId) == -1);
       }
-
+      
       public function get isUsable() : Boolean {
-         var itbt:Item = Item.getItemById(this.objectGID);
-         return (itbt)&&((itbt.usable)||(itbt.targetable));
+         var _loc1_:Item = Item.getItemById(this.objectGID);
+         return (_loc1_) && ((_loc1_.usable) || (_loc1_.targetable));
       }
-
+      
       public function get belongsToSet() : Boolean {
-         var itbt:Item = Item.getItemById(this.objectGID);
-         return (itbt)&&(!(itbt.itemSetId==-1));
+         var _loc1_:Item = Item.getItemById(this.objectGID);
+         return (_loc1_) && !(_loc1_.itemSetId == -1);
       }
-
+      
       public function get favoriteEffect() : Vector.<EffectInstance> {
-         var saO:Object = null;
-         var itbt:Item = null;
-         var boostedEffect:EffectInstance = null;
-         var effect:EffectInstance = null;
-         var result:Vector.<EffectInstance> = new Vector.<EffectInstance>();
+         var _loc2_:Object = null;
+         var _loc3_:Item = null;
+         var _loc4_:EffectInstance = null;
+         var _loc5_:EffectInstance = null;
+         var _loc1_:Vector.<EffectInstance> = new Vector.<EffectInstance>();
          if(PlayedCharacterManager.getInstance())
          {
-            saO=PlayedCharacterManager.getInstance().currentSubArea;
-            itbt=Item.getItemById(this.objectGID);
-            if((saO)&&(!(itbt.favoriteSubAreas.indexOf(saO.id)==-1)))
+            _loc2_ = PlayedCharacterManager.getInstance().currentSubArea;
+            _loc3_ = Item.getItemById(this.objectGID);
+            if((_loc2_) && !(_loc3_.favoriteSubAreas.indexOf(_loc2_.id) == -1))
             {
-               if((itbt.favoriteSubAreas)&&(itbt.favoriteSubAreas.length)&&(itbt.favoriteSubAreasBonus))
+               if((_loc3_.favoriteSubAreas) && (_loc3_.favoriteSubAreas.length) && (_loc3_.favoriteSubAreasBonus))
                {
-                  for each (effect in this.effects)
+                  for each (_loc5_ in this.effects)
                   {
-                     if((effect is EffectInstanceInteger)&&(Effect.getEffectById(effect.effectId).bonusType==1))
+                     if(_loc5_ is EffectInstanceInteger && Effect.getEffectById(_loc5_.effectId).bonusType == 1)
                      {
-                        boostedEffect=effect.clone();
-                        EffectInstanceInteger(boostedEffect).value=Math.floor(EffectInstanceInteger(boostedEffect).value*itbt.favoriteSubAreasBonus/100);
-                        if(EffectInstanceInteger(boostedEffect).value)
+                        _loc4_ = _loc5_.clone();
+                        EffectInstanceInteger(_loc4_).value = Math.floor(EffectInstanceInteger(_loc4_).value * _loc3_.favoriteSubAreasBonus / 100);
+                        if(EffectInstanceInteger(_loc4_).value)
                         {
-                           result.push(boostedEffect);
+                           _loc1_.push(_loc4_);
                         }
                      }
                   }
                }
             }
          }
-         return result;
+         return _loc1_;
       }
-
+      
       public function get setCount() : int {
          return this._setCount;
       }
-
+      
       override public function get name() : String {
-         if(this.shortName==super.name)
+         if(this.shortName == super.name)
          {
             return super.name;
          }
          switch(this.objectGID)
          {
             case OBJECT_GID_SOULSTONE_MINIBOSS:
-               return I18n.getUiText("ui.item.miniboss")+I18n.getUiText("ui.common.colon")+this.shortName;
+               return I18n.getUiText("ui.item.miniboss") + I18n.getUiText("ui.common.colon") + this.shortName;
             case OBJECT_GID_SOULSTONE_BOSS:
-               return I18n.getUiText("ui.item.boss")+I18n.getUiText("ui.common.colon")+this.shortName;
+               return I18n.getUiText("ui.item.boss") + I18n.getUiText("ui.common.colon") + this.shortName;
             case OBJECT_GID_SOULSTONE:
-               return I18n.getUiText("ui.item.soul")+I18n.getUiText("ui.common.colon")+this.shortName;
+               return I18n.getUiText("ui.item.soul") + I18n.getUiText("ui.common.colon") + this.shortName;
             default:
                return super.name;
          }
       }
-
+      
       public function get shortName() : String {
-         var bestLevel:* = 0;
-         var bestName:String = null;
-         var miniboss:Array = null;
-         var boss:Array = null;
-         var effect:EffectInstance = null;
-         var monster:Monster = null;
-         var grade:MonsterGrade = null;
+         var _loc1_:* = 0;
+         var _loc2_:String = null;
+         var _loc3_:Array = null;
+         var _loc4_:Array = null;
+         var _loc5_:EffectInstance = null;
+         var _loc6_:Monster = null;
+         var _loc7_:* = 0;
+         var _loc8_:MonsterGrade = null;
          if(!this._shortName)
          {
             switch(this.objectGID)
             {
                case OBJECT_GID_SOULSTONE:
-                  bestLevel=0;
-                  bestName=null;
-                  for each (effect in this.effects)
+                  _loc1_ = 0;
+                  _loc2_ = null;
+                  for each (_loc5_ in this.effects)
                   {
-                     monster=Monster.getMonsterById(int(effect.parameter2));
-                     if(monster)
+                     _loc6_ = Monster.getMonsterById(int(_loc5_.parameter2));
+                     if(_loc6_)
                      {
-                        grade=monster.grades[int(effect.parameter0)-1];
-                        if((grade)&&(grade.level<bestLevel))
+                        _loc7_ = int(_loc5_.parameter0);
+                        if(_loc7_ < 1 || _loc7_ > _loc6_.grades.length)
                         {
-                           bestLevel=grade.level;
-                           bestName=monster.name;
+                           _loc7_ = _loc6_.grades.length;
+                        }
+                        _loc8_ = _loc6_.grades[_loc7_-1];
+                        if((_loc8_) && _loc8_.level > _loc1_)
+                        {
+                           _loc1_ = _loc8_.level;
+                           _loc2_ = _loc6_.name;
                         }
                      }
                   }
-                  this._shortName=bestName;
+                  this._shortName = _loc2_;
                   break;
                case OBJECT_GID_SOULSTONE_MINIBOSS:
-                  miniboss=new Array();
-                  for each (effect in this.effects)
+                  _loc3_ = new Array();
+                  for each (_loc5_ in this.effects)
                   {
-                     monster=Monster.getMonsterById(int(effect.parameter2));
-                     if((monster)&&(monster.isMiniBoss))
+                     _loc6_ = Monster.getMonsterById(int(_loc5_.parameter2));
+                     if((_loc6_) && (_loc6_.isMiniBoss))
                      {
-                        miniboss.push(monster.name);
+                        _loc3_.push(_loc6_.name);
                      }
                   }
-                  if(miniboss.length)
+                  if(_loc3_.length)
                   {
-                     this._shortName=miniboss.join(", ");
+                     this._shortName = _loc3_.join(", ");
                   }
                   break;
                case OBJECT_GID_SOULSTONE_BOSS:
-                  boss=new Array();
-                  for each (effect in this.effects)
+                  _loc4_ = new Array();
+                  for each (_loc5_ in this.effects)
                   {
-                     monster=Monster.getMonsterById(int(effect.parameter2));
-                     if((monster)&&(monster.isBoss))
+                     _loc6_ = Monster.getMonsterById(int(_loc5_.parameter2));
+                     if((_loc6_) && (_loc6_.isBoss))
                      {
-                        boss.push(monster.name);
+                        _loc4_.push(_loc6_.name);
                      }
                   }
-                  if(boss.length)
+                  if(_loc4_.length)
                   {
-                     this._shortName=boss.join(", ");
+                     this._shortName = _loc4_.join(", ");
                   }
                   break;
             }
          }
          if(!this._shortName)
          {
-            this._shortName=super.name;
+            this._shortName = super.name;
          }
          return this._shortName;
       }
-
+      
       public function get realName() : String {
          return super.name;
       }
-
-      public function get isTradeable() : Boolean {
-         var effect:Object = null;
-         if(category==Item.QUEST_CATEGORY)
-         {
-            return false;
-         }
-         for each (effect in this.effects)
-         {
-            if((effect.effectId==981)||(effect.effectId==982))
-            {
-               return false;
-            }
-         }
-         return true;
+      
+      public function get linked() : Boolean {
+         return !exchangeable || !this.exchangeAllowed;
       }
-
-      public function update(position:uint, objectUID:uint, objectGID:uint, quantity:uint, newEffects:Vector.<ObjectEffect>) : void {
-         if((!(this.objectGID==objectGID))||(!(this.effectsList==newEffects)))
+      
+      public function update(param1:uint, param2:uint, param3:uint, param4:uint, param5:Vector.<ObjectEffect>) : void {
+         if(!(this.objectGID == param3) || !(this.effectsList == param5))
          {
-            this._uri=this._uriPngMode=null;
+            this._uri = this._uriPngMode = null;
          }
-         this.position=position;
-         this.objectGID=objectGID;
-         this.quantity=quantity;
-         this.effectsList=newEffects;
-         this.effects=new Vector.<EffectInstance>();
-         this.livingObjectCategory=0;
-         this.livingObjectId=0;
-         var refItem:Item = Item.getItemById(objectGID);
-         refItem.copy(refItem,this);
-         this.updateEffects(newEffects);
+         this.position = param1;
+         this.objectGID = param3;
+         this.quantity = param4;
+         this.effectsList = param5;
+         this.effects = new Vector.<EffectInstance>();
+         this.livingObjectCategory = 0;
+         this.livingObjectId = 0;
+         var _loc6_:* = Item.getItemById(param3);
+         _loc6_.copy(_loc6_,this);
+         this.updateEffects(param5);
          this._setCount++;
       }
-
-      public function getIconUri(pngMode:Boolean=true) : Uri {
-         var iconId:String = null;
-         if((pngMode)&&(this._uriPngMode))
+      
+      public function getIconUri(param1:Boolean=true) : Uri {
+         var _loc3_:String = null;
+         var _loc4_:Item = null;
+         if((param1) && (this._uriPngMode))
          {
             return this._uriPngMode;
          }
-         if((!pngMode)&&(this._uri))
+         if(!param1 && (this._uri))
          {
             return this._uri;
          }
-         var item:Item = Item.getItemById(this.objectGID);
-         if(this.presetIcon!=-1)
+         var _loc2_:Item = Item.getItemById(this.objectGID);
+         if(this.presetIcon != -1)
          {
-            this._uri=new Uri(XmlConfig.getInstance().getEntry("config.gfx.path").concat("presets/icons.swf|icon_").concat(this.presetIcon));
+            this._uri = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path").concat("presets/icons.swf|icon_").concat(this.presetIcon));
             if(!_uriLoaderContext)
             {
-               _uriLoaderContext=new LoaderContext();
+               _uriLoaderContext = new LoaderContext();
                AirScanner.allowByteCodeExecution(_uriLoaderContext,true);
             }
-            this._uri.loaderContext=_uriLoaderContext;
+            this._uri.loaderContext = _uriLoaderContext;
             return this._uri;
          }
          if(this.isLivingObject)
          {
-            iconId=LivingObjectSkinJntMood.getLivingObjectSkin(this.livingObjectId?this.livingObjectId:this.objectGID,this.livingObjectMood,this.livingObjectSkin).toString();
+            _loc3_ = LivingObjectSkinJntMood.getLivingObjectSkin(this.livingObjectId?this.livingObjectId:this.objectGID,this.livingObjectMood,this.livingObjectSkin).toString();
          }
          else
          {
-            iconId=item?item.iconId.toString():"error_on_item_"+this.objectGID+".png";
+            if(this.isMimicryObject)
+            {
+               _loc4_ = Item.getItemById(this._mimicryItemSkinGID);
+               _loc3_ = _loc4_?_loc4_.iconId.toString():"error_on_item_" + this.objectGID + ".png";
+            }
+            else
+            {
+               _loc3_ = _loc2_?_loc2_.iconId.toString():"error_on_item_" + this.objectGID + ".png";
+            }
          }
-         if(pngMode)
+         if(param1)
          {
-            this._uriPngMode=new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.bitmap").concat(iconId).concat(".png"));
+            this._uriPngMode = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.bitmap").concat(_loc3_).concat(".png"));
             return this._uriPngMode;
          }
-         this._uri=new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.vector").concat(iconId).concat(".swf"));
+         this._uri = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.vector").concat(_loc3_).concat(".swf"));
          if(!_uriLoaderContext)
          {
-            _uriLoaderContext=new LoaderContext();
+            _uriLoaderContext = new LoaderContext();
             AirScanner.allowByteCodeExecution(_uriLoaderContext,true);
          }
-         this._uri.loaderContext=_uriLoaderContext;
+         this._uri.loaderContext = _uriLoaderContext;
          return this._uri;
       }
-
-      public function clone(baseClass:Class=null) : ItemWrapper {
-         if(baseClass==null)
+      
+      public function clone(param1:Class=null) : ItemWrapper {
+         if(param1 == null)
          {
-            baseClass=ItemWrapper;
+            param1 = ItemWrapper;
          }
-         var item:ItemWrapper = new baseClass() as ItemWrapper;
-         MEMORY_LOG[item]=1;
-         item.copy(this,item);
-         item.objectUID=this.objectUID;
-         item.position=this.position;
-         item.objectGID=this.objectGID;
-         item.quantity=this.quantity;
-         item.effects=this.effects;
-         item.effectsList=this.effectsList;
-         item.livingObjectCategory=this.livingObjectCategory;
-         item.livingObjectFoodDate=this.livingObjectFoodDate;
-         item.livingObjectId=this.livingObjectId;
-         item.livingObjectLevel=this.livingObjectLevel;
-         item.livingObjectMood=this.livingObjectMood;
-         item.livingObjectSkin=this.livingObjectSkin;
-         item.livingObjectXp=this.livingObjectXp;
-         item.livingObjectMaxXp=this.livingObjectMaxXp;
-         item.linked=this.linked;
-         item.isOkForMultiUse=this.isOkForMultiUse;
-         item.sortOrder=this.sortOrder;
-         return item;
+         var _loc2_:ItemWrapper = new param1() as ItemWrapper;
+         MEMORY_LOG[_loc2_] = 1;
+         _loc2_.copy(this,_loc2_);
+         _loc2_.objectUID = this.objectUID;
+         _loc2_.position = this.position;
+         _loc2_.objectGID = this.objectGID;
+         _loc2_.quantity = this.quantity;
+         _loc2_.effects = this.effects;
+         _loc2_.effectsList = this.effectsList;
+         _loc2_.livingObjectCategory = this.livingObjectCategory;
+         _loc2_.livingObjectFoodDate = this.livingObjectFoodDate;
+         _loc2_.livingObjectId = this.livingObjectId;
+         _loc2_.livingObjectLevel = this.livingObjectLevel;
+         _loc2_.livingObjectMood = this.livingObjectMood;
+         _loc2_.livingObjectSkin = this.livingObjectSkin;
+         _loc2_.livingObjectXp = this.livingObjectXp;
+         _loc2_.livingObjectMaxXp = this.livingObjectMaxXp;
+         _loc2_.exchangeAllowed = this.exchangeAllowed;
+         _loc2_.isOkForMultiUse = this.isOkForMultiUse;
+         _loc2_.sortOrder = this.sortOrder;
+         return _loc2_;
       }
-
-      public function addHolder(h:ISlotDataHolder) : void {
-         
+      
+      public function addHolder(param1:ISlotDataHolder) : void {
       }
-
-      public function removeHolder(h:ISlotDataHolder) : void {
-         
+      
+      public function removeHolder(param1:ISlotDataHolder) : void {
       }
-
-      private function updateLivingObjects(effect:EffectInstance) : void {
-         switch(effect.effectId)
+      
+      private function updateLivingObjects(param1:EffectInstance) : void {
+         switch(param1.effectId)
          {
             case ACTION_ID_LIVING_OBJECT_FOOD_DATE:
-               this.livingObjectFoodDate=effect.description;
+               this.livingObjectFoodDate = param1.description;
                return;
-               break;
             case ACTION_ID_LIVING_OBJECT_ID:
-               this.livingObjectId=EffectInstanceInteger(effect).value;
+               this.livingObjectId = EffectInstanceInteger(param1).value;
                break;
             case ACTION_ID_LIVING_OBJECT_MOOD:
-               this.livingObjectMood=EffectInstanceInteger(effect).value;
+               this.livingObjectMood = EffectInstanceInteger(param1).value;
                break;
             case ACTION_ID_LIVING_OBJECT_SKIN:
-               this.livingObjectSkin=EffectInstanceInteger(effect).value;
+               this.livingObjectSkin = EffectInstanceInteger(param1).value;
                break;
             case ACTION_ID_LIVING_OBJECT_CATEGORY:
-               this.livingObjectCategory=EffectInstanceInteger(effect).value;
+               this.livingObjectCategory = EffectInstanceInteger(param1).value;
                break;
             case ACTION_ID_LIVING_OBJECT_LEVEL:
-               this.livingObjectLevel=this.getLivingObjectLevel(EffectInstanceInteger(effect).value);
-               this.livingObjectXp=EffectInstanceInteger(effect).value-LEVEL_STEP[this.livingObjectLevel-1];
-               this.livingObjectMaxXp=LEVEL_STEP[this.livingObjectLevel]-LEVEL_STEP[this.livingObjectLevel-1];
+               this.livingObjectLevel = this.getLivingObjectLevel(EffectInstanceInteger(param1).value);
+               this.livingObjectXp = EffectInstanceInteger(param1).value - LEVEL_STEP[this.livingObjectLevel-1];
+               this.livingObjectMaxXp = LEVEL_STEP[this.livingObjectLevel] - LEVEL_STEP[this.livingObjectLevel-1];
                break;
          }
       }
-
-      private function updatePresets(effect:EffectInstance) : void {
-         switch(effect.effectId)
+      
+      private function updatePresets(param1:EffectInstance) : void {
+         switch(param1.effectId)
          {
             case ACTION_ID_USE_PRESET:
-               this.presetIcon=int(effect.parameter0);
+               this.presetIcon = int(param1.parameter0);
                return;
             default:
                return;
          }
       }
-
-      private function getLivingObjectLevel(xp:int) : uint {
-         var i:int = 0;
-         while(i<LEVEL_STEP.length)
+      
+      private function getLivingObjectLevel(param1:int) : uint {
+         var _loc2_:* = 0;
+         while(_loc2_ < LEVEL_STEP.length)
          {
-            if(LEVEL_STEP[i]>xp)
+            if(LEVEL_STEP[_loc2_] > param1)
             {
-               return i;
+               return _loc2_;
             }
-            i++;
+            _loc2_++;
          }
          return LEVEL_STEP.length;
       }
-
-      private function updateEffects(updateEffects:Vector.<ObjectEffect>) : void {
-         var effect:ObjectEffect = null;
-         var effectInstance:EffectInstance = null;
-         var itbt:Item = Item.getItemById(this.objectGID);
-         var shape:uint = 0;
-         var ray:uint = 0;
-         if((itbt)&&(itbt.isWeapon))
+      
+      private function updateEffects(param1:Vector.<ObjectEffect>) : void {
+         var _loc5_:ObjectEffect = null;
+         var _loc6_:EffectInstance = null;
+         var _loc2_:Item = Item.getItemById(this.objectGID);
+         var _loc3_:uint = 0;
+         var _loc4_:uint = 0;
+         if((_loc2_) && (_loc2_.isWeapon))
          {
-            switch(itbt.typeId)
+            switch(_loc2_.typeId)
             {
                case 7:
-                  shape=88;
-                  ray=1;
+                  _loc3_ = 88;
+                  _loc4_ = 1;
                   break;
                case 4:
-                  shape=84;
-                  ray=1;
+                  _loc3_ = 84;
+                  _loc4_ = 1;
                   break;
                case 8:
-                  shape=76;
-                  ray=1;
+                  _loc3_ = 76;
+                  _loc4_ = 1;
                   break;
             }
          }
-         this.linked=false;
-         this.isOkForMultiUse=false;
-         for each (effect in updateEffects)
+         this.exchangeAllowed = true;
+         this.isOkForMultiUse = false;
+         for each (_loc5_ in param1)
          {
-            effectInstance=ObjectEffectAdapter.fromNetwork(effect);
-            if((shape)&&(effectInstance.category==2))
+            _loc6_ = ObjectEffectAdapter.fromNetwork(_loc5_);
+            if((_loc3_) && _loc6_.category == 2)
             {
-               effectInstance.zoneShape=shape;
-               effectInstance.zoneSize=ray;
+               _loc6_.zoneShape = _loc3_;
+               _loc6_.zoneSize = _loc4_;
             }
-            this.effects.push(effectInstance);
-            this.updateLivingObjects(effectInstance);
-            this.updatePresets(effectInstance);
-            if((effectInstance.effectId==139)||(effectInstance.effectId==110))
+            this.effects.push(_loc6_);
+            this.updateLivingObjects(_loc6_);
+            this.updatePresets(_loc6_);
+            if(_loc6_.effectId == 139 || _loc6_.effectId == 110)
             {
-               this.isOkForMultiUse=true;
+               this.isOkForMultiUse = true;
             }
-            if((effectInstance.effectId==981)||(effectInstance.effectId==982)||(effectInstance.effectId==983))
+            if(_loc6_.effectId == 983)
             {
-               this.linked=true;
+               this.exchangeAllowed = false;
+            }
+            if(_loc6_.effectId == 981 || _loc6_.effectId == 982)
+            {
+               exchangeable = false;
             }
          }
       }
    }
-
 }

@@ -4,80 +4,78 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class PartyKickRequestMessage extends AbstractPartyMessage implements INetworkMessage
    {
-         
-
+      
       public function PartyKickRequestMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 5592;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
-         return (super.isInitialized)&&(this._isInitialized);
+         return (super.isInitialized) && (this._isInitialized);
       }
-
+      
       public var playerId:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 5592;
       }
-
-      public function initPartyKickRequestMessage(partyId:uint=0, playerId:uint=0) : PartyKickRequestMessage {
-         super.initAbstractPartyMessage(partyId);
-         this.playerId=playerId;
-         this._isInitialized=true;
+      
+      public function initPartyKickRequestMessage(param1:uint=0, param2:uint=0) : PartyKickRequestMessage {
+         super.initAbstractPartyMessage(param1);
+         this.playerId = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
          super.reset();
-         this.playerId=0;
-         this._isInitialized=false;
+         this.playerId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      override public function serialize(output:IDataOutput) : void {
-         this.serializeAs_PartyKickRequestMessage(output);
+      
+      override public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_PartyKickRequestMessage(param1);
       }
-
-      public function serializeAs_PartyKickRequestMessage(output:IDataOutput) : void {
-         super.serializeAs_AbstractPartyMessage(output);
-         if(this.playerId<0)
+      
+      public function serializeAs_PartyKickRequestMessage(param1:IDataOutput) : void {
+         super.serializeAs_AbstractPartyMessage(param1);
+         if(this.playerId < 0)
          {
-            throw new Error("Forbidden value ("+this.playerId+") on element playerId.");
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
          }
          else
          {
-            output.writeInt(this.playerId);
+            param1.writeInt(this.playerId);
             return;
          }
       }
-
-      override public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_PartyKickRequestMessage(input);
+      
+      override public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_PartyKickRequestMessage(param1);
       }
-
-      public function deserializeAs_PartyKickRequestMessage(input:IDataInput) : void {
-         super.deserialize(input);
-         this.playerId=input.readInt();
-         if(this.playerId<0)
+      
+      public function deserializeAs_PartyKickRequestMessage(param1:IDataInput) : void {
+         super.deserialize(param1);
+         this.playerId = param1.readInt();
+         if(this.playerId < 0)
          {
-            throw new Error("Forbidden value ("+this.playerId+") on element of PartyKickRequestMessage.playerId.");
+            throw new Error("Forbidden value (" + this.playerId + ") on element of PartyKickRequestMessage.playerId.");
          }
          else
          {
@@ -85,5 +83,4 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          }
       }
    }
-
 }

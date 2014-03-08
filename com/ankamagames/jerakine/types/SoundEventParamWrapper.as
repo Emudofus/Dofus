@@ -1,40 +1,34 @@
 package com.ankamagames.jerakine.types
 {
-
-
    public class SoundEventParamWrapper extends Object
    {
-         
-
-      public function SoundEventParamWrapper(pId:String, pVolume:uint, pRollOff:uint, pBerceauDuree:int=-1, pBerceauVol:int=-1, pBerceauFadeIn:int=-1, pBerceauFadeOut:int=-1, pNoCutSilence:Boolean=false) {
+      
+      public function SoundEventParamWrapper(param1:String, param2:uint, param3:uint, param4:int=-1, param5:int=-1, param6:int=-1, param7:int=-1, param8:Boolean=false) {
          super();
-         this.id=pId;
-         this.volume=pVolume;
-         this.rollOff=pRollOff;
-         this.berceauDuree=pBerceauDuree;
-         this.berceauVol=pBerceauVol;
-         this.berceauFadeIn=pBerceauFadeIn;
-         this.berceauFadeOut=pBerceauFadeOut;
-         this.noCutSilence=pNoCutSilence;
+         this.id = param1;
+         this.volume = param2;
+         this.rollOff = param3;
+         this.berceauDuree = param4;
+         this.berceauVol = param5;
+         this.berceauFadeIn = param6;
+         this.berceauFadeOut = param7;
+         this.noCutSilence = param8;
       }
-
-
-
+      
       public var id:String;
-
+      
       public var volume:uint;
-
+      
       public var rollOff:uint;
-
+      
       public var berceauDuree:int;
-
+      
       public var berceauVol:int;
-
+      
       public var berceauFadeIn:int;
-
+      
       public var berceauFadeOut:int;
-
+      
       public var noCutSilence:Boolean;
    }
-
 }

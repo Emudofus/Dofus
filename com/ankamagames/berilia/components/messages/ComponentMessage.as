@@ -8,65 +8,62 @@ package com.ankamagames.berilia.components.messages
    import flash.display.DisplayObject;
    import com.ankamagames.jerakine.handlers.messages.InvalidCancelError;
    import com.ankamagames.jerakine.handlers.messages.Action;
-
-
+   
    public class ComponentMessage extends Object implements Message
    {
-         
-
-      public function ComponentMessage(target:InteractiveObject) {
+      
+      public function ComponentMessage(param1:InteractiveObject) {
          super();
-         this._target=target;
+         this._target = param1;
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ComponentMessage));
-
+      
       protected var _target:InteractiveObject;
-
+      
       private var _canceled:Boolean;
-
+      
       private var _actions:Array;
-
+      
       public var bubbling:Boolean;
-
+      
       public function get target() : DisplayObject {
          return this._target;
       }
-
+      
       public function get canceled() : Boolean {
          return this._canceled;
       }
-
-      public function set canceled(value:Boolean) : void {
+      
+      public function set canceled(param1:Boolean) : void {
          if(this.bubbling)
          {
             throw new InvalidCancelError("Can\'t cancel a bubbling message.");
          }
          else
          {
-            if((this._canceled)&&(!value))
+            if((this._canceled) && !param1)
             {
                throw new InvalidCancelError("Can\'t uncancel a canceled message.");
             }
             else
             {
-               this._canceled=value;
+               this._canceled = param1;
                return;
             }
          }
       }
-
+      
       public function get actions() : Array {
          return this._actions;
       }
-
-      public function addAction(action:Action) : void {
-         if(this._actions==null)
+      
+      public function addAction(param1:Action) : void {
+         if(this._actions == null)
          {
-            this._actions=new Array();
+            this._actions = new Array();
          }
-         this._actions.push(action);
+         this._actions.push(param1);
       }
    }
-
 }

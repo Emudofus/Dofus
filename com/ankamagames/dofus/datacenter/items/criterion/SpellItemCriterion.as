@@ -5,81 +5,72 @@ package com.ankamagames.dofus.datacenter.items.criterion
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.datacenter.spells.Spell;
    import com.ankamagames.jerakine.data.I18n;
-
-
+   
    public class SpellItemCriterion extends ItemCriterion implements IDataCenter
    {
-         
-
-      public function SpellItemCriterion(pCriterion:String) {
-         super(pCriterion);
-         var arrayParams:Array = String(_criterionValueText).split(",");
-         if((arrayParams)&&(arrayParams.length<0))
+      
+      public function SpellItemCriterion(param1:String) {
+         super(param1);
+         var _loc2_:Array = String(_criterionValueText).split(",");
+         if((_loc2_) && _loc2_.length > 0)
          {
-            if(arrayParams.length>1)
+            if(_loc2_.length <= 1)
             {
-               trace("Les paramètres pour le sort sont mauvais ! ("+_serverCriterionForm+")");
-            }
-            else
-            {
-               this._spellId=uint(arrayParams[0]);
+               this._spellId = uint(_loc2_[0]);
             }
          }
          else
          {
-            this._spellId=uint(_criterionValue);
+            this._spellId = uint(_criterionValue);
          }
       }
-
-
-
+      
       private var _spellId:uint;
-
+      
       override public function get isRespected() : Boolean {
-         var sp:SpellWrapper = null;
-         for each (sp in PlayedCharacterManager.getInstance().playerSpellList)
+         var _loc1_:SpellWrapper = null;
+         for each (_loc1_ in PlayedCharacterManager.getInstance().playerSpellList)
          {
-            if(sp.id==this._spellId)
+            if(_loc1_.id == this._spellId)
             {
-               if(_operator.text==ItemCriterionOperator.EQUAL)
+               if(_operator.text == ItemCriterionOperator.EQUAL)
                {
                   return true;
                }
                return false;
             }
          }
-         if(_operator.text==ItemCriterionOperator.DIFFERENT)
+         if(_operator.text == ItemCriterionOperator.DIFFERENT)
          {
             return true;
          }
          return false;
       }
-
+      
       override public function get text() : String {
-         var readableCriterionRef:String = "";
-         var readableCriterion:String = "";
-         var spell:Spell = Spell.getSpellById(this._spellId);
-         if(!spell)
+         var _loc1_:* = "";
+         var _loc2_:* = "";
+         var _loc3_:Spell = Spell.getSpellById(this._spellId);
+         if(!_loc3_)
          {
-            return readableCriterion;
+            return _loc2_;
          }
-         var readableCriterionValue:String = spell.name;
+         var _loc4_:String = _loc3_.name;
          switch(_operator.text)
          {
             case ItemCriterionOperator.EQUAL:
-               readableCriterion=I18n.getUiText("ui.criterion.gotSpell",[readableCriterionValue]);
+               _loc2_ = I18n.getUiText("ui.criterion.gotSpell",[_loc4_]);
                break;
             case ItemCriterionOperator.DIFFERENT:
-               readableCriterion=I18n.getUiText("ui.criterion.doesntGotSpell",[readableCriterionValue]);
+               _loc2_ = I18n.getUiText("ui.criterion.doesntGotSpell",[_loc4_]);
                break;
          }
-         return readableCriterion;
+         return _loc2_;
       }
-
+      
       override public function clone() : IItemCriterion {
-         var clonedCriterion:SpellItemCriterion = new SpellItemCriterion(this.basicText);
-         return clonedCriterion;
+         var _loc1_:SpellItemCriterion = new SpellItemCriterion(this.basicText);
+         return _loc1_;
       }
    }
-
 }

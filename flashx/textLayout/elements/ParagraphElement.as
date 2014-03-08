@@ -30,36 +30,35 @@ package flashx.textLayout.elements
    import flash.text.engine.TabAlignment;
    import flashx.textLayout.utils.LocaleUtil;
    import flashx.textLayout.formats.FormatValue;
-
+   
    use namespace tlf_internal;
-
+   
    public final class ParagraphElement extends ParagraphFormattedElement
    {
-         
-
+      
       public function ParagraphElement() {
          super();
-         this._terminatorSpan=null;
+         this._terminatorSpan = null;
       }
-
+      
       private static var _defaultTabStops:Vector.<TabStop>;
-
+      
       private static const defaultTabWidth:int = 48;
-
+      
       private static const defaultTabCount:int = 20;
-
+      
       private static function initializeDefaultTabStops() : void {
-         _defaultTabStops=new Vector.<TabStop>(defaultTabCount,true);
-         var i:int = 0;
-         while(i<defaultTabCount)
+         _defaultTabStops = new Vector.<TabStop>(defaultTabCount,true);
+         var _loc1_:* = 0;
+         while(_loc1_ < defaultTabCount)
          {
-            _defaultTabStops[i]=new TabStop(TextAlign.START,defaultTabWidth*i);
-            i++;
+            _defaultTabStops[_loc1_] = new TabStop(TextAlign.START,defaultTabWidth * _loc1_);
+            _loc1_++;
          }
       }
-
-      tlf_internal  static function getLeadingBasis(leadingModel:String) : String {
-         switch(leadingModel)
+      
+      tlf_internal  static function getLeadingBasis(param1:String) : String {
+         switch(null)
          {
             case LeadingModel.ASCENT_DESCENT_UP:
             case LeadingModel.APPROXIMATE_TEXT_FIELD:
@@ -71,14 +70,13 @@ package flashx.textLayout.elements
             case LeadingModel.IDEOGRAPHIC_CENTER_UP:
                return TextBaseline.IDEOGRAPHIC_TOP;
             case LeadingModel.IDEOGRAPHIC_CENTER_DOWN:
-               return TextBaseline.IDEOGRAPHIC_CENTER;
             default:
                return TextBaseline.IDEOGRAPHIC_CENTER;
          }
       }
-
-      tlf_internal  static function useUpLeadingDirection(leadingModel:String) : Boolean {
-         switch(leadingModel)
+      
+      tlf_internal  static function useUpLeadingDirection(param1:String) : Boolean {
+         switch(null)
          {
             case LeadingModel.ASCENT_DESCENT_UP:
             case LeadingModel.APPROXIMATE_TEXT_FIELD:
@@ -89,69 +87,68 @@ package flashx.textLayout.elements
             case LeadingModel.IDEOGRAPHIC_TOP_DOWN:
                return true;
             case LeadingModel.IDEOGRAPHIC_CENTER_DOWN:
-               return false;
             default:
                return false;
          }
       }
-
+      
       private var _textBlock:TextBlock;
-
+      
       private var _terminatorSpan:SpanElement;
-
+      
       tlf_internal function createTextBlock() : void {
-         var child:FlowElement = null;
-         this._textBlock=new TextBlock();
-         var i:int = 0;
-         while(i<numChildren)
+         var _loc2_:FlowElement = null;
+         this._textBlock = new TextBlock();
+         var _loc1_:* = 0;
+         while(_loc1_ < numChildren)
          {
-            child=getChildAt(i);
-            child.createContentElement();
-            i++;
+            _loc2_ = getChildAt(_loc1_);
+            _loc2_.createContentElement();
+            _loc1_++;
          }
          this.updateTextBlock();
       }
-
+      
       tlf_internal function releaseTextBlock() : void {
-         var textLineTest:TextLine = null;
-         var tfl:TextFlowLine = null;
-         var child:FlowElement = null;
+         var _loc2_:TextLine = null;
+         var _loc3_:TextFlowLine = null;
+         var _loc4_:FlowElement = null;
          if(!this._textBlock)
          {
             return;
          }
          if(this._textBlock.firstLine)
          {
-            textLineTest=this._textBlock.firstLine;
-            while(textLineTest!=null)
+            _loc2_ = this._textBlock.firstLine;
+            while(_loc2_ != null)
             {
-               if(textLineTest.numChildren!=0)
+               if(_loc2_.numChildren != 0)
                {
-                  tfl=textLineTest.userData as TextFlowLine;
-                  if(tfl.adornCount!=textLineTest.numChildren)
+                  _loc3_ = _loc2_.userData as TextFlowLine;
+                  if(_loc3_.adornCount != _loc2_.numChildren)
                   {
                      return;
                   }
                }
-               textLineTest=textLineTest.nextLine;
+               _loc2_ = _loc2_.nextLine;
             }
             this._textBlock.releaseLines(this._textBlock.firstLine,this._textBlock.lastLine);
          }
-         this._textBlock.content=null;
-         var i:int = 0;
-         while(i<numChildren)
+         this._textBlock.content = null;
+         var _loc1_:* = 0;
+         while(_loc1_ < numChildren)
          {
-            child=getChildAt(i);
-            child.releaseContentElement();
-            i++;
+            _loc4_ = getChildAt(_loc1_);
+            _loc4_.releaseContentElement();
+            _loc1_++;
          }
-         this._textBlock=null;
+         this._textBlock = null;
          if(_computedFormat)
          {
-            _computedFormat=null;
+            _computedFormat = null;
          }
       }
-
+      
       tlf_internal function getTextBlock() : TextBlock {
          if(!this._textBlock)
          {
@@ -159,205 +156,205 @@ package flashx.textLayout.elements
          }
          return this._textBlock;
       }
-
+      
       tlf_internal function peekTextBlock() : TextBlock {
          return this._textBlock;
       }
-
+      
       tlf_internal function releaseLineCreationData() : void {
          if(this._textBlock)
          {
             this._textBlock["releaseLineCreationData"]();
          }
       }
-
+      
       override tlf_internal function createContentAsGroup() : GroupElement {
-         var originalContent:ContentElement = null;
-         var gc:Vector.<ContentElement> = null;
-         var textFlow:TextFlow = null;
-         var group:GroupElement = this._textBlock.content as GroupElement;
-         if(!group)
+         var _loc2_:ContentElement = null;
+         var _loc3_:Vector.<ContentElement> = null;
+         var _loc4_:TextFlow = null;
+         var _loc1_:GroupElement = this._textBlock.content as GroupElement;
+         if(!_loc1_)
          {
-            originalContent=this._textBlock.content;
-            group=new GroupElement();
-            this._textBlock.content=group;
-            if(originalContent)
+            _loc2_ = this._textBlock.content;
+            _loc1_ = new GroupElement();
+            this._textBlock.content = _loc1_;
+            if(_loc2_)
             {
-               gc=new Vector.<ContentElement>();
-               gc.push(originalContent);
-               group.replaceElements(0,0,gc);
+               _loc3_ = new Vector.<ContentElement>();
+               _loc3_.push(_loc2_);
+               _loc1_.replaceElements(0,0,_loc3_);
             }
-            if((this._textBlock.firstLine)&&(textLength))
+            if((this._textBlock.firstLine) && (textLength))
             {
-               textFlow=getTextFlow();
-               if(textFlow)
+               _loc4_ = getTextFlow();
+               if(_loc4_)
                {
-                  textFlow.damage(getAbsoluteStart(),textLength,TextLineValidity.INVALID,false);
+                  _loc4_.damage(getAbsoluteStart(),textLength,TextLineValidity.INVALID,false);
                }
             }
          }
-         return group;
+         return _loc1_;
       }
-
-      override tlf_internal function removeBlockElement(child:FlowElement, block:ContentElement) : void {
-         var idx:* = 0;
-         var group:GroupElement = null;
-         var elem:ContentElement = null;
-         if(numChildren==1)
+      
+      override tlf_internal function removeBlockElement(param1:FlowElement, param2:ContentElement) : void {
+         var _loc3_:* = 0;
+         var _loc4_:GroupElement = null;
+         var _loc5_:ContentElement = null;
+         if(numChildren == 1)
          {
-            if(block is GroupElement)
+            if(param2 is GroupElement)
             {
                GroupElement(this._textBlock.content).replaceElements(0,1,null);
             }
-            this._textBlock.content=null;
+            this._textBlock.content = null;
          }
          else
          {
-            idx=this.getChildIndex(child);
-            group=GroupElement(this._textBlock.content);
-            group.replaceElements(idx,idx+1,null);
-            if(numChildren==2)
+            _loc3_ = this.getChildIndex(param1);
+            _loc4_ = GroupElement(this._textBlock.content);
+            _loc4_.replaceElements(_loc3_,_loc3_ + 1,null);
+            if(numChildren == 2)
             {
-               elem=group.getElementAt(0);
-               if(!(elem is GroupElement))
+               _loc5_ = _loc4_.getElementAt(0);
+               if(!(_loc5_ is GroupElement))
                {
-                  group.replaceElements(0,1,null);
-                  this._textBlock.content=elem;
+                  _loc4_.replaceElements(0,1,null);
+                  this._textBlock.content = _loc5_;
                }
             }
          }
       }
-
+      
       override tlf_internal function hasBlockElement() : Boolean {
-         return !(this._textBlock==null);
+         return !(this._textBlock == null);
       }
-
+      
       override tlf_internal function createContentElement() : void {
          this.createTextBlock();
       }
-
-      override tlf_internal function insertBlockElement(child:FlowElement, block:ContentElement) : void {
-         var gc:Vector.<ContentElement> = null;
-         var group:GroupElement = null;
-         var idx:* = 0;
-         if(this._textBlock==null)
+      
+      override tlf_internal function insertBlockElement(param1:FlowElement, param2:ContentElement) : void {
+         var _loc3_:Vector.<ContentElement> = null;
+         var _loc4_:GroupElement = null;
+         var _loc5_:* = 0;
+         if(this._textBlock == null)
          {
-            child.releaseContentElement();
+            param1.releaseContentElement();
             this.createTextBlock();
             return;
          }
-         if(numChildren==1)
+         if(numChildren == 1)
          {
-            if(block is GroupElement)
+            if(param2 is GroupElement)
             {
-               gc=new Vector.<ContentElement>();
-               gc.push(block);
-               group=new GroupElement(gc);
-               this._textBlock.content=group;
+               _loc3_ = new Vector.<ContentElement>();
+               _loc3_.push(param2);
+               _loc4_ = new GroupElement(_loc3_);
+               this._textBlock.content = _loc4_;
             }
             else
             {
-               this._textBlock.content=block;
+               this._textBlock.content = param2;
             }
          }
          else
          {
-            group=this.createContentAsGroup();
-            idx=this.getChildIndex(child);
-            gc=new Vector.<ContentElement>();
-            gc.push(block);
-            group.replaceElements(idx,idx,gc);
+            _loc4_ = this.createContentAsGroup();
+            _loc5_ = this.getChildIndex(param1);
+            _loc3_ = new Vector.<ContentElement>();
+            _loc3_.push(param2);
+            _loc4_.replaceElements(_loc5_,_loc5_,_loc3_);
          }
       }
-
+      
       override protected function get abstract() : Boolean {
          return false;
       }
-
+      
       override tlf_internal function get defaultTypeName() : String {
          return "p";
       }
-
-      override public function replaceChildren(beginChildIndex:int, endChildIndex:int, ... rest) : void {
-         var applyParams:Array = null;
-         if(rest.length==1)
+      
+      override public function replaceChildren(param1:int, param2:int, ... rest) : void {
+         var _loc4_:Array = null;
+         if(rest.length == 1)
          {
-            applyParams=[beginChildIndex,endChildIndex,rest[0]];
+            _loc4_ = [param1,param2,rest[0]];
          }
          else
          {
-            applyParams=[beginChildIndex,endChildIndex];
-            if(rest.length!=0)
+            _loc4_ = [param1,param2];
+            if(rest.length != 0)
             {
-               applyParams=applyParams.concat.apply(applyParams,rest);
+               _loc4_ = _loc4_.concat.apply(_loc4_,rest);
             }
          }
-         super.replaceChildren.apply(this,applyParams);
+         super.replaceChildren.apply(this,_loc4_);
          this.ensureTerminatorAfterReplace();
       }
-
+      
       tlf_internal function ensureTerminatorAfterReplace() : void {
-         var s:SpanElement = null;
-         var newLastLeaf:FlowLeafElement = getLastLeaf();
-         if(this._terminatorSpan!=newLastLeaf)
+         var _loc2_:SpanElement = null;
+         var _loc1_:FlowLeafElement = getLastLeaf();
+         if(this._terminatorSpan != _loc1_)
          {
             if(this._terminatorSpan)
             {
                this._terminatorSpan.removeParaTerminator();
-               this._terminatorSpan=null;
+               this._terminatorSpan = null;
             }
-            if(newLastLeaf)
+            if(_loc1_)
             {
-               if(newLastLeaf is SpanElement)
+               if(_loc1_ is SpanElement)
                {
-                  (newLastLeaf as SpanElement).addParaTerminator();
-                  this._terminatorSpan=newLastLeaf as SpanElement;
+                  (_loc1_ as SpanElement).addParaTerminator();
+                  this._terminatorSpan = _loc1_ as SpanElement;
                }
                else
                {
-                  s=new SpanElement();
-                  super.replaceChildren(numChildren,numChildren,s);
-                  s.format=newLastLeaf.format;
-                  s.addParaTerminator();
-                  this._terminatorSpan=s;
+                  _loc2_ = new SpanElement();
+                  super.replaceChildren(numChildren,numChildren,_loc2_);
+                  _loc2_.format = _loc1_.format;
+                  _loc2_.addParaTerminator();
+                  this._terminatorSpan = _loc2_;
                }
             }
          }
       }
-
-      tlf_internal function updateTerminatorSpan(splitSpan:SpanElement, followingSpan:SpanElement) : void {
-         if(this._terminatorSpan==splitSpan)
+      
+      tlf_internal function updateTerminatorSpan(param1:SpanElement, param2:SpanElement) : void {
+         if(this._terminatorSpan == param1)
          {
-            this._terminatorSpan=followingSpan;
+            this._terminatorSpan = param2;
          }
       }
-
-      override public function set mxmlChildren(array:Array) : void {
-         var child:Object = null;
-         var s:SpanElement = null;
+      
+      override public function set mxmlChildren(param1:Array) : void {
+         var _loc2_:Object = null;
+         var _loc3_:SpanElement = null;
          this.replaceChildren(0,numChildren);
-         for each (child in array)
+         for each (_loc2_ in param1)
          {
-            if(child is FlowElement)
+            if(_loc2_ is FlowElement)
             {
-               if((child is SpanElement)||(child is SubParagraphGroupElementBase))
+               if(_loc2_ is SpanElement || _loc2_ is SubParagraphGroupElementBase)
                {
-                  child.bindableElement=true;
+                  _loc2_.bindableElement = true;
                }
-               super.replaceChildren(numChildren,numChildren,child as FlowElement);
+               super.replaceChildren(numChildren,numChildren,_loc2_ as FlowElement);
                continue;
             }
-            if(child is String)
+            if(_loc2_ is String)
             {
-               s=new SpanElement();
-               s.text=String(child);
-               s.bindableElement=true;
-               super.replaceChildren(numChildren,numChildren,s);
+               _loc3_ = new SpanElement();
+               _loc3_.text = String(_loc2_);
+               _loc3_.bindableElement = true;
+               super.replaceChildren(numChildren,numChildren,_loc3_);
                continue;
             }
-            if(child!=null)
+            if(_loc2_ != null)
             {
-               throw new TypeError(GlobalSettings.resourceStringFunction("badMXMLChildrenArgument",[getQualifiedClassName(child)]));
+               throw new TypeError(GlobalSettings.resourceStringFunction("badMXMLChildrenArgument",[getQualifiedClassName(_loc2_)]));
             }
             else
             {
@@ -366,171 +363,171 @@ package flashx.textLayout.elements
          }
          this.ensureTerminatorAfterReplace();
       }
-
-      override public function getText(relativeStart:int=0, relativeEnd:int=-1, paragraphSeparator:String="\n") : String {
-         var text:String = null;
-         if((relativeStart==0)&&((relativeEnd==-1)||(relativeEnd>=textLength-1))&&(this._textBlock))
+      
+      override public function getText(param1:int=0, param2:int=-1, param3:String="\n") : String {
+         var _loc4_:String = null;
+         if(param1 == 0 && (param2 == -1 || param2 >= textLength-1) && (this._textBlock))
          {
             if(this._textBlock.content)
             {
-               text=this._textBlock.content.rawText;
-               return text.substring(0,text.length-1);
+               _loc4_ = this._textBlock.content.rawText;
+               return _loc4_.substring(0,_loc4_.length-1);
             }
             return "";
          }
-         return super.getText(relativeStart,relativeEnd,paragraphSeparator);
+         return super.getText(param1,param2,param3);
       }
-
+      
       public function getNextParagraph() : ParagraphElement {
-         var nextLeaf:FlowLeafElement = getLastLeaf().getNextLeaf();
-         return nextLeaf?nextLeaf.getParagraph():null;
+         var _loc1_:FlowLeafElement = getLastLeaf().getNextLeaf();
+         return _loc1_?_loc1_.getParagraph():null;
       }
-
+      
       public function getPreviousParagraph() : ParagraphElement {
-         var previousLeaf:FlowLeafElement = getFirstLeaf().getPreviousLeaf();
-         return previousLeaf?previousLeaf.getParagraph():null;
+         var _loc1_:FlowLeafElement = getFirstLeaf().getPreviousLeaf();
+         return _loc1_?_loc1_.getParagraph():null;
       }
-
-      public function findPreviousAtomBoundary(relativePosition:int) : int {
-         return this.getTextBlock().findPreviousAtomBoundary(relativePosition);
+      
+      public function findPreviousAtomBoundary(param1:int) : int {
+         return this.getTextBlock().findPreviousAtomBoundary(param1);
       }
-
-      public function findNextAtomBoundary(relativePosition:int) : int {
-         return this.getTextBlock().findNextAtomBoundary(relativePosition);
+      
+      public function findNextAtomBoundary(param1:int) : int {
+         return this.getTextBlock().findNextAtomBoundary(param1);
       }
-
-      override public function getCharAtPosition(relativePosition:int) : String {
-         return this.getTextBlock().content.rawText.charAt(relativePosition);
+      
+      override public function getCharAtPosition(param1:int) : String {
+         return this.getTextBlock().content.rawText.charAt(param1);
       }
-
-      public function findPreviousWordBoundary(relativePosition:int) : int {
-         if(relativePosition==0)
+      
+      public function findPreviousWordBoundary(param1:int) : int {
+         if(param1 == 0)
          {
             return 0;
          }
-         var prevCharCode:int = getCharCodeAtPosition(relativePosition-1);
-         if(CharacterUtil.isWhitespace(prevCharCode))
+         var _loc2_:int = getCharCodeAtPosition(param1-1);
+         if(CharacterUtil.isWhitespace(_loc2_))
          {
-            while((CharacterUtil.isWhitespace(prevCharCode))&&(relativePosition-1<0))
+            while((CharacterUtil.isWhitespace(_loc2_)) && param1-1 > 0)
             {
-               relativePosition--;
-               prevCharCode=getCharCodeAtPosition(relativePosition-1);
+               param1--;
+               _loc2_ = getCharCodeAtPosition(param1-1);
             }
-            return relativePosition;
+            return param1;
          }
-         return this.getTextBlock().findPreviousWordBoundary(relativePosition);
+         return this.getTextBlock().findPreviousWordBoundary(param1);
       }
-
-      public function findNextWordBoundary(relativePosition:int) : int {
-         if(relativePosition==textLength)
+      
+      public function findNextWordBoundary(param1:int) : int {
+         if(param1 == textLength)
          {
             return textLength;
          }
-         var curCharCode:int = getCharCodeAtPosition(relativePosition);
-         if(CharacterUtil.isWhitespace(curCharCode))
+         var _loc2_:int = getCharCodeAtPosition(param1);
+         if(CharacterUtil.isWhitespace(_loc2_))
          {
-            while((CharacterUtil.isWhitespace(curCharCode))&&(relativePosition>textLength-1))
+            while((CharacterUtil.isWhitespace(_loc2_)) && param1 < textLength-1)
             {
-               relativePosition++;
-               curCharCode=getCharCodeAtPosition(relativePosition);
+               param1++;
+               _loc2_ = getCharCodeAtPosition(param1);
             }
-            return relativePosition;
+            return param1;
          }
-         return this.getTextBlock().findNextWordBoundary(relativePosition);
+         return this.getTextBlock().findNextWordBoundary(param1);
       }
-
+      
       private function updateTextBlock() : void {
-         var lineJust:String = null;
-         var spaceJustifier:SpaceJustifier = null;
-         var newMinimumSpacing:* = NaN;
-         var newMaximumSpacing:* = NaN;
-         var newOptimumSpacing:* = NaN;
-         var eastAsianJustifier:EastAsianJustifier = null;
-         var tabStops:Vector.<TabStop> = null;
-         var tsa:TabStopFormat = null;
-         var token:String = null;
-         var alignment:String = null;
-         var tabStop:TabStop = null;
-         var garbage:String = null;
-         var containerElement:ContainerFormattedElement = getAncestorWithContainer();
-         if(!containerElement)
+         var _loc3_:String = null;
+         var _loc6_:SpaceJustifier = null;
+         var _loc7_:* = NaN;
+         var _loc8_:* = NaN;
+         var _loc9_:* = NaN;
+         var _loc10_:EastAsianJustifier = null;
+         var _loc11_:Vector.<TabStop> = null;
+         var _loc12_:TabStopFormat = null;
+         var _loc13_:String = null;
+         var _loc14_:String = null;
+         var _loc15_:TabStop = null;
+         var _loc16_:String = null;
+         var _loc1_:ContainerFormattedElement = getAncestorWithContainer();
+         if(!_loc1_)
          {
             return;
          }
-         var containerElementFormat:ITextLayoutFormat = containerElement?containerElement.computedFormat:TextLayoutFormat.defaultFormat;
-         if(this.computedFormat.textAlign==TextAlign.JUSTIFY)
+         var _loc2_:ITextLayoutFormat = _loc1_?_loc1_.computedFormat:TextLayoutFormat.defaultFormat;
+         if(this.computedFormat.textAlign == TextAlign.JUSTIFY)
          {
-            lineJust=_computedFormat.textAlignLast==TextAlign.JUSTIFY?LineJustification.ALL_INCLUDING_LAST:LineJustification.ALL_BUT_LAST;
-            if(containerElementFormat.lineBreak==LineBreak.EXPLICIT)
+            _loc3_ = _computedFormat.textAlignLast == TextAlign.JUSTIFY?LineJustification.ALL_INCLUDING_LAST:LineJustification.ALL_BUT_LAST;
+            if(_loc2_.lineBreak == LineBreak.EXPLICIT)
             {
-               lineJust=LineJustification.UNJUSTIFIED;
+               _loc3_ = LineJustification.UNJUSTIFIED;
             }
          }
          else
          {
-            lineJust=LineJustification.UNJUSTIFIED;
+            _loc3_ = LineJustification.UNJUSTIFIED;
          }
-         var makeJustRuleStyle:String = this.getEffectiveJustificationStyle();
-         var justRule:String = this.getEffectiveJustificationRule();
-         if(justRule==JustificationRule.SPACE)
+         var _loc4_:String = this.getEffectiveJustificationStyle();
+         var _loc5_:String = this.getEffectiveJustificationRule();
+         if(_loc5_ == JustificationRule.SPACE)
          {
-            spaceJustifier=new SpaceJustifier(_computedFormat.locale,lineJust,false);
-            spaceJustifier.letterSpacing=_computedFormat.textJustify==TextJustify.DISTRIBUTE?true:false;
+            _loc6_ = new SpaceJustifier(_computedFormat.locale,_loc3_,false);
+            _loc6_.letterSpacing = _computedFormat.textJustify == TextJustify.DISTRIBUTE?true:false;
             if(Configuration.playerEnablesArgoFeatures)
             {
-               newMinimumSpacing=Property.toNumberIfPercent(_computedFormat.wordSpacing.minimumSpacing)/100;
-               newMaximumSpacing=Property.toNumberIfPercent(_computedFormat.wordSpacing.maximumSpacing)/100;
-               newOptimumSpacing=Property.toNumberIfPercent(_computedFormat.wordSpacing.optimumSpacing)/100;
-               spaceJustifier["minimumSpacing"]=Math.min(newMinimumSpacing,spaceJustifier["minimumSpacing"]);
-               spaceJustifier["maximumSpacing"]=Math.max(newMaximumSpacing,spaceJustifier["maximumSpacing"]);
-               spaceJustifier["optimumSpacing"]=newOptimumSpacing;
-               spaceJustifier["minimumSpacing"]=newMinimumSpacing;
-               spaceJustifier["maximumSpacing"]=newMaximumSpacing;
+               _loc7_ = Property.toNumberIfPercent(_computedFormat.wordSpacing.minimumSpacing) / 100;
+               _loc8_ = Property.toNumberIfPercent(_computedFormat.wordSpacing.maximumSpacing) / 100;
+               _loc9_ = Property.toNumberIfPercent(_computedFormat.wordSpacing.optimumSpacing) / 100;
+               _loc6_["minimumSpacing"] = Math.min(_loc7_,_loc6_["minimumSpacing"]);
+               _loc6_["maximumSpacing"] = Math.max(_loc8_,_loc6_["maximumSpacing"]);
+               _loc6_["optimumSpacing"] = _loc9_;
+               _loc6_["minimumSpacing"] = _loc7_;
+               _loc6_["maximumSpacing"] = _loc8_;
             }
-            this._textBlock.textJustifier=spaceJustifier;
-            this._textBlock.baselineZero=getLeadingBasis(this.getEffectiveLeadingModel());
+            this._textBlock.textJustifier = _loc6_;
+            this._textBlock.baselineZero = getLeadingBasis(this.getEffectiveLeadingModel());
          }
          else
          {
-            eastAsianJustifier=new EastAsianJustifier(_computedFormat.locale,lineJust,makeJustRuleStyle);
-            this._textBlock.textJustifier=eastAsianJustifier;
-            this._textBlock.baselineZero=getLeadingBasis(this.getEffectiveLeadingModel());
+            _loc10_ = new EastAsianJustifier(_computedFormat.locale,_loc3_,_loc4_);
+            this._textBlock.textJustifier = _loc10_;
+            this._textBlock.baselineZero = getLeadingBasis(this.getEffectiveLeadingModel());
          }
-         this._textBlock.bidiLevel=_computedFormat.direction==Direction.LTR?0:1;
-         this._textBlock.lineRotation=containerElementFormat.blockProgression==BlockProgression.RL?TextRotation.ROTATE_90:TextRotation.ROTATE_0;
-         if((_computedFormat.tabStops)&&(!(_computedFormat.tabStops.length==0)))
+         this._textBlock.bidiLevel = _computedFormat.direction == Direction.LTR?0:1;
+         this._textBlock.lineRotation = _loc2_.blockProgression == BlockProgression.RL?TextRotation.ROTATE_90:TextRotation.ROTATE_0;
+         if((_computedFormat.tabStops) && !(_computedFormat.tabStops.length == 0))
          {
-            tabStops=new Vector.<TabStop>();
-            for each (tsa in _computedFormat.tabStops)
+            _loc11_ = new Vector.<TabStop>();
+            for each (_loc12_ in _computedFormat.tabStops)
             {
-               token=tsa.decimalAlignmentToken==null?"":tsa.decimalAlignmentToken;
-               alignment=tsa.alignment==null?TabAlignment.START:tsa.alignment;
-               tabStop=new TabStop(alignment,Number(tsa.position),token);
-               if(tsa.decimalAlignmentToken!=null)
+               _loc13_ = _loc12_.decimalAlignmentToken == null?"":_loc12_.decimalAlignmentToken;
+               _loc14_ = _loc12_.alignment == null?TabAlignment.START:_loc12_.alignment;
+               _loc15_ = new TabStop(_loc14_,Number(_loc12_.position),_loc13_);
+               if(_loc12_.decimalAlignmentToken != null)
                {
-                  garbage="x"+tabStop.decimalAlignmentToken;
+                  _loc16_ = "x" + _loc15_.decimalAlignmentToken;
                }
-               tabStops.push(tabStop);
+               _loc11_.push(_loc15_);
             }
-            this._textBlock.tabStops=tabStops;
+            this._textBlock.tabStops = _loc11_;
          }
          else
          {
-            if((GlobalSettings.enableDefaultTabStops)&&(!Configuration.playerEnablesArgoFeatures))
+            if((GlobalSettings.enableDefaultTabStops) && !Configuration.playerEnablesArgoFeatures)
             {
-               if(_defaultTabStops==null)
+               if(_defaultTabStops == null)
                {
                   initializeDefaultTabStops();
                }
-               this._textBlock.tabStops=_defaultTabStops;
+               this._textBlock.tabStops = _defaultTabStops;
             }
             else
             {
-               this._textBlock.tabStops=null;
+               this._textBlock.tabStops = null;
             }
          }
       }
-
+      
       override public function get computedFormat() : ITextLayoutFormat {
          if(!_computedFormat)
          {
@@ -541,97 +538,87 @@ package flashx.textLayout.elements
          }
          return _computedFormat;
       }
-
-      override tlf_internal function canOwnFlowElement(elem:FlowElement) : Boolean {
-         return (elem is FlowLeafElement)||(elem is SubParagraphGroupElementBase);
+      
+      override tlf_internal function canOwnFlowElement(param1:FlowElement) : Boolean {
+         return param1 is FlowLeafElement || param1 is SubParagraphGroupElementBase;
       }
-
-      override tlf_internal function normalizeRange(normalizeStart:uint, normalizeEnd:uint) : void {
-         var child:FlowElement = null;
-         var origChildEnd:* = 0;
-         var newChildEnd:* = 0;
-         var prevElement:FlowElement = null;
-         var lastChild:FlowElement = null;
-         var s:SpanElement = null;
-         var idx:int = findChildIndexAtPosition(normalizeStart);
-         if((!(idx==-1))&&(idx>numChildren))
+      
+      override tlf_internal function normalizeRange(param1:uint, param2:uint) : void {
+         var _loc4_:FlowElement = null;
+         var _loc5_:* = 0;
+         var _loc6_:* = 0;
+         var _loc7_:FlowElement = null;
+         var _loc8_:FlowElement = null;
+         var _loc9_:SpanElement = null;
+         var _loc3_:int = findChildIndexAtPosition(param1);
+         if(!(_loc3_ == -1) && _loc3_ < numChildren)
          {
-            child=getChildAt(idx);
-            normalizeStart=normalizeStart-child.parentRelativeStart;
-            origChildEnd=child.parentRelativeStart+child.textLength;
-            child.normalizeRange(normalizeStart,normalizeEnd-child.parentRelativeStart);
-            newChildEnd=child.parentRelativeStart+child.textLength;
-            normalizeEnd=normalizeEnd+(newChildEnd-origChildEnd);
+            _loc4_ = getChildAt(_loc3_);
+            param1 = param1 - _loc4_.parentRelativeStart;
             while(true)
             {
-               if((child.textLength==0)&&(!child.bindableElement))
+               _loc5_ = _loc4_.parentRelativeStart + _loc4_.textLength;
+               _loc4_.normalizeRange(param1,param2 - _loc4_.parentRelativeStart);
+               _loc6_ = _loc4_.parentRelativeStart + _loc4_.textLength;
+               param2 = param2 + (_loc6_ - _loc5_);
+               if(_loc4_.textLength == 0 && !_loc4_.bindableElement)
                {
-                  this.replaceChildren(idx,idx+1);
+                  this.replaceChildren(_loc3_,_loc3_ + 1);
                }
                else
                {
-                  if(child.mergeToPreviousIfPossible())
+                  if(_loc4_.mergeToPreviousIfPossible())
                   {
-                     prevElement=this.getChildAt(idx-1);
-                     prevElement.normalizeRange(0,prevElement.textLength);
+                     _loc7_ = this.getChildAt(_loc3_-1);
+                     _loc7_.normalizeRange(0,_loc7_.textLength);
                   }
                   else
                   {
-                     idx++;
+                     _loc3_++;
                   }
                }
-               if(idx==numChildren)
+               if(_loc3_ == numChildren)
                {
-                  if(idx!=0)
+                  if(_loc3_ != 0)
                   {
-                     lastChild=this.getChildAt(idx-1);
-                     if((lastChild is SubParagraphGroupElementBase)&&(lastChild.textLength==1)&&(!lastChild.bindableElement))
+                     _loc8_ = this.getChildAt(_loc3_-1);
+                     if(_loc8_ is SubParagraphGroupElementBase && _loc8_.textLength == 1 && !_loc8_.bindableElement)
                      {
-                        this.replaceChildren(idx-1,idx);
+                        this.replaceChildren(_loc3_-1,_loc3_);
                      }
                   }
+                  break;
                }
-               else
+               _loc4_ = getChildAt(_loc3_);
+               if(_loc4_.parentRelativeStart > param2)
                {
-                  child=getChildAt(idx);
-                  if(child.parentRelativeStart>normalizeEnd)
-                  {
-                  }
-                  else
-                  {
-                     normalizeStart=0;
-                  }
+                  break;
                }
-               origChildEnd=child.parentRelativeStart+child.textLength;
-               child.normalizeRange(normalizeStart,normalizeEnd-child.parentRelativeStart);
-               newChildEnd=child.parentRelativeStart+child.textLength;
-               normalizeEnd=normalizeEnd+(newChildEnd-origChildEnd);
-               continue loop0;
+               param1 = 0;
             }
          }
-         if((numChildren==0)||(textLength==0))
+         if(numChildren == 0 || textLength == 0)
          {
-            s=new SpanElement();
-            this.replaceChildren(0,0,s);
-            s.normalizeRange(0,s.textLength);
+            _loc9_ = new SpanElement();
+            this.replaceChildren(0,0,_loc9_);
+            _loc9_.normalizeRange(0,_loc9_.textLength);
          }
       }
-
+      
       tlf_internal function getEffectiveLeadingModel() : String {
-         return this.computedFormat.leadingModel==LeadingModel.AUTO?LocaleUtil.leadingModel(this.computedFormat.locale):this.computedFormat.leadingModel;
+         return this.computedFormat.leadingModel == LeadingModel.AUTO?LocaleUtil.leadingModel(this.computedFormat.locale):this.computedFormat.leadingModel;
       }
-
+      
       tlf_internal function getEffectiveDominantBaseline() : String {
-         return this.computedFormat.dominantBaseline==FormatValue.AUTO?LocaleUtil.dominantBaseline(this.computedFormat.locale):this.computedFormat.dominantBaseline;
+         return this.computedFormat.dominantBaseline == FormatValue.AUTO?LocaleUtil.dominantBaseline(this.computedFormat.locale):this.computedFormat.dominantBaseline;
       }
-
+      
       tlf_internal function getEffectiveJustificationRule() : String {
-         return this.computedFormat.justificationRule==FormatValue.AUTO?LocaleUtil.justificationRule(this.computedFormat.locale):this.computedFormat.justificationRule;
+         return this.computedFormat.justificationRule == FormatValue.AUTO?LocaleUtil.justificationRule(this.computedFormat.locale):this.computedFormat.justificationRule;
       }
-
+      
       tlf_internal function getEffectiveJustificationStyle() : String {
-         return this.computedFormat.justificationStyle==FormatValue.AUTO?LocaleUtil.justificationStyle(this.computedFormat.locale):this.computedFormat.justificationStyle;
+         return this.computedFormat.justificationStyle == FormatValue.AUTO?LocaleUtil.justificationStyle(this.computedFormat.locale):this.computedFormat.justificationStyle;
       }
    }
-
 }

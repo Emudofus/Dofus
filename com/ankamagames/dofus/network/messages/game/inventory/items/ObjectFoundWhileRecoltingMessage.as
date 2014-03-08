@@ -5,114 +5,112 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ObjectFoundWhileRecoltingMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ObjectFoundWhileRecoltingMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6017;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var genericId:uint = 0;
-
+      
       public var quantity:uint = 0;
-
+      
       public var ressourceGenericId:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 6017;
       }
-
-      public function initObjectFoundWhileRecoltingMessage(genericId:uint=0, quantity:uint=0, ressourceGenericId:uint=0) : ObjectFoundWhileRecoltingMessage {
-         this.genericId=genericId;
-         this.quantity=quantity;
-         this.ressourceGenericId=ressourceGenericId;
-         this._isInitialized=true;
+      
+      public function initObjectFoundWhileRecoltingMessage(param1:uint=0, param2:uint=0, param3:uint=0) : ObjectFoundWhileRecoltingMessage {
+         this.genericId = param1;
+         this.quantity = param2;
+         this.ressourceGenericId = param3;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.genericId=0;
-         this.quantity=0;
-         this.ressourceGenericId=0;
-         this._isInitialized=false;
+         this.genericId = 0;
+         this.quantity = 0;
+         this.ressourceGenericId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ObjectFoundWhileRecoltingMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ObjectFoundWhileRecoltingMessage(param1);
       }
-
-      public function serializeAs_ObjectFoundWhileRecoltingMessage(output:IDataOutput) : void {
-         if(this.genericId<0)
+      
+      public function serializeAs_ObjectFoundWhileRecoltingMessage(param1:IDataOutput) : void {
+         if(this.genericId < 0)
          {
-            throw new Error("Forbidden value ("+this.genericId+") on element genericId.");
+            throw new Error("Forbidden value (" + this.genericId + ") on element genericId.");
          }
          else
          {
-            output.writeInt(this.genericId);
-            if(this.quantity<0)
+            param1.writeInt(this.genericId);
+            if(this.quantity < 0)
             {
-               throw new Error("Forbidden value ("+this.quantity+") on element quantity.");
+               throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
             }
             else
             {
-               output.writeInt(this.quantity);
-               if(this.ressourceGenericId<0)
+               param1.writeInt(this.quantity);
+               if(this.ressourceGenericId < 0)
                {
-                  throw new Error("Forbidden value ("+this.ressourceGenericId+") on element ressourceGenericId.");
+                  throw new Error("Forbidden value (" + this.ressourceGenericId + ") on element ressourceGenericId.");
                }
                else
                {
-                  output.writeInt(this.ressourceGenericId);
+                  param1.writeInt(this.ressourceGenericId);
                   return;
                }
             }
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ObjectFoundWhileRecoltingMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ObjectFoundWhileRecoltingMessage(param1);
       }
-
-      public function deserializeAs_ObjectFoundWhileRecoltingMessage(input:IDataInput) : void {
-         this.genericId=input.readInt();
-         if(this.genericId<0)
+      
+      public function deserializeAs_ObjectFoundWhileRecoltingMessage(param1:IDataInput) : void {
+         this.genericId = param1.readInt();
+         if(this.genericId < 0)
          {
-            throw new Error("Forbidden value ("+this.genericId+") on element of ObjectFoundWhileRecoltingMessage.genericId.");
+            throw new Error("Forbidden value (" + this.genericId + ") on element of ObjectFoundWhileRecoltingMessage.genericId.");
          }
          else
          {
-            this.quantity=input.readInt();
-            if(this.quantity<0)
+            this.quantity = param1.readInt();
+            if(this.quantity < 0)
             {
-               throw new Error("Forbidden value ("+this.quantity+") on element of ObjectFoundWhileRecoltingMessage.quantity.");
+               throw new Error("Forbidden value (" + this.quantity + ") on element of ObjectFoundWhileRecoltingMessage.quantity.");
             }
             else
             {
-               this.ressourceGenericId=input.readInt();
-               if(this.ressourceGenericId<0)
+               this.ressourceGenericId = param1.readInt();
+               if(this.ressourceGenericId < 0)
                {
-                  throw new Error("Forbidden value ("+this.ressourceGenericId+") on element of ObjectFoundWhileRecoltingMessage.ressourceGenericId.");
+                  throw new Error("Forbidden value (" + this.ressourceGenericId + ") on element of ObjectFoundWhileRecoltingMessage.ressourceGenericId.");
                }
                else
                {
@@ -122,5 +120,4 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          }
       }
    }
-
 }

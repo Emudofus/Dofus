@@ -6,44 +6,41 @@ package com.ankamagames.atouin.data.map.elements
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import flash.utils.IDataInput;
-
-
+   
    public class BasicElement extends Object
    {
-         
-
-      public function BasicElement(cell:Cell) {
+      
+      public function BasicElement(param1:Cell) {
          super();
-         this._cell=cell;
+         this._cell = param1;
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(BasicElement));
-
-      public static function getElementFromType(type:int, cell:Cell) : BasicElement {
-         switch(type)
+      
+      public static function getElementFromType(param1:int, param2:Cell) : BasicElement {
+         switch(param1)
          {
             case ElementTypesEnum.GRAPHICAL:
-               return new GraphicalElement(cell);
+               return new GraphicalElement(param2);
             case ElementTypesEnum.SOUND:
-               return new SoundElement(cell);
+               return new SoundElement(param2);
             default:
-               throw new UnknownElementError("Un élément de type inconnu "+type+" a été trouvé sur la cellule "+cell.cellId+"!");
+               throw new UnknownElementError("Un Ã©lÃ©ment de type inconnu " + param1 + " a Ã©tÃ© trouvÃ© sur la cellule " + param2.cellId + "!");
          }
       }
-
+      
       private var _cell:Cell;
-
+      
       public function get cell() : Cell {
          return this._cell;
       }
-
+      
       public function get elementType() : int {
          return -1;
       }
-
-      public function fromRaw(raw:IDataInput, mapVersion:int) : void {
-         throw new Error("Cette méthode doit être surchargée !");
+      
+      public function fromRaw(param1:IDataInput, param2:int) : void {
+         throw new Error("Cette mÃ©thode doit Ãªtre surchargÃ©e !");
       }
    }
-
 }

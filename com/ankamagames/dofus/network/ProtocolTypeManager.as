@@ -2,18 +2,44 @@ package com.ankamagames.dofus.network
 {
    import flash.utils.Dictionary;
    import com.ankamagames.jerakine.managers.StoreDataManager;
+   import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
    import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyMemberInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyMemberArenaInformations;
    import com.ankamagames.dofus.network.types.game.character.choice.CharacterHardcoreInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyInvitationMemberInformations;
+   import com.ankamagames.dofus.network.types.game.character.CharacterMinimalGuildInformations;
+   import com.ankamagames.dofus.network.types.game.character.CharacterMinimalAllianceInformations;
+   import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookAndGradeInformations;
    import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
    import com.ankamagames.dofus.network.types.game.context.IdentifiedEntityDispositionInformations;
    import com.ankamagames.dofus.network.types.game.context.FightEntityDispositionInformations;
+   import com.ankamagames.dofus.network.types.game.social.AbstractSocialGroupInfos;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.BasicAllianceInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.BasicNamedAllianceInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.AllianceInformations;
+   import com.ankamagames.dofus.network.types.game.social.AllianceFactSheetInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.BasicGuildInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GuildInformations;
+   import com.ankamagames.dofus.network.types.game.social.GuildFactSheetInformations;
+   import com.ankamagames.dofus.network.types.game.social.GuildInsiderFactSheetInformations;
+   import com.ankamagames.dofus.network.types.game.social.AlliancedGuildFactSheetInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GuildInAllianceInformations;
+   import com.ankamagames.dofus.network.types.game.social.GuildVersatileInformations;
+   import com.ankamagames.dofus.network.types.game.social.GuildInAllianceVersatileInformations;
+   import com.ankamagames.dofus.network.types.game.prism.PrismSubareaEmptyInfo;
+   import com.ankamagames.dofus.network.types.game.prism.PrismGeolocalizedInformation;
+   import com.ankamagames.dofus.network.types.game.prism.PrismInformation;
+   import com.ankamagames.dofus.network.types.game.prism.AllianceInsiderPrismInformation;
+   import com.ankamagames.dofus.network.types.game.prism.AlliancePrismInformation;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberCharacterInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberWithAllianceCharacterInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberCompanionInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberMonsterInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberTaxCollectorInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.FightTeamInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.FightAllianceTeamInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightMinimalStats;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightMinimalStatsPreparation;
    import com.ankamagames.dofus.network.types.game.context.fight.FightResultListEntry;
@@ -80,13 +106,13 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterNamedInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightMutantInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightCharacterInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightCompanionInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNamedActorInformations;
-   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMerchantInformations;
-   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMerchantWithGuildInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayHumanoidInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMutantInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayCharacterInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMerchantInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMountInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcWithQuestInformations;
@@ -95,54 +121,80 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPrismInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOption;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionAlliance;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionOrnament;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionFollowers;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionObjectUse;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionGuild;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionTitle;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionEmote;
+   import com.ankamagames.dofus.network.types.game.context.TaxCollectorStaticInformations;
+   import com.ankamagames.dofus.network.types.game.context.TaxCollectorStaticExtendedInformations;
    import com.ankamagames.dofus.network.types.game.guild.tax.TaxCollectorInformations;
-   import com.ankamagames.dofus.network.types.game.guild.tax.TaxCollectorInformationsInWaitForHelpState;
+   import com.ankamagames.dofus.network.types.game.guild.tax.TaxCollectorComplementaryInformations;
+   import com.ankamagames.dofus.network.types.game.guild.tax.TaxCollectorLootInformations;
+   import com.ankamagames.dofus.network.types.game.guild.tax.TaxCollectorWaitingForHelpInformations;
+   import com.ankamagames.dofus.network.types.game.guild.tax.TaxCollectorGuildInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GroupMonsterStaticInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GroupMonsterStaticInformationsWithAlternatives;
    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestActiveInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestActiveDetailedInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestObjectiveInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestObjectiveInformationsWithCompletion;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterLightInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterNamedLightInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterMonsterLightInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterCompanionLightInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterTaxCollectorLightInformations;
+   import com.ankamagames.dofus.network.types.game.context.MapCoordinates;
+   import com.ankamagames.dofus.network.types.game.context.MapCoordinatesAndId;
+   import com.ankamagames.dofus.network.types.game.context.MapCoordinatesExtended;
    import com.ankamagames.dofus.network.types.game.character.status.PlayerStatus;
    import com.ankamagames.dofus.network.types.game.character.status.PlayerStatusExtended;
-
-
+   import com.ankamagames.dofus.network.types.game.approach.ServerSessionConstant;
+   import com.ankamagames.dofus.network.types.game.approach.ServerSessionConstantString;
+   import com.ankamagames.dofus.network.types.game.approach.ServerSessionConstantInteger;
+   import com.ankamagames.dofus.network.types.game.approach.ServerSessionConstantLong;
+   
    public class ProtocolTypeManager extends Object
    {
-         
-
+      
       public function ProtocolTypeManager() {
          super();
       }
-
+      
       private static const _typesTypes:Dictionary = new Dictionary();
-
-      public static function getInstance(base:Class, typeId:uint) : * {
-         var objType:Class = _typesTypes[typeId];
-         if(!objType)
+      
+      public static function getInstance(param1:Class, param2:uint) : * {
+         var _loc3_:Class = _typesTypes[param2];
+         if(!_loc3_)
          {
-            throw new Error("Type with id "+typeId+" is unknown.");
+            throw new Error("Type with id " + param2 + " is unknown.");
          }
          else
          {
-            obj=new objType();
-            if(!(obj is base))
+            _loc4_ = new _loc3_();
+            if(!(_loc4_ is param1))
             {
-               throw new Error("Type "+typeId+" is not a "+base+".");
+               throw new Error("Type " + param2 + " is not a " + param1 + ".");
             }
             else
             {
-               return obj;
+               return _loc4_;
             }
          }
       }
-
+      
       public static function register() : void {
+         StoreDataManager.getInstance().registerClass(new CharacterMinimalPlusLookInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new CharacterBaseInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new PartyMemberInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new PartyMemberArenaInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new CharacterHardcoreInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new PartyInvitationMemberInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new CharacterMinimalGuildInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new CharacterMinimalAllianceInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new CharacterMinimalPlusLookAndGradeInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new CharacterBaseInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyMemberInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyMemberArenaInformations(),true,true);
@@ -151,10 +203,35 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new EntityDispositionInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new IdentifiedEntityDispositionInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new FightEntityDispositionInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new AbstractSocialGroupInfos(),true,true);
+         StoreDataManager.getInstance().registerClass(new BasicAllianceInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new BasicNamedAllianceInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceFactSheetInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new BasicGuildInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuildInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuildFactSheetInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuildInsiderFactSheetInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new AlliancedGuildFactSheetInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuildInAllianceInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuildVersatileInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuildInAllianceVersatileInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuildFactSheetInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuildInsiderFactSheetInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceFactSheetInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new PrismSubareaEmptyInfo(),true,true);
+         StoreDataManager.getInstance().registerClass(new PrismGeolocalizedInformation(),true,true);
+         StoreDataManager.getInstance().registerClass(new PrismInformation(),true,true);
+         StoreDataManager.getInstance().registerClass(new AllianceInsiderPrismInformation(),true,true);
+         StoreDataManager.getInstance().registerClass(new AlliancePrismInformation(),true,true);
          StoreDataManager.getInstance().registerClass(new FightTeamMemberInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new FightTeamMemberCharacterInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new FightTeamMemberWithAllianceCharacterInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new FightTeamMemberCompanionInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new FightTeamMemberMonsterInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new FightTeamMemberTaxCollectorInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new FightTeamInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new FightAllianceTeamInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightMinimalStats(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightMinimalStatsPreparation(),true,true);
          StoreDataManager.getInstance().registerClass(new FightResultListEntry(),true,true);
@@ -223,13 +300,13 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GameFightFighterNamedInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightMutantInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightCharacterInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameFightCompanionInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayActorInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayNamedActorInformations(),true,true);
-         StoreDataManager.getInstance().registerClass(new GameRolePlayMerchantInformations(),true,true);
-         StoreDataManager.getInstance().registerClass(new GameRolePlayMerchantWithGuildInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayHumanoidInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayMutantInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayCharacterInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameRolePlayMerchantInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayMountInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayNpcInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayNpcWithQuestInformations(),true,true);
@@ -238,11 +315,10 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GameRolePlayPrismInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayActorInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayNamedActorInformations(),true,true);
-         StoreDataManager.getInstance().registerClass(new GameRolePlayMerchantInformations(),true,true);
-         StoreDataManager.getInstance().registerClass(new GameRolePlayMerchantWithGuildInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayHumanoidInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayMutantInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayCharacterInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameRolePlayMerchantInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayMountInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayNpcInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayNpcWithQuestInformations(),true,true);
@@ -251,13 +327,20 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GameRolePlayPrismInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new HumanInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new HumanOption(),true,true);
+         StoreDataManager.getInstance().registerClass(new HumanOptionAlliance(),true,true);
          StoreDataManager.getInstance().registerClass(new HumanOptionOrnament(),true,true);
          StoreDataManager.getInstance().registerClass(new HumanOptionFollowers(),true,true);
+         StoreDataManager.getInstance().registerClass(new HumanOptionObjectUse(),true,true);
          StoreDataManager.getInstance().registerClass(new HumanOptionGuild(),true,true);
          StoreDataManager.getInstance().registerClass(new HumanOptionTitle(),true,true);
          StoreDataManager.getInstance().registerClass(new HumanOptionEmote(),true,true);
+         StoreDataManager.getInstance().registerClass(new TaxCollectorStaticInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new TaxCollectorStaticExtendedInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new TaxCollectorInformations(),true,true);
-         StoreDataManager.getInstance().registerClass(new TaxCollectorInformationsInWaitForHelpState(),true,true);
+         StoreDataManager.getInstance().registerClass(new TaxCollectorComplementaryInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new TaxCollectorLootInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new TaxCollectorWaitingForHelpInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new TaxCollectorGuildInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GroupMonsterStaticInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GroupMonsterStaticInformationsWithAlternatives(),true,true);
          StoreDataManager.getInstance().registerClass(new QuestActiveInformations(),true,true);
@@ -272,11 +355,21 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GameFightFighterNamedInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightMutantInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightCharacterInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameFightCompanionInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameFightFighterLightInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameFightFighterNamedLightInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameFightFighterMonsterLightInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameFightFighterCompanionLightInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameFightFighterTaxCollectorLightInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new MapCoordinates(),true,true);
+         StoreDataManager.getInstance().registerClass(new MapCoordinatesAndId(),true,true);
+         StoreDataManager.getInstance().registerClass(new MapCoordinatesExtended(),true,true);
          StoreDataManager.getInstance().registerClass(new PlayerStatus(),true,true);
          StoreDataManager.getInstance().registerClass(new PlayerStatusExtended(),true,true);
+         StoreDataManager.getInstance().registerClass(new ServerSessionConstant(),true,true);
+         StoreDataManager.getInstance().registerClass(new ServerSessionConstantString(),true,true);
+         StoreDataManager.getInstance().registerClass(new ServerSessionConstantInteger(),true,true);
+         StoreDataManager.getInstance().registerClass(new ServerSessionConstantLong(),true,true);
       }
-
-
    }
-
 }

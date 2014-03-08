@@ -1,58 +1,57 @@
 package com.ankamagames.dofus.console.chat
 {
    import com.ankamagames.jerakine.console.ConsoleInstructionHandler;
+   import com.ankamagames.dofus.uiApi.SystemApi;
    import com.ankamagames.jerakine.console.ConsoleHandler;
-   import com.ankamagames.dofus.network.messages.game.context.roleplay.emote.EmotePlayRequestMessage;
+   import com.ankamagames.dofus.logic.game.roleplay.actions.EmotePlayRequestAction;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.network.enums.PlayerLifeStatusEnum;
-   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.datacenter.communication.Emoticon;
-
-
+   
    public class EmoteInstructionHandler extends Object implements ConsoleInstructionHandler
    {
-         
-
+      
       public function EmoteInstructionHandler() {
+         this.sysApi = new SystemApi();
          super();
       }
-
-
-
-      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
-         var eprmsg:EmotePlayRequestMessage = null;
-         var playerManager:PlayedCharacterManager = PlayedCharacterManager.getInstance();
-         if((playerManager.state==PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)&&(playerManager.isRidding)||(playerManager.isPetsMounting)||(playerManager.infos.entityLook.bonesId==1))
+      
+      private var sysApi:SystemApi;
+      
+      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
+         var _loc6_:EmotePlayRequestAction = null;
+         var _loc4_:uint = this.getEmoteId(param2);
+         var _loc5_:PlayedCharacterManager = PlayedCharacterManager.getInstance();
+         if(_loc4_ > 0 && _loc5_.state == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING && (_loc5_.isRidding) || (_loc5_.isPetsMounting) || _loc5_.infos.entityLook.bonesId == 1)
          {
-            eprmsg=new EmotePlayRequestMessage();
-            eprmsg.initEmotePlayRequestMessage(this.getEmoteId(cmd));
-            ConnectionsHandler.getConnection().send(eprmsg);
+            _loc6_ = EmotePlayRequestAction.create(_loc4_);
+            Kernel.getWorker().process(_loc6_);
          }
       }
-
-      public function getHelp(cmd:String) : String {
+      
+      public function getHelp(param1:String) : String {
          return null;
       }
-
-      private function getEmoteId(cmd:String) : uint {
-         var emote:Emoticon = null;
-         for each (emote in Emoticon.getEmoticons())
+      
+      private function getEmoteId(param1:String) : uint {
+         var _loc2_:Emoticon = null;
+         for each (_loc2_ in Emoticon.getEmoticons())
          {
-            if(emote.shortcut==cmd)
+            if(_loc2_.shortcut == param1)
             {
-               return emote.id;
+               return _loc2_.id;
             }
-            if(emote.defaultAnim==cmd)
+            if(_loc2_.defaultAnim == param1)
             {
-               return emote.id;
+               return _loc2_.id;
             }
          }
          return 0;
       }
-
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      
+      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
          return [];
       }
    }
-
 }

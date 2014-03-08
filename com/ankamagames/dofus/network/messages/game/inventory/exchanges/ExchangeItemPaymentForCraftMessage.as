@@ -6,74 +6,71 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class ExchangeItemPaymentForCraftMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function ExchangeItemPaymentForCraftMessage() {
-         this.object=new ObjectItemNotInContainer();
+         this.object = new ObjectItemNotInContainer();
          super();
       }
-
+      
       public static const protocolId:uint = 5831;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var onlySuccess:Boolean = false;
-
+      
       public var object:ObjectItemNotInContainer;
-
+      
       override public function getMessageId() : uint {
          return 5831;
       }
-
-      public function initExchangeItemPaymentForCraftMessage(onlySuccess:Boolean=false, object:ObjectItemNotInContainer=null) : ExchangeItemPaymentForCraftMessage {
-         this.onlySuccess=onlySuccess;
-         this.object=object;
-         this._isInitialized=true;
+      
+      public function initExchangeItemPaymentForCraftMessage(param1:Boolean=false, param2:ObjectItemNotInContainer=null) : ExchangeItemPaymentForCraftMessage {
+         this.onlySuccess = param1;
+         this.object = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.onlySuccess=false;
-         this.object=new ObjectItemNotInContainer();
-         this._isInitialized=false;
+         this.onlySuccess = false;
+         this.object = new ObjectItemNotInContainer();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ExchangeItemPaymentForCraftMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ExchangeItemPaymentForCraftMessage(param1);
       }
-
-      public function serializeAs_ExchangeItemPaymentForCraftMessage(output:IDataOutput) : void {
-         output.writeBoolean(this.onlySuccess);
-         this.object.serializeAs_ObjectItemNotInContainer(output);
+      
+      public function serializeAs_ExchangeItemPaymentForCraftMessage(param1:IDataOutput) : void {
+         param1.writeBoolean(this.onlySuccess);
+         this.object.serializeAs_ObjectItemNotInContainer(param1);
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ExchangeItemPaymentForCraftMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ExchangeItemPaymentForCraftMessage(param1);
       }
-
-      public function deserializeAs_ExchangeItemPaymentForCraftMessage(input:IDataInput) : void {
-         this.onlySuccess=input.readBoolean();
-         this.object=new ObjectItemNotInContainer();
-         this.object.deserialize(input);
+      
+      public function deserializeAs_ExchangeItemPaymentForCraftMessage(param1:IDataInput) : void {
+         this.onlySuccess = param1.readBoolean();
+         this.object = new ObjectItemNotInContainer();
+         this.object.deserialize(param1);
       }
    }
-
 }

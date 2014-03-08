@@ -5,88 +5,86 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class InventoryPresetDeleteResultMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function InventoryPresetDeleteResultMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6173;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var presetId:uint = 0;
-
+      
       public var code:uint = 2;
-
+      
       override public function getMessageId() : uint {
          return 6173;
       }
-
-      public function initInventoryPresetDeleteResultMessage(presetId:uint=0, code:uint=2) : InventoryPresetDeleteResultMessage {
-         this.presetId=presetId;
-         this.code=code;
-         this._isInitialized=true;
+      
+      public function initInventoryPresetDeleteResultMessage(param1:uint=0, param2:uint=2) : InventoryPresetDeleteResultMessage {
+         this.presetId = param1;
+         this.code = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.presetId=0;
-         this.code=2;
-         this._isInitialized=false;
+         this.presetId = 0;
+         this.code = 2;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_InventoryPresetDeleteResultMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_InventoryPresetDeleteResultMessage(param1);
       }
-
-      public function serializeAs_InventoryPresetDeleteResultMessage(output:IDataOutput) : void {
-         if(this.presetId<0)
+      
+      public function serializeAs_InventoryPresetDeleteResultMessage(param1:IDataOutput) : void {
+         if(this.presetId < 0)
          {
-            throw new Error("Forbidden value ("+this.presetId+") on element presetId.");
+            throw new Error("Forbidden value (" + this.presetId + ") on element presetId.");
          }
          else
          {
-            output.writeByte(this.presetId);
-            output.writeByte(this.code);
+            param1.writeByte(this.presetId);
+            param1.writeByte(this.code);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_InventoryPresetDeleteResultMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_InventoryPresetDeleteResultMessage(param1);
       }
-
-      public function deserializeAs_InventoryPresetDeleteResultMessage(input:IDataInput) : void {
-         this.presetId=input.readByte();
-         if(this.presetId<0)
+      
+      public function deserializeAs_InventoryPresetDeleteResultMessage(param1:IDataInput) : void {
+         this.presetId = param1.readByte();
+         if(this.presetId < 0)
          {
-            throw new Error("Forbidden value ("+this.presetId+") on element of InventoryPresetDeleteResultMessage.presetId.");
+            throw new Error("Forbidden value (" + this.presetId + ") on element of InventoryPresetDeleteResultMessage.presetId.");
          }
          else
          {
-            this.code=input.readByte();
-            if(this.code<0)
+            this.code = param1.readByte();
+            if(this.code < 0)
             {
-               throw new Error("Forbidden value ("+this.code+") on element of InventoryPresetDeleteResultMessage.code.");
+               throw new Error("Forbidden value (" + this.code + ") on element of InventoryPresetDeleteResultMessage.code.");
             }
             else
             {
@@ -95,5 +93,4 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          }
       }
    }
-
 }

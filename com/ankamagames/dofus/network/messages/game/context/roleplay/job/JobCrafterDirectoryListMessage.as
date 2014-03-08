@@ -7,82 +7,79 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class JobCrafterDirectoryListMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function JobCrafterDirectoryListMessage() {
-         this.listEntries=new Vector.<JobCrafterDirectoryListEntry>();
+         this.listEntries = new Vector.<JobCrafterDirectoryListEntry>();
          super();
       }
-
+      
       public static const protocolId:uint = 6046;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var listEntries:Vector.<JobCrafterDirectoryListEntry>;
-
+      
       override public function getMessageId() : uint {
          return 6046;
       }
-
-      public function initJobCrafterDirectoryListMessage(listEntries:Vector.<JobCrafterDirectoryListEntry>=null) : JobCrafterDirectoryListMessage {
-         this.listEntries=listEntries;
-         this._isInitialized=true;
+      
+      public function initJobCrafterDirectoryListMessage(param1:Vector.<JobCrafterDirectoryListEntry>=null) : JobCrafterDirectoryListMessage {
+         this.listEntries = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.listEntries=new Vector.<JobCrafterDirectoryListEntry>();
-         this._isInitialized=false;
+         this.listEntries = new Vector.<JobCrafterDirectoryListEntry>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_JobCrafterDirectoryListMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_JobCrafterDirectoryListMessage(param1);
       }
-
-      public function serializeAs_JobCrafterDirectoryListMessage(output:IDataOutput) : void {
-         output.writeShort(this.listEntries.length);
-         var _i1:uint = 0;
-         while(_i1<this.listEntries.length)
+      
+      public function serializeAs_JobCrafterDirectoryListMessage(param1:IDataOutput) : void {
+         param1.writeShort(this.listEntries.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.listEntries.length)
          {
-            (this.listEntries[_i1] as JobCrafterDirectoryListEntry).serializeAs_JobCrafterDirectoryListEntry(output);
-            _i1++;
+            (this.listEntries[_loc2_] as JobCrafterDirectoryListEntry).serializeAs_JobCrafterDirectoryListEntry(param1);
+            _loc2_++;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_JobCrafterDirectoryListMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_JobCrafterDirectoryListMessage(param1);
       }
-
-      public function deserializeAs_JobCrafterDirectoryListMessage(input:IDataInput) : void {
-         var _item1:JobCrafterDirectoryListEntry = null;
-         var _listEntriesLen:uint = input.readUnsignedShort();
-         var _i1:uint = 0;
-         while(_i1<_listEntriesLen)
+      
+      public function deserializeAs_JobCrafterDirectoryListMessage(param1:IDataInput) : void {
+         var _loc4_:JobCrafterDirectoryListEntry = null;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            _item1=new JobCrafterDirectoryListEntry();
-            _item1.deserialize(input);
-            this.listEntries.push(_item1);
-            _i1++;
+            _loc4_ = new JobCrafterDirectoryListEntry();
+            _loc4_.deserialize(param1);
+            this.listEntries.push(_loc4_);
+            _loc3_++;
          }
       }
    }
-
 }

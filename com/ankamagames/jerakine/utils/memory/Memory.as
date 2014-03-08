@@ -2,35 +2,33 @@ package com.ankamagames.jerakine.utils.memory
 {
    import flash.system.System;
    import flash.net.LocalConnection;
-
-
+   
    public class Memory extends Object
    {
-         
-
+      
       public function Memory() {
          super();
       }
-
+      
       private static const MOD:uint = 1024;
-
+      
       private static const UNITS:Array = ["B","KB","MB","GB","TB","PB"];
-
+      
       public static function usage() : uint {
          return System.totalMemory;
       }
-
+      
       public static function humanReadableUsage() : String {
-         var memory:uint = System.totalMemory;
-         var i:uint = 0;
-         while(memory>MOD)
+         var _loc1_:uint = System.totalMemory;
+         var _loc2_:uint = 0;
+         while(_loc1_ > MOD)
          {
-            memory=memory/MOD;
-            i++;
+            _loc1_ = _loc1_ / MOD;
+            _loc2_++;
          }
-         return memory+" "+UNITS[i];
+         return _loc1_ + " " + UNITS[_loc2_];
       }
-
+      
       public static function gc() : void {
          try
          {
@@ -41,8 +39,5 @@ package com.ankamagames.jerakine.utils.memory
          {
          }
       }
-
-
    }
-
 }

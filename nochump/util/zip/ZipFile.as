@@ -7,169 +7,161 @@ package nochump.util.zip
    import flash.events.Event;
    import flash.utils.Endian;
    import flash.utils.IDataInput;
-
-
+   
    public class ZipFile extends EventDispatcher
    {
-         
-
-      public function ZipFile(data:IDataInput) {
+      
+      public function ZipFile(param1:IDataInput) {
          super();
-         this.buf=new ByteArray();
-         this.buf.endian=Endian.LITTLE_ENDIAN;
-         data.readBytes(this.buf);
+         this.buf = new ByteArray();
+         this.buf.endian = Endian.LITTLE_ENDIAN;
+         param1.readBytes(this.buf);
          this.readEntries();
       }
-
-
-
+      
       private var buf:ByteArray;
-
+      
       private var entryList:Array;
-
+      
       private var entryTable:Dictionary;
-
+      
       private var locOffsetTable:Dictionary;
-
+      
       public function get entries() : Array {
          return this.entryList;
       }
-
+      
       public function get size() : uint {
          return this.entryList.length;
       }
-
-      public function getEntry(name:String) : ZipEntry {
-         return this.entryTable[name];
+      
+      public function getEntry(param1:String) : ZipEntry {
+         return this.entryTable[param1];
       }
-
-      public function getInput(entry:ZipEntry, asynCallback:Function=null) : ByteArray {
-         var b2:ByteArray = null;
-         var inflater:Inflater = null;
-         this.buf.position=this.locOffsetTable[entry.name]+ZipConstants.LOCHDR-2;
-         var len:uint = this.buf.readShort();
-         this.buf.position=this.buf.position+(entry.name.length+len);
-         var b1:ByteArray = new ByteArray();
-         if(entry.compressedSize>0)
+      
+      public function getInput(param1:ZipEntry, param2:Function=null) : ByteArray {
+         var _loc5_:ByteArray = null;
+         var _loc6_:Inflater = null;
+         this.buf.position = this.locOffsetTable[param1.name] + ZipConstants.LOCHDR - 2;
+         var _loc3_:uint = this.buf.readShort();
+         this.buf.position = this.buf.position + (param1.name.length + _loc3_);
+         var _loc4_:ByteArray = new ByteArray();
+         if(param1.compressedSize > 0)
          {
-            this.buf.readBytes(b1,0,entry.compressedSize);
+            this.buf.readBytes(_loc4_,0,param1.compressedSize);
          }
-         switch(entry.method)
+         switch(param1.method)
          {
             case ZipConstants.STORED:
-               return b1;
+               return _loc4_;
             case ZipConstants.DEFLATED:
-               b2=new ByteArray();
-               inflater=new Inflater();
-               inflater.addEventListener(ProgressEvent.PROGRESS,this.onProgress,false,0,true);
-               inflater.setInput(b1);
-               inflater.inflate(b2,asynCallback);
-               if(asynCallback!=null)
+               _loc5_ = new ByteArray();
+               _loc6_ = new Inflater();
+               _loc6_.addEventListener(ProgressEvent.PROGRESS,this.onProgress,false,0,true);
+               _loc6_.setInput(_loc4_);
+               _loc6_.inflate(_loc5_,param2);
+               if(param2 != null)
                {
                   return null;
                }
-               return b2;
+               return _loc5_;
             default:
                throw new ZipError("invalid compression method");
          }
       }
-
-      private function onProgress(e:Event) : void {
-         dispatchEvent(e);
+      
+      private function onProgress(param1:Event) : void {
+         dispatchEvent(param1);
       }
-
+      
       private function readEntries() : void {
-         var tmpbuf:ByteArray = null;
-         var len:uint = 0;
-         var e:ZipEntry = null;
+         var _loc2_:ByteArray = null;
+         var _loc3_:uint = 0;
+         var _loc4_:ZipEntry = null;
          this.readEND();
-         this.entryTable=new Dictionary();
-         this.locOffsetTable=new Dictionary();
-         var i:uint = 0;
-         while(i<this.entryList.length)
+         this.entryTable = new Dictionary();
+         this.locOffsetTable = new Dictionary();
+         var _loc1_:uint = 0;
+         while(_loc1_ < this.entryList.length)
          {
-            tmpbuf=new ByteArray();
-            tmpbuf.endian=Endian.LITTLE_ENDIAN;
-            this.buf.readBytes(tmpbuf,0,ZipConstants.CENHDR);
-            if(tmpbuf.readUnsignedInt()!=ZipConstants.CENSIG)
+            _loc2_ = new ByteArray();
+            _loc2_.endian = Endian.LITTLE_ENDIAN;
+            this.buf.readBytes(_loc2_,0,ZipConstants.CENHDR);
+            if(_loc2_.readUnsignedInt() != ZipConstants.CENSIG)
             {
                throw new ZipError("invalid CEN header (bad signature)");
             }
             else
             {
-               tmpbuf.position=ZipConstants.CENNAM;
-               len=tmpbuf.readUnsignedShort();
-               if(len==0)
+               _loc2_.position = ZipConstants.CENNAM;
+               _loc3_ = _loc2_.readUnsignedShort();
+               if(_loc3_ == 0)
                {
                   throw new ZipError("missing entry name");
                }
                else
                {
-                  e=new ZipEntry(this.buf.readUTFBytes(len));
-                  len=tmpbuf.readUnsignedShort();
-                  e.extra=new ByteArray();
-                  if(len>0)
+                  _loc4_ = new ZipEntry(this.buf.readUTFBytes(_loc3_));
+                  _loc3_ = _loc2_.readUnsignedShort();
+                  _loc4_.extra = new ByteArray();
+                  if(_loc3_ > 0)
                   {
-                     this.buf.readBytes(e.extra,0,len);
+                     this.buf.readBytes(_loc4_.extra,0,_loc3_);
                   }
-                  this.buf.position=this.buf.position+tmpbuf.readUnsignedShort();
-                  tmpbuf.position=ZipConstants.CENVER;
-                  e.version=tmpbuf.readUnsignedShort();
-                  e.flag=tmpbuf.readUnsignedShort();
-                  if((e.flag&1)==1)
+                  this.buf.position = this.buf.position + _loc2_.readUnsignedShort();
+                  _loc2_.position = ZipConstants.CENVER;
+                  _loc4_.version = _loc2_.readUnsignedShort();
+                  _loc4_.flag = _loc2_.readUnsignedShort();
+                  if((_loc4_.flag & 1) == 1)
                   {
                      throw new ZipError("encrypted ZIP entry not supported");
                   }
                   else
                   {
-                     e.method=tmpbuf.readUnsignedShort();
-                     e.dostime=tmpbuf.readUnsignedInt();
-                     e.crc=tmpbuf.readUnsignedInt();
-                     e.compressedSize=tmpbuf.readUnsignedInt();
-                     e.size=tmpbuf.readUnsignedInt();
-                     this.entryList[i]=e;
-                     this.entryTable[e.name]=e;
-                     tmpbuf.position=ZipConstants.CENOFF;
-                     this.locOffsetTable[e.name]=tmpbuf.readUnsignedInt();
-                     i++;
+                     _loc4_.method = _loc2_.readUnsignedShort();
+                     _loc4_.dostime = _loc2_.readUnsignedInt();
+                     _loc4_.crc = _loc2_.readUnsignedInt();
+                     _loc4_.compressedSize = _loc2_.readUnsignedInt();
+                     _loc4_.size = _loc2_.readUnsignedInt();
+                     this.entryList[_loc1_] = _loc4_;
+                     this.entryTable[_loc4_.name] = _loc4_;
+                     _loc2_.position = ZipConstants.CENOFF;
+                     this.locOffsetTable[_loc4_.name] = _loc2_.readUnsignedInt();
+                     _loc1_++;
                      continue;
                   }
                }
             }
          }
       }
-
+      
       private function readEND() : void {
-         var b:ByteArray = new ByteArray();
-         b.endian=Endian.LITTLE_ENDIAN;
-         this.buf.position=this.findEND();
-         this.buf.readBytes(b,0,ZipConstants.ENDHDR);
-         b.position=ZipConstants.ENDTOT;
-         this.entryList=new Array(b.readUnsignedShort());
-         b.position=ZipConstants.ENDOFF;
-         this.buf.position=b.readUnsignedInt();
+         var _loc1_:ByteArray = new ByteArray();
+         _loc1_.endian = Endian.LITTLE_ENDIAN;
+         this.buf.position = this.findEND();
+         this.buf.readBytes(_loc1_,0,ZipConstants.ENDHDR);
+         _loc1_.position = ZipConstants.ENDTOT;
+         this.entryList = new Array(_loc1_.readUnsignedShort());
+         _loc1_.position = ZipConstants.ENDOFF;
+         this.buf.position = _loc1_.readUnsignedInt();
       }
-
+      
       private function findEND() : uint {
-         var i:uint = this.buf.length-ZipConstants.ENDHDR;
-         var n:uint = Math.max(0,i-65535);
-         while(i>=n)
+         var _loc1_:uint = this.buf.length - ZipConstants.ENDHDR;
+         var _loc2_:uint = Math.max(0,_loc1_ - 65535);
+         while(_loc1_ >= _loc2_)
          {
-            if(this.buf[i]!=80)
+            if(this.buf[_loc1_] == 80)
             {
-            }
-            else
-            {
-               this.buf.position=i;
-               if(this.buf.readUnsignedInt()==ZipConstants.ENDSIG)
+               this.buf.position = _loc1_;
+               if(this.buf.readUnsignedInt() == ZipConstants.ENDSIG)
                {
-                  return i;
+                  return _loc1_;
                }
             }
-            i--;
+            _loc1_--;
          }
          throw new ZipError("invalid zip");
       }
    }
-
 }

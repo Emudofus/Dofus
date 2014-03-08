@@ -1,752 +1,601 @@
 package gs
 {
    import flash.events.IEventDispatcher;
-   import flash.utils.Dictionary;
+   import flash.utils.*;
    import gs.events.TweenEvent;
    import flash.events.EventDispatcher;
    import flash.events.Event;
-
-
+   
    public class TweenMax extends TweenFilterLite implements IEventDispatcher
    {
-         
-
-      public function TweenMax($target:Object, $duration:Number, $vars:Object) {
-         super($target,$duration,$vars);
-         if((!(this.vars.onCompleteListener==null))||(!(this.vars.onUpdateListener==null))||(!(this.vars.onStartListener==null)))
+      
+      public function TweenMax(param1:Object, param2:Number, param3:Object) {
+         super(param1,param2,param3);
+         if(!(this.vars.onCompleteListener == null) || !(this.vars.onUpdateListener == null) || !(this.vars.onStartListener == null))
          {
             this.initDispatcher();
-            if(($duration==0)&&(this.delay==0))
+            if(param2 == 0 && this.delay == 0)
             {
                this.onUpdateDispatcher();
                this.onCompleteDispatcher();
             }
          }
-         this._repeatCount=0;
-         if((!isNaN(this.vars.yoyo))||(!isNaN(this.vars.loop)))
+         this._repeatCount = 0;
+         if(!isNaN(this.vars.yoyo) || !isNaN(this.vars.loop))
          {
-            this.vars.persist=true;
+            this.vars.persist = true;
          }
-         if(TweenFilterLite.version<9.29)
+         if(TweenFilterLite.version < 9.29)
          {
             trace("TweenMax error! Please update your TweenFilterLite class or try deleting your ASO files. TweenMax requires a more recent version. Download updates at http://www.TweenMax.com.");
          }
       }
-
+      
       public static var version:Number = 3.51;
-
-      protected static const _RAD2DEG:Number = 180/Math.PI;
-
+      
+      protected static const _RAD2DEG:Number = 180 / Math.PI;
+      
       private static var _overwriteMode:int = OverwriteManager.enabled?OverwriteManager.mode:OverwriteManager.init();
-
+      
       public static var killTweensOf:Function = TweenLite.killTweensOf;
-
+      
       public static var killDelayedCallsTo:Function = TweenLite.killTweensOf;
-
+      
       public static var removeTween:Function = TweenLite.removeTween;
-
+      
       public static var setGlobalTimeScale:Function = TweenFilterLite.setGlobalTimeScale;
-
+      
       protected static var _pausedTweens:Dictionary = new Dictionary(false);
-
-      public static function to($target:Object, $duration:Number, $vars:Object) : TweenMax {
-         return new TweenMax($target,$duration,$vars);
+      
+      public static function to(param1:Object, param2:Number, param3:Object) : TweenMax {
+         return new TweenMax(param1,param2,param3);
       }
-
-      public static function from($target:Object, $duration:Number, $vars:Object) : TweenMax {
-         $vars.runBackwards=true;
-         return new TweenMax($target,$duration,$vars);
+      
+      public static function from(param1:Object, param2:Number, param3:Object) : TweenMax {
+         param3.runBackwards = true;
+         return new TweenMax(param1,param2,param3);
       }
-
-      public static function allTo($targets:Array, $duration:Number, $vars:Object) : Array {
-         var i:* = 0;
-         var v:Object = null;
-         var p:String = null;
-         var dl:* = NaN;
-         var lastVars:Object = null;
+      
+      public static function allTo(param1:Array, param2:Number, param3:Object) : Array {
+         var _loc4_:* = 0;
+         var _loc5_:Object = null;
+         var _loc6_:String = null;
+         var _loc7_:* = NaN;
+         var _loc8_:Object = null;
          trace("WARNING: TweenMax.allTo() and TweenMax.allFrom() have been deprecated in favor of the much more powerful and flexible TweenGroup class. See http://blog.greensock.com/tweengroup/ for more details. Future versions of TweenMax may not include allTo() and allFrom() (to conserve file size).");
-         if($targets.length==0)
+         if(param1.length == 0)
          {
             return [];
          }
-         var a:Array = [];
-         var dli:Number = ($vars.delayIncrement)||(0);
-         delete $vars[delayIncrement];
-         if($vars.onCompleteAll==undefined)
+         var _loc9_:Array = [];
+         var _loc10_:Number = (param3.delayIncrement) || (0);
+         delete param3[delayIncrement];
+         if(param3.onCompleteAll == undefined)
          {
-            lastVars=$vars;
+            _loc8_ = param3;
          }
          else
          {
-            lastVars={};
-            for (p in $vars)
+            _loc8_ = {};
+            for (_loc6_ in param3)
             {
-               lastVars[p]=$vars[p];
+               _loc8_[_loc6_] = param3[_loc6_];
             }
-            lastVars.onCompleteParams=[[$vars.onComplete,$vars.onCompleteAll],[$vars.onCompleteParams,$vars.onCompleteAllParams]];
-            lastVars.onComplete=TweenMax.callbackProxy;
-            delete $vars[onCompleteAll];
+            _loc8_.onCompleteParams = [[param3.onComplete,param3.onCompleteAll],[param3.onCompleteParams,param3.onCompleteAllParams]];
+            _loc8_.onComplete = TweenMax.callbackProxy;
+            delete param3[onCompleteAll];
          }
-         delete $vars[onCompleteAllParams];
-         if(dli==0)
+         delete param3[onCompleteAllParams];
+         if(_loc10_ == 0)
          {
-            i=0;
-            while(i<$targets.length-1)
+            _loc4_ = 0;
+            while(_loc4_ < param1.length-1)
             {
-               v={};
-               for (p in $vars)
+               _loc5_ = {};
+               for (_loc6_ in param3)
                {
-                  v[p]=$vars[p];
+                  _loc5_[_loc6_] = param3[_loc6_];
                }
-               a[a.length]=new TweenMax($targets[i],$duration,v);
-               i++;
+               _loc9_[_loc9_.length] = new TweenMax(param1[_loc4_],param2,_loc5_);
+               _loc4_++;
             }
          }
          else
          {
-            dl=($vars.delay)||(0);
-            i=0;
-            while(i<$targets.length-1)
+            _loc7_ = (param3.delay) || (0);
+            _loc4_ = 0;
+            while(_loc4_ < param1.length-1)
             {
-               v={};
-               for (p in $vars)
+               _loc5_ = {};
+               for (_loc6_ in param3)
                {
-                  v[p]=$vars[p];
+                  _loc5_[_loc6_] = param3[_loc6_];
                }
-               v.delay=dl+i*dli;
-               a[a.length]=new TweenMax($targets[i],$duration,v);
-               i++;
+               _loc5_.delay = _loc7_ + _loc4_ * _loc10_;
+               _loc9_[_loc9_.length] = new TweenMax(param1[_loc4_],param2,_loc5_);
+               _loc4_++;
             }
-            lastVars.delay=dl+($targets.length-1)*dli;
+            _loc8_.delay = _loc7_ + (param1.length-1) * _loc10_;
          }
-         a[a.length]=new TweenMax($targets[$targets.length-1],$duration,lastVars);
-         if($vars.onCompleteAllListener is Function)
+         _loc9_[_loc9_.length] = new TweenMax(param1[param1.length-1],param2,_loc8_);
+         if(param3.onCompleteAllListener is Function)
          {
-            a[a.length-1].addEventListener(TweenEvent.COMPLETE,$vars.onCompleteAllListener);
+            _loc9_[_loc9_.length-1].addEventListener(TweenEvent.COMPLETE,param3.onCompleteAllListener);
          }
-         return a;
+         return _loc9_;
       }
-
-      public static function allFrom($targets:Array, $duration:Number, $vars:Object) : Array {
-         $vars.runBackwards=true;
-         return allTo($targets,$duration,$vars);
+      
+      public static function allFrom(param1:Array, param2:Number, param3:Object) : Array {
+         param3.runBackwards = true;
+         return allTo(param1,param2,param3);
       }
-
-      public static function callbackProxy($functions:Array, $params:Array=null) : void {
-         var i:uint = 0;
-         while(i<$functions.length)
+      
+      public static function callbackProxy(param1:Array, param2:Array=null) : void {
+         var _loc3_:uint = 0;
+         while(_loc3_ < param1.length)
          {
-            if($functions[i]!=undefined)
+            if(param1[_loc3_] != undefined)
             {
-               $functions[i].apply(null,$params[i]);
+               param1[_loc3_].apply(null,param2[_loc3_]);
             }
-            i++;
+            _loc3_++;
          }
       }
-
-      public static function sequence($target:Object, $tweens:Array) : Array {
-         var i:uint = 0;
-         while(i<$tweens.length)
+      
+      public static function sequence(param1:Object, param2:Array) : Array {
+         var _loc3_:uint = 0;
+         while(_loc3_ < param2.length)
          {
-            $tweens[i].target=$target;
-            i++;
+            param2[_loc3_].target = param1;
+            _loc3_++;
          }
-         return multiSequence($tweens);
+         return multiSequence(param2);
       }
-
-      public static function multiSequence($tweens:Array) : Array {
-         var tw:Object = null;
-         var tgt:Object = null;
-         var dl:* = NaN;
-         var t:* = NaN;
-         var i:uint = 0;
-         var o:Object = null;
-         var p:String = null;
+      
+      public static function multiSequence(param1:Array) : Array {
+         var _loc6_:Object = null;
+         var _loc7_:Object = null;
+         var _loc8_:* = NaN;
+         var _loc9_:* = NaN;
+         var _loc10_:uint = 0;
+         var _loc11_:Object = null;
+         var _loc12_:String = null;
          trace("WARNING: TweenMax.multiSequence() and TweenMax.sequence() have been deprecated in favor of the much more powerful and flexible TweenGroup class. See http://blog.greensock.com/tweengroup/ for more details. Future versions of TweenMax may not include sequence() and multiSequence() (to conserve file size).");
-         var dict:Dictionary = new Dictionary();
-         var a:Array = [];
-         var overwriteMode:int = TweenLite.overwriteManager.mode;
-         var totalDelay:Number = 0;
-         i=0;
-         while(i<$tweens.length)
+         var _loc2_:Dictionary = new Dictionary();
+         var _loc3_:Array = [];
+         var _loc4_:int = TweenLite.overwriteManager.mode;
+         var _loc5_:Number = 0;
+         _loc10_ = 0;
+         while(_loc10_ < param1.length)
          {
-            tw=$tweens[i];
-            t=(tw.time)||(0);
-            o={};
-            for (p in tw)
+            _loc6_ = param1[_loc10_];
+            _loc9_ = (_loc6_.time) || (0);
+            _loc11_ = {};
+            for (_loc12_ in _loc6_)
             {
-               o[p]=tw[p];
+               _loc11_[_loc12_] = _loc6_[_loc12_];
             }
-            delete o[time];
-            dl=(o.delay)||(0);
-            o.delay=totalDelay+dl;
-            tgt=o.target;
-            delete o[target];
-            if(overwriteMode==1)
+            delete _loc11_[time];
+            _loc8_ = (_loc11_.delay) || (0);
+            _loc11_.delay = _loc5_ + _loc8_;
+            _loc7_ = _loc11_.target;
+            delete _loc11_[target];
+            if(_loc4_ == 1)
             {
-               if(dict[tgt]==undefined)
+               if(_loc2_[_loc7_] == undefined)
                {
-                  dict[tgt]=o;
+                  _loc2_[_loc7_] = _loc11_;
                }
                else
                {
-                  o.overwrite=2;
+                  _loc11_.overwrite = 2;
                }
             }
-            a[a.length]=new TweenMax(tgt,t,o);
-            totalDelay=totalDelay+(t+dl);
-            i++;
+            _loc3_[_loc3_.length] = new TweenMax(_loc7_,_loc9_,_loc11_);
+            _loc5_ = _loc5_ + (_loc9_ + _loc8_);
+            _loc10_++;
          }
-         return a;
+         return _loc3_;
       }
-
-      public static function delayedCall($delay:Number, $onComplete:Function, $onCompleteParams:Array=null, $persist:Boolean=false) : TweenMax {
-         return new TweenMax($onComplete,0,
+      
+      public static function delayedCall(param1:Number, param2:Function, param3:Array=null, param4:Boolean=false) : TweenMax {
+         return new TweenMax(param2,0,
             {
-               delay:$delay,
-               onComplete:$onComplete,
-               onCompleteParams:$onCompleteParams,
-               persist:$persist,
-               overwrite:0
-            }
-         );
+               "delay":param1,
+               "onComplete":param2,
+               "onCompleteParams":param3,
+               "persist":param4,
+               "overwrite":0
+            });
       }
-
-      public static function parseBeziers($props:Object, $through:Boolean=false) : Object {
-         var i:* = 0;
-         var a:Array = null;
-         var b:Object = null;
-         var p:String = null;
-         var all:Object = {};
-         if($through)
+      
+      public static function parseBeziers(param1:Object, param2:Boolean=false) : Object {
+         var _loc3_:* = 0;
+         var _loc4_:Array = null;
+         var _loc5_:Object = null;
+         var _loc6_:String = null;
+         var _loc7_:Object = {};
+         if(param2)
          {
-            for (p in $props)
+            for (_loc6_ in param1)
             {
-               a=$props[p];
-               all[p]=b=[];
-               if(a.length>2)
+               _loc4_ = param1[_loc6_];
+               _loc7_[_loc6_] = _loc5_ = [];
+               if(_loc4_.length > 2)
                {
-                  b[b.length]=
+                  _loc5_[_loc5_.length] = 
                      {
-                        s:a[0],
-                        cp:a[1]-(a[2]-a[0])/4,
-                        e:a[1]
-                     }
-                  ;
-                  i=1;
-                  while(i<a.length-1)
+                        "s":_loc4_[0],
+                        "cp":_loc4_[1] - (_loc4_[2] - _loc4_[0]) / 4,
+                        "e":_loc4_[1]
+                     };
+                  _loc3_ = 1;
+                  while(_loc3_ < _loc4_.length-1)
                   {
-                     b[b.length]=
+                     _loc5_[_loc5_.length] = 
                         {
-                           s:a[i],
-                           cp:a[i]+(a[i]-b[i-1].cp),
-                           e:a[i+1]
-                        }
-                     ;
-                     i++;
+                           "s":_loc4_[_loc3_],
+                           "cp":_loc4_[_loc3_] + (_loc4_[_loc3_] - _loc5_[_loc3_-1].cp),
+                           "e":_loc4_[_loc3_ + 1]
+                        };
+                     _loc3_++;
                   }
                }
                else
                {
-                  b[b.length]=
+                  _loc5_[_loc5_.length] = 
                      {
-                        s:a[0],
-                        cp:(a[0]+a[1])/2,
-                        e:a[1]
-                     }
-                  ;
+                        "s":_loc4_[0],
+                        "cp":(_loc4_[0] + _loc4_[1]) / 2,
+                        "e":_loc4_[1]
+                     };
                }
             }
          }
          else
          {
-            for (p in $props)
+            for (_loc6_ in param1)
             {
-               a=$props[p];
-               all[p]=b=[];
-               if(a.length>3)
+               _loc4_ = param1[_loc6_];
+               _loc7_[_loc6_] = _loc5_ = [];
+               if(_loc4_.length > 3)
                {
-                  b[b.length]=
+                  _loc5_[_loc5_.length] = 
                      {
-                        s:a[0],
-                        cp:a[1],
-                        e:(a[1]+a[2])/2
-                     }
-                  ;
-                  i=2;
-                  while(i<a.length-2)
+                        "s":_loc4_[0],
+                        "cp":_loc4_[1],
+                        "e":(_loc4_[1] + _loc4_[2]) / 2
+                     };
+                  _loc3_ = 2;
+                  while(_loc3_ < _loc4_.length - 2)
                   {
-                     b[b.length]=
+                     _loc5_[_loc5_.length] = 
                         {
-                           s:b[i-2].e,
-                           cp:a[i],
-                           e:(a[i]+a[i+1])/2
-                        }
-                     ;
-                     i++;
+                           "s":_loc5_[_loc3_ - 2].e,
+                           "cp":_loc4_[_loc3_],
+                           "e":(_loc4_[_loc3_] + _loc4_[_loc3_ + 1]) / 2
+                        };
+                     _loc3_++;
                   }
-                  b[b.length]=
+                  _loc5_[_loc5_.length] = 
                      {
-                        s:b[b.length-1].e,
-                        cp:a[a.length-2],
-                        e:a[a.length-1]
-                     }
-                  ;
+                        "s":_loc5_[_loc5_.length-1].e,
+                        "cp":_loc4_[_loc4_.length - 2],
+                        "e":_loc4_[_loc4_.length-1]
+                     };
                }
                else
                {
-                  if(a.length==3)
+                  if(_loc4_.length == 3)
                   {
-                     b[b.length]=
+                     _loc5_[_loc5_.length] = 
                         {
-                           s:a[0],
-                           cp:a[1],
-                           e:a[2]
-                        }
-                     ;
+                           "s":_loc4_[0],
+                           "cp":_loc4_[1],
+                           "e":_loc4_[2]
+                        };
                   }
                   else
                   {
-                     if(a.length==2)
+                     if(_loc4_.length == 2)
                      {
-                        b[b.length]=
+                        _loc5_[_loc5_.length] = 
                            {
-                              s:a[0],
-                              cp:(a[0]+a[1])/2,
-                              e:a[1]
-                           }
-                        ;
+                              "s":_loc4_[0],
+                              "cp":(_loc4_[0] + _loc4_[1]) / 2,
+                              "e":_loc4_[1]
+                           };
                      }
                   }
                }
             }
          }
-         return all;
+         return _loc7_;
       }
-
-      public static function getTweensOf($target:Object) : Array {
-         var tween:TweenLite = null;
-         var i:* = 0;
-         var a:Array = masterList[$target];
-         var toReturn:Array = [];
-         if(a!=null)
+      
+      public static function getTweensOf(param1:Object) : Array {
+         var _loc4_:TweenLite = null;
+         var _loc5_:* = 0;
+         var _loc2_:Array = masterList[param1];
+         var _loc3_:Array = [];
+         if(_loc2_ != null)
          {
-            i=a.length-1;
-            while(i>-1)
+            _loc5_ = _loc2_.length-1;
+            while(_loc5_ > -1)
             {
-               if(!a[i].gc)
+               if(!_loc2_[_loc5_].gc)
                {
-                  toReturn[toReturn.length]=a[i];
+                  _loc3_[_loc3_.length] = _loc2_[_loc5_];
                }
-               i--;
+               _loc5_--;
             }
          }
-         for each (tween in _pausedTweens)
+         for each (_loc4_ in _pausedTweens)
          {
-            if(tween.target==$target)
+            if(_loc4_.target == param1)
             {
-               toReturn[toReturn.length]=tween;
+               _loc3_[_loc3_.length] = _loc4_;
             }
          }
-         return toReturn;
+         return _loc3_;
       }
-
-      public static function isTweening($target:Object) : Boolean {
-         var a:Array = getTweensOf($target);
-         var i:int = a.length-1;
-         while(i>-1)
+      
+      public static function isTweening(param1:Object) : Boolean {
+         var _loc2_:Array = getTweensOf(param1);
+         var _loc3_:int = _loc2_.length-1;
+         while(_loc3_ > -1)
          {
-            if((a[i].active)&&(!a[i].gc))
+            if((_loc2_[_loc3_].active) && !_loc2_[_loc3_].gc)
             {
                return true;
             }
-            i--;
+            _loc3_--;
          }
          return false;
       }
-
+      
       public static function getAllTweens() : Array {
-         var a:Array = null;
-         var i:* = 0;
-         var tween:TweenLite = null;
-         var ml:Dictionary = masterList;
-         var toReturn:Array = [];
-         for each (a in ml)
+         var _loc3_:Array = null;
+         var _loc4_:* = 0;
+         var _loc5_:TweenLite = null;
+         var _loc1_:Dictionary = masterList;
+         var _loc2_:Array = [];
+         for each (_loc3_ in _loc1_)
          {
-            i=a.length-1;
-            while(i>-1)
+            _loc4_ = _loc3_.length-1;
+            while(_loc4_ > -1)
             {
-               if(!a[i].gc)
+               if(!_loc3_[_loc4_].gc)
                {
-                  toReturn[toReturn.length]=a[i];
+                  _loc2_[_loc2_.length] = _loc3_[_loc4_];
                }
-               i--;
+               _loc4_--;
             }
          }
-         for each (toReturn[toReturn.length] in _pausedTweens)
+         for each (_loc2_[_loc2_.length] in _pausedTweens)
          {
          }
-         return toReturn;
+         return _loc2_;
       }
-
-      public static function killAllTweens($complete:Boolean=false) : void {
-         killAll($complete,true,false);
+      
+      public static function killAllTweens(param1:Boolean=false) : void {
+         killAll(param1,true,false);
       }
-
-      public static function killAllDelayedCalls($complete:Boolean=false) : void {
-         killAll($complete,false,true);
+      
+      public static function killAllDelayedCalls(param1:Boolean=false) : void {
+         killAll(param1,false,true);
       }
-
-      public static function killAll($complete:Boolean=false, $tweens:Boolean=true, $delayedCalls:Boolean=true) : void {
-         var isDC:* = false;
-         var i:* = 0;
-         var a:Array = getAllTweens();
-         i=a.length-1;
-         while(i>-1)
+      
+      public static function killAll(param1:Boolean=false, param2:Boolean=true, param3:Boolean=true) : void {
+         var _loc5_:* = false;
+         var _loc6_:* = 0;
+         var _loc4_:Array = getAllTweens();
+         _loc6_ = _loc4_.length-1;
+         while(_loc6_ > -1)
          {
-            isDC=a[i].target==a[i].vars.onComplete;
-            if((isDC==$delayedCalls)||(!(isDC==$tweens)))
+            _loc5_ = _loc4_[_loc6_].target == _loc4_[_loc6_].vars.onComplete;
+            if(_loc5_ == param3 || !(_loc5_ == param2))
             {
-               if($complete)
+               if(param1)
                {
-                  a[i].complete(false);
-                  a[i].clear();
+                  _loc4_[_loc6_].complete(false);
+                  _loc4_[_loc6_].clear();
                }
                else
                {
-                  TweenLite.removeTween(a[i],true);
+                  TweenLite.removeTween(_loc4_[_loc6_],true);
                }
             }
-            i--;
+            _loc6_--;
          }
       }
-
-      public static function pauseAll($tweens:Boolean=true, $delayedCalls:Boolean=false) : void {
-         changePause(true,$tweens,$delayedCalls);
+      
+      public static function pauseAll(param1:Boolean=true, param2:Boolean=false) : void {
+         changePause(true,param1,param2);
       }
-
-      public static function resumeAll($tweens:Boolean=true, $delayedCalls:Boolean=false) : void {
-         changePause(false,$tweens,$delayedCalls);
+      
+      public static function resumeAll(param1:Boolean=true, param2:Boolean=false) : void {
+         changePause(false,param1,param2);
       }
-
-      public static function changePause($pause:Boolean, $tweens:Boolean=true, $delayedCalls:Boolean=false) : void {
-         var isDC:* = false;
-         var a:Array = getAllTweens();
-         var i:int = a.length-1;
-         while(i>-1)
+      
+      public static function changePause(param1:Boolean, param2:Boolean=true, param3:Boolean=false) : void {
+         var _loc5_:* = false;
+         var _loc4_:Array = getAllTweens();
+         var _loc6_:int = _loc4_.length-1;
+         while(_loc6_ > -1)
          {
-            isDC=a[i].target==a[i].vars.onComplete;
-            if((a[i] is TweenMax)&&((isDC==$delayedCalls)||(!(isDC==$tweens))))
+            _loc5_ = _loc4_[_loc6_].target == _loc4_[_loc6_].vars.onComplete;
+            if(_loc4_[_loc6_] is TweenMax && (_loc5_ == param3 || !(_loc5_ == param2)))
             {
-               a[i].paused=$pause;
+               _loc4_[_loc6_].paused = param1;
             }
-            i--;
+            _loc6_--;
          }
       }
-
-      public static function hexColorsProxy($o:Object, $time:Number=0) : void {
-         $o.info.target[$o.info.prop]=uint($o.target.r<<16|$o.target.g<<8|$o.target.b);
+      
+      public static function hexColorsProxy(param1:Object, param2:Number=0) : void {
+         param1.info.target[param1.info.prop] = uint(param1.target.r << 16 | param1.target.g << 8 | param1.target.b);
       }
-
-      public static function bezierProxy($o:Object, $time:Number=0) : void {
-         var i:* = 0;
-         var p:String = null;
-         var b:Object = null;
-         var t:* = NaN;
-         var segments:uint = 0;
-         var factor:Number = $o.target.t;
-         var props:Object = $o.info.props;
-         var tg:Object = $o.info.target;
-         if(factor==1)
+      
+      public static function bezierProxy(param1:Object, param2:Number=0) : void {
+         var _loc6_:* = 0;
+         var _loc7_:String = null;
+         var _loc8_:Object = null;
+         var _loc9_:* = NaN;
+         var _loc10_:uint = 0;
+         var _loc3_:Number = param1.target.t;
+         var _loc4_:Object = param1.info.props;
+         var _loc5_:Object = param1.info.target;
+         if(_loc3_ == 1)
          {
-            for (p in props)
+            for (_loc7_ in _loc4_)
             {
-               i=props[p].length-1;
-               tg[p]=props[p][i].e;
+               _loc6_ = _loc4_[_loc7_].length-1;
+               _loc5_[_loc7_] = _loc4_[_loc7_][_loc6_].e;
             }
          }
          else
          {
-            for (p in props)
+            for (_loc7_ in _loc4_)
             {
-               segments=props[p].length;
-               if(factor<0)
+               _loc10_ = _loc4_[_loc7_].length;
+               if(_loc3_ < 0)
                {
-                  i=0;
+                  _loc6_ = 0;
                }
                else
                {
-                  if(factor>=1)
+                  if(_loc3_ >= 1)
                   {
-                     i=segments-1;
+                     _loc6_ = _loc10_-1;
                   }
                   else
                   {
-                     i=int(segments*factor);
+                     _loc6_ = int(_loc10_ * _loc3_);
                   }
                }
-               t=(factor-i*1/segments)*segments;
-               b=props[p][i];
-               tg[p]=b.s+t*(2*(1-t)*(b.cp-b.s)+t*(b.e-b.s));
+               _loc9_ = (_loc3_ - _loc6_ * 1 / _loc10_) * _loc10_;
+               _loc8_ = _loc4_[_loc7_][_loc6_];
+               _loc5_[_loc7_] = _loc8_.s + _loc9_ * (2 * (1 - _loc9_) * (_loc8_.cp - _loc8_.s) + _loc9_ * (_loc8_.e - _loc8_.s));
             }
          }
       }
-
-      public static function bezierProxy2($o:Object, $time:Number=0) : void {
-         var a:* = NaN;
-         var dx:* = NaN;
-         var dy:* = NaN;
-         var cotb:Array = null;
-         var toAdd:* = NaN;
-         bezierProxy($o,$time);
-         var future:Object = {};
-         var tg:Object = $o.info.target;
-         $o.info.target=future;
-         $o.target.t=$o.target.t+0.01;
-         bezierProxy($o);
-         var otb:Array = $o.info.orientToBezier;
-         var i:uint = 0;
-         while(i<otb.length)
+      
+      public static function bezierProxy2(param1:Object, param2:Number=0) : void {
+         var _loc6_:* = NaN;
+         var _loc7_:* = NaN;
+         var _loc8_:* = NaN;
+         var _loc9_:Array = null;
+         var _loc10_:* = NaN;
+         bezierProxy(param1,param2);
+         var _loc3_:Object = {};
+         var _loc4_:Object = param1.info.target;
+         param1.info.target = _loc3_;
+         param1.target.t = param1.target.t + 0.01;
+         bezierProxy(param1);
+         var _loc5_:Array = param1.info.orientToBezier;
+         var _loc11_:uint = 0;
+         while(_loc11_ < _loc5_.length)
          {
-            cotb=otb[i];
-            toAdd=(cotb[3])||(0);
-            dx=future[cotb[0]]-tg[cotb[0]];
-            dy=future[cotb[1]]-tg[cotb[1]];
-            tg[cotb[2]]=Math.atan2(dy,dx)*_RAD2DEG+toAdd;
-            i++;
+            _loc9_ = _loc5_[_loc11_];
+            _loc10_ = (_loc9_[3]) || (0);
+            _loc7_ = _loc3_[_loc9_[0]] - _loc4_[_loc9_[0]];
+            _loc8_ = _loc3_[_loc9_[1]] - _loc4_[_loc9_[1]];
+            _loc4_[_loc9_[2]] = Math.atan2(_loc8_,_loc7_) * _RAD2DEG + _loc10_;
+            _loc11_++;
          }
-         $o.info.target=tg;
-         $o.target.t=$o.target.t-0.01;
+         param1.info.target = _loc4_;
+         param1.target.t = param1.target.t - 0.01;
       }
-
-      public static function set globalTimeScale($n:Number) : void {
-         setGlobalTimeScale($n);
+      
+      public static function set globalTimeScale(param1:Number) : void {
+         setGlobalTimeScale(param1);
       }
-
+      
       public static function get globalTimeScale() : Number {
          return _globalTimeScale;
       }
-
+      
       protected var _dispatcher:EventDispatcher;
-
+      
       protected var _callbacks:Object;
-
+      
       protected var _repeatCount:Number;
-
+      
       public var pauseTime:Number;
-
-      override public function initTweenVals($hrp:Boolean=false, $reservedProps:String="") : void {
-         var p:String = null;
-         var i:* = 0;
-         var curProp:Object = null;
-         var props:Object = null;
-         var b:Array = null;
-         var dif:* = NaN;
-         var $reservedProps:String = $reservedProps+" hexColors bezier bezierThrough shortRotation orientToBezier quaternions onCompleteAll onCompleteAllParams yoyo loop onCompleteListener onUpdateListener onStartListener ";
-         if((!$hrp)&&(TweenLite.overwriteManager.enabled))
-         {
-            TweenLite.overwriteManager.manageOverwrites(this,masterList[this.target]);
-         }
-         var bProxy:Function = bezierProxy;
-         if(this.vars.orientToBezier==true)
-         {
-            this.vars.orientToBezier=[["x","y","rotation",0]];
-            bProxy=bezierProxy2;
-         }
-         else
-         {
-            if(this.vars.orientToBezier is Array)
-            {
-               bProxy=bezierProxy2;
-            }
-         }
-         if((!(this.vars.bezier==undefined))&&(this.vars.bezier is Array))
-         {
-            props={};
-            b=this.vars.bezier;
-            i=0;
-            while(i<b.length)
-            {
-               for (p in b[i])
-               {
-                  if(props[p]==undefined)
-                  {
-                     props[p]=[this.target[p]];
-                  }
-                  if(typeof b[i][p]=="number")
-                  {
-                     props[p].push(b[i][p]);
-                  }
-                  else
-                  {
-                     props[p].push(this.target[p]+Number(b[i][p]));
-                  }
-               }
-               i++;
-            }
-            for (p in props)
-            {
-               if(typeof this.vars[p]=="number")
-               {
-                  props[p].push(this.vars[p]);
-               }
-               else
-               {
-                  props[p].push(this.target[p]+Number(this.vars[p]));
-               }
-               delete this.vars[[p]];
-            }
-            addSubTween("bezier",bProxy,{t:0},{t:1},
-               {
-                  props:parseBeziers(props,false),
-                  target:this.target,
-                  orientToBezier:this.vars.orientToBezier
-               }
-            );
-         }
-         if((!(this.vars.bezierThrough==undefined))&&(this.vars.bezierThrough is Array))
-         {
-            props={};
-            b=this.vars.bezierThrough;
-            i=0;
-            while(i<b.length)
-            {
-               for (p in b[i])
-               {
-                  if(props[p]==undefined)
-                  {
-                     props[p]=[this.target[p]];
-                  }
-                  if(typeof b[i][p]=="number")
-                  {
-                     props[p].push(b[i][p]);
-                  }
-                  else
-                  {
-                     props[p].push(this.target[p]+Number(b[i][p]));
-                  }
-               }
-               i++;
-            }
-            for (p in props)
-            {
-               if(typeof this.vars[p]=="number")
-               {
-                  props[p].push(this.vars[p]);
-               }
-               else
-               {
-                  props[p].push(this.target[p]+Number(this.vars[p]));
-               }
-               delete this.vars[[p]];
-            }
-            addSubTween("bezierThrough",bProxy,{t:0},{t:1},
-               {
-                  props:parseBeziers(props,true),
-                  target:this.target,
-                  orientToBezier:this.vars.orientToBezier
-               }
-            );
-         }
-         if(!isNaN(this.vars.shortRotation))
-         {
-            dif=(this.vars.shortRotation-this.target.rotation)%360;
-            if(dif!=dif%180)
-            {
-               dif=dif<0?dif+360:dif-360;
-            }
-            this.tweens[this.tweens.length]=[this.target,"rotation",this.target.rotation,dif,"rotation"];
-         }
-         if((!(this.vars.hexColors==undefined))&&(typeof this.vars.hexColors=="object"))
-         {
-            for (p in this.vars.hexColors)
-            {
-               addSubTween("hexColors",hexColorsProxy,
-                  {
-                     r:this.target[p]>>16,
-                     g:this.target[p]>>8&255,
-                     b:this.target[p]&255
-                  }
-               ,
-                  {
-                     r:this.vars.hexColors[p]>>16,
-                     g:this.vars.hexColors[p]>>8&255,
-                     b:this.vars.hexColors[p]&255
-                  }
-               ,
-                  {
-                     prop:p,
-                     target:this.target
-                  }
-               );
-            }
-         }
-         super.initTweenVals(true,$reservedProps);
+      
+      override public function initTweenVals(param1:Boolean=false, param2:String="") : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
-
+      
       public function pause() : void {
          if(isNaN(this.pauseTime))
          {
-            this.pauseTime=currentTime;
-            this.startTime=9.99999999999999E14;
-            this.enabled=false;
-            _pausedTweens[this]=this;
+            this.pauseTime = currentTime;
+            this.startTime = 9.99999999999999E14;
+            this.enabled = false;
+            _pausedTweens[this] = this;
          }
       }
-
+      
       public function resume() : void {
-         this.enabled=true;
+         this.enabled = true;
          if(!isNaN(this.pauseTime))
          {
-            this.initTime=this.initTime+(currentTime-this.pauseTime);
-            this.startTime=this.initTime+this.delay*1000/this.combinedTimeScale;
-            this.pauseTime=NaN;
-            if((!this.started)&&(currentTime>=this.startTime))
+            this.initTime = this.initTime + (currentTime - this.pauseTime);
+            this.startTime = this.initTime + this.delay * 1000 / this.combinedTimeScale;
+            this.pauseTime = NaN;
+            if(!this.started && currentTime >= this.startTime)
             {
                activate();
             }
             else
             {
-               this.active=this.started;
+               this.active = this.started;
             }
-            _pausedTweens[this]=null;
+            _pausedTweens[this] = null;
             delete _pausedTweens[[this]];
          }
       }
-
-      public function restart($includeDelay:Boolean=false) : void {
-         if($includeDelay)
+      
+      public function restart(param1:Boolean=false) : void {
+         if(param1)
          {
-            this.initTime=currentTime;
-            this.startTime=currentTime+this.delay*1000/this.combinedTimeScale;
+            this.initTime = currentTime;
+            this.startTime = currentTime + this.delay * 1000 / this.combinedTimeScale;
          }
          else
          {
-            this.startTime=currentTime;
-            this.initTime=currentTime-this.delay*1000/this.combinedTimeScale;
+            this.startTime = currentTime;
+            this.initTime = currentTime - this.delay * 1000 / this.combinedTimeScale;
          }
-         this._repeatCount=0;
-         if(this.target!=this.vars.onComplete)
+         this._repeatCount = 0;
+         if(this.target != this.vars.onComplete)
          {
             render(this.startTime);
          }
-         this.pauseTime=NaN;
-         _pausedTweens[this]=null;
+         this.pauseTime = NaN;
+         _pausedTweens[this] = null;
          delete _pausedTweens[[this]];
-         this.enabled=true;
+         this.enabled = true;
       }
-
-      public function reverse($adjustDuration:Boolean=true, $forcePlay:Boolean=true) : void {
-         this.ease=this.vars.ease==this.ease?this.reverseEase:this.vars.ease;
-         var p:Number = this.progress;
-         if(($adjustDuration)&&(p<0))
+      
+      public function reverse(param1:Boolean=true, param2:Boolean=true) : void {
+         this.ease = this.vars.ease == this.ease?this.reverseEase:this.vars.ease;
+         var _loc3_:Number = this.progress;
+         if((param1) && _loc3_ > 0)
          {
-            this.startTime=currentTime-(1-p)*this.duration*1000/this.combinedTimeScale;
-            this.initTime=this.startTime-this.delay*1000/this.combinedTimeScale;
+            this.startTime = currentTime - (1 - _loc3_) * this.duration * 1000 / this.combinedTimeScale;
+            this.initTime = this.startTime - this.delay * 1000 / this.combinedTimeScale;
          }
-         if($forcePlay!=false)
+         if(param2 != false)
          {
-            if(p<1)
+            if(_loc3_ < 1)
             {
                this.resume();
             }
@@ -756,186 +605,185 @@ package gs
             }
          }
       }
-
-      public function reverseEase($t:Number, $b:Number, $c:Number, $d:Number) : Number {
-         return this.vars.ease($d-$t,$b,$c,$d);
+      
+      public function reverseEase(param1:Number, param2:Number, param3:Number, param4:Number) : Number {
+         return this.vars.ease(param4 - param1,param2,param3,param4);
       }
-
-      public function invalidate($adjustStartValues:Boolean=true) : void {
-         var p:* = NaN;
+      
+      public function invalidate(param1:Boolean=true) : void {
+         var _loc2_:* = NaN;
          if(this.initted)
          {
-            p=this.progress;
-            if((!$adjustStartValues)&&(!(p==0)))
+            _loc2_ = this.progress;
+            if(!param1 && !(_loc2_ == 0))
             {
-               this.progress=0;
+               this.progress = 0;
             }
-            this.tweens=[];
-            _subTweens=[];
-            _specialVars=this.vars.isTV==true?this.vars.exposedProps:this.vars;
+            this.tweens = [];
+            _subTweens = [];
+            _specialVars = this.vars.isTV == true?this.vars.exposedProps:this.vars;
             this.initTweenVals();
-            _timeScale=(this.vars.timeScale)||(1);
-            this.combinedTimeScale=_timeScale*_globalTimeScale;
-            this.delay=(this.vars.delay)||(0);
+            _timeScale = (this.vars.timeScale) || (1);
+            this.combinedTimeScale = _timeScale * _globalTimeScale;
+            this.delay = (this.vars.delay) || (0);
             if(isNaN(this.pauseTime))
             {
-               this.startTime=this.initTime+this.delay*1000/this.combinedTimeScale;
+               this.startTime = this.initTime + this.delay * 1000 / this.combinedTimeScale;
             }
-            if((!(this.vars.onCompleteListener==null))||(!(this.vars.onUpdateListener==null))||(!(this.vars.onStartListener==null)))
+            if(!(this.vars.onCompleteListener == null) || !(this.vars.onUpdateListener == null) || !(this.vars.onStartListener == null))
             {
-               if(this._dispatcher!=null)
+               if(this._dispatcher != null)
                {
-                  this.vars.onStart=this._callbacks.onStart;
-                  this.vars.onUpdate=this._callbacks.onUpdate;
-                  this.vars.onComplete=this._callbacks.onComplete;
-                  this._dispatcher=null;
+                  this.vars.onStart = this._callbacks.onStart;
+                  this.vars.onUpdate = this._callbacks.onUpdate;
+                  this.vars.onComplete = this._callbacks.onComplete;
+                  this._dispatcher = null;
                }
                this.initDispatcher();
             }
-            if(p!=0)
+            if(_loc2_ != 0)
             {
-               if($adjustStartValues)
+               if(param1)
                {
                   this.adjustStartValues();
                }
                else
                {
-                  this.progress=p;
+                  this.progress = _loc2_;
                }
             }
          }
       }
-
-      public function setDestination($property:String, $value:*, $adjustStartValues:Boolean=true) : void {
-         var v:Object = null;
-         var i:* = 0;
-         var varsOld:Object = null;
-         var tweensOld:Array = null;
-         var subTweensOld:Array = null;
-         var p:Number = this.progress;
-         if((!(this.vars[$property]==undefined))&&(this.initted))
+      
+      public function setDestination(param1:String, param2:*, param3:Boolean=true) : void {
+         var _loc5_:Object = null;
+         var _loc6_:* = 0;
+         var _loc7_:Object = null;
+         var _loc8_:Array = null;
+         var _loc9_:Array = null;
+         var _loc4_:Number = this.progress;
+         if(!(this.vars[param1] == undefined) && (this.initted))
          {
-            if((!$adjustStartValues)&&(!(p==0)))
+            if(!param3 && !(_loc4_ == 0))
             {
-               i=this.tweens.length-1;
-               while(i>-1)
+               _loc6_ = this.tweens.length-1;
+               while(_loc6_ > -1)
                {
-                  if(this.tweens[i][4]==$property)
+                  if(this.tweens[_loc6_][4] == param1)
                   {
-                     this.tweens[i][0][this.tweens[i][1]]=this.tweens[i][2];
+                     this.tweens[_loc6_][0][this.tweens[_loc6_][1]] = this.tweens[_loc6_][2];
                   }
-                  i--;
+                  _loc6_--;
                }
             }
-            v={};
-            v[$property]=1;
-            killVars(v);
+            _loc5_ = {};
+            _loc5_[param1] = 1;
+            killVars(_loc5_);
          }
-         this.vars[$property]=$value;
+         this.vars[param1] = param2;
          if(this.initted)
          {
-            varsOld=this.vars;
-            tweensOld=this.tweens;
-            subTweensOld=_subTweens;
-            this.vars={};
-            this.tweens=[];
-            _subTweens=[];
-            this.vars[$property]=$value;
+            _loc7_ = this.vars;
+            _loc8_ = this.tweens;
+            _loc9_ = _subTweens;
+            this.vars = {};
+            this.tweens = [];
+            _subTweens = [];
+            this.vars[param1] = param2;
             this.initTweenVals();
-            if((!(this.ease==this.reverseEase))&&(varsOld.ease is Function))
+            if(!(this.ease == this.reverseEase) && _loc7_.ease is Function)
             {
-               this.ease=varsOld.ease;
+               this.ease = _loc7_.ease;
             }
-            if(($adjustStartValues)&&(!(p==0)))
+            if((param3) && !(_loc4_ == 0))
             {
                this.adjustStartValues();
             }
-            this.vars=varsOld;
-            this.tweens=tweensOld.concat(this.tweens);
-            _subTweens=subTweensOld.concat(_subTweens);
+            this.vars = _loc7_;
+            this.tweens = _loc8_.concat(this.tweens);
+            _subTweens = _loc9_.concat(_subTweens);
          }
       }
-
+      
       protected function adjustStartValues() : void {
-         var factor:* = NaN;
-         var endValue:* = NaN;
-         var tp:Object = null;
-         var i:* = 0;
-         var p:Number = this.progress;
-         if(p!=0)
+         var _loc2_:* = NaN;
+         var _loc3_:* = NaN;
+         var _loc4_:Object = null;
+         var _loc5_:* = 0;
+         var _loc1_:Number = this.progress;
+         if(_loc1_ != 0)
          {
-            factor=1/(1-this.ease(p*this.duration,0,1,this.duration));
-            i=this.tweens.length-1;
-            while(i>-1)
+            _loc2_ = 1 / (1 - this.ease(_loc1_ * this.duration,0,1,this.duration));
+            _loc5_ = this.tweens.length-1;
+            while(_loc5_ > -1)
             {
-               tp=this.tweens[i];
-               endValue=tp[2]+tp[3];
-               tp[3]=(endValue-tp[0][tp[1]])*factor;
-               tp[2]=endValue-tp[3];
-               i--;
+               _loc4_ = this.tweens[_loc5_];
+               _loc3_ = _loc4_[2] + _loc4_[3];
+               _loc4_[3] = (_loc3_ - _loc4_[0][_loc4_[1]]) * _loc2_;
+               _loc4_[2] = _loc3_ - _loc4_[3];
+               _loc5_--;
             }
          }
       }
-
-      public function killProperties($names:Array) : void {
-         var i:* = 0;
-         var v:Object = {};
-         i=$names.length-1;
-         while(i>-1)
+      
+      public function killProperties(param1:Array) : void {
+         var _loc3_:* = 0;
+         var _loc2_:Object = {};
+         _loc3_ = param1.length-1;
+         while(_loc3_ > -1)
          {
-            if(this.vars[$names[i]]!=null)
+            if(this.vars[param1[_loc3_]] != null)
             {
-               v[$names[i]]=1;
+               _loc2_[param1[_loc3_]] = 1;
             }
-            i--;
+            _loc3_--;
          }
-         killVars(v);
+         killVars(_loc2_);
       }
-
-      override public function complete($skipRender:Boolean=false) : void {
-         if((!isNaN(this.vars.yoyo))&&((this._repeatCount>this.vars.yoyo)||(this.vars.yoyo==0))||(!isNaN(this.vars.loop))&&((this._repeatCount>this.vars.loop)||(this.vars.loop==0)))
+      
+      override public function complete(param1:Boolean=false) : void {
+         if(!isNaN(this.vars.yoyo) && (this._repeatCount < this.vars.yoyo || this.vars.yoyo == 0) || !isNaN(this.vars.loop) && (this._repeatCount < this.vars.loop || this.vars.loop == 0))
          {
             this._repeatCount++;
             if(!isNaN(this.vars.yoyo))
             {
-               this.ease=this.vars.ease==this.ease?this.reverseEase:this.vars.ease;
+               this.ease = this.vars.ease == this.ease?this.reverseEase:this.vars.ease;
             }
-            this.startTime=$skipRender?this.startTime+this.duration*1000/this.combinedTimeScale:currentTime;
-            this.initTime=this.startTime-this.delay*1000/this.combinedTimeScale;
+            this.startTime = param1?this.startTime + this.duration * 1000 / this.combinedTimeScale:currentTime;
+            this.initTime = this.startTime - this.delay * 1000 / this.combinedTimeScale;
          }
          else
          {
-            if(this.vars.persist==true)
+            if(this.vars.persist == true)
             {
-               super.complete($skipRender);
+               super.complete(param1);
                this.pause();
                return;
             }
          }
-         super.complete($skipRender);
+         super.complete(param1);
       }
-
+      
       protected function initDispatcher() : void {
-         var v:Object = null;
-         var p:String = null;
-         if(this._dispatcher==null)
+         var _loc1_:Object = null;
+         var _loc2_:String = null;
+         if(this._dispatcher == null)
          {
-            this._dispatcher=new EventDispatcher(this);
-            this._callbacks=
+            this._dispatcher = new EventDispatcher(this);
+            this._callbacks = 
                {
-                  onStart:this.vars.onStart,
-                  onUpdate:this.vars.onUpdate,
-                  onComplete:this.vars.onComplete
-               }
-            ;
-            v={};
-            for (p in this.vars)
+                  "onStart":this.vars.onStart,
+                  "onUpdate":this.vars.onUpdate,
+                  "onComplete":this.vars.onComplete
+               };
+            _loc1_ = {};
+            for (_loc2_ in this.vars)
             {
-               v[p]=this.vars[p];
+               _loc1_[_loc2_] = this.vars[_loc2_];
             }
-            this.vars=v;
-            this.vars.onStart=this.onStartDispatcher;
-            this.vars.onComplete=this.onCompleteDispatcher;
+            this.vars = _loc1_;
+            this.vars.onStart = this.onStartDispatcher;
+            this.vars.onComplete = this.onCompleteDispatcher;
             if(this.vars.onStartListener is Function)
             {
                this._dispatcher.addEventListener(TweenEvent.START,this.vars.onStartListener,false,0,true);
@@ -943,8 +791,8 @@ package gs
             if(this.vars.onUpdateListener is Function)
             {
                this._dispatcher.addEventListener(TweenEvent.UPDATE,this.vars.onUpdateListener,false,0,true);
-               this.vars.onUpdate=this.onUpdateDispatcher;
-               _hasUpdate=true;
+               this.vars.onUpdate = this.onUpdateDispatcher;
+               _hasUpdate = true;
             }
             if(this.vars.onCompleteListener is Function)
             {
@@ -952,81 +800,81 @@ package gs
             }
          }
       }
-
-      protected function onStartDispatcher(... $args) : void {
-         if(this._callbacks.onStart!=null)
+      
+      protected function onStartDispatcher(... rest) : void {
+         if(this._callbacks.onStart != null)
          {
             this._callbacks.onStart.apply(null,this.vars.onStartParams);
          }
          this._dispatcher.dispatchEvent(new TweenEvent(TweenEvent.START));
       }
-
-      protected function onUpdateDispatcher(... $args) : void {
-         if(this._callbacks.onUpdate!=null)
+      
+      protected function onUpdateDispatcher(... rest) : void {
+         if(this._callbacks.onUpdate != null)
          {
             this._callbacks.onUpdate.apply(null,this.vars.onUpdateParams);
          }
          this._dispatcher.dispatchEvent(new TweenEvent(TweenEvent.UPDATE));
       }
-
-      protected function onCompleteDispatcher(... $args) : void {
-         if(this._callbacks.onComplete!=null)
+      
+      protected function onCompleteDispatcher(... rest) : void {
+         if(this._callbacks.onComplete != null)
          {
             this._callbacks.onComplete.apply(null,this.vars.onCompleteParams);
          }
          this._dispatcher.dispatchEvent(new TweenEvent(TweenEvent.COMPLETE));
       }
-
-      public function addEventListener($type:String, $listener:Function, $useCapture:Boolean=false, $priority:int=0, $useWeakReference:Boolean=false) : void {
-         if(this._dispatcher==null)
+      
+      public function addEventListener(param1:String, param2:Function, param3:Boolean=false, param4:int=0, param5:Boolean=false) : void {
+         if(this._dispatcher == null)
          {
             this.initDispatcher();
          }
-         if(($type==TweenEvent.UPDATE)&&(!(this.vars.onUpdate==this.onUpdateDispatcher)))
+         if(param1 == TweenEvent.UPDATE && !(this.vars.onUpdate == this.onUpdateDispatcher))
          {
-            this.vars.onUpdate=this.onUpdateDispatcher;
-            _hasUpdate=true;
+            this.vars.onUpdate = this.onUpdateDispatcher;
+            _hasUpdate = true;
          }
-         this._dispatcher.addEventListener($type,$listener,$useCapture,$priority,$useWeakReference);
+         this._dispatcher.addEventListener(param1,param2,param3,param4,param5);
       }
-
-      public function removeEventListener($type:String, $listener:Function, $useCapture:Boolean=false) : void {
-         if(this._dispatcher!=null)
+      
+      public function removeEventListener(param1:String, param2:Function, param3:Boolean=false) : void {
+         if(this._dispatcher != null)
          {
-            this._dispatcher.removeEventListener($type,$listener,$useCapture);
+            this._dispatcher.removeEventListener(param1,param2,param3);
          }
       }
-
-      public function hasEventListener($type:String) : Boolean {
-         if(this._dispatcher==null)
-         {
-            return false;
-         }
-         return this._dispatcher.hasEventListener($type);
-      }
-
-      public function willTrigger($type:String) : Boolean {
-         if(this._dispatcher==null)
+      
+      public function hasEventListener(param1:String) : Boolean {
+         if(this._dispatcher == null)
          {
             return false;
          }
-         return this._dispatcher.willTrigger($type);
+         return this._dispatcher.hasEventListener(param1);
       }
-
-      public function dispatchEvent($e:Event) : Boolean {
-         if(this._dispatcher==null)
+      
+      public function willTrigger(param1:String) : Boolean {
+         if(this._dispatcher == null)
          {
             return false;
          }
-         return this._dispatcher.dispatchEvent($e);
+         return this._dispatcher.willTrigger(param1);
       }
-
+      
+      public function dispatchEvent(param1:Event) : Boolean {
+         if(this._dispatcher == null)
+         {
+            return false;
+         }
+         return this._dispatcher.dispatchEvent(param1);
+      }
+      
       public function get paused() : Boolean {
          return isNaN(this.pauseTime);
       }
-
-      public function set paused($b:Boolean) : void {
-         if($b)
+      
+      public function set paused(param1:Boolean) : void {
+         if(param1)
          {
             this.pause();
          }
@@ -1035,44 +883,44 @@ package gs
             this.resume();
          }
       }
-
+      
       public function get reversed() : Boolean {
-         return this.ease==this.reverseEase;
+         return this.ease == this.reverseEase;
       }
-
-      public function set reversed($b:Boolean) : void {
-         if(this.reversed!=$b)
+      
+      public function set reversed(param1:Boolean) : void {
+         if(this.reversed != param1)
          {
             this.reverse();
          }
       }
-
-      override public function set enabled($b:Boolean) : void {
-         if(!$b)
+      
+      override public function set enabled(param1:Boolean) : void {
+         if(!param1)
          {
-            _pausedTweens[this]=null;
+            _pausedTweens[this] = null;
             delete _pausedTweens[[this]];
          }
-         super.enabled=$b;
+         super.enabled = param1;
       }
-
+      
       public function get progress() : Number {
-         var t:Number = !isNaN(this.pauseTime)?this.pauseTime:currentTime;
-         var p:Number = ((t-this.initTime)*0.001-this.delay/this.combinedTimeScale)/this.duration*this.combinedTimeScale;
-         if(p>1)
+         var _loc1_:Number = !isNaN(this.pauseTime)?this.pauseTime:currentTime;
+         var _loc2_:Number = ((_loc1_ - this.initTime) * 0.001 - this.delay / this.combinedTimeScale) / this.duration * this.combinedTimeScale;
+         if(_loc2_ > 1)
          {
             return 1;
          }
-         if(p<0)
+         if(_loc2_ < 0)
          {
             return 0;
          }
-         return p;
+         return _loc2_;
       }
-
-      public function set progress($n:Number) : void {
-         this.startTime=currentTime-this.duration*$n*1000;
-         this.initTime=this.startTime-this.delay*1000/this.combinedTimeScale;
+      
+      public function set progress(param1:Number) : void {
+         this.startTime = currentTime - this.duration * param1 * 1000;
+         this.initTime = this.startTime - this.delay * 1000 / this.combinedTimeScale;
          if(!this.started)
          {
             activate();
@@ -1080,11 +928,10 @@ package gs
          render(currentTime);
          if(!isNaN(this.pauseTime))
          {
-            this.pauseTime=currentTime;
-            this.startTime=9.99999999999999E14;
-            this.active=false;
+            this.pauseTime = currentTime;
+            this.startTime = 9.99999999999999E14;
+            this.active = false;
          }
       }
    }
-
 }

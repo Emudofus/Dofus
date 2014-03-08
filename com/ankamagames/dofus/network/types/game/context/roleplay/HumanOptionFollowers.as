@@ -5,66 +5,63 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
    import com.ankamagames.dofus.network.types.game.look.IndexedEntityLook;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
-
-
+   
    public class HumanOptionFollowers extends HumanOption implements INetworkType
    {
-         
-
+      
       public function HumanOptionFollowers() {
-         this.followingCharactersLook=new Vector.<IndexedEntityLook>();
+         this.followingCharactersLook = new Vector.<IndexedEntityLook>();
          super();
       }
-
+      
       public static const protocolId:uint = 410;
-
+      
       public var followingCharactersLook:Vector.<IndexedEntityLook>;
-
+      
       override public function getTypeId() : uint {
          return 410;
       }
-
-      public function initHumanOptionFollowers(followingCharactersLook:Vector.<IndexedEntityLook>=null) : HumanOptionFollowers {
-         this.followingCharactersLook=followingCharactersLook;
+      
+      public function initHumanOptionFollowers(param1:Vector.<IndexedEntityLook>=null) : HumanOptionFollowers {
+         this.followingCharactersLook = param1;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.followingCharactersLook=new Vector.<IndexedEntityLook>();
+         this.followingCharactersLook = new Vector.<IndexedEntityLook>();
       }
-
-      override public function serialize(output:IDataOutput) : void {
-         this.serializeAs_HumanOptionFollowers(output);
+      
+      override public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_HumanOptionFollowers(param1);
       }
-
-      public function serializeAs_HumanOptionFollowers(output:IDataOutput) : void {
-         super.serializeAs_HumanOption(output);
-         output.writeShort(this.followingCharactersLook.length);
-         var _i1:uint = 0;
-         while(_i1<this.followingCharactersLook.length)
+      
+      public function serializeAs_HumanOptionFollowers(param1:IDataOutput) : void {
+         super.serializeAs_HumanOption(param1);
+         param1.writeShort(this.followingCharactersLook.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.followingCharactersLook.length)
          {
-            (this.followingCharactersLook[_i1] as IndexedEntityLook).serializeAs_IndexedEntityLook(output);
-            _i1++;
+            (this.followingCharactersLook[_loc2_] as IndexedEntityLook).serializeAs_IndexedEntityLook(param1);
+            _loc2_++;
          }
       }
-
-      override public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_HumanOptionFollowers(input);
+      
+      override public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_HumanOptionFollowers(param1);
       }
-
-      public function deserializeAs_HumanOptionFollowers(input:IDataInput) : void {
-         var _item1:IndexedEntityLook = null;
-         super.deserialize(input);
-         var _followingCharactersLookLen:uint = input.readUnsignedShort();
-         var _i1:uint = 0;
-         while(_i1<_followingCharactersLookLen)
+      
+      public function deserializeAs_HumanOptionFollowers(param1:IDataInput) : void {
+         var _loc4_:IndexedEntityLook = null;
+         super.deserialize(param1);
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
          {
-            _item1=new IndexedEntityLook();
-            _item1.deserialize(input);
-            this.followingCharactersLook.push(_item1);
-            _i1++;
+            _loc4_ = new IndexedEntityLook();
+            _loc4_.deserialize(param1);
+            this.followingCharactersLook.push(_loc4_);
+            _loc3_++;
          }
       }
    }
-
 }

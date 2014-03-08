@@ -6,73 +6,70 @@ package com.ankamagames.dofus.network.messages.updater.parts
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class PartInfoMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function PartInfoMessage() {
-         this.part=new ContentPart();
+         this.part = new ContentPart();
          super();
       }
-
+      
       public static const protocolId:uint = 1508;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var part:ContentPart;
-
+      
       public var installationPercent:Number = 0;
-
+      
       override public function getMessageId() : uint {
          return 1508;
       }
-
-      public function initPartInfoMessage(part:ContentPart=null, installationPercent:Number=0) : PartInfoMessage {
-         this.part=part;
-         this.installationPercent=installationPercent;
-         this._isInitialized=true;
+      
+      public function initPartInfoMessage(param1:ContentPart=null, param2:Number=0) : PartInfoMessage {
+         this.part = param1;
+         this.installationPercent = param2;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.part=new ContentPart();
-         this._isInitialized=false;
+         this.part = new ContentPart();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_PartInfoMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_PartInfoMessage(param1);
       }
-
-      public function serializeAs_PartInfoMessage(output:IDataOutput) : void {
-         this.part.serializeAs_ContentPart(output);
-         output.writeFloat(this.installationPercent);
+      
+      public function serializeAs_PartInfoMessage(param1:IDataOutput) : void {
+         this.part.serializeAs_ContentPart(param1);
+         param1.writeFloat(this.installationPercent);
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_PartInfoMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_PartInfoMessage(param1);
       }
-
-      public function deserializeAs_PartInfoMessage(input:IDataInput) : void {
-         this.part=new ContentPart();
-         this.part.deserialize(input);
-         this.installationPercent=input.readFloat();
+      
+      public function deserializeAs_PartInfoMessage(param1:IDataInput) : void {
+         this.part = new ContentPart();
+         this.part.deserialize(param1);
+         this.installationPercent = param1.readFloat();
       }
    }
-
 }

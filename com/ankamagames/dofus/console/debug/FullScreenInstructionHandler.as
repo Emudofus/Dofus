@@ -6,57 +6,53 @@ package com.ankamagames.dofus.console.debug
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import flash.display.StageDisplayState;
    import flash.geom.Rectangle;
-
-
+   
    public class FullScreenInstructionHandler extends Object implements ConsoleInstructionHandler
    {
-         
-
+      
       public function FullScreenInstructionHandler() {
          super();
       }
-
-
-
-      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
-         var resX:uint = 0;
-         var resY:uint = 0;
-         switch(cmd)
+      
+      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
+         var _loc4_:uint = 0;
+         var _loc5_:uint = 0;
+         switch(param2)
          {
             case "fullscreen":
-               if(args.length==0)
+               if(param3.length == 0)
                {
                   if(AirScanner.hasAir())
                   {
-                     if(StageShareManager.stage.displayState==StageDisplayState["FULL_SCREEN_INTERACTIVE"])
+                     if(StageShareManager.stage.displayState == StageDisplayState["FULL_SCREEN_INTERACTIVE"])
                      {
-                        StageShareManager.stage.displayState=StageDisplayState["NORMAL"];
+                        StageShareManager.stage.displayState = StageDisplayState["NORMAL"];
                      }
                      else
                      {
-                        console.output("Resolution needed.");
+                        param1.output("Resolution needed.");
                      }
                   }
                }
                else
                {
-                  if(args.length==2)
+                  if(param3.length == 2)
                   {
                      if(AirScanner.hasAir())
                      {
-                        resX=uint(args[0]);
-                        resY=uint(args[1]);
-                        StageShareManager.stage.fullScreenSourceRect=new Rectangle(0,0,resX,resY);
-                        StageShareManager.stage.displayState=StageDisplayState["FULL_SCREEN_INTERACTIVE"];
+                        _loc4_ = uint(param3[0]);
+                        _loc5_ = uint(param3[1]);
+                        StageShareManager.stage.fullScreenSourceRect = new Rectangle(0,0,_loc4_,_loc5_);
+                        StageShareManager.stage.displayState = StageDisplayState["FULL_SCREEN_INTERACTIVE"];
                      }
                   }
                }
                break;
          }
       }
-
-      public function getHelp(cmd:String) : String {
-         switch(cmd)
+      
+      public function getHelp(param1:String) : String {
+         switch(param1)
          {
             case "fullscreen":
                return "Toggle the full-screen display mode.";
@@ -64,10 +60,9 @@ package com.ankamagames.dofus.console.debug
                return "Unknown command";
          }
       }
-
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      
+      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
          return [];
       }
    }
-
 }

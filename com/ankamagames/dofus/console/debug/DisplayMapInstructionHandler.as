@@ -13,102 +13,100 @@ package com.ankamagames.dofus.console.debug
    import com.ankamagames.atouin.utils.map.getMapIdFromCoord;
    import com.ankamagames.atouin.Atouin;
    import com.ankamagames.atouin.managers.InteractiveCellManager;
-
-
+   
    public class DisplayMapInstructionHandler extends Object implements ConsoleInstructionHandler
    {
-         
-
+      
       public function DisplayMapInstructionHandler() {
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DisplayMapInstructionHandler));
-
+      
       private var _console:ConsoleHandler;
-
-      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
-         var decryptionKey:ByteArray = null;
-         var cacheMode:* = 0;
-         this._console=console;
-         switch(cmd)
+      
+      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
+         var _loc4_:ByteArray = null;
+         var _loc5_:* = 0;
+         this._console = param1;
+         switch(param2)
          {
             case "displaymapdebug":
             case "displaymap":
-               if(!args[0])
+               if(!param3[0])
                {
-                  console.output("Error : need mapId or map location as first parameter");
+                  param1.output("Error : need mapId or map location as first parameter");
                   return;
                }
-               decryptionKey=args.length<1?Hex.toArray(Hex.fromString(args[1])):null;
-               if(decryptionKey)
+               _loc4_ = param3.length > 1?Hex.toArray(Hex.fromString(param3[1])):null;
+               if(_loc4_)
                {
-                  decryptionKey.position=0;
+                  _loc4_.position = 0;
                }
-               if(args[0].indexOf(",")==-1)
+               if(param3[0].indexOf(",") == -1)
                {
-                  MapDisplayManager.getInstance().display(getWorldPointFromMapId(args[0]),false,decryptionKey);
+                  MapDisplayManager.getInstance().display(getWorldPointFromMapId(param3[0]),false,_loc4_);
                }
                else
                {
-                  MapDisplayManager.getInstance().display(WorldPoint.fromCoords(0,args[0].split(",")[0],args[0].split(",")[1]),false,decryptionKey);
+                  MapDisplayManager.getInstance().display(WorldPoint.fromCoords(0,param3[0].split(",")[0],param3[0].split(",")[1]),false,_loc4_);
                }
                break;
             case "getmapcoord":
-               console.output("Map world point for "+args[0]+" : "+getWorldPointFromMapId(int(args[0])).x+"/"+getWorldPointFromMapId(int(args[0])).y+" (world : "+WorldPoint.fromMapId(int(args[0])).worldId+")");
+               param1.output("Map world point for " + param3[0] + " : " + getWorldPointFromMapId(int(param3[0])).x + "/" + getWorldPointFromMapId(int(param3[0])).y + " (world : " + WorldPoint.fromMapId(int(param3[0])).worldId + ")");
                break;
             case "getmapid":
-               console.output("Map id : "+getMapIdFromCoord(int(args[0]),parseInt(args[1]),parseInt(args[2])));
+               param1.output("Map id : " + getMapIdFromCoord(int(param3[0]),parseInt(param3[1]),parseInt(param3[2])));
                break;
             case "testatouin":
                Atouin.getInstance().display(new WorldPoint());
                break;
             case "mapid":
-               console.output("Current map : "+MapDisplayManager.getInstance().currentMapPoint.x+"/"+MapDisplayManager.getInstance().currentMapPoint.y+" (map id : "+MapDisplayManager.getInstance().currentMapPoint.mapId+")");
+               param1.output("Current map : " + MapDisplayManager.getInstance().currentMapPoint.x + "/" + MapDisplayManager.getInstance().currentMapPoint.y + " (map id : " + MapDisplayManager.getInstance().currentMapPoint.mapId + ")");
                break;
             case "showcellid":
-               Atouin.getInstance().options.showCellIdOnOver=!Atouin.getInstance().options.showCellIdOnOver;
-               console.output("showCellIdOnOver : "+Atouin.getInstance().options.showCellIdOnOver);
+               Atouin.getInstance().options.showCellIdOnOver = !Atouin.getInstance().options.showCellIdOnOver;
+               param1.output("showCellIdOnOver : " + Atouin.getInstance().options.showCellIdOnOver);
                InteractiveCellManager.getInstance().setInteraction(true,Atouin.getInstance().options.showCellIdOnOver,Atouin.getInstance().options.showCellIdOnOver);
                break;
             case "playerjump":
-               Atouin.getInstance().options.virtualPlayerJump=!Atouin.getInstance().options.virtualPlayerJump;
-               console.output("playerJump : "+Atouin.getInstance().options.virtualPlayerJump);
+               Atouin.getInstance().options.virtualPlayerJump = !Atouin.getInstance().options.virtualPlayerJump;
+               param1.output("playerJump : " + Atouin.getInstance().options.virtualPlayerJump);
                break;
             case "showtransitions":
-               Atouin.getInstance().options.showTransitions=!Atouin.getInstance().options.showTransitions;
+               Atouin.getInstance().options.showTransitions = !Atouin.getInstance().options.showTransitions;
                break;
             case "groundcache":
-               if(args.length)
+               if(param3.length)
                {
-                  cacheMode=int(args[0]);
-                  Atouin.getInstance().options.groundCacheMode=cacheMode;
+                  _loc5_ = int(param3[0]);
+                  Atouin.getInstance().options.groundCacheMode = _loc5_;
                }
                else
                {
-                  cacheMode=Atouin.getInstance().options.groundCacheMode;
+                  _loc5_ = Atouin.getInstance().options.groundCacheMode;
                }
-               if(cacheMode==0)
+               if(_loc5_ == 0)
                {
-                  console.output("Ground cache : disabled");
+                  param1.output("Ground cache : disabled");
                }
                else
                {
-                  if(cacheMode==1)
+                  if(_loc5_ == 1)
                   {
-                     console.output("Ground cache : High");
+                     param1.output("Ground cache : High");
                   }
                   else
                   {
-                     if(cacheMode==2)
+                     if(_loc5_ == 2)
                      {
-                        console.output("Ground cache : Medium");
+                        param1.output("Ground cache : Medium");
                      }
                      else
                      {
-                        if(cacheMode==3)
+                        if(_loc5_ == 3)
                         {
-                           console.output("Ground cache : Low");
+                           param1.output("Ground cache : Low");
                         }
                      }
                   }
@@ -116,9 +114,9 @@ package com.ankamagames.dofus.console.debug
                break;
          }
       }
-
-      public function getHelp(cmd:String) : String {
-         switch(cmd)
+      
+      public function getHelp(param1:String) : String {
+         switch(param1)
          {
             case "displaymapdebug":
                return "Display a given map with debug filters activated. These filters apply a different color on every map layers.";
@@ -135,13 +133,12 @@ package com.ankamagames.dofus.console.debug
             case "mapid":
                return "Get the current map id.";
             default:
-               return "No help for command \'"+cmd+"\'";
+               return "No help for command \'" + param1 + "\'";
          }
       }
-
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      
+      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
          return [];
       }
    }
-
 }

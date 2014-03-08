@@ -7,126 +7,130 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
+   
    public class MapRunningFightDetailsMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function MapRunningFightDetailsMessage() {
-         this.attackers=new Vector.<GameFightFighterLightInformations>();
-         this.defenders=new Vector.<GameFightFighterLightInformations>();
+         this.attackers = new Vector.<GameFightFighterLightInformations>();
+         this.defenders = new Vector.<GameFightFighterLightInformations>();
          super();
       }
-
+      
       public static const protocolId:uint = 5751;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var fightId:uint = 0;
-
+      
       public var attackers:Vector.<GameFightFighterLightInformations>;
-
+      
       public var defenders:Vector.<GameFightFighterLightInformations>;
-
+      
       override public function getMessageId() : uint {
          return 5751;
       }
-
-      public function initMapRunningFightDetailsMessage(fightId:uint=0, attackers:Vector.<GameFightFighterLightInformations>=null, defenders:Vector.<GameFightFighterLightInformations>=null) : MapRunningFightDetailsMessage {
-         this.fightId=fightId;
-         this.attackers=attackers;
-         this.defenders=defenders;
-         this._isInitialized=true;
+      
+      public function initMapRunningFightDetailsMessage(param1:uint=0, param2:Vector.<GameFightFighterLightInformations>=null, param3:Vector.<GameFightFighterLightInformations>=null) : MapRunningFightDetailsMessage {
+         this.fightId = param1;
+         this.attackers = param2;
+         this.defenders = param3;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.fightId=0;
-         this.attackers=new Vector.<GameFightFighterLightInformations>();
-         this.defenders=new Vector.<GameFightFighterLightInformations>();
-         this._isInitialized=false;
+         this.fightId = 0;
+         this.attackers = new Vector.<GameFightFighterLightInformations>();
+         this.defenders = new Vector.<GameFightFighterLightInformations>();
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_MapRunningFightDetailsMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_MapRunningFightDetailsMessage(param1);
       }
-
-      public function serializeAs_MapRunningFightDetailsMessage(output:IDataOutput) : void {
-         if(this.fightId<0)
+      
+      public function serializeAs_MapRunningFightDetailsMessage(param1:IDataOutput) : void {
+         if(this.fightId < 0)
          {
-            throw new Error("Forbidden value ("+this.fightId+") on element fightId.");
+            throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
          }
          else
          {
-            output.writeInt(this.fightId);
-            output.writeShort(this.attackers.length);
-            _i2=0;
-            while(_i2<this.attackers.length)
+            param1.writeInt(this.fightId);
+            param1.writeShort(this.attackers.length);
+            _loc2_ = 0;
+            while(_loc2_ < this.attackers.length)
             {
-               (this.attackers[_i2] as GameFightFighterLightInformations).serializeAs_GameFightFighterLightInformations(output);
-               _i2++;
+               param1.writeShort((this.attackers[_loc2_] as GameFightFighterLightInformations).getTypeId());
+               (this.attackers[_loc2_] as GameFightFighterLightInformations).serialize(param1);
+               _loc2_++;
             }
-            output.writeShort(this.defenders.length);
-            _i3=0;
-            while(_i3<this.defenders.length)
+            param1.writeShort(this.defenders.length);
+            _loc3_ = 0;
+            while(_loc3_ < this.defenders.length)
             {
-               (this.defenders[_i3] as GameFightFighterLightInformations).serializeAs_GameFightFighterLightInformations(output);
-               _i3++;
+               param1.writeShort((this.defenders[_loc3_] as GameFightFighterLightInformations).getTypeId());
+               (this.defenders[_loc3_] as GameFightFighterLightInformations).serialize(param1);
+               _loc3_++;
             }
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_MapRunningFightDetailsMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_MapRunningFightDetailsMessage(param1);
       }
-
-      public function deserializeAs_MapRunningFightDetailsMessage(input:IDataInput) : void {
-         var _item2:GameFightFighterLightInformations = null;
-         var _item3:GameFightFighterLightInformations = null;
-         this.fightId=input.readInt();
-         if(this.fightId<0)
+      
+      public function deserializeAs_MapRunningFightDetailsMessage(param1:IDataInput) : void {
+         var _loc6_:uint = 0;
+         var _loc7_:GameFightFighterLightInformations = null;
+         var _loc8_:uint = 0;
+         var _loc9_:GameFightFighterLightInformations = null;
+         this.fightId = param1.readInt();
+         if(this.fightId < 0)
          {
-            throw new Error("Forbidden value ("+this.fightId+") on element of MapRunningFightDetailsMessage.fightId.");
+            throw new Error("Forbidden value (" + this.fightId + ") on element of MapRunningFightDetailsMessage.fightId.");
          }
          else
          {
-            _attackersLen=input.readUnsignedShort();
-            _i2=0;
-            while(_i2<_attackersLen)
+            _loc2_ = param1.readUnsignedShort();
+            _loc3_ = 0;
+            while(_loc3_ < _loc2_)
             {
-               _item2=new GameFightFighterLightInformations();
-               _item2.deserialize(input);
-               this.attackers.push(_item2);
-               _i2++;
+               _loc6_ = param1.readUnsignedShort();
+               _loc7_ = ProtocolTypeManager.getInstance(GameFightFighterLightInformations,_loc6_);
+               _loc7_.deserialize(param1);
+               this.attackers.push(_loc7_);
+               _loc3_++;
             }
-            _defendersLen=input.readUnsignedShort();
-            _i3=0;
-            while(_i3<_defendersLen)
+            _loc4_ = param1.readUnsignedShort();
+            _loc5_ = 0;
+            while(_loc5_ < _loc4_)
             {
-               _item3=new GameFightFighterLightInformations();
-               _item3.deserialize(input);
-               this.defenders.push(_item3);
-               _i3++;
+               _loc8_ = param1.readUnsignedShort();
+               _loc9_ = ProtocolTypeManager.getInstance(GameFightFighterLightInformations,_loc8_);
+               _loc9_.deserialize(param1);
+               this.defenders.push(_loc9_);
+               _loc5_++;
             }
             return;
          }
       }
    }
-
 }

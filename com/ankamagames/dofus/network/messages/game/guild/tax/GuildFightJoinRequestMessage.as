@@ -5,66 +5,63 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class GuildFightJoinRequestMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function GuildFightJoinRequestMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 5717;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var taxCollectorId:int = 0;
-
+      
       override public function getMessageId() : uint {
          return 5717;
       }
-
-      public function initGuildFightJoinRequestMessage(taxCollectorId:int=0) : GuildFightJoinRequestMessage {
-         this.taxCollectorId=taxCollectorId;
-         this._isInitialized=true;
+      
+      public function initGuildFightJoinRequestMessage(param1:int=0) : GuildFightJoinRequestMessage {
+         this.taxCollectorId = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.taxCollectorId=0;
-         this._isInitialized=false;
+         this.taxCollectorId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_GuildFightJoinRequestMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_GuildFightJoinRequestMessage(param1);
       }
-
-      public function serializeAs_GuildFightJoinRequestMessage(output:IDataOutput) : void {
-         output.writeInt(this.taxCollectorId);
+      
+      public function serializeAs_GuildFightJoinRequestMessage(param1:IDataOutput) : void {
+         param1.writeInt(this.taxCollectorId);
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_GuildFightJoinRequestMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_GuildFightJoinRequestMessage(param1);
       }
-
-      public function deserializeAs_GuildFightJoinRequestMessage(input:IDataInput) : void {
-         this.taxCollectorId=input.readInt();
+      
+      public function deserializeAs_GuildFightJoinRequestMessage(param1:IDataInput) : void {
+         this.taxCollectorId = param1.readInt();
       }
    }
-
 }

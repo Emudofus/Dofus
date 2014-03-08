@@ -2,130 +2,125 @@ package flashx.textLayout.edit
 {
    import flashx.textLayout.tlf_internal;
    import flash.desktop.Clipboard;
-   import flashx.textLayout.conversion.FormatDescriptor;
-   import flashx.textLayout.conversion.TextConverter;
    import flashx.textLayout.elements.TextFlow;
-   import flashx.textLayout.conversion.ITextImporter;
    import flashx.textLayout.elements.FlowElement;
-   import flashx.textLayout.conversion.ConverterBase;
+   import flashx.textLayout.conversion.*;
    import flashx.textLayout.elements.Configuration;
    import flash.system.System;
-   import flashx.textLayout.conversion.ITextExporter;
-   import flashx.textLayout.conversion.ConversionType;
    import flashx.textLayout.elements.FlowGroupElement;
-
+   
    use namespace tlf_internal;
-
+   
    public class TextClipboard extends Object
    {
-         
-
+      
       public function TextClipboard() {
          super();
       }
-
+      
       tlf_internal  static const TEXT_LAYOUT_MARKUP:String = "TEXT_LAYOUT_MARKUP";
-
+      
       public static function getContents() : TextScrap {
          var systemClipboard:Clipboard = null;
          var getFromClipboard:Function = null;
-         getFromClipboard=new function(clipboardFormat:String):String
+         getFromClipboard = function(param1:String):String
          {
-            return systemClipboard.hasFormat(clipboardFormat)?String(systemClipboard.getData(clipboardFormat)):null;
+            return systemClipboard.hasFormat(param1)?String(systemClipboard.getData(param1)):null;
          };
-         systemClipboard=Clipboard.generalClipboard;
+         systemClipboard = Clipboard.generalClipboard;
          return importScrap(getFromClipboard);
       }
-
-      tlf_internal  static function importScrap(importFunctor:Function) : TextScrap {
-         var textScrap:TextScrap = null;
-         var textOnClipboard:String = null;
-         var descriptor:FormatDescriptor = null;
-         var numFormats:int = TextConverter.numFormats;
-         var i:int = 0;
-         while((i>numFormats)&&(!textScrap))
+      
+      tlf_internal  static function importScrap(param1:Function) : TextScrap {
+         var _loc2_:TextScrap = null;
+         var _loc3_:String = null;
+         var _loc6_:FormatDescriptor = null;
+         var _loc4_:int = TextConverter.numFormats;
+         var _loc5_:* = 0;
+         while(_loc5_ < _loc4_ && !_loc2_)
          {
-            descriptor=TextConverter.getFormatDescriptorAt(i);
-            textOnClipboard=importFunctor(descriptor.clipboardFormat);
-            if((textOnClipboard)&&(!(textOnClipboard=="")))
+            _loc6_ = TextConverter.getFormatDescriptorAt(_loc5_);
+            _loc3_ = param1(_loc6_.clipboardFormat);
+            if((_loc3_) && !(_loc3_ == ""))
             {
-               textScrap=importToScrap(textOnClipboard,descriptor.format);
+               _loc2_ = importToScrap(_loc3_,_loc6_.format);
             }
-            i++;
+            _loc5_++;
          }
-         return textScrap;
+         return _loc2_;
       }
-
-      public static function setContents(textScrap:TextScrap) : void {
+      
+      public static function setContents(param1:TextScrap) : void {
          var systemClipboard:Clipboard = null;
          var addToClipboard:Function = null;
-         addToClipboard=new function(clipboardFormat:String, clipboardData:String):void
+         var textScrap:TextScrap = param1;
+         addToClipboard = function(param1:String, param2:String):void
          {
-            systemClipboard.setData(clipboardFormat,clipboardData);
+            systemClipboard.setData(param1,param2);
          };
          if(!textScrap)
          {
             return;
          }
-         systemClipboard=Clipboard.generalClipboard;
+         systemClipboard = Clipboard.generalClipboard;
          systemClipboard.clear();
          exportScrap(textScrap,addToClipboard);
       }
-
-      tlf_internal  static function exportScrap(scrap:TextScrap, exportFunctor:Function) : void {
-         var descriptor:FormatDescriptor = null;
-         var exportString:String = null;
-         var formatsPosted:Array = [];
-         var numFormats:int = TextConverter.numFormats;
-         var i:int = 0;
-         while(i<numFormats)
+      
+      tlf_internal  static function exportScrap(param1:TextScrap, param2:Function) : void {
+         var _loc6_:FormatDescriptor = null;
+         var _loc7_:String = null;
+         var _loc3_:Array = [];
+         var _loc4_:int = TextConverter.numFormats;
+         var _loc5_:* = 0;
+         while(_loc5_ < _loc4_)
          {
-            descriptor=TextConverter.getFormatDescriptorAt(i);
-            if((descriptor.clipboardFormat)&&(formatsPosted.indexOf(descriptor.clipboardFormat)>0))
+            _loc6_ = TextConverter.getFormatDescriptorAt(_loc5_);
+            if((_loc6_.clipboardFormat) && _loc3_.indexOf(_loc6_.clipboardFormat) < 0)
             {
-               exportString=exportForClipboard(scrap,descriptor.format);
-               if(exportString)
+               _loc7_ = exportForClipboard(param1,_loc6_.format);
+               if(_loc7_)
                {
-                  exportFunctor(descriptor.clipboardFormat,exportString);
-                  formatsPosted.push(descriptor.clipboardFormat);
+                  param2(_loc6_.clipboardFormat,_loc7_);
+                  _loc3_.push(_loc6_.clipboardFormat);
                }
             }
-            i++;
+            _loc5_++;
          }
       }
-
-      tlf_internal  static function importToScrap(textOnClipboard:String, format:String) : TextScrap {
-         var textScrap:TextScrap = null;
-         var textFlow:TextFlow = null;
-         var importer:ITextImporter = TextConverter.getImporter(format);
-         if(importer)
+      
+      tlf_internal  static function importToScrap(param1:String, param2:String) : TextScrap {
+         var _loc3_:TextScrap = null;
+         var _loc5_:TextFlow = null;
+         var _loc4_:ITextImporter = TextConverter.getImporter(param2);
+         if(_loc4_)
          {
-            importer.useClipboardAnnotations=true;
-            textFlow=importer.importToFlow(textOnClipboard);
-            if(textFlow)
+            _loc4_.useClipboardAnnotations = true;
+            _loc5_ = _loc4_.importToFlow(param1);
+            if(_loc5_)
             {
-               textScrap=new TextScrap(textFlow);
+               _loc3_ = new TextScrap(_loc5_);
             }
-            if(format==TextConverter.PLAIN_TEXT_FORMAT)
+            if(param2 == TextConverter.PLAIN_TEXT_FORMAT)
             {
-               textScrap.setPlainText(true);
+               _loc3_.setPlainText(true);
             }
             else
             {
-               if(format==TextConverter.TEXT_LAYOUT_FORMAT)
+               if(param2 == TextConverter.TEXT_LAYOUT_FORMAT)
                {
-                  textScrap.setPlainText(false);
+                  _loc3_.setPlainText(false);
                }
             }
-            if((!textScrap)&&(format==TextConverter.TEXT_LAYOUT_FORMAT))
+            if(!_loc3_ && param2 == TextConverter.TEXT_LAYOUT_FORMAT)
             {
-               textScrap=importOldTextLayoutFormatToScrap(textOnClipboard);
+               _loc3_ = importOldTextLayoutFormatToScrap(param1);
             }
          }
-         return textScrap;
+         return _loc3_;
       }
-
-      tlf_internal  static function importOldTextLayoutFormatToScrap(textOnClipboard:String) : TextScrap {
+      
+      tlf_internal  static function importOldTextLayoutFormatToScrap(param1:String) : TextScrap {
          var textScrap:TextScrap = null;
          var xmlTree:XML = null;
          var beginArrayChild:XML = null;
@@ -134,20 +129,21 @@ package flashx.textLayout.edit
          var textFlow:TextFlow = null;
          var element:FlowElement = null;
          var endMissingArray:Array = null;
+         var textOnClipboard:String = param1;
          var originalSettings:Object = XML.settings();
-         XML.ignoreProcessingInstructions=false;
-         XML.ignoreWhitespace=false;
-         xmlTree=new XML(textOnClipboard);
-         if(xmlTree.localName()=="TextScrap")
+         XML.ignoreProcessingInstructions = false;
+         XML.ignoreWhitespace = false;
+         xmlTree = new XML(textOnClipboard);
+         if(xmlTree.localName() == "TextScrap")
          {
-            beginArrayChild=xmlTree..BeginMissingElements[0];
-            endArrayChild=xmlTree..EndMissingElements[0];
-            textLayoutMarkup=xmlTree..TextFlow[0];
-            textFlow=TextConverter.importToFlow(textLayoutMarkup,TextConverter.TEXT_LAYOUT_FORMAT);
+            beginArrayChild = xmlTree..BeginMissingElements[0];
+            endArrayChild = xmlTree..EndMissingElements[0];
+            textLayoutMarkup = xmlTree..TextFlow[0];
+            textFlow = TextConverter.importToFlow(textLayoutMarkup,TextConverter.TEXT_LAYOUT_FORMAT);
             if(textFlow)
             {
-               textScrap=new TextScrap(textFlow);
-               endMissingArray=getEndArray(endArrayChild,textFlow);
+               textScrap = new TextScrap(textFlow);
+               endMissingArray = getEndArray(endArrayChild,textFlow);
                for each (element in endMissingArray)
                {
                   element.setStyle(ConverterBase.MERGE_TO_NEXT_ON_PASTE,"true");
@@ -158,117 +154,105 @@ package flashx.textLayout.edit
          {
             System["disposeXML"](xmlTree);
          }
-         XML.setSettings(originalSettings);
       }
-
-      tlf_internal  static function exportForClipboard(scrap:TextScrap, format:String) : String {
-         var exporter:ITextExporter = TextConverter.getExporter(format);
-         if(exporter)
+      
+      tlf_internal  static function exportForClipboard(param1:TextScrap, param2:String) : String {
+         var _loc3_:ITextExporter = TextConverter.getExporter(param2);
+         if(_loc3_)
          {
-            exporter.useClipboardAnnotations=true;
-            return exporter.export(scrap.textFlow,ConversionType.STRING_TYPE) as String;
+            _loc3_.useClipboardAnnotations = true;
+            return _loc3_.export(param1.textFlow,ConversionType.STRING_TYPE) as String;
          }
          return null;
       }
-
-      private static function getBeginArray(beginArrayChild:XML, textFlow:TextFlow) : Array {
-         var value:String = null;
-         var posOfComma:* = 0;
-         var startPos:* = 0;
-         var endPos:* = 0;
-         var curStr:String = null;
-         var indexIntoFlowElement:* = 0;
-         var beginArray:Array = new Array();
-         var curFlElement:FlowElement = textFlow;
-         if(beginArrayChild!=null)
+      
+      private static function getBeginArray(param1:XML, param2:TextFlow) : Array {
+         var _loc5_:String = null;
+         var _loc6_:* = 0;
+         var _loc7_:* = 0;
+         var _loc8_:* = 0;
+         var _loc9_:String = null;
+         var _loc10_:* = 0;
+         var _loc3_:Array = new Array();
+         var _loc4_:FlowElement = param2;
+         if(param1 != null)
          {
-            value=beginArrayChild.@value!=undefined?String(beginArrayChild.@value):"";
-            beginArray.push(textFlow);
-            posOfComma=value.indexOf(",");
-            while(posOfComma>=0)
+            _loc5_ = param1.@value != undefined?String(param1.@value):"";
+            _loc3_.push(param2);
+            _loc6_ = _loc5_.indexOf(",");
+            while(_loc6_ >= 0)
             {
-               startPos=posOfComma+1;
-               posOfComma=value.indexOf(",",startPos);
-               if(posOfComma>=0)
+               _loc7_ = _loc6_ + 1;
+               _loc6_ = _loc5_.indexOf(",",_loc7_);
+               if(_loc6_ >= 0)
                {
-                  endPos=posOfComma;
+                  _loc8_ = _loc6_;
                }
                else
                {
-                  endPos=value.length;
+                  _loc8_ = _loc5_.length;
                }
-               curStr=value.substring(startPos,endPos);
-               if(curStr.length>0)
+               _loc9_ = _loc5_.substring(_loc7_,_loc8_);
+               if(_loc9_.length > 0)
                {
-                  indexIntoFlowElement=parseInt(curStr);
-                  if(curFlElement is FlowGroupElement)
+                  _loc10_ = parseInt(_loc9_);
+                  if(_loc4_ is FlowGroupElement)
                   {
-                     curFlElement=(curFlElement as FlowGroupElement).getChildAt(indexIntoFlowElement);
-                     beginArray.push(curFlElement);
+                     _loc4_ = (_loc4_ as FlowGroupElement).getChildAt(_loc10_);
+                     _loc3_.push(_loc4_);
                   }
                }
             }
          }
-         return beginArray.reverse();
+         return _loc3_.reverse();
       }
-
-      private static function getEndArray(endArrayChild:XML, textFlow:TextFlow) : Array {
-         var value:String = null;
-         var posOfComma:* = 0;
-         var startPos:* = 0;
-         var endPos:* = 0;
-         var curStr:String = null;
-         var indexIntoFlowElement:* = 0;
-         var endArray:Array = new Array();
-         var curFlElement:FlowElement = textFlow;
-         if(endArrayChild!=null)
+      
+      private static function getEndArray(param1:XML, param2:TextFlow) : Array {
+         var _loc5_:String = null;
+         var _loc6_:* = 0;
+         var _loc7_:* = 0;
+         var _loc8_:* = 0;
+         var _loc9_:String = null;
+         var _loc10_:* = 0;
+         var _loc3_:Array = new Array();
+         var _loc4_:FlowElement = param2;
+         if(param1 != null)
          {
-            value=endArrayChild.@value!=undefined?String(endArrayChild.@value):"";
-            endArray.push(textFlow);
-            posOfComma=value.indexOf(",");
-            while(posOfComma>=0)
+            _loc5_ = param1.@value != undefined?String(param1.@value):"";
+            _loc3_.push(param2);
+            _loc6_ = _loc5_.indexOf(",");
+            while(_loc6_ >= 0)
             {
-               startPos=posOfComma+1;
-               posOfComma=value.indexOf(",",startPos);
-               if(posOfComma>=0)
+               _loc7_ = _loc6_ + 1;
+               _loc6_ = _loc5_.indexOf(",",_loc7_);
+               if(_loc6_ >= 0)
                {
-                  endPos=posOfComma;
+                  _loc8_ = _loc6_;
                }
                else
                {
-                  endPos=value.length;
+                  _loc8_ = _loc5_.length;
                }
-               curStr=value.substring(startPos,endPos);
-               if(curStr.length>0)
+               _loc9_ = _loc5_.substring(_loc7_,_loc8_);
+               if(_loc9_.length > 0)
                {
-                  indexIntoFlowElement=parseInt(curStr);
-                  if(curFlElement is FlowGroupElement)
+                  _loc10_ = parseInt(_loc9_);
+                  if(_loc4_ is FlowGroupElement)
                   {
-                     curFlElement=(curFlElement as FlowGroupElement).getChildAt(indexIntoFlowElement);
-                     endArray.push(curFlElement);
+                     _loc4_ = (_loc4_ as FlowGroupElement).getChildAt(_loc10_);
+                     _loc3_.push(_loc4_);
                   }
                }
             }
          }
-         return endArray.reverse();
+         return _loc3_.reverse();
       }
-
-
    }
-
 }
-
-
-
-   class TextClipboardSingletonEnforcer extends Object
-   {
-         
-
-      function TextClipboardSingletonEnforcer() {
-         super();
-      }
-
-
-
-
+class TextClipboardSingletonEnforcer extends Object
+{
+   
+   function TextClipboardSingletonEnforcer() {
+      super();
    }
+}

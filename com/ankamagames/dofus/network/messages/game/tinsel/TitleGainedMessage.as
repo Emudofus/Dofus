@@ -5,76 +5,74 @@ package com.ankamagames.dofus.network.messages.game.tinsel
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-
-
+   
    public class TitleGainedMessage extends NetworkMessage implements INetworkMessage
    {
-         
-
+      
       public function TitleGainedMessage() {
          super();
       }
-
+      
       public static const protocolId:uint = 6364;
-
+      
       private var _isInitialized:Boolean = false;
-
+      
       override public function get isInitialized() : Boolean {
          return this._isInitialized;
       }
-
+      
       public var titleId:uint = 0;
-
+      
       override public function getMessageId() : uint {
          return 6364;
       }
-
-      public function initTitleGainedMessage(titleId:uint=0) : TitleGainedMessage {
-         this.titleId=titleId;
-         this._isInitialized=true;
+      
+      public function initTitleGainedMessage(param1:uint=0) : TitleGainedMessage {
+         this.titleId = param1;
+         this._isInitialized = true;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.titleId=0;
-         this._isInitialized=false;
+         this.titleId = 0;
+         this._isInitialized = false;
       }
-
-      override public function pack(output:IDataOutput) : void {
-         var data:ByteArray = new ByteArray();
-         this.serialize(data);
-         writePacket(output,this.getMessageId(),data);
+      
+      override public function pack(param1:IDataOutput) : void {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(_loc2_);
+         writePacket(param1,this.getMessageId(),_loc2_);
       }
-
-      override public function unpack(input:IDataInput, length:uint) : void {
-         this.deserialize(input);
+      
+      override public function unpack(param1:IDataInput, param2:uint) : void {
+         this.deserialize(param1);
       }
-
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_TitleGainedMessage(output);
+      
+      public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_TitleGainedMessage(param1);
       }
-
-      public function serializeAs_TitleGainedMessage(output:IDataOutput) : void {
-         if(this.titleId<0)
+      
+      public function serializeAs_TitleGainedMessage(param1:IDataOutput) : void {
+         if(this.titleId < 0)
          {
-            throw new Error("Forbidden value ("+this.titleId+") on element titleId.");
+            throw new Error("Forbidden value (" + this.titleId + ") on element titleId.");
          }
          else
          {
-            output.writeShort(this.titleId);
+            param1.writeShort(this.titleId);
             return;
          }
       }
-
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_TitleGainedMessage(input);
+      
+      public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_TitleGainedMessage(param1);
       }
-
-      public function deserializeAs_TitleGainedMessage(input:IDataInput) : void {
-         this.titleId=input.readShort();
-         if(this.titleId<0)
+      
+      public function deserializeAs_TitleGainedMessage(param1:IDataInput) : void {
+         this.titleId = param1.readShort();
+         if(this.titleId < 0)
          {
-            throw new Error("Forbidden value ("+this.titleId+") on element of TitleGainedMessage.titleId.");
+            throw new Error("Forbidden value (" + this.titleId + ") on element of TitleGainedMessage.titleId.");
          }
          else
          {
@@ -82,5 +80,4 @@ package com.ankamagames.dofus.network.messages.game.tinsel
          }
       }
    }
-
 }

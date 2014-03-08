@@ -13,181 +13,202 @@ package com.ankamagames.dofus.console.debug
    import flash.events.Event;
    import flash.events.IOErrorEvent;
    import flash.system.ApplicationDomain;
-
-
+   
    public class DtdInstructionHandler extends Object implements ConsoleInstructionHandler
    {
-         
-
+      
       public function DtdInstructionHandler() {
          super();
       }
-
+      
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DtdInstructionHandler));
-
+      
       public static const DONT_IGNORE:Array = new Array("alpha","linkedTo");
-
+      
       public static const IGNORE:Array = new Array("width","height","haveFocus");
-
+      
       private var _chCurrent:ConsoleHandler;
-
-      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
-         var constants:XML = null;
-         var sBuffer:String = null;
-         var sClassName:String = null;
-         var aElement:Array = null;
-         var xmlKernelEvents:XML = null;
-         var sLang:String = null;
-         var urlRequest:URLRequest = null;
-         var ulLoader:URLLoader = null;
-         var xmlCpt:XML = null;
-         var aElements:Array = null;
-         var aCommonElements:Array = null;
-         var sClass:String = null;
-         var sSubBuffer:String = null;
-         var i:uint = 0;
-         var sIter:String = null;
-         var sSubIter:String = null;
-         var j:uint = 0;
-         var className:String = null;
-         var xmlDef:XML = null;
-         var bDontIgnore:* = false;
-         var accessor:XML = null;
-         this._chCurrent=console;
-         switch(cmd)
+      
+      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
+         var _loc4_:XML = null;
+         var _loc5_:String = null;
+         var _loc6_:String = null;
+         var _loc7_:Array = null;
+         var _loc8_:XML = null;
+         var _loc9_:String = null;
+         var _loc10_:URLRequest = null;
+         var _loc11_:URLLoader = null;
+         var _loc12_:XML = null;
+         var _loc13_:Array = null;
+         var _loc14_:Array = null;
+         var _loc15_:String = null;
+         var _loc16_:String = null;
+         var _loc17_:uint = 0;
+         var _loc18_:String = null;
+         var _loc19_:String = null;
+         var _loc20_:uint = 0;
+         var _loc21_:String = null;
+         var _loc22_:XML = null;
+         var _loc23_:* = false;
+         var _loc24_:XML = null;
+         this._chCurrent = param1;
+         switch(param2)
          {
             case "kerneleventdtd":
-               xmlKernelEvents=describeType(getDefinitionByName("com.ankamagames.dofus.utils.KernelEventList"));
-               sBuffer="";
-               aElement=new Array();
-               for each (constants in xmlKernelEvents..constant)
+               _loc8_ = describeType(getDefinitionByName("com.ankamagames.dofus.utils.KernelEventList"));
+               _loc5_ = "";
+               _loc7_ = new Array();
+               for each (_loc4_ in _loc8_..constant)
                {
-                  sClassName="on"+constants..@type.split("::")[constants..@type.split("::").length-1];
-                  sBuffer=sBuffer+("&lt;!ELEMENT "+sClassName+" EMPTY &gt;\n");
-                  aElement.push(sClassName);
+                  _loc6_ = "on" + _loc4_..@type.split("::")[_loc4_..@type.split("::").length-1];
+                  _loc5_ = _loc5_ + ("&lt;!ELEMENT " + _loc6_ + " EMPTY &gt;\n");
+                  _loc7_.push(_loc6_);
                }
-               sBuffer=sBuffer+("&lt;!ELEMENT SystemEvents ("+aElement.join(" | ")+")* &gt;");
-               console.output(sBuffer);
+               _loc5_ = _loc5_ + ("&lt;!ELEMENT SystemEvents (" + _loc7_.join(" | ") + ")* &gt;");
+               param1.output(_loc5_);
                break;
             case "shortcutsdtd":
-               if(args[0]!=null)
+               if(param3[0] != null)
                {
-                  sLang=args[0];
+                  _loc9_ = param3[0];
                }
-               if(!sLang)
+               if(!_loc9_)
                {
-                  urlRequest=new URLRequest(LangManager.getInstance().getEntry("config.binds.file"));
+                  _loc10_ = new URLRequest(LangManager.getInstance().getEntry("config.binds.file"));
                }
                else
                {
-                  urlRequest=new URLRequest(LangManager.getInstance().getEntry("config.binds.path.root")+"bind_"+sLang+".xml");
+                  _loc10_ = new URLRequest(LangManager.getInstance().getEntry("config.binds.path.root") + "bind_" + _loc9_ + ".xml");
                }
-               _log.error(urlRequest.url);
-               ulLoader=new URLLoader();
-               ulLoader.addEventListener(Event.COMPLETE,this.onXmlLoadComplete);
-               ulLoader.addEventListener(IOErrorEvent.IO_ERROR,this.onXmlLoadError);
-               ulLoader.load(urlRequest);
+               _log.error(_loc10_.url);
+               _loc11_ = new URLLoader();
+               _loc11_.addEventListener(Event.COMPLETE,this.onXmlLoadComplete);
+               _loc11_.addEventListener(IOErrorEvent.IO_ERROR,this.onXmlLoadError);
+               _loc11_.load(_loc10_);
                break;
             case "componentdtd":
-               xmlCpt=describeType(getDefinitionByName("com.ankamagames.berilia.utils.ComponentList"));
-               args=new Array();
-               for each (constants in xmlCpt..constant)
+               _loc12_ = describeType(getDefinitionByName("com.ankamagames.berilia.utils.ComponentList"));
+               param3 = new Array();
+               for each (_loc4_ in _loc12_..constant)
                {
-                  args.push(constants..@type.split("::").join("."));
+                  param3.push(_loc4_..@type.split("::").join("."));
                }
             case "dtd":
-               aElements=new Array();
-               aCommonElements=new Array();
-               sBuffer="";
-               sSubBuffer="";
-               j=0;
-               while(i<IGNORE.length)
+               _loc13_ = new Array();
+               _loc14_ = new Array();
+               _loc5_ = "";
+               _loc16_ = "";
+               _loc20_ = 0;
+               while(_loc20_ < param3.length)
                {
-                  if(IGNORE[i]==accessor..@name)
+                  if(param3[_loc20_].indexOf(".") == -1)
                   {
-                     bDontIgnore=false;
-                     continue loop2;
-                  }
-                  i++;
-               }
-               {
-                  accessor=nextValue(_loc25_,_loc26_);
-                  bDontIgnore=!(accessor..@declaredBy.indexOf("ankamagames")==-1);
-                  i=0;
-                  while(i<DONT_IGNORE.length)
-                  {
-                     if(DONT_IGNORE[i]==accessor..@name)
-                     {
-                        bDontIgnore=true;
-                        continue loop2;
-                     }
-                     i++;
-                  }
-               }
-               {
-                  if(args[j].indexOf(".")==-1)
-                  {
-                     sClass="com.ankamagames.berilia.components."+args[j];
+                     _loc15_ = "com.ankamagames.berilia.components." + param3[_loc20_];
                   }
                   else
                   {
-                     sClass=args[j];
+                     _loc15_ = param3[_loc20_];
                   }
-                  if(ApplicationDomain.currentDomain.hasDefinition(sClass))
+                  if(ApplicationDomain.currentDomain.hasDefinition(_loc15_))
                   {
-                     className=sClass.split(".")[sClass.split(".").length-1];
-                     xmlDef=describeType(getDefinitionByName(sClass));
-                     aElement=new Array();
-                     continue;
-                  }
-                  do
-                  {
-                     console.output(sClass+" cannot be found.");
-                  }
-                  while(true);
-                  j++;
-                  continue loop2;
-               }
-               sSubBuffer="";
-               for (sIter in aCommonElements)
-               {
-                  if(aCommonElements[sIter].ref.length>1)
-                  {
-                     sSubBuffer=sSubBuffer+("&lt;!ELEMENT "+sIter+" (#PCDATA) &gt;&lt;!-- "+aCommonElements[sIter].type+", used by "+aCommonElements[sIter].ref.join(", ")+" --&gt;\n");
-                  }
-               }
-               if(sSubBuffer.length)
-               {
-                  sBuffer=sBuffer+("\n\n&lt;!--======================= Common Elements =======================--&gt;\n\n"+sSubBuffer);
-               }
-               for (sIter in aElements)
-               {
-                  sBuffer=sBuffer+("\n\n&lt;!--======================= "+sIter+" Elements =======================--&gt;\n\n");
-                  aElement=new Array();
-                  for (sSubIter in aElements[sIter])
-                  {
-                     if(isNaN(Number(sSubIter)))
+                     _loc21_ = _loc15_.split(".")[_loc15_.split(".").length-1];
+                     _loc22_ = describeType(getDefinitionByName(_loc15_));
+                     _loc7_ = new Array();
+                     for each (_loc24_ in _loc22_..accessor)
                      {
-                        aElement.push(sSubIter+"?");
+                        _loc23_ = !(_loc24_..@declaredBy.indexOf("ankamagames") == -1);
+                        _loc17_ = 0;
+                        while(_loc17_ < DONT_IGNORE.length)
+                        {
+                           if(DONT_IGNORE[_loc17_] == _loc24_..@name)
+                           {
+                              _loc23_ = true;
+                              break;
+                           }
+                           _loc17_++;
+                        }
+                        _loc17_ = 0;
+                        while(_loc17_ < IGNORE.length)
+                        {
+                           if(IGNORE[_loc17_] == _loc24_..@name)
+                           {
+                              _loc23_ = false;
+                              break;
+                           }
+                           _loc17_++;
+                        }
+                        if((_loc23_) && (_loc24_..@type == "String" || _loc24_..@type == "Boolean" || _loc24_..@type == "Number" || _loc24_..@type == "uint" || _loc24_..@type == "int"))
+                        {
+                           try
+                           {
+                              if(_loc14_[_loc24_..@name] == null)
+                              {
+                                 _loc14_[_loc24_..@name] = 
+                                    {
+                                       "type":_loc24_..@type,
+                                       "ref":[_loc21_]
+                                    };
+                              }
+                              else
+                              {
+                                 _loc14_[_loc24_..@name].ref.push(_loc21_);
+                              }
+                              _loc7_[_loc24_..@name] = _loc24_..@type;
+                           }
+                           catch(e:Error)
+                           {
+                              continue;
+                           }
+                        }
                      }
-                     if((!(aCommonElements[sSubIter]==null))&&(aCommonElements[sSubIter].ref.length==1))
+                     _loc13_[_loc21_] = _loc7_;
+                  }
+                  else
+                  {
+                     param1.output(_loc15_ + " cannot be found.");
+                  }
+                  _loc20_++;
+               }
+               _loc16_ = "";
+               for (_loc18_ in _loc14_)
+               {
+                  if(_loc14_[_loc18_].ref.length > 1)
+                  {
+                     _loc16_ = _loc16_ + ("&lt;!ELEMENT " + _loc18_ + " (#PCDATA) &gt;&lt;!-- " + _loc14_[_loc18_].type + ", used by " + _loc14_[_loc18_].ref.join(", ") + " --&gt;\n");
+                  }
+               }
+               if(_loc16_.length)
+               {
+                  _loc5_ = _loc5_ + ("\n\n&lt;!--======================= Common Elements =======================--&gt;\n\n" + _loc16_);
+               }
+               for (_loc18_ in _loc13_)
+               {
+                  _loc5_ = _loc5_ + ("\n\n&lt;!--======================= " + _loc18_ + " Elements =======================--&gt;\n\n");
+                  _loc7_ = new Array();
+                  for (_loc19_ in _loc13_[_loc18_])
+                  {
+                     if(isNaN(Number(_loc19_)))
                      {
-                        sBuffer=sBuffer+("&lt;!ELEMENT "+sSubIter+" (#PCDATA) &gt;&lt;!-- "+aElements[sIter][sSubIter]+" --&gt;\n");
+                        _loc7_.push(_loc19_ + "?");
+                     }
+                     if(!(_loc14_[_loc19_] == null) && _loc14_[_loc19_].ref.length == 1)
+                     {
+                        _loc5_ = _loc5_ + ("&lt;!ELEMENT " + _loc19_ + " (#PCDATA) &gt;&lt;!-- " + _loc13_[_loc18_][_loc19_] + " --&gt;\n");
                      }
                   }
-                  aElement.push("Size?");
-                  aElement.push("Anchors?");
-                  aElement.push("Events?");
-                  sBuffer=sBuffer+("&lt;!ELEMENT "+sIter+" ("+aElement.join(" | ")+")* &gt;\n");
-                  sBuffer=sBuffer+("&lt;!ATTLIST "+sIter+"\n"+"\t\tname CDATA #IMPLIED\n"+"\t\tstrata (LOW | MEDIUM | HIGH | TOP | TOOLTIP) #IMPLIED &gt;");
+                  _loc7_.push("Size?");
+                  _loc7_.push("Anchors?");
+                  _loc7_.push("Events?");
+                  _loc5_ = _loc5_ + ("&lt;!ELEMENT " + _loc18_ + " (" + _loc7_.join(" | ") + ")* &gt;\n");
+                  _loc5_ = _loc5_ + ("&lt;!ATTLIST " + _loc18_ + "\n" + "\t\tname CDATA #IMPLIED\n" + "\t\tstrata (LOW | MEDIUM | HIGH | TOP | TOOLTIP) #IMPLIED &gt;");
                }
-               console.output(sBuffer);
+               param1.output(_loc5_);
                break;
          }
       }
-
-      public function getHelp(cmd:String) : String {
-         switch(cmd)
+      
+      public function getHelp(param1:String) : String {
+         switch(param1)
          {
             case "kernelEventdtd":
                return "Generate the Kernel Events DTD.";
@@ -198,42 +219,41 @@ package com.ankamagames.dofus.console.debug
             case "dtd":
                return "Generate a DTD for a given class or component.";
             default:
-               return "No help for command \'"+cmd+"\'";
+               return "No help for command \'" + param1 + "\'";
          }
       }
-
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      
+      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
          return [];
       }
-
-      private function parseShortcutXml(sXml:String) : void {
-         var shortcut:XML = null;
-         var xmlShortcuts:XML = XML(sXml);
-         var sBuffer:String = "";
-         var aElement:Array = new Array();
-         for each (shortcut in xmlShortcuts..bind)
+      
+      private function parseShortcutXml(param1:String) : void {
+         var _loc5_:XML = null;
+         var _loc2_:XML = XML(param1);
+         var _loc3_:* = "";
+         var _loc4_:Array = new Array();
+         for each (_loc5_ in _loc2_..bind)
          {
-            sBuffer=sBuffer+("&lt;!ELEMENT "+shortcut..@name+" EMPTY &gt;\n");
-            aElement.push(shortcut..@name);
+            _loc3_ = _loc3_ + ("&lt;!ELEMENT " + _loc5_..@name + " EMPTY &gt;\n");
+            _loc4_.push(_loc5_..@name);
          }
-         sBuffer=sBuffer+("&lt;!ELEMENT Shortcuts ("+aElement.join(" | ")+")* &gt;");
-         if(this._chCurrent!=null)
+         _loc3_ = _loc3_ + ("&lt;!ELEMENT Shortcuts (" + _loc4_.join(" | ") + ")* &gt;");
+         if(this._chCurrent != null)
          {
-            this._chCurrent.output(sBuffer);
+            this._chCurrent.output(_loc3_);
          }
       }
-
-      public function onXmlLoadComplete(event:Event) : void {
-         var loader:URLLoader = URLLoader(event.target);
-         this.parseShortcutXml(loader.data);
+      
+      public function onXmlLoadComplete(param1:Event) : void {
+         var _loc2_:URLLoader = URLLoader(param1.target);
+         this.parseShortcutXml(_loc2_.data);
       }
-
-      public function onXmlLoadError(event:Event) : void {
-         if(this._chCurrent!=null)
+      
+      public function onXmlLoadError(param1:Event) : void {
+         if(this._chCurrent != null)
          {
             this._chCurrent.output("IO Error : KeyboardBind file cannot be found");
          }
       }
    }
-
 }

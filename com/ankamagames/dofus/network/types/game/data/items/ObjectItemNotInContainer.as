@@ -6,135 +6,121 @@ package com.ankamagames.dofus.network.types.game.data.items
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
-
-
+   
    public class ObjectItemNotInContainer extends Item implements INetworkType
    {
-         
-
+      
       public function ObjectItemNotInContainer() {
-         this.effects=new Vector.<ObjectEffect>();
+         this.effects = new Vector.<ObjectEffect>();
          super();
       }
-
+      
       public static const protocolId:uint = 134;
-
+      
       public var objectGID:uint = 0;
-
-      public var powerRate:int = 0;
-
-      public var overMax:Boolean = false;
-
+      
       public var effects:Vector.<ObjectEffect>;
-
+      
       public var objectUID:uint = 0;
-
+      
       public var quantity:uint = 0;
-
+      
       override public function getTypeId() : uint {
          return 134;
       }
-
-      public function initObjectItemNotInContainer(objectGID:uint=0, powerRate:int=0, overMax:Boolean=false, effects:Vector.<ObjectEffect>=null, objectUID:uint=0, quantity:uint=0) : ObjectItemNotInContainer {
-         this.objectGID=objectGID;
-         this.powerRate=powerRate;
-         this.overMax=overMax;
-         this.effects=effects;
-         this.objectUID=objectUID;
-         this.quantity=quantity;
+      
+      public function initObjectItemNotInContainer(param1:uint=0, param2:Vector.<ObjectEffect>=null, param3:uint=0, param4:uint=0) : ObjectItemNotInContainer {
+         this.objectGID = param1;
+         this.effects = param2;
+         this.objectUID = param3;
+         this.quantity = param4;
          return this;
       }
-
+      
       override public function reset() : void {
-         this.objectGID=0;
-         this.powerRate=0;
-         this.overMax=false;
-         this.effects=new Vector.<ObjectEffect>();
-         this.objectUID=0;
-         this.quantity=0;
+         this.objectGID = 0;
+         this.effects = new Vector.<ObjectEffect>();
+         this.objectUID = 0;
+         this.quantity = 0;
       }
-
-      override public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ObjectItemNotInContainer(output);
+      
+      override public function serialize(param1:IDataOutput) : void {
+         this.serializeAs_ObjectItemNotInContainer(param1);
       }
-
-      public function serializeAs_ObjectItemNotInContainer(output:IDataOutput) : void {
-         super.serializeAs_Item(output);
-         if(this.objectGID<0)
+      
+      public function serializeAs_ObjectItemNotInContainer(param1:IDataOutput) : void {
+         super.serializeAs_Item(param1);
+         if(this.objectGID < 0)
          {
-            throw new Error("Forbidden value ("+this.objectGID+") on element objectGID.");
+            throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
          }
          else
          {
-            output.writeShort(this.objectGID);
-            output.writeShort(this.powerRate);
-            output.writeBoolean(this.overMax);
-            output.writeShort(this.effects.length);
-            _i4=0;
-            while(_i4<this.effects.length)
+            param1.writeShort(this.objectGID);
+            param1.writeShort(this.effects.length);
+            _loc2_ = 0;
+            while(_loc2_ < this.effects.length)
             {
-               output.writeShort((this.effects[_i4] as ObjectEffect).getTypeId());
-               (this.effects[_i4] as ObjectEffect).serialize(output);
-               _i4++;
+               param1.writeShort((this.effects[_loc2_] as ObjectEffect).getTypeId());
+               (this.effects[_loc2_] as ObjectEffect).serialize(param1);
+               _loc2_++;
             }
-            if(this.objectUID<0)
+            if(this.objectUID < 0)
             {
-               throw new Error("Forbidden value ("+this.objectUID+") on element objectUID.");
+               throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
             }
             else
             {
-               output.writeInt(this.objectUID);
-               if(this.quantity<0)
+               param1.writeInt(this.objectUID);
+               if(this.quantity < 0)
                {
-                  throw new Error("Forbidden value ("+this.quantity+") on element quantity.");
+                  throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
                }
                else
                {
-                  output.writeInt(this.quantity);
+                  param1.writeInt(this.quantity);
                   return;
                }
             }
          }
       }
-
-      override public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_ObjectItemNotInContainer(input);
+      
+      override public function deserialize(param1:IDataInput) : void {
+         this.deserializeAs_ObjectItemNotInContainer(param1);
       }
-
-      public function deserializeAs_ObjectItemNotInContainer(input:IDataInput) : void {
-         var _id4:uint = 0;
-         var _item4:ObjectEffect = null;
-         super.deserialize(input);
-         this.objectGID=input.readShort();
-         if(this.objectGID<0)
+      
+      public function deserializeAs_ObjectItemNotInContainer(param1:IDataInput) : void {
+         var _loc4_:uint = 0;
+         var _loc5_:ObjectEffect = null;
+         super.deserialize(param1);
+         this.objectGID = param1.readShort();
+         if(this.objectGID < 0)
          {
-            throw new Error("Forbidden value ("+this.objectGID+") on element of ObjectItemNotInContainer.objectGID.");
+            throw new Error("Forbidden value (" + this.objectGID + ") on element of ObjectItemNotInContainer.objectGID.");
          }
          else
          {
-            this.powerRate=input.readShort();
-            this.overMax=input.readBoolean();
-            _effectsLen=input.readUnsignedShort();
-            _i4=0;
-            while(_i4<_effectsLen)
+            _loc2_ = param1.readUnsignedShort();
+            _loc3_ = 0;
+            while(_loc3_ < _loc2_)
             {
-               _id4=input.readUnsignedShort();
-               _item4=ProtocolTypeManager.getInstance(ObjectEffect,_id4);
-               _item4.deserialize(input);
-               this.effects.push(_item4);
-               _i4++;
+               _loc4_ = param1.readUnsignedShort();
+               _loc5_ = ProtocolTypeManager.getInstance(ObjectEffect,_loc4_);
+               _loc5_.deserialize(param1);
+               this.effects.push(_loc5_);
+               _loc3_++;
             }
-            this.objectUID=input.readInt();
-            if(this.objectUID<0)
+            this.objectUID = param1.readInt();
+            if(this.objectUID < 0)
             {
-               throw new Error("Forbidden value ("+this.objectUID+") on element of ObjectItemNotInContainer.objectUID.");
+               throw new Error("Forbidden value (" + this.objectUID + ") on element of ObjectItemNotInContainer.objectUID.");
             }
             else
             {
-               this.quantity=input.readInt();
-               if(this.quantity<0)
+               this.quantity = param1.readInt();
+               if(this.quantity < 0)
                {
-                  throw new Error("Forbidden value ("+this.quantity+") on element of ObjectItemNotInContainer.quantity.");
+                  throw new Error("Forbidden value (" + this.quantity + ") on element of ObjectItemNotInContainer.quantity.");
                }
                else
                {
@@ -144,5 +130,4 @@ package com.ankamagames.dofus.network.types.game.data.items
          }
       }
    }
-
 }

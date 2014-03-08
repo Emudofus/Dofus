@@ -2,19 +2,17 @@ package com.ankamagames.dofus.kernel.sound.utils
 {
    import com.ankamagames.dofus.kernel.sound.TubulSoundConfiguration;
    import com.ankamagames.jerakine.managers.LangManager;
-
-
+   
    public class SoundUtil extends Object
    {
-         
-
+      
       public function SoundUtil() {
          super();
       }
-
-      public static function getBusIdBySoundId(pSoundId:String) : uint {
-         var soundIdBeginning:String = pSoundId.slice(0,2);
-         switch(soundIdBeginning)
+      
+      public static function getBusIdBySoundId(param1:String) : uint {
+         var _loc2_:String = param1.slice(0,2);
+         switch(_loc2_)
          {
             case TubulSoundConfiguration.ID_SOUND_MUSIC:
                return TubulSoundConfiguration.BUS_MUSIC_ID;
@@ -44,9 +42,9 @@ package com.ankamagames.dofus.kernel.sound.utils
                return TubulSoundConfiguration.BUS_UI_ID;
          }
       }
-
-      public static function getConfigEntryByBusId(pBusId:uint) : String {
-         switch(pBusId)
+      
+      public static function getConfigEntryByBusId(param1:uint) : String {
+         switch(param1)
          {
             case TubulSoundConfiguration.BUS_MUSIC_ID:
             case TubulSoundConfiguration.BUS_FIGHT_MUSIC_ID:
@@ -71,8 +69,5 @@ package com.ankamagames.dofus.kernel.sound.utils
                throw new Error("The Bus Id seems not matching to any sound folder");
          }
       }
-
-
    }
-
 }
