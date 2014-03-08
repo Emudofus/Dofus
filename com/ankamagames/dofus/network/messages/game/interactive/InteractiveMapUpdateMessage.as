@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.interactive
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,8 +31,8 @@ package com.ankamagames.dofus.network.messages.game.interactive
          return 5002;
       }
       
-      public function initInteractiveMapUpdateMessage(param1:Vector.<InteractiveElement>=null) : InteractiveMapUpdateMessage {
-         this.interactiveElements = param1;
+      public function initInteractiveMapUpdateMessage(interactiveElements:Vector.<InteractiveElement>=null) : InteractiveMapUpdateMessage {
+         this.interactiveElements = interactiveElements;
          this._isInitialized = true;
          return this;
       }
@@ -42,47 +42,47 @@ package com.ankamagames.dofus.network.messages.game.interactive
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_InteractiveMapUpdateMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_InteractiveMapUpdateMessage(output);
       }
       
-      public function serializeAs_InteractiveMapUpdateMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.interactiveElements.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.interactiveElements.length)
+      public function serializeAs_InteractiveMapUpdateMessage(output:IDataOutput) : void {
+         output.writeShort(this.interactiveElements.length);
+         var _i1:uint = 0;
+         while(_i1 < this.interactiveElements.length)
          {
-            param1.writeShort((this.interactiveElements[_loc2_] as InteractiveElement).getTypeId());
-            (this.interactiveElements[_loc2_] as InteractiveElement).serialize(param1);
-            _loc2_++;
+            output.writeShort((this.interactiveElements[_i1] as InteractiveElement).getTypeId());
+            (this.interactiveElements[_i1] as InteractiveElement).serialize(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_InteractiveMapUpdateMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_InteractiveMapUpdateMessage(input);
       }
       
-      public function deserializeAs_InteractiveMapUpdateMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         var _loc5_:InteractiveElement = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_InteractiveMapUpdateMessage(input:IDataInput) : void {
+         var _id1:uint = 0;
+         var _item1:InteractiveElement = null;
+         var _interactiveElementsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _interactiveElementsLen)
          {
-            _loc4_ = param1.readUnsignedShort();
-            _loc5_ = ProtocolTypeManager.getInstance(InteractiveElement,_loc4_);
-            _loc5_.deserialize(param1);
-            this.interactiveElements.push(_loc5_);
-            _loc3_++;
+            _id1 = input.readUnsignedShort();
+            _item1 = ProtocolTypeManager.getInstance(InteractiveElement,_id1);
+            _item1.deserialize(input);
+            this.interactiveElements.push(_item1);
+            _i1++;
          }
       }
    }

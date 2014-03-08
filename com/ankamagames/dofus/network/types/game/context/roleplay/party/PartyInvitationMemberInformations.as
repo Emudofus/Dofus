@@ -2,9 +2,9 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
 {
    import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.companion.PartyCompanionBaseInformations;
    import com.ankamagames.dofus.network.types.game.look.EntityLook;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -32,13 +32,13 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
          return 376;
       }
       
-      public function initPartyInvitationMemberInformations(param1:uint=0, param2:uint=0, param3:String="", param4:EntityLook=null, param5:int=0, param6:Boolean=false, param7:int=0, param8:int=0, param9:int=0, param10:uint=0, param11:Vector.<PartyCompanionBaseInformations>=null) : PartyInvitationMemberInformations {
-         super.initCharacterBaseInformations(param1,param2,param3,param4,param5,param6);
-         this.worldX = param7;
-         this.worldY = param8;
-         this.mapId = param9;
-         this.subAreaId = param10;
-         this.companions = param11;
+      public function initPartyInvitationMemberInformations(id:uint=0, level:uint=0, name:String="", entityLook:EntityLook=null, breed:int=0, sex:Boolean=false, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0, companions:Vector.<PartyCompanionBaseInformations>=null) : PartyInvitationMemberInformations {
+         super.initCharacterBaseInformations(id,level,name,entityLook,breed,sex);
+         this.worldX = worldX;
+         this.worldY = worldY;
+         this.mapId = mapId;
+         this.subAreaId = subAreaId;
+         this.companions = companions;
          return this;
       }
       
@@ -51,40 +51,40 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
          this.companions = new Vector.<PartyCompanionBaseInformations>();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PartyInvitationMemberInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartyInvitationMemberInformations(output);
       }
       
-      public function serializeAs_PartyInvitationMemberInformations(param1:IDataOutput) : void {
-         super.serializeAs_CharacterBaseInformations(param1);
-         if(this.worldX < -255 || this.worldX > 255)
+      public function serializeAs_PartyInvitationMemberInformations(output:IDataOutput) : void {
+         super.serializeAs_CharacterBaseInformations(output);
+         if((this.worldX < -255) || (this.worldX > 255))
          {
             throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
          }
          else
          {
-            param1.writeShort(this.worldX);
-            if(this.worldY < -255 || this.worldY > 255)
+            output.writeShort(this.worldX);
+            if((this.worldY < -255) || (this.worldY > 255))
             {
                throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
             }
             else
             {
-               param1.writeShort(this.worldY);
-               param1.writeInt(this.mapId);
+               output.writeShort(this.worldY);
+               output.writeInt(this.mapId);
                if(this.subAreaId < 0)
                {
                   throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
                }
                else
                {
-                  param1.writeShort(this.subAreaId);
-                  param1.writeShort(this.companions.length);
-                  _loc2_ = 0;
-                  while(_loc2_ < this.companions.length)
+                  output.writeShort(this.subAreaId);
+                  output.writeShort(this.companions.length);
+                  _i5 = 0;
+                  while(_i5 < this.companions.length)
                   {
-                     (this.companions[_loc2_] as PartyCompanionBaseInformations).serializeAs_PartyCompanionBaseInformations(param1);
-                     _loc2_++;
+                     (this.companions[_i5] as PartyCompanionBaseInformations).serializeAs_PartyCompanionBaseInformations(output);
+                     _i5++;
                   }
                   return;
                }
@@ -92,43 +92,43 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PartyInvitationMemberInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartyInvitationMemberInformations(input);
       }
       
-      public function deserializeAs_PartyInvitationMemberInformations(param1:IDataInput) : void {
-         var _loc4_:PartyCompanionBaseInformations = null;
-         super.deserialize(param1);
-         this.worldX = param1.readShort();
-         if(this.worldX < -255 || this.worldX > 255)
+      public function deserializeAs_PartyInvitationMemberInformations(input:IDataInput) : void {
+         var _item5:PartyCompanionBaseInformations = null;
+         super.deserialize(input);
+         this.worldX = input.readShort();
+         if((this.worldX < -255) || (this.worldX > 255))
          {
             throw new Error("Forbidden value (" + this.worldX + ") on element of PartyInvitationMemberInformations.worldX.");
          }
          else
          {
-            this.worldY = param1.readShort();
-            if(this.worldY < -255 || this.worldY > 255)
+            this.worldY = input.readShort();
+            if((this.worldY < -255) || (this.worldY > 255))
             {
                throw new Error("Forbidden value (" + this.worldY + ") on element of PartyInvitationMemberInformations.worldY.");
             }
             else
             {
-               this.mapId = param1.readInt();
-               this.subAreaId = param1.readShort();
+               this.mapId = input.readInt();
+               this.subAreaId = input.readShort();
                if(this.subAreaId < 0)
                {
                   throw new Error("Forbidden value (" + this.subAreaId + ") on element of PartyInvitationMemberInformations.subAreaId.");
                }
                else
                {
-                  _loc2_ = param1.readUnsignedShort();
-                  _loc3_ = 0;
-                  while(_loc3_ < _loc2_)
+                  _companionsLen = input.readUnsignedShort();
+                  _i5 = 0;
+                  while(_i5 < _companionsLen)
                   {
-                     _loc4_ = new PartyCompanionBaseInformations();
-                     _loc4_.deserialize(param1);
-                     this.companions.push(_loc4_);
-                     _loc3_++;
+                     _item5 = new PartyCompanionBaseInformations();
+                     _item5.deserialize(input);
+                     this.companions.push(_item5);
+                     _i5++;
                   }
                   return;
                }

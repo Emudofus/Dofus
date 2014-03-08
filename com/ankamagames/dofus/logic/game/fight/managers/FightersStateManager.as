@@ -27,41 +27,41 @@ package com.ankamagames.dofus.logic.game.fight.managers
       
       private var _entityStates:Dictionary;
       
-      public function addStateOnTarget(param1:int, param2:int) : void {
-         var _loc3_:Array = this._entityStates[param2];
-         if(!_loc3_)
+      public function addStateOnTarget(stateId:int, targetId:int) : void {
+         var stateList:Array = this._entityStates[targetId];
+         if(!stateList)
          {
-            _loc3_ = new Array();
-            this._entityStates[param2] = _loc3_;
+            stateList = new Array();
+            this._entityStates[targetId] = stateList;
          }
-         _loc3_.push(param1);
+         stateList.push(stateId);
       }
       
-      public function removeStateOnTarget(param1:int, param2:int) : void {
-         var _loc3_:Array = this._entityStates[param2];
-         if(!_loc3_)
+      public function removeStateOnTarget(stateId:int, targetId:int) : void {
+         var stateList:Array = this._entityStates[targetId];
+         if(!stateList)
          {
-            _log.error("Can\'t find state list for " + param2 + " to remove state");
+            _log.error("Can\'t find state list for " + targetId + " to remove state");
             return;
          }
-         var _loc4_:int = _loc3_.indexOf(param1);
-         if(_loc4_ != -1)
+         var index:int = stateList.indexOf(stateId);
+         if(index != -1)
          {
-            _loc3_.splice(_loc4_,1);
+            stateList.splice(index,1);
          }
       }
       
-      public function hasState(param1:int, param2:int) : Boolean {
-         var _loc3_:Array = this._entityStates[param1];
-         if(!_loc3_)
+      public function hasState(targetId:int, stateId:int) : Boolean {
+         var stateList:Array = this._entityStates[targetId];
+         if(!stateList)
          {
             return false;
          }
-         return !(_loc3_.indexOf(param2) == -1);
+         return !(stateList.indexOf(stateId) == -1);
       }
       
-      public function getStates(param1:int) : Array {
-         return this._entityStates[param1];
+      public function getStates(targetId:int) : Array {
+         return this._entityStates[targetId];
       }
       
       public function endFight() : void {

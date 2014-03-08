@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:uint, param2:uint) : ContactLookRequestByIdAction {
-         var _loc3_:ContactLookRequestByIdAction = new ContactLookRequestByIdAction();
-         _loc3_._contactType = param1;
-         _loc3_._entityId = param2;
-         return _loc3_;
+      public static function create(pContactType:uint, pEntityId:uint) : ContactLookRequestByIdAction {
+         var clrbia:ContactLookRequestByIdAction = new ContactLookRequestByIdAction();
+         clrbia._contactType = pContactType;
+         clrbia._entityId = pEntityId;
+         return clrbia;
       }
       
       private var _contactType:uint;

@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.updater.parts
          return 1512;
       }
       
-      public function initDownloadSetSpeedRequestMessage(param1:uint=0) : DownloadSetSpeedRequestMessage {
-         this.downloadSpeed = param1;
+      public function initDownloadSetSpeedRequestMessage(downloadSpeed:uint=0) : DownloadSetSpeedRequestMessage {
+         this.downloadSpeed = downloadSpeed;
          this._isInitialized = true;
          return this;
       }
@@ -38,39 +38,39 @@ package com.ankamagames.dofus.network.messages.updater.parts
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_DownloadSetSpeedRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_DownloadSetSpeedRequestMessage(output);
       }
       
-      public function serializeAs_DownloadSetSpeedRequestMessage(param1:IDataOutput) : void {
-         if(this.downloadSpeed < 1 || this.downloadSpeed > 10)
+      public function serializeAs_DownloadSetSpeedRequestMessage(output:IDataOutput) : void {
+         if((this.downloadSpeed < 1) || (this.downloadSpeed > 10))
          {
             throw new Error("Forbidden value (" + this.downloadSpeed + ") on element downloadSpeed.");
          }
          else
          {
-            param1.writeByte(this.downloadSpeed);
+            output.writeByte(this.downloadSpeed);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_DownloadSetSpeedRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_DownloadSetSpeedRequestMessage(input);
       }
       
-      public function deserializeAs_DownloadSetSpeedRequestMessage(param1:IDataInput) : void {
-         this.downloadSpeed = param1.readByte();
-         if(this.downloadSpeed < 1 || this.downloadSpeed > 10)
+      public function deserializeAs_DownloadSetSpeedRequestMessage(input:IDataInput) : void {
+         this.downloadSpeed = input.readByte();
+         if((this.downloadSpeed < 1) || (this.downloadSpeed > 10))
          {
             throw new Error("Forbidden value (" + this.downloadSpeed + ") on element of DownloadSetSpeedRequestMessage.downloadSpeed.");
          }

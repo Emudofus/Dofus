@@ -1,18 +1,18 @@
 package com.ankamagames.jerakine.types.zones
 {
    import com.ankamagames.jerakine.map.IDataMapProvider;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.positions.MapPoint;
    
    public class ZRectangle extends Object implements IZone
    {
       
-      public function ZRectangle(param1:uint, param2:uint, param3:uint, param4:IDataMapProvider) {
+      public function ZRectangle(nMinRadius:uint, nWidth:uint, nHeight:uint, dataMapProvider:IDataMapProvider) {
          super();
-         this.radius = param2;
-         this._radius2 = param3?param3:param2;
-         this.minRadius = param1;
-         this._dataMapProvider = param4;
+         this.radius = nWidth;
+         this._radius2 = nHeight?nHeight:nWidth;
+         this.minRadius = nMinRadius;
+         this._dataMapProvider = dataMapProvider;
       }
       
       private var _radius:uint = 0;
@@ -29,27 +29,27 @@ package com.ankamagames.jerakine.types.zones
          return this._radius;
       }
       
-      public function set radius(param1:uint) : void {
-         this._radius = param1;
+      public function set radius(n:uint) : void {
+         this._radius = n;
       }
       
-      public function set minRadius(param1:uint) : void {
-         this._minRadius = param1;
+      public function set minRadius(r:uint) : void {
+         this._minRadius = r;
       }
       
       public function get minRadius() : uint {
          return this._minRadius;
       }
       
-      public function set direction(param1:uint) : void {
+      public function set direction(d:uint) : void {
       }
       
       public function get direction() : uint {
          return null;
       }
       
-      public function set diagonalFree(param1:Boolean) : void {
-         this._diagonalFree = param1;
+      public function set diagonalFree(d:Boolean) : void {
+         this._diagonalFree = d;
       }
       
       public function get diagonalFree() : Boolean {
@@ -60,48 +60,48 @@ package com.ankamagames.jerakine.types.zones
          return Math.pow(this._radius + this._radius2 + 1,2);
       }
       
-      public function getCells(param1:uint=0) : Vector.<uint> {
-         var _loc6_:* = 0;
-         var _loc7_:* = 0;
-         var _loc2_:Vector.<uint> = new Vector.<uint>();
-         var _loc3_:MapPoint = MapPoint.fromCellId(param1);
-         var _loc4_:int = _loc3_.x;
-         var _loc5_:int = _loc3_.y;
-         if(this._radius == 0 || this._radius2 == 0)
+      public function getCells(cellId:uint=0) : Vector.<uint> {
+         var i:* = 0;
+         var j:* = 0;
+         var aCells:Vector.<uint> = new Vector.<uint>();
+         var origin:MapPoint = MapPoint.fromCellId(cellId);
+         var x:int = origin.x;
+         var y:int = origin.y;
+         if((this._radius == 0) || (this._radius2 == 0))
          {
-            if(this._minRadius == 0 && !this._diagonalFree)
+            if((this._minRadius == 0) && (!this._diagonalFree))
             {
-               _loc2_.push(param1);
+               aCells.push(cellId);
             }
-            return _loc2_;
+            return aCells;
          }
-         _loc6_ = _loc4_ - this._radius;
-         while(_loc6_ <= _loc4_ + this._radius)
+         i = x - this._radius;
+         while(i <= x + this._radius)
          {
-            _loc7_ = _loc5_ - this._radius2;
-            while(_loc7_ <= _loc5_ + this._radius2)
+            j = y - this._radius2;
+            while(j <= y + this._radius2)
             {
-               if(!this._minRadius || Math.abs(_loc4_ - _loc6_) + Math.abs(_loc5_ - _loc7_) >= this._minRadius)
+               if((!this._minRadius) || (Math.abs(x - i) + Math.abs(y - j) >= this._minRadius))
                {
-                  if(!this._diagonalFree || !(Math.abs(_loc4_ - _loc6_) == Math.abs(_loc5_ - _loc7_)))
+                  if((!this._diagonalFree) || (!(Math.abs(x - i) == Math.abs(y - j))))
                   {
-                     if(MapPoint.isInMap(_loc6_,_loc7_))
+                     if(MapPoint.isInMap(i,j))
                      {
-                        this.addCell(_loc6_,_loc7_,_loc2_);
+                        this.addCell(i,j,aCells);
                      }
                   }
                }
-               _loc7_++;
+               j++;
             }
-            _loc6_++;
+            i++;
          }
-         return _loc2_;
+         return aCells;
       }
       
-      private function addCell(param1:int, param2:int, param3:Vector.<uint>) : void {
-         if(this._dataMapProvider == null || (this._dataMapProvider.pointMov(param1,param2)))
+      private function addCell(x:int, y:int, cellMap:Vector.<uint>) : void {
+         if((this._dataMapProvider == null) || (this._dataMapProvider.pointMov(x,y)))
          {
-            param3.push(MapPoint.fromCoords(param1,param2).cellId);
+            cellMap.push(MapPoint.fromCoords(x,y).cellId);
          }
       }
    }

@@ -5,11 +5,11 @@ package com.ankamagames.jerakine.logger
    public class LogEvent extends Event
    {
       
-      public function LogEvent(param1:String=null, param2:String=null, param3:uint=0) {
+      public function LogEvent(category:String=null, message:String=null, logLevel:uint=0) {
          super(LOG_EVENT,false,false);
-         this.category = param1;
-         this.message = param2;
-         this.level = param3;
+         this.category = category;
+         this.message = message;
+         this.level = logLevel;
       }
       
       public static const LOG_EVENT:String = "logEvent";

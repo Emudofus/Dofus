@@ -26,18 +26,18 @@ package com.ankamagames.berilia.types.uiDefinition
       public var offsetYType:uint;
       
       public function toGraphicLocation() : GraphicLocation {
-         var _loc1_:GraphicLocation = new GraphicLocation(this.point,this.relativePoint,this.relativeTo);
-         _loc1_.offsetXType = this.offsetXType;
-         _loc1_.offsetYType = this.offsetYType;
+         var gl:GraphicLocation = new GraphicLocation(this.point,this.relativePoint,this.relativeTo);
+         gl.offsetXType = this.offsetXType;
+         gl.offsetYType = this.offsetYType;
          if(!isNaN(this.offsetX))
          {
-            _loc1_.setOffsetX(this.offsetX);
+            gl.setOffsetX(this.offsetX);
          }
          if(!isNaN(this.offsetY))
          {
-            _loc1_.setOffsetY(this.offsetY);
+            gl.setOffsetY(this.offsetY);
          }
-         return _loc1_;
+         return gl;
       }
    }
 }

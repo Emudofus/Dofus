@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.character
          return 163;
       }
       
-      public function initCharacterMinimalPlusLookInformations(param1:uint=0, param2:uint=0, param3:String="", param4:EntityLook=null) : CharacterMinimalPlusLookInformations {
-         super.initCharacterMinimalInformations(param1,param2,param3);
-         this.entityLook = param4;
+      public function initCharacterMinimalPlusLookInformations(id:uint=0, level:uint=0, name:String="", entityLook:EntityLook=null) : CharacterMinimalPlusLookInformations {
+         super.initCharacterMinimalInformations(id,level,name);
+         this.entityLook = entityLook;
          return this;
       }
       
@@ -32,23 +32,23 @@ package com.ankamagames.dofus.network.types.game.character
          this.entityLook = new EntityLook();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CharacterMinimalPlusLookInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterMinimalPlusLookInformations(output);
       }
       
-      public function serializeAs_CharacterMinimalPlusLookInformations(param1:IDataOutput) : void {
-         super.serializeAs_CharacterMinimalInformations(param1);
-         this.entityLook.serializeAs_EntityLook(param1);
+      public function serializeAs_CharacterMinimalPlusLookInformations(output:IDataOutput) : void {
+         super.serializeAs_CharacterMinimalInformations(output);
+         this.entityLook.serializeAs_EntityLook(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CharacterMinimalPlusLookInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterMinimalPlusLookInformations(input);
       }
       
-      public function deserializeAs_CharacterMinimalPlusLookInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_CharacterMinimalPlusLookInformations(input:IDataInput) : void {
+         super.deserialize(input);
          this.entityLook = new EntityLook();
-         this.entityLook.deserialize(param1);
+         this.entityLook.deserialize(input);
       }
    }
 }

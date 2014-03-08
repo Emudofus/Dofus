@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5673;
       }
       
-      public function initIgnoredAddRequestMessage(param1:String="", param2:Boolean=false) : IgnoredAddRequestMessage {
-         this.name = param1;
-         this.session = param2;
+      public function initIgnoredAddRequestMessage(name:String="", session:Boolean=false) : IgnoredAddRequestMessage {
+         this.name = name;
+         this.session = session;
          this._isInitialized = true;
          return this;
       }
@@ -42,32 +42,32 @@ package com.ankamagames.dofus.network.messages.game.friend
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_IgnoredAddRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_IgnoredAddRequestMessage(output);
       }
       
-      public function serializeAs_IgnoredAddRequestMessage(param1:IDataOutput) : void {
-         param1.writeUTF(this.name);
-         param1.writeBoolean(this.session);
+      public function serializeAs_IgnoredAddRequestMessage(output:IDataOutput) : void {
+         output.writeUTF(this.name);
+         output.writeBoolean(this.session);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_IgnoredAddRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_IgnoredAddRequestMessage(input);
       }
       
-      public function deserializeAs_IgnoredAddRequestMessage(param1:IDataInput) : void {
-         this.name = param1.readUTF();
-         this.session = param1.readBoolean();
+      public function deserializeAs_IgnoredAddRequestMessage(input:IDataInput) : void {
+         this.name = input.readUTF();
+         this.session = input.readBoolean();
       }
    }
 }

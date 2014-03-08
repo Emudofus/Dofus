@@ -8,23 +8,23 @@ package com.ankamagames.berilia.types.listener
    public class GenericListener extends Object
    {
       
-      public function GenericListener(param1:String=null, param2:*=null, param3:Function=null, param4:int=0, param5:uint=1, param6:WeakReference=null) {
+      public function GenericListener(sEvent:String=null, oListener:*=null, fCallback:Function=null, nSortIndex:int=0, listener_type:uint=1, listenerContext:WeakReference=null) {
          super();
-         if(param1 != null)
+         if(sEvent != null)
          {
-            this._sEvent = param1;
+            this._sEvent = sEvent;
          }
-         if(param2 != null)
+         if(oListener != null)
          {
-            this.listener = param2;
+            this.listener = oListener;
          }
-         if(param3 != null)
+         if(fCallback != null)
          {
-            this._fCallback = param3;
+            this._fCallback = fCallback;
          }
-         this._nSortIndex = param4;
-         this._nListenerType = param5;
-         this._nListenerContext = param6;
+         this._nSortIndex = nSortIndex;
+         this._nListenerType = listener_type;
+         this._nListenerContext = listenerContext;
       }
       
       public static const LISTENER_TYPE_UI:uint = 0;
@@ -49,32 +49,32 @@ package com.ankamagames.berilia.types.listener
          return this._sEvent;
       }
       
-      public function set event(param1:String) : void {
-         this._sEvent = param1;
+      public function set event(sEvent:String) : void {
+         this._sEvent = sEvent;
       }
       
       public function get listener() : * {
          return this._oListener;
       }
       
-      public function set listener(param1:*) : void {
-         this._oListener = param1;
+      public function set listener(oListener:*) : void {
+         this._oListener = oListener;
       }
       
       public function getCallback() : Function {
          return this._fCallback;
       }
       
-      public function set callback(param1:Function) : void {
-         this._fCallback = param1;
+      public function set callback(fCallback:Function) : void {
+         this._fCallback = fCallback;
       }
       
       public function get sortIndex() : int {
          return this._nSortIndex;
       }
       
-      public function set sortIndex(param1:int) : void {
-         this._nSortIndex = param1;
+      public function set sortIndex(n:int) : void {
+         this._nSortIndex = n;
       }
       
       public function get listenerType() : uint {

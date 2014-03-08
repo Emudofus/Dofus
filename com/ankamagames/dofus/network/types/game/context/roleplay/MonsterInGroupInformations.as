@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 144;
       }
       
-      public function initMonsterInGroupInformations(param1:int=0, param2:uint=0, param3:EntityLook=null) : MonsterInGroupInformations {
-         super.initMonsterInGroupLightInformations(param1,param2);
-         this.look = param3;
+      public function initMonsterInGroupInformations(creatureGenericId:int=0, grade:uint=0, look:EntityLook=null) : MonsterInGroupInformations {
+         super.initMonsterInGroupLightInformations(creatureGenericId,grade);
+         this.look = look;
          return this;
       }
       
@@ -32,23 +32,23 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.look = new EntityLook();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MonsterInGroupInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MonsterInGroupInformations(output);
       }
       
-      public function serializeAs_MonsterInGroupInformations(param1:IDataOutput) : void {
-         super.serializeAs_MonsterInGroupLightInformations(param1);
-         this.look.serializeAs_EntityLook(param1);
+      public function serializeAs_MonsterInGroupInformations(output:IDataOutput) : void {
+         super.serializeAs_MonsterInGroupLightInformations(output);
+         this.look.serializeAs_EntityLook(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MonsterInGroupInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MonsterInGroupInformations(input);
       }
       
-      public function deserializeAs_MonsterInGroupInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_MonsterInGroupInformations(input:IDataInput) : void {
+         super.deserialize(input);
          this.look = new EntityLook();
-         this.look.deserialize(param1);
+         this.look.deserialize(input);
       }
    }
 }

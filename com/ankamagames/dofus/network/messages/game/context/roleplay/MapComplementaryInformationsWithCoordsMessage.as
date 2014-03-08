@@ -35,10 +35,10 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 6268;
       }
       
-      public function initMapComplementaryInformationsWithCoordsMessage(param1:uint=0, param2:uint=0, param3:Vector.<HouseInformations>=null, param4:Vector.<GameRolePlayActorInformations>=null, param5:Vector.<InteractiveElement>=null, param6:Vector.<StatedElement>=null, param7:Vector.<MapObstacle>=null, param8:Vector.<FightCommonInformations>=null, param9:int=0, param10:int=0) : MapComplementaryInformationsWithCoordsMessage {
-         super.initMapComplementaryInformationsDataMessage(param1,param2,param3,param4,param5,param6,param7,param8);
-         this.worldX = param9;
-         this.worldY = param10;
+      public function initMapComplementaryInformationsWithCoordsMessage(subAreaId:uint=0, mapId:uint=0, houses:Vector.<HouseInformations>=null, actors:Vector.<GameRolePlayActorInformations>=null, interactiveElements:Vector.<InteractiveElement>=null, statedElements:Vector.<StatedElement>=null, obstacles:Vector.<MapObstacle>=null, fights:Vector.<FightCommonInformations>=null, worldX:int=0, worldY:int=0) : MapComplementaryInformationsWithCoordsMessage {
+         super.initMapComplementaryInformationsDataMessage(subAreaId,mapId,houses,actors,interactiveElements,statedElements,obstacles,fights);
+         this.worldX = worldX;
+         this.worldY = worldY;
          this._isInitialized = true;
          return this;
       }
@@ -50,56 +50,56 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MapComplementaryInformationsWithCoordsMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MapComplementaryInformationsWithCoordsMessage(output);
       }
       
-      public function serializeAs_MapComplementaryInformationsWithCoordsMessage(param1:IDataOutput) : void {
-         super.serializeAs_MapComplementaryInformationsDataMessage(param1);
-         if(this.worldX < -255 || this.worldX > 255)
+      public function serializeAs_MapComplementaryInformationsWithCoordsMessage(output:IDataOutput) : void {
+         super.serializeAs_MapComplementaryInformationsDataMessage(output);
+         if((this.worldX < -255) || (this.worldX > 255))
          {
             throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
          }
          else
          {
-            param1.writeShort(this.worldX);
-            if(this.worldY < -255 || this.worldY > 255)
+            output.writeShort(this.worldX);
+            if((this.worldY < -255) || (this.worldY > 255))
             {
                throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
             }
             else
             {
-               param1.writeShort(this.worldY);
+               output.writeShort(this.worldY);
                return;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MapComplementaryInformationsWithCoordsMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MapComplementaryInformationsWithCoordsMessage(input);
       }
       
-      public function deserializeAs_MapComplementaryInformationsWithCoordsMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.worldX = param1.readShort();
-         if(this.worldX < -255 || this.worldX > 255)
+      public function deserializeAs_MapComplementaryInformationsWithCoordsMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.worldX = input.readShort();
+         if((this.worldX < -255) || (this.worldX > 255))
          {
             throw new Error("Forbidden value (" + this.worldX + ") on element of MapComplementaryInformationsWithCoordsMessage.worldX.");
          }
          else
          {
-            this.worldY = param1.readShort();
-            if(this.worldY < -255 || this.worldY > 255)
+            this.worldY = input.readShort();
+            if((this.worldY < -255) || (this.worldY > 255))
             {
                throw new Error("Forbidden value (" + this.worldY + ") on element of MapComplementaryInformationsWithCoordsMessage.worldY.");
             }

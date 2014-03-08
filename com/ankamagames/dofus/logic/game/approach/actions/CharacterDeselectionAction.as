@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.approach.actions
       }
       
       public static function create() : CharacterDeselectionAction {
-         var _loc1_:CharacterDeselectionAction = new CharacterDeselectionAction();
-         return _loc1_;
+         var a:CharacterDeselectionAction = new CharacterDeselectionAction();
+         return a;
       }
    }
 }

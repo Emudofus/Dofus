@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.dialog
          return 6012;
       }
       
-      public function initPauseDialogMessage(param1:uint=0) : PauseDialogMessage {
-         this.dialogType = param1;
+      public function initPauseDialogMessage(dialogType:uint=0) : PauseDialogMessage {
+         this.dialogType = dialogType;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.dialog
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PauseDialogMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PauseDialogMessage(output);
       }
       
-      public function serializeAs_PauseDialogMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.dialogType);
+      public function serializeAs_PauseDialogMessage(output:IDataOutput) : void {
+         output.writeByte(this.dialogType);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PauseDialogMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PauseDialogMessage(input);
       }
       
-      public function deserializeAs_PauseDialogMessage(param1:IDataInput) : void {
-         this.dialogType = param1.readByte();
+      public function deserializeAs_PauseDialogMessage(input:IDataInput) : void {
+         this.dialogType = input.readByte();
          if(this.dialogType < 0)
          {
             throw new Error("Forbidden value (" + this.dialogType + ") on element of PauseDialogMessage.dialogType.");

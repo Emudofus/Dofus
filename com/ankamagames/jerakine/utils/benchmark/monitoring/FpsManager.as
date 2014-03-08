@@ -74,15 +74,15 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
       
       private var _last:uint;
       
-      public function display(param1:Boolean=false) : void {
+      public function display(pExternal:Boolean=false) : void {
          if(_instance == null)
          {
             throw new Error("FpsManager is not initialized");
          }
          else
          {
-            this.isExternal = param1;
-            if(param1)
+            this.isExternal = pExternal;
+            if(pExternal)
             {
                this.conn = new LocalConnection();
                this.conn.addEventListener(StatusEvent.STATUS,this.onStatus);
@@ -119,26 +119,26 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
          }
       }
       
-      private function onMouseDown(param1:MouseEvent) : void {
-         this._decal = new Point(param1.localX,param1.localY);
+      private function onMouseDown(pEvt:MouseEvent) : void {
+         this._decal = new Point(pEvt.localX,pEvt.localY);
          StageShareManager.stage.addEventListener(MouseEvent.MOUSE_UP,this.onMouseUp);
          StageShareManager.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
       }
       
-      private function onMouseUp(param1:MouseEvent) : void {
+      private function onMouseUp(pEvt:MouseEvent) : void {
          this._decal = null;
          StageShareManager.stage.removeEventListener(MouseEvent.MOUSE_UP,this.onMouseUp);
          StageShareManager.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
       }
       
-      private function onMouseMove(param1:MouseEvent) : void {
+      private function onMouseMove(pEvt:MouseEvent) : void {
          x = StageShareManager.stage.mouseX - this._decal.x;
          y = StageShareManager.stage.mouseY - this._decal.y;
-         param1.updateAfterEvent();
+         pEvt.updateAfterEvent();
       }
       
-      private function onStatus(param1:StatusEvent) : void {
-         switch(param1.level)
+      private function onStatus(event:StatusEvent) : void {
+         switch(event.level)
          {
             case "status":
                break;
@@ -150,82 +150,82 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
          }
       }
       
-      private function redrawRegionHandler(param1:MouseEvent) : void {
+      private function redrawRegionHandler(pEvt:MouseEvent) : void {
          this._redrawRegionsVisible = !this._redrawRegionsVisible;
          showRedrawRegions(this._redrawRegionsVisible,17595);
       }
       
-      private function changeStateHandler(param1:MouseEvent) : void {
+      private function changeStateHandler(pEvt:MouseEvent) : void {
          this._extensionPanel.changeState();
       }
       
-      private function loop(param1:Event) : void {
-         var _loc4_:* = NaN;
-         var _loc5_:Array = null;
-         var _loc6_:Object = null;
+      private function loop(pEvt:Event) : void {
+         var fpsValue:* = NaN;
+         var graphList:Array = null;
+         var o:Object = null;
          this.stopTracking(FpsManagerConst.SPECIAL_GRAPH[0].name);
          this.startTracking(FpsManagerConst.SPECIAL_GRAPH[0].name,FpsManagerConst.SPECIAL_GRAPH[0].color);
          this._graphPanel.update();
          this.updateMem();
          this._ticks++;
-         var _loc2_:uint = getTimer();
-         var _loc3_:uint = _loc2_ - this._last;
-         if(_loc3_ >= 500)
+         var now:uint = getTimer();
+         var delta:uint = now - this._last;
+         if(delta >= 500)
          {
-            _loc4_ = this._ticks / _loc3_ * 1000;
-            if((this.isExternal) && !(this.conn == null))
+            fpsValue = this._ticks / delta * 1000;
+            if((this.isExternal) && (!(this.conn == null)))
             {
-               this.conn.send("app#DofusDebugger:DofusDebugConnection","updateValues",_loc4_,this._graphPanel.memory,FpsManagerUtils.getTimeFromNow(this._extensionPanel.lastGc));
-               _loc5_ = this._graphPanel.getExternalGraphs();
-               for each (_loc6_ in _loc5_)
+               this.conn.send("app#DofusDebugger:DofusDebugConnection","updateValues",fpsValue,this._graphPanel.memory,FpsManagerUtils.getTimeFromNow(this._extensionPanel.lastGc));
+               graphList = this._graphPanel.getExternalGraphs();
+               for each (o in graphList)
                {
                   if(this.conn == null)
                   {
                      break;
                   }
-                  this.conn.send("app#DofusDebugger:DofusDebugConnection","updateGraphValues",_loc6_.name,_loc6_.color,_loc6_.points);
+                  this.conn.send("app#DofusDebugger:DofusDebugConnection","updateGraphValues",o.name,o.color,o.points);
                }
                this.conn.send("app#DofusDebugger:DofusDebugConnection","updateGraphes");
             }
-            this._graphPanel.updateFpsValue(_loc4_);
+            this._graphPanel.updateFpsValue(fpsValue);
             this._extensionPanel.update();
             this._ticks = 0;
-            this._last = _loc2_;
+            this._last = now;
          }
       }
       
       private function updateMem() : void {
-         var _loc1_:* = NaN;
-         var _loc2_:* = NaN;
+         var currentFreeMem:* = NaN;
+         var max_memory:* = NaN;
          this._graphPanel.memory = FpsManagerUtils.calculateMB(System.totalMemory).toPrecision(3);
          if(AirScanner.hasAir())
          {
             if(FpsManagerConst.PLAYER_VERSION >= 10)
             {
-               _loc1_ = FpsManagerUtils.calculateMB(System["freeMemory"]);
-               if(_loc1_ - this._graphPanel.previousFreeMem > 1)
+               currentFreeMem = FpsManagerUtils.calculateMB(System["freeMemory"]);
+               if(currentFreeMem - this._graphPanel.previousFreeMem > 1)
                {
                   this._extensionPanel.lastGc = getTimer();
                }
-               _loc2_ = FpsManagerUtils.calculateMB(System["privateMemory"]);
-               this._graphPanel.memory = this._graphPanel.memory + ("/" + _loc2_.toPrecision(3));
-               this._graphPanel.previousFreeMem = _loc1_;
-               this._extensionPanel.updateGc(_loc2_);
+               max_memory = FpsManagerUtils.calculateMB(System["privateMemory"]);
+               this._graphPanel.memory = this._graphPanel.memory + ("/" + max_memory.toPrecision(3));
+               this._graphPanel.previousFreeMem = currentFreeMem;
+               this._extensionPanel.updateGc(max_memory);
             }
          }
          this._graphPanel.memory = this._graphPanel.memory + " MB";
       }
       
-      public function startTracking(param1:String, param2:uint=16777215) : void {
-         this._graphPanel.startTracking(param1,param2);
+      public function startTracking(pIndice:String, pColor:uint=16777215) : void {
+         this._graphPanel.startTracking(pIndice,pColor);
       }
       
-      public function stopTracking(param1:String) : void {
-         this._graphPanel.stopTracking(param1);
+      public function stopTracking(pIndice:String) : void {
+         this._graphPanel.stopTracking(pIndice);
       }
       
-      public function watchObject(param1:Object, param2:Boolean=false) : void {
-         this._extensionPanel.watchObject(param1,FpsManagerUtils.getBrightRandomColor(),param2);
+      public function watchObject(o:Object, incrementParents:Boolean=false) : void {
+         this._extensionPanel.watchObject(o,FpsManagerUtils.getBrightRandomColor(),incrementParents);
       }
    }
 }

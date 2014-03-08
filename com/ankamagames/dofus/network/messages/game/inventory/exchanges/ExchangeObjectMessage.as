@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5515;
       }
       
-      public function initExchangeObjectMessage(param1:Boolean=false) : ExchangeObjectMessage {
-         this.remote = param1;
+      public function initExchangeObjectMessage(remote:Boolean=false) : ExchangeObjectMessage {
+         this.remote = remote;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeObjectMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeObjectMessage(output);
       }
       
-      public function serializeAs_ExchangeObjectMessage(param1:IDataOutput) : void {
-         param1.writeBoolean(this.remote);
+      public function serializeAs_ExchangeObjectMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.remote);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeObjectMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeObjectMessage(input);
       }
       
-      public function deserializeAs_ExchangeObjectMessage(param1:IDataInput) : void {
-         this.remote = param1.readBoolean();
+      public function deserializeAs_ExchangeObjectMessage(input:IDataInput) : void {
+         this.remote = input.readBoolean();
       }
    }
 }

@@ -22,9 +22,9 @@ package com.ankamagames.dofus.network.types.game.character
          return 445;
       }
       
-      public function initCharacterMinimalGuildInformations(param1:uint=0, param2:uint=0, param3:String="", param4:EntityLook=null, param5:BasicGuildInformations=null) : CharacterMinimalGuildInformations {
-         super.initCharacterMinimalPlusLookInformations(param1,param2,param3,param4);
-         this.guild = param5;
+      public function initCharacterMinimalGuildInformations(id:uint=0, level:uint=0, name:String="", entityLook:EntityLook=null, guild:BasicGuildInformations=null) : CharacterMinimalGuildInformations {
+         super.initCharacterMinimalPlusLookInformations(id,level,name,entityLook);
+         this.guild = guild;
          return this;
       }
       
@@ -33,23 +33,23 @@ package com.ankamagames.dofus.network.types.game.character
          this.guild = new BasicGuildInformations();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CharacterMinimalGuildInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterMinimalGuildInformations(output);
       }
       
-      public function serializeAs_CharacterMinimalGuildInformations(param1:IDataOutput) : void {
-         super.serializeAs_CharacterMinimalPlusLookInformations(param1);
-         this.guild.serializeAs_BasicGuildInformations(param1);
+      public function serializeAs_CharacterMinimalGuildInformations(output:IDataOutput) : void {
+         super.serializeAs_CharacterMinimalPlusLookInformations(output);
+         this.guild.serializeAs_BasicGuildInformations(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CharacterMinimalGuildInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterMinimalGuildInformations(input);
       }
       
-      public function deserializeAs_CharacterMinimalGuildInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_CharacterMinimalGuildInformations(input:IDataInput) : void {
+         super.deserialize(input);
          this.guild = new BasicGuildInformations();
-         this.guild.deserialize(param1);
+         this.guild.deserialize(input);
       }
    }
 }

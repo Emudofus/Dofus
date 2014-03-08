@@ -12,32 +12,30 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         switch(cmd)
          {
             case "connectionstatus":
-               param1.output("" + (ConnectionsHandler.getConnection()?ConnectionsHandler.getConnection():"There is currently no connection."));
+               console.output("" + (ConnectionsHandler.getConnection()?ConnectionsHandler.getConnection():"There is currently no connection."));
                break;
             case "inspecttraffic":
                ServerConnection.DEBUG_VERBOSE = !ServerConnection.DEBUG_VERBOSE;
-               param1.output("Inspect traffic is " + (ServerConnection.DEBUG_VERBOSE?"ON":"OFF"));
+               console.output("Inspect traffic is " + (ServerConnection.DEBUG_VERBOSE?"ON":"OFF"));
                break;
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "connectionstatus":
                return "Print the status of the current connection (if any).";
             case "inspecttraffic":
                return "Show detailled informations about network activities.";
-            default:
-               return "No help for command \'" + param1 + "\'";
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return [];
       }
    }

@@ -27,9 +27,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 5517;
       }
       
-      public function initExchangeObjectRemovedMessage(param1:Boolean=false, param2:uint=0) : ExchangeObjectRemovedMessage {
-         super.initExchangeObjectMessage(param1);
-         this.objectUID = param2;
+      public function initExchangeObjectRemovedMessage(remote:Boolean=false, objectUID:uint=0) : ExchangeObjectRemovedMessage {
+         super.initExchangeObjectMessage(remote);
+         this.objectUID = objectUID;
          this._isInitialized = true;
          return this;
       }
@@ -40,40 +40,40 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeObjectRemovedMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeObjectRemovedMessage(output);
       }
       
-      public function serializeAs_ExchangeObjectRemovedMessage(param1:IDataOutput) : void {
-         super.serializeAs_ExchangeObjectMessage(param1);
+      public function serializeAs_ExchangeObjectRemovedMessage(output:IDataOutput) : void {
+         super.serializeAs_ExchangeObjectMessage(output);
          if(this.objectUID < 0)
          {
             throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
          }
          else
          {
-            param1.writeInt(this.objectUID);
+            output.writeInt(this.objectUID);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeObjectRemovedMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeObjectRemovedMessage(input);
       }
       
-      public function deserializeAs_ExchangeObjectRemovedMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.objectUID = param1.readInt();
+      public function deserializeAs_ExchangeObjectRemovedMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.objectUID = input.readInt();
          if(this.objectUID < 0)
          {
             throw new Error("Forbidden value (" + this.objectUID + ") on element of ExchangeObjectRemovedMessage.objectUID.");

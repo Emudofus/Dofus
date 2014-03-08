@@ -1,8 +1,8 @@
 package com.ankamagames.dofus.network.messages.game.chat
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 883;
       }
       
-      public function initChatServerWithObjectMessage(param1:uint=0, param2:String="", param3:uint=0, param4:String="", param5:int=0, param6:String="", param7:int=0, param8:Vector.<ObjectItem>=null) : ChatServerWithObjectMessage {
-         super.initChatServerMessage(param1,param2,param3,param4,param5,param6,param7);
-         this.objects = param8;
+      public function initChatServerWithObjectMessage(channel:uint=0, content:String="", timestamp:uint=0, fingerprint:String="", senderId:int=0, senderName:String="", senderAccountId:int=0, objects:Vector.<ObjectItem>=null) : ChatServerWithObjectMessage {
+         super.initChatServerMessage(channel,content,timestamp,fingerprint,senderId,senderName,senderAccountId);
+         this.objects = objects;
          this._isInitialized = true;
          return this;
       }
@@ -42,46 +42,46 @@ package com.ankamagames.dofus.network.messages.game.chat
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ChatServerWithObjectMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ChatServerWithObjectMessage(output);
       }
       
-      public function serializeAs_ChatServerWithObjectMessage(param1:IDataOutput) : void {
-         super.serializeAs_ChatServerMessage(param1);
-         param1.writeShort(this.objects.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.objects.length)
+      public function serializeAs_ChatServerWithObjectMessage(output:IDataOutput) : void {
+         super.serializeAs_ChatServerMessage(output);
+         output.writeShort(this.objects.length);
+         var _i1:uint = 0;
+         while(_i1 < this.objects.length)
          {
-            (this.objects[_loc2_] as ObjectItem).serializeAs_ObjectItem(param1);
-            _loc2_++;
+            (this.objects[_i1] as ObjectItem).serializeAs_ObjectItem(output);
+            _i1++;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ChatServerWithObjectMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ChatServerWithObjectMessage(input);
       }
       
-      public function deserializeAs_ChatServerWithObjectMessage(param1:IDataInput) : void {
-         var _loc4_:ObjectItem = null;
-         super.deserialize(param1);
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_ChatServerWithObjectMessage(input:IDataInput) : void {
+         var _item1:ObjectItem = null;
+         super.deserialize(input);
+         var _objectsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _objectsLen)
          {
-            _loc4_ = new ObjectItem();
-            _loc4_.deserialize(param1);
-            this.objects.push(_loc4_);
-            _loc3_++;
+            _item1 = new ObjectItem();
+            _item1.deserialize(input);
+            this.objects.push(_item1);
+            _i1++;
          }
       }
    }

@@ -6,10 +6,10 @@ package com.hurlant.util.der
    public class ByteString extends ByteArray implements IAsn1Type
    {
       
-      public function ByteString(param1:uint=4, param2:uint=0) {
+      public function ByteString(type:uint=4, length:uint=0) {
          super();
-         this.type = param1;
-         this.len = param2;
+         this.type = type;
+         this.len = length;
       }
       
       private var type:uint;

@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.party
          super();
       }
       
-      public static function create(param1:int, param2:Boolean) : PartyPledgeLoyaltyRequestAction {
-         var _loc3_:PartyPledgeLoyaltyRequestAction = new PartyPledgeLoyaltyRequestAction();
-         _loc3_.partyId = param1;
-         _loc3_.loyal = param2;
-         return _loc3_;
+      public static function create(partyId:int, loyal:Boolean) : PartyPledgeLoyaltyRequestAction {
+         var a:PartyPledgeLoyaltyRequestAction = new PartyPledgeLoyaltyRequestAction();
+         a.partyId = partyId;
+         a.loyal = loyal;
+         return a;
       }
       
       public var loyal:Boolean;

@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 408;
       }
       
-      public function initHumanOptionTitle(param1:uint=0, param2:String="") : HumanOptionTitle {
-         this.titleId = param1;
-         this.titleParam = param2;
+      public function initHumanOptionTitle(titleId:uint=0, titleParam:String="") : HumanOptionTitle {
+         this.titleId = titleId;
+         this.titleParam = titleParam;
          return this;
       }
       
@@ -32,38 +32,38 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.titleParam = "";
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_HumanOptionTitle(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HumanOptionTitle(output);
       }
       
-      public function serializeAs_HumanOptionTitle(param1:IDataOutput) : void {
-         super.serializeAs_HumanOption(param1);
+      public function serializeAs_HumanOptionTitle(output:IDataOutput) : void {
+         super.serializeAs_HumanOption(output);
          if(this.titleId < 0)
          {
             throw new Error("Forbidden value (" + this.titleId + ") on element titleId.");
          }
          else
          {
-            param1.writeShort(this.titleId);
-            param1.writeUTF(this.titleParam);
+            output.writeShort(this.titleId);
+            output.writeUTF(this.titleParam);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_HumanOptionTitle(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HumanOptionTitle(input);
       }
       
-      public function deserializeAs_HumanOptionTitle(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.titleId = param1.readShort();
+      public function deserializeAs_HumanOptionTitle(input:IDataInput) : void {
+         super.deserialize(input);
+         this.titleId = input.readShort();
          if(this.titleId < 0)
          {
             throw new Error("Forbidden value (" + this.titleId + ") on element of HumanOptionTitle.titleId.");
          }
          else
          {
-            this.titleParam = param1.readUTF();
+            this.titleParam = input.readUTF();
             return;
          }
       }

@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.common.actions
          super();
       }
       
-      public static function create(param1:uint) : ChangeCharacterAction {
-         var _loc2_:ChangeCharacterAction = new ChangeCharacterAction();
-         _loc2_.serverId = param1;
-         return _loc2_;
+      public static function create(serverId:uint) : ChangeCharacterAction {
+         var a:ChangeCharacterAction = new ChangeCharacterAction();
+         a.serverId = serverId;
+         return a;
       }
       
       public var serverId:uint;

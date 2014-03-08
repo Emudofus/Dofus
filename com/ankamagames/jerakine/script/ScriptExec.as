@@ -38,49 +38,49 @@ package com.ankamagames.jerakine.script
       
       private static var _runners:Dictionary;
       
-      public static function exec(param1:*, param2:IRunner, param3:Boolean=true, param4:Callback=null, param5:Callback=null) : void {
-         var _loc6_:Uri = null;
-         var _loc9_:IAdapter = null;
-         if(param1 is Uri)
+      public static function exec(script:*, runner:IRunner, useCache:Boolean=true, successCallback:Callback=null, errorCallback:Callback=null) : void {
+         var scriptUri:Uri = null;
+         var ada:IAdapter = null;
+         if(script is Uri)
          {
-            _loc6_ = param1;
+            scriptUri = script;
          }
          else
          {
-            if(param1 is BinaryScript)
+            if(script is BinaryScript)
             {
-               _loc6_ = new Uri("file://fake_script_url/" + BinaryScript(param1).path);
+               scriptUri = new Uri("file://fake_script_url/" + BinaryScript(script).path);
             }
          }
          if(!_prepared)
          {
             prepare();
          }
-         var _loc7_:Object = new Object();
-         _loc7_.runner = param2;
-         _loc7_.success = param4;
-         _loc7_.error = param5;
-         var _loc8_:String = _loc6_.toSum();
-         if(!_loc6_.loaderContext)
+         var obj:Object = new Object();
+         obj.runner = runner;
+         obj.success = successCallback;
+         obj.error = errorCallback;
+         var uriSum:String = scriptUri.toSum();
+         if(!scriptUri.loaderContext)
          {
-            _loc6_.loaderContext = new LoaderContext(false,ApplicationDomain.currentDomain);
+            scriptUri.loaderContext = new LoaderContext(false,ApplicationDomain.currentDomain);
          }
-         if(_runners[_loc8_])
+         if(_runners[uriSum])
          {
-            (_runners[_loc8_] as Array).push(_loc7_);
-         }
-         else
-         {
-            _runners[_loc8_] = [_loc7_];
-         }
-         if(param1 is Uri)
-         {
-            _rld.load(_loc6_,param3?_scriptCache:null);
+            (_runners[uriSum] as Array).push(obj);
          }
          else
          {
-            _loc9_ = AdapterFactory.getAdapter(_loc6_);
-            _loc9_.loadFromData(_loc6_,BinaryScript(param1).data,new ResourceObserverWrapper(onLoadedWrapper,onFailedWrapper),false);
+            _runners[uriSum] = [obj];
+         }
+         if(script is Uri)
+         {
+            _rld.load(scriptUri,useCache?_scriptCache:null);
+         }
+         else
+         {
+            ada = AdapterFactory.getAdapter(scriptUri);
+            ada.loadFromData(scriptUri,BinaryScript(script).data,new ResourceObserverWrapper(onLoadedWrapper,onFailedWrapper),false);
          }
       }
       
@@ -93,75 +93,75 @@ package com.ankamagames.jerakine.script
          _prepared = true;
       }
       
-      private static function onLoaded(param1:ResourceLoadedEvent) : void {
-         var _loc4_:Object = null;
-         var _loc5_:uint = 0;
-         var _loc2_:String = param1.uri.toSum();
-         var _loc3_:* = false;
-         if(param1.resourceType != ResourceType.RESOURCE_DX)
+      private static function onLoaded(rle:ResourceLoadedEvent) : void {
+         var obj:Object = null;
+         var returnCode:uint = 0;
+         var uriSum:String = rle.uri.toSum();
+         var isFailed:Boolean = false;
+         if(rle.resourceType != ResourceType.RESOURCE_DX)
          {
-            _log.error("Cannot execute " + param1.uri + "; not a script.");
-            _loc3_ = true;
+            _log.error("Cannot execute " + rle.uri + "; not a script.");
+            isFailed = true;
          }
-         for each (_loc4_ in _runners[_loc2_])
+         for each (obj in _runners[uriSum])
          {
-            if(_loc3_)
+            if(isFailed)
             {
-               if(_loc4_.error)
+               if(obj.error)
                {
-                  Callback(_loc4_.error).exec();
+                  Callback(obj.error).exec();
                }
             }
             else
             {
-               _loc5_ = (_loc4_.runner as IRunner).run(param1.resource as Class);
-               if(_loc5_)
+               returnCode = (obj.runner as IRunner).run(rle.resource as Class);
+               if(returnCode)
                {
-                  if(_loc4_.error)
+                  if(obj.error)
                   {
-                     Callback(_loc4_.error).exec();
+                     Callback(obj.error).exec();
                   }
                }
                else
                {
-                  if(_loc4_.success)
+                  if(obj.success)
                   {
-                     Callback(_loc4_.success).exec();
+                     Callback(obj.success).exec();
                   }
                }
             }
          }
-         delete _runners[[_loc2_]];
+         delete _runners[[uriSum]];
       }
       
-      private static function onError(param1:ResourceErrorEvent) : void {
-         var _loc3_:Object = null;
-         _log.error("Cannot execute " + param1.uri + "; script not found (" + param1.errorMsg + ").");
-         var _loc2_:String = param1.uri.toSum();
-         for each (_loc3_ in _runners[_loc2_])
+      private static function onError(ree:ResourceErrorEvent) : void {
+         var obj:Object = null;
+         _log.error("Cannot execute " + ree.uri + "; script not found (" + ree.errorMsg + ").");
+         var uriSum:String = ree.uri.toSum();
+         for each (obj in _runners[uriSum])
          {
-            if(_loc3_.error)
+            if(obj.error)
             {
-               Callback(_loc3_.error).exec();
+               Callback(obj.error).exec();
             }
          }
-         delete _runners[[_loc2_]];
+         delete _runners[[uriSum]];
       }
       
-      private static function onLoadedWrapper(param1:Uri, param2:uint, param3:*) : void {
-         var _loc4_:ResourceLoadedEvent = new ResourceLoadedEvent(ResourceLoadedEvent.LOADED);
-         _loc4_.uri = param1;
-         _loc4_.resource = param3;
-         _loc4_.resourceType = param2;
-         onLoaded(_loc4_);
+      private static function onLoadedWrapper(uri:Uri, resourceType:uint, resource:*) : void {
+         var rle:ResourceLoadedEvent = new ResourceLoadedEvent(ResourceLoadedEvent.LOADED);
+         rle.uri = uri;
+         rle.resource = resource;
+         rle.resourceType = resourceType;
+         onLoaded(rle);
       }
       
-      private static function onFailedWrapper(param1:Uri, param2:String, param3:uint) : void {
-         var _loc4_:ResourceErrorEvent = new ResourceErrorEvent(ResourceErrorEvent.ERROR);
-         _loc4_.uri = param1;
-         _loc4_.errorMsg = param2;
-         _loc4_.errorCode = param3;
-         onError(_loc4_);
+      private static function onFailedWrapper(uri:Uri, errorMsg:String, errorCode:uint) : void {
+         var ree:ResourceErrorEvent = new ResourceErrorEvent(ResourceErrorEvent.ERROR);
+         ree.uri = uri;
+         ree.errorMsg = errorMsg;
+         ree.errorCode = errorCode;
+         onError(ree);
       }
    }
 }

@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.common.actions
          super();
       }
       
-      public static function create(param1:String="") : ResetGameAction {
-         var _loc2_:ResetGameAction = new ResetGameAction();
-         _loc2_.messageToShow = param1;
-         return _loc2_;
+      public static function create(pMsg:String="") : ResetGameAction {
+         var a:ResetGameAction = new ResetGameAction();
+         a.messageToShow = pMsg;
+         return a;
       }
       
       public var messageToShow:String;

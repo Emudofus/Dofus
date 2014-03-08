@@ -9,30 +9,30 @@ package com.ankamagames.dofus.scripts
          super();
       }
       
-      public static function getMapPoint(param1:Array) : MapPoint {
-         var _loc2_:MapPoint = null;
-         var _loc3_:ScriptEntity = null;
-         if(param1)
+      public static function getMapPoint(pArgs:Array) : MapPoint {
+         var mp:MapPoint = null;
+         var se:ScriptEntity = null;
+         if(pArgs)
          {
-            switch(param1.length)
+            switch(pArgs.length)
             {
                case 1:
-                  if(param1[0] is ScriptEntity)
+                  if(pArgs[0] is ScriptEntity)
                   {
-                     _loc3_ = param1[0] as ScriptEntity;
-                     _loc2_ = MapPoint.fromCoords(_loc3_.x,_loc3_.y);
+                     se = pArgs[0] as ScriptEntity;
+                     mp = MapPoint.fromCoords(se.x,se.y);
                   }
                   else
                   {
-                     _loc2_ = MapPoint.fromCellId(param1[0]);
+                     mp = MapPoint.fromCellId(pArgs[0]);
                   }
                   break;
                case 2:
-                  _loc2_ = MapPoint.fromCoords(param1[0],param1[1]);
+                  mp = MapPoint.fromCoords(pArgs[0],pArgs[1]);
                   break;
             }
          }
-         return _loc2_;
+         return mp;
       }
    }
 }

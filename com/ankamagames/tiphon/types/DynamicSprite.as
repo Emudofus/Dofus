@@ -13,31 +13,31 @@ package com.ankamagames.tiphon.types
          addEventListener(Event.ADDED_TO_STAGE,this.onAdded);
       }
       
-      public function init(param1:IAnimationSpriteHandler) : void {
+      public function init(handler:IAnimationSpriteHandler) : void {
       }
       
-      private function onAdded(param1:Event) : void {
+      private function onAdded(e:Event) : void {
          removeEventListener(Event.ADDED_TO_STAGE,this.onAdded);
-         var _loc2_:DisplayObject = param1.target as DisplayObject;
-         while(!(_loc2_ is TiphonSprite) && (_loc2_.parent))
+         var currentDo:DisplayObject = e.target as DisplayObject;
+         while((!(currentDo is TiphonSprite)) && (currentDo.parent))
          {
-            _loc2_ = _loc2_.parent;
+            currentDo = currentDo.parent;
          }
-         if(_loc2_ is TiphonSprite)
+         if(currentDo is TiphonSprite)
          {
-            this.init(_loc2_ as TiphonSprite);
+            this.init(currentDo as TiphonSprite);
          }
       }
       
       public function getRoot() : ScriptedAnimation {
-         var _loc1_:DisplayObject = this;
-         while(_loc1_)
+         var current:DisplayObject = this;
+         while(current)
          {
-            if(_loc1_ is ScriptedAnimation)
+            if(current is ScriptedAnimation)
             {
-               return _loc1_ as ScriptedAnimation;
+               return current as ScriptedAnimation;
             }
-            _loc1_ = _loc1_.parent;
+            current = current.parent;
          }
          return null;
       }

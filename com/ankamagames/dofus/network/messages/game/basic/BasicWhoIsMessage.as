@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.basic
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.social.AbstractSocialGroupInfos;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -50,17 +50,17 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 180;
       }
       
-      public function initBasicWhoIsMessage(param1:Boolean=false, param2:int=-1, param3:String="", param4:uint=0, param5:String="", param6:uint=0, param7:int=0, param8:Vector.<AbstractSocialGroupInfos>=null, param9:Boolean=false, param10:uint=99) : BasicWhoIsMessage {
-         this.self = param1;
-         this.position = param2;
-         this.accountNickname = param3;
-         this.accountId = param4;
-         this.playerName = param5;
-         this.playerId = param6;
-         this.areaId = param7;
-         this.socialGroups = param8;
-         this.verbose = param9;
-         this.playerState = param10;
+      public function initBasicWhoIsMessage(self:Boolean=false, position:int=-1, accountNickname:String="", accountId:uint=0, playerName:String="", playerId:uint=0, areaId:int=0, socialGroups:Vector.<AbstractSocialGroupInfos>=null, verbose:Boolean=false, playerState:uint=99) : BasicWhoIsMessage {
+         this.self = self;
+         this.position = position;
+         this.accountNickname = accountNickname;
+         this.accountId = accountId;
+         this.playerName = playerName;
+         this.playerId = playerId;
+         this.areaId = areaId;
+         this.socialGroups = socialGroups;
+         this.verbose = verbose;
+         this.playerState = playerState;
          this._isInitialized = true;
          return this;
       }
@@ -79,96 +79,96 @@ package com.ankamagames.dofus.network.messages.game.basic
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_BasicWhoIsMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_BasicWhoIsMessage(output);
       }
       
-      public function serializeAs_BasicWhoIsMessage(param1:IDataOutput) : void {
-         var _loc2_:uint = 0;
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,0,this.self);
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,1,this.verbose);
-         param1.writeByte(_loc2_);
-         param1.writeByte(this.position);
-         param1.writeUTF(this.accountNickname);
+      public function serializeAs_BasicWhoIsMessage(output:IDataOutput) : void {
+         var _box0:uint = 0;
+         _box0 = BooleanByteWrapper.setFlag(_box0,0,this.self);
+         _box0 = BooleanByteWrapper.setFlag(_box0,1,this.verbose);
+         output.writeByte(_box0);
+         output.writeByte(this.position);
+         output.writeUTF(this.accountNickname);
          if(this.accountId < 0)
          {
             throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
          }
          else
          {
-            param1.writeInt(this.accountId);
-            param1.writeUTF(this.playerName);
+            output.writeInt(this.accountId);
+            output.writeUTF(this.playerName);
             if(this.playerId < 0)
             {
                throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
             }
             else
             {
-               param1.writeInt(this.playerId);
-               param1.writeShort(this.areaId);
-               param1.writeShort(this.socialGroups.length);
-               _loc3_ = 0;
-               while(_loc3_ < this.socialGroups.length)
+               output.writeInt(this.playerId);
+               output.writeShort(this.areaId);
+               output.writeShort(this.socialGroups.length);
+               _i8 = 0;
+               while(_i8 < this.socialGroups.length)
                {
-                  param1.writeShort((this.socialGroups[_loc3_] as AbstractSocialGroupInfos).getTypeId());
-                  (this.socialGroups[_loc3_] as AbstractSocialGroupInfos).serialize(param1);
-                  _loc3_++;
+                  output.writeShort((this.socialGroups[_i8] as AbstractSocialGroupInfos).getTypeId());
+                  (this.socialGroups[_i8] as AbstractSocialGroupInfos).serialize(output);
+                  _i8++;
                }
-               param1.writeByte(this.playerState);
+               output.writeByte(this.playerState);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_BasicWhoIsMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_BasicWhoIsMessage(input);
       }
       
-      public function deserializeAs_BasicWhoIsMessage(param1:IDataInput) : void {
-         var _loc5_:uint = 0;
-         var _loc6_:AbstractSocialGroupInfos = null;
-         var _loc2_:uint = param1.readByte();
-         this.self = BooleanByteWrapper.getFlag(_loc2_,0);
-         this.verbose = BooleanByteWrapper.getFlag(_loc2_,1);
-         this.position = param1.readByte();
-         this.accountNickname = param1.readUTF();
-         this.accountId = param1.readInt();
+      public function deserializeAs_BasicWhoIsMessage(input:IDataInput) : void {
+         var _id8:uint = 0;
+         var _item8:AbstractSocialGroupInfos = null;
+         var _box0:uint = input.readByte();
+         this.self = BooleanByteWrapper.getFlag(_box0,0);
+         this.verbose = BooleanByteWrapper.getFlag(_box0,1);
+         this.position = input.readByte();
+         this.accountNickname = input.readUTF();
+         this.accountId = input.readInt();
          if(this.accountId < 0)
          {
             throw new Error("Forbidden value (" + this.accountId + ") on element of BasicWhoIsMessage.accountId.");
          }
          else
          {
-            this.playerName = param1.readUTF();
-            this.playerId = param1.readInt();
+            this.playerName = input.readUTF();
+            this.playerId = input.readInt();
             if(this.playerId < 0)
             {
                throw new Error("Forbidden value (" + this.playerId + ") on element of BasicWhoIsMessage.playerId.");
             }
             else
             {
-               this.areaId = param1.readShort();
-               _loc3_ = param1.readUnsignedShort();
-               _loc4_ = 0;
-               while(_loc4_ < _loc3_)
+               this.areaId = input.readShort();
+               _socialGroupsLen = input.readUnsignedShort();
+               _i8 = 0;
+               while(_i8 < _socialGroupsLen)
                {
-                  _loc5_ = param1.readUnsignedShort();
-                  _loc6_ = ProtocolTypeManager.getInstance(AbstractSocialGroupInfos,_loc5_);
-                  _loc6_.deserialize(param1);
-                  this.socialGroups.push(_loc6_);
-                  _loc4_++;
+                  _id8 = input.readUnsignedShort();
+                  _item8 = ProtocolTypeManager.getInstance(AbstractSocialGroupInfos,_id8);
+                  _item8.deserialize(input);
+                  this.socialGroups.push(_item8);
+                  _i8++;
                }
-               this.playerState = param1.readByte();
+               this.playerState = input.readByte();
                if(this.playerState < 0)
                {
                   throw new Error("Forbidden value (" + this.playerState + ") on element of BasicWhoIsMessage.playerState.");

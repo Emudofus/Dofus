@@ -7,9 +7,9 @@ package com.ankamagames.atouin.types
    public class MapGfxBitmap extends Bitmap implements ICustomUnicNameGetter
    {
       
-      public function MapGfxBitmap(param1:BitmapData, param2:String="auto", param3:Boolean=false, param4:uint=0) {
-         super(param1,param2,param3);
-         this._name = "mapGfx::" + param4;
+      public function MapGfxBitmap(bitmapdata:BitmapData, pixelSnapping:String="auto", smoothing:Boolean=false, identifier:uint=0) {
+         super(bitmapdata,pixelSnapping,smoothing);
+         this._name = "mapGfx::" + identifier;
       }
       
       private var _name:String;

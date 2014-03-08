@@ -28,12 +28,12 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
          return 373;
       }
       
-      public function initDungeonPartyFinderPlayer(param1:uint=0, param2:String="", param3:int=0, param4:Boolean=false, param5:uint=0) : DungeonPartyFinderPlayer {
-         this.playerId = param1;
-         this.playerName = param2;
-         this.breed = param3;
-         this.sex = param4;
-         this.level = param5;
+      public function initDungeonPartyFinderPlayer(playerId:uint=0, playerName:String="", breed:int=0, sex:Boolean=false, level:uint=0) : DungeonPartyFinderPlayer {
+         this.playerId = playerId;
+         this.playerName = playerName;
+         this.breed = breed;
+         this.sex = sex;
+         this.level = level;
          return this;
       }
       
@@ -45,55 +45,55 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
          this.level = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_DungeonPartyFinderPlayer(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_DungeonPartyFinderPlayer(output);
       }
       
-      public function serializeAs_DungeonPartyFinderPlayer(param1:IDataOutput) : void {
+      public function serializeAs_DungeonPartyFinderPlayer(output:IDataOutput) : void {
          if(this.playerId < 0)
          {
             throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
          }
          else
          {
-            param1.writeInt(this.playerId);
-            param1.writeUTF(this.playerName);
-            param1.writeByte(this.breed);
-            param1.writeBoolean(this.sex);
+            output.writeInt(this.playerId);
+            output.writeUTF(this.playerName);
+            output.writeByte(this.breed);
+            output.writeBoolean(this.sex);
             if(this.level < 0)
             {
                throw new Error("Forbidden value (" + this.level + ") on element level.");
             }
             else
             {
-               param1.writeShort(this.level);
+               output.writeShort(this.level);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_DungeonPartyFinderPlayer(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_DungeonPartyFinderPlayer(input);
       }
       
-      public function deserializeAs_DungeonPartyFinderPlayer(param1:IDataInput) : void {
-         this.playerId = param1.readInt();
+      public function deserializeAs_DungeonPartyFinderPlayer(input:IDataInput) : void {
+         this.playerId = input.readInt();
          if(this.playerId < 0)
          {
             throw new Error("Forbidden value (" + this.playerId + ") on element of DungeonPartyFinderPlayer.playerId.");
          }
          else
          {
-            this.playerName = param1.readUTF();
-            this.breed = param1.readByte();
-            if(this.breed < PlayableBreedEnum.Feca || this.breed > PlayableBreedEnum.Steamer)
+            this.playerName = input.readUTF();
+            this.breed = input.readByte();
+            if((this.breed < PlayableBreedEnum.Feca) || (this.breed > PlayableBreedEnum.Steamer))
             {
                throw new Error("Forbidden value (" + this.breed + ") on element of DungeonPartyFinderPlayer.breed.");
             }
             else
             {
-               this.sex = param1.readBoolean();
-               this.level = param1.readShort();
+               this.sex = input.readBoolean();
+               this.level = input.readShort();
                if(this.level < 0)
                {
                   throw new Error("Forbidden value (" + this.level + ") on element of DungeonPartyFinderPlayer.level.");

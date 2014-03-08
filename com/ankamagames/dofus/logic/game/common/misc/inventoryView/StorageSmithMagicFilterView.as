@@ -12,10 +12,10 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    public class StorageSmithMagicFilterView extends StorageGenericView
    {
       
-      public function StorageSmithMagicFilterView(param1:HookLock, param2:IStorageView, param3:Skill) {
-         super(param1);
-         this._skill = param3;
-         this._parent = param2;
+      public function StorageSmithMagicFilterView(hookLock:HookLock, parentView:IStorageView, skill:Skill) {
+         super(hookLock);
+         this._skill = skill;
+         this._parent = parentView;
       }
       
       private static const SMITHMAGIC_RUNE_ID:int = 78;
@@ -32,9 +32,9 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          return "storageSmithMagicFilter";
       }
       
-      override public function isListening(param1:ItemWrapper) : Boolean {
-         var _loc2_:Item = Item.getItemById(param1.objectGID);
-         return (this._parent.isListening(param1)) && (super.isListening(param1)) && (_loc2_.typeId == this._skill.modifiableItemType || _loc2_.typeId == SMITHMAGIC_RUNE_ID || _loc2_.typeId == SMITHMAGIC_POTION_ID || param1.objectGID == SIGNATURE_RUNE_ID);
+      override public function isListening(item:ItemWrapper) : Boolean {
+         var data:Item = Item.getItemById(item.objectGID);
+         return (this._parent.isListening(item)) && (super.isListening(item)) && ((data.typeId == this._skill.modifiableItemType) || (data.typeId == SMITHMAGIC_RUNE_ID) || (data.typeId == SMITHMAGIC_POTION_ID) || (item.objectGID == SIGNATURE_RUNE_ID));
       }
       
       override public function updateView() : void {
@@ -45,8 +45,8 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          }
       }
       
-      public function set parent(param1:IStorageView) : void {
-         this._parent = param1;
+      public function set parent(view:IStorageView) : void {
+         this._parent = view;
       }
       
       public function get parent() : IStorageView {

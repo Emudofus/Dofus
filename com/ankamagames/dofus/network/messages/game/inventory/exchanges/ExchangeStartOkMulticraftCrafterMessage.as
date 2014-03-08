@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5818;
       }
       
-      public function initExchangeStartOkMulticraftCrafterMessage(param1:uint=0, param2:uint=0) : ExchangeStartOkMulticraftCrafterMessage {
-         this.maxCase = param1;
-         this.skillId = param2;
+      public function initExchangeStartOkMulticraftCrafterMessage(maxCase:uint=0, skillId:uint=0) : ExchangeStartOkMulticraftCrafterMessage {
+         this.maxCase = maxCase;
+         this.skillId = skillId;
          this._isInitialized = true;
          return this;
       }
@@ -42,53 +42,53 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeStartOkMulticraftCrafterMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeStartOkMulticraftCrafterMessage(output);
       }
       
-      public function serializeAs_ExchangeStartOkMulticraftCrafterMessage(param1:IDataOutput) : void {
+      public function serializeAs_ExchangeStartOkMulticraftCrafterMessage(output:IDataOutput) : void {
          if(this.maxCase < 0)
          {
             throw new Error("Forbidden value (" + this.maxCase + ") on element maxCase.");
          }
          else
          {
-            param1.writeByte(this.maxCase);
+            output.writeByte(this.maxCase);
             if(this.skillId < 0)
             {
                throw new Error("Forbidden value (" + this.skillId + ") on element skillId.");
             }
             else
             {
-               param1.writeInt(this.skillId);
+               output.writeInt(this.skillId);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeStartOkMulticraftCrafterMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeStartOkMulticraftCrafterMessage(input);
       }
       
-      public function deserializeAs_ExchangeStartOkMulticraftCrafterMessage(param1:IDataInput) : void {
-         this.maxCase = param1.readByte();
+      public function deserializeAs_ExchangeStartOkMulticraftCrafterMessage(input:IDataInput) : void {
+         this.maxCase = input.readByte();
          if(this.maxCase < 0)
          {
             throw new Error("Forbidden value (" + this.maxCase + ") on element of ExchangeStartOkMulticraftCrafterMessage.maxCase.");
          }
          else
          {
-            this.skillId = param1.readInt();
+            this.skillId = input.readInt();
             if(this.skillId < 0)
             {
                throw new Error("Forbidden value (" + this.skillId + ") on element of ExchangeStartOkMulticraftCrafterMessage.skillId.");

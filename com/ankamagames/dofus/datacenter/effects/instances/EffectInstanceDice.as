@@ -15,67 +15,67 @@ package com.ankamagames.dofus.datacenter.effects.instances
       public var diceSide:uint;
       
       override public function clone() : EffectInstance {
-         var _loc1_:EffectInstanceDice = new EffectInstanceDice();
-         _loc1_.rawZone = rawZone;
-         _loc1_.effectId = effectId;
-         _loc1_.duration = duration;
-         _loc1_.delay = delay;
-         _loc1_.diceNum = this.diceNum;
-         _loc1_.diceSide = this.diceSide;
-         _loc1_.value = value;
-         _loc1_.random = random;
-         _loc1_.group = group;
-         _loc1_.hidden = hidden;
-         _loc1_.targetId = targetId;
-         _loc1_.targetMask = targetMask;
-         return _loc1_;
+         var o:EffectInstanceDice = new EffectInstanceDice();
+         o.rawZone = rawZone;
+         o.effectId = effectId;
+         o.duration = duration;
+         o.delay = delay;
+         o.diceNum = this.diceNum;
+         o.diceSide = this.diceSide;
+         o.value = value;
+         o.random = random;
+         o.group = group;
+         o.hidden = hidden;
+         o.targetId = targetId;
+         o.targetMask = targetMask;
+         return o;
       }
       
       override public function get parameter0() : Object {
-         return this.diceNum != 0?this.diceNum:null;
+         return !(this.diceNum == 0)?this.diceNum:null;
       }
       
       override public function get parameter1() : Object {
-         return this.diceSide != 0?this.diceSide:null;
+         return !(this.diceSide == 0)?this.diceSide:null;
       }
       
       override public function get parameter2() : Object {
-         return value != 0?value:null;
+         return !(value == 0)?value:null;
       }
       
-      override public function setParameter(param1:uint, param2:*) : void {
-         switch(param1)
+      override public function setParameter(paramIndex:uint, value:*) : void {
+         switch(paramIndex)
          {
             case 0:
-               this.diceNum = uint(param2);
+               this.diceNum = uint(value);
                break;
             case 1:
-               this.diceSide = uint(param2);
+               this.diceSide = uint(value);
                break;
             case 2:
-               this.value = int(param2);
+               this.value = int(value);
                break;
          }
       }
       
-      override public function add(param1:*) : EffectInstance {
-         if(param1 is EffectInstanceDice)
+      override public function add(term:*) : EffectInstance {
+         if(term is EffectInstanceDice)
          {
-            this.diceNum = this.diceNum + param1.diceNum;
-            this.diceSide = this.diceSide + param1.diceSide;
+            this.diceNum = this.diceNum + term.diceNum;
+            this.diceSide = this.diceSide + term.diceSide;
             forceDescriptionRefresh();
          }
          else
          {
-            if(param1 is EffectInstanceInteger)
+            if(term is EffectInstanceInteger)
             {
-               this.diceNum = this.diceNum + param1.value;
-               this.diceSide = this.diceSide != 0?this.diceSide + param1.value:0;
+               this.diceNum = this.diceNum + term.value;
+               this.diceSide = !(this.diceSide == 0)?this.diceSide + term.value:0;
                forceDescriptionRefresh();
             }
             else
             {
-               _log.error(param1 + " cannot be added to EffectInstanceDice.");
+               _log.error(term + " cannot be added to EffectInstanceDice.");
             }
          }
          return this;

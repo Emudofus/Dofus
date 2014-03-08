@@ -6,9 +6,9 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightRemoveCarriedEntityStep extends FightRemoveSubEntityStep
    {
       
-      public function FightRemoveCarriedEntityStep(param1:int, param2:int, param3:uint, param4:uint) {
-         this._carriedId = param2;
-         super(param1,param3,param4);
+      public function FightRemoveCarriedEntityStep(fighterId:int, carriedId:int, category:uint, slot:uint) {
+         this._carriedId = carriedId;
+         super(fighterId,category,slot);
       }
       
       private var _carriedId:int;
@@ -18,11 +18,11 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc1_:TiphonSprite = DofusEntities.getEntity(this._carriedId) as TiphonSprite;
-         var _loc2_:TiphonSprite = _loc1_.parentSprite;
-         if((_loc1_) && (_loc2_))
+         var carriedEntity:TiphonSprite = DofusEntities.getEntity(this._carriedId) as TiphonSprite;
+         var parentSprite:TiphonSprite = carriedEntity.parentSprite;
+         if((carriedEntity) && (parentSprite))
          {
-            _loc2_.removeSubEntity(_loc1_);
+            parentSprite.removeSubEntity(carriedEntity);
          }
          super.start();
       }

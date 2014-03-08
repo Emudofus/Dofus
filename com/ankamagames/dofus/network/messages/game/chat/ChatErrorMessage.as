@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 870;
       }
       
-      public function initChatErrorMessage(param1:uint=0) : ChatErrorMessage {
-         this.reason = param1;
+      public function initChatErrorMessage(reason:uint=0) : ChatErrorMessage {
+         this.reason = reason;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.chat
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ChatErrorMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ChatErrorMessage(output);
       }
       
-      public function serializeAs_ChatErrorMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.reason);
+      public function serializeAs_ChatErrorMessage(output:IDataOutput) : void {
+         output.writeByte(this.reason);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ChatErrorMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ChatErrorMessage(input);
       }
       
-      public function deserializeAs_ChatErrorMessage(param1:IDataInput) : void {
-         this.reason = param1.readByte();
+      public function deserializeAs_ChatErrorMessage(input:IDataInput) : void {
+         this.reason = input.readByte();
          if(this.reason < 0)
          {
             throw new Error("Forbidden value (" + this.reason + ") on element of ChatErrorMessage.reason.");

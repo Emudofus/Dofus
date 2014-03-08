@@ -91,16 +91,16 @@ package com.ankamagames.berilia.components
       
       public var autoCenter:Boolean = true;
       
-      public function set buttonTexture(param1:Uri) : void {
-         this._bgTexture.uri = param1;
+      public function set buttonTexture(uri:Uri) : void {
+         this._bgTexture.uri = uri;
       }
       
       public function get buttonTexture() : Uri {
          return this._bgTexture.uri;
       }
       
-      public function set listTexture(param1:Uri) : void {
-         this._listTexture.uri = param1;
+      public function set listTexture(uri:Uri) : void {
+         this._listTexture.uri = uri;
       }
       
       public function get listTexture() : Uri {
@@ -111,16 +111,16 @@ package com.ankamagames.berilia.components
          return this._maxListSize;
       }
       
-      public function set maxHeight(param1:uint) : void {
-         this._maxListSize = param1;
+      public function set maxHeight(v:uint) : void {
+         this._maxListSize = v;
       }
       
       public function get slotWidth() : uint {
          return this._slotWidth;
       }
       
-      public function set slotWidth(param1:uint) : void {
-         this._slotWidth = param1;
+      public function set slotWidth(value:uint) : void {
+         this._slotWidth = value;
          if(this.finalized)
          {
             this.finalize();
@@ -131,19 +131,19 @@ package com.ankamagames.berilia.components
          return this._slotHeight;
       }
       
-      public function set slotHeight(param1:uint) : void {
-         this._slotHeight = param1;
+      public function set slotHeight(value:uint) : void {
+         this._slotHeight = value;
          if(this.finalized)
          {
             this.finalize();
          }
       }
       
-      public function set dataProvider(param1:*) : void {
-         var _loc2_:uint = this._maxListSize / this._list.slotHeight;
-         if(param1)
+      public function set dataProvider(data:*) : void {
+         var nbSlot:uint = this._maxListSize / this._list.slotHeight;
+         if(data)
          {
-            if(param1.length > _loc2_)
+            if(data.length > nbSlot)
             {
                this._list.width = width - 6;
                this._list.height = this._maxListSize;
@@ -152,7 +152,7 @@ package com.ankamagames.berilia.components
             else
             {
                this._list.width = width - this.listSizeOffset;
-               this._list.height = this._list.slotHeight * param1.length;
+               this._list.height = this._list.slotHeight * data.length;
                this._list.slotWidth = this.slotWidth?this.slotWidth:this._list.width;
             }
          }
@@ -164,7 +164,7 @@ package com.ankamagames.berilia.components
          }
          this._listTexture.height = this._list.height + 8;
          this._listTexture.width = this._list.width + 3;
-         this._list.dataProvider = param1;
+         this._list.dataProvider = data;
       }
       
       public function get dataProvider() : * {
@@ -175,28 +175,28 @@ package com.ankamagames.berilia.components
          return this._finalized;
       }
       
-      public function set finalized(param1:Boolean) : void {
-         this._finalized = param1;
+      public function set finalized(b:Boolean) : void {
+         this._finalized = b;
       }
       
-      public function set scrollBarCss(param1:Uri) : void {
-         this._list.verticalScrollbarCss = param1;
+      public function set scrollBarCss(uri:Uri) : void {
+         this._list.verticalScrollbarCss = uri;
       }
       
       public function get scrollBarCss() : Uri {
          return this._list.verticalScrollbarCss;
       }
       
-      public function set rendererName(param1:String) : void {
-         this._list.rendererName = param1;
+      public function set rendererName(name:String) : void {
+         this._list.rendererName = name;
       }
       
       public function get rendererName() : String {
          return this._list.rendererName;
       }
       
-      public function set rendererArgs(param1:String) : void {
-         this._list.rendererArgs = param1;
+      public function set rendererArgs(args:String) : void {
+         this._list.rendererArgs = args;
       }
       
       public function get rendererArgs() : String {
@@ -207,44 +207,44 @@ package com.ankamagames.berilia.components
          return this._list.selectedItem;
       }
       
-      public function set value(param1:*) : void {
-         this._list.selectedItem = param1;
+      public function set value(o:*) : void {
+         this._list.selectedItem = o;
       }
       
-      public function set autoSelect(param1:Boolean) : void {
-         this._list.autoSelect = param1;
+      public function set autoSelect(b:Boolean) : void {
+         this._list.autoSelect = b;
       }
       
       public function get autoSelect() : Boolean {
          return this._list.autoSelect;
       }
       
-      public function set autoSelectMode(param1:int) : void {
-         this._list.autoSelectMode = param1;
+      public function set autoSelectMode(n:int) : void {
+         this._list.autoSelectMode = n;
       }
       
       public function get autoSelectMode() : int {
          return this._list.autoSelectMode;
       }
       
-      public function set useKeyboard(param1:Boolean) : void {
-         this._useKeyboard = param1;
+      public function set useKeyboard(b:Boolean) : void {
+         this._useKeyboard = b;
       }
       
       public function get useKeyboard() : Boolean {
          return this._useKeyboard;
       }
       
-      public function set closeOnClick(param1:Boolean) : void {
-         this._closeOnClick = param1;
+      public function set closeOnClick(b:Boolean) : void {
+         this._closeOnClick = b;
       }
       
       public function get closeOnClick() : Boolean {
          return this._closeOnClick;
       }
       
-      public function set selectedItem(param1:Object) : void {
-         this._list.selectedItem = param1;
+      public function set selectedItem(v:Object) : void {
+         this._list.selectedItem = v;
       }
       
       public function get selectedItem() : Object {
@@ -255,8 +255,8 @@ package com.ankamagames.berilia.components
          return this._list.selectedIndex;
       }
       
-      public function set selectedIndex(param1:uint) : void {
-         this._list.selectedIndex = param1;
+      public function set selectedIndex(v:uint) : void {
+         this._list.selectedIndex = v;
       }
       
       public function get container() : * {
@@ -271,12 +271,12 @@ package com.ankamagames.berilia.components
          return SecureCenter.secure(this._mainContainer,getUi().uiModule.trusted);
       }
       
-      public function set dataNameField(param1:String) : void {
-         this._dataNameField = param1;
+      public function set dataNameField(value:String) : void {
+         this._dataNameField = value;
       }
       
-      public function renderModificator(param1:Array, param2:Object) : Array {
-         if(param2 != SecureCenter.ACCESS_KEY)
+      public function renderModificator(childs:Array, accessKey:Object) : Array {
+         if(accessKey != SecureCenter.ACCESS_KEY)
          {
             throw new IllegalOperationError();
          }
@@ -289,7 +289,7 @@ package com.ankamagames.berilia.components
             this._list.slotWidth = this.slotWidth?this.slotWidth:this._list.width;
             this._list.slotHeight = this.slotHeight?this.slotHeight:height - 4;
             InternalComponentAccess.setProperty(this._list,"_uiRootContainer",InternalComponentAccess.getProperty(this,"_uiRootContainer"));
-            return this._list.renderModificator(param1,param2);
+            return this._list.renderModificator(childs,accessKey);
          }
       }
       
@@ -302,14 +302,14 @@ package com.ankamagames.berilia.components
          this._bgTexture.finalize();
          this._button.addChild(this._bgTexture);
          getUi().registerId(this._bgTexture.name,new GraphicElement(this._bgTexture,new Array(),this._bgTexture.name));
-         var _loc1_:Array = new Array();
-         _loc1_[StatesEnum.STATE_OVER] = new Array();
-         _loc1_[StatesEnum.STATE_OVER][this._bgTexture.name] = new Array();
-         _loc1_[StatesEnum.STATE_OVER][this._bgTexture.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
-         _loc1_[StatesEnum.STATE_CLICKED] = new Array();
-         _loc1_[StatesEnum.STATE_CLICKED][this._bgTexture.name] = new Array();
-         _loc1_[StatesEnum.STATE_CLICKED][this._bgTexture.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
-         this._button.changingStateData = _loc1_;
+         var stateChangingProperties:Array = new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER] = new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER][this._bgTexture.name] = new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER][this._bgTexture.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
+         stateChangingProperties[StatesEnum.STATE_CLICKED] = new Array();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][this._bgTexture.name] = new Array();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][this._bgTexture.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
+         this._button.changingStateData = stateChangingProperties;
          this._button.finalize();
          this._list.name = "grid_" + name;
          this._list.width = width - this.listSizeOffset;
@@ -320,7 +320,7 @@ package com.ankamagames.berilia.components
          this._list.finalize();
          this._listTexture.width = this._list.width + 4;
          this._listTexture.autoGrid = true;
-         this._listTexture.y = height-1;
+         this._listTexture.y = height - 1;
          this._listTexture.x = 2;
          this._listTexture.finalize();
          addChild(this._button);
@@ -341,18 +341,18 @@ package com.ankamagames.berilia.components
          getUi().iAmFinalized(this);
       }
       
-      override public function process(param1:Message) : Boolean {
-         var _loc2_:InteractiveObject = null;
-         var _loc3_:uint = 0;
+      override public function process(msg:Message) : Boolean {
+         var focusedObject:InteractiveObject = null;
+         var keyCode:uint = 0;
          switch(true)
          {
-            case param1 is MouseReleaseOutsideMessage:
+            case msg is MouseReleaseOutsideMessage:
                this.showList(false);
                this._searchString = "";
                break;
-            case param1 is SelectItemMessage:
+            case msg is SelectItemMessage:
                this._list.renderer.update(this._list.selectedItem,0,this._mainContainer,false);
-               switch(SelectItemMessage(param1).selectMethod)
+               switch(SelectItemMessage(msg).selectMethod)
                {
                   case SelectMethodEnum.UP_ARROW:
                   case SelectMethodEnum.DOWN_ARROW:
@@ -362,14 +362,12 @@ package com.ankamagames.berilia.components
                   case SelectMethodEnum.AUTO:
                   case SelectMethodEnum.MANUAL:
                      break;
-                  default:
-                     this.showList(false);
                }
                break;
-            case param1 is MouseDownMessage:
+            case msg is MouseDownMessage:
                if(!this._list.visible)
                {
-                  if((this._list.dataProvider) && (this._list.dataProvider.length > 0) || MouseDownMessage(param1).target == this._button)
+                  if((this._list.dataProvider) && (this._list.dataProvider.length > 0) || (MouseDownMessage(msg).target == this._button))
                   {
                      this.showList(true);
                      this._list.moveTo(this._list.selectedIndex);
@@ -377,46 +375,46 @@ package com.ankamagames.berilia.components
                }
                else
                {
-                  if(MouseDownMessage(param1).target == this._button)
+                  if(MouseDownMessage(msg).target == this._button)
                   {
                      this.showList(false);
                   }
                }
                this._searchString = "";
                break;
-            case param1 is MouseWheelMessage:
+            case msg is MouseWheelMessage:
                if(this._list.visible)
                {
-                  this._list.process(param1);
+                  this._list.process(msg);
                }
                else
                {
-                  this._list.setSelectedIndex(this._list.selectedIndex + MouseWheelMessage(param1).mouseEvent.delta / Math.abs(MouseWheelMessage(param1).mouseEvent.delta) * -1,SelectMethodEnum.WHEEL);
+                  this._list.setSelectedIndex(this._list.selectedIndex + MouseWheelMessage(msg).mouseEvent.delta / Math.abs(MouseWheelMessage(msg).mouseEvent.delta) * -1,SelectMethodEnum.WHEEL);
                }
                return true;
-            case param1 is KeyboardKeyUpMessage:
-               _loc2_ = FocusHandler.getInstance().getFocus();
-               if(!(_loc2_ is Input))
+            case msg is KeyboardKeyUpMessage:
+               focusedObject = FocusHandler.getInstance().getFocus();
+               if(!(focusedObject is Input))
                {
-                  _loc3_ = KeyboardMessage(param1).keyboardEvent.keyCode;
-                  if(!(_loc3_ == Keyboard.DOWN) && !(_loc3_ == Keyboard.UP) && !(_loc3_ == Keyboard.LEFT) && !(_loc3_ == Keyboard.RIGHT) && !(_loc3_ == Keyboard.ENTER))
+                  keyCode = KeyboardMessage(msg).keyboardEvent.keyCode;
+                  if((!(keyCode == Keyboard.DOWN)) && (!(keyCode == Keyboard.UP)) && (!(keyCode == Keyboard.LEFT)) && (!(keyCode == Keyboard.RIGHT)) && (!(keyCode == Keyboard.ENTER)))
                   {
                      if(this._searchStopped)
                      {
                         this._searchStopped = false;
-                        if(this._searchString.length == 1 && String.fromCharCode(KeyboardMessage(param1).keyboardEvent.charCode) == this._searchString)
+                        if((this._searchString.length == 1) && (String.fromCharCode(KeyboardMessage(msg).keyboardEvent.charCode) == this._searchString))
                         {
                            this.searchStringInCB(this._searchString,this._lastSearchIndex + 1);
                            return true;
                         }
                         this._searchString = "";
                      }
-                     this._searchString = this._searchString + String.fromCharCode(KeyboardMessage(param1).keyboardEvent.charCode);
+                     this._searchString = this._searchString + String.fromCharCode(KeyboardMessage(msg).keyboardEvent.charCode);
                      this.searchStringInCB(this._searchString);
                      return true;
                   }
                }
-               if(KeyboardMessage(param1).keyboardEvent.keyCode == Keyboard.ENTER && (this._list.visible))
+               if((KeyboardMessage(msg).keyboardEvent.keyCode == Keyboard.ENTER) && (this._list.visible))
                {
                   if(this._useKeyboard)
                   {
@@ -425,10 +423,10 @@ package com.ankamagames.berilia.components
                   }
                }
                break;
-            case param1 is KeyboardMessage:
+            case msg is KeyboardMessage:
                if(this._useKeyboard)
                {
-                  this._list.process(param1);
+                  this._list.process(msg);
                }
                break;
          }
@@ -456,88 +454,88 @@ package com.ankamagames.berilia.components
          super.remove();
       }
       
-      protected function showList(param1:Boolean) : void {
-         var _loc2_:IInterfaceListener = null;
-         var _loc3_:IInterfaceListener = null;
-         if(this._previousState != param1)
+      protected function showList(show:Boolean) : void {
+         var listener:IInterfaceListener = null;
+         var listener2:IInterfaceListener = null;
+         if(this._previousState != show)
          {
-            if(param1)
+            if(show)
             {
-               for each (_loc2_ in Berilia.getInstance().UISoundListeners)
+               for each (listener in Berilia.getInstance().UISoundListeners)
                {
-                  _loc2_.playUISound("16012");
+                  listener.playUISound("16012");
                }
             }
             else
             {
-               for each (_loc3_ in Berilia.getInstance().UISoundListeners)
+               for each (listener2 in Berilia.getInstance().UISoundListeners)
                {
-                  _loc3_.playUISound("16013");
+                  listener2.playUISound("16013");
                }
             }
          }
-         this._listTexture.visible = param1;
-         this._list.visible = param1;
-         this._previousState = param1;
+         this._listTexture.visible = show;
+         this._list.visible = show;
+         this._previousState = show;
       }
       
-      protected function searchStringInCB(param1:String, param2:int=0) : void {
-         var _loc4_:* = 0;
+      protected function searchStringInCB(searchPhrase:String, startIndex:int=0) : void {
+         var i:* = 0;
          this._searchTimer.reset();
          this._searchTimer.start();
-         var _loc3_:RegExp = new RegExp(param1 + "?","gi");
-         var _loc5_:* = -1;
-         var _loc6_:* = "";
-         _loc4_ = param2;
-         while(_loc4_ < this.dataProvider.length)
+         var comparRegexp:RegExp = new RegExp(searchPhrase + "?","gi");
+         var indexOfString:int = -1;
+         var compareString:String = "";
+         i = startIndex;
+         while(i < this.dataProvider.length)
          {
-            if(this._dataNameField == "" || this.dataProvider[_loc4_] is String)
+            if((this._dataNameField == "") || (this.dataProvider[i] is String))
             {
-               _loc6_ = this.cleanString(this.dataProvider[_loc4_].toLowerCase());
+               compareString = this.cleanString(this.dataProvider[i].toLowerCase());
             }
             else
             {
-               _loc6_ = this.cleanString(this.dataProvider[_loc4_][this._dataNameField].toLowerCase());
+               compareString = this.cleanString(this.dataProvider[i][this._dataNameField].toLowerCase());
             }
-            _loc5_ = _loc6_.indexOf(this.cleanString(param1));
-            if(_loc5_ != -1)
+            indexOfString = compareString.indexOf(this.cleanString(searchPhrase));
+            if(indexOfString != -1)
             {
-               this._list.setSelectedIndex(_loc4_,SelectMethodEnum.SEARCH);
-               this._lastSearchIndex = _loc4_;
+               this._list.setSelectedIndex(i,SelectMethodEnum.SEARCH);
+               this._lastSearchIndex = i;
                break;
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      protected function cleanString(param1:String) : String {
-         var _loc2_:RegExp = new RegExp("\\s","g");
-         var _loc3_:* = " ";
-         var _loc4_:RegExp = new RegExp(_loc2_);
-         var _loc5_:String = param1.replace(_loc4_,"");
-         _loc5_ = _loc5_.replace(_loc3_,"");
-         return StringUtils.noAccent(_loc5_);
+      protected function cleanString(spaced:String) : String {
+         var regSpace:RegExp = new RegExp("\\s","g");
+         var numberSeparator:String = " ";
+         var pattern1:RegExp = new RegExp(regSpace);
+         var tempString:String = spaced.replace(pattern1,"");
+         tempString = tempString.replace(numberSeparator,"");
+         return StringUtils.noAccent(tempString);
       }
       
-      private function onClick(param1:MouseEvent) : void {
-         var _loc2_:DisplayObject = DisplayObject(param1.target);
-         while(_loc2_.parent)
+      private function onClick(e:MouseEvent) : void {
+         var p:DisplayObject = DisplayObject(e.target);
+         while(p.parent)
          {
-            if(_loc2_ == this)
+            if(p == this)
             {
                return;
             }
-            _loc2_ = _loc2_.parent;
+            p = p.parent;
          }
          this.showList(false);
       }
       
-      private function onAddedToStage(param1:Event) : void {
+      private function onAddedToStage(e:Event) : void {
          removeEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
          StageShareManager.stage.addEventListener(MouseEvent.CLICK,this.onClick);
       }
       
-      private function onSearchTimerComplete(param1:TimerEvent) : void {
+      private function onSearchTimerComplete(e:TimerEvent) : void {
          this._searchStopped = true;
       }
    }

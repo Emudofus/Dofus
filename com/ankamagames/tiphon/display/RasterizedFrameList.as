@@ -3,12 +3,12 @@ package com.ankamagames.tiphon.display
    public class RasterizedFrameList extends Object
    {
       
-      public function RasterizedFrameList(param1:String, param2:int, param3:int=40) {
+      public function RasterizedFrameList(key:String, life:int, maxLife:int=40) {
          this.frameList = new Array();
          super();
-         this.key = param1;
-         this.life = param2;
-         this.maxLife = param3;
+         this.key = key;
+         this.life = life;
+         this.maxLife = maxLife;
       }
       
       public var life:int;

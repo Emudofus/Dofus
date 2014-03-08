@@ -27,31 +27,31 @@ package com.ankamagames.dofus.logic.common.managers
       
       private static var _zoneTimer:Timer;
       
-      public static function showSpell(param1:int, param2:int) : void {
-         var _loc3_:int = param1 * 10 + param2;
-         if(_loc3_ == lastSpellTooltipId && (TooltipManager.isVisible("Hyperlink")))
+      public static function showSpell(spellId:int, spellLevel:int) : void {
+         var spellCacheId:int = spellId * 10 + spellLevel;
+         if((spellCacheId == lastSpellTooltipId) && (TooltipManager.isVisible("Hyperlink")))
          {
             TooltipManager.hide("Hyperlink");
             lastSpellTooltipId = -1;
             return;
          }
-         lastSpellTooltipId = _loc3_;
+         lastSpellTooltipId = spellCacheId;
          HyperlinkItemManager.lastItemTooltipId = -1;
-         var _loc4_:SpellWrapper = SpellWrapper.create(-1,param1,param2);
-         var _loc5_:Stage = StageShareManager.stage;
-         var _loc6_:Rectangle = new Rectangle(_loc5_.mouseX,_loc5_.mouseY,10,10);
-         TooltipManager.show(_loc4_,_loc6_,UiModuleManager.getInstance().getModule("Ankama_Tooltips"),false,"Hyperlink",6,2,50,true,null,null,null,null,true);
+         var spellWrapper:SpellWrapper = SpellWrapper.create(-1,spellId,spellLevel);
+         var stage:Stage = StageShareManager.stage;
+         var target:Rectangle = new Rectangle(stage.mouseX,stage.mouseY,10,10);
+         TooltipManager.show(spellWrapper,target,UiModuleManager.getInstance().getModule("Ankama_Tooltips"),false,"Hyperlink",6,2,50,true,null,null,null,null,true);
       }
       
-      public static function getSpellName(param1:int, param2:int) : String {
-         var _loc3_:SpellWrapper = SpellWrapper.create(-1,param1,param2);
-         return "[" + _loc3_.name + " " + I18n.getUiText("ui.common.short.level") + param2 + "]";
+      public static function getSpellName(spellId:int, spellLevel:int) : String {
+         var spellWrapper:SpellWrapper = SpellWrapper.create(-1,spellId,spellLevel);
+         return "[" + spellWrapper.name + " " + I18n.getUiText("ui.common.short.level") + spellLevel + "]";
       }
       
-      public static function showSpellArea(param1:int, param2:int, param3:int, param4:int, param5:int) : void {
+      public static function showSpellArea(casterId:int, targetCellId:int, sourceCellId:int, spellId:int, spellLevelId:int) : void {
          if(Kernel.getWorker().getFrame(FightContextFrame))
          {
-            SpellZoneManager.getInstance().displaySpellZone(param1,param2,param3,param4,param5);
+            SpellZoneManager.getInstance().displaySpellZone(casterId,targetCellId,sourceCellId,spellId,spellLevelId);
             if(!_zoneTimer)
             {
                _zoneTimer = new Timer(2000);
@@ -62,7 +62,7 @@ package com.ankamagames.dofus.logic.common.managers
          }
       }
       
-      private static function onStopZoneTimer(param1:Event) : void {
+      private static function onStopZoneTimer(e:Event) : void {
          if(_zoneTimer)
          {
             _zoneTimer.removeEventListener(TimerEvent.TIMER,onStopZoneTimer);
@@ -72,10 +72,10 @@ package com.ankamagames.dofus.logic.common.managers
          SpellZoneManager.getInstance().removeSpellZone();
       }
       
-      public static function rollOver(param1:int, param2:int, param3:int, param4:int, param5:int, param6:int, param7:int) : void {
-         var _loc8_:Rectangle = new Rectangle(param1,param2,10,10);
-         var _loc9_:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.showSpellZone"));
-         TooltipManager.show(_loc9_,_loc8_,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
+      public static function rollOver(pX:int, pY:int, casterId:int, targetCellId:int, sourceCellId:int, spellId:int, spellLevelId:int) : void {
+         var target:Rectangle = new Rectangle(pX,pY,10,10);
+         var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.showSpellZone"));
+         TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
       }
    }
 }

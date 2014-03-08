@@ -5,8 +5,8 @@ package com.ankamagames.berilia.components.messages
    public class BrowserSessionTimeout extends ComponentMessage
    {
       
-      public function BrowserSessionTimeout(param1:InteractiveObject) {
-         super(param1);
+      public function BrowserSessionTimeout(target:InteractiveObject) {
+         super(target);
       }
    }
 }

@@ -12,8 +12,8 @@ package com.ankamagames.dofus.datacenter.monsters
       
       public static const MODULE:String = "CompanionSpells";
       
-      public static function getCompanionSpellById(param1:uint) : CompanionSpell {
-         return GameData.getObject(MODULE,param1) as CompanionSpell;
+      public static function getCompanionSpellById(id:uint) : CompanionSpell {
+         return GameData.getObject(MODULE,id) as CompanionSpell;
       }
       
       public static function getCompanionSpells() : Array {

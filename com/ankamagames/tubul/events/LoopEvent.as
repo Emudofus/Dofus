@@ -5,8 +5,8 @@ package com.ankamagames.tubul.events
    public class LoopEvent extends Event
    {
       
-      public function LoopEvent(param1:String, param2:Boolean=false, param3:Boolean=false) {
-         super(param1,param2,param3);
+      public function LoopEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
       }
       
       public static const SOUND_LOOP:String = "sound_loop";
@@ -18,10 +18,10 @@ package com.ankamagames.tubul.events
       public var loop:uint;
       
       override public function clone() : Event {
-         var _loc1_:LoopEvent = new LoopEvent(type,bubbles,cancelable);
-         _loc1_.sound = this.sound;
-         _loc1_.loop = this.loop;
-         return _loc1_;
+         var le:LoopEvent = new LoopEvent(type,bubbles,cancelable);
+         le.sound = this.sound;
+         le.loop = this.loop;
+         return le;
       }
    }
 }

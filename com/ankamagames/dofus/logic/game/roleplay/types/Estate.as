@@ -13,72 +13,72 @@ package com.ankamagames.dofus.logic.game.roleplay.types
    public class Estate extends Object
    {
       
-      public function Estate(param1:Object) {
-         var _loc2_:HouseInformationsForSell = null;
-         var _loc3_:SubArea = null;
-         var _loc4_:House = null;
-         var _loc5_:Area = null;
-         var _loc6_:PaddockInformationsForSell = null;
-         var _loc7_:SubArea = null;
-         var _loc8_:Area = null;
+      public function Estate(estate:Object) {
+         var house:HouseInformationsForSell = null;
+         var subAreah:SubArea = null;
+         var housen:House = null;
+         var area:Area = null;
+         var paddock:PaddockInformationsForSell = null;
+         var subAreap:SubArea = null;
+         var areap:Area = null;
          super();
-         if(param1 is HouseInformationsForSell)
+         if(estate is HouseInformationsForSell)
          {
-            _loc2_ = param1 as HouseInformationsForSell;
-            _loc3_ = SubArea.getSubAreaById(_loc2_.subAreaId);
-            _loc4_ = House.getGuildHouseById(_loc2_.modelId);
-            if(!_loc4_)
+            house = estate as HouseInformationsForSell;
+            subAreah = SubArea.getSubAreaById(house.subAreaId);
+            housen = House.getGuildHouseById(house.modelId);
+            if(!housen)
             {
                this.name = "-";
             }
             else
             {
-               this.name = _loc4_.name;
+               this.name = housen.name;
             }
-            if(_loc3_)
+            if(subAreah)
             {
-               _loc5_ = Area.getAreaById(_loc3_.areaId);
-               if(!_loc5_)
+               area = Area.getAreaById(subAreah.areaId);
+               if(!area)
                {
                   this.area = "-";
                }
                else
                {
-                  this.area = _loc5_.name;
+                  this.area = area.name;
                }
             }
             else
             {
                this.area = "-";
             }
-            this.price = _loc2_.price;
-            this.infos = _loc2_;
+            this.price = house.price;
+            this.infos = house;
          }
          else
          {
-            if(param1 is PaddockInformationsForSell)
+            if(estate is PaddockInformationsForSell)
             {
-               _loc6_ = param1 as PaddockInformationsForSell;
-               _loc7_ = SubArea.getSubAreaById(_loc6_.subAreaId);
-               this.name = I18n.getUiText("ui.mount.paddockWithRoom",[_loc6_.nbMount]);
-               if(_loc7_)
+               paddock = estate as PaddockInformationsForSell;
+               subAreap = SubArea.getSubAreaById(paddock.subAreaId);
+               this.name = I18n.getUiText("ui.mount.paddockWithRoom",[paddock.nbMount]);
+               if(subAreap)
                {
-                  _loc8_ = Area.getAreaById(_loc7_.areaId);
-                  if(!_loc8_)
+                  areap = Area.getAreaById(subAreap.areaId);
+                  if(!areap)
                   {
                      this.area = "-";
                   }
                   else
                   {
-                     this.area = _loc8_.name;
+                     this.area = areap.name;
                   }
                }
                else
                {
                   this.area = "-";
                }
-               this.price = _loc6_.price;
-               this.infos = _loc6_;
+               this.price = paddock.price;
+               this.infos = paddock;
             }
          }
       }

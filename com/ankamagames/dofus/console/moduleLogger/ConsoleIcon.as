@@ -14,17 +14,17 @@ package com.ankamagames.dofus.console.moduleLogger
    public final class ConsoleIcon extends Sprite
    {
       
-      public function ConsoleIcon(param1:String, param2:int=16, param3:String="") {
+      public function ConsoleIcon(name:String, size:int=16, toolTip:String="") {
          super();
-         this._size = param2;
-         if(_assets[param1])
+         this._size = size;
+         if(_assets[name])
          {
-            this._icon = new _assets[param1]();
+            this._icon = new _assets[name]();
          }
          else
          {
             this._icon = new MovieClip();
-            this._icon.name = param1;
+            this._icon.name = name;
             this._icon.graphics.beginFill(16711935);
             this._icon.graphics.drawRect(0,0,this._size,this._size);
             this._icon.graphics.endFill();
@@ -37,10 +37,10 @@ package com.ankamagames.dofus.console.moduleLogger
          buttonMode = true;
          addEventListener(MouseEvent.MOUSE_OVER,this.onRollOver);
          addEventListener(MouseEvent.MOUSE_OUT,this.onRollOut);
-         if(param3.length > 0)
+         if(toolTip.length > 0)
          {
             this._toolTip = new TextField();
-            this._toolTip.text = param3;
+            this._toolTip.text = toolTip;
             this._toolTip.background = true;
             this._toolTip.backgroundColor = 16776389;
             this._toolTip.autoSize = TextFieldAutoSize.LEFT;
@@ -117,14 +117,14 @@ package com.ankamagames.dofus.console.moduleLogger
          return this._toggled;
       }
       
-      public function set toggled(param1:Boolean) : void {
-         var _loc2_:Class = null;
-         this._toggled = param1;
-         if(!(this._icon.name.toLowerCase().indexOf("record") == -1) || !(this._icon.name.toLowerCase().indexOf("pause") == -1))
+      public function set toggled(value:Boolean) : void {
+         var IconClass:Class = null;
+         this._toggled = value;
+         if((!(this._icon.name.toLowerCase().indexOf("record") == -1)) || (!(this._icon.name.toLowerCase().indexOf("pause") == -1)))
          {
-            _loc2_ = this._toggled?I_PAUSE:I_RECORD;
+            IconClass = this._toggled?I_PAUSE:I_RECORD;
             removeChild(this._icon);
-            this._icon = new _loc2_();
+            this._icon = new IconClass();
             this._icon.width = this._size;
             this._icon.height = this._size;
             addChild(this._icon);
@@ -146,8 +146,8 @@ package com.ankamagames.dofus.console.moduleLogger
          return this._enabled;
       }
       
-      public function set enabled(param1:Boolean) : void {
-         this._enabled = param1;
+      public function set enabled(value:Boolean) : void {
+         this._enabled = value;
          if(this._enabled)
          {
             alpha = 1;
@@ -159,8 +159,8 @@ package com.ankamagames.dofus.console.moduleLogger
          mouseEnabled = this._enabled;
       }
       
-      public function disable(param1:Boolean) : void {
-         if(param1)
+      public function disable(value:Boolean) : void {
+         if(value)
          {
             if(!this._cross)
             {
@@ -183,11 +183,11 @@ package com.ankamagames.dofus.console.moduleLogger
          }
       }
       
-      public function changeColor(param1:ColorTransform) : void {
-         this._icon.transform.colorTransform = param1;
+      public function changeColor(color:ColorTransform) : void {
+         this._icon.transform.colorTransform = color;
       }
       
-      private function onRollOver(param1:MouseEvent) : void {
+      private function onRollOver(e:MouseEvent) : void {
          transform.colorTransform = new ColorTransform(1.4,1.4,1.4);
          if(this._toolTip)
          {
@@ -195,8 +195,8 @@ package com.ankamagames.dofus.console.moduleLogger
             {
                stage.addChild(this._toolTip);
             }
-            this._toolTip.x = param1.stageX + 10;
-            this._toolTip.y = param1.stageY + 20;
+            this._toolTip.x = e.stageX + 10;
+            this._toolTip.y = e.stageY + 20;
             if(this._toolTip.x + this._toolTip.width > stage.stageWidth)
             {
                this._toolTip.x = stage.stageWidth - this._toolTip.width;
@@ -205,7 +205,7 @@ package com.ankamagames.dofus.console.moduleLogger
          }
       }
       
-      private function onRollOut(param1:MouseEvent) : void {
+      private function onRollOut(e:MouseEvent) : void {
          transform.colorTransform = new ColorTransform(1,1,1);
          this.enabled = this._enabled;
          if(this._toolTip)

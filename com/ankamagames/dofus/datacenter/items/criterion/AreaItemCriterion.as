@@ -8,8 +8,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class AreaItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function AreaItemCriterion(param1:String) {
-         super(param1);
+      public function AreaItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get isRespected() : Boolean {
@@ -18,34 +18,32 @@ package com.ankamagames.dofus.datacenter.items.criterion
             case ItemCriterionOperator.EQUAL:
             case ItemCriterionOperator.DIFFERENT:
                return super.isRespected;
-            default:
-               return false;
          }
       }
       
       override public function get text() : String {
-         var _loc1_:String = null;
-         var _loc2_:Area = Area.getAreaById(_criterionValue);
-         if(!_loc2_)
+         var readableCriterion:String = null;
+         var area:Area = Area.getAreaById(_criterionValue);
+         if(!area)
          {
             return "error on AreaItemCriterion";
          }
-         var _loc3_:String = _loc2_.name;
+         var areaName:String = area.name;
          switch(_operator.text)
          {
             case ItemCriterionOperator.EQUAL:
-               _loc1_ = I18n.getUiText("ui.tooltip.beInArea",[_loc3_]);
+               readableCriterion = I18n.getUiText("ui.tooltip.beInArea",[areaName]);
                break;
             case ItemCriterionOperator.DIFFERENT:
-               _loc1_ = I18n.getUiText("ui.tooltip.dontBeInArea",[_loc3_]);
+               readableCriterion = I18n.getUiText("ui.tooltip.dontBeInArea",[areaName]);
                break;
          }
-         return _loc1_;
+         return readableCriterion;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:AreaItemCriterion = new AreaItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:AreaItemCriterion = new AreaItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {

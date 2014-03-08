@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.bid
          super();
       }
       
-      public static function create(param1:uint, param2:uint) : ExchangeBidHouseSearchAction {
-         var _loc3_:ExchangeBidHouseSearchAction = new ExchangeBidHouseSearchAction();
-         _loc3_.type = param1;
-         _loc3_.genId = param2;
-         return _loc3_;
+      public static function create(pType:uint, pGenId:uint) : ExchangeBidHouseSearchAction {
+         var a:ExchangeBidHouseSearchAction = new ExchangeBidHouseSearchAction();
+         a.type = pType;
+         a.genId = pGenId;
+         return a;
       }
       
       public var type:uint;

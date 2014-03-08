@@ -14,8 +14,8 @@ package com.ankamagames.dofus.datacenter.items
       
       private static var _incarnationsList:Array;
       
-      public static function getIncarnationById(param1:uint) : Incarnation {
-         return GameData.getObject(MODULE,param1) as Incarnation;
+      public static function getIncarnationById(id:uint) : Incarnation {
+         return GameData.getObject(MODULE,id) as Incarnation;
       }
       
       public static function getAllIncarnation() : Array {

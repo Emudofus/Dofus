@@ -33,10 +33,10 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5552;
       }
       
-      public function initGuildInvitedMessage(param1:uint=0, param2:String="", param3:BasicGuildInformations=null) : GuildInvitedMessage {
-         this.recruterId = param1;
-         this.recruterName = param2;
-         this.guildInfo = param3;
+      public function initGuildInvitedMessage(recruterId:uint=0, recruterName:String="", guildInfo:BasicGuildInformations=null) : GuildInvitedMessage {
+         this.recruterId = recruterId;
+         this.recruterName = recruterName;
+         this.guildInfo = guildInfo;
          this._isInitialized = true;
          return this;
       }
@@ -48,49 +48,49 @@ package com.ankamagames.dofus.network.messages.game.guild
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildInvitedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildInvitedMessage(output);
       }
       
-      public function serializeAs_GuildInvitedMessage(param1:IDataOutput) : void {
+      public function serializeAs_GuildInvitedMessage(output:IDataOutput) : void {
          if(this.recruterId < 0)
          {
             throw new Error("Forbidden value (" + this.recruterId + ") on element recruterId.");
          }
          else
          {
-            param1.writeInt(this.recruterId);
-            param1.writeUTF(this.recruterName);
-            this.guildInfo.serializeAs_BasicGuildInformations(param1);
+            output.writeInt(this.recruterId);
+            output.writeUTF(this.recruterName);
+            this.guildInfo.serializeAs_BasicGuildInformations(output);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildInvitedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildInvitedMessage(input);
       }
       
-      public function deserializeAs_GuildInvitedMessage(param1:IDataInput) : void {
-         this.recruterId = param1.readInt();
+      public function deserializeAs_GuildInvitedMessage(input:IDataInput) : void {
+         this.recruterId = input.readInt();
          if(this.recruterId < 0)
          {
             throw new Error("Forbidden value (" + this.recruterId + ") on element of GuildInvitedMessage.recruterId.");
          }
          else
          {
-            this.recruterName = param1.readUTF();
+            this.recruterName = input.readUTF();
             this.guildInfo = new BasicGuildInformations();
-            this.guildInfo.deserialize(param1);
+            this.guildInfo.deserialize(input);
             return;
          }
       }

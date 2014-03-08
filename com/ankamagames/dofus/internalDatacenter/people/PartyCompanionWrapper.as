@@ -9,20 +9,20 @@ package com.ankamagames.dofus.internalDatacenter.people
    public class PartyCompanionWrapper extends PartyMemberWrapper implements IDataCenter
    {
       
-      public function PartyCompanionWrapper(param1:int, param2:String, param3:int, param4:Boolean, param5:int=0, param6:EntityLook=null, param7:int=0, param8:int=0, param9:int=0, param10:int=0, param11:int=0) {
-         var _loc12_:String = null;
-         var _loc13_:String = Companion.getCompanionById(param3).name;
-         if(param1 != PlayedCharacterManager.getInstance().id)
+      public function PartyCompanionWrapper(masterId:int, masterName:String, companionGenericId:int, isMember:Boolean, level:int=0, entityLook:EntityLook=null, lifePoints:int=0, maxLifePoints:int=0, maxInitiative:int=0, prospecting:int=0, regenRate:int=0) {
+         var name:String = null;
+         var genericName:String = Companion.getCompanionById(companionGenericId).name;
+         if(masterId != PlayedCharacterManager.getInstance().id)
          {
-            _loc12_ = I18n.getUiText("ui.common.belonging",[_loc13_,param2]);
+            name = I18n.getUiText("ui.common.belonging",[genericName,masterName]);
          }
          else
          {
-            _loc12_ = _loc13_;
+            name = genericName;
          }
-         super(param1,_loc12_,0,param4,false,param5,param6,param7,param8,param9,param10,0,param11,0,0,0,0,0,0,null);
-         this.companionGenericId = param3;
-         this.masterName = param2;
+         super(masterId,name,0,isMember,false,level,entityLook,lifePoints,maxLifePoints,maxInitiative,prospecting,0,regenRate,0,0,0,0,0,0,null);
+         this.companionGenericId = companionGenericId;
+         this.masterName = masterName;
       }
       
       public var companionGenericId:uint = 0;

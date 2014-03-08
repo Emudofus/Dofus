@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.npcs
       
       public static const MODULE:String = "TaxCollectorFirstnames";
       
-      public static function getTaxCollectorFirstnameById(param1:int) : TaxCollectorFirstname {
-         return GameData.getObject(MODULE,param1) as TaxCollectorFirstname;
+      public static function getTaxCollectorFirstnameById(id:int) : TaxCollectorFirstname {
+         return GameData.getObject(MODULE,id) as TaxCollectorFirstname;
       }
       
       public var id:int;

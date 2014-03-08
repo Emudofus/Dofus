@@ -6,14 +6,14 @@ package com.ankamagames.dofus.logic.game.roleplay.messages
    public class GameRolePlaySetAnimationMessage extends Object implements Message
    {
       
-      public function GameRolePlaySetAnimationMessage(param1:GameContextActorInformations, param2:String, param3:uint=0, param4:Boolean=true, param5:Boolean=true, param6:Boolean=false) {
+      public function GameRolePlaySetAnimationMessage(informations:GameContextActorInformations, animation:String, duration:uint=0, instant:Boolean=true, directions8:Boolean=true, playStaticOnly:Boolean=false) {
          super();
-         this._informations = param1;
-         this._animation = param2;
-         this._duration = param3;
-         this._instant = param4;
-         this._directions8 = param5;
-         this._playStaticOnly = param6;
+         this._informations = informations;
+         this._animation = animation;
+         this._duration = duration;
+         this._instant = instant;
+         this._directions8 = directions8;
+         this._playStaticOnly = playStaticOnly;
       }
       
       private var _informations:GameContextActorInformations;

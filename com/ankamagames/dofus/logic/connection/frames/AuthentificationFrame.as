@@ -68,10 +68,10 @@ package com.ankamagames.dofus.logic.connection.frames
    public class AuthentificationFrame extends Object implements Frame
    {
       
-      public function AuthentificationFrame(param1:Boolean=true) {
+      public function AuthentificationFrame(dispatchModuleHook:Boolean=true) {
          this.commonMod = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
          super();
-         this._dispatchModuleHook = param1;
+         this._dispatchModuleHook = dispatchModuleHook;
          this._contextLoader = new LoaderContext();
          this._contextLoader.checkPolicyFile = true;
          this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
@@ -100,33 +100,33 @@ package com.ankamagames.dofus.logic.connection.frames
       }
       
       public function pushed() : Boolean {
-         var _loc1_:String = null;
-         var _loc2_:String = null;
-         var _loc3_:String = null;
-         var _loc4_:String = null;
-         var _loc5_:Array = null;
+         var lengthEula:String = null;
+         var lengthTou:String = null;
+         var newLengthEula:String = null;
+         var newLengthTou:String = null;
+         var files:Array = null;
          this.processInvokeArgs();
          if(this._dispatchModuleHook)
          {
             PartManagerV2.getInstance().init();
             if(!AirScanner.isStreamingVersion())
             {
-               _loc1_ = OptionManager.getOptionManager("dofus")["legalAgreementEula"];
-               _loc2_ = OptionManager.getOptionManager("dofus")["legalAgreementTou"];
-               _loc3_ = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + I18n.getUiText("ui.legal.eula").length;
-               _loc4_ = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + (I18n.getUiText("ui.legal.tou1") + I18n.getUiText("ui.legal.tou2")).length;
-               _loc5_ = new Array();
-               if(_loc1_ != _loc3_)
+               lengthEula = OptionManager.getOptionManager("dofus")["legalAgreementEula"];
+               lengthTou = OptionManager.getOptionManager("dofus")["legalAgreementTou"];
+               newLengthEula = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + I18n.getUiText("ui.legal.eula").length;
+               newLengthTou = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + (I18n.getUiText("ui.legal.tou1") + I18n.getUiText("ui.legal.tou2")).length;
+               files = new Array();
+               if(lengthEula != newLengthEula)
                {
-                  _loc5_.push("eula");
+                  files.push("eula");
                }
-               if(_loc2_ != _loc4_)
+               if(lengthTou != newLengthTou)
                {
-                  _loc5_.push("tou");
+                  files.push("tou");
                }
-               if(_loc5_.length > 0)
+               if(files.length > 0)
                {
-                  KernelEventsManager.getInstance().processCallback(HookList.AgreementsRequired,_loc5_);
+                  KernelEventsManager.getInstance().processCallback(HookList.AgreementsRequired,files);
                }
             }
             KernelEventsManager.getInstance().processCallback(HookList.AuthentificationStart);
@@ -138,70 +138,16 @@ package com.ankamagames.dofus.logic.connection.frames
       
       private var _streamingBetaAccess:Boolean = false;
       
-      private function onStreamingBetaAuthentification(param1:Event) : void {
-         if(SpecialBetaAuthentification(param1.target).haveAccess)
-         {
-            this._streamingBetaAccess = true;
-            this.process(this._lva);
-         }
-         else
-         {
-            if(UiModuleManager.getInstance().isDevMode)
-            {
-               UiModuleManager.getInstance().isDevMode = false;
-               if(_loc4_)
-               {
-                  if(_loc4_)
-                  {
-                  }
-                  this.process(this._lva);
-               }
-               if(_loc4_)
-               {
-               }
-               return;
-            }
-            this._streamingBetaAccess = false;
-            if(_loc3_)
-            {
-               this.process(this._lva);
-               if(_loc4_)
-               {
-               }
-               return;
-            }
-            loop0:
-            while(true)
-            {
-               if(_loc3_)
-               {
-               }
-               KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailed,0);
-               if(!_loc3_)
-               {
-                  loop1:
-                  while(true)
-                  {
-                     while(_loc4_)
-                     {
-                        _loc2_.openPopup(I18n.getUiText("ui.popup.information"),"You are trying to access to a private beta but your account is not allowed.If you wish have an access, please contact Ankama.",[I18n.getUiText("ui.common.ok")]);
-                        if(!_loc3_)
-                        {
-                           if(_loc3_)
-                           {
-                              continue loop1;
-                           }
-                           break loop1;
-                        }
-                     }
-                     continue loop0;
-                  }
-               }
-            }
-         }
+      private function onStreamingBetaAuthentification(e:Event) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
-      public function process(param1:Message) : Boolean {
+      public function process(msg:Message) : Boolean {
          var lva:LoginValidationAction = null;
          var connexionPorts:Array = null;
          var ports:String = null;
@@ -214,6 +160,7 @@ package com.ankamagames.dofus.logic.connection.frames
          var connInfo:Object = null;
          var scfMsg:ServerConnectionFailedMessage = null;
          var hcmsg:HelloConnectMessage = null;
+         var iMsg:* = undefined;
          var ismsg:IdentificationSuccessMessage = null;
          var updaterV2:Boolean = false;
          var iffbvmsg:IdentificationFailedForBadVersionMessage = null;
@@ -251,7 +198,6 @@ package com.ankamagames.dofus.logic.connection.frames
          var lengthModsTou:String = null;
          var newLengthModsTou:String = null;
          var files:Array = null;
-         var msg:Message = param1;
          switch(true)
          {
             case msg is LoginValidationAction:
@@ -261,7 +207,7 @@ package com.ankamagames.dofus.logic.connection.frames
                   this._streamingBetaAccess = false;
                   UiModuleManager.getInstance().isDevMode = XmlConfig.getInstance().getEntry("config.dev.mode");
                }
-               if(BuildInfos.BUILD_TYPE < BuildTypeEnum.TESTING && ((AirScanner.isStreamingVersion()) && !this._streamingBetaAccess || (UiModuleManager.getInstance().isDevMode) && !(this._lastLoginHash == MD5.hash(lva.username))))
+               if((BuildInfos.BUILD_TYPE < BuildTypeEnum.TESTING) && ((AirScanner.isStreamingVersion()) && (!this._streamingBetaAccess) || (UiModuleManager.getInstance().isDevMode) && (!(this._lastLoginHash == MD5.hash(lva.username)))))
                {
                   this._lastLoginHash = MD5.hash(lva.username);
                   this._lva = lva;
@@ -351,7 +297,7 @@ package com.ankamagames.dofus.logic.connection.frames
                if(Constants.EVENT_MODE)
                {
                   rawParam = Constants.EVENT_MODE_PARAM;
-                  if((rawParam) && !(rawParam.charAt(0) == "!"))
+                  if((rawParam) && (!(rawParam.charAt(0) == "!")))
                   {
                      rawParam = Base64.decode(rawParam);
                      params = [];
@@ -363,10 +309,12 @@ package com.ankamagames.dofus.logic.connection.frames
                      }
                      if(params["login"])
                      {
+                        trace("Attention, login pris depuis le fichier de config");
                         lva.username = params["login"];
                      }
                      if(params["password"])
                      {
+                        trace("Attention, password pris depuis le fichier de config");
                         lva.password = params["password"];
                      }
                   }
@@ -400,7 +348,9 @@ package com.ankamagames.dofus.logic.connection.frames
                hcmsg = HelloConnectMessage(msg);
                AuthentificationManager.getInstance().setPublicKey(hcmsg.key);
                AuthentificationManager.getInstance().setSalt(hcmsg.salt);
-               ConnectionsHandler.getConnection().send(AuthentificationManager.getInstance().getIdentificationMessage());
+               iMsg = AuthentificationManager.getInstance().getIdentificationMessage();
+               _log.info("Current version : " + iMsg.version.major + "." + iMsg.version.minor + "." + iMsg.version.release + "." + iMsg.version.revision + "." + iMsg.version.patch);
+               ConnectionsHandler.getConnection().send(iMsg);
                KernelEventsManager.getInstance().processCallback(HookList.ConnectionTimerStart);
                TimeManager.getInstance().reset();
                return true;
@@ -430,7 +380,7 @@ package com.ankamagames.dofus.logic.connection.frames
                }
                AuthorizedFrame(Kernel.getWorker().getFrame(AuthorizedFrame)).hasRights = ismsg.hasRights;
                updaterV2 = CommandLineArguments.getInstance().getArgument("updater_version") == "v2";
-               if(PlayerManager.getInstance().subscriptionEndDate > 0 || (PlayerManager.getInstance().hasRights))
+               if((PlayerManager.getInstance().subscriptionEndDate > 0) || (PlayerManager.getInstance().hasRights))
                {
                   if(updaterV2)
                   {
@@ -540,7 +490,7 @@ package com.ankamagames.dofus.logic.connection.frames
                }
                sglra = SubscribersGiftListRequestAction(msg);
                lang = XmlConfig.getInstance().getEntry("config.lang.current");
-               if(lang == "de" || lang == "en" || lang == "es" || lang == "pt" || lang == "fr" || lang == "uk" || lang == "ru")
+               if((lang == "de") || (lang == "en") || (lang == "es") || (lang == "pt") || (lang == "fr") || (lang == "uk") || (lang == "ru"))
                {
                   uri = new Uri(XmlConfig.getInstance().getEntry("config.subscribersGift") + "subscriberGifts_" + lang + ".xml");
                }
@@ -554,7 +504,7 @@ package com.ankamagames.dofus.logic.connection.frames
             case msg is NewsLoginRequestAction:
                nlra = NewsLoginRequestAction(msg);
                lang2 = XmlConfig.getInstance().getEntry("config.lang.current");
-               if(lang2 == "de" || lang2 == "en" || lang2 == "es" || lang2 == "pt" || lang2 == "fr" || lang2 == "uk" || lang2 == "it" || lang2 == "ru")
+               if((lang2 == "de") || (lang2 == "en") || (lang2 == "es") || (lang2 == "pt") || (lang2 == "fr") || (lang2 == "uk") || (lang2 == "it") || (lang2 == "ru"))
                {
                   uri2 = new Uri(XmlConfig.getInstance().getEntry("config.loginNews") + "news_" + lang2 + ".xml");
                }
@@ -565,8 +515,6 @@ package com.ankamagames.dofus.logic.connection.frames
                uri2.loaderContext = this._contextLoader;
                this._loader.load(uri2);
                return true;
-            default:
-               return false;
          }
       }
       
@@ -586,7 +534,7 @@ package com.ankamagames.dofus.logic.connection.frames
          throw new IllegalOperationError("Not decompiled due to error");
       }
       
-      private function onLoad(param1:ResourceLoadedEvent) : void {
+      private function onLoad(e:ResourceLoadedEvent) : void {
          /*
           * Decompilation error
           * Code may be obfuscated
@@ -595,39 +543,13 @@ package com.ankamagames.dofus.logic.connection.frames
          throw new IllegalOperationError("Not decompiled due to error");
       }
       
-      private function onLoadError(param1:ResourceErrorEvent) : void {
-         var _loc2_:* = false;
-         var _loc3_:* = true;
-         if(!_loc2_)
-         {
-            if(_loc3_)
-            {
-               if(_loc3_)
-               {
-                  if(!_loc2_)
-                  {
-                     if(!_loc2_)
-                     {
-                        if(_loc2_)
-                        {
-                        }
-                     }
-                  }
-                  if(_loc2_)
-                  {
-                  }
-               }
-               if(_loc3_)
-               {
-                  ("Cannot load xml " + param1.uri).error("(");
-               }
-               else
-               {
-                  _log.error("Cannot load xml " + param1.uri);
-               }
-            }
-            _log.error("Cannot load xml " + ")");
-         }
+      private function onLoadError(e:ResourceErrorEvent) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: EmptyStackException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
    }
 }

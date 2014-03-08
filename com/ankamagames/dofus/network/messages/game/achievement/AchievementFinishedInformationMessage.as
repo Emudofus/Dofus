@@ -28,10 +28,10 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6381;
       }
       
-      public function initAchievementFinishedInformationMessage(param1:uint=0, param2:uint=0, param3:String="", param4:uint=0) : AchievementFinishedInformationMessage {
-         super.initAchievementFinishedMessage(param1,param2);
-         this.name = param3;
-         this.playerId = param4;
+      public function initAchievementFinishedInformationMessage(id:uint=0, finishedlevel:uint=0, name:String="", playerId:uint=0) : AchievementFinishedInformationMessage {
+         super.initAchievementFinishedMessage(id,finishedlevel);
+         this.name = name;
+         this.playerId = playerId;
          this._isInitialized = true;
          return this;
       }
@@ -43,42 +43,42 @@ package com.ankamagames.dofus.network.messages.game.achievement
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AchievementFinishedInformationMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AchievementFinishedInformationMessage(output);
       }
       
-      public function serializeAs_AchievementFinishedInformationMessage(param1:IDataOutput) : void {
-         super.serializeAs_AchievementFinishedMessage(param1);
-         param1.writeUTF(this.name);
+      public function serializeAs_AchievementFinishedInformationMessage(output:IDataOutput) : void {
+         super.serializeAs_AchievementFinishedMessage(output);
+         output.writeUTF(this.name);
          if(this.playerId < 0)
          {
             throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
          }
          else
          {
-            param1.writeInt(this.playerId);
+            output.writeInt(this.playerId);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AchievementFinishedInformationMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AchievementFinishedInformationMessage(input);
       }
       
-      public function deserializeAs_AchievementFinishedInformationMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.name = param1.readUTF();
-         this.playerId = param1.readInt();
+      public function deserializeAs_AchievementFinishedInformationMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.name = input.readUTF();
+         this.playerId = input.readInt();
          if(this.playerId < 0)
          {
             throw new Error("Forbidden value (" + this.playerId + ") on element of AchievementFinishedInformationMessage.playerId.");

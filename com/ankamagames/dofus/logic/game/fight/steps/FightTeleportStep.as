@@ -18,10 +18,10 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightTeleportStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightTeleportStep(param1:int, param2:MapPoint) {
+      public function FightTeleportStep(fighterId:int, destinationCell:MapPoint) {
          super();
-         this._fighterId = param1;
-         this._destinationCell = param2;
+         this._fighterId = fighterId;
+         this._destinationCell = destinationCell;
       }
       
       private var _fighterId:int;
@@ -33,25 +33,25 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc3_:FightTurnFrame = null;
-         var _loc1_:IMovable = DofusEntities.getEntity(this._fighterId) as IMovable;
-         if(_loc1_)
+         var fightTurnFrame:FightTurnFrame = null;
+         var entity:IMovable = DofusEntities.getEntity(this._fighterId) as IMovable;
+         if(entity)
          {
-            (_loc1_ as IDisplayable).display(PlacementStrataEnums.STRATA_PLAYER);
-            _loc1_.jump(this._destinationCell);
+            (entity as IDisplayable).display(PlacementStrataEnums.STRATA_PLAYER);
+            entity.jump(this._destinationCell);
          }
          else
          {
             _log.warn("Unable to teleport unknown entity " + this._fighterId + ".");
          }
-         var _loc2_:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterId) as GameFightFighterInformations;
-         _loc2_.disposition.cellId = this._destinationCell.cellId;
+         var infos:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterId) as GameFightFighterInformations;
+         infos.disposition.cellId = this._destinationCell.cellId;
          if(this._fighterId == PlayedCharacterManager.getInstance().id)
          {
-            _loc3_ = Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
-            if((_loc3_) && (_loc3_.myTurn))
+            fightTurnFrame = Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
+            if((fightTurnFrame) && (fightTurnFrame.myTurn))
             {
-               _loc3_.drawPath();
+               fightTurnFrame.drawPath();
             }
          }
          FightSpellCastFrame.updateRangeAndTarget();

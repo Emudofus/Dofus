@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.handshake
          return 1;
       }
       
-      public function initProtocolRequired(param1:uint=0, param2:uint=0) : ProtocolRequired {
-         this.requiredVersion = param1;
-         this.currentVersion = param2;
+      public function initProtocolRequired(requiredVersion:uint=0, currentVersion:uint=0) : ProtocolRequired {
+         this.requiredVersion = requiredVersion;
+         this.currentVersion = currentVersion;
          this._isInitialized = true;
          return this;
       }
@@ -42,53 +42,53 @@ package com.ankamagames.dofus.network.messages.handshake
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ProtocolRequired(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ProtocolRequired(output);
       }
       
-      public function serializeAs_ProtocolRequired(param1:IDataOutput) : void {
+      public function serializeAs_ProtocolRequired(output:IDataOutput) : void {
          if(this.requiredVersion < 0)
          {
             throw new Error("Forbidden value (" + this.requiredVersion + ") on element requiredVersion.");
          }
          else
          {
-            param1.writeInt(this.requiredVersion);
+            output.writeInt(this.requiredVersion);
             if(this.currentVersion < 0)
             {
                throw new Error("Forbidden value (" + this.currentVersion + ") on element currentVersion.");
             }
             else
             {
-               param1.writeInt(this.currentVersion);
+               output.writeInt(this.currentVersion);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ProtocolRequired(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ProtocolRequired(input);
       }
       
-      public function deserializeAs_ProtocolRequired(param1:IDataInput) : void {
-         this.requiredVersion = param1.readInt();
+      public function deserializeAs_ProtocolRequired(input:IDataInput) : void {
+         this.requiredVersion = input.readInt();
          if(this.requiredVersion < 0)
          {
             throw new Error("Forbidden value (" + this.requiredVersion + ") on element of ProtocolRequired.requiredVersion.");
          }
          else
          {
-            this.currentVersion = param1.readInt();
+            this.currentVersion = input.readInt();
             if(this.currentVersion < 0)
             {
                throw new Error("Forbidden value (" + this.currentVersion + ") on element of ProtocolRequired.currentVersion.");

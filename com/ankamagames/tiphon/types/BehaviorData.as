@@ -5,13 +5,13 @@ package com.ankamagames.tiphon.types
    public class BehaviorData extends Object
    {
       
-      public function BehaviorData(param1:String, param2:int, param3:TiphonSprite) {
+      public function BehaviorData(animation:String, direction:int, parent:TiphonSprite) {
          super();
-         this._animation = param1;
-         this._animationStartValue = param1;
-         this._parent = param3;
-         this._direction = param2;
-         this._directionStartValue = param2;
+         this._animation = animation;
+         this._animationStartValue = animation;
+         this._parent = parent;
+         this._direction = direction;
+         this._directionStartValue = direction;
       }
       
       private var _animation:String;
@@ -34,10 +34,10 @@ package com.ankamagames.tiphon.types
          return this._direction;
       }
       
-      public function set animation(param1:String) : void {
+      public function set animation(v:String) : void {
          if(!this.lock)
          {
-            this._animation = param1;
+            this._animation = v;
          }
       }
       

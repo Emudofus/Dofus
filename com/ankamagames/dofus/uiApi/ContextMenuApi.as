@@ -15,22 +15,22 @@ package com.ankamagames.dofus.uiApi
          super();
       }
       
-      public function registerMenuMaker(param1:String, param2:Class) : void {
-         if(CheckCompatibility.isCompatible(IMenuMaker,param2))
+      public function registerMenuMaker(makerName:String, makerClass:Class) : void {
+         if(CheckCompatibility.isCompatible(IMenuMaker,makerClass))
          {
-            MenusFactory.registerMaker(param1,param2);
+            MenusFactory.registerMaker(makerName,makerClass);
             return;
          }
-         throw new ApiError(param1 + " maker class is not compatible with IMenuMaker");
+         throw new ApiError(makerName + " maker class is not compatible with IMenuMaker");
       }
       
-      public function create(param1:*, param2:String=null, param3:Array=null) : ContextMenuData {
-         var _loc4_:ContextMenuData = MenusFactory.create(SecureCenter.unsecure(param1),param2,SecureCenter.unsecure(param3));
-         return _loc4_;
+      public function create(data:*, makerName:String=null, makerParams:Array=null) : ContextMenuData {
+         var menu:ContextMenuData = MenusFactory.create(SecureCenter.unsecure(data),makerName,SecureCenter.unsecure(makerParams));
+         return menu;
       }
       
-      public function getMenuMaker(param1:String) : Object {
-         return MenusFactory.getMenuMaker(param1);
+      public function getMenuMaker(makerName:String) : Object {
+         return MenusFactory.getMenuMaker(makerName);
       }
    }
 }

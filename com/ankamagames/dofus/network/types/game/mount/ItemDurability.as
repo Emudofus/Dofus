@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.mount
          return 168;
       }
       
-      public function initItemDurability(param1:int=0, param2:int=0) : ItemDurability {
-         this.durability = param1;
-         this.durabilityMax = param2;
+      public function initItemDurability(durability:int=0, durabilityMax:int=0) : ItemDurability {
+         this.durability = durability;
+         this.durabilityMax = durabilityMax;
          return this;
       }
       
@@ -32,22 +32,22 @@ package com.ankamagames.dofus.network.types.game.mount
          this.durabilityMax = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ItemDurability(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ItemDurability(output);
       }
       
-      public function serializeAs_ItemDurability(param1:IDataOutput) : void {
-         param1.writeShort(this.durability);
-         param1.writeShort(this.durabilityMax);
+      public function serializeAs_ItemDurability(output:IDataOutput) : void {
+         output.writeShort(this.durability);
+         output.writeShort(this.durabilityMax);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ItemDurability(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ItemDurability(input);
       }
       
-      public function deserializeAs_ItemDurability(param1:IDataInput) : void {
-         this.durability = param1.readShort();
-         this.durabilityMax = param1.readShort();
+      public function deserializeAs_ItemDurability(input:IDataInput) : void {
+         this.durability = input.readShort();
+         this.durabilityMax = input.readShort();
       }
    }
 }

@@ -7,11 +7,11 @@ package com.ankamagames.berilia.types.tooltip
    public class TooltipPosition extends Object
    {
       
-      public function TooltipPosition(param1:UiRootContainer, param2:IRectangle, param3:uint) {
+      public function TooltipPosition(pTooltip:UiRootContainer, pTarget:IRectangle, pCellId:uint) {
          super();
-         this._tooltip = param1;
-         this._target = param2;
-         this._cellId = param3;
+         this._tooltip = pTooltip;
+         this._target = pTarget;
+         this._cellId = pCellId;
          this._rect = new Rectangle2(this._tooltip.x,this._tooltip.y,this._tooltip.width,this._tooltip.height);
          this._originalX = this._tooltip.x;
          this._originalY = this._tooltip.y;
@@ -37,8 +37,8 @@ package com.ankamagames.berilia.types.tooltip
          return this._target;
       }
       
-      public function set target(param1:IRectangle) : void {
-         this._target = param1;
+      public function set target(pTarget:IRectangle) : void {
+         this._target = pTarget;
       }
       
       public function get cellId() : uint {

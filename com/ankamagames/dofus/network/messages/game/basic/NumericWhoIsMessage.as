@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 6297;
       }
       
-      public function initNumericWhoIsMessage(param1:uint=0, param2:uint=0) : NumericWhoIsMessage {
-         this.playerId = param1;
-         this.accountId = param2;
+      public function initNumericWhoIsMessage(playerId:uint=0, accountId:uint=0) : NumericWhoIsMessage {
+         this.playerId = playerId;
+         this.accountId = accountId;
          this._isInitialized = true;
          return this;
       }
@@ -42,53 +42,53 @@ package com.ankamagames.dofus.network.messages.game.basic
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_NumericWhoIsMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_NumericWhoIsMessage(output);
       }
       
-      public function serializeAs_NumericWhoIsMessage(param1:IDataOutput) : void {
+      public function serializeAs_NumericWhoIsMessage(output:IDataOutput) : void {
          if(this.playerId < 0)
          {
             throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
          }
          else
          {
-            param1.writeInt(this.playerId);
+            output.writeInt(this.playerId);
             if(this.accountId < 0)
             {
                throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
             }
             else
             {
-               param1.writeInt(this.accountId);
+               output.writeInt(this.accountId);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_NumericWhoIsMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_NumericWhoIsMessage(input);
       }
       
-      public function deserializeAs_NumericWhoIsMessage(param1:IDataInput) : void {
-         this.playerId = param1.readInt();
+      public function deserializeAs_NumericWhoIsMessage(input:IDataInput) : void {
+         this.playerId = input.readInt();
          if(this.playerId < 0)
          {
             throw new Error("Forbidden value (" + this.playerId + ") on element of NumericWhoIsMessage.playerId.");
          }
          else
          {
-            this.accountId = param1.readInt();
+            this.accountId = input.readInt();
             if(this.accountId < 0)
             {
                throw new Error("Forbidden value (" + this.accountId + ") on element of NumericWhoIsMessage.accountId.");

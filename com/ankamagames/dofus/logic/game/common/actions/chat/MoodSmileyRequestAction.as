@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.chat
          super();
       }
       
-      public static function create(param1:int) : MoodSmileyRequestAction {
-         var _loc2_:MoodSmileyRequestAction = new MoodSmileyRequestAction();
-         _loc2_.smileyId = param1;
-         return _loc2_;
+      public static function create(id:int) : MoodSmileyRequestAction {
+         var a:MoodSmileyRequestAction = new MoodSmileyRequestAction();
+         a.smileyId = id;
+         return a;
       }
       
       public var smileyId:int;

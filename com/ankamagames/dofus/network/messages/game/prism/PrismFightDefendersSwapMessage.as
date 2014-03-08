@@ -33,11 +33,11 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 5902;
       }
       
-      public function initPrismFightDefendersSwapMessage(param1:uint=0, param2:Number=0, param3:uint=0, param4:uint=0) : PrismFightDefendersSwapMessage {
-         this.subAreaId = param1;
-         this.fightId = param2;
-         this.fighterId1 = param3;
-         this.fighterId2 = param4;
+      public function initPrismFightDefendersSwapMessage(subAreaId:uint=0, fightId:Number=0, fighterId1:uint=0, fighterId2:uint=0) : PrismFightDefendersSwapMessage {
+         this.subAreaId = subAreaId;
+         this.fightId = fightId;
+         this.fighterId1 = fighterId1;
+         this.fighterId2 = fighterId2;
          this._isInitialized = true;
          return this;
       }
@@ -50,70 +50,70 @@ package com.ankamagames.dofus.network.messages.game.prism
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PrismFightDefendersSwapMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismFightDefendersSwapMessage(output);
       }
       
-      public function serializeAs_PrismFightDefendersSwapMessage(param1:IDataOutput) : void {
+      public function serializeAs_PrismFightDefendersSwapMessage(output:IDataOutput) : void {
          if(this.subAreaId < 0)
          {
             throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
          }
          else
          {
-            param1.writeShort(this.subAreaId);
-            param1.writeDouble(this.fightId);
+            output.writeShort(this.subAreaId);
+            output.writeDouble(this.fightId);
             if(this.fighterId1 < 0)
             {
                throw new Error("Forbidden value (" + this.fighterId1 + ") on element fighterId1.");
             }
             else
             {
-               param1.writeInt(this.fighterId1);
+               output.writeInt(this.fighterId1);
                if(this.fighterId2 < 0)
                {
                   throw new Error("Forbidden value (" + this.fighterId2 + ") on element fighterId2.");
                }
                else
                {
-                  param1.writeInt(this.fighterId2);
+                  output.writeInt(this.fighterId2);
                   return;
                }
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PrismFightDefendersSwapMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismFightDefendersSwapMessage(input);
       }
       
-      public function deserializeAs_PrismFightDefendersSwapMessage(param1:IDataInput) : void {
-         this.subAreaId = param1.readShort();
+      public function deserializeAs_PrismFightDefendersSwapMessage(input:IDataInput) : void {
+         this.subAreaId = input.readShort();
          if(this.subAreaId < 0)
          {
             throw new Error("Forbidden value (" + this.subAreaId + ") on element of PrismFightDefendersSwapMessage.subAreaId.");
          }
          else
          {
-            this.fightId = param1.readDouble();
-            this.fighterId1 = param1.readInt();
+            this.fightId = input.readDouble();
+            this.fighterId1 = input.readInt();
             if(this.fighterId1 < 0)
             {
                throw new Error("Forbidden value (" + this.fighterId1 + ") on element of PrismFightDefendersSwapMessage.fighterId1.");
             }
             else
             {
-               this.fighterId2 = param1.readInt();
+               this.fighterId2 = input.readInt();
                if(this.fighterId2 < 0)
                {
                   throw new Error("Forbidden value (" + this.fighterId2 + ") on element of PrismFightDefendersSwapMessage.fighterId2.");

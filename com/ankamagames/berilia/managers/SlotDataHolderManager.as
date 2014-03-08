@@ -4,18 +4,18 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import flash.utils.Dictionary;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.interfaces.ISlotData;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
    
    public class SlotDataHolderManager extends Object
    {
       
-      public function SlotDataHolderManager(param1:ISlotData) {
+      public function SlotDataHolderManager(linkedSlotData:ISlotData) {
          this._weakHolderReference = new Dictionary(true);
          super();
          this._linkedSlotsData = new Vector.<ISlotData>();
-         this._linkedSlotsData.push(param1);
+         this._linkedSlotsData.push(linkedSlotData);
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SlotDataHolderManager));
@@ -24,45 +24,45 @@ package com.ankamagames.berilia.managers
       
       private var _linkedSlotsData:Vector.<ISlotData>;
       
-      public function setLinkedSlotData(param1:ISlotData) : void {
+      public function setLinkedSlotData(slotData:ISlotData) : void {
          if(!this._linkedSlotsData)
          {
             this._linkedSlotsData = new Vector.<ISlotData>();
          }
-         if(this._linkedSlotsData.indexOf(param1) == -1)
+         if(this._linkedSlotsData.indexOf(slotData) == -1)
          {
-            this._linkedSlotsData.push(param1);
+            this._linkedSlotsData.push(slotData);
          }
       }
       
-      public function addHolder(param1:ISlotDataHolder) : void {
-         this._weakHolderReference[param1] = true;
+      public function addHolder(h:ISlotDataHolder) : void {
+         this._weakHolderReference[h] = true;
       }
       
-      public function removeHolder(param1:ISlotDataHolder) : void {
-         delete this._weakHolderReference[[param1]];
+      public function removeHolder(h:ISlotDataHolder) : void {
+         delete this._weakHolderReference[[h]];
       }
       
       public function getHolders() : Array {
-         var _loc2_:Object = null;
-         var _loc1_:Array = [];
-         for (_loc2_ in this._weakHolderReference)
+         var h:Object = null;
+         var result:Array = [];
+         for (h in this._weakHolderReference)
          {
-            _loc1_.push(_loc2_);
+            result.push(h);
          }
-         return _loc1_;
+         return result;
       }
       
       public function refreshAll() : void {
-         var _loc1_:Object = null;
-         var _loc2_:ISlotData = null;
-         for (_loc1_ in this._weakHolderReference)
+         var h:Object = null;
+         var linkedSlotData:ISlotData = null;
+         for (h in this._weakHolderReference)
          {
-            for each (_loc2_ in this._linkedSlotsData)
+            for each (linkedSlotData in this._linkedSlotsData)
             {
-               if((_loc1_) && ISlotDataHolder(_loc1_).data === _loc2_)
+               if((h) && (ISlotDataHolder(h).data === linkedSlotData))
                {
-                  _loc1_.refresh();
+                  h.refresh();
                }
             }
          }

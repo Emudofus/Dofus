@@ -28,10 +28,10 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5523;
       }
       
-      public function initExchangeRequestedTradeMessage(param1:int=0, param2:uint=0, param3:uint=0) : ExchangeRequestedTradeMessage {
-         super.initExchangeRequestedMessage(param1);
-         this.source = param2;
-         this.target = param3;
+      public function initExchangeRequestedTradeMessage(exchangeType:int=0, source:uint=0, target:uint=0) : ExchangeRequestedTradeMessage {
+         super.initExchangeRequestedMessage(exchangeType);
+         this.source = source;
+         this.target = target;
          this._isInitialized = true;
          return this;
       }
@@ -43,55 +43,55 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeRequestedTradeMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeRequestedTradeMessage(output);
       }
       
-      public function serializeAs_ExchangeRequestedTradeMessage(param1:IDataOutput) : void {
-         super.serializeAs_ExchangeRequestedMessage(param1);
+      public function serializeAs_ExchangeRequestedTradeMessage(output:IDataOutput) : void {
+         super.serializeAs_ExchangeRequestedMessage(output);
          if(this.source < 0)
          {
             throw new Error("Forbidden value (" + this.source + ") on element source.");
          }
          else
          {
-            param1.writeInt(this.source);
+            output.writeInt(this.source);
             if(this.target < 0)
             {
                throw new Error("Forbidden value (" + this.target + ") on element target.");
             }
             else
             {
-               param1.writeInt(this.target);
+               output.writeInt(this.target);
                return;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeRequestedTradeMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeRequestedTradeMessage(input);
       }
       
-      public function deserializeAs_ExchangeRequestedTradeMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.source = param1.readInt();
+      public function deserializeAs_ExchangeRequestedTradeMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.source = input.readInt();
          if(this.source < 0)
          {
             throw new Error("Forbidden value (" + this.source + ") on element of ExchangeRequestedTradeMessage.source.");
          }
          else
          {
-            this.target = param1.readInt();
+            this.target = input.readInt();
             if(this.target < 0)
             {
                throw new Error("Forbidden value (" + this.target + ") on element of ExchangeRequestedTradeMessage.target.");

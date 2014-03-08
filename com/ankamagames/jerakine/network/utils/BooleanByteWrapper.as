@@ -7,116 +7,112 @@ package com.ankamagames.jerakine.network.utils
          super();
       }
       
-      public static function setFlag(param1:uint, param2:uint, param3:Boolean) : uint {
-         switch(param2)
+      public static function setFlag(a:uint, pos:uint, b:Boolean) : uint {
+         switch(pos)
          {
             case 0:
-               if(param3)
+               if(b)
                {
-                  param1 = param1 | 1;
+                  a = a | 1;
                }
                else
                {
-                  param1 = param1 & 255-1;
+                  a = a & 255 - 1;
                }
                break;
             case 1:
-               if(param3)
+               if(b)
                {
-                  param1 = param1 | 2;
+                  a = a | 2;
                }
                else
                {
-                  param1 = param1 & 255 - 2;
+                  a = a & 255 - 2;
                }
                break;
             case 2:
-               if(param3)
+               if(b)
                {
-                  param1 = param1 | 4;
+                  a = a | 4;
                }
                else
                {
-                  param1 = param1 & 255 - 4;
+                  a = a & 255 - 4;
                }
                break;
             case 3:
-               if(param3)
+               if(b)
                {
-                  param1 = param1 | 8;
+                  a = a | 8;
                }
                else
                {
-                  param1 = param1 & 255 - 8;
+                  a = a & 255 - 8;
                }
                break;
             case 4:
-               if(param3)
+               if(b)
                {
-                  param1 = param1 | 16;
+                  a = a | 16;
                }
                else
                {
-                  param1 = param1 & 255 - 16;
+                  a = a & 255 - 16;
                }
                break;
             case 5:
-               if(param3)
+               if(b)
                {
-                  param1 = param1 | 32;
+                  a = a | 32;
                }
                else
                {
-                  param1 = param1 & 255 - 32;
+                  a = a & 255 - 32;
                }
                break;
             case 6:
-               if(param3)
+               if(b)
                {
-                  param1 = param1 | 64;
+                  a = a | 64;
                }
                else
                {
-                  param1 = param1 & 255 - 64;
+                  a = a & 255 - 64;
                }
                break;
             case 7:
-               if(param3)
+               if(b)
                {
-                  param1 = param1 | 128;
+                  a = a | 128;
                }
                else
                {
-                  param1 = param1 & 255 - 128;
+                  a = a & 255 - 128;
                }
                break;
-            default:
-               throw new Error("Bytebox overflow.");
          }
-         return param1;
+         return a;
       }
       
-      public static function getFlag(param1:uint, param2:uint) : Boolean {
-         switch(param2)
+      public static function getFlag(a:uint, pos:uint) : Boolean {
+         switch(pos)
          {
             case 0:
-               return !((param1 & 1) == 0);
+               return !((a & 1) == 0);
             case 1:
-               return !((param1 & 2) == 0);
+               return !((a & 2) == 0);
             case 2:
-               return !((param1 & 4) == 0);
+               return !((a & 4) == 0);
             case 3:
-               return !((param1 & 8) == 0);
+               return !((a & 8) == 0);
             case 4:
-               return !((param1 & 16) == 0);
+               return !((a & 16) == 0);
             case 5:
-               return !((param1 & 32) == 0);
+               return !((a & 32) == 0);
             case 6:
-               return !((param1 & 64) == 0);
+               return !((a & 64) == 0);
             case 7:
-               return !((param1 & 128) == 0);
-            default:
-               throw new Error("Bytebox overflow.");
+               return !((a & 128) == 0);
          }
       }
    }

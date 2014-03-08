@@ -31,9 +31,9 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6402;
       }
       
-      public function initAllianceJoinedMessage(param1:AllianceInformations=null, param2:Boolean=false) : AllianceJoinedMessage {
-         this.allianceInfo = param1;
-         this.enabled = param2;
+      public function initAllianceJoinedMessage(allianceInfo:AllianceInformations=null, enabled:Boolean=false) : AllianceJoinedMessage {
+         this.allianceInfo = allianceInfo;
+         this.enabled = enabled;
          this._isInitialized = true;
          return this;
       }
@@ -43,33 +43,33 @@ package com.ankamagames.dofus.network.messages.game.alliance
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AllianceJoinedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AllianceJoinedMessage(output);
       }
       
-      public function serializeAs_AllianceJoinedMessage(param1:IDataOutput) : void {
-         this.allianceInfo.serializeAs_AllianceInformations(param1);
-         param1.writeBoolean(this.enabled);
+      public function serializeAs_AllianceJoinedMessage(output:IDataOutput) : void {
+         this.allianceInfo.serializeAs_AllianceInformations(output);
+         output.writeBoolean(this.enabled);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AllianceJoinedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AllianceJoinedMessage(input);
       }
       
-      public function deserializeAs_AllianceJoinedMessage(param1:IDataInput) : void {
+      public function deserializeAs_AllianceJoinedMessage(input:IDataInput) : void {
          this.allianceInfo = new AllianceInformations();
-         this.allianceInfo.deserialize(param1);
-         this.enabled = param1.readBoolean();
+         this.allianceInfo.deserialize(input);
+         this.enabled = input.readBoolean();
       }
    }
 }

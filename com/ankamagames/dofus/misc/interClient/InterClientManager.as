@@ -55,10 +55,6 @@ package com.ankamagames.dofus.misc.interClient
                _log.warn("Closing a disconnected LocalConnection in destroy(). Exception catched.");
             }
          }
-         if(_self)
-         {
-            return;
-         }
       }
       
       public static function isMaster() : Boolean {
@@ -83,8 +79,8 @@ package com.ankamagames.dofus.misc.interClient
          return this._identity;
       }
       
-      public function set flashKey(param1:String) : void {
-         this._identity = param1;
+      public function set flashKey(key:String) : void {
+         this._identity = key;
       }
       
       public function get isAlone() : Boolean {
@@ -92,23 +88,23 @@ package com.ankamagames.dofus.misc.interClient
       }
       
       public function identifyFromFlashKey() : void {
-         var _loc1_:CustomSharedObject = CustomSharedObject.getLocal("uid");
-         if(!_loc1_.data["identity"])
+         var so:CustomSharedObject = CustomSharedObject.getLocal("uid");
+         if(!so.data["identity"])
          {
             this._identity = this.getRandomFlashKey();
-            _loc1_.data["identity"] = this._identity;
-            _loc1_.flush();
+            so.data["identity"] = this._identity;
+            so.flush();
          }
          else
          {
-            this._identity = _loc1_.data["identity"];
+            this._identity = so.data["identity"];
          }
-         _loc1_.close();
+         so.close();
       }
       
       public function update() : void {
          this._master = InterClientMaster.etreLeCalif();
-         if(!this._master && !this._client)
+         if((!this._master) && (!this._client))
          {
             this._client = new InterClientSlave();
             this._client.retreiveUid();
@@ -129,10 +125,10 @@ package com.ankamagames.dofus.misc.interClient
       }
       
       public function gainFocus() : void {
-         var _loc1_:Number = new Date().time;
+         var date:Number = new Date().time;
          if(this._client)
          {
-            this._client.gainFocus(_loc1_);
+            this._client.gainFocus(date);
          }
          else
          {
@@ -158,40 +154,40 @@ package com.ankamagames.dofus.misc.interClient
       }
       
       public function updateFocusList() : void {
-         var _loc1_:String = this._master?"_dofus":this._client.connId;
-         DofusFpsManager.updateFocusList(this.clientListInfo,_loc1_);
+         var clientId:String = this._master?"_dofus":this._client.connId;
+         DofusFpsManager.updateFocusList(this.clientListInfo,clientId);
       }
       
       private function getRandomFlashKey() : String {
-         var _loc1_:* = "";
-         var _loc2_:Number = 20;
-         var _loc3_:Number = 0;
-         while(_loc3_ < _loc2_)
+         var sSentance:String = "";
+         var nLen:Number = 20;
+         var i:Number = 0;
+         while(i < nLen)
          {
-            _loc1_ = _loc1_ + this.getRandomChar();
-            _loc3_++;
+            sSentance = sSentance + this.getRandomChar();
+            i++;
          }
-         return _loc1_ + this.checksum(_loc1_);
+         return sSentance + this.checksum(sSentance);
       }
       
-      private function checksum(param1:String) : String {
-         var _loc2_:Number = 0;
-         var _loc3_:Number = 0;
-         while(_loc3_ < param1.length)
+      private function checksum(s:String) : String {
+         var r:Number = 0;
+         var i:Number = 0;
+         while(i < s.length)
          {
-            _loc2_ = _loc2_ + param1.charCodeAt(_loc3_) % 16;
-            _loc3_++;
+            r = r + s.charCodeAt(i) % 16;
+            i++;
          }
-         return this.hex_chars[_loc2_ % 16];
+         return this.hex_chars[r % 16];
       }
       
       private function getRandomChar() : String {
-         var _loc1_:Number = Math.ceil(Math.random() * 100);
-         if(_loc1_ <= 40)
+         var n:Number = Math.ceil(Math.random() * 100);
+         if(n <= 40)
          {
             return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
          }
-         if(_loc1_ <= 80)
+         if(n <= 80)
          {
             return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
          }

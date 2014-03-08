@@ -1,29 +1,29 @@
 package com.ankamagames.dofus.types.data
 {
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.items.ItemSet;
    import com.ankamagames.dofus.misc.ObjectEffectAdapter;
    
    public class PlayerSetInfo extends Object
    {
       
-      public function PlayerSetInfo(param1:uint, param2:Vector.<uint>, param3:Vector.<ObjectEffect>) {
+      public function PlayerSetInfo(id:uint, items:Vector.<uint>, effects:Vector.<ObjectEffect>) {
          this.setObjects = new Vector.<uint>();
          super();
-         var _loc4_:ItemSet = ItemSet.getItemSetById(param1);
-         this.setName = _loc4_.name;
-         this.allItems = _loc4_.items;
-         this.setId = param1;
-         this.setObjects = param2;
-         var _loc5_:int = param3.length;
-         this.setEffects = new Vector.<EffectInstance>(_loc5_);
-         var _loc6_:* = 0;
-         while(_loc6_ < _loc5_)
+         var itemSet:ItemSet = ItemSet.getItemSetById(id);
+         this.setName = itemSet.name;
+         this.allItems = itemSet.items;
+         this.setId = id;
+         this.setObjects = items;
+         var nEffect:int = effects.length;
+         this.setEffects = new Vector.<EffectInstance>(nEffect);
+         var i:int = 0;
+         while(i < nEffect)
          {
-            this.setEffects[_loc6_] = ObjectEffectAdapter.fromNetwork(param3[_loc6_]);
-            _loc6_++;
+            this.setEffects[i] = ObjectEffectAdapter.fromNetwork(effects[i]);
+            i++;
          }
       }
       

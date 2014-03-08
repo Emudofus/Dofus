@@ -30,73 +30,71 @@ package com.ankamagames.dofus.logic.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:DirectSelectionCharacterAction = null;
-         var _loc3_:LoginValidationAction = null;
-         var _loc4_:LoginValidationAction = null;
-         var _loc5_:ChangeCharacterAction = null;
-         var _loc6_:LoginValidationAction = null;
-         var _loc7_:LoginValidationAction = null;
-         var _loc8_:LoginValidationAction = null;
-         var _loc9_:LoginValidationAction = null;
-         var _loc10_:NotificationListMessage = null;
-         var _loc11_:* = 0;
-         var _loc12_:* = 0;
-         var _loc13_:* = 0;
-         var _loc14_:* = 0;
+      public function process(msg:Message) : Boolean {
+         var dsca:DirectSelectionCharacterAction = null;
+         var lvad:LoginValidationAction = null;
+         var lvadNew:LoginValidationAction = null;
+         var cca:ChangeCharacterAction = null;
+         var lva:LoginValidationAction = null;
+         var lvaNew:LoginValidationAction = null;
+         var lvacha:LoginValidationAction = null;
+         var lvachaNew:LoginValidationAction = null;
+         var nlmsg:NotificationListMessage = null;
+         var num:* = 0;
+         var c:* = 0;
+         var val:* = 0;
+         var bit:* = 0;
          switch(true)
          {
-            case param1 is DirectSelectionCharacterAction:
-               _loc2_ = param1 as DirectSelectionCharacterAction;
+            case msg is DirectSelectionCharacterAction:
+               dsca = msg as DirectSelectionCharacterAction;
                WebServiceDataHandler.getInstance().changeCharacter();
                PlayerManager.getInstance().allowAutoConnectCharacter = true;
-               PlayerManager.getInstance().autoConnectOfASpecificCharacterId = _loc2_.characterId;
-               _loc3_ = AuthentificationManager.getInstance().loginValidationAction;
-               _loc4_ = LoginValidationAction.create(_loc3_.username,_loc3_.password,true,_loc2_.serverId);
-               AuthentificationManager.getInstance().setValidationAction(_loc4_);
+               PlayerManager.getInstance().autoConnectOfASpecificCharacterId = dsca.characterId;
+               lvad = AuthentificationManager.getInstance().loginValidationAction;
+               lvadNew = LoginValidationAction.create(lvad.username,lvad.password,true,dsca.serverId);
+               AuthentificationManager.getInstance().setValidationAction(lvadNew);
                SoundManager.getInstance().manager.removeAllSounds();
                ConnectionsHandler.closeConnection();
                Kernel.getWorker().resume();
-               Kernel.getInstance().reset(null,(AuthentificationManager.getInstance().canAutoConnectWithToken) || !AuthentificationManager.getInstance().tokenMode);
+               Kernel.getInstance().reset(null,(AuthentificationManager.getInstance().canAutoConnectWithToken) || (!AuthentificationManager.getInstance().tokenMode));
                return true;
-            case param1 is ChangeCharacterAction:
-               _loc5_ = param1 as ChangeCharacterAction;
+            case msg is ChangeCharacterAction:
+               cca = msg as ChangeCharacterAction;
                WebServiceDataHandler.getInstance().changeCharacter();
-               _loc6_ = AuthentificationManager.getInstance().loginValidationAction;
-               _loc7_ = LoginValidationAction.create(_loc6_.username,_loc6_.password,true,_loc5_.serverId);
-               AuthentificationManager.getInstance().setValidationAction(_loc7_);
+               lva = AuthentificationManager.getInstance().loginValidationAction;
+               lvaNew = LoginValidationAction.create(lva.username,lva.password,true,cca.serverId);
+               AuthentificationManager.getInstance().setValidationAction(lvaNew);
                SoundManager.getInstance().manager.removeAllSounds();
                ConnectionsHandler.closeConnection();
                Kernel.getWorker().resume();
-               Kernel.getInstance().reset(null,(AuthentificationManager.getInstance().canAutoConnectWithToken) || !AuthentificationManager.getInstance().tokenMode);
+               Kernel.getInstance().reset(null,(AuthentificationManager.getInstance().canAutoConnectWithToken) || (!AuthentificationManager.getInstance().tokenMode));
                return true;
-            case param1 is ChangeServerAction:
-               _loc8_ = AuthentificationManager.getInstance().loginValidationAction;
-               _loc9_ = LoginValidationAction.create(_loc8_.username,_loc8_.password,false);
-               AuthentificationManager.getInstance().setValidationAction(_loc9_);
+            case msg is ChangeServerAction:
+               lvacha = AuthentificationManager.getInstance().loginValidationAction;
+               lvachaNew = LoginValidationAction.create(lvacha.username,lvacha.password,false);
+               AuthentificationManager.getInstance().setValidationAction(lvachaNew);
                ConnectionsHandler.closeConnection();
-               Kernel.getInstance().reset(null,(AuthentificationManager.getInstance().canAutoConnectWithToken) || !AuthentificationManager.getInstance().tokenMode);
+               Kernel.getInstance().reset(null,(AuthentificationManager.getInstance().canAutoConnectWithToken) || (!AuthentificationManager.getInstance().tokenMode));
                return true;
-            case param1 is NotificationListMessage:
-               _loc10_ = param1 as NotificationListMessage;
+            case msg is NotificationListMessage:
+               nlmsg = msg as NotificationListMessage;
                QuestFrame.notificationList = new Array();
-               _loc11_ = _loc10_.flags.length;
-               _loc12_ = 0;
-               while(_loc12_ < _loc11_)
+               num = nlmsg.flags.length;
+               c = 0;
+               while(c < num)
                {
-                  _loc13_ = _loc10_.flags[_loc12_];
-                  _loc14_ = 0;
-                  while(_loc14_ < 32)
+                  val = nlmsg.flags[c];
+                  bit = 0;
+                  while(bit < 32)
                   {
-                     QuestFrame.notificationList[_loc14_ + _loc12_ * 32] = Boolean(_loc13_ & 1);
-                     _loc13_ = _loc13_ >> 1;
-                     _loc14_++;
+                     QuestFrame.notificationList[bit + c * 32] = Boolean(val & 1);
+                     val = val >> 1;
+                     bit++;
                   }
-                  _loc12_++;
+                  c++;
                }
                return true;
-            default:
-               return false;
          }
       }
       

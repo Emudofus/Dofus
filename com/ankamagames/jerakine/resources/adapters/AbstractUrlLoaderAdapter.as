@@ -32,34 +32,34 @@ package com.ankamagames.jerakine.resources.adapters
       
       private var _dispatchProgress:Boolean;
       
-      public function loadDirectly(param1:Uri, param2:String, param3:IResourceObserver, param4:Boolean) : void {
+      public function loadDirectly(uri:Uri, path:String, observer:IResourceObserver, dispatchProgress:Boolean) : void {
          if(this._ldr)
          {
             throw new IllegalOperationError("A single adapter can\'t handle two simultaneous loadings.");
          }
          else
          {
-            this._observer = param3;
-            this._uri = param1;
-            this._dispatchProgress = param4;
+            this._observer = observer;
+            this._uri = uri;
+            this._dispatchProgress = dispatchProgress;
             this.prepareLoader();
-            _loc5_ = new URLRequest(param2);
-            _loc5_.requestHeaders = [new URLRequestHeader("pragma","no-cache")];
-            this._ldr.load(_loc5_);
+            r = new URLRequest(path);
+            r.requestHeaders = [new URLRequestHeader("pragma","no-cache")];
+            this._ldr.load(r);
             return;
          }
       }
       
-      public function loadFromData(param1:Uri, param2:ByteArray, param3:IResourceObserver, param4:Boolean) : void {
+      public function loadFromData(uri:Uri, data:ByteArray, observer:IResourceObserver, dispatchProgress:Boolean) : void {
          if(this._ldr)
          {
             throw new IllegalOperationError("A single adapter can\'t handle two simultaneous loadings.");
          }
          else
          {
-            this._observer = param3;
-            this._uri = param1;
-            this.process(URLLoaderDataFormat.BINARY,param2);
+            this._observer = observer;
+            this._uri = uri;
+            this.process(URLLoaderDataFormat.BINARY,data);
             return;
          }
       }
@@ -70,19 +70,19 @@ package com.ankamagames.jerakine.resources.adapters
          this._observer = null;
       }
       
-      protected function process(param1:String, param2:*) : void {
-         this.dispatchSuccess(param1,param2);
+      protected function process(dataFormat:String, data:*) : void {
+         this.dispatchSuccess(dataFormat,data);
       }
       
-      protected function dispatchSuccess(param1:String, param2:*) : void {
-         var _loc3_:* = this.getResource(param1,param2);
+      protected function dispatchSuccess(dataFormat:String, data:*) : void {
+         var res:* = this.getResource(dataFormat,data);
          this.releaseLoader();
-         this._observer.onLoaded(this._uri,this.getResourceType(),_loc3_);
+         this._observer.onLoaded(this._uri,this.getResourceType(),res);
       }
       
-      protected function dispatchFailure(param1:String, param2:uint) : void {
+      protected function dispatchFailure(errorMsg:String, errorCode:uint) : void {
          this.releaseLoader();
-         this._observer.onFailed(this._uri,param1,param2);
+         this._observer.onFailed(this._uri,errorMsg,errorCode);
       }
       
       protected function getDataFormat() : String {
@@ -93,7 +93,7 @@ package com.ankamagames.jerakine.resources.adapters
          return this._uri;
       }
       
-      protected function getResource(param1:String, param2:*) : * {
+      protected function getResource(dataFormat:String, data:*) : * {
          throw new AbstractMethodCallError("This method should be overrided.");
       }
       
@@ -132,17 +132,17 @@ package com.ankamagames.jerakine.resources.adapters
          this._ldr = null;
       }
       
-      protected function onComplete(param1:Event) : void {
+      protected function onComplete(e:Event) : void {
          this.process(this._ldr.dataFormat,this._ldr.data);
       }
       
-      protected function onError(param1:ErrorEvent) : void {
+      protected function onError(ee:ErrorEvent) : void {
          this.releaseLoader();
-         this._observer.onFailed(this._uri,param1.text,ResourceErrorCode.RESOURCE_NOT_FOUND);
+         this._observer.onFailed(this._uri,ee.text,ResourceErrorCode.RESOURCE_NOT_FOUND);
       }
       
-      protected function onProgress(param1:ProgressEvent) : void {
-         this._observer.onProgress(this._uri,param1.bytesLoaded,param1.bytesTotal);
+      protected function onProgress(pe:ProgressEvent) : void {
+         this._observer.onProgress(this._uri,pe.bytesLoaded,pe.bytesTotal);
       }
    }
 }

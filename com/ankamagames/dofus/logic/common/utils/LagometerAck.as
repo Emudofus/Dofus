@@ -1,11 +1,11 @@
 package com.ankamagames.dofus.logic.common.utils
 {
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.logic.common.frames.MiscFrame;
    import com.ankamagames.dofus.kernel.Kernel;
    import flash.utils.getTimer;
    import com.ankamagames.dofus.network.messages.game.basic.BasicAckMessage;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.misc.OptionalFeature;
    
    public class LagometerAck extends Lagometer
@@ -31,19 +31,19 @@ package com.ankamagames.dofus.logic.common.utils
          this._msgTimeStack.length = 0;
       }
       
-      override public function ping(param1:INetworkMessage=null) : void {
-         var _loc2_:MiscFrame = null;
+      override public function ping(msg:INetworkMessage=null) : void {
+         var f:MiscFrame = null;
          if(!this._active)
          {
-            _loc2_ = Kernel.getWorker().getFrame(MiscFrame) as MiscFrame;
-            if((_loc2_) && (_loc2_.isOptionalFeatureActive(this._optionId)))
+            f = Kernel.getWorker().getFrame(MiscFrame) as MiscFrame;
+            if((f) && (f.isOptionalFeatureActive(this._optionId)))
             {
                this._active = true;
             }
          }
          if(!this._active)
          {
-            super.ping(param1);
+            super.ping(msg);
             return;
          }
          if(!this._msgTimeStack.length)
@@ -54,19 +54,19 @@ package com.ankamagames.dofus.logic.common.utils
          this._msgTimeStack.push(getTimer());
       }
       
-      override public function pong(param1:INetworkMessage=null) : void {
-         var _loc2_:uint = 0;
+      override public function pong(msg:INetworkMessage=null) : void {
+         var latency:uint = 0;
          if(!this._active)
          {
-            super.pong(param1);
+            super.pong(msg);
             return;
          }
-         if(param1 is BasicAckMessage)
+         if(msg is BasicAckMessage)
          {
-            _loc2_ = getTimer() - this._msgTimeStack.shift();
-            if(_loc2_ > SHOW_LAG_DELAY)
+            latency = getTimer() - this._msgTimeStack.shift();
+            if(latency > SHOW_LAG_DELAY)
             {
-               _log.debug(_loc2_ + " ms de latence (basé sur ACK)");
+               _log.debug(latency + " ms de latence (basé sur ACK)");
                startLag();
                if(_timer.running)
                {

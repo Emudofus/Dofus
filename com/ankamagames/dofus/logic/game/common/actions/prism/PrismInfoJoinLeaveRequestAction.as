@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.prism
          super();
       }
       
-      public static function create(param1:Boolean) : PrismInfoJoinLeaveRequestAction {
-         var _loc2_:PrismInfoJoinLeaveRequestAction = new PrismInfoJoinLeaveRequestAction();
-         _loc2_.join = param1;
-         return _loc2_;
+      public static function create(join:Boolean) : PrismInfoJoinLeaveRequestAction {
+         var action:PrismInfoJoinLeaveRequestAction = new PrismInfoJoinLeaveRequestAction();
+         action.join = join;
+         return action;
       }
       
       public var join:Boolean;

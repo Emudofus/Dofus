@@ -7,8 +7,8 @@ package com.ankamagames.jerakine.messages
          super();
       }
       
-      public function dispatchMessage(param1:MessageHandler, param2:Message) : void {
-         param1.process(param2);
+      public function dispatchMessage(handler:MessageHandler, message:Message) : void {
+         handler.process(message);
       }
    }
 }

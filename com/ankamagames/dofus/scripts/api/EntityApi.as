@@ -36,61 +36,61 @@ package com.ankamagames.dofus.scripts.api
       
       public function reset() : void {
          this.removeEntities();
-         var _loc1_:ScriptEntity = this._entities[PlayedCharacterManager.getInstance().id];
-         if(_loc1_)
+         var player:ScriptEntity = this._entities[PlayedCharacterManager.getInstance().id];
+         if(player)
          {
-            _loc1_.teleport(this._playerPosition.x,this._playerPosition.y).start();
+            player.teleport(this._playerPosition.x,this._playerPosition.y).start();
          }
          delete this._entities[[PlayedCharacterManager.getInstance().id]];
       }
       
-      public function getEntity(param1:int) : ScriptEntity {
-         var _loc2_:AnimatedCharacter = null;
-         if(!this._entities[param1] && param1 == PlayedCharacterManager.getInstance().id)
+      public function getEntity(pEntityId:int) : ScriptEntity {
+         var player:AnimatedCharacter = null;
+         if((!this._entities[pEntityId]) && (pEntityId == PlayedCharacterManager.getInstance().id))
          {
-            _loc2_ = DofusEntities.getEntity(param1) as AnimatedCharacter;
-            this._entities[param1] = new ScriptEntity(param1,_loc2_.look.toString());
+            player = DofusEntities.getEntity(pEntityId) as AnimatedCharacter;
+            this._entities[pEntityId] = new ScriptEntity(pEntityId,player.look.toString());
          }
-         return this._entities[param1];
+         return this._entities[pEntityId];
       }
       
-      public function getWorldEntity(param1:int) : ScriptEntity {
-         var _loc2_:SpriteWrapper = null;
-         var _loc3_:WorldEntitySprite = null;
-         if(!this._entities[param1])
+      public function getWorldEntity(pEntityId:int) : ScriptEntity {
+         var worldObject:SpriteWrapper = null;
+         var entity:WorldEntitySprite = null;
+         if(!this._entities[pEntityId])
          {
-            _loc2_ = Atouin.getInstance().getIdentifiedElement(param1) as SpriteWrapper;
-            _loc3_ = _loc2_.getChildAt(0) as WorldEntitySprite;
-            this._entities[param1] = new ScriptEntity(param1,_loc3_.look.toString(),_loc3_);
+            worldObject = Atouin.getInstance().getIdentifiedElement(pEntityId) as SpriteWrapper;
+            entity = worldObject.getChildAt(0) as WorldEntitySprite;
+            this._entities[pEntityId] = new ScriptEntity(pEntityId,entity.look.toString(),entity);
          }
-         return this._entities[param1];
+         return this._entities[pEntityId];
       }
       
-      public function getEntityFromCell(param1:uint) : ScriptEntity {
-         var _loc6_:SpriteWrapper = null;
-         var _loc7_:WorldEntitySprite = null;
-         var _loc2_:AnimatedCharacter = Atouin.getInstance().getEntityOnCell(param1) as AnimatedCharacter;
-         if(_loc2_)
+      public function getEntityFromCell(pCellID:uint) : ScriptEntity {
+         var worldObject:SpriteWrapper = null;
+         var entity1:WorldEntitySprite = null;
+         var entity:AnimatedCharacter = Atouin.getInstance().getEntityOnCell(pCellID) as AnimatedCharacter;
+         if(entity)
          {
-            if(!this._entities[_loc2_.id])
+            if(!this._entities[entity.id])
             {
-               this._entities[_loc2_.id] = new ScriptEntity(_loc2_.id,_loc2_.look.toString(),_loc2_);
+               this._entities[entity.id] = new ScriptEntity(entity.id,entity.look.toString(),entity);
             }
-            return this._entities[_loc2_.id];
+            return this._entities[entity.id];
          }
-         var _loc3_:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-         var _loc4_:Vector.<InteractiveElement> = _loc3_.entitiesFrame.interactiveElements;
-         var _loc5_:* = 0;
-         while(_loc5_ < _loc4_.length)
+         var rpContextFrame:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+         var ies:Vector.<InteractiveElement> = rpContextFrame.entitiesFrame.interactiveElements;
+         var i:int = 0;
+         while(i < ies.length)
          {
-            _loc6_ = Atouin.getInstance().getIdentifiedElement(_loc4_[_loc5_].elementId) as SpriteWrapper;
-            _loc7_ = _loc6_.getChildAt(0) as WorldEntitySprite;
-            if(_loc7_.cellId == param1)
+            worldObject = Atouin.getInstance().getIdentifiedElement(ies[i].elementId) as SpriteWrapper;
+            entity1 = worldObject.getChildAt(0) as WorldEntitySprite;
+            if(entity1.cellId == pCellID)
             {
-               this._entities[_loc7_.identifier] = new ScriptEntity(_loc7_.identifier,_loc7_.look.toString(),_loc7_);
-               return this._entities[_loc7_.identifier];
+               this._entities[entity1.identifier] = new ScriptEntity(entity1.identifier,entity1.look.toString(),entity1);
+               return this._entities[entity1.identifier];
             }
-            _loc5_++;
+            i++;
          }
          return null;
       }
@@ -99,62 +99,62 @@ package com.ankamagames.dofus.scripts.api
          return this.getEntity(PlayedCharacterManager.getInstance().id);
       }
       
-      public function createMonster(param1:int, param2:Boolean=true, param3:int=0, param4:int=0, param5:int=1) : ScriptEntity {
-         var _loc6_:ScriptEntity = this.createEntity(Monster.getMonsterById(param1).look);
-         if(param2)
+      public function createMonster(pMonsterId:int, pAddEntity:Boolean=true, pStartX:int=0, pStartY:int=0, pStartDirection:int=1) : ScriptEntity {
+         var entity:ScriptEntity = this.createEntity(Monster.getMonsterById(pMonsterId).look);
+         if(pAddEntity)
          {
-            _loc6_.x = param3;
-            _loc6_.y = param4;
-            _loc6_.direction = param5;
-            _loc6_.display().start();
+            entity.x = pStartX;
+            entity.y = pStartY;
+            entity.direction = pStartDirection;
+            entity.display().start();
          }
-         return _loc6_;
+         return entity;
       }
       
-      public function createNpc(param1:int, param2:Boolean=true, param3:int=0, param4:int=0, param5:int=1) : ScriptEntity {
-         var _loc6_:ScriptEntity = this.createEntity(Npc.getNpcById(param1).look);
-         if(param2)
+      public function createNpc(pNpcId:int, pAddEntity:Boolean=true, pStartX:int=0, pStartY:int=0, pStartDirection:int=1) : ScriptEntity {
+         var entity:ScriptEntity = this.createEntity(Npc.getNpcById(pNpcId).look);
+         if(pAddEntity)
          {
-            _loc6_.x = param3;
-            _loc6_.y = param4;
-            _loc6_.direction = param5;
-            _loc6_.display().start();
+            entity.x = pStartX;
+            entity.y = pStartY;
+            entity.direction = pStartDirection;
+            entity.display().start();
          }
-         return _loc6_;
+         return entity;
       }
       
-      public function createCustom(param1:String, param2:Boolean=true, param3:int=0, param4:int=0, param5:int=1) : ScriptEntity {
-         var _loc6_:ScriptEntity = this.createEntity(param1);
-         if(param2)
+      public function createCustom(pLook:String, pAddEntity:Boolean=true, pStartX:int=0, pStartY:int=0, pStartDirection:int=1) : ScriptEntity {
+         var entity:ScriptEntity = this.createEntity(pLook);
+         if(pAddEntity)
          {
-            _loc6_.x = param3;
-            _loc6_.y = param4;
-            _loc6_.direction = param5;
-            _loc6_.display().start();
+            entity.x = pStartX;
+            entity.y = pStartY;
+            entity.direction = pStartDirection;
+            entity.display().start();
          }
-         return _loc6_;
+         return entity;
       }
       
-      public function removeEntity(param1:int) : void {
-         delete this._entities[[param1]];
+      public function removeEntity(pEntityId:int) : void {
+         delete this._entities[[pEntityId]];
       }
       
       public function removeEntities() : void {
-         var _loc1_:ScriptEntity = null;
-         for each (_loc1_ in this._entities)
+         var entity:ScriptEntity = null;
+         for each (entity in this._entities)
          {
-            if(_loc1_.id != PlayedCharacterManager.getInstance().id)
+            if(entity.id != PlayedCharacterManager.getInstance().id)
             {
-               _loc1_.destroy();
-               _loc1_.remove().start();
+               entity.destroy();
+               entity.remove().start();
             }
          }
       }
       
-      private function createEntity(param1:String) : ScriptEntity {
-         var _loc2_:int = EntitiesManager.getInstance().getFreeEntityId();
-         this._entities[_loc2_] = new ScriptEntity(_loc2_,param1);
-         return this._entities[_loc2_];
+      private function createEntity(pLook:String) : ScriptEntity {
+         var entityId:int = EntitiesManager.getInstance().getFreeEntityId();
+         this._entities[entityId] = new ScriptEntity(entityId,pLook);
+         return this._entities[entityId];
       }
    }
 }

@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.notifications
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Notification));
       
-      public static function getNotificationById(param1:int) : Notification {
-         return GameData.getObject(MODULE,param1) as Notification;
+      public static function getNotificationById(id:int) : Notification {
+         return GameData.getObject(MODULE,id) as Notification;
       }
       
       public static function getNotifications() : Array {

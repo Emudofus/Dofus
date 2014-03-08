@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.craft
          super();
       }
       
-      public static function create(param1:int) : ExchangeReplayAction {
-         var _loc2_:ExchangeReplayAction = new ExchangeReplayAction();
-         _loc2_.count = param1;
-         return _loc2_;
+      public static function create(pCount:int) : ExchangeReplayAction {
+         var action:ExchangeReplayAction = new ExchangeReplayAction();
+         action.count = pCount;
+         return action;
       }
       
       public var count:int;

@@ -1,8 +1,8 @@
 package com.ankamagames.dofus.network.types.game.data.items
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
@@ -31,12 +31,12 @@ package com.ankamagames.dofus.network.types.game.data.items
          return 37;
       }
       
-      public function initObjectItem(param1:uint=63, param2:uint=0, param3:Vector.<ObjectEffect>=null, param4:uint=0, param5:uint=0) : ObjectItem {
-         this.position = param1;
-         this.objectGID = param2;
-         this.effects = param3;
-         this.objectUID = param4;
-         this.quantity = param5;
+      public function initObjectItem(position:uint=63, objectGID:uint=0, effects:Vector.<ObjectEffect>=null, objectUID:uint=0, quantity:uint=0) : ObjectItem {
+         this.position = position;
+         this.objectGID = objectGID;
+         this.effects = effects;
+         this.objectUID = objectUID;
+         this.quantity = quantity;
          return this;
       }
       
@@ -48,27 +48,27 @@ package com.ankamagames.dofus.network.types.game.data.items
          this.quantity = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ObjectItem(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectItem(output);
       }
       
-      public function serializeAs_ObjectItem(param1:IDataOutput) : void {
-         super.serializeAs_Item(param1);
-         param1.writeByte(this.position);
+      public function serializeAs_ObjectItem(output:IDataOutput) : void {
+         super.serializeAs_Item(output);
+         output.writeByte(this.position);
          if(this.objectGID < 0)
          {
             throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
          }
          else
          {
-            param1.writeShort(this.objectGID);
-            param1.writeShort(this.effects.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.effects.length)
+            output.writeShort(this.objectGID);
+            output.writeShort(this.effects.length);
+            _i3 = 0;
+            while(_i3 < this.effects.length)
             {
-               param1.writeShort((this.effects[_loc2_] as ObjectEffect).getTypeId());
-               (this.effects[_loc2_] as ObjectEffect).serialize(param1);
-               _loc2_++;
+               output.writeShort((this.effects[_i3] as ObjectEffect).getTypeId());
+               (this.effects[_i3] as ObjectEffect).serialize(output);
+               _i3++;
             }
             if(this.objectUID < 0)
             {
@@ -76,60 +76,60 @@ package com.ankamagames.dofus.network.types.game.data.items
             }
             else
             {
-               param1.writeInt(this.objectUID);
+               output.writeInt(this.objectUID);
                if(this.quantity < 0)
                {
                   throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
                }
                else
                {
-                  param1.writeInt(this.quantity);
+                  output.writeInt(this.quantity);
                   return;
                }
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ObjectItem(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectItem(input);
       }
       
-      public function deserializeAs_ObjectItem(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         var _loc5_:ObjectEffect = null;
-         super.deserialize(param1);
-         this.position = param1.readUnsignedByte();
-         if(this.position < 0 || this.position > 255)
+      public function deserializeAs_ObjectItem(input:IDataInput) : void {
+         var _id3:uint = 0;
+         var _item3:ObjectEffect = null;
+         super.deserialize(input);
+         this.position = input.readUnsignedByte();
+         if((this.position < 0) || (this.position > 255))
          {
             throw new Error("Forbidden value (" + this.position + ") on element of ObjectItem.position.");
          }
          else
          {
-            this.objectGID = param1.readShort();
+            this.objectGID = input.readShort();
             if(this.objectGID < 0)
             {
                throw new Error("Forbidden value (" + this.objectGID + ") on element of ObjectItem.objectGID.");
             }
             else
             {
-               _loc2_ = param1.readUnsignedShort();
-               _loc3_ = 0;
-               while(_loc3_ < _loc2_)
+               _effectsLen = input.readUnsignedShort();
+               _i3 = 0;
+               while(_i3 < _effectsLen)
                {
-                  _loc4_ = param1.readUnsignedShort();
-                  _loc5_ = ProtocolTypeManager.getInstance(ObjectEffect,_loc4_);
-                  _loc5_.deserialize(param1);
-                  this.effects.push(_loc5_);
-                  _loc3_++;
+                  _id3 = input.readUnsignedShort();
+                  _item3 = ProtocolTypeManager.getInstance(ObjectEffect,_id3);
+                  _item3.deserialize(input);
+                  this.effects.push(_item3);
+                  _i3++;
                }
-               this.objectUID = param1.readInt();
+               this.objectUID = input.readInt();
                if(this.objectUID < 0)
                {
                   throw new Error("Forbidden value (" + this.objectUID + ") on element of ObjectItem.objectUID.");
                }
                else
                {
-                  this.quantity = param1.readInt();
+                  this.quantity = input.readInt();
                   if(this.quantity < 0)
                   {
                      throw new Error("Forbidden value (" + this.quantity + ") on element of ObjectItem.quantity.");

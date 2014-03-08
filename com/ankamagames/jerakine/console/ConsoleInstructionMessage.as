@@ -5,15 +5,15 @@ package com.ankamagames.jerakine.console
    public class ConsoleInstructionMessage extends Object implements Message
    {
       
-      public function ConsoleInstructionMessage(param1:String, param2:Array) {
+      public function ConsoleInstructionMessage(cmd:String, args:Array) {
          super();
-         this._localCmd = param1.charAt(0) == "/";
-         this._cmd = param1.toLocaleLowerCase();
+         this._localCmd = cmd.charAt(0) == "/";
+         this._cmd = cmd.toLocaleLowerCase();
          if(this._localCmd)
          {
             this._cmd = this._cmd.substr(1);
          }
-         this._args = param2;
+         this._args = args;
       }
       
       private var _cmd:String;
@@ -38,20 +38,20 @@ package com.ankamagames.jerakine.console
          return this._localCmd;
       }
       
-      public function equals(param1:ConsoleInstructionMessage) : Boolean {
-         var _loc2_:* = false;
-         var _loc3_:uint = 0;
-         _loc2_ = param1.completCmd == this.completCmd && this.args.length == param1.args.length;
-         if(_loc2_)
+      public function equals(cim:ConsoleInstructionMessage) : Boolean {
+         var result:* = false;
+         var i:uint = 0;
+         result = (cim.completCmd == this.completCmd) && (this.args.length == cim.args.length);
+         if(result)
          {
-            _loc3_ = 0;
-            while(_loc3_ < this.args.length)
+            i = 0;
+            while(i < this.args.length)
             {
-               _loc2_ = (_loc2_) && this.args[_loc3_] == param1.args[_loc3_];
-               _loc3_++;
+               result = (result) && (this.args[i] == cim.args[i]);
+               i++;
             }
          }
-         return _loc2_;
+         return result;
       }
    }
 }

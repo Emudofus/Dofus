@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.fight.actions
       }
       
       public static function create() : ShowAllNamesAction {
-         var _loc1_:ShowAllNamesAction = new ShowAllNamesAction();
-         return _loc1_;
+         var a:ShowAllNamesAction = new ShowAllNamesAction();
+         return a;
       }
    }
 }

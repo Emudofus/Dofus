@@ -6,9 +6,9 @@ package com.ankamagames.dofus.datacenter.breeds
    import com.ankamagames.dofus.datacenter.appearance.SkinMapping;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.spells.Spell;
    import com.ankamagames.jerakine.data.I18n;
+   import __AS3__.vec.*;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    
    public class Breed extends Object implements IDataCenter
@@ -24,41 +24,41 @@ package com.ankamagames.dofus.datacenter.breeds
       
       private static var _skinsForBreed:Array = new Array();
       
-      public static function getBreedById(param1:int) : Breed {
-         return GameData.getObject(MODULE,param1) as Breed;
+      public static function getBreedById(id:int) : Breed {
+         return GameData.getObject(MODULE,id) as Breed;
       }
       
       public static function getBreeds() : Array {
          return GameData.getObjects(MODULE);
       }
       
-      public static function getBreedFromSkin(param1:int) : Breed {
-         var _loc3_:Object = null;
-         var _loc4_:Breed = null;
-         var _loc5_:String = null;
-         var _loc2_:* = 0;
+      public static function getBreedFromSkin(skin:int) : Breed {
+         var skinKnown:Object = null;
+         var breed:Breed = null;
+         var look:String = null;
+         var id:int = 0;
          if(!_skinsForBreed.length)
          {
-            for each (_loc4_ in getBreeds())
+            for each (breed in getBreeds())
             {
-               _loc5_ = _loc4_.maleLook.split("|")[1];
-               _loc5_ = _loc5_.split(",")[0];
-               _skinsForBreed[_loc5_] = _loc4_.id;
-               _skinsForBreed[SkinMapping.getSkinMappingById(int(_loc5_)).lowDefId] = _loc4_.id;
-               _loc5_ = _loc4_.femaleLook.split("|")[1];
-               _loc5_ = _loc5_.split(",")[0];
-               _skinsForBreed[_loc5_] = _loc4_.id;
-               _skinsForBreed[SkinMapping.getSkinMappingById(int(_loc5_)).lowDefId] = _loc4_.id;
+               look = breed.maleLook.split("|")[1];
+               look = look.split(",")[0];
+               _skinsForBreed[look] = breed.id;
+               _skinsForBreed[SkinMapping.getSkinMappingById(int(look)).lowDefId] = breed.id;
+               look = breed.femaleLook.split("|")[1];
+               look = look.split(",")[0];
+               _skinsForBreed[look] = breed.id;
+               _skinsForBreed[SkinMapping.getSkinMappingById(int(look)).lowDefId] = breed.id;
             }
          }
-         for (_loc3_ in _skinsForBreed)
+         for (skinKnown in _skinsForBreed)
          {
-            if(_loc3_ == param1.toString())
+            if(skinKnown == skin.toString())
             {
-               _loc2_ = _skinsForBreed[_loc3_];
+               id = _skinsForBreed[skinKnown];
             }
          }
-         return GameData.getObject(MODULE,_loc2_) as Breed;
+         return GameData.getObject(MODULE,id) as Breed;
       }
       
       public var id:int;
@@ -144,112 +144,112 @@ package com.ankamagames.dofus.datacenter.breeds
       }
       
       public function get breedSpells() : Vector.<Spell> {
-         var _loc1_:uint = 0;
-         if(!this._breedSpells && !(Spell.getSpellById(1) == null))
+         var spellId:uint = 0;
+         if((!this._breedSpells) && (!(Spell.getSpellById(1) == null)))
          {
             this._breedSpells = new Vector.<Spell>();
-            for each (_loc1_ in this.breedSpellsId)
+            for each (spellId in this.breedSpellsId)
             {
-               this._breedSpells.push(Spell.getSpellById(_loc1_));
+               this._breedSpells.push(Spell.getSpellById(spellId));
             }
          }
          return this._breedSpells;
       }
       
       public function get femaleLookWithColors() : TiphonEntityLook {
-         var _loc1_:TiphonEntityLook = TiphonEntityLook.fromString(this.femaleLook);
-         var _loc2_:int = this.femaleColors.length;
-         var _loc3_:* = 0;
-         while(_loc3_ < _loc2_)
+         var look:TiphonEntityLook = TiphonEntityLook.fromString(this.femaleLook);
+         var num:int = this.femaleColors.length;
+         var i:int = 0;
+         while(i < num)
          {
-            _loc1_.setColor(_loc3_ + 1,this.femaleColors[_loc3_]);
-            _loc3_++;
+            look.setColor(i + 1,this.femaleColors[i]);
+            i++;
          }
-         return _loc1_;
+         return look;
       }
       
       public function get maleLookWithColors() : TiphonEntityLook {
-         var _loc1_:TiphonEntityLook = TiphonEntityLook.fromString(this.maleLook);
-         var _loc2_:int = this.maleColors.length;
-         var _loc3_:* = 0;
-         while(_loc3_ < _loc2_)
+         var look:TiphonEntityLook = TiphonEntityLook.fromString(this.maleLook);
+         var num:int = this.maleColors.length;
+         var i:int = 0;
+         while(i < num)
          {
-            _loc1_.setColor(_loc3_ + 1,this.maleColors[_loc3_]);
-            _loc3_++;
+            look.setColor(i + 1,this.maleColors[i]);
+            i++;
          }
-         return _loc1_;
+         return look;
       }
       
-      public function getStatsPointsNeededForStrength(param1:uint) : uint {
-         var _loc2_:* = undefined;
-         for (_loc2_ in this.statsPointsForStrength)
+      public function getStatsPointsNeededForStrength(stat:uint) : uint {
+         var i:* = undefined;
+         for (i in this.statsPointsForStrength)
          {
-            if(param1 < this.statsPointsForStrength[_loc2_][0])
+            if(stat < this.statsPointsForStrength[i][0])
             {
-               return this.statsPointsForStrength[_loc2_-1][1];
+               return this.statsPointsForStrength[i - 1][1];
             }
          }
-         return this.statsPointsForStrength[_loc2_][1];
+         return this.statsPointsForStrength[i][1];
       }
       
-      public function getStatsPointsNeededForIntelligence(param1:uint) : uint {
-         var _loc2_:* = undefined;
-         for (_loc2_ in this.statsPointsForIntelligence)
+      public function getStatsPointsNeededForIntelligence(stat:uint) : uint {
+         var i:* = undefined;
+         for (i in this.statsPointsForIntelligence)
          {
-            if(param1 < this.statsPointsForIntelligence[_loc2_][0])
+            if(stat < this.statsPointsForIntelligence[i][0])
             {
-               return this.statsPointsForIntelligence[_loc2_-1][1];
+               return this.statsPointsForIntelligence[i - 1][1];
             }
          }
-         return this.statsPointsForIntelligence[_loc2_][1];
+         return this.statsPointsForIntelligence[i][1];
       }
       
-      public function getStatsPointsNeededForChance(param1:uint) : uint {
-         var _loc2_:* = undefined;
-         for (_loc2_ in this.statsPointsForChance)
+      public function getStatsPointsNeededForChance(stat:uint) : uint {
+         var i:* = undefined;
+         for (i in this.statsPointsForChance)
          {
-            if(param1 < this.statsPointsForChance[_loc2_][0])
+            if(stat < this.statsPointsForChance[i][0])
             {
-               return this.statsPointsForChance[_loc2_-1][1];
+               return this.statsPointsForChance[i - 1][1];
             }
          }
-         return this.statsPointsForChance[_loc2_][1];
+         return this.statsPointsForChance[i][1];
       }
       
-      public function getStatsPointsNeededForAgility(param1:uint) : uint {
-         var _loc2_:* = undefined;
-         for (_loc2_ in this.statsPointsForAgility)
+      public function getStatsPointsNeededForAgility(stat:uint) : uint {
+         var i:* = undefined;
+         for (i in this.statsPointsForAgility)
          {
-            if(param1 < this.statsPointsForAgility[_loc2_][0])
+            if(stat < this.statsPointsForAgility[i][0])
             {
-               return this.statsPointsForAgility[_loc2_-1][1];
+               return this.statsPointsForAgility[i - 1][1];
             }
          }
-         return this.statsPointsForAgility[_loc2_][1];
+         return this.statsPointsForAgility[i][1];
       }
       
-      public function getStatsPointsNeededForVitality(param1:uint) : uint {
-         var _loc2_:* = undefined;
-         for (_loc2_ in this.statsPointsForVitality)
+      public function getStatsPointsNeededForVitality(stat:uint) : uint {
+         var i:* = undefined;
+         for (i in this.statsPointsForVitality)
          {
-            if(param1 < this.statsPointsForVitality[_loc2_][0])
+            if(stat < this.statsPointsForVitality[i][0])
             {
-               return this.statsPointsForVitality[_loc2_-1][1];
+               return this.statsPointsForVitality[i - 1][1];
             }
          }
-         return this.statsPointsForVitality[_loc2_][1];
+         return this.statsPointsForVitality[i][1];
       }
       
-      public function getStatsPointsNeededForWisdom(param1:uint) : uint {
-         var _loc2_:* = undefined;
-         for (_loc2_ in this.statsPointsForWisdom)
+      public function getStatsPointsNeededForWisdom(stat:uint) : uint {
+         var i:* = undefined;
+         for (i in this.statsPointsForWisdom)
          {
-            if(param1 < this.statsPointsForWisdom[_loc2_][0])
+            if(stat < this.statsPointsForWisdom[i][0])
             {
-               return this.statsPointsForWisdom[_loc2_-1][1];
+               return this.statsPointsForWisdom[i - 1][1];
             }
          }
-         return this.statsPointsForWisdom[_loc2_][1];
+         return this.statsPointsForWisdom[i][1];
       }
    }
 }

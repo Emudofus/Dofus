@@ -15,11 +15,11 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightMarkTriggeredStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightMarkTriggeredStep(param1:int, param2:int, param3:int) {
+      public function FightMarkTriggeredStep(fighterId:int, casterId:int, markId:int) {
          super();
-         this._fighterId = param1;
-         this._casterId = param2;
-         this._markId = param3;
+         this._fighterId = fighterId;
+         this._casterId = casterId;
+         this._markId = markId;
       }
       
       private var _fighterId:int;
@@ -33,46 +33,44 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc1_:MarkInstance = MarkedCellsManager.getInstance().getMarkDatas(this._markId);
-         if(!_loc1_)
+         var mi:MarkInstance = MarkedCellsManager.getInstance().getMarkDatas(this._markId);
+         if(!mi)
          {
             _log.error("Trying to trigger an unknown mark (" + this._markId + "). Aborting.");
             executeCallbacks();
             return;
          }
-         var _loc2_:String = FightEventEnum.UNKNOWN_FIGHT_EVENT;
-         switch(_loc1_.markType)
+         var evt:String = FightEventEnum.UNKNOWN_FIGHT_EVENT;
+         switch(mi.markType)
          {
             case GameActionMarkTypeEnum.GLYPH:
                this.addProjectile(1016);
-               _loc2_ = FightEventEnum.FIGHTER_TRIGGERED_GLYPH;
+               evt = FightEventEnum.FIGHTER_TRIGGERED_GLYPH;
                break;
             case GameActionMarkTypeEnum.TRAP:
                this.addProjectile(1017);
-               _loc2_ = FightEventEnum.FIGHTER_TRIGGERED_TRAP;
+               evt = FightEventEnum.FIGHTER_TRIGGERED_TRAP;
                break;
-            default:
-               _log.warn("Unknown mark type triggered (" + _loc1_.markType + ").");
          }
-         FightEventsHelper.sendFightEvent(_loc2_,[this._fighterId,this._casterId,_loc1_.associatedSpell.id],0,castingSpellId);
+         FightEventsHelper.sendFightEvent(evt,[this._fighterId,this._casterId,mi.associatedSpell.id],0,castingSpellId);
          executeCallbacks();
       }
       
-      private function addProjectile(param1:int) : void {
-         var _loc2_:int = EntitiesManager.getInstance().getFreeEntityId();
-         var _loc3_:Projectile = new Projectile(_loc2_,TiphonEntityLook.fromString("{" + param1 + "}"),true);
-         _loc3_.init();
+      private function addProjectile(gfxId:int) : void {
+         var id:int = EntitiesManager.getInstance().getFreeEntityId();
+         var entity:Projectile = new Projectile(id,TiphonEntityLook.fromString("{" + gfxId + "}"),true);
+         entity.init();
          if(MarkedCellsManager.getInstance().getGlyph(this._markId) == null)
          {
             return;
          }
-         _loc3_.position = MarkedCellsManager.getInstance().getGlyph(this._markId).position;
-         _loc3_.display(PlacementStrataEnums.STRATA_AREA);
-         _loc3_.addEventListener(TiphonEvent.ANIMATION_END,this.removeProjectile);
+         entity.position = MarkedCellsManager.getInstance().getGlyph(this._markId).position;
+         entity.display(PlacementStrataEnums.STRATA_AREA);
+         entity.addEventListener(TiphonEvent.ANIMATION_END,this.removeProjectile);
       }
       
-      private function removeProjectile(param1:TiphonEvent) : void {
-         (param1.target as Projectile).remove();
+      private function removeProjectile(event:TiphonEvent) : void {
+         (event.target as Projectile).remove();
       }
    }
 }

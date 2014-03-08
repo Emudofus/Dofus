@@ -28,12 +28,12 @@ package com.ankamagames.dofus.network.types.game.friend
          return 93;
       }
       
-      public function initFriendSpouseOnlineInformations(param1:uint=0, param2:uint=0, param3:String="", param4:uint=0, param5:int=0, param6:int=0, param7:EntityLook=null, param8:BasicGuildInformations=null, param9:int=0, param10:uint=0, param11:uint=0, param12:Boolean=false, param13:Boolean=false) : FriendSpouseOnlineInformations {
-         super.initFriendSpouseInformations(param1,param2,param3,param4,param5,param6,param7,param8,param9);
-         this.mapId = param10;
-         this.subAreaId = param11;
-         this.inFight = param12;
-         this.followSpouse = param13;
+      public function initFriendSpouseOnlineInformations(spouseAccountId:uint=0, spouseId:uint=0, spouseName:String="", spouseLevel:uint=0, breed:int=0, sex:int=0, spouseEntityLook:EntityLook=null, guildInfo:BasicGuildInformations=null, alignmentSide:int=0, mapId:uint=0, subAreaId:uint=0, inFight:Boolean=false, followSpouse:Boolean=false) : FriendSpouseOnlineInformations {
+         super.initFriendSpouseInformations(spouseAccountId,spouseId,spouseName,spouseLevel,breed,sex,spouseEntityLook,guildInfo,alignmentSide);
+         this.mapId = mapId;
+         this.subAreaId = subAreaId;
+         this.inFight = inFight;
+         this.followSpouse = followSpouse;
          return this;
       }
       
@@ -45,52 +45,52 @@ package com.ankamagames.dofus.network.types.game.friend
          this.followSpouse = false;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FriendSpouseOnlineInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FriendSpouseOnlineInformations(output);
       }
       
-      public function serializeAs_FriendSpouseOnlineInformations(param1:IDataOutput) : void {
-         super.serializeAs_FriendSpouseInformations(param1);
-         var _loc2_:uint = 0;
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,0,this.inFight);
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,1,this.followSpouse);
-         param1.writeByte(_loc2_);
+      public function serializeAs_FriendSpouseOnlineInformations(output:IDataOutput) : void {
+         super.serializeAs_FriendSpouseInformations(output);
+         var _box0:uint = 0;
+         _box0 = BooleanByteWrapper.setFlag(_box0,0,this.inFight);
+         _box0 = BooleanByteWrapper.setFlag(_box0,1,this.followSpouse);
+         output.writeByte(_box0);
          if(this.mapId < 0)
          {
             throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
          }
          else
          {
-            param1.writeInt(this.mapId);
+            output.writeInt(this.mapId);
             if(this.subAreaId < 0)
             {
                throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
             }
             else
             {
-               param1.writeShort(this.subAreaId);
+               output.writeShort(this.subAreaId);
                return;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FriendSpouseOnlineInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FriendSpouseOnlineInformations(input);
       }
       
-      public function deserializeAs_FriendSpouseOnlineInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         var _loc2_:uint = param1.readByte();
-         this.inFight = BooleanByteWrapper.getFlag(_loc2_,0);
-         this.followSpouse = BooleanByteWrapper.getFlag(_loc2_,1);
-         this.mapId = param1.readInt();
+      public function deserializeAs_FriendSpouseOnlineInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         var _box0:uint = input.readByte();
+         this.inFight = BooleanByteWrapper.getFlag(_box0,0);
+         this.followSpouse = BooleanByteWrapper.getFlag(_box0,1);
+         this.mapId = input.readInt();
          if(this.mapId < 0)
          {
             throw new Error("Forbidden value (" + this.mapId + ") on element of FriendSpouseOnlineInformations.mapId.");
          }
          else
          {
-            this.subAreaId = param1.readShort();
+            this.subAreaId = input.readShort();
             if(this.subAreaId < 0)
             {
                throw new Error("Forbidden value (" + this.subAreaId + ") on element of FriendSpouseOnlineInformations.subAreaId.");

@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(param1:Boolean=true) : PlayerFightFriendlyAnswerAction {
-         var _loc2_:PlayerFightFriendlyAnswerAction = new PlayerFightFriendlyAnswerAction();
-         _loc2_.accept = param1;
-         return _loc2_;
+      public static function create(accept:Boolean=true) : PlayerFightFriendlyAnswerAction {
+         var o:PlayerFightFriendlyAnswerAction = new PlayerFightFriendlyAnswerAction();
+         o.accept = accept;
+         return o;
       }
       
       public var accept:Boolean;

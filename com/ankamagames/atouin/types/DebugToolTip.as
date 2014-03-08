@@ -25,8 +25,8 @@ package com.ankamagames.atouin.types
             mouseEnabled = false;
             mouseChildren = false;
             this._shape = new Shape();
-            _loc1_ = new DropShadowFilter(0,45,4473924,0.5,4,4,1,1);
-            filters = [_loc1_];
+            f = new DropShadowFilter(0,45,4473924,0.5,4,4,1,1);
+            filters = [f];
             addChild(this._shape);
             this._textfield = new TextField();
             this._textfield.defaultTextFormat = this._textformat;
@@ -60,21 +60,21 @@ package com.ankamagames.atouin.types
       
       private var _defautY:Number = 880;
       
-      public function setPosition(param1:Number, param2:Number) : void {
-         x = param1;
-         y = param2;
+      public function setPosition(pX:Number, pY:Number) : void {
+         x = pX;
+         y = pY;
       }
       
-      public function set text(param1:String) : void {
-         this._textfield.text = param1;
+      public function set text(s:String) : void {
+         this._textfield.text = s;
          this._shape.x = this._textfield.x - 4;
          this._shape.y = this._textfield.y - 4;
-         var _loc2_:Number = this._minWidth < this._textfield.textWidth + 8?this._textfield.textWidth + 8:this._minWidth;
-         var _loc3_:Number = this._minHeight < this._textfield.textHeight + 8?this._textfield.textHeight + 8:this._minHeight;
+         var pw:Number = this._minWidth < this._textfield.textWidth + 8?this._textfield.textWidth + 8:this._minWidth;
+         var ph:Number = this._minHeight < this._textfield.textHeight + 8?this._textfield.textHeight + 8:this._minHeight;
          this._shape.graphics.clear();
          this._shape.graphics.beginFill(16777215,0.7);
-         this._shape.graphics.drawRect(0,0,_loc2_,_loc3_);
-         this.setPosition(this._defautX - _loc2_,this._defautY - _loc3_);
+         this._shape.graphics.drawRect(0,0,pw,ph);
+         this.setPosition(this._defautX - pw,this._defautY - ph);
       }
    }
 }

@@ -33,11 +33,11 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 880;
       }
       
-      public function initChatAbstractServerMessage(param1:uint=0, param2:String="", param3:uint=0, param4:String="") : ChatAbstractServerMessage {
-         this.channel = param1;
-         this.content = param2;
-         this.timestamp = param3;
-         this.fingerprint = param4;
+      public function initChatAbstractServerMessage(channel:uint=0, content:String="", timestamp:uint=0, fingerprint:String="") : ChatAbstractServerMessage {
+         this.channel = channel;
+         this.content = content;
+         this.timestamp = timestamp;
+         this.fingerprint = fingerprint;
          this._isInitialized = true;
          return this;
       }
@@ -50,56 +50,56 @@ package com.ankamagames.dofus.network.messages.game.chat
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ChatAbstractServerMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ChatAbstractServerMessage(output);
       }
       
-      public function serializeAs_ChatAbstractServerMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.channel);
-         param1.writeUTF(this.content);
+      public function serializeAs_ChatAbstractServerMessage(output:IDataOutput) : void {
+         output.writeByte(this.channel);
+         output.writeUTF(this.content);
          if(this.timestamp < 0)
          {
             throw new Error("Forbidden value (" + this.timestamp + ") on element timestamp.");
          }
          else
          {
-            param1.writeInt(this.timestamp);
-            param1.writeUTF(this.fingerprint);
+            output.writeInt(this.timestamp);
+            output.writeUTF(this.fingerprint);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ChatAbstractServerMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ChatAbstractServerMessage(input);
       }
       
-      public function deserializeAs_ChatAbstractServerMessage(param1:IDataInput) : void {
-         this.channel = param1.readByte();
+      public function deserializeAs_ChatAbstractServerMessage(input:IDataInput) : void {
+         this.channel = input.readByte();
          if(this.channel < 0)
          {
             throw new Error("Forbidden value (" + this.channel + ") on element of ChatAbstractServerMessage.channel.");
          }
          else
          {
-            this.content = param1.readUTF();
-            this.timestamp = param1.readInt();
+            this.content = input.readUTF();
+            this.timestamp = input.readInt();
             if(this.timestamp < 0)
             {
                throw new Error("Forbidden value (" + this.timestamp + ") on element of ChatAbstractServerMessage.timestamp.");
             }
             else
             {
-               this.fingerprint = param1.readUTF();
+               this.fingerprint = input.readUTF();
                return;
             }
          }

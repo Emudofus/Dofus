@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.tinsel
          super();
       }
       
-      public static function create(param1:int) : TitleSelectRequestAction {
-         var _loc2_:TitleSelectRequestAction = new TitleSelectRequestAction();
-         _loc2_.titleId = param1;
-         return _loc2_;
+      public static function create(titleId:int) : TitleSelectRequestAction {
+         var action:TitleSelectRequestAction = new TitleSelectRequestAction();
+         action.titleId = titleId;
+         return action;
       }
       
       public var titleId:int;

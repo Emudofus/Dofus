@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.fight.actions
       }
       
       public static function create() : BannerEmptySlotClickAction {
-         var _loc1_:BannerEmptySlotClickAction = new BannerEmptySlotClickAction();
-         return _loc1_;
+         var a:BannerEmptySlotClickAction = new BannerEmptySlotClickAction();
+         return a;
       }
    }
 }

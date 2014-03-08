@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:uint, param2:String="") : OpenSmileysAction {
-         var _loc3_:OpenSmileysAction = new OpenSmileysAction();
-         _loc3_.type = param1;
-         _loc3_.forceOpen = param2;
-         return _loc3_;
+      public static function create(pType:uint, pForceOpen:String="") : OpenSmileysAction {
+         var a:OpenSmileysAction = new OpenSmileysAction();
+         a.type = pType;
+         a.forceOpen = pForceOpen;
+         return a;
       }
       
       public var type:uint;

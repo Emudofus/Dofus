@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.party
          super();
       }
       
-      public static function create(param1:Array) : DungeonPartyFinderRegisterAction {
-         var _loc2_:DungeonPartyFinderRegisterAction = new DungeonPartyFinderRegisterAction();
-         _loc2_.dungeons = param1;
-         return _loc2_;
+      public static function create(dungeons:Array) : DungeonPartyFinderRegisterAction {
+         var a:DungeonPartyFinderRegisterAction = new DungeonPartyFinderRegisterAction();
+         a.dungeons = dungeons;
+         return a;
       }
       
       public var dungeons:Array;

@@ -3,10 +3,10 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
    public class List extends Object
    {
       
-      public function List(param1:Object, param2:List=null) {
+      public function List(pValue:Object, pNext:List=null) {
          super();
-         this.value = param1;
-         this.next = param2;
+         this.value = pValue;
+         this.next = pNext;
       }
       
       public var value:Object;

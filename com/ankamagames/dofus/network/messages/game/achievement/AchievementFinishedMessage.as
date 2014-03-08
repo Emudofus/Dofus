@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6208;
       }
       
-      public function initAchievementFinishedMessage(param1:uint=0, param2:uint=0) : AchievementFinishedMessage {
-         this.id = param1;
-         this.finishedlevel = param2;
+      public function initAchievementFinishedMessage(id:uint=0, finishedlevel:uint=0) : AchievementFinishedMessage {
+         this.id = id;
+         this.finishedlevel = finishedlevel;
          this._isInitialized = true;
          return this;
       }
@@ -42,54 +42,54 @@ package com.ankamagames.dofus.network.messages.game.achievement
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AchievementFinishedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AchievementFinishedMessage(output);
       }
       
-      public function serializeAs_AchievementFinishedMessage(param1:IDataOutput) : void {
+      public function serializeAs_AchievementFinishedMessage(output:IDataOutput) : void {
          if(this.id < 0)
          {
             throw new Error("Forbidden value (" + this.id + ") on element id.");
          }
          else
          {
-            param1.writeShort(this.id);
-            if(this.finishedlevel < 0 || this.finishedlevel > 200)
+            output.writeShort(this.id);
+            if((this.finishedlevel < 0) || (this.finishedlevel > 200))
             {
                throw new Error("Forbidden value (" + this.finishedlevel + ") on element finishedlevel.");
             }
             else
             {
-               param1.writeShort(this.finishedlevel);
+               output.writeShort(this.finishedlevel);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AchievementFinishedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AchievementFinishedMessage(input);
       }
       
-      public function deserializeAs_AchievementFinishedMessage(param1:IDataInput) : void {
-         this.id = param1.readShort();
+      public function deserializeAs_AchievementFinishedMessage(input:IDataInput) : void {
+         this.id = input.readShort();
          if(this.id < 0)
          {
             throw new Error("Forbidden value (" + this.id + ") on element of AchievementFinishedMessage.id.");
          }
          else
          {
-            this.finishedlevel = param1.readShort();
-            if(this.finishedlevel < 0 || this.finishedlevel > 200)
+            this.finishedlevel = input.readShort();
+            if((this.finishedlevel < 0) || (this.finishedlevel > 200))
             {
                throw new Error("Forbidden value (" + this.finishedlevel + ") on element of AchievementFinishedMessage.finishedlevel.");
             }

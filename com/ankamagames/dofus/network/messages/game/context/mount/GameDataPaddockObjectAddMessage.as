@@ -29,8 +29,8 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5990;
       }
       
-      public function initGameDataPaddockObjectAddMessage(param1:PaddockItem=null) : GameDataPaddockObjectAddMessage {
-         this.paddockItemDescription = param1;
+      public function initGameDataPaddockObjectAddMessage(paddockItemDescription:PaddockItem=null) : GameDataPaddockObjectAddMessage {
+         this.paddockItemDescription = paddockItemDescription;
          this._isInitialized = true;
          return this;
       }
@@ -40,31 +40,31 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameDataPaddockObjectAddMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameDataPaddockObjectAddMessage(output);
       }
       
-      public function serializeAs_GameDataPaddockObjectAddMessage(param1:IDataOutput) : void {
-         this.paddockItemDescription.serializeAs_PaddockItem(param1);
+      public function serializeAs_GameDataPaddockObjectAddMessage(output:IDataOutput) : void {
+         this.paddockItemDescription.serializeAs_PaddockItem(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameDataPaddockObjectAddMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameDataPaddockObjectAddMessage(input);
       }
       
-      public function deserializeAs_GameDataPaddockObjectAddMessage(param1:IDataInput) : void {
+      public function deserializeAs_GameDataPaddockObjectAddMessage(input:IDataInput) : void {
          this.paddockItemDescription = new PaddockItem();
-         this.paddockItemDescription.deserialize(param1);
+         this.paddockItemDescription.deserialize(input);
       }
    }
 }

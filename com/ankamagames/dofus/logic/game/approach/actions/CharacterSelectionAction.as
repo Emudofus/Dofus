@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.approach.actions
          super();
       }
       
-      public static function create(param1:int, param2:Boolean) : CharacterSelectionAction {
-         var _loc3_:CharacterSelectionAction = new CharacterSelectionAction();
-         _loc3_.characterId = param1;
-         _loc3_.btutoriel = param2;
-         return _loc3_;
+      public static function create(characterId:int, btutoriel:Boolean) : CharacterSelectionAction {
+         var a:CharacterSelectionAction = new CharacterSelectionAction();
+         a.characterId = characterId;
+         a.btutoriel = btutoriel;
+         return a;
       }
       
       public var characterId:int;

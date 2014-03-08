@@ -55,9 +55,9 @@ package com.ankamagames.dofus.misc.utils.errormanager
    public class DofusErrorHandler extends Object
    {
       
-      public function DofusErrorHandler(param1:Boolean=true) {
+      public function DofusErrorHandler(pAutoInit:Boolean=true) {
          super();
-         if(param1)
+         if(pAutoInit)
          {
             this.activeManually();
             this.initData();
@@ -81,12 +81,12 @@ package com.ankamagames.dofus.misc.utils.errormanager
          return (_manualActivation.data) && (_manualActivation.data.force);
       }
       
-      public static function set manualActivation(param1:Boolean) : void {
+      public static function set manualActivation(v:Boolean) : void {
          if(!_manualActivation.data)
          {
             _manualActivation.data = {};
          }
-         _manualActivation.data.force = param1;
+         _manualActivation.data.force = v;
          _manualActivation.flush();
       }
       
@@ -169,32 +169,21 @@ package com.ankamagames.dofus.misc.utils.errormanager
                this._localSaveReport = true;
                this._distantSaveReport = true;
                break;
-            default:
-               this.activeSOS();
-               this.activeLogBuffer();
-               this.activeDebugMode();
-               this.activeShortcut();
-               if(AirScanner.isStreamingVersion())
-               {
-                  this.activeGlobalExceptionCatch(true);
-               }
-               this._localSaveReport = true;
-               this._distantSaveReport = true;
          }
          this.createEmptyLog4As();
       }
       
-      private function onKeyUp(param1:KeyboardEvent) : void {
+      private function onKeyUp(e:KeyboardEvent) : void {
          if(SystemManager.getSingleton().os == OperatingSystem.MAC_OS)
          {
-            if(param1.keyCode == Keyboard.F1)
+            if(e.keyCode == Keyboard.F1)
             {
                this.onError(new ErrorReportedEvent(null,"Manual bug report"));
             }
          }
          else
          {
-            if(param1.keyCode == Keyboard.F11)
+            if(e.keyCode == Keyboard.F11)
             {
                this.onError(new ErrorReportedEvent(null,"Manual bug report"));
             }
@@ -220,34 +209,32 @@ package com.ankamagames.dofus.misc.utils.errormanager
       }
       
       private function getDebugFile() : File {
-         var _loc1_:File = null;
+         var debugFile:File = null;
          switch(this.getOs())
          {
             case OperatingSystem.MAC_OS:
-               _loc1_ = File.applicationDirectory.resolvePath("../Resources/META-INF/AIR/debug");
+               debugFile = File.applicationDirectory.resolvePath("../Resources/META-INF/AIR/debug");
                break;
             case OperatingSystem.WINDOWS:
-               _loc1_ = File.applicationDirectory.resolvePath("META-INF/AIR/debug");
+               debugFile = File.applicationDirectory.resolvePath("META-INF/AIR/debug");
                break;
-            default:
-               return null;
          }
-         return new File(_loc1_.nativePath);
+         return new File(debugFile.nativePath);
       }
       
       public function activeSOS() : void {
-         var _loc2_:FileStream = null;
-         var _loc1_:File = new File(File.applicationDirectory.resolvePath("log4as.xml").nativePath);
-         if(!_loc1_.exists)
+         var fs:FileStream = null;
+         var sosFile:File = new File(File.applicationDirectory.resolvePath("log4as.xml").nativePath);
+         if(!sosFile.exists)
          {
-            _loc2_ = new FileStream();
-            _loc2_.open(_loc1_,FileMode.WRITE);
-            _loc2_.writeUTFBytes(<logging>
+            fs = new FileStream();
+            fs.open(sosFile,FileMode.WRITE);
+            fs.writeUTFBytes(<logging>
 					<targets>
 						<target module="com.ankamagames.jerakine.logger.targets.SOSTarget"/>
 					</targets>
 				</logging>);
-            _loc2_.close();
+            fs.close();
          }
          Log.addTarget(new DebugTarget());
       }
@@ -283,7 +270,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
          Log.addTarget(_logBuffer);
       }
       
-      public function activeShortcut(param1:Event=null) : void {
+      public function activeShortcut(e:Event=null) : void {
          if(Dofus.getInstance().stage)
          {
             Dofus.getInstance().stage.addEventListener(KeyboardEvent.KEY_UP,this.onKeyUp);
@@ -294,11 +281,11 @@ package com.ankamagames.dofus.misc.utils.errormanager
          }
       }
       
-      public function activeGlobalExceptionCatch(param1:Boolean) : void {
+      public function activeGlobalExceptionCatch(pShowPopup:Boolean) : void {
          _log.info("Catch des exceptions activés");
          ErrorManager.catchError = true;
-         _log.info("Affichage des popups: " + param1);
-         ErrorManager.showPopup = param1;
+         _log.info("Affichage des popups: " + pShowPopup);
+         ErrorManager.showPopup = pShowPopup;
          ErrorManager.eventDispatcher.addEventListener(ErrorReportedEvent.ERROR,this.onError);
       }
       
@@ -311,7 +298,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
          }
       }
       
-      private function onError(param1:ErrorReportedEvent) : void {
+      private function onError(e:ErrorReportedEvent) : void {
          var error:Error = null;
          var report:ErrorReport = null;
          var stackTrace:String = null;
@@ -321,7 +308,6 @@ package com.ankamagames.dofus.misc.utils.errormanager
          var exception:DataExceptionModel = null;
          var buttons:Array = null;
          var popup:SystemPopupUI = null;
-         var e:ErrorReportedEvent = param1;
          var txt:String = e.text;
          error = e.error;
          if(error)
@@ -335,7 +321,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
             tmp = realStacktrace.split("\n");
             for each (line in tmp)
             {
-               if(line.indexOf("ErrorManager") == -1 || line.indexOf("addError") == -1)
+               if((line.indexOf("ErrorManager") == -1) || (line.indexOf("addError") == -1))
                {
                   stackTrace = stackTrace + ((stackTrace.length?"\n":"") + line);
                }
@@ -407,7 +393,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
          }
       }
       
-      public function getReportInfo(param1:Error, param2:String) : Object {
+      public function getReportInfo(error:Error, txt:String) : Object {
          var date:Date = null;
          var o:Object = null;
          var userNameData:Array = null;
@@ -440,8 +426,6 @@ package com.ankamagames.dofus.misc.utils.errormanager
          var iePos:MapPoint = null;
          var ieInfoDataStr:String = null;
          var keyIe:String = null;
-         var error:Error = param1;
-         var txt:String = param2;
          try
          {
             date = new Date();
@@ -466,7 +450,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
                logs = _logBuffer.getBuffer();
                for each (log in logs)
                {
-                  if(log is TextLogEvent && log.level > 0)
+                  if((log is TextLogEvent) && (log.level > 0))
                   {
                      htmlBuffer = htmlBuffer + ("\t\t\t<li class=\"l_" + log.level + "\">" + log.message + "</li>\n");
                   }
@@ -567,7 +551,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
                      entityInfoDataStr = "{cell:" + cellId + ",className:\'" + getQualifiedClassName(entityInfo).split("::").pop() + "\'";
                      for each (key in entityInfoData)
                      {
-                        if(entityInfo[key] is int || entityInfo[key] is uint || entityInfo[key] is Number || entityInfo[key] is Boolean || entityInfo[key] is String)
+                        if((entityInfo[key] is int) || (entityInfo[key] is uint) || (entityInfo[key] is Number) || (entityInfo[key] is Boolean) || (entityInfo[key] is String))
                         {
                            entityInfoDataStr = entityInfoDataStr + ("," + key + ":\"" + entityInfo[key] + "\"");
                         }
@@ -590,7 +574,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
                      ieInfoDataStr = "{cell:" + iePos.cellId + ",className:\'" + getQualifiedClassName(ie).split("::").pop() + "\'";
                      for each (keyIe in ieInfoData)
                      {
-                        if(ie[keyIe] is int || ie[keyIe] is uint || ie[keyIe] is Number || ie[keyIe] is Boolean || ie[keyIe] is String)
+                        if((ie[keyIe] is int) || (ie[keyIe] is uint) || (ie[keyIe] is Number) || (ie[keyIe] is Boolean) || (ie[keyIe] is String))
                         {
                            ieInfoDataStr = ieInfoDataStr + ("," + keyIe + ":\"" + ie[keyIe] + "\"");
                         }
@@ -605,14 +589,14 @@ package com.ankamagames.dofus.misc.utils.errormanager
          }
          catch(e:Error)
          {
-            _log.error("Error lors du rapport de bug...");
+            _log.error("Error lors du rapport de bug... " + e.message + "\nErreur d\'origine :" + (error?error.message:txt));
          }
          return o;
       }
       
       private function getFightFrame() : FightContextFrame {
-         var _loc1_:Frame = Kernel.getWorker().getFrame(FightContextFrame);
-         return _loc1_ as FightContextFrame;
+         var frame:Frame = Kernel.getWorker().getFrame(FightContextFrame);
+         return frame as FightContextFrame;
       }
       
       public function get localSaveReport() : Boolean {
@@ -628,16 +612,16 @@ package com.ankamagames.dofus.misc.utils.errormanager
       }
       
       private function getOs() : String {
-         var _loc1_:String = Capabilities.os;
-         if(_loc1_ == OperatingSystem.LINUX)
+         var cos:String = Capabilities.os;
+         if(cos == OperatingSystem.LINUX)
          {
             return OperatingSystem.LINUX;
          }
-         if(_loc1_.substr(0,OperatingSystem.MAC_OS.length) == OperatingSystem.MAC_OS)
+         if(cos.substr(0,OperatingSystem.MAC_OS.length) == OperatingSystem.MAC_OS)
          {
             return OperatingSystem.MAC_OS;
          }
-         if(_loc1_.substr(0,OperatingSystem.WINDOWS.length) == OperatingSystem.WINDOWS)
+         if(cos.substr(0,OperatingSystem.WINDOWS.length) == OperatingSystem.WINDOWS)
          {
             return OperatingSystem.WINDOWS;
          }

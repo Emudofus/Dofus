@@ -18,20 +18,20 @@ package com.ankamagames.dofus.datacenter.world
       
       private static var _allSubAreas:Array;
       
-      public static function getSubAreaById(param1:int) : SubArea {
-         var _loc2_:SubArea = GameData.getObject(MODULE,param1) as SubArea;
-         if(!_loc2_ || !_loc2_.area)
+      public static function getSubAreaById(id:int) : SubArea {
+         var subArea:SubArea = GameData.getObject(MODULE,id) as SubArea;
+         if((!subArea) || (!subArea.area))
          {
             return null;
          }
-         return _loc2_;
+         return subArea;
       }
       
-      public static function getSubAreaByMapId(param1:uint) : SubArea {
-         var _loc2_:MapPosition = MapPosition.getMapPositionById(param1);
-         if(_loc2_)
+      public static function getSubAreaByMapId(mapId:uint) : SubArea {
+         var mp:MapPosition = MapPosition.getMapPositionById(mapId);
+         if(mp)
          {
-            return _loc2_.subArea;
+            return mp.subArea;
          }
          return null;
       }
@@ -119,7 +119,7 @@ package com.ankamagames.dofus.datacenter.world
       }
       
       public function get hasCustomWorldMap() : Boolean {
-         return (this.customWorldMap) && this.customWorldMap.length > 0;
+         return (this.customWorldMap) && (this.customWorldMap.length > 0);
       }
    }
 }

@@ -43,41 +43,41 @@ package com.ankamagames.dofus.misc.utils
       
       private static var matrix:Matrix = new Matrix();
       
-      public static function getBitmap(param1:String, param2:Boolean=false, param3:Boolean=true) : Bitmap {
-         var _loc4_:Bitmap = null;
-         var _loc6_:BitmapData = null;
-         if((param3) && !(_cache[param1] == null))
+      public static function getBitmap(className:String, unique:Boolean=false, useCache:Boolean=true) : Bitmap {
+         var bmp:Bitmap = null;
+         var bmpdt:BitmapData = null;
+         if((useCache) && (!(_cache[className] == null)))
          {
-            _loc4_ = _cache[param1];
-            if(!param2)
+            bmp = _cache[className];
+            if(!unique)
             {
-               return _loc4_;
+               return bmp;
             }
-            _loc6_ = new BitmapData(_loc4_.width,_loc4_.height,true,16711935);
-            _loc6_.draw(_loc4_,matrix);
-            return new Bitmap(_loc6_);
+            bmpdt = new BitmapData(bmp.width,bmp.height,true,16711935);
+            bmpdt.draw(bmp,matrix);
+            return new Bitmap(bmpdt);
          }
-         var _loc5_:Class = EmbedAssets[param1] as Class;
-         _loc4_ = new _loc5_() as Bitmap;
-         if(param3)
+         var ClassReference:Class = EmbedAssets[className] as Class;
+         bmp = new ClassReference() as Bitmap;
+         if(useCache)
          {
-            saveCache(param1,_loc4_);
+            saveCache(className,bmp);
          }
-         return _loc4_;
+         return bmp;
       }
       
-      public static function getSprite(param1:String) : Sprite {
-         var _loc2_:Class = EmbedAssets[param1] as Class;
-         var _loc3_:Sprite = new _loc2_() as Sprite;
-         return _loc3_;
+      public static function getSprite(className:String) : Sprite {
+         var ClassReference:Class = EmbedAssets[className] as Class;
+         var spr:Sprite = new ClassReference() as Sprite;
+         return spr;
       }
       
-      public static function getClass(param1:String) : Class {
-         return EmbedAssets[param1] as Class;
+      public static function getClass(className:String) : Class {
+         return EmbedAssets[className] as Class;
       }
       
-      private static function saveCache(param1:String, param2:*) : void {
-         _cache[param1] = param2;
+      private static function saveCache(className:String, data:*) : void {
+         _cache[className] = data;
       }
    }
 }

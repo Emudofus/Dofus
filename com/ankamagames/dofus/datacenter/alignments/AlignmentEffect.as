@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.alignments
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlignmentEffect));
       
-      public static function getAlignmentEffectById(param1:int) : AlignmentEffect {
-         return GameData.getObject(MODULE,param1) as AlignmentEffect;
+      public static function getAlignmentEffectById(id:int) : AlignmentEffect {
+         return GameData.getObject(MODULE,id) as AlignmentEffect;
       }
       
       public static function getAlignmentEffects() : Array {

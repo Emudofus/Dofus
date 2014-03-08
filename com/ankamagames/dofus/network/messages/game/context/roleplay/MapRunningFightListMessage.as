@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.context.fight.FightExternalInformations;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,8 +30,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 5743;
       }
       
-      public function initMapRunningFightListMessage(param1:Vector.<FightExternalInformations>=null) : MapRunningFightListMessage {
-         this.fights = param1;
+      public function initMapRunningFightListMessage(fights:Vector.<FightExternalInformations>=null) : MapRunningFightListMessage {
+         this.fights = fights;
          this._isInitialized = true;
          return this;
       }
@@ -41,44 +41,44 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MapRunningFightListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MapRunningFightListMessage(output);
       }
       
-      public function serializeAs_MapRunningFightListMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.fights.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.fights.length)
+      public function serializeAs_MapRunningFightListMessage(output:IDataOutput) : void {
+         output.writeShort(this.fights.length);
+         var _i1:uint = 0;
+         while(_i1 < this.fights.length)
          {
-            (this.fights[_loc2_] as FightExternalInformations).serializeAs_FightExternalInformations(param1);
-            _loc2_++;
+            (this.fights[_i1] as FightExternalInformations).serializeAs_FightExternalInformations(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MapRunningFightListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MapRunningFightListMessage(input);
       }
       
-      public function deserializeAs_MapRunningFightListMessage(param1:IDataInput) : void {
-         var _loc4_:FightExternalInformations = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_MapRunningFightListMessage(input:IDataInput) : void {
+         var _item1:FightExternalInformations = null;
+         var _fightsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _fightsLen)
          {
-            _loc4_ = new FightExternalInformations();
-            _loc4_.deserialize(param1);
-            this.fights.push(_loc4_);
-            _loc3_++;
+            _item1 = new FightExternalInformations();
+            _item1.deserialize(input);
+            this.fights.push(_item1);
+            _i1++;
          }
       }
    }

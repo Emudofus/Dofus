@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.approach
          return 433;
       }
       
-      public function initServerSessionConstantInteger(param1:uint=0, param2:int=0) : ServerSessionConstantInteger {
-         super.initServerSessionConstant(param1);
-         this.value = param2;
+      public function initServerSessionConstantInteger(id:uint=0, value:int=0) : ServerSessionConstantInteger {
+         super.initServerSessionConstant(id);
+         this.value = value;
          return this;
       }
       
@@ -30,22 +30,22 @@ package com.ankamagames.dofus.network.types.game.approach
          this.value = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ServerSessionConstantInteger(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ServerSessionConstantInteger(output);
       }
       
-      public function serializeAs_ServerSessionConstantInteger(param1:IDataOutput) : void {
-         super.serializeAs_ServerSessionConstant(param1);
-         param1.writeInt(this.value);
+      public function serializeAs_ServerSessionConstantInteger(output:IDataOutput) : void {
+         super.serializeAs_ServerSessionConstant(output);
+         output.writeInt(this.value);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ServerSessionConstantInteger(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ServerSessionConstantInteger(input);
       }
       
-      public function deserializeAs_ServerSessionConstantInteger(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.value = param1.readInt();
+      public function deserializeAs_ServerSessionConstantInteger(input:IDataInput) : void {
+         super.deserialize(input);
+         this.value = input.readInt();
       }
    }
 }

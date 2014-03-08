@@ -19,8 +19,8 @@ package com.ankamagames.dofus.network.types.game.approach
          return 430;
       }
       
-      public function initServerSessionConstant(param1:uint=0) : ServerSessionConstant {
-         this.id = param1;
+      public function initServerSessionConstant(id:uint=0) : ServerSessionConstant {
+         this.id = id;
          return this;
       }
       
@@ -28,28 +28,28 @@ package com.ankamagames.dofus.network.types.game.approach
          this.id = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ServerSessionConstant(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ServerSessionConstant(output);
       }
       
-      public function serializeAs_ServerSessionConstant(param1:IDataOutput) : void {
+      public function serializeAs_ServerSessionConstant(output:IDataOutput) : void {
          if(this.id < 0)
          {
             throw new Error("Forbidden value (" + this.id + ") on element id.");
          }
          else
          {
-            param1.writeShort(this.id);
+            output.writeShort(this.id);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ServerSessionConstant(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ServerSessionConstant(input);
       }
       
-      public function deserializeAs_ServerSessionConstant(param1:IDataInput) : void {
-         this.id = param1.readShort();
+      public function deserializeAs_ServerSessionConstant(input:IDataInput) : void {
+         this.id = input.readShort();
          if(this.id < 0)
          {
             throw new Error("Forbidden value (" + this.id + ") on element of ServerSessionConstant.id.");

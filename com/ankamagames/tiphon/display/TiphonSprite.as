@@ -12,7 +12,6 @@ package com.ankamagames.tiphon.display
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.tiphon.types.Skin;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
-   import __AS3__.vec.Vector;
    import com.ankamagames.tiphon.types.SubEntityTempInfo;
    import flash.events.Event;
    import com.ankamagames.tiphon.engine.TiphonEventsManager;
@@ -57,19 +56,20 @@ package com.ankamagames.tiphon.display
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import com.ankamagames.tiphon.engine.TiphonDebugManager;
    import com.ankamagames.tiphon.types.CarriedSprite;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.system.AirScanner;
    
    public class TiphonSprite extends Sprite implements IAnimated, IAnimationSpriteHandler, IDestroyable, EntityLookObserver
    {
       
-      public function TiphonSprite(param1:TiphonEntityLook) {
-         var _loc2_:* = 0;
-         var _loc5_:String = null;
-         var _loc6_:* = 0;
-         var _loc7_:uint = 0;
-         var _loc8_:* = 0;
-         var _loc9_:uint = 0;
-         var _loc10_:TiphonSprite = null;
+      public function TiphonSprite(look:TiphonEntityLook) {
+         var num:* = 0;
+         var cat:String = null;
+         var i:* = 0;
+         var skin:uint = 0;
+         var category:* = 0;
+         var subIndex:uint = 0;
+         var subEntity:TiphonSprite = null;
          this._backgroundTemp = new Array();
          this._deactivatedSubEntityCategory = new Array();
          this._waitingEventInitList = new Vector.<Event>();
@@ -80,7 +80,7 @@ package com.ankamagames.tiphon.display
          FpsManager.getInstance().watchObject(this,true);
          this._libReady = false;
          this._background = new Array();
-         this.initializeLibrary(param1.getBone());
+         this.initializeLibrary(look.getBone());
          this._subEntityBehaviors = new Array();
          this._currentAnimation = null;
          this._currentDirection = -1;
@@ -90,34 +90,34 @@ package com.ankamagames.tiphon.display
          this._aSubEntities = new Array();
          this._subEntitiesList = new Array();
          this._subEntitiesTemp = new Vector.<SubEntityTempInfo>();
-         this._look = param1;
+         this._look = look;
          this._lookCode = this._look.toString();
          this._skin = new Skin();
          this._skin.addEventListener(Event.COMPLETE,this.checkRessourceState);
-         var _loc3_:Vector.<uint> = this._look.getSkins(true);
-         if(_loc3_)
+         var skinList:Vector.<uint> = this._look.getSkins(true);
+         if(skinList)
          {
-            _loc2_ = _loc3_.length;
-            _loc6_ = 0;
-            while(_loc6_ < _loc2_)
+            num = skinList.length;
+            i = 0;
+            while(i < num)
             {
-               _loc7_ = _loc3_[_loc6_];
-               _loc7_ = this._skin.add(_loc7_,this._alternativeSkinIndex);
-               _loc6_++;
+               skin = skinList[i];
+               skin = this._skin.add(skin,this._alternativeSkinIndex);
+               i++;
             }
          }
-         var _loc4_:Array = this._look.getSubEntities(true);
-         for (_loc5_ in _loc4_)
+         var subEntitiesLook:Array = this._look.getSubEntities(true);
+         for (cat in subEntitiesLook)
          {
-            _loc8_ = int(_loc5_);
-            _loc2_ = _loc4_[_loc8_].length;
-            _loc9_ = 0;
-            while(_loc9_ < _loc2_)
+            category = int(cat);
+            num = subEntitiesLook[category].length;
+            subIndex = 0;
+            while(subIndex < num)
             {
-               _loc10_ = new TiphonSprite(this._look.getSubEntity(_loc8_,_loc9_));
-               _loc10_.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onSubEntityRendered,false,0,true);
-               this.addSubEntity(_loc10_,_loc8_,_loc9_);
-               _loc9_++;
+               subEntity = new TiphonSprite(this._look.getSubEntity(category,subIndex));
+               subEntity.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onSubEntityRendered,false,0,true);
+               this.addSubEntity(subEntity,category,subIndex);
+               subIndex++;
             }
          }
          this._look.addObserver(this);
@@ -235,17 +235,17 @@ package com.ankamagames.tiphon.display
          }
       }
       
-      override public function set visible(param1:Boolean) : void {
-         super.visible = param1;
+      override public function set visible(v:Boolean) : void {
+         super.visible = v;
       }
       
-      override public function set alpha(param1:Number) : void {
-         super.alpha = param1;
+      override public function set alpha(a:Number) : void {
+         super.alpha = a;
       }
       
-      override public function set mouseEnabled(param1:Boolean) : void {
-         this._savedMouseEnabled = param1;
-         super.mouseEnabled = param1;
+      override public function set mouseEnabled(enabled:Boolean) : void {
+         this._savedMouseEnabled = enabled;
+         super.mouseEnabled = enabled;
       }
       
       override public function get mouseEnabled() : Boolean {
@@ -256,25 +256,25 @@ package com.ankamagames.tiphon.display
          return this._carriedEntity;
       }
       
-      public function set carriedEntity(param1:TiphonSprite) : void {
-         this._carriedEntity = param1;
+      public function set carriedEntity(pTs:TiphonSprite) : void {
+         this._carriedEntity = pTs;
       }
       
-      public function set isCarrying(param1:Boolean) : void {
-         this._isCarrying = param1;
+      public function set isCarrying(pIsCarrying:Boolean) : void {
+         this._isCarrying = pIsCarrying;
       }
       
       public function get bitmapData() : BitmapData {
-         var _loc1_:Rectangle = getBounds(this);
-         if(_loc1_.height * _loc1_.width == 0)
+         var bounds:Rectangle = getBounds(this);
+         if(bounds.height * bounds.width == 0)
          {
             return null;
          }
-         var _loc2_:BitmapData = new BitmapData(_loc1_.right - _loc1_.left,_loc1_.bottom - _loc1_.top,true,22015);
-         var _loc3_:Matrix = new Matrix();
-         _loc3_.translate(-_loc1_.left,-_loc1_.top);
-         _loc2_.draw(this,_loc3_);
-         return _loc2_;
+         var bitmapdata:BitmapData = new BitmapData(bounds.right - bounds.left,bounds.bottom - bounds.top,true,22015);
+         var m:Matrix = new Matrix();
+         m.translate(-bounds.left,-bounds.top);
+         bitmapdata.draw(this,m);
+         return bitmapdata;
       }
       
       public function get look() : TiphonEntityLook {
@@ -285,8 +285,8 @@ package com.ankamagames.tiphon.display
          return this._rasterize;
       }
       
-      public function set rasterize(param1:Boolean) : void {
-         this._rasterize = param1;
+      public function set rasterize(b:Boolean) : void {
+         this._rasterize = b;
       }
       
       public function get rawAnimation() : TiphonAnimation {
@@ -306,12 +306,12 @@ package com.ankamagames.tiphon.display
       }
       
       public function get rootEntity() : TiphonSprite {
-         var _loc1_:TiphonSprite = this;
-         while(_loc1_._parentSprite)
+         var currentSprite:TiphonSprite = this;
+         while(currentSprite._parentSprite)
          {
-            _loc1_ = _loc1_._parentSprite;
+            currentSprite = currentSprite._parentSprite;
          }
-         return _loc1_;
+         return currentSprite;
       }
       
       public function get maxFrame() : uint {
@@ -331,12 +331,12 @@ package com.ankamagames.tiphon.display
          {
             return BoneIndexManager.getInstance().getAllCustomAnimations(this._look.getBone());
          }
-         var _loc1_:Swl = Tiphon.skullLibrary.getResourceById(this._look.getBone());
-         return _loc1_?_loc1_.getDefinitions():null;
+         var resource:Swl = Tiphon.skullLibrary.getResourceById(this._look.getBone());
+         return resource?resource.getDefinitions():null;
       }
       
-      public function set skinModifier(param1:ISkinModifier) : void {
-         this._skinModifier = param1;
+      public function set skinModifier(sm:ISkinModifier) : void {
+         this._skinModifier = sm;
       }
       
       public function get skinModifier() : ISkinModifier {
@@ -348,20 +348,20 @@ package com.ankamagames.tiphon.display
       }
       
       public function isPlayingAnimation() : Boolean {
-         var _loc1_:* = false;
+         var playing:* = false;
          if(this._animMovieClip)
          {
-            _loc1_ = !(this._animMovieClip.currentFrame == this._animMovieClip.totalFrames);
+            playing = !(this._animMovieClip.currentFrame == this._animMovieClip.totalFrames);
          }
-         return _loc1_;
+         return playing;
       }
       
-      public function stopAnimation(param1:int=0) : void {
+      public function stopAnimation(frame:int=0) : void {
          if(this._animMovieClip)
          {
-            if(param1)
+            if(frame)
             {
-               this._animMovieClip.gotoAndStop(param1);
+               this._animMovieClip.gotoAndStop(frame);
             }
             else
             {
@@ -372,7 +372,7 @@ package com.ankamagames.tiphon.display
       }
       
       public function stopAnimationAtLastFrame() : void {
-         if((this._animMovieClip) && (this._rendered) && this._lastAnimation == this._currentAnimation)
+         if((this._animMovieClip) && (this._rendered) && (this._lastAnimation == this._currentAnimation))
          {
             this.stopAnimationAtEnd();
             this.restartAnimation();
@@ -383,15 +383,15 @@ package com.ankamagames.tiphon.display
          }
       }
       
-      protected function onLoadComplete(param1:TiphonEvent) : void {
+      protected function onLoadComplete(pEvt:TiphonEvent) : void {
          removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onLoadComplete);
-         var _loc2_:String = this._currentAnimation.indexOf("_Statique_") == -1?this._currentAnimation.replace("_","_Statique_"):null;
-         var _loc3_:TiphonSprite = this.getSubEntitySlot(2,0) as TiphonSprite;
+         var customStaticAnim:String = this._currentAnimation.indexOf("_Statique_") == -1?this._currentAnimation.replace("_","_Statique_"):null;
+         var rider:TiphonSprite = this.getSubEntitySlot(2,0) as TiphonSprite;
          if(this._currentAnimation != "AnimStatique")
          {
-            if((_loc2_) && (this.hasAnimation(_loc2_,this._currentDirection)) || (_loc3_) && (_loc3_.hasAnimation(_loc2_,_loc3_.getDirection())))
+            if((customStaticAnim) && (this.hasAnimation(customStaticAnim,this._currentDirection)) || (rider) && (rider.hasAnimation(customStaticAnim,rider.getDirection())))
             {
-               this.setAnimation(_loc2_);
+               this.setAnimation(customStaticAnim);
             }
             else
             {
@@ -405,29 +405,29 @@ package com.ankamagames.tiphon.display
          }
       }
       
-      public function restartAnimation(param1:int=-1) : void {
-         var _loc2_:Swl = Tiphon.skullLibrary.getResourceById(this._look.getBone(),this._currentAnimation);
-         if((this._animMovieClip) && (_loc2_))
+      public function restartAnimation(frame:int=-1) : void {
+         var lib:Swl = Tiphon.skullLibrary.getResourceById(this._look.getBone(),this._currentAnimation);
+         if((this._animMovieClip) && (lib))
          {
-            if(param1 != -1)
+            if(frame != -1)
             {
-               this._animMovieClip.gotoAndStop(param1);
+               this._animMovieClip.gotoAndStop(frame);
             }
-            FpsControler.controlFps(this._animMovieClip,_loc2_.frameRate);
+            FpsControler.controlFps(this._animMovieClip,lib.frameRate);
          }
       }
       
       public function stopAnimationAtEnd() : void {
-         var _loc1_:MovieClip = null;
+         var child:MovieClip = null;
          if(this._animMovieClip)
          {
             this._animMovieClip.gotoAndStop(this._animMovieClip.totalFrames);
             if(this._animMovieClip.numChildren)
             {
-               _loc1_ = this._animMovieClip.getChildAt(0) as MovieClip;
-               if(_loc1_)
+               child = this._animMovieClip.getChildAt(0) as MovieClip;
+               if(child)
                {
-                  _loc1_.gotoAndStop(_loc1_.totalFrames);
+                  child.gotoAndStop(child.totalFrames);
                }
             }
             FpsControler.uncontrolFps(this._animMovieClip);
@@ -435,14 +435,14 @@ package com.ankamagames.tiphon.display
          }
       }
       
-      public function setDirection(param1:uint) : void {
+      public function setDirection(newDirection:uint) : void {
          if(this._currentAnimation)
          {
-            this.setAnimationAndDirection(this._currentAnimation,param1);
+            this.setAnimationAndDirection(this._currentAnimation,newDirection);
          }
          else
          {
-            this._currentDirection = param1;
+            this._currentDirection = newDirection;
          }
       }
       
@@ -450,94 +450,94 @@ package com.ankamagames.tiphon.display
          return this._currentDirection > 0?this._currentDirection:0;
       }
       
-      public function setAnimation(param1:String) : void {
-         this.setAnimationAndDirection(param1,this._currentDirection);
+      public function setAnimation(newAnimation:String) : void {
+         this.setAnimationAndDirection(newAnimation,this._currentDirection);
       }
       
       public function getAnimation() : String {
          return this._currentAnimation;
       }
       
-      public function addAnimationModifier(param1:IAnimationModifier, param2:Boolean=true) : void {
-         if(!param2 || this._animationModifier.indexOf(param1) == -1)
+      public function addAnimationModifier(modifier:IAnimationModifier, noDuplicate:Boolean=true) : void {
+         if((!noDuplicate) || (this._animationModifier.indexOf(modifier) == -1))
          {
-            this._animationModifier.push(param1);
+            this._animationModifier.push(modifier);
          }
          this._animationModifier.sortOn("priority");
       }
       
-      public function removeAnimationModifier(param1:IAnimationModifier) : void {
-         var _loc3_:IAnimationModifier = null;
-         var _loc2_:Array = [];
-         for each (_loc3_ in this._animationModifier)
+      public function removeAnimationModifier(modifier:IAnimationModifier) : void {
+         var currentModifier:IAnimationModifier = null;
+         var tmp:Array = [];
+         for each (currentModifier in this._animationModifier)
          {
-            if(param1 != _loc3_)
+            if(modifier != currentModifier)
             {
-               _loc2_.push(_loc3_);
+               tmp.push(currentModifier);
             }
          }
-         this._animationModifier = _loc2_;
+         this._animationModifier = tmp;
       }
       
-      public function removeAnimationModifierByClass(param1:Class) : void {
-         var _loc3_:IAnimationModifier = null;
-         var _loc2_:Array = [];
-         for each (_loc3_ in this._animationModifier)
+      public function removeAnimationModifierByClass(modifier:Class) : void {
+         var currentModifier:IAnimationModifier = null;
+         var tmp:Array = [];
+         for each (currentModifier in this._animationModifier)
          {
-            if(!(_loc3_ is param1))
+            if(!(currentModifier is modifier))
             {
-               _loc2_.push(_loc3_);
+               tmp.push(currentModifier);
             }
          }
-         this._animationModifier = _loc2_;
+         this._animationModifier = tmp;
       }
       
-      public function setAnimationAndDirection(param1:String, param2:uint, param3:Boolean=false) : void {
-         var _loc5_:String = null;
-         var _loc6_:EventListener = null;
-         var _loc7_:Array = null;
-         var _loc8_:DisplayObject = null;
-         var _loc9_:IAnimationModifier = null;
-         var _loc10_:TiphonEvent = null;
-         var _loc11_:String = null;
-         var _loc12_:Uri = null;
+      public function setAnimationAndDirection(animation:String, direction:uint, pDisableAnimModifier:Boolean=false) : void {
+         var catId:String = null;
+         var eListener:EventListener = null;
+         var cat:Array = null;
+         var subEntity:DisplayObject = null;
+         var modifier:IAnimationModifier = null;
+         var te:TiphonEvent = null;
+         var transitionalAnim:String = null;
+         var boneFileUri:Uri = null;
          if(this.destroyed)
          {
             return;
          }
          FpsManager.getInstance().startTracking("animation",40277);
-         this._rawAnimation = param1;
-         if(!param1)
+         this._rawAnimation = animation;
+         if(!animation)
          {
-            param1 = this._currentAnimation;
+            animation = this._currentAnimation;
          }
          if(this is IEntity)
          {
-            if((this._currentAnimation == "AnimMarche" || this._currentAnimation == "AnimCourse") && param1 == "AnimStatique")
+            if(((this._currentAnimation == "AnimMarche") || (this._currentAnimation == "AnimCourse")) && (animation == "AnimStatique"))
             {
-               for each (_loc6_ in TiphonEventsManager.listeners)
+               for each (eListener in TiphonEventsManager.listeners)
                {
-                  _loc6_.listener.removeEntitySound(this as IEntity);
+                  eListener.listener.removeEntitySound(this as IEntity);
                }
             }
          }
-         var _loc4_:BehaviorData = new BehaviorData(param1,param2,this);
-         for (_loc5_ in this._aSubEntities)
+         var behaviorData:BehaviorData = new BehaviorData(animation,direction,this);
+         for (catId in this._aSubEntities)
          {
-            _loc7_ = this._aSubEntities[_loc5_];
-            if(_loc7_)
+            cat = this._aSubEntities[catId];
+            if(cat)
             {
-               for each (_loc8_ in _loc7_)
+               for each (subEntity in cat)
                {
-                  if(_loc8_ is TiphonSprite)
+                  if(subEntity is TiphonSprite)
                   {
-                     if(this._subEntityBehaviors[_loc5_])
+                     if(this._subEntityBehaviors[catId])
                      {
-                        (this._subEntityBehaviors[_loc5_] as ISubEntityBehavior).updateFromParentEntity(TiphonSprite(_loc8_),_loc4_);
+                        (this._subEntityBehaviors[catId] as ISubEntityBehavior).updateFromParentEntity(TiphonSprite(subEntity),behaviorData);
                      }
                      else
                      {
-                        this.updateFromParentEntity(TiphonSprite(_loc8_),_loc4_);
+                        this.updateFromParentEntity(TiphonSprite(subEntity),behaviorData);
                      }
                   }
                }
@@ -545,19 +545,19 @@ package com.ankamagames.tiphon.display
          }
          if(this._animationModifier)
          {
-            for each (_loc9_ in this._animationModifier)
+            for each (modifier in this._animationModifier)
             {
-               _loc4_.animation = _loc9_.getModifiedAnimation(_loc4_.animation,this.look);
+               behaviorData.animation = modifier.getModifiedAnimation(behaviorData.animation,this.look);
             }
          }
-         if(param3)
+         if(pDisableAnimModifier)
          {
-            this._currentAnimation = param1;
+            this._currentAnimation = animation;
             this.overrideNextAnimation = true;
          }
-         if(!this.overrideNextAnimation && _loc4_.animation == this._currentAnimation && param2 == this._currentDirection && (this._rendered))
+         if((!this.overrideNextAnimation) && (behaviorData.animation == this._currentAnimation) && (direction == this._currentDirection) && (this._rendered))
          {
-            if((this._animMovieClip) && this._animMovieClip.totalFrames > 1)
+            if((this._animMovieClip) && (this._animMovieClip.totalFrames > 1))
             {
                this.restartAnimation();
             }
@@ -565,33 +565,33 @@ package com.ankamagames.tiphon.display
             {
                this.dispatchEvent(new TiphonEvent(TiphonEvent.RENDER_FATHER_SUCCEED,this));
             }
-            _loc10_ = new TiphonEvent(TiphonEvent.RENDER_SUCCEED,this);
-            _loc10_.animationName = this._currentAnimation + "_" + this._currentDirection;
-            this.dispatchEvent(_loc10_);
+            te = new TiphonEvent(TiphonEvent.RENDER_SUCCEED,this);
+            te.animationName = this._currentAnimation + "_" + this._currentDirection;
+            this.dispatchEvent(te);
             return;
          }
          this.overrideNextAnimation = false;
          this._lastAnimation = this._currentAnimation;
-         this._currentDirection = param2;
-         if(!param3)
+         this._currentDirection = direction;
+         if(!pDisableAnimModifier)
          {
-            if(BoneIndexManager.getInstance().hasTransition(this._look.getBone(),this._lastAnimation,_loc4_.animation,this._currentDirection))
+            if(BoneIndexManager.getInstance().hasTransition(this._look.getBone(),this._lastAnimation,behaviorData.animation,this._currentDirection))
             {
-               _loc11_ = BoneIndexManager.getInstance().getTransition(this._look.getBone(),this._lastAnimation,_loc4_.animation,this._currentDirection);
-               this._currentAnimation = _loc11_;
-               this._targetAnimation = _loc4_.animation;
+               transitionalAnim = BoneIndexManager.getInstance().getTransition(this._look.getBone(),this._lastAnimation,behaviorData.animation,this._currentDirection);
+               this._currentAnimation = transitionalAnim;
+               this._targetAnimation = behaviorData.animation;
             }
             else
             {
-               this._currentAnimation = _loc4_.animation;
+               this._currentAnimation = behaviorData.animation;
             }
          }
          if(BoneIndexManager.getInstance().hasCustomBone(this._look.getBone()))
          {
-            _loc12_ = BoneIndexManager.getInstance().getBoneFile(this._look.getBone(),this._currentAnimation);
-            if(!(_loc12_.fileName == this._look.getBone() + ".swl") || (BoneIndexManager.getInstance().hasAnim(this._look.getBone(),this._currentAnimation,this._currentDirection)))
+            boneFileUri = BoneIndexManager.getInstance().getBoneFile(this._look.getBone(),this._currentAnimation);
+            if((!(boneFileUri.fileName == this._look.getBone() + ".swl")) || (BoneIndexManager.getInstance().hasAnim(this._look.getBone(),this._currentAnimation,this._currentDirection)))
             {
-               this.initializeLibrary(this._look.getBone(),_loc12_);
+               this.initializeLibrary(this._look.getBone(),boneFileUri);
             }
             else
             {
@@ -603,44 +603,44 @@ package com.ankamagames.tiphon.display
          FpsManager.getInstance().stopTracking("animation");
       }
       
-      public function setView(param1:String) : void {
-         this._customView = param1;
-         var _loc2_:DisplayInfoSprite = this.getDisplayInfoSprite(param1);
-         if(_loc2_)
+      public function setView(view:String) : void {
+         this._customView = view;
+         var infoSprite:DisplayInfoSprite = this.getDisplayInfoSprite(view);
+         if(infoSprite)
          {
-            if(!(this.mask == null) && (this.mask.parent))
+            if((!(this.mask == null)) && (this.mask.parent))
             {
                this.mask.parent.removeChild(this.mask);
             }
-            addChild(_loc2_);
-            this.mask = _loc2_;
+            addChild(infoSprite);
+            this.mask = infoSprite;
          }
       }
       
-      public function getSubEntityBehavior(param1:int) : ISubEntityBehavior {
-         return this._subEntityBehaviors[param1];
+      public function getSubEntityBehavior(pCategory:int) : ISubEntityBehavior {
+         return this._subEntityBehaviors[pCategory];
       }
       
-      public function setSubEntityBehaviour(param1:int, param2:ISubEntityBehavior) : void {
-         this._subEntityBehaviors[param1] = param2;
+      public function setSubEntityBehaviour(category:int, behaviour:ISubEntityBehavior) : void {
+         this._subEntityBehaviors[category] = behaviour;
       }
       
-      public function updateFromParentEntity(param1:TiphonSprite, param2:BehaviorData) : void {
-         if(!param1)
+      public function updateFromParentEntity(subEntity:TiphonSprite, parentData:BehaviorData) : void {
+         if(!subEntity)
          {
             return;
          }
-         var _loc3_:* = false;
-         var _loc4_:Array = param1.getAvaibleDirection(param2.animation);
-         var _loc5_:* = 0;
-         while(_loc5_ < 8)
+         var animExist:Boolean = false;
+         var ad:Array = subEntity.getAvaibleDirection(parentData.animation);
+         var i:int = 0;
+         while(i < 8)
          {
-            _loc3_ = (_loc4_[_loc5_]) || (_loc3_);
-            _loc5_++;
+            animExist = (ad[i]) || (animExist);
+            i++;
          }
-         if((_loc3_) || !this._libReady)
+         if((animExist) || (!this._libReady))
          {
-            param1.setAnimationAndDirection(param2.animation,param2.direction);
+            subEntity.setAnimationAndDirection(parentData.animation,parentData.direction);
          }
       }
       
@@ -678,7 +678,7 @@ package com.ankamagames.tiphon.display
                      subEntity = this._subEntitiesList[i] as TiphonSprite;
                      if(subEntity)
                      {
-                        isCarriedEntity = (this._aSubEntities["3"]) && subEntity == this._aSubEntities["3"]["0"];
+                        isCarriedEntity = (this._aSubEntities["3"]) && (subEntity == this._aSubEntities["3"]["0"]);
                         this.removeSubEntity(subEntity);
                         if(!isCarriedEntity)
                         {
@@ -725,165 +725,165 @@ package com.ankamagames.tiphon.display
          }
       }
       
-      public function getAvaibleDirection(param1:String=null, param2:Boolean=false) : Array {
-         var _loc3_:Swl = Tiphon.skullLibrary.getResourceById(this._look.getBone());
-         var _loc4_:Array = new Array();
-         if(!_loc3_)
+      public function getAvaibleDirection(anim:String=null, flipped:Boolean=false) : Array {
+         var lib:Swl = Tiphon.skullLibrary.getResourceById(this._look.getBone());
+         var res:Array = new Array();
+         if(!lib)
          {
             return [];
          }
-         var _loc5_:uint = 0;
-         while(_loc5_ < 8)
+         var i:uint = 0;
+         while(i < 8)
          {
-            _loc4_[_loc5_] = !(_loc3_.getDefinitions().indexOf((param1?param1:this._currentAnimation) + "_" + _loc5_) == -1);
-            if((param2) && !_loc4_[_loc5_])
+            res[i] = !(lib.getDefinitions().indexOf((anim?anim:this._currentAnimation) + "_" + i) == -1);
+            if((flipped) && (!res[i]))
             {
-               _loc4_[_loc5_] = !(_loc3_.getDefinitions().indexOf((param1?param1:this._currentAnimation) + "_" + TiphonUtility.getFlipDirection(_loc5_)) == -1);
+               res[i] = !(lib.getDefinitions().indexOf((anim?anim:this._currentAnimation) + "_" + TiphonUtility.getFlipDirection(i)) == -1);
             }
-            _loc5_++;
+            i++;
          }
-         return _loc4_;
+         return res;
       }
       
-      public function hasAnimation(param1:String, param2:int=-1) : Boolean {
-         var _loc5_:* = 0;
-         var _loc3_:* = false;
-         var _loc4_:uint = this._look.getBone();
-         if(param2 != -1)
+      public function hasAnimation(anim:String, direction:int=-1) : Boolean {
+         var i:* = 0;
+         var result:Boolean = false;
+         var bone:uint = this._look.getBone();
+         if(direction != -1)
          {
-            _loc3_ = (Tiphon.skullLibrary.hasAnim(_loc4_,param1,param2)) || (Tiphon.skullLibrary.hasAnim(_loc4_,param1,TiphonUtility.getFlipDirection(param2)));
+            result = (Tiphon.skullLibrary.hasAnim(bone,anim,direction)) || (Tiphon.skullLibrary.hasAnim(bone,anim,TiphonUtility.getFlipDirection(direction)));
          }
          else
          {
-            _loc5_ = 0;
-            while(_loc5_ < 8)
+            i = 0;
+            while(i < 8)
             {
-               Tiphon.skullLibrary.hasAnim(_loc4_,(param1?param1:this._currentAnimation) + "_" + _loc5_);
-               if(param2)
+               Tiphon.skullLibrary.hasAnim(bone,(anim?anim:this._currentAnimation) + "_" + i);
+               if(direction)
                {
-                  _loc3_ = true;
+                  result = true;
                }
-               _loc5_++;
+               i++;
             }
          }
-         if(!_loc3_ && (this._look.getSubEntity(2,0)))
+         if((!result) && (this._look.getSubEntity(2,0)))
          {
-            _loc4_ = this._look.getSubEntity(2,0).getBone();
-            if(param2 != -1)
+            bone = this._look.getSubEntity(2,0).getBone();
+            if(direction != -1)
             {
-               _loc3_ = (Tiphon.skullLibrary.hasAnim(_loc4_,param1,param2)) || (Tiphon.skullLibrary.hasAnim(_loc4_,param1,TiphonUtility.getFlipDirection(param2)));
+               result = (Tiphon.skullLibrary.hasAnim(bone,anim,direction)) || (Tiphon.skullLibrary.hasAnim(bone,anim,TiphonUtility.getFlipDirection(direction)));
             }
             else
             {
-               _loc5_ = 0;
-               while(_loc5_ < 8)
+               i = 0;
+               while(i < 8)
                {
-                  Tiphon.skullLibrary.hasAnim(_loc4_,(param1?param1:this._currentAnimation) + "_" + _loc5_);
-                  if(param2)
+                  Tiphon.skullLibrary.hasAnim(bone,(anim?anim:this._currentAnimation) + "_" + i);
+                  if(direction)
                   {
-                     _loc3_ = true;
+                     result = true;
                   }
-                  _loc5_++;
+                  i++;
                }
             }
          }
-         return _loc3_;
+         return result;
       }
       
-      public function getSlot(param1:String="") : DisplayObject {
-         var _loc2_:uint = 0;
+      public function getSlot(name:String="") : DisplayObject {
+         var i:uint = 0;
          if((numChildren) && (this._animMovieClip))
          {
-            _loc2_ = 0;
-            while(_loc2_ < this._animMovieClip.numChildren)
+            i = 0;
+            while(i < this._animMovieClip.numChildren)
             {
-               if(getQualifiedClassName(this._animMovieClip.getChildAt(_loc2_)).indexOf(param1) == 0)
+               if(getQualifiedClassName(this._animMovieClip.getChildAt(i)).indexOf(name) == 0)
                {
-                  return this._animMovieClip.getChildAt(_loc2_);
+                  return this._animMovieClip.getChildAt(i);
                }
-               _loc2_++;
+               i++;
             }
          }
          return null;
       }
       
-      public function getColorTransform(param1:uint) : ColorTransform {
-         var _loc3_:ColorTransform = null;
-         if(this._aTransformColors[param1])
+      public function getColorTransform(index:uint) : ColorTransform {
+         var ct:ColorTransform = null;
+         if(this._aTransformColors[index])
          {
-            return this._aTransformColors[param1];
+            return this._aTransformColors[index];
          }
-         var _loc2_:DefaultableColor = this._look.getColor(param1);
-         if(!_loc2_.isDefault)
+         var c:DefaultableColor = this._look.getColor(index);
+         if(!c.isDefault)
          {
-            _loc3_ = new ColorTransform();
-            _loc3_.color = _loc2_.color;
-            this._aTransformColors[param1] = _loc3_;
-            return _loc3_;
+            ct = new ColorTransform();
+            ct.color = c.color;
+            this._aTransformColors[index] = ct;
+            return ct;
          }
          return null;
       }
       
-      public function getSkinSprite(param1:EquipmentSprite) : Sprite {
+      public function getSkinSprite(sprite:EquipmentSprite) : Sprite {
          if(!this._skin)
          {
             return null;
          }
-         var _loc2_:String = getQualifiedClassName(param1);
+         var className:String = getQualifiedClassName(sprite);
          if(this._skinModifier != null)
          {
-            _loc2_ = this._skinModifier.getModifiedSkin(this._skin,_loc2_,this._look);
+            className = this._skinModifier.getModifiedSkin(this._skin,className,this._look);
          }
-         return this._skin.getPart(_loc2_);
+         return this._skin.getPart(className);
       }
       
-      public function getPartTransformData(param1:String) : TransformData {
-         return this._skin?this._skin.getTransformData(param1):null;
+      public function getPartTransformData(part:String) : TransformData {
+         return this._skin?this._skin.getTransformData(part):null;
       }
       
-      public function addSubEntity(param1:DisplayObject, param2:uint, param3:uint) : void {
-         var _loc4_:TiphonSprite = null;
-         if(param2 == 3 && param3 == 0)
+      public function addSubEntity(entity:DisplayObject, category:uint, slot:uint) : void {
+         var tiphonEntity:TiphonSprite = null;
+         if((category == 3) && (slot == 0))
          {
-            this._carriedEntity = param1 as TiphonSprite;
+            this._carriedEntity = entity as TiphonSprite;
          }
          if(this._rendered)
          {
-            param1.x = 0;
-            param1.y = 0;
-            _loc4_ = param1 as TiphonSprite;
-            if(_loc4_)
+            entity.x = 0;
+            entity.y = 0;
+            tiphonEntity = entity as TiphonSprite;
+            if(tiphonEntity)
             {
-               _loc4_._parentSprite = this;
-               _loc4_.overrideNextAnimation = true;
-               _loc4_.setDirection(this._currentDirection);
+               tiphonEntity._parentSprite = this;
+               tiphonEntity.overrideNextAnimation = true;
+               tiphonEntity.setDirection(this._currentDirection);
             }
-            if(!this._aSubEntities[param2])
+            if(!this._aSubEntities[category])
             {
-               this._aSubEntities[param2] = new Array();
+               this._aSubEntities[category] = new Array();
             }
-            this._aSubEntities[param2][param3] = param1;
+            this._aSubEntities[category][slot] = entity;
             this.dispatchEvent(new TiphonEvent(TiphonEvent.SUB_ENTITY_ADDED,this));
-            this._subEntitiesList.push(param1);
-            _log.info("Add subentity " + param1.name + " to " + name + " (cat: " + param2 + ")");
-            if((this._recursiveAlternativeSkinIndex) && (_loc4_))
+            this._subEntitiesList.push(entity);
+            _log.info("Add subentity " + entity.name + " to " + name + " (cat: " + category + ")");
+            if((this._recursiveAlternativeSkinIndex) && (tiphonEntity))
             {
-               _loc4_.setAlternativeSkinIndex(this._alternativeSkinIndex);
+               tiphonEntity.setAlternativeSkinIndex(this._alternativeSkinIndex);
             }
             this.finalize();
          }
          else
          {
-            this._subEntitiesTemp.push(new SubEntityTempInfo(param1,param2,param3));
+            this._subEntitiesTemp.push(new SubEntityTempInfo(entity,category,slot));
          }
       }
       
-      public function removeSubEntity(param1:DisplayObject) : void {
-         var _loc2_:* = false;
-         var _loc3_:String = null;
-         var _loc4_:* = 0;
-         var _loc6_:String = null;
-         if(param1 == this._carriedEntity)
+      public function removeSubEntity(entity:DisplayObject) : void {
+         var found:* = false;
+         var i:String = null;
+         var index:* = 0;
+         var j:String = null;
+         if(entity == this._carriedEntity)
          {
             this._carriedEntity = null;
             this._isCarrying = false;
@@ -892,52 +892,52 @@ package com.ankamagames.tiphon.display
          {
             return;
          }
-         for (_loc3_ in this._aSubEntities)
+         for (i in this._aSubEntities)
          {
-            for (_loc6_ in this._aSubEntities[_loc3_])
+            for (j in this._aSubEntities[i])
             {
-               if(param1 === this._aSubEntities[_loc3_][_loc6_])
+               if(entity === this._aSubEntities[i][j])
                {
-                  if(this._subEntityBehaviors[_loc3_] is ISubEntityBehavior)
+                  if(this._subEntityBehaviors[i] is ISubEntityBehavior)
                   {
-                     ISubEntityBehavior(this._subEntityBehaviors[_loc3_]).remove();
+                     ISubEntityBehavior(this._subEntityBehaviors[i]).remove();
                   }
-                  delete this._subEntityBehaviors[[_loc3_]];
-                  delete this._aSubEntities[_loc3_][[_loc6_]];
-                  _loc2_ = true;
+                  delete this._subEntityBehaviors[[i]];
+                  delete this._aSubEntities[i][[j]];
+                  found = true;
                   break;
                }
             }
-            if(_loc2_)
+            if(found)
             {
                break;
             }
          }
-         _loc4_ = this._subEntitiesList.indexOf(param1);
-         if(_loc4_ != -1)
+         index = this._subEntitiesList.indexOf(entity);
+         if(index != -1)
          {
-            this._subEntitiesList.splice(_loc4_,1);
+            this._subEntitiesList.splice(index,1);
          }
-         var _loc5_:TiphonSprite = param1 as TiphonSprite;
-         if(_loc5_)
+         var tiphonSprite:TiphonSprite = entity as TiphonSprite;
+         if(tiphonSprite)
          {
-            _loc5_._parentSprite = null;
-            _loc5_.overrideNextAnimation = true;
+            tiphonSprite._parentSprite = null;
+            tiphonSprite.overrideNextAnimation = true;
          }
       }
       
-      public function getSubEntitySlot(param1:uint, param2:uint) : DisplayObjectContainer {
+      public function getSubEntitySlot(category:uint, slot:uint) : DisplayObjectContainer {
          if(this.destroyed)
          {
             return null;
          }
-         if((this._aSubEntities[param1]) && (this._aSubEntities[param1][param2]))
+         if((this._aSubEntities[category]) && (this._aSubEntities[category][slot]))
          {
-            if(this._aSubEntities[param1][param2] is TiphonSprite)
+            if(this._aSubEntities[category][slot] is TiphonSprite)
             {
-               (this._aSubEntities[param1][param2] as TiphonSprite)._parentSprite = this;
+               (this._aSubEntities[category][slot] as TiphonSprite)._parentSprite = this;
             }
-            return this._aSubEntities[param1][param2];
+            return this._aSubEntities[category][slot];
          }
          return null;
       }
@@ -950,71 +950,71 @@ package com.ankamagames.tiphon.display
          return this._subEntitiesTemp.length;
       }
       
-      public function registerColoredSprite(param1:ColoredSprite, param2:uint) : void {
-         if(!this._customColoredParts[param2])
+      public function registerColoredSprite(sprite:ColoredSprite, nColorIndex:uint) : void {
+         if(!this._customColoredParts[nColorIndex])
          {
-            this._customColoredParts[param2] = new Dictionary(true);
+            this._customColoredParts[nColorIndex] = new Dictionary(true);
          }
-         this._customColoredParts[param2][param1] = 1;
+         this._customColoredParts[nColorIndex][sprite] = 1;
       }
       
-      public function registerInfoSprite(param1:DisplayInfoSprite, param2:String) : void {
-         this._displayInfoParts[param2] = param1;
-         if(param2 == this._customView)
+      public function registerInfoSprite(sprite:DisplayInfoSprite, nViewIndex:String) : void {
+         this._displayInfoParts[nViewIndex] = sprite;
+         if(nViewIndex == this._customView)
          {
-            this.setView(param2);
+            this.setView(nViewIndex);
          }
       }
       
-      public function getDisplayInfoSprite(param1:String) : DisplayInfoSprite {
-         return this._displayInfoParts[param1];
+      public function getDisplayInfoSprite(nViewIndex:String) : DisplayInfoSprite {
+         return this._displayInfoParts[nViewIndex];
       }
       
-      public function addBackground(param1:String, param2:DisplayObject, param3:Boolean=false) : void {
-         var _loc4_:Rectangle = null;
-         if(!this._background[param1])
+      public function addBackground(name:String, sprite:DisplayObject, posAuto:Boolean=false) : void {
+         var pos:Rectangle = null;
+         if(!this._background[name])
          {
-            this._background[param1] = param2;
+            this._background[name] = sprite;
             if(this._rendered)
             {
-               if(param1 == "teamCircle")
+               if(name == "teamCircle")
                {
                }
-               if(param3)
+               if(posAuto)
                {
-                  _loc4_ = this.getRect(this);
-                  param2.y = _loc4_.y - 10;
+                  pos = this.getRect(this);
+                  sprite.y = pos.y - 10;
                }
-               addChildAt(param2,0);
+               addChildAt(sprite,0);
                this.updateScale();
             }
             else
             {
-               if(param1 == "teamCircle")
+               if(name == "teamCircle")
                {
                }
-               this._backgroundTemp.push(param2,param3);
+               this._backgroundTemp.push(sprite,posAuto);
             }
          }
       }
       
-      public function removeBackground(param1:String) : void {
-         if((this._rendered) && (this._background[param1]))
+      public function removeBackground(name:String) : void {
+         if((this._rendered) && (this._background[name]))
          {
-            removeChild(this._background[param1]);
+            removeChild(this._background[name]);
          }
-         this._background[param1] = null;
+         this._background[name] = null;
       }
       
-      public function showOnlyBackground(param1:Boolean) : void {
-         this._backgroundOnly = param1;
-         if((param1) && (this._animMovieClip) && (contains(this._animMovieClip)))
+      public function showOnlyBackground(pOnlyBackground:Boolean) : void {
+         this._backgroundOnly = pOnlyBackground;
+         if((pOnlyBackground) && (this._animMovieClip) && (contains(this._animMovieClip)))
          {
             removeChild(this._animMovieClip);
          }
          else
          {
-            if(!param1 && (this._animMovieClip))
+            if((!pOnlyBackground) && (this._animMovieClip))
             {
                addChild(this._animMovieClip);
             }
@@ -1025,27 +1025,27 @@ package com.ankamagames.tiphon.display
          return this._backgroundOnly;
       }
       
-      public function setAlternativeSkinIndex(param1:int=-1, param2:Boolean=false) : void {
-         var _loc3_:* = 0;
-         var _loc4_:* = 0;
-         var _loc5_:TiphonSprite = null;
-         this._recursiveAlternativeSkinIndex = param2;
+      public function setAlternativeSkinIndex(index:int=-1, recursiveAlternativeSkinIndex:Boolean=false) : void {
+         var i:* = 0;
+         var num:* = 0;
+         var entity:TiphonSprite = null;
+         this._recursiveAlternativeSkinIndex = recursiveAlternativeSkinIndex;
          if(this._recursiveAlternativeSkinIndex)
          {
-            _loc3_ = -1;
-            _loc4_ = this._subEntitiesList.length;
-            while(++_loc3_ < _loc4_)
+            i = -1;
+            num = this._subEntitiesList.length;
+            while(++i < num)
             {
-               _loc5_ = this._subEntitiesList[_loc3_] as TiphonSprite;
-               if(_loc5_)
+               entity = this._subEntitiesList[i] as TiphonSprite;
+               if(entity)
                {
-                  _loc5_.setAlternativeSkinIndex(param1);
+                  entity.setAlternativeSkinIndex(index);
                }
             }
          }
-         if(param1 != this._alternativeSkinIndex)
+         if(index != this._alternativeSkinIndex)
          {
-            this._alternativeSkinIndex = param1;
+            this._alternativeSkinIndex = index;
             this.resetSkins();
          }
       }
@@ -1055,14 +1055,14 @@ package com.ankamagames.tiphon.display
       }
       
       public function getGlobalScale() : Number {
-         var _loc1_:Number = 1;
-         var _loc2_:TiphonSprite = this.parentSprite;
-         while(_loc2_)
+         var globalScale:Number = 1;
+         var currentParentSprite:TiphonSprite = this.parentSprite;
+         while(currentParentSprite)
          {
-            _loc1_ = _loc1_ * (_loc2_._animMovieClip?_loc2_._animMovieClip.scaleX:1);
-            _loc2_ = _loc2_.parentSprite;
+            globalScale = globalScale * (currentParentSprite._animMovieClip?currentParentSprite._animMovieClip.scaleX:1);
+            currentParentSprite = currentParentSprite.parentSprite;
          }
-         return _loc1_;
+         return globalScale;
       }
       
       public function reprocessSkin() : void {
@@ -1072,93 +1072,93 @@ package com.ankamagames.tiphon.display
          }
       }
       
-      private function initializeLibrary(param1:uint, param2:Uri=null) : void {
-         if(!param2)
+      private function initializeLibrary(gfxId:uint, file:Uri=null) : void {
+         if(!file)
          {
-            if(BoneIndexManager.getInstance().hasCustomBone(param1))
+            if(BoneIndexManager.getInstance().hasCustomBone(gfxId))
             {
                return;
             }
-            param2 = new Uri(TiphonConstants.SWF_SKULL_PATH + param1 + ".swl");
+            file = new Uri(TiphonConstants.SWF_SKULL_PATH + gfxId + ".swl");
          }
          this._libReady = false;
-         Tiphon.skullLibrary.addResource(param1,param2);
-         Tiphon.skullLibrary.askResource(param1,this._currentAnimation,new Callback(this.onSkullLibraryReady,param1),new Callback(this.onSkullLibraryError));
+         Tiphon.skullLibrary.addResource(gfxId,file);
+         Tiphon.skullLibrary.askResource(gfxId,this._currentAnimation,new Callback(this.onSkullLibraryReady,gfxId),new Callback(this.onSkullLibraryError));
       }
       
-      private function applyColor(param1:uint) : void {
-         var _loc2_:* = undefined;
-         if(this._customColoredParts[param1])
+      private function applyColor(index:uint) : void {
+         var cs:* = undefined;
+         if(this._customColoredParts[index])
          {
-            for (_loc2_ in this._customColoredParts[param1])
+            for (cs in this._customColoredParts[index])
             {
-               _loc2_.colorize(this.getColorTransform(param1));
+               cs.colorize(this.getColorTransform(index));
             }
          }
       }
       
       private function resetSkins() : void {
-         var _loc1_:uint = 0;
+         var skin:uint = 0;
          this._skin.validate = false;
          this._skin.reset();
-         for each (_loc1_ in this._look.getSkins(true))
+         for each (skin in this._look.getSkins(true))
          {
-            _loc1_ = this._skin.add(_loc1_,this._alternativeSkinIndex);
+            skin = this._skin.add(skin,this._alternativeSkinIndex);
          }
          this._skin.validate = true;
       }
       
       private function resetSubEntities() : void {
-         var _loc1_:TiphonSprite = null;
-         var _loc3_:String = null;
-         var _loc4_:TiphonSprite = null;
-         var _loc5_:String = null;
-         var _loc6_:TiphonEntityLook = null;
-         var _loc7_:TiphonSprite = null;
+         var mountCarriedEntity:TiphonSprite = null;
+         var subEntitiesCategory:String = null;
+         var entity:TiphonSprite = null;
+         var subEntityIndex:String = null;
+         var subEntityLook:TiphonEntityLook = null;
+         var subEntity:TiphonSprite = null;
          while(this._subEntitiesList.length)
          {
-            _loc4_ = this._subEntitiesList.shift() as TiphonSprite;
-            if((_loc4_) && !((this._carriedEntity) && (_loc4_ == this._carriedEntity)))
+            entity = this._subEntitiesList.shift() as TiphonSprite;
+            if((entity) && (!((this._carriedEntity) && (entity == this._carriedEntity))))
             {
-               if((this._aSubEntities["2"]) && (this._aSubEntities["2"]["0"]) && _loc4_ == this._aSubEntities["2"]["0"])
+               if((this._aSubEntities["2"]) && (this._aSubEntities["2"]["0"]) && (entity == this._aSubEntities["2"]["0"]))
                {
-                  if(!(this._deactivatedSubEntityCategory.indexOf("2") == -1) && (_loc4_.carriedEntity))
+                  if((!(this._deactivatedSubEntityCategory.indexOf("2") == -1)) && (entity.carriedEntity))
                   {
-                     this._carriedEntity = _loc4_.carriedEntity;
+                     this._carriedEntity = entity.carriedEntity;
                   }
                   else
                   {
-                     _loc1_ = _loc4_.getSubEntitySlot(3,0) as TiphonSprite;
+                     mountCarriedEntity = entity.getSubEntitySlot(3,0) as TiphonSprite;
                   }
                }
-               _loc4_.destroy();
+               entity.destroy();
             }
          }
          this._aSubEntities = [];
-         var _loc2_:Array = this._look.getSubEntities(true);
-         for (_loc3_ in _loc2_)
+         var subEntities:Array = this._look.getSubEntities(true);
+         for (subEntitiesCategory in subEntities)
          {
-            if(this._deactivatedSubEntityCategory.indexOf(_loc3_) == -1)
+            if(this._deactivatedSubEntityCategory.indexOf(subEntitiesCategory) == -1)
             {
-               if(_loc3_ == "2" && (this._carriedEntity))
+               if((subEntitiesCategory == "2") && (this._carriedEntity))
                {
-                  _loc1_ = this._carriedEntity;
+                  mountCarriedEntity = this._carriedEntity;
                   this.removeSubEntity(this._carriedEntity);
                }
-               for (_loc5_ in _loc2_[_loc3_])
+               for (subEntityIndex in subEntities[subEntitiesCategory])
                {
-                  _loc6_ = _loc2_[_loc3_][_loc5_];
-                  _loc7_ = new TiphonSprite(_loc6_);
-                  _loc7_.setAnimationAndDirection("AnimStatique",this._currentDirection);
-                  if(!_loc7_.rendered)
+                  subEntityLook = subEntities[subEntitiesCategory][subEntityIndex];
+                  subEntity = new TiphonSprite(subEntityLook);
+                  subEntity.setAnimationAndDirection("AnimStatique",this._currentDirection);
+                  if(!subEntity.rendered)
                   {
-                     _loc7_.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onSubEntityRendered,false,0,true);
+                     subEntity.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onSubEntityRendered,false,0,true);
                   }
-                  this.addSubEntity(_loc7_,parseInt(_loc3_),parseInt(_loc5_));
-                  if(parseInt(_loc3_) == 2 && parseInt(_loc5_) == 0 && (_loc1_))
+                  this.addSubEntity(subEntity,parseInt(subEntitiesCategory),parseInt(subEntityIndex));
+                  if((parseInt(subEntitiesCategory) == 2) && (parseInt(subEntityIndex) == 0) && (mountCarriedEntity))
                   {
-                     _loc7_.isCarrying = true;
-                     _loc7_.addSubEntity(_loc1_,3,0);
+                     subEntity.isCarrying = true;
+                     subEntity.addSubEntity(mountCarriedEntity,3,0);
                   }
                }
             }
@@ -1170,7 +1170,7 @@ package com.ankamagames.tiphon.display
                this._aSubEntities["3"] = new Array();
             }
             this._aSubEntities["3"]["0"] = this._carriedEntity;
-            this._subEntitiesList.push(_loc4_);
+            this._subEntitiesList.push(entity);
          }
       }
       
@@ -1184,12 +1184,12 @@ package com.ankamagames.tiphon.display
       
       private var _lastRenderRequest:uint;
       
-      private function checkRessourceState(param1:Event=null) : void {
+      private function checkRessourceState(e:Event=null) : void {
          if(this.destroyed)
          {
             return;
          }
-         if(((this._skin.complete) || (this.useProgressiveLoading) && this._lastRenderRequest > 60) && (Tiphon.skullLibrary.isLoaded(this._look.getBone(),this._currentAnimation)) && !(this._currentAnimation == null) && this._currentDirection >= 0)
+         if(((this._skin.complete) || (this.useProgressiveLoading) && (this._lastRenderRequest > 60)) && (Tiphon.skullLibrary.isLoaded(this._look.getBone(),this._currentAnimation)) && (!(this._currentAnimation == null)) && (this._currentDirection >= 0))
          {
             this.render();
          }
@@ -1197,83 +1197,83 @@ package com.ankamagames.tiphon.display
       }
       
       private function render() : void {
-         var _loc7_:DisplayObject = null;
-         var _loc8_:* = 0;
-         var _loc12_:String = null;
-         var _loc13_:String = null;
-         var _loc14_:uint = 0;
-         var _loc15_:* = 0;
-         var _loc16_:Array = null;
-         var _loc17_:* = undefined;
-         var _loc18_:RasterizedSyncAnimation = null;
-         var _loc19_:Sprite = null;
-         var _loc20_:Rectangle = null;
-         var _loc21_:SubEntityTempInfo = null;
-         var _loc22_:TiphonSprite = null;
+         var bgElement:DisplayObject = null;
+         var currentBone:* = 0;
+         var log:String = null;
+         var defaultAnimation:String = null;
+         var defaultOrientation:uint = 0;
+         var carrying:* = 0;
+         var dirs:Array = null;
+         var dir:* = undefined;
+         var rasterizedSyncAnimation:RasterizedSyncAnimation = null;
+         var sprite:Sprite = null;
+         var pos:Rectangle = null;
+         var subEntityInfo:SubEntityTempInfo = null;
+         var tiphonSprite:TiphonSprite = null;
          if(this.destroyed)
          {
             return;
          }
          FpsManager.getInstance().startTracking("animation",40277);
-         var _loc1_:Class = null;
-         var _loc2_:Swl = Tiphon.skullLibrary.getResourceById(this._look.getBone(),this._currentAnimation);
-         var _loc3_:int = this._currentDirection;
+         var animClass:Class = null;
+         var lib:Swl = Tiphon.skullLibrary.getResourceById(this._look.getBone(),this._currentAnimation);
+         var finalDirection:int = this._currentDirection;
          if(this.parentSprite)
          {
             if(this.getGlobalScale() < 0)
             {
-               _loc3_ = TiphonUtility.getFlipDirection(_loc3_);
+               finalDirection = TiphonUtility.getFlipDirection(finalDirection);
             }
          }
-         var _loc4_:* = false;
-         var _loc5_:String = this._currentAnimation + "_" + _loc3_;
-         if(_loc2_.hasDefinition(_loc5_))
+         var fliped:Boolean = false;
+         var className:String = this._currentAnimation + "_" + finalDirection;
+         if(lib.hasDefinition(className))
          {
-            _loc1_ = _loc2_.getDefinition(_loc5_) as Class;
+            animClass = lib.getDefinition(className) as Class;
          }
          else
          {
-            _loc5_ = this._currentAnimation + "_" + TiphonUtility.getFlipDirection(_loc3_);
-            if(_loc2_.hasDefinition(_loc5_))
+            className = this._currentAnimation + "_" + TiphonUtility.getFlipDirection(finalDirection);
+            if(lib.hasDefinition(className))
             {
-               _loc1_ = _loc2_.getDefinition(_loc5_) as Class;
-               _loc4_ = true;
+               animClass = lib.getDefinition(className) as Class;
+               fliped = true;
             }
          }
-         if(_loc1_ == null)
+         if(animClass == null)
          {
-            _loc12_ = "Class [" + this._currentAnimation + "_" + _loc3_ + "] or [" + this._currentAnimation + "_" + TiphonUtility.getFlipDirection(_loc3_) + "] cannot be found in library " + this._look.getBone();
-            _log.error(_loc12_);
-            _loc13_ = SubstituteAnimationManager.getDefaultAnimation(this._currentAnimation);
-            _loc14_ = this._currentDirection;
-            if(_loc13_)
+            log = "Class [" + this._currentAnimation + "_" + finalDirection + "] or [" + this._currentAnimation + "_" + TiphonUtility.getFlipDirection(finalDirection) + "] cannot be found in library " + this._look.getBone();
+            _log.error(log);
+            defaultAnimation = SubstituteAnimationManager.getDefaultAnimation(this._currentAnimation);
+            defaultOrientation = this._currentDirection;
+            if(defaultAnimation)
             {
-               _loc16_ = this.getAvaibleDirection(_loc13_,true);
-               for (_loc17_ in _loc16_)
+               dirs = this.getAvaibleDirection(defaultAnimation,true);
+               for (dir in dirs)
                {
-                  if(_loc16_[_loc17_])
+                  if(dirs[dir])
                   {
-                     _loc14_ = int(_loc17_);
+                     defaultOrientation = int(dir);
                      break;
                   }
                }
             }
-            _loc15_ = this._currentAnimation.indexOf("Carrying");
-            if(!_loc13_ && !(_loc15_ == -1))
+            carrying = this._currentAnimation.indexOf("Carrying");
+            if((!defaultAnimation) && (!(carrying == -1)))
             {
-               _loc13_ = this._currentAnimation.substring(0,_loc15_);
+               defaultAnimation = this._currentAnimation.substring(0,carrying);
             }
-            if((_loc13_) && !(this._currentAnimation == _loc13_))
+            if((defaultAnimation) && (!(this._currentAnimation == defaultAnimation)))
             {
-               _log.error("On ne trouve pas cette animation, on va jouer l\'animation " + _loc13_ + "_" + this._currentDirection + " à la place.");
-               this.setAnimationAndDirection(_loc13_,this._currentDirection,true);
+               _log.error("On ne trouve pas cette animation, on va jouer l\'animation " + defaultAnimation + "_" + this._currentDirection + " à la place.");
+               this.setAnimationAndDirection(defaultAnimation,this._currentDirection,true);
             }
             else
             {
-               if((_loc13_) && (this._currentAnimation == _loc13_) && !(this._currentDirection == _loc14_))
+               if((defaultAnimation) && (this._currentAnimation == defaultAnimation) && (!(this._currentDirection == defaultOrientation)))
                {
-                  _log.error("On ne trouve pas cette animation dans cette direction, on va jouer l\'animation " + _loc13_ + "_" + _loc14_ + " à la place.");
-                  this.setAnimationAndDirection(_loc13_,_loc14_,true);
+                  _log.error("On ne trouve pas cette animation dans cette direction, on va jouer l\'animation " + defaultAnimation + "_" + defaultOrientation + " à la place.");
+                  this.setAnimationAndDirection(defaultAnimation,defaultOrientation,true);
                }
                else
                {
@@ -1282,74 +1282,74 @@ package com.ankamagames.tiphon.display
             }
             return;
          }
-         if(this._lastAnimation == "AnimPickup" && this._currentAnimation == "AnimStatiqueCarrying")
+         if((this._lastAnimation == "AnimPickup") && (this._currentAnimation == "AnimStatiqueCarrying"))
          {
             this._isCarrying = true;
          }
-         var _loc6_:* = -1;
-         if(this._currentAnimation == this._lastClassName && (this._animMovieClip))
+         var gotoFrame:int = -1;
+         if((this._currentAnimation == this._lastClassName) && (this._animMovieClip))
          {
-            _loc6_ = this._animMovieClip.currentFrame;
+            gotoFrame = this._animMovieClip.currentFrame;
          }
          this._lastClassName = this._currentAnimation;
          this.clearAnimation();
-         for each (_loc7_ in this._background)
+         for each (bgElement in this._background)
          {
-            if(_loc7_)
+            if(bgElement)
             {
-               addChild(_loc7_);
+               addChild(bgElement);
             }
          }
          this._customColoredParts = new Array();
          this._displayInfoParts = new Dictionary();
          ScriptedAnimation.currentSpriteHandler = this;
-         _loc8_ = this._look.getBone();
-         if((this._useCacheIfPossible) && (TiphonCacheManager.hasCache(_loc8_,this._currentAnimation)))
+         currentBone = this._look.getBone();
+         if((this._useCacheIfPossible) && (TiphonCacheManager.hasCache(currentBone,this._currentAnimation)))
          {
-            this._animMovieClip = TiphonCacheManager.getScriptedAnimation(_loc8_,this._currentAnimation,this._currentDirection);
+            this._animMovieClip = TiphonCacheManager.getScriptedAnimation(currentBone,this._currentAnimation,this._currentDirection);
          }
          else
          {
-            this._animMovieClip = new _loc1_() as ScriptedAnimation;
+            this._animMovieClip = new animClass() as ScriptedAnimation;
          }
          ScriptedAnimation.currentSpriteHandler = null;
          MEMORY_LOG2[this._animMovieClip] = 1;
          if(!this._animMovieClip)
          {
-            _log.error("Class [" + this._currentAnimation + "_" + _loc3_ + "] is not a ScriptedAnimation");
+            _log.error("Class [" + this._currentAnimation + "_" + finalDirection + "] is not a ScriptedAnimation");
             return;
          }
          this._animMovieClip.addEventListener(Event.ADDED_TO_STAGE,this.onAdded);
-         if((_loc4_) && this._animMovieClip.scaleX > 0)
+         if((fliped) && (this._animMovieClip.scaleX > 0))
          {
             this._animMovieClip.scaleX = this._animMovieClip.scaleX * -1;
          }
          else
          {
-            if(!_loc4_ && this._animMovieClip.scaleX < 0)
+            if((!fliped) && (this._animMovieClip.scaleX < 0))
             {
                this._animMovieClip.scaleX = this._animMovieClip.scaleX * -1;
             }
          }
-         var _loc9_:Boolean = MovieClipUtils.isSingleFrame(this._animMovieClip);
-         this._animMovieClip.cacheAsBitmap = _loc9_;
+         var isSingleFrame:Boolean = MovieClipUtils.isSingleFrame(this._animMovieClip);
+         this._animMovieClip.cacheAsBitmap = isSingleFrame;
          if(this.disableMouseEventWhenAnimated)
          {
-            super.mouseEnabled = (_loc9_) && (this.mouseEnabled);
+            super.mouseEnabled = (isSingleFrame) && (this.mouseEnabled);
          }
          if(!this._backgroundOnly)
          {
             this.addChild(this._animMovieClip);
          }
-         if((_loc9_) || !this._rasterize && !Tiphon.getInstance().isRasterizeAnimation(this._currentAnimation))
+         if((isSingleFrame) || (!this._rasterize) && (!Tiphon.getInstance().isRasterizeAnimation(this._currentAnimation)))
          {
-            if((!(this._currentAnimation.indexOf("AnimStatique") == -1) || !(this._currentAnimation.indexOf("AnimState") == -1)) && this._currentAnimation.indexOf("_to_") == -1 && !_loc9_)
+            if(((!(this._currentAnimation.indexOf("AnimStatique") == -1)) || (!(this._currentAnimation.indexOf("AnimState") == -1))) && (this._currentAnimation.indexOf("_to_") == -1) && (!isSingleFrame))
             {
-               _log.error("/!\\ ATTENTION, l\'animation [" + this._currentAnimation + "_" + _loc3_ + "] sur le squelette [" + this._look.getBone() + "] contient un clip qui contient plusieurs frames. C\'est mal.");
+               _log.error("/!\\ ATTENTION, l\'animation [" + this._currentAnimation + "_" + finalDirection + "] sur le squelette [" + this._look.getBone() + "] contient un clip qui contient plusieurs frames. C\'est mal.");
             }
-            if(!_loc9_)
+            if(!isSingleFrame)
             {
-               FpsControler.controlFps(this._animMovieClip,_loc2_.frameRate);
+               FpsControler.controlFps(this._animMovieClip,lib.frameRate);
             }
             this._animMovieClip.addEventListener(AnimationEvent.EVENT,this.animEventHandler);
             this._animMovieClip.addEventListener(AnimationEvent.ANIM,this.animSwitchHandler);
@@ -1357,22 +1357,22 @@ package com.ankamagames.tiphon.display
          else
          {
             this._animMovieClip.visible = false;
-            _loc18_ = new RasterizedSyncAnimation(this._animMovieClip,this._lookCode);
-            FpsControler.controlFps(_loc18_,_loc2_.frameRate);
-            _loc18_.addEventListener(AnimationEvent.EVENT,this.animEventHandler);
-            _loc18_.addEventListener(AnimationEvent.ANIM,this.animSwitchHandler);
+            rasterizedSyncAnimation = new RasterizedSyncAnimation(this._animMovieClip,this._lookCode);
+            FpsControler.controlFps(rasterizedSyncAnimation,lib.frameRate);
+            rasterizedSyncAnimation.addEventListener(AnimationEvent.EVENT,this.animEventHandler);
+            rasterizedSyncAnimation.addEventListener(AnimationEvent.ANIM,this.animSwitchHandler);
             if(!this._backgroundOnly)
             {
-               this.addChild(_loc18_);
+               this.addChild(rasterizedSyncAnimation);
             }
-            this._animMovieClip = _loc18_;
+            this._animMovieClip = rasterizedSyncAnimation;
          }
-         if(!_loc9_ && !(_loc6_ == -1))
+         if((!isSingleFrame) && (!(gotoFrame == -1)))
          {
-            this._animMovieClip.gotoAndStop(_loc6_);
+            this._animMovieClip.gotoAndStop(gotoFrame);
             if(this._animMovieClip is ScriptedAnimation)
             {
-               (this._animMovieClip as ScriptedAnimation).playEventAtFrame(_loc6_);
+               (this._animMovieClip as ScriptedAnimation).playEventAtFrame(gotoFrame);
             }
          }
          this._rendered = true;
@@ -1380,45 +1380,45 @@ package com.ankamagames.tiphon.display
          {
             this.dispatchEvent(new TiphonEvent(TiphonEvent.RENDER_FATHER_SUCCEED,this));
          }
-         var _loc10_:int = this._backgroundTemp.length;
-         var _loc11_:* = 0;
-         while(_loc11_ < _loc10_)
+         var nbb:int = this._backgroundTemp.length;
+         var m:int = 0;
+         while(m < nbb)
          {
-            _loc19_ = this._backgroundTemp.shift();
+            sprite = this._backgroundTemp.shift();
             if(this._backgroundTemp.shift())
             {
-               _loc20_ = this.getRect(this);
-               _loc19_.y = _loc20_.y - 10;
+               pos = this.getRect(this);
+               sprite.y = pos.y - 10;
             }
-            addChildAt(_loc19_,0);
-            _loc11_ = _loc11_ + 2;
+            addChildAt(sprite,0);
+            m = m + 2;
          }
          FpsManager.getInstance().stopTracking("animation");
          if(this._subEntitiesTemp)
          {
             while(this._subEntitiesTemp.length)
             {
-               _loc21_ = this._subEntitiesTemp.shift();
-               _loc22_ = _loc21_.entity as TiphonSprite;
-               if((_loc22_) && !_loc22_._currentAnimation)
+               subEntityInfo = this._subEntitiesTemp.shift();
+               tiphonSprite = subEntityInfo.entity as TiphonSprite;
+               if((tiphonSprite) && (!tiphonSprite._currentAnimation))
                {
-                  _loc22_._currentAnimation = this._currentAnimation;
+                  tiphonSprite._currentAnimation = this._currentAnimation;
                }
-               this.addSubEntity(_loc21_.entity,_loc21_.category,_loc21_.slot);
+               this.addSubEntity(subEntityInfo.entity,subEntityInfo.category,subEntityInfo.slot);
             }
          }
          this.checkRenderState();
       }
       
       public function forceRender() : void {
-         var _loc1_:int = this._currentDirection;
-         if((this.parentSprite) && this.getGlobalScale() < 0)
+         var finalDirection:int = this._currentDirection;
+         if((this.parentSprite) && (this.getGlobalScale() < 0))
          {
-            _loc1_ = TiphonUtility.getFlipDirection(_loc1_);
+            finalDirection = TiphonUtility.getFlipDirection(finalDirection);
          }
-         var _loc2_:String = this._currentAnimation + "_" + _loc1_;
-         var _loc3_:Swl = Tiphon.skullLibrary.getResourceById(this._look.getBone(),this._currentAnimation,true);
-         if(_loc3_ == null)
+         var className:String = this._currentAnimation + "_" + finalDirection;
+         var lib:Swl = Tiphon.skullLibrary.getResourceById(this._look.getBone(),this._currentAnimation,true);
+         if(lib == null)
          {
             Tiphon.skullLibrary.addEventListener(SwlEvent.SWL_LOADED,this.checkRessourceState);
          }
@@ -1429,8 +1429,8 @@ package com.ankamagames.tiphon.display
       }
       
       protected function clearAnimation() : void {
-         var _loc1_:* = 0;
-         var _loc2_:* = 0;
+         var num:* = 0;
+         var i:* = 0;
          if(this._animMovieClip)
          {
             this._animMovieClip.removeEventListener(AnimationEvent.EVENT,this.animEventHandler);
@@ -1450,9 +1450,9 @@ package com.ankamagames.tiphon.display
                TiphonFpsManager.addOldScriptedAnimation(this._animMovieClip as ScriptedAnimation,true);
             }
             (this._animMovieClip as MovieClip).destroy();
-            _loc1_ = this._animMovieClip.numChildren;
-            _loc2_ = -1;
-            while(++_loc2_ < _loc1_)
+            num = this._animMovieClip.numChildren;
+            i = -1;
+            while(++i < num)
             {
                this._animMovieClip.removeChildAt(0);
             }
@@ -1464,97 +1464,97 @@ package com.ankamagames.tiphon.display
          }
       }
       
-      private function animEventHandler(param1:AnimationEvent) : void {
-         this.dispatchEvent(new TiphonEvent(param1.id,this));
+      private function animEventHandler(event:AnimationEvent) : void {
+         this.dispatchEvent(new TiphonEvent(event.id,this));
          this.dispatchEvent(new TiphonEvent(TiphonEvent.ANIMATION_EVENT,this));
       }
       
-      private function animSwitchHandler(param1:AnimationEvent) : void {
-         this.setAnimation(param1.id);
+      private function animSwitchHandler(event:AnimationEvent) : void {
+         this.setAnimation(event.id);
       }
       
-      override public function dispatchEvent(param1:Event) : Boolean {
-         var _loc2_:String = null;
-         if(param1.type == TiphonEvent.ANIMATION_END && (this._targetAnimation))
+      override public function dispatchEvent(event:Event) : Boolean {
+         var anim:String = null;
+         if((event.type == TiphonEvent.ANIMATION_END) && (this._targetAnimation))
          {
-            _loc2_ = this._targetAnimation;
+            anim = this._targetAnimation;
             this._targetAnimation = null;
-            this.setAnimation(_loc2_);
+            this.setAnimation(anim);
             return false;
          }
-         return super.dispatchEvent(param1);
+         return super.dispatchEvent(event);
       }
       
       private function checkRenderState() : void {
-         var _loc1_:DisplayObject = null;
-         for each (_loc1_ in this._subEntitiesList)
+         var subEntity:DisplayObject = null;
+         for each (subEntity in this._subEntitiesList)
          {
-            if(_loc1_ is TiphonSprite && !TiphonSprite(_loc1_)._rendered)
+            if((subEntity is TiphonSprite) && (!TiphonSprite(subEntity)._rendered))
             {
                return;
             }
          }
-         if(!this._skin || !this._skin.complete)
+         if((!this._skin) || (!this._skin.complete))
          {
             return;
          }
-         var _loc2_:TiphonEvent = new TiphonEvent(TiphonEvent.RENDER_SUCCEED,this);
-         _loc2_.animationName = this._currentAnimation + "_" + this._currentDirection;
-         setTimeout(this.dispatchEvent,1,_loc2_);
+         var te:TiphonEvent = new TiphonEvent(TiphonEvent.RENDER_SUCCEED,this);
+         te.animationName = this._currentAnimation + "_" + this._currentDirection;
+         setTimeout(this.dispatchEvent,1,te);
       }
       
       private function updateScale() : void {
-         var _loc4_:DisplayObject = null;
-         var _loc5_:DisplayObject = null;
-         var _loc6_:TiphonSprite = null;
-         var _loc7_:TiphonSprite = null;
+         var p:DisplayObject = null;
+         var bg:DisplayObject = null;
+         var parentSprite:TiphonSprite = null;
+         var p2:TiphonSprite = null;
          if(!this._animMovieClip)
          {
             return;
          }
-         var _loc1_:int = this._animMovieClip.scaleX >= 0?1:-1;
-         var _loc2_:int = this._animMovieClip.scaleY >= 0?1:-1;
-         var _loc3_:DisplayObject = this;
-         while(_loc3_.parent)
+         var valueX:int = this._animMovieClip.scaleX >= 0?1:-1;
+         var valueY:int = this._animMovieClip.scaleY >= 0?1:-1;
+         var ent:DisplayObject = this;
+         while(ent.parent)
          {
-            _loc1_ = _loc1_ * (_loc3_.parent.scaleX >= 0?1:-1);
-            _loc2_ = _loc2_ * (_loc3_.parent.scaleY >= 0?1:-1);
-            if(_loc3_.parent is TiphonSprite && _loc4_ == null)
+            valueX = valueX * (ent.parent.scaleX >= 0?1:-1);
+            valueY = valueY * (ent.parent.scaleY >= 0?1:-1);
+            if((ent.parent is TiphonSprite) && (p == null))
             {
-               _loc4_ = _loc3_.parent;
+               p = ent.parent;
             }
-            _loc3_ = _loc3_.parent;
+            ent = ent.parent;
          }
-         if(_loc4_ is TiphonSprite && (!(TiphonSprite(_loc4_).look.getScaleX() == 1) || !(TiphonSprite(_loc4_).look.getScaleY() == 1)))
+         if((p is TiphonSprite) && ((!(TiphonSprite(p).look.getScaleX() == 1)) || (!(TiphonSprite(p).look.getScaleY() == 1))))
          {
-            _loc6_ = _loc4_ as TiphonSprite;
-            this._animMovieClip.scaleX = this.look.getScaleX() / _loc6_.look.getScaleX() * (this._animMovieClip.scaleX < 0?-1:1);
-            this._animMovieClip.scaleY = this.look.getScaleY() / _loc6_.look.getScaleY();
+            parentSprite = p as TiphonSprite;
+            this._animMovieClip.scaleX = this.look.getScaleX() / parentSprite.look.getScaleX() * (this._animMovieClip.scaleX < 0?-1:1);
+            this._animMovieClip.scaleY = this.look.getScaleY() / parentSprite.look.getScaleY();
          }
          else
          {
             this._animMovieClip.scaleX = this.look.getScaleX() * (this._animMovieClip.scaleX < 0?-1:1);
             this._animMovieClip.scaleY = this.look.getScaleY();
          }
-         for each (_loc5_ in this._background)
+         for each (bg in this._background)
          {
-            if(_loc5_)
+            if(bg)
             {
-               if(_loc4_ is TiphonSprite)
+               if(p is TiphonSprite)
                {
-                  _loc7_ = _loc4_ as TiphonSprite;
-                  _loc5_.scaleX = 1 / _loc7_.look.getScaleX() * _loc1_;
-                  _loc5_.scaleY = 1 / _loc7_.look.getScaleY() * _loc2_;
+                  p2 = p as TiphonSprite;
+                  bg.scaleX = 1 / p2.look.getScaleX() * valueX;
+                  bg.scaleY = 1 / p2.look.getScaleY() * valueY;
                }
                else
                {
-                  _loc5_.scaleX = _loc5_.scaleY = 1;
+                  bg.scaleX = bg.scaleY = 1;
                }
             }
          }
       }
       
-      private function dispatchWaitingEvents(param1:Event) : void {
+      private function dispatchWaitingEvents(e:Event) : void {
          StageShareManager.stage.removeEventListener(Event.ENTER_FRAME,this.dispatchWaitingEvents);
          while(this._waitingEventInitList.length)
          {
@@ -1562,103 +1562,103 @@ package com.ankamagames.tiphon.display
          }
       }
       
-      public function onAnimationEvent(param1:String, param2:String="") : void {
-         if(param1 == TiphonEvent.PLAYER_STOP)
+      public function onAnimationEvent(eventName:String, params:String="") : void {
+         if(eventName == TiphonEvent.PLAYER_STOP)
          {
             this.stopAnimation();
          }
-         var _loc3_:TiphonEvent = new TiphonEvent(param1,this,param2);
-         var _loc4_:TiphonEvent = new TiphonEvent(TiphonEvent.ANIMATION_EVENT,this);
+         var event:TiphonEvent = new TiphonEvent(eventName,this,params);
+         var animEvent:TiphonEvent = new TiphonEvent(TiphonEvent.ANIMATION_EVENT,this);
          if(this._init)
          {
-            this.dispatchEvent(_loc3_);
-            this.dispatchEvent(_loc4_);
+            this.dispatchEvent(event);
+            this.dispatchEvent(animEvent);
          }
          else
          {
-            this._waitingEventInitList.push(_loc3_,_loc4_);
+            this._waitingEventInitList.push(event,animEvent);
          }
-         if(!(param1 == TiphonEvent.PLAYER_STOP) && (this.parentSprite))
+         if((!(eventName == TiphonEvent.PLAYER_STOP)) && (this.parentSprite))
          {
-            this.parentSprite.onAnimationEvent(param1);
+            this.parentSprite.onAnimationEvent(eventName);
          }
       }
       
       private function onRenderFail() : void {
-         var _loc1_:TiphonEvent = new TiphonEvent(TiphonEvent.RENDER_FAILED,this);
+         var event:TiphonEvent = new TiphonEvent(TiphonEvent.RENDER_FAILED,this);
          if(this._init)
          {
-            this.dispatchEvent(_loc1_);
+            this.dispatchEvent(event);
          }
          else
          {
-            this._waitingEventInitList.push(_loc1_);
+            this._waitingEventInitList.push(event);
          }
          TiphonDebugManager.displayDofusScriptError("Rendu impossible : " + this._currentAnimation + ", " + this._currentDirection,this);
       }
       
-      private function onSubEntityRendered(param1:Event) : void {
-         param1.currentTarget.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onSubEntityRendered);
+      private function onSubEntityRendered(e:Event) : void {
+         e.currentTarget.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onSubEntityRendered);
          this.checkRenderState();
       }
       
-      private function onSkullLibraryReady(param1:uint) : void {
+      private function onSkullLibraryReady(pBoneId:uint) : void {
          this._libReady = true;
-         var _loc2_:TiphonEvent = new TiphonEvent(TiphonEvent.SPRITE_INIT,this,param1);
+         var event:TiphonEvent = new TiphonEvent(TiphonEvent.SPRITE_INIT,this,pBoneId);
          if(this._init)
          {
-            this.dispatchEvent(_loc2_);
+            this.dispatchEvent(event);
          }
          else
          {
-            this._waitingEventInitList.push(_loc2_);
+            this._waitingEventInitList.push(event);
          }
       }
       
       private function onSkullLibraryError() : void {
-         var _loc1_:TiphonEvent = new TiphonEvent(TiphonEvent.SPRITE_INIT_FAILED,this);
+         var event:TiphonEvent = new TiphonEvent(TiphonEvent.SPRITE_INIT_FAILED,this);
          if(this._init)
          {
-            this.dispatchEvent(_loc1_);
+            this.dispatchEvent(event);
          }
          else
          {
-            this._waitingEventInitList.push(_loc1_);
+            this._waitingEventInitList.push(event);
          }
          TiphonDebugManager.displayDofusScriptError("Initialisation impossible : " + this._currentAnimation + ", " + this._currentDirection,this);
       }
       
-      protected function onAdded(param1:Event) : void {
-         var _loc3_:CarriedSprite = null;
-         var _loc5_:DisplayObject = null;
-         var _loc6_:Array = null;
+      protected function onAdded(e:Event) : void {
+         var carriedSprite:CarriedSprite = null;
+         var child:DisplayObject = null;
+         var splitedName:Array = null;
          this.updateScale();
-         var _loc2_:int = this._animMovieClip.numChildren;
-         var _loc4_:* = 0;
-         while(_loc4_ < _loc2_)
+         var nc:int = this._animMovieClip.numChildren;
+         var i:int = 0;
+         while(i < nc)
          {
-            _loc5_ = this._animMovieClip.getChildAt(_loc4_);
-            if(_loc5_ is CarriedSprite)
+            child = this._animMovieClip.getChildAt(i);
+            if(child is CarriedSprite)
             {
-               _loc6_ = getQualifiedClassName(_loc5_).split("_");
-               if(_loc6_[1] == "3" && _loc6_[2] == "0")
+               splitedName = getQualifiedClassName(child).split("_");
+               if((splitedName[1] == "3") && (splitedName[2] == "0"))
                {
-                  _loc3_ = this._animMovieClip.getChildAt(_loc4_) as CarriedSprite;
+                  carriedSprite = this._animMovieClip.getChildAt(i) as CarriedSprite;
                }
             }
-            _loc4_++;
+            i++;
          }
          if((this._isCarrying) && (this._carriedEntity))
          {
-            if(_loc3_)
+            if(carriedSprite)
             {
                this._carriedEntity.y = this._carriedEntity.x = 0;
                this._carriedEntity.setDirection(this._currentDirection);
-               _loc3_.addChild(this._carriedEntity);
+               carriedSprite.addChild(this._carriedEntity);
             }
             else
             {
-               if(this._animMovieClip.width > 0 && this._animMovieClip.height > 0)
+               if((this._animMovieClip.width > 0) && (this._animMovieClip.height > 0))
                {
                   if(this._carriedEntity.parent == this._animMovieClip)
                   {
@@ -1672,17 +1672,17 @@ package com.ankamagames.tiphon.display
          this.dispatchEvent(new TiphonEvent(TiphonEvent.ANIMATION_ADDED,this));
       }
       
-      public function boneChanged(param1:TiphonEntityLook) : void {
-         this._look = param1;
+      public function boneChanged(look:TiphonEntityLook) : void {
+         this._look = look;
          this._lookCode = this._look.toString();
          this._tiphonEventManager = new TiphonEventsManager(this);
          this._rendered = false;
-         var _loc2_:Uri = BoneIndexManager.getInstance().getBoneFile(this._look.getBone(),this._currentAnimation);
+         var boneFileUri:Uri = BoneIndexManager.getInstance().getBoneFile(this._look.getBone(),this._currentAnimation);
          if(BoneIndexManager.getInstance().hasCustomBone(this._look.getBone()))
          {
-            if(!(_loc2_.fileName == this._look.getBone() + ".swl") || (BoneIndexManager.getInstance().hasAnim(this._look.getBone(),this._currentAnimation,this._currentDirection)))
+            if((!(boneFileUri.fileName == this._look.getBone() + ".swl")) || (BoneIndexManager.getInstance().hasAnim(this._look.getBone(),this._currentAnimation,this._currentDirection)))
             {
-               this.initializeLibrary(param1.getBone(),_loc2_);
+               this.initializeLibrary(look.getBone(),boneFileUri);
                this.setAnimation(this._rawAnimation);
             }
             else
@@ -1692,22 +1692,22 @@ package com.ankamagames.tiphon.display
          }
          else
          {
-            this.initializeLibrary(param1.getBone(),_loc2_);
+            this.initializeLibrary(look.getBone(),boneFileUri);
             this.setAnimation(this._rawAnimation);
          }
       }
       
-      public function skinsChanged(param1:TiphonEntityLook) : void {
-         this._look = param1;
+      public function skinsChanged(look:TiphonEntityLook) : void {
+         this._look = look;
          this._lookCode = this._look.toString();
          this._rendered = false;
          this.resetSkins();
          this.finalize();
       }
       
-      public function colorsChanged(param1:TiphonEntityLook) : void {
-         var _loc2_:String = null;
-         this._look = param1;
+      public function colorsChanged(look:TiphonEntityLook) : void {
+         var colorIndex:String = null;
+         this._look = look;
          this._lookCode = this._look.toString();
          this._aTransformColors = new Array();
          if(this._rasterize)
@@ -1716,15 +1716,15 @@ package com.ankamagames.tiphon.display
          }
          else
          {
-            for (_loc2_ in this._customColoredParts)
+            for (colorIndex in this._customColoredParts)
             {
-               this.applyColor(uint(_loc2_));
+               this.applyColor(uint(colorIndex));
             }
          }
       }
       
-      public function scalesChanged(param1:TiphonEntityLook) : void {
-         this._look = param1;
+      public function scalesChanged(look:TiphonEntityLook) : void {
+         this._look = look;
          this._lookCode = this._look.toString();
          if(this._rasterize)
          {
@@ -1739,23 +1739,23 @@ package com.ankamagames.tiphon.display
          }
       }
       
-      public function subEntitiesChanged(param1:TiphonEntityLook) : void {
-         this._look = param1;
+      public function subEntitiesChanged(look:TiphonEntityLook) : void {
+         this._look = look;
          this._lookCode = this._look.toString();
          this.resetSubEntities();
          this.finalize();
       }
       
-      public function enableSubCategory(param1:int, param2:Boolean=true) : void {
-         if(param2)
+      public function enableSubCategory(catId:int, isEnabled:Boolean=true) : void {
+         if(isEnabled)
          {
-            this._deactivatedSubEntityCategory.splice(this._deactivatedSubEntityCategory.indexOf(param1.toString()),1);
+            this._deactivatedSubEntityCategory.splice(this._deactivatedSubEntityCategory.indexOf(catId.toString()),1);
          }
          else
          {
-            if(this._deactivatedSubEntityCategory.indexOf(param1.toString()) == -1)
+            if(this._deactivatedSubEntityCategory.indexOf(catId.toString()) == -1)
             {
-               this._deactivatedSubEntityCategory.push(param1.toString());
+               this._deactivatedSubEntityCategory.push(catId.toString());
             }
          }
       }

@@ -7,11 +7,11 @@ package com.ankamagames.dofus.logic.game.roleplay.messages
    public class InteractiveElementActivationMessage extends Object implements Message
    {
       
-      public function InteractiveElementActivationMessage(param1:InteractiveElement, param2:MapPoint, param3:uint) {
+      public function InteractiveElementActivationMessage(ie:InteractiveElement, position:MapPoint, skillInstanceId:uint) {
          super();
-         this._ie = param1;
-         this._position = param2;
-         this._skillInstanceId = param3;
+         this._ie = ie;
+         this._position = position;
+         this._skillInstanceId = skillInstanceId;
       }
       
       private var _ie:InteractiveElement;

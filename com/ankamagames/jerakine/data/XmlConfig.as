@@ -30,33 +30,33 @@ package com.ankamagames.jerakine.data
       
       private var _constants:Array;
       
-      public function init(param1:Array) : void {
-         this._constants = param1;
+      public function init(constants:Array) : void {
+         this._constants = constants;
       }
       
-      public function addCategory(param1:Array) : void {
-         var _loc2_:* = undefined;
-         for (_loc2_ in param1)
+      public function addCategory(constants:Array) : void {
+         var i:* = undefined;
+         for (i in constants)
          {
-            this._constants[_loc2_] = param1[_loc2_];
+            this._constants[i] = constants[i];
          }
       }
       
-      public function getEntry(param1:String) : * {
-         return this._constants[param1];
+      public function getEntry(name:String) : * {
+         return this._constants[name];
       }
       
-      public function getBooleanEntry(param1:String) : Boolean {
-         var _loc2_:* = this._constants[param1];
-         if(_loc2_ is String)
+      public function getBooleanEntry(name:String) : Boolean {
+         var v:* = this._constants[name];
+         if(v is String)
          {
-            return String(_loc2_).toLowerCase() == "true" || _loc2_ == "1";
+            return (String(v).toLowerCase() == "true") || (v == "1");
          }
-         return _loc2_;
+         return v;
       }
       
-      public function setEntry(param1:String, param2:*) : void {
-         this._constants[param1] = param2;
+      public function setEntry(sKey:String, sValue:*) : void {
+         this._constants[sKey] = sValue;
       }
    }
 }

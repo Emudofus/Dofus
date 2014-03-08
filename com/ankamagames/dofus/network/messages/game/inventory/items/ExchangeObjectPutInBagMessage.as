@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6009;
       }
       
-      public function initExchangeObjectPutInBagMessage(param1:Boolean=false, param2:ObjectItem=null) : ExchangeObjectPutInBagMessage {
-         super.initExchangeObjectMessage(param1);
-         this.object = param2;
+      public function initExchangeObjectPutInBagMessage(remote:Boolean=false, object:ObjectItem=null) : ExchangeObjectPutInBagMessage {
+         super.initExchangeObjectMessage(remote);
+         this.object = object;
          this._isInitialized = true;
          return this;
       }
@@ -42,33 +42,33 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeObjectPutInBagMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeObjectPutInBagMessage(output);
       }
       
-      public function serializeAs_ExchangeObjectPutInBagMessage(param1:IDataOutput) : void {
-         super.serializeAs_ExchangeObjectMessage(param1);
-         this.object.serializeAs_ObjectItem(param1);
+      public function serializeAs_ExchangeObjectPutInBagMessage(output:IDataOutput) : void {
+         super.serializeAs_ExchangeObjectMessage(output);
+         this.object.serializeAs_ObjectItem(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeObjectPutInBagMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeObjectPutInBagMessage(input);
       }
       
-      public function deserializeAs_ExchangeObjectPutInBagMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_ExchangeObjectPutInBagMessage(input:IDataInput) : void {
+         super.deserialize(input);
          this.object = new ObjectItem();
-         this.object.deserialize(param1);
+         this.object.deserialize(input);
       }
    }
 }

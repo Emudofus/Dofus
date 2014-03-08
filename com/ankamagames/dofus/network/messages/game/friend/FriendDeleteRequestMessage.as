@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5603;
       }
       
-      public function initFriendDeleteRequestMessage(param1:uint=0) : FriendDeleteRequestMessage {
-         this.accountId = param1;
+      public function initFriendDeleteRequestMessage(accountId:uint=0) : FriendDeleteRequestMessage {
+         this.accountId = accountId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.friend
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FriendDeleteRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FriendDeleteRequestMessage(output);
       }
       
-      public function serializeAs_FriendDeleteRequestMessage(param1:IDataOutput) : void {
+      public function serializeAs_FriendDeleteRequestMessage(output:IDataOutput) : void {
          if(this.accountId < 0)
          {
             throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
          }
          else
          {
-            param1.writeInt(this.accountId);
+            output.writeInt(this.accountId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FriendDeleteRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FriendDeleteRequestMessage(input);
       }
       
-      public function deserializeAs_FriendDeleteRequestMessage(param1:IDataInput) : void {
-         this.accountId = param1.readInt();
+      public function deserializeAs_FriendDeleteRequestMessage(input:IDataInput) : void {
+         this.accountId = input.readInt();
          if(this.accountId < 0)
          {
             throw new Error("Forbidden value (" + this.accountId + ") on element of FriendDeleteRequestMessage.accountId.");

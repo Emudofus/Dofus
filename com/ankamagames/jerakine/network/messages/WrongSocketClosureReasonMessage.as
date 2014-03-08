@@ -5,10 +5,10 @@ package com.ankamagames.jerakine.network.messages
    public class WrongSocketClosureReasonMessage extends Object implements Message
    {
       
-      public function WrongSocketClosureReasonMessage(param1:uint, param2:uint) {
+      public function WrongSocketClosureReasonMessage(expectedReason:uint, gotReason:uint) {
          super();
-         this._expectedReason = param1;
-         this._gotReason = param2;
+         this._expectedReason = expectedReason;
+         this._gotReason = gotReason;
       }
       
       private var _expectedReason:uint;

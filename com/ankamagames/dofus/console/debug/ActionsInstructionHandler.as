@@ -24,7 +24,7 @@ package com.ankamagames.dofus.console.debug
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ActionsInstructionHandler));
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
          var actionName:String = null;
          var apiAction:DofusApiAction = null;
          var actionClass:Class = null;
@@ -52,9 +52,6 @@ package com.ankamagames.dofus.console.debug
          var aDesc:XML = null;
          var aParams:Array = null;
          var p:* = undefined;
-         var console:ConsoleHandler = param1;
-         var cmd:String = param2;
-         var args:Array = param3;
          switch(cmd)
          {
             case "sendaction":
@@ -84,7 +81,7 @@ package com.ankamagames.dofus.console.debug
                   paramsTypes.push(param.@type);
                   maxParams++;
                }
-               if(args.length < neededParams + 1 || args.length > maxParams + 1)
+               if((args.length < neededParams + 1) || (args.length > maxParams + 1))
                {
                   console.output("This action needs at least <b>" + neededParams + "</b> and a maximum of <b>" + maxParams + "</b> parameters.");
                   console.output("Parameters types : " + paramsTypes);
@@ -174,7 +171,7 @@ package com.ankamagames.dofus.console.debug
                foundCount = 0;
                for (a in actionsList)
                {
-                  if(!(lookFor.length > 0 && a.toLowerCase().indexOf(lookFor) == -1))
+                  if(!((lookFor.length > 0) && (a.toLowerCase().indexOf(lookFor) == -1)))
                   {
                      console.output("    <b>" + a + "</b>");
                      aDesc = describeType(actionsList[a].actionClass);
@@ -198,8 +195,8 @@ package com.ankamagames.dofus.console.debug
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "sendaction":
                return "Send an actions to the worker.";
@@ -207,43 +204,56 @@ package com.ankamagames.dofus.console.debug
                return "Send a hook to the worker.";
             case "listactions":
                return "List all valid actions.";
-            default:
-               return "Unknown command \'" + param1 + "\'.";
          }
       }
       
-      private function getParams(param1:Array, param2:Array) : Array {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      private function getParams(data:Array, types:Array) : Array {
+         var iStr:String = null;
+         var i:uint = 0;
+         var v:String = null;
+         var t:String = null;
+         var params:Array = [];
+         for (iStr in data)
+         {
+            i = parseInt(iStr);
+            v = data[i];
+            t = types[i];
+            params[i] = this.getParam(v,t);
+         }
+         return params;
       }
       
-      private function getParam(param1:String, param2:String) : * {
-         switch(param2)
+      private function getParam(value:String, type:String) : * {
+         switch(type)
          {
             case "String":
-               return param1;
+               return value;
             case "Boolean":
-               return (param1 == "true") || (param1 == "1");
+               return (value == "true") || (value == "1");
             case "int":
             case "uint":
-               return parseInt(param1);
-            default:
-               _log.warn("Unsupported parameter type \'" + param2 + "\'.");
-               return param1;
+               return parseInt(value);
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+         var actionsList:Array = null;
+         var a:String = null;
+         var possibilities:Array = [];
+         switch(cmd)
+         {
+            case "sendaction":
+               if(paramIndex == 0)
+               {
+                  actionsList = DofusApiAction.getApiActionsList();
+                  for (a in actionsList)
+                  {
+                     possibilities.push(a);
+                  }
+               }
+               break;
+         }
+         return possibilities;
       }
    }
 }

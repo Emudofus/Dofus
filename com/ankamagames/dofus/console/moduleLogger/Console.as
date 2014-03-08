@@ -2,7 +2,6 @@ package com.ankamagames.dofus.console.moduleLogger
 {
    import flash.text.StyleSheet;
    import flash.display.NativeWindow;
-   import __AS3__.vec.Vector;
    import flash.display.Sprite;
    import flash.text.TextField;
    import com.ankamagames.jerakine.logger.ModuleLogger;
@@ -22,6 +21,7 @@ package com.ankamagames.dofus.console.moduleLogger
    import flash.filesystem.File;
    import flash.filesystem.FileStream;
    import flash.filesystem.FileMode;
+   import __AS3__.vec.*;
    
    public final class Console extends Object
    {
@@ -127,41 +127,41 @@ package com.ankamagames.dofus.console.moduleLogger
       
       private var _showShortcut:Boolean = true;
       
-      private function output(param1:TypeMessage) : void {
-         var _loc2_:* = 0;
-         var _loc3_:String = null;
-         var _loc4_:Array = null;
+      private function output(message:TypeMessage) : void {
+         var type:* = 0;
+         var text:String = null;
+         var newLines:Array = null;
          if(this._active)
          {
-            this._allInfo.push(param1);
+            this._allInfo.push(message);
             if(!_displayed)
             {
                return;
             }
-            if((this._filterUI) && (this._filterUI.isOn) && (this._filterUI.isFiltered(param1.name)))
+            if((this._filterUI) && (this._filterUI.isOn) && (this._filterUI.isFiltered(message.name)))
             {
                return;
             }
-            _loc2_ = param1.type;
-            if(_loc2_ == TypeMessage.TYPE_HOOK && !this._showHook)
+            type = message.type;
+            if((type == TypeMessage.TYPE_HOOK) && (!this._showHook))
             {
                return;
             }
-            if(_loc2_ == TypeMessage.TYPE_UI && !this._showUI)
+            if((type == TypeMessage.TYPE_UI) && (!this._showUI))
             {
                return;
             }
-            if(_loc2_ == TypeMessage.TYPE_ACTION && !this._showAction)
+            if((type == TypeMessage.TYPE_ACTION) && (!this._showAction))
             {
                return;
             }
-            if(_loc2_ == TypeMessage.TYPE_SHORTCUT && !this._showShortcut)
+            if((type == TypeMessage.TYPE_SHORTCUT) && (!this._showShortcut))
             {
                return;
             }
-            _loc3_ = param1.textInfo;
-            _loc4_ = _loc3_.split("\n");
-            this._lines.push.apply(this._lines,_loc4_);
+            text = message.textInfo;
+            newLines = text.split("\n");
+            this._lines.push.apply(this._lines,newLines);
             this._scrollBar.updateScrolling();
             this._scrollBarH.resize();
          }
@@ -178,22 +178,22 @@ package com.ankamagames.dofus.console.moduleLogger
       }
       
       public function disableLogEvent() : void {
-         var _loc1_:ConsoleIcon = null;
+         var icon:ConsoleIcon = null;
          this._showHook = false;
          this._showUI = false;
          this._showAction = false;
          this._showShortcut = false;
-         for each (_loc1_ in this._filterButton)
+         for each (icon in this._filterButton)
          {
-            _loc1_.disable(true);
+            icon.disable(true);
          }
          this.onFilterChange();
       }
       
-      public function display(param1:Boolean=false) : void {
+      public function display(quietMode:Boolean=false) : void {
          ModuleLogger.active = true;
          this._active = true;
-         if(param1)
+         if(quietMode)
          {
             return;
          }
@@ -216,16 +216,16 @@ package com.ankamagames.dofus.console.moduleLogger
          }
       }
       
-      private function log(... rest) : void {
-         var _loc2_:TypeMessage = null;
-         if((this._active) && (rest.length))
+      private function log(... args) : void {
+         var message:TypeMessage = null;
+         if((this._active) && (args.length))
          {
-            _loc2_ = CallWithParameters.callConstructor(TypeMessage,rest);
-            this.output(_loc2_);
+            message = CallWithParameters.callConstructor(TypeMessage,args);
+            this.output(message);
          }
       }
       
-      private function clearConsole(param1:Event=null) : void {
+      private function clearConsole(e:Event=null) : void {
          this._lines.splice(0,this._lines.length);
          this._allInfo.splice(0,this._allInfo.length);
          this._scrollBar.updateScrolling();
@@ -234,7 +234,7 @@ package com.ankamagames.dofus.console.moduleLogger
       }
       
       private function createUI() : void {
-         var _loc9_:ConsoleIcon = null;
+         var book:ConsoleIcon = null;
          this._backGround = new Sprite();
          this._textField = new TextField();
          this._textField.addEventListener(TextEvent.LINK,this.onTextClick);
@@ -243,39 +243,39 @@ package com.ankamagames.dofus.console.moduleLogger
          this._textField.mouseWheelEnabled = false;
          this._scrollBar = new TextFieldScrollBar(this._textField,this._lines,10,SCROLL_BG_COLOR,SCROLL_COLOR);
          this._scrollBarH = new TextFieldOldScrollBarH(this._textField,5,SCROLL_BG_COLOR,SCROLL_COLOR);
-         var _loc1_:TextFormat = new TextFormat();
-         _loc1_.font = "Courier New";
-         _loc1_.size = 16;
-         _loc1_.color = OUTPUT_COLOR;
-         this._textField.defaultTextFormat = _loc1_;
+         var textFormat:TextFormat = new TextFormat();
+         textFormat.font = "Courier New";
+         textFormat.size = 16;
+         textFormat.color = OUTPUT_COLOR;
+         this._textField.defaultTextFormat = textFormat;
          this._textField.styleSheet = CONSOLE_STYLE;
-         var _loc2_:* = 0;
+         var posX:int = 0;
          this._iconList = new Sprite();
-         var _loc3_:ConsoleIcon = new ConsoleIcon("cancel",ICON_SIZE);
-         _loc3_.addEventListener(MouseEvent.MOUSE_DOWN,this.clearConsole);
-         this._iconList.addChild(_loc3_);
-         _loc2_ = _loc2_ + (ICON_SIZE + ICON_INTERVAL);
-         var _loc4_:ConsoleIcon = new ConsoleIcon("disk",ICON_SIZE);
-         _loc4_.addEventListener(MouseEvent.MOUSE_DOWN,this.saveText);
-         _loc4_.x = _loc2_;
-         this._iconList.addChild(_loc4_);
-         _loc2_ = _loc2_ + (ICON_SIZE + ICON_INTERVAL);
-         var _loc5_:ConsoleIcon = new ConsoleIcon("list",ICON_SIZE);
-         _loc5_.addEventListener(MouseEvent.MOUSE_DOWN,this.onIconFilterMouseDown);
-         _loc5_.x = _loc2_;
-         this._iconList.addChild(_loc5_);
+         var erase:ConsoleIcon = new ConsoleIcon("cancel",ICON_SIZE);
+         erase.addEventListener(MouseEvent.MOUSE_DOWN,this.clearConsole);
+         this._iconList.addChild(erase);
+         posX = posX + (ICON_SIZE + ICON_INTERVAL);
+         var disk:ConsoleIcon = new ConsoleIcon("disk",ICON_SIZE);
+         disk.addEventListener(MouseEvent.MOUSE_DOWN,this.saveText);
+         disk.x = posX;
+         this._iconList.addChild(disk);
+         posX = posX + (ICON_SIZE + ICON_INTERVAL);
+         var filter:ConsoleIcon = new ConsoleIcon("list",ICON_SIZE);
+         filter.addEventListener(MouseEvent.MOUSE_DOWN,this.onIconFilterMouseDown);
+         filter.x = posX;
+         this._iconList.addChild(filter);
          this._filterButton = new Array();
-         var _loc6_:Array = new Array(new ColorTransform(0.9,1,1.1),new ColorTransform(0.9,1.2,0.8),new ColorTransform(1.3,0.7,0.8),new ColorTransform(1.3,1.3,0.5));
-         var _loc7_:* = 0;
-         while(_loc7_ < _loc6_.length)
+         var bookList:Array = new Array(new ColorTransform(0.9,1,1.1),new ColorTransform(0.9,1.2,0.8),new ColorTransform(1.3,0.7,0.8),new ColorTransform(1.3,1.3,0.5));
+         var i:int = 0;
+         while(i < bookList.length)
          {
-            _loc9_ = new ConsoleIcon("book",ICON_SIZE);
-            this._filterButton[_loc7_] = _loc9_;
-            _loc9_.changeColor(_loc6_[_loc7_]);
-            this._iconList.addChild(_loc9_);
-            _loc9_.name = "_" + _loc7_;
-            _loc9_.addEventListener(MouseEvent.MOUSE_DOWN,this.onBookClick);
-            _loc7_++;
+            book = new ConsoleIcon("book",ICON_SIZE);
+            this._filterButton[i] = book;
+            book.changeColor(bookList[i]);
+            this._iconList.addChild(book);
+            book.name = "_" + i;
+            book.addEventListener(MouseEvent.MOUSE_DOWN,this.onBookClick);
+            i++;
          }
          this._filterUI = new FilterUI(FILTER_UI_COLOR);
          this._filterUI.addEventListener(Event.CHANGE,this.onFilterChange);
@@ -285,13 +285,13 @@ package com.ankamagames.dofus.console.moduleLogger
          this._window.stage.addChild(this._scrollBar);
          this._window.stage.addChild(this._scrollBarH);
          this._window.stage.addChild(this._iconList);
-         var _loc8_:Object = StoreDataManager.getInstance().getData(Constants.DATASTORE_MODULE_DEBUG,"console_pref");
-         this.loadData(_loc8_);
+         var data:Object = StoreDataManager.getInstance().getData(Constants.DATASTORE_MODULE_DEBUG,"console_pref");
+         this.loadData(data);
          this.onResize();
       }
       
-      private function openFilterUI(param1:Boolean) : void {
-         if(param1)
+      private function openFilterUI(open:Boolean) : void {
+         if(open)
          {
             this._window.stage.addChild(this._filterUI);
             this.onResize();
@@ -306,12 +306,12 @@ package com.ankamagames.dofus.console.moduleLogger
       }
       
       private function createWindow() : void {
-         var _loc1_:NativeWindowInitOptions = null;
+         var options:NativeWindowInitOptions = null;
          if(!this._window)
          {
-            _loc1_ = new NativeWindowInitOptions();
-            _loc1_.resizable = true;
-            this._window = new NativeWindow(_loc1_);
+            options = new NativeWindowInitOptions();
+            options.resizable = true;
+            this._window = new NativeWindow(options);
             this._window.width = 800;
             this._window.height = 600;
             this._window.title = "Module Console";
@@ -325,52 +325,52 @@ package com.ankamagames.dofus.console.moduleLogger
       }
       
       private function saveData() : void {
-         var _loc1_:Object = null;
+         var data:Object = null;
          try
          {
-            _loc1_ = new Object();
+            data = new Object();
             if(this._filterUI)
             {
-               _loc1_.filter = this._filterUI.getCurrentOptions();
+               data.filter = this._filterUI.getCurrentOptions();
             }
-            _loc1_.showHook = this._showHook;
-            _loc1_.showUI = this._showUI;
-            _loc1_.showAction = this._showAction;
-            _loc1_.showShortcut = this._showShortcut;
-            StoreDataManager.getInstance().setData(Constants.DATASTORE_MODULE_DEBUG,"console_pref",_loc1_);
+            data.showHook = this._showHook;
+            data.showUI = this._showUI;
+            data.showAction = this._showAction;
+            data.showShortcut = this._showShortcut;
+            StoreDataManager.getInstance().setData(Constants.DATASTORE_MODULE_DEBUG,"console_pref",data);
          }
          catch(e:Error)
          {
          }
       }
       
-      private function loadData(param1:Object) : void {
-         if(param1)
+      private function loadData(data:Object) : void {
+         if(data)
          {
-            if(param1.filter)
+            if(data.filter)
             {
-               this._filterUI.setOptions(param1.filter);
-               if(param1.filter.isOn)
+               this._filterUI.setOptions(data.filter);
+               if(data.filter.isOn)
                {
                   this.openFilterUI(true);
                }
             }
-            if((param1.hasOwnProperty("showHook")) && !param1.showHook)
+            if((data.hasOwnProperty("showHook")) && (!data.showHook))
             {
                this._filterButton[0].disable(true);
                this._showHook = false;
             }
-            if((param1.hasOwnProperty("showUI")) && !param1.showUI)
+            if((data.hasOwnProperty("showUI")) && (!data.showUI))
             {
                this._filterButton[1].disable(true);
                this._showUI = false;
             }
-            if((param1.hasOwnProperty("showAction")) && !param1.showAction)
+            if((data.hasOwnProperty("showAction")) && (!data.showAction))
             {
                this._filterButton[2].disable(true);
                this._showAction = false;
             }
-            if((param1.hasOwnProperty("showShortcut")) && !param1.showShortcut)
+            if((data.hasOwnProperty("showShortcut")) && (!data.showShortcut))
             {
                this._filterButton[3].disable(true);
                this._showShortcut = false;
@@ -379,7 +379,7 @@ package com.ankamagames.dofus.console.moduleLogger
          }
       }
       
-      private function onIconFilterMouseDown(param1:Event) : void {
+      private function onIconFilterMouseDown(e:Event) : void {
          if(this._filterUI)
          {
             this.openFilterUI(!this._filterUI.parent);
@@ -390,32 +390,32 @@ package com.ankamagames.dofus.console.moduleLogger
          }
       }
       
-      private function onFilterChange(param1:Event=null) : void {
-         var _loc5_:TypeMessage = null;
-         var _loc6_:* = 0;
-         var _loc7_:String = null;
-         var _loc8_:Array = null;
+      private function onFilterChange(event:Event=null) : void {
+         var message:TypeMessage = null;
+         var type:* = 0;
+         var text:String = null;
+         var newLines:Array = null;
          this._lines.splice(0,this._lines.length);
-         var _loc2_:Boolean = (this._filterUI) && (this._filterUI.isOn);
-         var _loc3_:int = this._allInfo.length;
-         var _loc4_:* = -1;
-         while(++_loc4_ < _loc3_)
+         var filterIsOn:Boolean = (this._filterUI) && (this._filterUI.isOn);
+         var num:int = this._allInfo.length;
+         var i:int = -1;
+         while(++i < num)
          {
-            _loc5_ = this._allInfo[_loc4_];
-            if(!((_loc2_) && (this._filterUI.isFiltered(_loc5_.name))))
+            message = this._allInfo[i];
+            if(!((filterIsOn) && (this._filterUI.isFiltered(message.name))))
             {
-               _loc6_ = _loc5_.type;
-               if(!(_loc6_ == TypeMessage.TYPE_HOOK && !this._showHook))
+               type = message.type;
+               if(!((type == TypeMessage.TYPE_HOOK) && (!this._showHook)))
                {
-                  if(!(_loc6_ == TypeMessage.TYPE_UI && !this._showUI))
+                  if(!((type == TypeMessage.TYPE_UI) && (!this._showUI)))
                   {
-                     if(!(_loc6_ == TypeMessage.TYPE_ACTION && !this._showAction))
+                     if(!((type == TypeMessage.TYPE_ACTION) && (!this._showAction)))
                      {
-                        if(!(_loc6_ == TypeMessage.TYPE_SHORTCUT && !this._showShortcut))
+                        if(!((type == TypeMessage.TYPE_SHORTCUT) && (!this._showShortcut)))
                         {
-                           _loc7_ = _loc5_.textInfo;
-                           _loc8_ = _loc7_.split("\n");
-                           this._lines.push.apply(this._lines,_loc8_);
+                           text = message.textInfo;
+                           newLines = text.split("\n");
+                           this._lines.push.apply(this._lines,newLines);
                         }
                      }
                   }
@@ -427,9 +427,9 @@ package com.ankamagames.dofus.console.moduleLogger
          this.onResize();
       }
       
-      private function onResize(param1:Event=null) : void {
-         var _loc5_:* = 0;
-         var _loc6_:* = 0;
+      private function onResize(event:Event=null) : void {
+         var posX:* = 0;
+         var k:* = 0;
          this._backGround.graphics.clear();
          this._backGround.graphics.beginFill(BACKGROUND_COLOR);
          this._backGround.graphics.drawRect(0,0,this._window.stage.stageWidth,this._window.stage.stageHeight);
@@ -444,13 +444,13 @@ package com.ankamagames.dofus.console.moduleLogger
          }
          if(this._filterButton)
          {
-            _loc5_ = this._window.stage.stageWidth - ICON_SIZE - 20;
-            _loc6_ = this._filterButton.length-1;
-            while(_loc6_ >= 0)
+            posX = this._window.stage.stageWidth - ICON_SIZE - 20;
+            k = this._filterButton.length - 1;
+            while(k >= 0)
             {
-               this._filterButton[_loc6_].x = _loc5_;
-               _loc5_ = _loc5_ - (ICON_SIZE + 5);
-               _loc6_--;
+               this._filterButton[k].x = posX;
+               posX = posX - (ICON_SIZE + 5);
+               k--;
             }
          }
          if(this._filterUI)
@@ -462,58 +462,58 @@ package com.ankamagames.dofus.console.moduleLogger
          this._textField.width = this._window.stage.stageWidth - TextFieldScrollBar.WIDTH;
          this._textField.height = this._window.stage.stageHeight - this._textField.y - SCROLLBAR_SIZE;
          this._textField.scrollV = 0;
-         var _loc2_:* = "";
-         var _loc3_:* = 0;
-         while(_loc3_ < 200)
+         var text:String = "";
+         var i:int = 0;
+         while(i < 200)
          {
-            _loc2_ = _loc2_ + "o\n";
-            _loc3_++;
+            text = text + "o\n";
+            i++;
          }
-         this._textField.text = _loc2_;
-         var _loc4_:int = this._textField.numLines - this._textField.maxScrollV;
+         this._textField.text = text;
+         var numLines:int = this._textField.numLines - this._textField.maxScrollV;
          this._textField.text = "";
          this._scrollBar.addEventListener(Event.CHANGE,this.onScrollVChange);
          this._scrollBar.scrollAtEnd();
-         this._scrollBar.resize(_loc4_);
+         this._scrollBar.resize(numLines);
          this._scrollBarH.resize();
       }
       
-      private function onTextClick(param1:TextEvent) : void {
-         var _loc2_:String = param1.text;
-         if(_loc2_.charAt(0) == "@")
+      private function onTextClick(textEvent:TextEvent) : void {
+         var text:String = textEvent.text;
+         if(text.charAt(0) == "@")
          {
-            this._filterUI.addToFilter(_loc2_.substr(1));
+            this._filterUI.addToFilter(text.substr(1));
          }
       }
       
-      private function onBookClick(param1:MouseEvent) : void {
-         var _loc2_:ConsoleIcon = param1.currentTarget as ConsoleIcon;
-         var _loc3_:int = int(_loc2_.name.substr(1));
-         if(_loc3_ == TypeMessage.TYPE_HOOK)
+      private function onBookClick(e:MouseEvent) : void {
+         var target:ConsoleIcon = e.currentTarget as ConsoleIcon;
+         var type:int = int(target.name.substr(1));
+         if(type == TypeMessage.TYPE_HOOK)
          {
             this._showHook = !this._showHook;
-            _loc2_.disable(!this._showHook);
+            target.disable(!this._showHook);
          }
          else
          {
-            if(_loc3_ == TypeMessage.TYPE_UI)
+            if(type == TypeMessage.TYPE_UI)
             {
                this._showUI = !this._showUI;
-               _loc2_.disable(!this._showUI);
+               target.disable(!this._showUI);
             }
             else
             {
-               if(_loc3_ == TypeMessage.TYPE_ACTION)
+               if(type == TypeMessage.TYPE_ACTION)
                {
                   this._showAction = !this._showAction;
-                  _loc2_.disable(!this._showAction);
+                  target.disable(!this._showAction);
                }
                else
                {
-                  if(_loc3_ == TypeMessage.TYPE_SHORTCUT)
+                  if(type == TypeMessage.TYPE_SHORTCUT)
                   {
                      this._showShortcut = !this._showShortcut;
-                     _loc2_.disable(!this._showShortcut);
+                     target.disable(!this._showShortcut);
                   }
                }
             }
@@ -521,13 +521,13 @@ package com.ankamagames.dofus.console.moduleLogger
          this.onFilterChange();
       }
       
-      private function saveText(param1:Event) : void {
-         var _loc2_:File = new File();
-         _loc2_.browseForSave("Save");
-         _loc2_.addEventListener(Event.SELECT,this.onFileSelect);
+      private function saveText(e:Event) : void {
+         var file:File = new File();
+         file.browseForSave("Save");
+         file.addEventListener(Event.SELECT,this.onFileSelect);
       }
       
-      private function onClose(param1:Event) : void {
+      private function onClose(e:Event) : void {
          _displayed = false;
          this._window = null;
          this.saveData();
@@ -537,26 +537,16 @@ package com.ankamagames.dofus.console.moduleLogger
       
       private var regExp2:RegExp;
       
-      private function onFileSelect(param1:Event) : void {
-         var fileStream:FileStream = null;
-         var text:String = null;
-         var e:Event = param1;
-         try
-         {
-            text = this._lines.join(File.lineEnding);
-            text = text.replace(this.regExp,"");
-            text = text.replace(this.regExp2," ");
-            fileStream = new FileStream();
-            fileStream.open(e.target as File,FileMode.WRITE);
-            fileStream.writeUTFBytes(text);
-            fileStream.close();
-         }
-         catch(e:Error)
-         {
-         }
+      private function onFileSelect(e:Event) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: EmptyStackException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
-      private function onScrollVChange(param1:Event) : void {
+      private function onScrollVChange(e:Event) : void {
          this._scrollBarH.resize();
       }
    }

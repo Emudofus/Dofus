@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.security
          return 5607;
       }
       
-      public function initClientKeyMessage(param1:String="") : ClientKeyMessage {
-         this.key = param1;
+      public function initClientKeyMessage(key:String="") : ClientKeyMessage {
+         this.key = key;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.security
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ClientKeyMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ClientKeyMessage(output);
       }
       
-      public function serializeAs_ClientKeyMessage(param1:IDataOutput) : void {
-         param1.writeUTF(this.key);
+      public function serializeAs_ClientKeyMessage(output:IDataOutput) : void {
+         output.writeUTF(this.key);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ClientKeyMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ClientKeyMessage(input);
       }
       
-      public function deserializeAs_ClientKeyMessage(param1:IDataInput) : void {
-         this.key = param1.readUTF();
+      public function deserializeAs_ClientKeyMessage(input:IDataInput) : void {
+         this.key = input.readUTF();
       }
    }
 }

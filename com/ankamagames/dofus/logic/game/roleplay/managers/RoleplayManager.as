@@ -57,64 +57,64 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
          _self = null;
       }
       
-      public function displayCharacterContextualMenu(param1:GameContextActorInformations) : Boolean {
-         var _loc2_:Object = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
-         var _loc3_:ContextMenuData = MenusFactory.create(param1,null,[{"id":param1.contextualId}]);
-         if(_loc3_)
+      public function displayCharacterContextualMenu(pGameContextActorInformations:GameContextActorInformations) : Boolean {
+         var modContextMenu:Object = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
+         var menu:ContextMenuData = MenusFactory.create(pGameContextActorInformations,null,[{"id":pGameContextActorInformations.contextualId}]);
+         if(menu)
          {
-            _loc2_.createContextMenu(_loc3_);
+            modContextMenu.createContextMenu(menu);
             return true;
          }
          return false;
       }
       
-      public function displayContextualMenu(param1:GameContextActorInformations, param2:IInteractive) : Boolean {
-         var _loc3_:ContextMenuData = null;
-         var _loc4_:Object = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
+      public function displayContextualMenu(pGameContextActorInformations:GameContextActorInformations, pEntity:IInteractive) : Boolean {
+         var menu:ContextMenuData = null;
+         var modContextMenu:Object = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
          switch(true)
          {
-            case param1 is GameRolePlayMutantInformations:
-               if((param1 as GameRolePlayMutantInformations).humanoidInfo.restrictions.cantAttack)
+            case pGameContextActorInformations is GameRolePlayMutantInformations:
+               if((pGameContextActorInformations as GameRolePlayMutantInformations).humanoidInfo.restrictions.cantAttack)
                {
-                  _loc3_ = MenusFactory.create(param1,null,[param2]);
+                  menu = MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
                }
                break;
-            case param1 is GameRolePlayCharacterInformations:
-               _loc3_ = MenusFactory.create(param1,null,[param2]);
+            case pGameContextActorInformations is GameRolePlayCharacterInformations:
+               menu = MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
                break;
-            case param1 is GameRolePlayMerchantInformations:
-               _loc3_ = MenusFactory.create(param1,null,[param2]);
+            case pGameContextActorInformations is GameRolePlayMerchantInformations:
+               menu = MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
                break;
-            case param1 is GameRolePlayNpcInformations:
-               _loc3_ = MenusFactory.create(param1,null,[param2]);
+            case pGameContextActorInformations is GameRolePlayNpcInformations:
+               menu = MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
                break;
-            case param1 is GameRolePlayTaxCollectorInformations:
-               _loc3_ = MenusFactory.create(param1,null,[param2]);
+            case pGameContextActorInformations is GameRolePlayTaxCollectorInformations:
+               menu = MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
                break;
-            case param1 is GameRolePlayPrismInformations:
-               _loc3_ = MenusFactory.create(param1,null,[param2]);
+            case pGameContextActorInformations is GameRolePlayPrismInformations:
+               menu = MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
                break;
-            case param1 is GameContextPaddockItemInformations:
+            case pGameContextActorInformations is GameContextPaddockItemInformations:
                if(this.roleplayContextFrame.currentPaddock.guildIdentity)
                {
-                  _loc3_ = MenusFactory.create(param1,null,[param2]);
+                  menu = MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
                }
                break;
-            case param1 is GameRolePlayMountInformations:
-               _loc3_ = MenusFactory.create(param1,null,[param2]);
+            case pGameContextActorInformations is GameRolePlayMountInformations:
+               menu = MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
                break;
          }
-         if(_loc3_)
+         if(menu)
          {
-            _loc4_.createContextMenu(_loc3_);
+            modContextMenu.createContextMenu(menu);
             return true;
          }
          return false;
       }
       
-      public function putEntityOnTop(param1:AnimatedCharacter) : void {
-         var _loc2_:Sprite = InteractiveCellManager.getInstance().getCell(param1.position.cellId);
-         EntitiesDisplayManager.getInstance().orderEntity(param1,_loc2_);
+      public function putEntityOnTop(entity:AnimatedCharacter) : void {
+         var cellSprite:Sprite = InteractiveCellManager.getInstance().getCell(entity.position.cellId);
+         EntitiesDisplayManager.getInstance().orderEntity(entity,cellSprite);
       }
    }
 }

@@ -12,29 +12,29 @@ package nochump.util.zip
       private static var crcTable:Array = makeCrcTable();
       
       private static function makeCrcTable() : Array {
-         var _loc3_:uint = 0;
-         var _loc4_:* = 0;
-         var _loc1_:Array = new Array(256);
-         var _loc2_:* = 0;
-         while(_loc2_ < 256)
+         var c:uint = 0;
+         var k:* = 0;
+         var crcTable:Array = new Array(256);
+         var n:int = 0;
+         while(n < 256)
          {
-            _loc3_ = _loc2_;
-            _loc4_ = 8;
-            while(--_loc4_ >= 0)
+            c = n;
+            k = 8;
+            while(--k >= 0)
             {
-               if((_loc3_ & 1) != 0)
+               if((c & 1) != 0)
                {
-                  _loc3_ = 3.988292384E9 ^ _loc3_ >>> 1;
+                  c = 3.988292384E9 ^ c >>> 1;
                }
                else
                {
-                  _loc3_ = _loc3_ >>> 1;
+                  c = c >>> 1;
                }
             }
-            _loc1_[_loc2_] = _loc3_;
-            _loc2_++;
+            crcTable[n] = c;
+            n++;
          }
-         return _loc1_;
+         return crcTable;
       }
       
       private var crc:uint;
@@ -47,15 +47,15 @@ package nochump.util.zip
          this.crc = 0;
       }
       
-      public function update(param1:ByteArray) : void {
-         var _loc2_:uint = 0;
-         var _loc3_:uint = param1.length;
-         var _loc4_:uint = ~this.crc;
-         while(--_loc3_ >= 0)
+      public function update(buf:ByteArray) : void {
+         var off:uint = 0;
+         var len:uint = buf.length;
+         var c:uint = ~this.crc;
+         while(--len >= 0)
          {
-            _loc4_ = crcTable[(_loc4_ ^ param1[_loc2_++]) & 255] ^ _loc4_ >>> 8;
+            c = crcTable[(c ^ buf[off++]) & 255] ^ c >>> 8;
          }
-         this.crc = ~_loc4_;
+         this.crc = ~c;
       }
    }
 }

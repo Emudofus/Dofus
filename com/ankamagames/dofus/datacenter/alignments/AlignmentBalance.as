@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.alignments
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlignmentBalance));
       
-      public static function getAlignmentBalanceById(param1:int) : AlignmentBalance {
-         return GameData.getObject(MODULE,param1) as AlignmentBalance;
+      public static function getAlignmentBalanceById(id:int) : AlignmentBalance {
+         return GameData.getObject(MODULE,id) as AlignmentBalance;
       }
       
       public static function getAlignmentBalances() : Array {

@@ -11,10 +11,10 @@ package com.ankamagames.dofus.logic.common.actions
       
       public var behavior:String;
       
-      public function create(param1:String) : RemoveBehaviorToStackAction {
-         var _loc2_:RemoveBehaviorToStackAction = new RemoveBehaviorToStackAction();
-         _loc2_.behavior = param1;
-         return _loc2_;
+      public function create(name:String) : RemoveBehaviorToStackAction {
+         var s:RemoveBehaviorToStackAction = new RemoveBehaviorToStackAction();
+         s.behavior = name;
+         return s;
       }
    }
 }

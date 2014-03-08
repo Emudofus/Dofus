@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.quest
       
       public static const MODULE:String = "AchievementRewards";
       
-      public static function getAchievementRewardById(param1:int) : AchievementReward {
-         return GameData.getObject(MODULE,param1) as AchievementReward;
+      public static function getAchievementRewardById(id:int) : AchievementReward {
+         return GameData.getObject(MODULE,id) as AchievementReward;
       }
       
       public static function getAchievementRewards() : Array {

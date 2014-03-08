@@ -1,7 +1,7 @@
 package com.ankamagames.atouin.managers
 {
-   import __AS3__.vec.Vector;
    import com.ankamagames.atouin.types.AnimatedElementInfo;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import flash.events.Event;
    import com.ankamagames.tiphon.display.TiphonSprite;
@@ -28,40 +28,40 @@ package com.ankamagames.atouin.managers
       private static const MAX_ANIMATION_LENGTH:int = 20000;
       
       public static function reset() : void {
-         var _loc1_:* = 0;
-         var _loc2_:* = 0;
-         var _loc3_:AnimatedElementInfo = null;
+         var num:* = 0;
+         var i:* = 0;
+         var info:AnimatedElementInfo = null;
          if(_elements)
          {
-            _loc1_ = _elements.length;
-            _loc2_ = -1;
-            while(++_loc2_ < _loc1_)
+            num = _elements.length;
+            i = -1;
+            while(++i < num)
             {
-               _loc3_ = _elements[_loc2_];
-               _loc3_.tiphonSprite.destroy();
+               info = _elements[i];
+               info.tiphonSprite.destroy();
             }
          }
          _elements = new Vector.<AnimatedElementInfo>();
          StageShareManager.stage.removeEventListener(Event.ENTER_FRAME,loop);
       }
       
-      public static function addAnimatedElement(param1:TiphonSprite, param2:int, param3:int) : void {
+      public static function addAnimatedElement(tiphonSprite:TiphonSprite, min:int, max:int) : void {
          if(_elements.length == 0)
          {
             StageShareManager.stage.addEventListener(Event.ENTER_FRAME,loop);
          }
-         _elements.push(new AnimatedElementInfo(param1,param2,param3));
+         _elements.push(new AnimatedElementInfo(tiphonSprite,min,max));
       }
       
-      public static function removeAnimatedElement(param1:TiphonSprite) : void {
-         var _loc2_:uint = 0;
-         var _loc3_:AnimatedElementInfo = null;
-         while(_loc2_ < _elements.length)
+      public static function removeAnimatedElement(tiphonSprite:TiphonSprite) : void {
+         var index:uint = 0;
+         var elem:AnimatedElementInfo = null;
+         while(index < _elements.length)
          {
-            _loc3_ = _elements[_loc2_];
-            if(_loc3_.tiphonSprite == param1)
+            elem = _elements[index];
+            if(elem.tiphonSprite == tiphonSprite)
             {
-               _elements.splice(_loc2_,1);
+               _elements.splice(index,1);
                if(_elements.length == 0)
                {
                   StageShareManager.stage.removeEventListener(Event.ENTER_FRAME,loop);
@@ -69,39 +69,39 @@ package com.ankamagames.atouin.managers
                }
                return;
             }
-            _loc2_++;
+            index++;
          }
       }
       
-      public static function loop(param1:Event) : void {
-         var _loc5_:AnimatedElementInfo = null;
-         var _loc6_:SerialSequencer = null;
-         var _loc7_:PlayAnimationStep = null;
-         var _loc2_:int = getTimer();
-         var _loc3_:* = -1;
-         var _loc4_:int = _elements.length;
-         while(++_loc3_ < _loc4_)
+      public static function loop(e:Event) : void {
+         var elementInfo:AnimatedElementInfo = null;
+         var seq:SerialSequencer = null;
+         var playAnimStep:PlayAnimationStep = null;
+         var time:int = getTimer();
+         var i:int = -1;
+         var num:int = _elements.length;
+         while(++i < num)
          {
-            _loc5_ = _elements[_loc3_];
-            if(_loc2_ - _loc5_.nextAnimation > 0)
+            elementInfo = _elements[i];
+            if(time - elementInfo.nextAnimation > 0)
             {
-               _loc5_.setNextAnimation();
-               _loc6_ = new SerialSequencer(SEQUENCE_TYPE_NAME);
-               _loc7_ = new PlayAnimationStep(_loc5_.tiphonSprite,"AnimStart",false);
-               _loc7_.timeout = MAX_ANIMATION_LENGTH;
-               _loc6_.addStep(_loc7_);
-               _loc6_.addStep(new SetAnimationStep(_loc5_.tiphonSprite,"AnimStatique"));
-               _loc6_.addStep(new CallbackStep(new Callback(onSequenceEnd,_loc6_,_loc5_.tiphonSprite)));
-               _loc6_.start();
+               elementInfo.setNextAnimation();
+               seq = new SerialSequencer(SEQUENCE_TYPE_NAME);
+               playAnimStep = new PlayAnimationStep(elementInfo.tiphonSprite,"AnimStart",false);
+               playAnimStep.timeout = MAX_ANIMATION_LENGTH;
+               seq.addStep(playAnimStep);
+               seq.addStep(new SetAnimationStep(elementInfo.tiphonSprite,"AnimStatique"));
+               seq.addStep(new CallbackStep(new Callback(onSequenceEnd,seq,elementInfo.tiphonSprite)));
+               seq.start();
             }
          }
       }
       
-      private static function onSequenceEnd(param1:SerialSequencer, param2:TiphonSprite) : void {
-         param1.clear();
-         if(param2.getAnimation() == "AnimStart")
+      private static function onSequenceEnd(sequence:SerialSequencer, ts:TiphonSprite) : void {
+         sequence.clear();
+         if(ts.getAnimation() == "AnimStart")
          {
-            param2.stopAnimation();
+            ts.stopAnimation();
          }
       }
       

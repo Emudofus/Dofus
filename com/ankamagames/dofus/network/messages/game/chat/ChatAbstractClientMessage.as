@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 850;
       }
       
-      public function initChatAbstractClientMessage(param1:String="") : ChatAbstractClientMessage {
-         this.content = param1;
+      public function initChatAbstractClientMessage(content:String="") : ChatAbstractClientMessage {
+         this.content = content;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.chat
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ChatAbstractClientMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ChatAbstractClientMessage(output);
       }
       
-      public function serializeAs_ChatAbstractClientMessage(param1:IDataOutput) : void {
-         param1.writeUTF(this.content);
+      public function serializeAs_ChatAbstractClientMessage(output:IDataOutput) : void {
+         output.writeUTF(this.content);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ChatAbstractClientMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ChatAbstractClientMessage(input);
       }
       
-      public function deserializeAs_ChatAbstractClientMessage(param1:IDataInput) : void {
-         this.content = param1.readUTF();
+      public function deserializeAs_ChatAbstractClientMessage(input:IDataInput) : void {
+         this.content = input.readUTF();
       }
    }
 }

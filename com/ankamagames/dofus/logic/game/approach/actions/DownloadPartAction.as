@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.approach.actions
          super();
       }
       
-      public static function create(param1:String) : DownloadPartAction {
-         var _loc2_:DownloadPartAction = new DownloadPartAction();
-         _loc2_.id = param1;
-         return _loc2_;
+      public static function create(id:String) : DownloadPartAction {
+         var a:DownloadPartAction = new DownloadPartAction();
+         a.id = id;
+         return a;
       }
       
       public var id:String;

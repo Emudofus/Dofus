@@ -2,7 +2,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,9 +32,9 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 713;
       }
       
-      public function initGameFightTurnListMessage(param1:Vector.<int>=null, param2:Vector.<int>=null) : GameFightTurnListMessage {
-         this.ids = param1;
-         this.deadsIds = param2;
+      public function initGameFightTurnListMessage(ids:Vector.<int>=null, deadsIds:Vector.<int>=null) : GameFightTurnListMessage {
+         this.ids = ids;
+         this.deadsIds = deadsIds;
          this._isInitialized = true;
          return this;
       }
@@ -45,59 +45,59 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightTurnListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightTurnListMessage(output);
       }
       
-      public function serializeAs_GameFightTurnListMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.ids.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.ids.length)
+      public function serializeAs_GameFightTurnListMessage(output:IDataOutput) : void {
+         output.writeShort(this.ids.length);
+         var _i1:uint = 0;
+         while(_i1 < this.ids.length)
          {
-            param1.writeInt(this.ids[_loc2_]);
-            _loc2_++;
+            output.writeInt(this.ids[_i1]);
+            _i1++;
          }
-         param1.writeShort(this.deadsIds.length);
-         var _loc3_:uint = 0;
-         while(_loc3_ < this.deadsIds.length)
+         output.writeShort(this.deadsIds.length);
+         var _i2:uint = 0;
+         while(_i2 < this.deadsIds.length)
          {
-            param1.writeInt(this.deadsIds[_loc3_]);
-            _loc3_++;
+            output.writeInt(this.deadsIds[_i2]);
+            _i2++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightTurnListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightTurnListMessage(input);
       }
       
-      public function deserializeAs_GameFightTurnListMessage(param1:IDataInput) : void {
-         var _loc6_:* = 0;
-         var _loc7_:* = 0;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_GameFightTurnListMessage(input:IDataInput) : void {
+         var _val1:* = 0;
+         var _val2:* = 0;
+         var _idsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _idsLen)
          {
-            _loc6_ = param1.readInt();
-            this.ids.push(_loc6_);
-            _loc3_++;
+            _val1 = input.readInt();
+            this.ids.push(_val1);
+            _i1++;
          }
-         var _loc4_:uint = param1.readUnsignedShort();
-         var _loc5_:uint = 0;
-         while(_loc5_ < _loc4_)
+         var _deadsIdsLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2 < _deadsIdsLen)
          {
-            _loc7_ = param1.readInt();
-            this.deadsIds.push(_loc7_);
-            _loc5_++;
+            _val2 = input.readInt();
+            this.deadsIds.push(_val2);
+            _i2++;
          }
       }
    }

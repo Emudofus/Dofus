@@ -12,11 +12,11 @@ package com.ankamagames.dofus.logic.game.common.steps
    public class TextBubbleStep extends AbstractSequencable
    {
       
-      public function TextBubbleStep(param1:AnimatedCharacter, param2:*, param3:Boolean) {
+      public function TextBubbleStep(pEntity:AnimatedCharacter, pBubble:*, pWaitForEnd:Boolean) {
          super();
-         this._entity = param1;
-         this._bubble = param2;
-         this._waitForEnd = param3;
+         this._entity = pEntity;
+         this._bubble = pBubble;
+         this._waitForEnd = pWaitForEnd;
          this._timerDelay = 4000 + this._bubble.text.length * 30;
          timeout = this._timerDelay + 1000;
       }
@@ -53,8 +53,8 @@ package com.ankamagames.dofus.logic.game.common.steps
          TooltipManager.hide("textBubble" + this._entity.id);
       }
       
-      private function onTimer(param1:TimerEvent) : void {
-         param1.currentTarget.removeEventListener(TimerEvent.TIMER,this.onTimer);
+      private function onTimer(pEvent:TimerEvent) : void {
+         pEvent.currentTarget.removeEventListener(TimerEvent.TIMER,this.onTimer);
          executeCallbacks();
       }
    }

@@ -29,13 +29,13 @@ package com.ankamagames.dofus.network.types.version
          return 11;
       }
       
-      public function initVersion(param1:uint=0, param2:uint=0, param3:uint=0, param4:uint=0, param5:uint=0, param6:uint=0) : Version {
-         this.major = param1;
-         this.minor = param2;
-         this.release = param3;
-         this.revision = param4;
-         this.patch = param5;
-         this.buildType = param6;
+      public function initVersion(major:uint=0, minor:uint=0, release:uint=0, revision:uint=0, patch:uint=0, buildType:uint=0) : Version {
+         this.major = major;
+         this.minor = minor;
+         this.release = release;
+         this.revision = revision;
+         this.patch = patch;
+         this.buildType = buildType;
          return this;
       }
       
@@ -48,47 +48,47 @@ package com.ankamagames.dofus.network.types.version
          this.buildType = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_Version(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_Version(output);
       }
       
-      public function serializeAs_Version(param1:IDataOutput) : void {
+      public function serializeAs_Version(output:IDataOutput) : void {
          if(this.major < 0)
          {
             throw new Error("Forbidden value (" + this.major + ") on element major.");
          }
          else
          {
-            param1.writeByte(this.major);
+            output.writeByte(this.major);
             if(this.minor < 0)
             {
                throw new Error("Forbidden value (" + this.minor + ") on element minor.");
             }
             else
             {
-               param1.writeByte(this.minor);
+               output.writeByte(this.minor);
                if(this.release < 0)
                {
                   throw new Error("Forbidden value (" + this.release + ") on element release.");
                }
                else
                {
-                  param1.writeByte(this.release);
+                  output.writeByte(this.release);
                   if(this.revision < 0)
                   {
                      throw new Error("Forbidden value (" + this.revision + ") on element revision.");
                   }
                   else
                   {
-                     param1.writeInt(this.revision);
+                     output.writeInt(this.revision);
                      if(this.patch < 0)
                      {
                         throw new Error("Forbidden value (" + this.patch + ") on element patch.");
                      }
                      else
                      {
-                        param1.writeByte(this.patch);
-                        param1.writeByte(this.buildType);
+                        output.writeByte(this.patch);
+                        output.writeByte(this.buildType);
                         return;
                      }
                   }
@@ -97,47 +97,47 @@ package com.ankamagames.dofus.network.types.version
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_Version(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_Version(input);
       }
       
-      public function deserializeAs_Version(param1:IDataInput) : void {
-         this.major = param1.readByte();
+      public function deserializeAs_Version(input:IDataInput) : void {
+         this.major = input.readByte();
          if(this.major < 0)
          {
             throw new Error("Forbidden value (" + this.major + ") on element of Version.major.");
          }
          else
          {
-            this.minor = param1.readByte();
+            this.minor = input.readByte();
             if(this.minor < 0)
             {
                throw new Error("Forbidden value (" + this.minor + ") on element of Version.minor.");
             }
             else
             {
-               this.release = param1.readByte();
+               this.release = input.readByte();
                if(this.release < 0)
                {
                   throw new Error("Forbidden value (" + this.release + ") on element of Version.release.");
                }
                else
                {
-                  this.revision = param1.readInt();
+                  this.revision = input.readInt();
                   if(this.revision < 0)
                   {
                      throw new Error("Forbidden value (" + this.revision + ") on element of Version.revision.");
                   }
                   else
                   {
-                     this.patch = param1.readByte();
+                     this.patch = input.readByte();
                      if(this.patch < 0)
                      {
                         throw new Error("Forbidden value (" + this.patch + ") on element of Version.patch.");
                      }
                      else
                      {
-                        this.buildType = param1.readByte();
+                        this.buildType = input.readByte();
                         if(this.buildType < 0)
                         {
                            throw new Error("Forbidden value (" + this.buildType + ") on element of Version.buildType.");

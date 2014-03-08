@@ -5,10 +5,10 @@ package com.hurlant.util.der
    public dynamic class Sequence extends Array implements IAsn1Type
    {
       
-      public function Sequence(param1:uint=48, param2:uint=0) {
+      public function Sequence(type:uint=48, length:uint=0) {
          super();
-         this.type = param1;
-         this.len = param2;
+         this.type = type;
+         this.len = length;
       }
       
       protected var type:uint;
@@ -24,77 +24,77 @@ package com.hurlant.util.der
       }
       
       public function toDER() : ByteArray {
-         var _loc3_:IAsn1Type = null;
-         var _loc1_:ByteArray = new ByteArray();
-         var _loc2_:* = 0;
-         while(_loc2_ < length)
+         var e:IAsn1Type = null;
+         var tmp:ByteArray = new ByteArray();
+         var i:int = 0;
+         while(i < length)
          {
-            _loc3_ = this[_loc2_];
-            if(_loc3_ == null)
+            e = this[i];
+            if(e == null)
             {
-               _loc1_.writeByte(5);
-               _loc1_.writeByte(0);
+               tmp.writeByte(5);
+               tmp.writeByte(0);
             }
             else
             {
-               _loc1_.writeBytes(_loc3_.toDER());
+               tmp.writeBytes(e.toDER());
             }
-            _loc2_++;
+            i++;
          }
-         return DER.wrapDER(this.type,_loc1_);
+         return DER.wrapDER(this.type,tmp);
       }
       
       public function toString() : String {
-         var _loc4_:* = false;
-         var _loc5_:String = null;
-         var _loc1_:String = DER.indent;
+         var found:* = false;
+         var key:String = null;
+         var s:String = DER.indent;
          DER.indent = DER.indent + "    ";
-         var _loc2_:* = "";
-         var _loc3_:* = 0;
-         while(_loc3_ < length)
+         var t:String = "";
+         var i:int = 0;
+         while(i < length)
          {
-            if(this[_loc3_] != null)
+            if(this[i] != null)
             {
-               _loc4_ = false;
-               for (_loc5_ in this)
+               found = false;
+               for (key in this)
                {
-                  if(!(_loc3_.toString() == _loc5_) && this[_loc3_] == this[_loc5_])
+                  if((!(i.toString() == key)) && (this[i] == this[key]))
                   {
-                     _loc2_ = _loc2_ + (_loc5_ + ": " + this[_loc3_] + "\n");
-                     _loc4_ = true;
+                     t = t + (key + ": " + this[i] + "\n");
+                     found = true;
                      break;
                   }
                }
-               if(!_loc4_)
+               if(!found)
                {
-                  _loc2_ = _loc2_ + (this[_loc3_] + "\n");
+                  t = t + (this[i] + "\n");
                }
             }
-            _loc3_++;
+            i++;
          }
-         DER.indent = _loc1_;
-         return DER.indent + "Sequence[" + this.type + "][" + this.len + "][\n" + _loc2_ + "\n" + _loc1_ + "]";
+         DER.indent = s;
+         return DER.indent + "Sequence[" + this.type + "][" + this.len + "][\n" + t + "\n" + s + "]";
       }
       
-      public function findAttributeValue(param1:String) : IAsn1Type {
-         var _loc2_:* = undefined;
-         var _loc3_:* = undefined;
-         var _loc4_:* = undefined;
-         var _loc5_:ObjectIdentifier = null;
-         for each (_loc2_ in this)
+      public function findAttributeValue(oid:String) : IAsn1Type {
+         var set:* = undefined;
+         var child:* = undefined;
+         var tmp:* = undefined;
+         var id:ObjectIdentifier = null;
+         for each (set in this)
          {
-            if(_loc2_ is Set)
+            if(set is Set)
             {
-               _loc3_ = _loc2_[0];
-               if(_loc3_ is Sequence)
+               child = set[0];
+               if(child is Sequence)
                {
-                  _loc4_ = _loc3_[0];
-                  if(_loc4_ is ObjectIdentifier)
+                  tmp = child[0];
+                  if(tmp is ObjectIdentifier)
                   {
-                     _loc5_ = _loc4_ as ObjectIdentifier;
-                     if(_loc5_.toString() == param1)
+                     id = tmp as ObjectIdentifier;
+                     if(id.toString() == oid)
                      {
-                        return _loc3_[1] as IAsn1Type;
+                        return child[1] as IAsn1Type;
                      }
                   }
                }

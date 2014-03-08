@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.livingObject
          super();
       }
       
-      public static function create(param1:uint, param2:uint) : MimicryObjectEraseRequestAction {
-         var _loc3_:MimicryObjectEraseRequestAction = new MimicryObjectEraseRequestAction();
-         _loc3_.hostUID = param1;
-         _loc3_.hostPos = param2;
-         return _loc3_;
+      public static function create(hostUID:uint, hostPos:uint) : MimicryObjectEraseRequestAction {
+         var action:MimicryObjectEraseRequestAction = new MimicryObjectEraseRequestAction();
+         action.hostUID = hostUID;
+         action.hostPos = hostPos;
+         return action;
       }
       
       public var hostUID:uint;

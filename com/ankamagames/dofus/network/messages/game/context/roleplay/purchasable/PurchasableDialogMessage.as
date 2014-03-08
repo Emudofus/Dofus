@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.purchasable
          return 5739;
       }
       
-      public function initPurchasableDialogMessage(param1:Boolean=false, param2:uint=0, param3:uint=0) : PurchasableDialogMessage {
-         this.buyOrSell = param1;
-         this.purchasableId = param2;
-         this.price = param3;
+      public function initPurchasableDialogMessage(buyOrSell:Boolean=false, purchasableId:uint=0, price:uint=0) : PurchasableDialogMessage {
+         this.buyOrSell = buyOrSell;
+         this.purchasableId = purchasableId;
+         this.price = price;
          this._isInitialized = true;
          return this;
       }
@@ -46,55 +46,55 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.purchasable
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PurchasableDialogMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PurchasableDialogMessage(output);
       }
       
-      public function serializeAs_PurchasableDialogMessage(param1:IDataOutput) : void {
-         param1.writeBoolean(this.buyOrSell);
+      public function serializeAs_PurchasableDialogMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.buyOrSell);
          if(this.purchasableId < 0)
          {
             throw new Error("Forbidden value (" + this.purchasableId + ") on element purchasableId.");
          }
          else
          {
-            param1.writeInt(this.purchasableId);
+            output.writeInt(this.purchasableId);
             if(this.price < 0)
             {
                throw new Error("Forbidden value (" + this.price + ") on element price.");
             }
             else
             {
-               param1.writeInt(this.price);
+               output.writeInt(this.price);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PurchasableDialogMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PurchasableDialogMessage(input);
       }
       
-      public function deserializeAs_PurchasableDialogMessage(param1:IDataInput) : void {
-         this.buyOrSell = param1.readBoolean();
-         this.purchasableId = param1.readInt();
+      public function deserializeAs_PurchasableDialogMessage(input:IDataInput) : void {
+         this.buyOrSell = input.readBoolean();
+         this.purchasableId = input.readInt();
          if(this.purchasableId < 0)
          {
             throw new Error("Forbidden value (" + this.purchasableId + ") on element of PurchasableDialogMessage.purchasableId.");
          }
          else
          {
-            this.price = param1.readInt();
+            this.price = input.readInt();
             if(this.price < 0)
             {
                throw new Error("Forbidden value (" + this.price + ") on element of PurchasableDialogMessage.price.");

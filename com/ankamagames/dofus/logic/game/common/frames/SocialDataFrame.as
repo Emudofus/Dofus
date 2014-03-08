@@ -5,7 +5,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.jerakine.logger.Log;
    import avmplus.getQualifiedClassName;
    import com.ankamagames.jerakine.types.Uri;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.guild.AllianceWrapper;
    import com.ankamagames.dofus.internalDatacenter.guild.GuildWrapper;
    import com.ankamagames.jerakine.types.enums.Priority;
@@ -17,6 +16,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.guild.GuildVersatileInfoListMessage;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import flash.utils.getTimer;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.network.types.game.social.AllianceFactSheetInformations;
    import com.ankamagames.dofus.network.types.game.social.AllianceVersatileInformations;
    import com.ankamagames.dofus.kernel.Kernel;
@@ -34,12 +34,12 @@ package com.ankamagames.dofus.logic.game.common.frames
       public function SocialDataFrame() {
          super();
          AllianceWrapper.clearCache();
-         var _loc1_:int = PlayerManager.getInstance().server.id;
-         var _loc2_:String = BuildInfos.BUILD_TYPE >= BuildTypeEnum.TESTING?LOCAL_URL:ONLINE_URL;
-         this._urlAllianceList = new Uri(_loc2_ + "AllianceListMessage." + _loc1_ + ".data");
-         this._urlAllianceVersatileList = new Uri(_loc2_ + "AllianceVersatileInfoListMessage." + _loc1_ + ".data");
-         this._urlGuildList = new Uri(_loc2_ + "GuildListMessage." + _loc1_ + ".data");
-         this._urlGuildVersatileList = new Uri(_loc2_ + "GuildVersatileInfoListMessage." + _loc1_ + ".data");
+         var serverId:int = PlayerManager.getInstance().server.id;
+         var base_url:String = BuildInfos.BUILD_TYPE >= BuildTypeEnum.TESTING?LOCAL_URL:ONLINE_URL;
+         this._urlAllianceList = new Uri(base_url + "AllianceListMessage." + serverId + ".data");
+         this._urlAllianceVersatileList = new Uri(base_url + "AllianceVersatileInfoListMessage." + serverId + ".data");
+         this._urlGuildList = new Uri(base_url + "GuildListMessage." + serverId + ".data");
+         this._urlGuildVersatileList = new Uri(base_url + "GuildVersatileInfoListMessage." + serverId + ".data");
          ConnectionsHandler.getHttpConnection().addToWhiteList(GuildVersatileInfoListMessage);
          ConnectionsHandler.getHttpConnection().addToWhiteList(GuildListMessage);
          ConnectionsHandler.getHttpConnection().addToWhiteList(AllianceVersatileInfoListMessage);
@@ -93,172 +93,172 @@ package com.ankamagames.dofus.logic.game.common.frames
          register(GuildVersatileInfoListMessage,this.onGuildVersatileListMessage);
       }
       
-      private function onGuildListRequest(param1:GuildListRequestAction) : Boolean {
-         var _loc2_:Boolean = ConnectionsHandler.getHttpConnection().request(this._urlGuildList,this.onAllianceIoError,this.staticDataLifetime);
-         if(_loc2_)
+      private function onGuildListRequest(a:GuildListRequestAction) : Boolean {
+         var newStaticRequest:Boolean = ConnectionsHandler.getHttpConnection().request(this._urlGuildList,this.onAllianceIoError,this.staticDataLifetime);
+         if(newStaticRequest)
          {
             this._waitStaticGuildInfo = true;
          }
-         var _loc3_:Boolean = ConnectionsHandler.getHttpConnection().request(this._urlGuildVersatileList,this.onGuildVersatileIoError,this.versatileDataLifetime);
-         if(_loc3_)
+         var newVersatileRequest:Boolean = ConnectionsHandler.getHttpConnection().request(this._urlGuildVersatileList,this.onGuildVersatileIoError,this.versatileDataLifetime);
+         if(newVersatileRequest)
          {
             this._waitVersatileGuildInfo = true;
          }
-         if(!this._waitVersatileGuildInfo && !this._waitStaticGuildInfo)
+         if((!this._waitVersatileGuildInfo) && (!this._waitStaticGuildInfo))
          {
             this.dispatchGuildList();
          }
          return true;
       }
       
-      private function onAllianceListRequest(param1:AllianceListRequestAction) : Boolean {
-         var _loc2_:Boolean = ConnectionsHandler.getHttpConnection().request(this._urlAllianceList,this.onAllianceIoError,this.staticDataLifetime);
-         if(_loc2_)
+      private function onAllianceListRequest(a:AllianceListRequestAction) : Boolean {
+         var newStaticRequest:Boolean = ConnectionsHandler.getHttpConnection().request(this._urlAllianceList,this.onAllianceIoError,this.staticDataLifetime);
+         if(newStaticRequest)
          {
             this._waitStaticAllianceInfo = true;
          }
-         var _loc3_:Boolean = ConnectionsHandler.getHttpConnection().request(this._urlAllianceVersatileList,this.onAllianceVersatileIoError,this.versatileDataLifetime);
-         if(_loc3_)
+         var newVersatileRequest:Boolean = ConnectionsHandler.getHttpConnection().request(this._urlAllianceVersatileList,this.onAllianceVersatileIoError,this.versatileDataLifetime);
+         if(newVersatileRequest)
          {
             this._waitVersatileAllianceInfo = true;
          }
-         if(!this._waitVersatileAllianceInfo && !this._waitStaticAllianceInfo)
+         if((!this._waitVersatileAllianceInfo) && (!this._waitStaticAllianceInfo))
          {
             this.dispatchAllianceList();
          }
          return true;
       }
       
-      private function onAllianceListMessage(param1:AllianceListMessage) : Boolean {
-         var _loc2_:uint = getTimer();
+      private function onAllianceListMessage(m:AllianceListMessage) : Boolean {
+         var ts:uint = getTimer();
          this._allianceList = new Vector.<AllianceWrapper>();
-         var _loc3_:uint = param1.alliances.length;
-         var _loc4_:Vector.<AllianceFactSheetInformations> = param1.alliances;
-         var _loc5_:uint = 0;
-         while(_loc5_ < _loc3_)
+         var len:uint = m.alliances.length;
+         var list:Vector.<AllianceFactSheetInformations> = m.alliances;
+         var i:uint = 0;
+         while(i < len)
          {
-            this._allianceList[_loc5_] = AllianceWrapper.getFromNetwork(_loc4_[_loc5_]);
-            _loc5_++;
+            this._allianceList[i] = AllianceWrapper.getFromNetwork(list[i]);
+            i++;
          }
          this._waitStaticAllianceInfo = false;
          this.dispatchAllianceList(true);
          return true;
       }
       
-      private function onAllianceVersatileListMessage(param1:AllianceVersatileInfoListMessage) : Boolean {
-         var _loc5_:AllianceWrapper = null;
-         var _loc6_:* = 0;
-         var _loc2_:uint = getTimer();
-         var _loc3_:uint = param1.alliances.length;
-         var _loc4_:Vector.<AllianceVersatileInformations> = param1.alliances;
-         var _loc7_:AllianceFrame = Kernel.getWorker().getFrame(AllianceFrame) as AllianceFrame;
-         var _loc8_:uint = 0;
-         while(_loc8_ < _loc3_)
+      private function onAllianceVersatileListMessage(m:AllianceVersatileInfoListMessage) : Boolean {
+         var alliance:AllianceWrapper = null;
+         var allianceIndex:* = 0;
+         var ts:uint = getTimer();
+         var len:uint = m.alliances.length;
+         var list:Vector.<AllianceVersatileInformations> = m.alliances;
+         var allianceFrame:AllianceFrame = Kernel.getWorker().getFrame(AllianceFrame) as AllianceFrame;
+         var i:uint = 0;
+         while(i < len)
          {
-            _loc6_ = -1;
-            for each (_loc5_ in this._allianceList)
+            allianceIndex = -1;
+            for each (alliance in this._allianceList)
             {
-               if(_loc5_.allianceId == _loc4_[_loc8_].allianceId)
+               if(alliance.allianceId == list[i].allianceId)
                {
-                  _loc6_ = this._allianceList.indexOf(_loc5_);
+                  allianceIndex = this._allianceList.indexOf(alliance);
                   break;
                }
             }
-            if(_loc6_ != -1)
+            if(allianceIndex != -1)
             {
-               this._allianceList[_loc6_] = AllianceWrapper.getFromNetwork(_loc4_[_loc8_]);
+               this._allianceList[allianceIndex] = AllianceWrapper.getFromNetwork(list[i]);
             }
             else
             {
-               if((_loc7_.hasAlliance) && _loc4_[_loc8_].allianceId == _loc7_.alliance.allianceId)
+               if((allianceFrame.hasAlliance) && (list[i].allianceId == allianceFrame.alliance.allianceId))
                {
-                  _loc5_ = _loc7_.alliance.clone();
-                  _loc5_.nbGuilds = _loc4_[_loc8_].nbGuilds;
-                  _loc5_.nbMembers = _loc4_[_loc8_].nbMembers;
-                  _loc5_.nbSubareas = _loc4_[_loc8_].nbSubarea;
-                  AllianceWrapper.updateRef(_loc5_.allianceId,_loc5_);
-                  this._allianceList.push(_loc5_);
+                  alliance = allianceFrame.alliance.clone();
+                  alliance.nbGuilds = list[i].nbGuilds;
+                  alliance.nbMembers = list[i].nbMembers;
+                  alliance.nbSubareas = list[i].nbSubarea;
+                  AllianceWrapper.updateRef(alliance.allianceId,alliance);
+                  this._allianceList.push(alliance);
                }
             }
-            _loc8_++;
+            i++;
          }
          this._waitVersatileAllianceInfo = false;
          this.dispatchAllianceList(true);
          return true;
       }
       
-      private function onGuildListMessage(param1:GuildListMessage) : Boolean {
-         var _loc2_:uint = getTimer();
+      private function onGuildListMessage(m:GuildListMessage) : Boolean {
+         var ts:uint = getTimer();
          this._guildList = new Vector.<GuildWrapper>();
-         var _loc3_:uint = param1.guilds.length;
-         var _loc4_:Vector.<GuildInformations> = param1.guilds;
-         var _loc5_:uint = 0;
-         while(_loc5_ < _loc3_)
+         var len:uint = m.guilds.length;
+         var list:Vector.<GuildInformations> = m.guilds;
+         var i:uint = 0;
+         while(i < len)
          {
-            this._guildList[_loc5_] = GuildWrapper.getFromNetwork(_loc4_[_loc5_]);
-            _loc5_++;
+            this._guildList[i] = GuildWrapper.getFromNetwork(list[i]);
+            i++;
          }
          this._waitStaticGuildInfo = false;
          this.dispatchGuildList(true);
          return true;
       }
       
-      private function onGuildVersatileListMessage(param1:GuildVersatileInfoListMessage) : Boolean {
-         var _loc5_:GuildWrapper = null;
-         var _loc6_:* = 0;
-         var _loc2_:uint = getTimer();
-         var _loc3_:uint = param1.guilds.length;
-         var _loc4_:Vector.<GuildVersatileInformations> = param1.guilds;
-         var _loc7_:SocialFrame = Kernel.getWorker().getFrame(SocialFrame) as SocialFrame;
-         var _loc8_:uint = 0;
-         while(_loc8_ < _loc3_)
+      private function onGuildVersatileListMessage(m:GuildVersatileInfoListMessage) : Boolean {
+         var guild:GuildWrapper = null;
+         var guildIndex:* = 0;
+         var ts:uint = getTimer();
+         var len:uint = m.guilds.length;
+         var list:Vector.<GuildVersatileInformations> = m.guilds;
+         var socialFrame:SocialFrame = Kernel.getWorker().getFrame(SocialFrame) as SocialFrame;
+         var i:uint = 0;
+         while(i < len)
          {
-            _loc6_ = -1;
-            for each (_loc5_ in this._guildList)
+            guildIndex = -1;
+            for each (guild in this._guildList)
             {
-               if(_loc5_.guildId == _loc4_[_loc8_].guildId)
+               if(guild.guildId == list[i].guildId)
                {
-                  _loc6_ = this._guildList.indexOf(_loc5_);
+                  guildIndex = this._guildList.indexOf(guild);
                   break;
                }
             }
-            if(_loc6_ != -1)
+            if(guildIndex != -1)
             {
-               this._guildList[_loc6_] = GuildWrapper.getFromNetwork(_loc4_[_loc8_]);
+               this._guildList[guildIndex] = GuildWrapper.getFromNetwork(list[i]);
             }
             else
             {
-               if((_loc7_.hasGuild) && _loc4_[_loc8_].guildId == _loc7_.guild.guildId)
+               if((socialFrame.hasGuild) && (list[i].guildId == socialFrame.guild.guildId))
                {
-                  _loc5_ = _loc7_.guild.clone();
-                  _loc5_.level = _loc4_[_loc8_].guildLevel;
-                  _loc5_.leaderId = _loc4_[_loc8_].leaderId;
-                  _loc5_.nbMembers = _loc4_[_loc8_].nbMembers;
-                  GuildWrapper.updateRef(_loc5_.guildId,_loc5_);
-                  this._guildList.push(_loc5_);
+                  guild = socialFrame.guild.clone();
+                  guild.level = list[i].guildLevel;
+                  guild.leaderId = list[i].leaderId;
+                  guild.nbMembers = list[i].nbMembers;
+                  GuildWrapper.updateRef(guild.guildId,guild);
+                  this._guildList.push(guild);
                }
             }
-            _loc8_++;
+            i++;
          }
          this._waitVersatileGuildInfo = false;
          this.dispatchGuildList(true);
          return true;
       }
       
-      private function dispatchGuildList(param1:Boolean=false, param2:Boolean=false) : void {
+      private function dispatchGuildList(isUpdate:Boolean=false, isError:Boolean=false) : void {
          if((this._waitStaticGuildInfo) || (this._waitVersatileGuildInfo))
          {
             return;
          }
-         KernelEventsManager.getInstance().processCallback(SocialHookList.GuildList,this._guildList,param1,(this._guildList == null) || (param2));
+         KernelEventsManager.getInstance().processCallback(SocialHookList.GuildList,this._guildList,isUpdate,(this._guildList == null) || (isError));
       }
       
-      private function dispatchAllianceList(param1:Boolean=false, param2:Boolean=false) : void {
+      private function dispatchAllianceList(isUpdate:Boolean=false, isError:Boolean=false) : void {
          if((this._waitStaticAllianceInfo) || (this._waitVersatileAllianceInfo))
          {
             return;
          }
-         KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceList,this._allianceList,param1,(this._allianceList == null) || (param2));
+         KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceList,this._allianceList,isUpdate,(this._allianceList == null) || (isError));
       }
       
       private function onAllianceIoError() : void {

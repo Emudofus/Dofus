@@ -26,7 +26,7 @@ package com.ankamagames.jerakine.utils.display
          _init = true;
       }
       
-      private static function onEnterFrame(param1:Event) : void {
+      private static function onEnterFrame(e:Event) : void {
          _frameId++;
       }
    }

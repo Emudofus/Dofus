@@ -1,7 +1,7 @@
 package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,10 +30,10 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6464;
       }
       
-      public function initExchangeBidPriceForSellerMessage(param1:uint=0, param2:int=0, param3:Boolean=false, param4:Vector.<uint>=null) : ExchangeBidPriceForSellerMessage {
-         super.initExchangeBidPriceMessage(param1,param2);
-         this.allIdentical = param3;
-         this.minimalPrices = param4;
+      public function initExchangeBidPriceForSellerMessage(genericId:uint=0, averagePrice:int=0, allIdentical:Boolean=false, minimalPrices:Vector.<uint>=null) : ExchangeBidPriceForSellerMessage {
+         super.initExchangeBidPriceMessage(genericId,averagePrice);
+         this.allIdentical = allIdentical;
+         this.minimalPrices = minimalPrices;
          this._isInitialized = true;
          return this;
       }
@@ -45,61 +45,61 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeBidPriceForSellerMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeBidPriceForSellerMessage(output);
       }
       
-      public function serializeAs_ExchangeBidPriceForSellerMessage(param1:IDataOutput) : void {
-         super.serializeAs_ExchangeBidPriceMessage(param1);
-         param1.writeBoolean(this.allIdentical);
-         param1.writeShort(this.minimalPrices.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.minimalPrices.length)
+      public function serializeAs_ExchangeBidPriceForSellerMessage(output:IDataOutput) : void {
+         super.serializeAs_ExchangeBidPriceMessage(output);
+         output.writeBoolean(this.allIdentical);
+         output.writeShort(this.minimalPrices.length);
+         var _i2:uint = 0;
+         while(_i2 < this.minimalPrices.length)
          {
-            if(this.minimalPrices[_loc2_] < 0)
+            if(this.minimalPrices[_i2] < 0)
             {
-               throw new Error("Forbidden value (" + this.minimalPrices[_loc2_] + ") on element 2 (starting at 1) of minimalPrices.");
+               throw new Error("Forbidden value (" + this.minimalPrices[_i2] + ") on element 2 (starting at 1) of minimalPrices.");
             }
             else
             {
-               param1.writeInt(this.minimalPrices[_loc2_]);
-               _loc2_++;
+               output.writeInt(this.minimalPrices[_i2]);
+               _i2++;
                continue;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeBidPriceForSellerMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeBidPriceForSellerMessage(input);
       }
       
-      public function deserializeAs_ExchangeBidPriceForSellerMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         super.deserialize(param1);
-         this.allIdentical = param1.readBoolean();
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_ExchangeBidPriceForSellerMessage(input:IDataInput) : void {
+         var _val2:uint = 0;
+         super.deserialize(input);
+         this.allIdentical = input.readBoolean();
+         var _minimalPricesLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2 < _minimalPricesLen)
          {
-            _loc4_ = param1.readInt();
-            if(_loc4_ < 0)
+            _val2 = input.readInt();
+            if(_val2 < 0)
             {
-               throw new Error("Forbidden value (" + _loc4_ + ") on elements of minimalPrices.");
+               throw new Error("Forbidden value (" + _val2 + ") on elements of minimalPrices.");
             }
             else
             {
-               this.minimalPrices.push(_loc4_);
-               _loc3_++;
+               this.minimalPrices.push(_val2);
+               _i2++;
                continue;
             }
          }

@@ -25,74 +25,74 @@ package com.ankamagames.dofus.console.debug
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SoundInstructionHandler));
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         var _loc4_:String = null;
-         var _loc5_:String = null;
-         var _loc6_:* = NaN;
-         var _loc7_:* = false;
-         var _loc8_:String = null;
-         var _loc9_:* = NaN;
-         var _loc10_:* = false;
-         var _loc11_:uint = 0;
-         var _loc12_:uint = 0;
-         var _loc13_:uint = 0;
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var soundId:String = null;
+         var sIdm:String = null;
+         var volm:* = NaN;
+         var loopm:* = false;
+         var sIda:String = null;
+         var vola:* = NaN;
+         var loopa:* = false;
+         var volume:uint = 0;
+         var silenceMin:uint = 0;
+         var silenceMax:uint = 0;
+         switch(cmd)
          {
             case "playmusic":
-               if(param3.length != 2)
+               if(args.length != 2)
                {
-                  param1.output("COMMAND FAILED ! playmusic must have followings parameters : \n-id\n-volume");
+                  console.output("COMMAND FAILED ! playmusic must have followings parameters : \n-id\n-volume");
                   return;
                }
-               _loc5_ = param3[0];
-               _loc6_ = param3[1];
-               _loc7_ = true;
-               SoundManager.getInstance().manager.playAdminSound(_loc5_,_loc6_,_loc7_,0);
+               sIdm = args[0];
+               volm = args[1];
+               loopm = true;
+               SoundManager.getInstance().manager.playAdminSound(sIdm,volm,loopm,0);
                break;
             case "stopmusic":
                SoundManager.getInstance().manager.removeAllSounds();
                break;
             case "playambiance":
-               if(param3.length != 2)
+               if(args.length != 2)
                {
-                  param1.output("COMMAND FAILED ! playambiance must have followings parameters : \n-id\n-volume");
+                  console.output("COMMAND FAILED ! playambiance must have followings parameters : \n-id\n-volume");
                   return;
                }
-               _loc8_ = param3[0];
-               _loc9_ = param3[1];
-               _loc10_ = true;
-               SoundManager.getInstance().manager.playAdminSound(_loc8_,_loc9_,_loc10_,1);
+               sIda = args[0];
+               vola = args[1];
+               loopa = true;
+               SoundManager.getInstance().manager.playAdminSound(sIda,vola,loopa,1);
                break;
             case "stopambiance":
                SoundManager.getInstance().manager.stopAdminSound(1);
                break;
             case "addsoundinplaylist":
-               if(param3.length != 4)
+               if(args.length != 4)
                {
-                  param1.output("addSoundInPLaylist must have followings parameters : \n-id\n-volume\n-silenceMin\n-SilenceMax");
+                  console.output("addSoundInPLaylist must have followings parameters : \n-id\n-volume\n-silenceMin\n-SilenceMax");
                   return;
                }
-               _loc4_ = param3[0];
-               _loc11_ = param3[1];
-               _loc12_ = param3[2];
-               _loc13_ = param3[3];
-               if(!SoundManager.getInstance().manager.addSoundInPlaylist(_loc4_,_loc11_,_loc12_,_loc13_))
+               soundId = args[0];
+               volume = args[1];
+               silenceMin = args[2];
+               silenceMax = args[3];
+               if(!SoundManager.getInstance().manager.addSoundInPlaylist(soundId,volume,silenceMin,silenceMax))
                {
-                  param1.output("addSoundInPLaylist failed !");
+                  console.output("addSoundInPLaylist failed !");
                }
                break;
             case "stopplaylist":
-               if(param3.length != 0)
+               if(args.length != 0)
                {
-                  param1.output("stopplaylist doesn\'t accept any paramter");
+                  console.output("stopplaylist doesn\'t accept any paramter");
                   return;
                }
                SoundManager.getInstance().manager.stopPlaylist();
                break;
             case "playplaylist":
-               if(param3.length != 0)
+               if(args.length != 0)
                {
-                  param1.output("removeSoundInPLaylist doesn\'t accept any paramter");
+                  console.output("removeSoundInPLaylist doesn\'t accept any paramter");
                   return;
                }
                SoundManager.getInstance().manager.playPlaylist();
@@ -111,112 +111,107 @@ package com.ankamagames.dofus.console.debug
                RegConnectionManager.getInstance().send(ProtocolEnum.CLEAR_CACHE);
                break;
             case "adduisoundelement":
-               if(param3.length < 4)
+               if(args.length < 4)
                {
-                  param1.output("4 parameters needed");
+                  console.output("4 parameters needed");
                   return;
                }
-               if(!UiSoundManager.getInstance().getUi(param3[0]))
+               if(!UiSoundManager.getInstance().getUi(args[0]))
                {
-                  UiSoundManager.getInstance().registerUi(param3[0]);
+                  UiSoundManager.getInstance().registerUi(args[0]);
                }
-               UiSoundManager.getInstance().registerUiElement(param3[0],param3[1],param3[2],param3[3]);
+               UiSoundManager.getInstance().registerUiElement(args[0],args[1],args[2],args[3]);
                break;
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "playsound":
                return "Play a sound";
             case "clearsoundcache":
                return "Nettoye les fichiers pré-cachés pour le son afin de les relire directement depuis le disque lors de la prochaine demande de lecture";
-            default:
-               return "Unknown command \'" + param1 + "\'.";
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
-         var _loc4_:String = null;
-         var _loc5_:Array = null;
-         var _loc6_:Array = null;
-         var _loc7_:SoundUiHook = null;
-         switch(param1)
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+         var filter:String = null;
+         var hooks:Array = null;
+         var hooksList:Array = null;
+         var hook:SoundUiHook = null;
+         switch(cmd)
          {
             case "adduisoundelement":
-               if(param2 == 0)
+               if(paramIndex == 0)
                {
-                  return this.getUiList((param3) && (param3.length)?param3[0]:null);
+                  return this.getUiList((currentParams) && (currentParams.length)?currentParams[0]:null);
                }
-               if(param2 == 2)
+               if(paramIndex == 2)
                {
-                  _loc4_ = (param3) && param3.length > 2?param3[2].toLowerCase():"";
-                  _loc5_ = [];
-                  _loc6_ = SoundUiHook.getSoundUiHooks();
-                  for each (_loc7_ in _loc6_)
+                  filter = (currentParams) && (currentParams.length > 2)?currentParams[2].toLowerCase():"";
+                  hooks = [];
+                  hooksList = SoundUiHook.getSoundUiHooks();
+                  for each (hook in hooksList)
                   {
-                     if(_loc7_.name.toLowerCase().indexOf(_loc4_) != -1)
+                     if(hook.name.toLowerCase().indexOf(filter) != -1)
                      {
-                        _loc5_.push(_loc7_.name);
+                        hooks.push(hook.name);
                      }
                   }
-                  return _loc5_;
+                  return hooks;
                }
                break;
          }
          return [];
       }
       
-      private function getUiList(param1:String=null) : Array {
-         var _loc4_:UiModule = null;
-         var _loc5_:UiData = null;
-         var param1:String = param1.toLowerCase();
-         var _loc2_:Array = [];
-         var _loc3_:Array = UiModuleManager.getInstance().getModules();
-         for each (_loc4_ in _loc3_)
+      private function getUiList(filter:String=null) : Array {
+         var m:UiModule = null;
+         var ui:UiData = null;
+         var filter:String = filter.toLowerCase();
+         var uiList:Array = [];
+         var modList:Array = UiModuleManager.getInstance().getModules();
+         for each (m in modList)
          {
-            for each (_loc5_ in _loc4_.uis)
+            for each (ui in m.uis)
             {
-               if(!param1 || !(_loc5_.name.toLowerCase().indexOf(param1) == -1))
+               if((!filter) || (!(ui.name.toLowerCase().indexOf(filter) == -1)))
                {
-                  _loc2_.push(_loc5_.name);
+                  uiList.push(ui.name);
                }
             }
          }
-         _loc2_.sort();
-         return _loc2_;
+         uiList.sort();
+         return uiList;
       }
       
-      private function getParams(param1:Array, param2:Array) : Array {
-         var _loc4_:String = null;
-         var _loc5_:uint = 0;
-         var _loc6_:String = null;
-         var _loc7_:String = null;
-         var _loc3_:Array = [];
-         for (_loc4_ in param1)
+      private function getParams(data:Array, types:Array) : Array {
+         var iStr:String = null;
+         var i:uint = 0;
+         var v:String = null;
+         var t:String = null;
+         var params:Array = [];
+         for (iStr in data)
          {
-            _loc5_ = parseInt(_loc4_);
-            _loc6_ = param1[_loc5_];
-            _loc7_ = param2[_loc5_];
-            _loc3_[_loc5_] = this.getParam(_loc6_,_loc7_);
+            i = parseInt(iStr);
+            v = data[i];
+            t = types[i];
+            params[i] = this.getParam(v,t);
          }
-         return _loc3_;
+         return params;
       }
       
-      private function getParam(param1:String, param2:String) : * {
-         switch(param2)
+      private function getParam(value:String, type:String) : * {
+         switch(type)
          {
             case "String":
-               return param1;
+               return value;
             case "Boolean":
-               return (param1 == "true") || (param1 == "1");
+               return (value == "true") || (value == "1");
             case "int":
             case "uint":
-               return parseInt(param1);
-            default:
-               _log.warn("Unsupported parameter type \'" + param2 + "\'.");
-               return param1;
+               return parseInt(value);
          }
       }
    }

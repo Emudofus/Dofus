@@ -9,10 +9,10 @@ package com.ankamagames.tiphon.types
          super();
       }
       
-      override public function init(param1:IAnimationSpriteHandler) : void {
+      override public function init(handler:IAnimationSpriteHandler) : void {
          alpha = 0;
-         var _loc2_:String = getQualifiedClassName(this).split("_")[1];
-         param1.registerInfoSprite(this,_loc2_);
+         var nViewIndex:String = getQualifiedClassName(this).split("_")[1];
+         handler.registerInfoSprite(this,nViewIndex);
       }
    }
 }

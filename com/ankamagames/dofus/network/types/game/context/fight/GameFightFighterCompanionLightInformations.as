@@ -21,10 +21,10 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 454;
       }
       
-      public function initGameFightFighterCompanionLightInformations(param1:int=0, param2:uint=0, param3:int=0, param4:Boolean=false, param5:Boolean=false, param6:int=0, param7:int=0) : GameFightFighterCompanionLightInformations {
-         super.initGameFightFighterLightInformations(param1,param2,param3,param4,param5);
-         this.companionId = param6;
-         this.masterId = param7;
+      public function initGameFightFighterCompanionLightInformations(id:int=0, level:uint=0, breed:int=0, sex:Boolean=false, alive:Boolean=false, companionId:int=0, masterId:int=0) : GameFightFighterCompanionLightInformations {
+         super.initGameFightFighterLightInformations(id,level,breed,sex,alive);
+         this.companionId = companionId;
+         this.masterId = masterId;
          return this;
       }
       
@@ -34,24 +34,24 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.masterId = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightFighterCompanionLightInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightFighterCompanionLightInformations(output);
       }
       
-      public function serializeAs_GameFightFighterCompanionLightInformations(param1:IDataOutput) : void {
-         super.serializeAs_GameFightFighterLightInformations(param1);
-         param1.writeInt(this.companionId);
-         param1.writeInt(this.masterId);
+      public function serializeAs_GameFightFighterCompanionLightInformations(output:IDataOutput) : void {
+         super.serializeAs_GameFightFighterLightInformations(output);
+         output.writeInt(this.companionId);
+         output.writeInt(this.masterId);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightFighterCompanionLightInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightFighterCompanionLightInformations(input);
       }
       
-      public function deserializeAs_GameFightFighterCompanionLightInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.companionId = param1.readInt();
-         this.masterId = param1.readInt();
+      public function deserializeAs_GameFightFighterCompanionLightInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.companionId = input.readInt();
+         this.masterId = input.readInt();
       }
    }
 }

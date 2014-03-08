@@ -108,23 +108,23 @@ package com.ankamagames.atouin
       }
       
       public function get selectionContainer() : DisplayObjectContainer {
-         var _loc2_:DisplayObjectContainer = null;
-         var _loc3_:* = 0;
+         var ctr:DisplayObjectContainer = null;
+         var i:* = 0;
          if(this._spMapContainer == null)
          {
             return null;
          }
-         var _loc1_:Number = this._spMapContainer.numChildren;
-         if(_loc1_ > 1)
+         var len:Number = this._spMapContainer.numChildren;
+         if(len > 1)
          {
-            _loc3_ = 1;
-            while(!_loc2_ && _loc3_ < _loc1_)
+            i = 1;
+            while((!ctr) && (i < len))
             {
-               _loc2_ = this._spMapContainer.getChildAt(_loc3_) as DisplayObjectContainer;
-               _loc3_++;
+               ctr = this._spMapContainer.getChildAt(i) as DisplayObjectContainer;
+               i++;
             }
          }
-         return _loc2_;
+         return ctr;
       }
       
       public function get chgMapContainer() : DisplayObjectContainer {
@@ -143,8 +143,8 @@ package com.ankamagames.atouin
          return this._handler;
       }
       
-      public function set handler(param1:MessageHandler) : void {
-         this._handler = param1;
+      public function set handler(value:MessageHandler) : void {
+         this._handler = value;
       }
       
       public function get options() : AtouinOptions {
@@ -155,16 +155,16 @@ package com.ankamagames.atouin
          return this._currentZoom;
       }
       
-      public function set currentZoom(param1:Number) : void {
-         this._currentZoom = param1;
+      public function set currentZoom(value:Number) : void {
+         this._currentZoom = value;
       }
       
       public function get cellOverEnabled() : Boolean {
          return InteractiveCellManager.getInstance().cellOverEnabled;
       }
       
-      public function set cellOverEnabled(param1:Boolean) : void {
-         InteractiveCellManager.getInstance().cellOverEnabled = param1;
+      public function set cellOverEnabled(value:Boolean) : void {
+         InteractiveCellManager.getInstance().cellOverEnabled = value;
       }
       
       public function get rootContainer() : DisplayObjectContainer {
@@ -175,15 +175,15 @@ package com.ankamagames.atouin
          return this._worldContainer.contains(this._spMapContainer);
       }
       
-      public function setDisplayOptions(param1:AtouinOptions) : void {
-         this._aoOptions = param1;
-         this._worldContainer = param1.container;
-         this._handler = param1.handler;
-         var _loc2_:uint = 0;
-         while(_loc2_ < this._worldContainer.numChildren)
+      public function setDisplayOptions(ao:AtouinOptions) : void {
+         this._aoOptions = ao;
+         this._worldContainer = ao.container;
+         this._handler = ao.handler;
+         var i:uint = 0;
+         while(i < this._worldContainer.numChildren)
          {
-            this._worldContainer.removeChildAt(_loc2_);
-            _loc2_++;
+            this._worldContainer.removeChildAt(i);
+            i++;
          }
          this._overlayContainer = new Sprite();
          this._spMapContainer = new Sprite();
@@ -208,24 +208,24 @@ package com.ankamagames.atouin
          FrustumManager.getInstance().init(this._spChgMapContainer);
          this._worldMask = new Sprite();
          this._worldMask.graphics.beginFill(0);
-         var _loc3_:int = StageShareManager.startWidth;
-         var _loc4_:int = StageShareManager.startHeight;
-         this._worldMask.graphics.drawRect(-2000,-2000,4000 + _loc3_,4000 + _loc4_);
-         this._worldMask.graphics.drawRect(0,0,_loc3_,_loc4_);
+         var w:int = StageShareManager.startWidth;
+         var h:int = StageShareManager.startHeight;
+         this._worldMask.graphics.drawRect(-2000,-2000,4000 + w,4000 + h);
+         this._worldMask.graphics.drawRect(0,0,w,h);
          this._worldMask.graphics.endFill();
          DisplayObjectContainer(this._worldContainer.parent).addChild(this._worldMask);
-         this.setFrustrum(param1.frustum);
+         this.setFrustrum(ao.frustum);
          this.init();
       }
       
-      public function onRollOverMapContainer(param1:Event) : void {
-         var _loc2_:MapContainerRollOverMessage = new MapContainerRollOverMessage();
-         Atouin.getInstance().handler.process(_loc2_);
+      public function onRollOverMapContainer(event:Event) : void {
+         var msg:MapContainerRollOverMessage = new MapContainerRollOverMessage();
+         Atouin.getInstance().handler.process(msg);
       }
       
-      private function onRollOutMapContainer(param1:Event) : void {
-         var _loc2_:MapContainerRollOutMessage = new MapContainerRollOutMessage();
-         Atouin.getInstance().handler.process(_loc2_);
+      private function onRollOutMapContainer(event:Event) : void {
+         var msg:MapContainerRollOutMessage = new MapContainerRollOutMessage();
+         Atouin.getInstance().handler.process(msg);
       }
       
       public function updateCursor() : void {
@@ -235,14 +235,14 @@ package com.ankamagames.atouin
          EnterFrameDispatcher.addEventListener(this.removeUpdateCursorSprite,"UpdateCursorSprite",50);
       }
       
-      public function showWorld(param1:Boolean, param2:Boolean=false) : void {
-         if(param1)
+      public function showWorld(b:Boolean, resetAnimations:Boolean=false) : void {
+         if(b)
          {
             this._worldContainer.addChild(this._spMapContainer);
             this._worldContainer.addChild(this._spChgMapContainer);
             this._worldContainer.addChild(this._spGfxontainer);
             this._worldContainer.addChild(this._overlayContainer);
-            if((param2) && (MapDisplayManager.getInstance()) && (MapDisplayManager.getInstance().getDataMapContainer()))
+            if((resetAnimations) && (MapDisplayManager.getInstance()) && (MapDisplayManager.getInstance().getDataMapContainer()))
             {
                MapDisplayManager.getInstance().getDataMapContainer().updateAllAnimatedElement();
             }
@@ -268,13 +268,13 @@ package com.ankamagames.atouin
          }
       }
       
-      public function setFrustrum(param1:Frustum) : void {
+      public function setFrustrum(f:Frustum) : void {
          if(!this._aoOptions)
          {
             _log.error("Please call setDisplayOptions once before calling setFrustrum");
             return;
          }
-         this._aoOptions.frustum = param1;
+         this._aoOptions.frustum = f;
          this.worldContainer.scaleX = this._aoOptions.frustum.scale;
          this.worldContainer.scaleY = this._aoOptions.frustum.scale;
          this.worldContainer.x = this._aoOptions.frustum.x;
@@ -287,27 +287,27 @@ package com.ankamagames.atouin
          this.overlayContainer.y = this._aoOptions.frustum.y;
          this.overlayContainer.scaleX = this._aoOptions.frustum.scale;
          this.overlayContainer.scaleY = this._aoOptions.frustum.scale;
-         FrustumManager.getInstance().frustum = param1;
+         FrustumManager.getInstance().frustum = f;
       }
       
-      public function initPreDisplay(param1:WorldPoint) : void {
-         if(((param1) && (MapDisplayManager.getInstance())) && (MapDisplayManager.getInstance().currentMapPoint) && MapDisplayManager.getInstance().currentMapPoint.mapId == param1.mapId)
+      public function initPreDisplay(wp:WorldPoint) : void {
+         if(((wp) && (MapDisplayManager.getInstance())) && (MapDisplayManager.getInstance().currentMapPoint) && (MapDisplayManager.getInstance().currentMapPoint.mapId == wp.mapId))
          {
             return;
          }
          MapDisplayManager.getInstance().capture();
       }
       
-      public function display(param1:WorldPoint, param2:ByteArray=null) : uint {
-         return MapDisplayManager.getInstance().display(param1,false,param2);
+      public function display(wpMap:WorldPoint, decryptionKey:ByteArray=null) : uint {
+         return MapDisplayManager.getInstance().display(wpMap,false,decryptionKey);
       }
       
-      public function getEntity(param1:int) : IEntity {
-         return EntitiesManager.getInstance().getEntity(param1);
+      public function getEntity(id:int) : IEntity {
+         return EntitiesManager.getInstance().getEntity(id);
       }
       
-      public function getEntityOnCell(param1:uint, param2:*=null) : IEntity {
-         return EntitiesManager.getInstance().getEntityOnCell(param1,param2);
+      public function getEntityOnCell(cellId:uint, oClass:*=null) : IEntity {
+         return EntitiesManager.getInstance().getEntityOnCell(cellId,oClass);
       }
       
       public function clearEntities() : void {
@@ -322,37 +322,37 @@ package com.ankamagames.atouin
          this.showWorld(false);
       }
       
-      public function displayGrid(param1:Boolean, param2:Boolean=false) : void {
-         InteractiveCellManager.getInstance().show((param1) || (this.options.alwaysShowGrid),param2);
+      public function displayGrid(b:Boolean, pIsInFight:Boolean=false) : void {
+         InteractiveCellManager.getInstance().show((b) || (this.options.alwaysShowGrid),pIsInFight);
       }
       
-      public function getIdentifiedElement(param1:uint) : InteractiveObject {
-         return MapDisplayManager.getInstance().getIdentifiedElement(param1);
+      public function getIdentifiedElement(id:uint) : InteractiveObject {
+         return MapDisplayManager.getInstance().getIdentifiedElement(id);
       }
       
-      public function getIdentifiedElementPosition(param1:uint) : MapPoint {
-         return MapDisplayManager.getInstance().getIdentifiedElementPosition(param1);
+      public function getIdentifiedElementPosition(id:uint) : MapPoint {
+         return MapDisplayManager.getInstance().getIdentifiedElementPosition(id);
       }
       
-      public function addListener(param1:ISoundPositionListener) : void {
+      public function addListener(pListener:ISoundPositionListener) : void {
          if(this._movementListeners == null)
          {
             this._movementListeners = new Array();
          }
-         this._movementListeners.push(param1);
+         this._movementListeners.push(pListener);
       }
       
-      public function removeListener(param1:ISoundPositionListener) : void {
-         var _loc2_:int = Atouin.getInstance()._movementListeners.indexOf(param1);
-         if(_loc2_)
+      public function removeListener(pListener:ISoundPositionListener) : void {
+         var index:int = Atouin.getInstance()._movementListeners.indexOf(pListener);
+         if(index)
          {
-            Atouin.getInstance()._movementListeners.splice(_loc2_,1);
+            Atouin.getInstance()._movementListeners.splice(index,1);
          }
       }
       
-      public function zoom(param1:Number, param2:int=0, param3:int=0) : void {
-         var _loc5_:* = NaN;
-         if(param1 == 1)
+      public function zoom(value:Number, posX:int=0, posY:int=0) : void {
+         var lastZoom:* = NaN;
+         if(value == 1)
          {
             this._worldContainer.scaleX = 1;
             this._worldContainer.scaleY = 1;
@@ -363,20 +363,20 @@ package com.ankamagames.atouin
          }
          else
          {
-            if(param1 < 1)
+            if(value < 1)
             {
-               param1 = 1;
+               value = 1;
             }
             else
             {
-               if(param1 > AtouinConstants.MAX_ZOOM)
+               if(value > AtouinConstants.MAX_ZOOM)
                {
-                  param1 = AtouinConstants.MAX_ZOOM;
+                  value = AtouinConstants.MAX_ZOOM;
                }
             }
-            _loc5_ = this._currentZoom;
-            this._currentZoom = param1;
-            if(_loc5_ == this._currentZoom)
+            lastZoom = this._currentZoom;
+            this._currentZoom = value;
+            if(lastZoom == this._currentZoom)
             {
                return;
             }
@@ -384,24 +384,24 @@ package com.ankamagames.atouin
             {
                MapDisplayManager.getInstance().cacheAsBitmapEnabled(false);
             }
-            if(param2)
+            if(posX)
             {
-               this._zoomPosX = param2;
+               this._zoomPosX = posX;
             }
             else
             {
-               param2 = this._zoomPosX;
+               posX = this._zoomPosX;
             }
-            if(param3)
+            if(posY)
             {
-               this._zoomPosY = param3;
+               this._zoomPosY = posY;
             }
             else
             {
-               param3 = this._zoomPosY;
+               posY = this._zoomPosY;
             }
-            this._worldContainer.x = this._worldContainer.x - (param2 * this._currentZoom - param2 * this._worldContainer.scaleX);
-            this._worldContainer.y = this._worldContainer.y - (param3 * this._currentZoom - param3 * this._worldContainer.scaleY);
+            this._worldContainer.x = this._worldContainer.x - (posX * this._currentZoom - posX * this._worldContainer.scaleX);
+            this._worldContainer.y = this._worldContainer.y - (posY * this._currentZoom - posY * this._worldContainer.scaleY);
             this._worldContainer.scaleX = this._currentZoom;
             this._worldContainer.scaleY = this._currentZoom;
             if(this._worldContainer.x > 0)
@@ -427,8 +427,8 @@ package com.ankamagames.atouin
                }
             }
          }
-         var _loc4_:MapZoomMessage = new MapZoomMessage(this._currentZoom,param2,param3);
-         Atouin.getInstance().handler.process(_loc4_);
+         var mzm:MapZoomMessage = new MapZoomMessage(this._currentZoom,posX,posY);
+         Atouin.getInstance().handler.process(mzm);
       }
       
       public function cancelZoom() : void {
@@ -438,7 +438,7 @@ package com.ankamagames.atouin
          }
       }
       
-      private function removeUpdateCursorSprite(param1:Event) : void {
+      private function removeUpdateCursorSprite(e:Event) : void {
          EnterFrameDispatcher.removeEventListener(this.removeUpdateCursorSprite);
          if(this._cursorUpdateSprite.parent)
          {
@@ -447,18 +447,18 @@ package com.ankamagames.atouin
       }
       
       private function init() : void {
-         var _loc1_:IResourceLoader = null;
+         var elementsLoader:IResourceLoader = null;
          this._aSprites = new Array();
          if(!Elements.getInstance().parsed)
          {
-            _loc1_ = ResourceLoaderFactory.getLoader(ResourceLoaderType.SINGLE_LOADER);
-            _loc1_.addEventListener(ResourceErrorEvent.ERROR,this.onElementsError);
-            _loc1_.load(new Uri(Atouin.getInstance().options.elementsIndexPath));
+            elementsLoader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SINGLE_LOADER);
+            elementsLoader.addEventListener(ResourceErrorEvent.ERROR,this.onElementsError);
+            elementsLoader.load(new Uri(Atouin.getInstance().options.elementsIndexPath));
          }
          Pathfinding.init(AtouinConstants.PATHFINDER_MIN_X,AtouinConstants.PATHFINDER_MAX_X,AtouinConstants.PATHFINDER_MIN_Y,AtouinConstants.PATHFINDER_MAX_Y);
       }
       
-      private function onElementsError(param1:ResourceErrorEvent) : void {
+      private function onElementsError(ree:ResourceErrorEvent) : void {
       }
    }
 }

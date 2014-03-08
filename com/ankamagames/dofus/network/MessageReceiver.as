@@ -1227,16 +1227,16 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new DownloadErrorMessage(),true,true);
       }
       
-      public function parse(param1:IDataInput, param2:uint, param3:uint) : INetworkMessage {
-         var _loc4_:Class = _messagesTypes[param2];
-         if(!_loc4_)
+      public function parse(input:IDataInput, messageId:uint, messageLength:uint) : INetworkMessage {
+         var messageType:Class = _messagesTypes[messageId];
+         if(!messageType)
          {
-            _log.warn("Unknown packet received (ID " + param2 + ", length " + param3 + ")");
+            _log.warn("Unknown packet received (ID " + messageId + ", length " + messageLength + ")");
             return null;
          }
-         var _loc5_:INetworkMessage = new _loc4_();
-         _loc5_.unpack(param1,param3);
-         return _loc5_;
+         var message:INetworkMessage = new messageType();
+         message.unpack(input,messageLength);
+         return message;
       }
    }
 }

@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.house.AccountHouseInformations;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,8 +30,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          return 6315;
       }
       
-      public function initAccountHouseMessage(param1:Vector.<AccountHouseInformations>=null) : AccountHouseMessage {
-         this.houses = param1;
+      public function initAccountHouseMessage(houses:Vector.<AccountHouseInformations>=null) : AccountHouseMessage {
+         this.houses = houses;
          this._isInitialized = true;
          return this;
       }
@@ -41,44 +41,44 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AccountHouseMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AccountHouseMessage(output);
       }
       
-      public function serializeAs_AccountHouseMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.houses.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.houses.length)
+      public function serializeAs_AccountHouseMessage(output:IDataOutput) : void {
+         output.writeShort(this.houses.length);
+         var _i1:uint = 0;
+         while(_i1 < this.houses.length)
          {
-            (this.houses[_loc2_] as AccountHouseInformations).serializeAs_AccountHouseInformations(param1);
-            _loc2_++;
+            (this.houses[_i1] as AccountHouseInformations).serializeAs_AccountHouseInformations(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AccountHouseMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AccountHouseMessage(input);
       }
       
-      public function deserializeAs_AccountHouseMessage(param1:IDataInput) : void {
-         var _loc4_:AccountHouseInformations = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_AccountHouseMessage(input:IDataInput) : void {
+         var _item1:AccountHouseInformations = null;
+         var _housesLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _housesLen)
          {
-            _loc4_ = new AccountHouseInformations();
-            _loc4_.deserialize(param1);
-            this.houses.push(_loc4_);
-            _loc3_++;
+            _item1 = new AccountHouseInformations();
+            _item1.deserialize(input);
+            this.houses.push(_item1);
+            _i1++;
          }
       }
    }

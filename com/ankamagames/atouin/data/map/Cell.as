@@ -12,38 +12,38 @@ package com.ankamagames.atouin.data.map
    public class Cell extends Object
    {
       
-      public function Cell(param1:Layer) {
+      public function Cell(layer:Layer) {
          super();
-         this._layer = param1;
+         this._layer = layer;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Cell));
       
       private static var _cellCoords:Point;
       
-      public static function cellCoords(param1:uint) : Point {
+      public static function cellCoords(cellId:uint) : Point {
          if(_cellCoords == null)
          {
             _cellCoords = new Point();
          }
-         _cellCoords.x = param1 % AtouinConstants.MAP_WIDTH;
-         _cellCoords.y = Math.floor(param1 / AtouinConstants.MAP_WIDTH);
+         _cellCoords.x = cellId % AtouinConstants.MAP_WIDTH;
+         _cellCoords.y = Math.floor(cellId / AtouinConstants.MAP_WIDTH);
          return _cellCoords;
       }
       
-      public static function cellId(param1:Point) : uint {
-         return CellIdConverter.coordToCellId(param1.x,param1.y);
+      public static function cellId(p:Point) : uint {
+         return CellIdConverter.coordToCellId(p.x,p.y);
       }
       
-      public static function cellIdByXY(param1:int, param2:int) : uint {
-         return CellIdConverter.coordToCellId(param1,param2);
+      public static function cellIdByXY(x:int, y:int) : uint {
+         return CellIdConverter.coordToCellId(x,y);
       }
       
-      public static function cellPixelCoords(param1:uint) : Point {
-         var _loc2_:Point = cellCoords(param1);
-         _loc2_.x = _loc2_.x * AtouinConstants.CELL_WIDTH + (_loc2_.y % 2 == 1?AtouinConstants.CELL_HALF_WIDTH:0);
-         _loc2_.y = _loc2_.y * AtouinConstants.CELL_HALF_HEIGHT;
-         return _loc2_;
+      public static function cellPixelCoords(cellId:uint) : Point {
+         var p:Point = cellCoords(cellId);
+         p.x = p.x * AtouinConstants.CELL_WIDTH + (p.y % 2 == 1?AtouinConstants.CELL_HALF_WIDTH:0);
+         p.y = p.y * AtouinConstants.CELL_HALF_HEIGHT;
+         return p;
       }
       
       public var cellId:int;
@@ -66,11 +66,9 @@ package com.ankamagames.atouin.data.map
          return cellPixelCoords(this.cellId);
       }
       
-      public function fromRaw(param1:IDataInput, param2:int) : void {
+      public function fromRaw(raw:IDataInput, mapVersion:int) : void {
          var be:BasicElement = null;
          var i:int = 0;
-         var raw:IDataInput = param1;
-         var mapVersion:int = param2;
          try
          {
             this.cellId = raw.readShort();

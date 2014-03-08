@@ -29,41 +29,41 @@ package com.ankamagames.dofus.internalDatacenter.communication
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EmoteWrapper));
       
-      public static function create(param1:uint, param2:int=-1, param3:Boolean=true) : EmoteWrapper {
-         var _loc4_:EmoteWrapper = new EmoteWrapper();
-         if(!_cache[param1] || !param3)
+      public static function create(emoteID:uint, position:int=-1, useCache:Boolean=true) : EmoteWrapper {
+         var emote:EmoteWrapper = new EmoteWrapper();
+         if((!_cache[emoteID]) || (!useCache))
          {
-            _loc4_ = new EmoteWrapper();
-            _loc4_.id = param1;
-            if(param3)
+            emote = new EmoteWrapper();
+            emote.id = emoteID;
+            if(useCache)
             {
-               _cache[param1] = _loc4_;
+               _cache[emoteID] = emote;
             }
-            _loc4_._slotDataHolderManager = new SlotDataHolderManager(_loc4_);
+            emote._slotDataHolderManager = new SlotDataHolderManager(emote);
          }
          else
          {
-            _loc4_ = _cache[param1];
+            emote = _cache[emoteID];
          }
-         _loc4_.id = param1;
-         _loc4_.gfxId = param1;
-         if(param2 >= 0)
+         emote.id = emoteID;
+         emote.gfxId = emoteID;
+         if(position >= 0)
          {
-            _loc4_.position = param2;
+            emote.position = position;
          }
-         return _loc4_;
+         return emote;
       }
       
       public static function refreshAllEmoteHolders() : void {
-         var _loc1_:EmoteWrapper = null;
-         for each (_loc1_ in _cache)
+         var wrapper:EmoteWrapper = null;
+         for each (wrapper in _cache)
          {
-            _loc1_._slotDataHolderManager.refreshAll();
+            wrapper._slotDataHolderManager.refreshAll();
          }
       }
       
-      public static function getEmoteWrapperById(param1:uint) : EmoteWrapper {
-         return _cache[param1];
+      public static function getEmoteWrapperById(id:uint) : EmoteWrapper {
+         return _cache[id];
       }
       
       private var _uri:Uri;
@@ -122,28 +122,28 @@ package com.ankamagames.dofus.internalDatacenter.communication
          return this._timerEndTime;
       }
       
-      public function set endTime(param1:int) : void {
-         this._timerEndTime = param1;
+      public function set endTime(t:int) : void {
+         this._timerEndTime = t;
       }
       
       public function get timer() : int {
-         var _loc1_:int = this._timerStartTime + this._timerDuration - getTimer();
-         if(_loc1_ > 0)
+         var remainingTime:int = this._timerStartTime + this._timerDuration - getTimer();
+         if(remainingTime > 0)
          {
-            return _loc1_;
+            return remainingTime;
          }
          return 0;
       }
       
-      public function set timerToStart(param1:int) : void {
-         this._timerDuration = param1;
+      public function set timerToStart(t:int) : void {
+         this._timerDuration = t;
          this._timerStartTime = getTimer();
          this._slotDataHolderManager.refreshAll();
       }
       
       public function get active() : Boolean {
-         var _loc1_:EmoticonFrame = Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
-         return _loc1_.isKnownEmote(this.id);
+         var rpEmoticonFrame:EmoticonFrame = Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
+         return rpEmoticonFrame.isKnownEmote(this.id);
       }
       
       public function get emote() : Emoticon {
@@ -158,10 +158,9 @@ package com.ankamagames.dofus.internalDatacenter.communication
          return true;
       }
       
-      override flash_proxy function getProperty(param1:*) : * {
+      override flash_proxy function getProperty(name:*) : * {
          var l:* = undefined;
          var r:* = undefined;
-         var name:* = param1;
          if(isAttribute(name))
          {
             return this[name];
@@ -181,27 +180,27 @@ package com.ankamagames.dofus.internalDatacenter.communication
          }
       }
       
-      override flash_proxy function hasProperty(param1:*) : Boolean {
-         return isAttribute(param1);
+      override flash_proxy function hasProperty(name:*) : Boolean {
+         return isAttribute(name);
       }
       
       public function toString() : String {
          return "[EmoteWrapper#" + this.id + "]";
       }
       
-      public function addHolder(param1:ISlotDataHolder) : void {
-         this._slotDataHolderManager.addHolder(param1);
+      public function addHolder(h:ISlotDataHolder) : void {
+         this._slotDataHolderManager.addHolder(h);
       }
       
-      public function removeHolder(param1:ISlotDataHolder) : void {
-         this._slotDataHolderManager.removeHolder(param1);
+      public function removeHolder(h:ISlotDataHolder) : void {
+         this._slotDataHolderManager.removeHolder(h);
       }
       
-      public function setLinkedSlotData(param1:ISlotData) : void {
-         this._slotDataHolderManager.setLinkedSlotData(param1);
+      public function setLinkedSlotData(slotData:ISlotData) : void {
+         this._slotDataHolderManager.setLinkedSlotData(slotData);
       }
       
-      public function getIconUri(param1:Boolean=true) : Uri {
+      public function getIconUri(pngMode:Boolean=true) : Uri {
          if(!this._uri)
          {
             this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/emotes/").concat(this.id).concat(".png"));

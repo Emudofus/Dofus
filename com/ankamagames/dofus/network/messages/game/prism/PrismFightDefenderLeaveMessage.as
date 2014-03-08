@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 5892;
       }
       
-      public function initPrismFightDefenderLeaveMessage(param1:uint=0, param2:Number=0, param3:uint=0) : PrismFightDefenderLeaveMessage {
-         this.subAreaId = param1;
-         this.fightId = param2;
-         this.fighterToRemoveId = param3;
+      public function initPrismFightDefenderLeaveMessage(subAreaId:uint=0, fightId:Number=0, fighterToRemoveId:uint=0) : PrismFightDefenderLeaveMessage {
+         this.subAreaId = subAreaId;
+         this.fightId = fightId;
+         this.fighterToRemoveId = fighterToRemoveId;
          this._isInitialized = true;
          return this;
       }
@@ -46,55 +46,55 @@ package com.ankamagames.dofus.network.messages.game.prism
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PrismFightDefenderLeaveMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismFightDefenderLeaveMessage(output);
       }
       
-      public function serializeAs_PrismFightDefenderLeaveMessage(param1:IDataOutput) : void {
+      public function serializeAs_PrismFightDefenderLeaveMessage(output:IDataOutput) : void {
          if(this.subAreaId < 0)
          {
             throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
          }
          else
          {
-            param1.writeShort(this.subAreaId);
-            param1.writeDouble(this.fightId);
+            output.writeShort(this.subAreaId);
+            output.writeDouble(this.fightId);
             if(this.fighterToRemoveId < 0)
             {
                throw new Error("Forbidden value (" + this.fighterToRemoveId + ") on element fighterToRemoveId.");
             }
             else
             {
-               param1.writeInt(this.fighterToRemoveId);
+               output.writeInt(this.fighterToRemoveId);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PrismFightDefenderLeaveMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismFightDefenderLeaveMessage(input);
       }
       
-      public function deserializeAs_PrismFightDefenderLeaveMessage(param1:IDataInput) : void {
-         this.subAreaId = param1.readShort();
+      public function deserializeAs_PrismFightDefenderLeaveMessage(input:IDataInput) : void {
+         this.subAreaId = input.readShort();
          if(this.subAreaId < 0)
          {
             throw new Error("Forbidden value (" + this.subAreaId + ") on element of PrismFightDefenderLeaveMessage.subAreaId.");
          }
          else
          {
-            this.fightId = param1.readDouble();
-            this.fighterToRemoveId = param1.readInt();
+            this.fightId = input.readDouble();
+            this.fighterToRemoveId = input.readInt();
             if(this.fighterToRemoveId < 0)
             {
                throw new Error("Forbidden value (" + this.fighterToRemoveId + ") on element of PrismFightDefenderLeaveMessage.fighterToRemoveId.");

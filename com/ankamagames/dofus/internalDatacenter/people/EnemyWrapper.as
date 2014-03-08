@@ -7,17 +7,17 @@ package com.ankamagames.dofus.internalDatacenter.people
    public class EnemyWrapper extends Object implements IDataCenter
    {
       
-      public function EnemyWrapper(param1:IgnoredInformations) {
+      public function EnemyWrapper(o:IgnoredInformations) {
          super();
-         this._item = param1;
-         this.name = param1.accountName;
-         this.accountId = param1.accountId;
-         if(param1 is IgnoredOnlineInformations)
+         this._item = o;
+         this.name = o.accountName;
+         this.accountId = o.accountId;
+         if(o is IgnoredOnlineInformations)
          {
-            this.playerName = IgnoredOnlineInformations(param1).playerName;
-            this.playerId = IgnoredOnlineInformations(param1).playerId;
-            this.breed = IgnoredOnlineInformations(param1).breed;
-            this.sex = IgnoredOnlineInformations(param1).sex?1:0;
+            this.playerName = IgnoredOnlineInformations(o).playerName;
+            this.playerId = IgnoredOnlineInformations(o).playerId;
+            this.breed = IgnoredOnlineInformations(o).breed;
+            this.sex = IgnoredOnlineInformations(o).sex?1:0;
             this.online = true;
          }
       }

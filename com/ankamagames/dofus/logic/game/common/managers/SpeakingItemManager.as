@@ -104,113 +104,113 @@ package com.ankamagames.dofus.logic.game.common.managers
          return _timer.delay;
       }
       
-      public function set speakTimerMinuteDelay(param1:int) : void {
-         _timer.delay = param1;
+      public function set speakTimerMinuteDelay(delay:int) : void {
+         _timer.delay = delay;
          _timer.stop();
          _timer.start();
       }
       
-      public function triggerEvent(param1:int) : void {
-         var _loc4_:ItemWrapper = null;
-         var _loc8_:String = null;
-         var _loc9_:* = 0;
-         var _loc10_:* = NaN;
-         var _loc11_:* = false;
-         var _loc12_:* = NaN;
-         var _loc13_:SpeakingItemText = null;
-         var _loc14_:Array = null;
-         var _loc15_:LivingObjectMessageRequestMessage = null;
+      public function triggerEvent(nEvent:int) : void {
+         var item:ItemWrapper = null;
+         var strId:String = null;
+         var i:* = 0;
+         var msgId:* = NaN;
+         var ok:* = false;
+         var media:* = NaN;
+         var speakingText:SpeakingItemText = null;
+         var restriction:Array = null;
+         var msg:LivingObjectMessageRequestMessage = null;
          if(!Kernel.getWorker().getFrame(ChatFrame))
          {
             return;
          }
-         var _loc2_:Boolean = OptionManager.getOptionManager("chat").letLivingObjectTalk;
-         if(!_loc2_)
+         var opt:Boolean = OptionManager.getOptionManager("chat").letLivingObjectTalk;
+         if(!opt)
          {
             return;
          }
-         var _loc3_:Array = new Array();
-         for each (_loc4_ in InventoryManager.getInstance().inventory.getView("equipment").content)
+         var items:Array = new Array();
+         for each (item in InventoryManager.getInstance().inventory.getView("equipment").content)
          {
-            if((_loc4_) && (_loc4_.isSpeakingObject))
+            if((item) && (item.isSpeakingObject))
             {
-               _loc3_.push(_loc4_);
+               items.push(item);
             }
          }
-         if(_loc3_.length == 0)
+         if(items.length == 0)
          {
             return;
          }
          this._nextMessageCount--;
-         this._nextMessageCount = this._nextMessageCount - (_loc3_.length-1) / 4;
+         this._nextMessageCount = this._nextMessageCount - (items.length - 1) / 4;
          if(this._nextMessageCount > 0)
          {
             return;
          }
-         var _loc5_:SpeakingItemsTrigger = SpeakingItemsTrigger.getSpeakingItemsTriggerById(param1);
-         var _loc6_:ItemWrapper = _loc3_[Math.floor(Math.random() * _loc3_.length)];
-         var _loc7_:Array = new Array();
-         if(_loc5_)
+         var triggersAssoc:SpeakingItemsTrigger = SpeakingItemsTrigger.getSpeakingItemsTriggerById(nEvent);
+         var itemWrapper:ItemWrapper = items[Math.floor(Math.random() * items.length)];
+         var tmpTriggersAssoc:Array = new Array();
+         if(triggersAssoc)
          {
-            _loc8_ = _loc6_.objectGID.toString();
-            _loc9_ = 0;
-            while(_loc9_ < _loc5_.textIds.length)
+            strId = itemWrapper.objectGID.toString();
+            i = 0;
+            while(i < triggersAssoc.textIds.length)
             {
-               if(!((_loc6_.isLivingObject) && !(_loc5_.states[_loc9_] == _loc6_.livingObjectMood)))
+               if(!((itemWrapper.isLivingObject) && (!(triggersAssoc.states[i] == itemWrapper.livingObjectMood))))
                {
-                  _loc13_ = SpeakingItemText.getSpeakingItemTextById(_loc5_.textIds[_loc9_]);
-                  if(_loc13_)
+                  speakingText = SpeakingItemText.getSpeakingItemTextById(triggersAssoc.textIds[i]);
+                  if(speakingText)
                   {
-                     if(!(_loc13_.textLevel > _loc6_.livingObjectLevel && (_loc6_.isLivingObject)))
+                     if(!((speakingText.textLevel > itemWrapper.livingObjectLevel) && (itemWrapper.isLivingObject)))
                      {
-                        _loc14_ = _loc13_.textRestriction.split(",");
-                        if(!(!(_loc13_.textRestriction == "") && _loc14_.indexOf(_loc8_) == -1))
+                        restriction = speakingText.textRestriction.split(",");
+                        if(!((!(speakingText.textRestriction == "")) && (restriction.indexOf(strId) == -1)))
                         {
-                           _loc7_.push(_loc5_.textIds[_loc9_]);
+                           tmpTriggersAssoc.push(triggersAssoc.textIds[i]);
                         }
                      }
                   }
                }
-               _loc9_++;
+               i++;
             }
-            if(_loc7_.length == 0)
+            if(tmpTriggersAssoc.length == 0)
             {
                return;
             }
-            _loc11_ = false;
-            _loc9_ = 0;
-            while(_loc9_ < 10)
+            ok = false;
+            i = 0;
+            while(i < 10)
             {
-               _loc10_ = _loc7_[Math.floor(Math.random() * _loc7_.length)];
-               _loc13_ = SpeakingItemText.getSpeakingItemTextById(_loc10_);
-               if(Math.random() < _loc13_.textProba)
+               msgId = tmpTriggersAssoc[Math.floor(Math.random() * tmpTriggersAssoc.length)];
+               speakingText = SpeakingItemText.getSpeakingItemTextById(msgId);
+               if(Math.random() < speakingText.textProba)
                {
-                  _loc11_ = true;
+                  ok = true;
                }
-               _loc9_++;
+               i++;
             }
-            if(!_loc11_)
+            if(!ok)
             {
                return;
             }
-            if(_loc13_.textSound != -1)
+            if(speakingText.textSound != -1)
             {
-               _loc12_ = Math.floor(Math.random() * 3);
+               media = Math.floor(Math.random() * 3);
             }
             else
             {
-               _loc12_ = 1;
+               media = 1;
             }
             if(Math.random() < SPEAKING_ITEMS_CHAT_PROBA)
             {
-               _loc15_ = new LivingObjectMessageRequestMessage();
-               _loc15_.msgId = _loc13_.textId;
-               _loc15_.livingObject = _loc6_.objectUID;
-               ConnectionsHandler.getConnection().send(_loc15_);
+               msg = new LivingObjectMessageRequestMessage();
+               msg.msgId = speakingText.textId;
+               msg.livingObject = itemWrapper.objectUID;
+               ConnectionsHandler.getConnection().send(msg);
             }
             else
             {
-               KernelEventsManager.getInstance().processCallback(ChatHookList.ChatSpeakingItem,ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,_loc6_,_loc13_.textString,TimeManager.getInstance().getTimestamp());
+               KernelEventsManager.getInstance().processCallback(ChatHookList.ChatSpeakingItem,ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,itemWrapper,speakingText.textString,TimeManager.getInstance().getTimestamp());
             }
          }
          this.generateNextMsgCount(false);
@@ -228,20 +228,20 @@ package com.ankamagames.dofus.logic.game.common.managers
          this.generateNextMsgCount(true);
       }
       
-      private function generateNextMsgCount(param1:Boolean) : void {
-         var _loc2_:Number = SPEAKING_ITEMS_MSG_COUNT;
-         var _loc3_:Number = SPEAKING_ITEMS_MSG_COUNT_DELTA;
-         if(param1)
+      private function generateNextMsgCount(noMin:Boolean) : void {
+         var msgCount:Number = SPEAKING_ITEMS_MSG_COUNT;
+         var delta:Number = SPEAKING_ITEMS_MSG_COUNT_DELTA;
+         if(noMin)
          {
-            this._nextMessageCount = Math.floor(_loc2_ * Math.random());
+            this._nextMessageCount = Math.floor(msgCount * Math.random());
          }
          else
          {
-            this._nextMessageCount = _loc2_ + Math.floor(2 * _loc3_ * Math.random());
+            this._nextMessageCount = msgCount + Math.floor(2 * delta * Math.random());
          }
       }
       
-      private function onTimer(param1:TimerEvent) : void {
+      private function onTimer(event:TimerEvent) : void {
          this.triggerEvent(SPEAK_TRIGGER_MINUTE);
       }
    }

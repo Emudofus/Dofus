@@ -7,19 +7,19 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class LevelItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function LevelItemCriterion(param1:String) {
-         super(param1);
+      public function LevelItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get text() : String {
-         var _loc1_:String = _criterionValue.toString();
-         var _loc2_:String = I18n.getUiText("ui.common.level");
-         return _loc2_ + " " + _operator.text + " " + _loc1_;
+         var readableCriterionValue:String = _criterionValue.toString();
+         var readableCriterionRef:String = I18n.getUiText("ui.common.level");
+         return readableCriterionRef + " " + _operator.text + " " + readableCriterionValue;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:LevelItemCriterion = new LevelItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:LevelItemCriterion = new LevelItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {

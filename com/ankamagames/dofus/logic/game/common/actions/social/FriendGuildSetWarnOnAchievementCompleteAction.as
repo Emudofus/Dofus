@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.social
          super();
       }
       
-      public static function create(param1:Boolean) : FriendGuildSetWarnOnAchievementCompleteAction {
-         var _loc2_:FriendGuildSetWarnOnAchievementCompleteAction = new FriendGuildSetWarnOnAchievementCompleteAction();
-         _loc2_.enable = param1;
-         return _loc2_;
+      public static function create(enable:Boolean) : FriendGuildSetWarnOnAchievementCompleteAction {
+         var a:FriendGuildSetWarnOnAchievementCompleteAction = new FriendGuildSetWarnOnAchievementCompleteAction();
+         a.enable = enable;
+         return a;
       }
       
       public var enable:Boolean;

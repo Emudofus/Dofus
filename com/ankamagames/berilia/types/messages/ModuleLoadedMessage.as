@@ -5,9 +5,9 @@ package com.ankamagames.berilia.types.messages
    public class ModuleLoadedMessage extends Object implements Message
    {
       
-      public function ModuleLoadedMessage(param1:String) {
+      public function ModuleLoadedMessage(moduleName:String) {
          super();
-         this._moduleName = param1;
+         this._moduleName = moduleName;
       }
       
       private var _moduleName:String;

@@ -11,8 +11,8 @@ package com.ankamagames.dofus.logic.common.managers
          super();
       }
       
-      public static function addCmd(param1:String, param2:String) : void {
-         KernelEventsManager.getInstance().processCallback(HookList.ConsoleAddCmd,param1.toLowerCase() == "true",Base64.decode(param2));
+      public static function addCmd(auto:String, cmd:String) : void {
+         KernelEventsManager.getInstance().processCallback(HookList.ConsoleAddCmd,auto.toLowerCase() == "true",Base64.decode(cmd));
       }
    }
 }

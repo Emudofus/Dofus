@@ -6,8 +6,8 @@ package com.ankamagames.jerakine.resources.events
    public class ResourceErrorEvent extends ResourceEvent
    {
       
-      public function ResourceErrorEvent(param1:String, param2:Boolean=false, param3:Boolean=false) {
-         super(param1,param2,param3);
+      public function ResourceErrorEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
       }
       
       public static const ERROR:String = "error";
@@ -19,11 +19,11 @@ package com.ankamagames.jerakine.resources.events
       public var errorCode:uint;
       
       override public function clone() : Event {
-         var _loc1_:ResourceErrorEvent = new ResourceErrorEvent(type,bubbles,cancelable);
-         _loc1_.uri = this.uri;
-         _loc1_.errorMsg = this.errorMsg;
-         _loc1_.errorCode = this.errorCode;
-         return _loc1_;
+         var re:ResourceErrorEvent = new ResourceErrorEvent(type,bubbles,cancelable);
+         re.uri = this.uri;
+         re.errorMsg = this.errorMsg;
+         re.errorCode = this.errorCode;
+         return re;
       }
    }
 }

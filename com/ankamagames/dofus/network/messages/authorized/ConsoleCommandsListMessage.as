@@ -2,7 +2,7 @@ package com.ankamagames.dofus.network.messages.authorized
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -35,10 +35,10 @@ package com.ankamagames.dofus.network.messages.authorized
          return 6127;
       }
       
-      public function initConsoleCommandsListMessage(param1:Vector.<String>=null, param2:Vector.<String>=null, param3:Vector.<String>=null) : ConsoleCommandsListMessage {
-         this.aliases = param1;
-         this.args = param2;
-         this.descriptions = param3;
+      public function initConsoleCommandsListMessage(aliases:Vector.<String>=null, args:Vector.<String>=null, descriptions:Vector.<String>=null) : ConsoleCommandsListMessage {
+         this.aliases = aliases;
+         this.args = args;
+         this.descriptions = descriptions;
          this._isInitialized = true;
          return this;
       }
@@ -50,40 +50,76 @@ package com.ankamagames.dofus.network.messages.authorized
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ConsoleCommandsListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ConsoleCommandsListMessage(output);
       }
       
-      public function serializeAs_ConsoleCommandsListMessage(param1:IDataOutput) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      public function serializeAs_ConsoleCommandsListMessage(output:IDataOutput) : void {
+         output.writeShort(this.aliases.length);
+         var _i1:uint = 0;
+         while(_i1 < this.aliases.length)
+         {
+            output.writeUTF(this.aliases[_i1]);
+            _i1++;
+         }
+         output.writeShort(this.args.length);
+         var _i2:uint = 0;
+         while(_i2 < this.args.length)
+         {
+            output.writeUTF(this.args[_i2]);
+            _i2++;
+         }
+         output.writeShort(this.descriptions.length);
+         var _i3:uint = 0;
+         while(_i3 < this.descriptions.length)
+         {
+            output.writeUTF(this.descriptions[_i3]);
+            _i3++;
+         }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ConsoleCommandsListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ConsoleCommandsListMessage(input);
       }
       
-      public function deserializeAs_ConsoleCommandsListMessage(param1:IDataInput) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      public function deserializeAs_ConsoleCommandsListMessage(input:IDataInput) : void {
+         var _val1:String = null;
+         var _val2:String = null;
+         var _val3:String = null;
+         var _aliasesLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _aliasesLen)
+         {
+            _val1 = input.readUTF();
+            this.aliases.push(_val1);
+            _i1++;
+         }
+         var _argsLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2 < _argsLen)
+         {
+            _val2 = input.readUTF();
+            this.args.push(_val2);
+            _i2++;
+         }
+         var _descriptionsLen:uint = input.readUnsignedShort();
+         var _i3:uint = 0;
+         while(_i3 < _descriptionsLen)
+         {
+            _val3 = input.readUTF();
+            this.descriptions.push(_val3);
+            _i3++;
+         }
       }
    }
 }

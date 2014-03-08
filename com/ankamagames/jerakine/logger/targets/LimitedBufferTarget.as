@@ -1,16 +1,16 @@
 package com.ankamagames.jerakine.logger.targets
 {
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.logger.LogEvent;
    import com.ankamagames.jerakine.json.JSON;
    import com.hurlant.util.Base64;
+   import __AS3__.vec.*;
    
    public class LimitedBufferTarget extends AbstractTarget
    {
       
-      public function LimitedBufferTarget(param1:int=50) {
+      public function LimitedBufferTarget(pLimit:int=50) {
          super();
-         this._limit = param1;
+         this._limit = pLimit;
          this._buffer = new Vector.<LogEvent>();
       }
       
@@ -18,28 +18,28 @@ package com.ankamagames.jerakine.logger.targets
       
       private var _limit:int;
       
-      override public function logEvent(param1:LogEvent) : void {
+      override public function logEvent(event:LogEvent) : void {
          if(this._buffer.length >= this._limit)
          {
             this._buffer.shift();
          }
-         this._buffer.push(param1);
+         this._buffer.push(event);
       }
       
       public function getFormatedBuffer() : String {
-         var _loc2_:LogEvent = null;
-         var _loc3_:Object = null;
-         var _loc4_:String = null;
-         var _loc1_:Array = new Array();
-         for each (_loc2_ in this._buffer)
+         var log:LogEvent = null;
+         var obj:Object = null;
+         var json:String = null;
+         var newArray:Array = new Array();
+         for each (log in this._buffer)
          {
-            _loc3_ = new Object();
-            _loc3_.message = _loc2_.message;
-            _loc3_.level = _loc2_.level;
-            _loc1_.push(_loc3_);
+            obj = new Object();
+            obj.message = log.message;
+            obj.level = log.level;
+            newArray.push(obj);
          }
-         _loc4_ = com.ankamagames.jerakine.json.JSON.encode(_loc1_);
-         return Base64.encode(_loc4_);
+         json = com.ankamagames.jerakine.json.JSON.encode(newArray);
+         return Base64.encode(json);
       }
       
       public function clearBuffer() : void {

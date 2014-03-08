@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.prism
          return 427;
       }
       
-      public function initAlliancePrismInformation(param1:uint=0, param2:uint=1, param3:uint=0, param4:uint=0, param5:uint=0, param6:AllianceInformations=null) : AlliancePrismInformation {
-         super.initPrismInformation(param1,param2,param3,param4,param5);
-         this.alliance = param6;
+      public function initAlliancePrismInformation(typeId:uint=0, state:uint=1, nextVulnerabilityDate:uint=0, placementDate:uint=0, rewardTokenCount:uint=0, alliance:AllianceInformations=null) : AlliancePrismInformation {
+         super.initPrismInformation(typeId,state,nextVulnerabilityDate,placementDate,rewardTokenCount);
+         this.alliance = alliance;
          return this;
       }
       
@@ -32,23 +32,23 @@ package com.ankamagames.dofus.network.types.game.prism
          this.alliance = new AllianceInformations();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AlliancePrismInformation(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AlliancePrismInformation(output);
       }
       
-      public function serializeAs_AlliancePrismInformation(param1:IDataOutput) : void {
-         super.serializeAs_PrismInformation(param1);
-         this.alliance.serializeAs_AllianceInformations(param1);
+      public function serializeAs_AlliancePrismInformation(output:IDataOutput) : void {
+         super.serializeAs_PrismInformation(output);
+         this.alliance.serializeAs_AllianceInformations(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AlliancePrismInformation(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AlliancePrismInformation(input);
       }
       
-      public function deserializeAs_AlliancePrismInformation(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_AlliancePrismInformation(input:IDataInput) : void {
+         super.deserialize(input);
          this.alliance = new AllianceInformations();
-         this.alliance.deserialize(param1);
+         this.alliance.deserialize(input);
       }
    }
 }

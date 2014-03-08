@@ -26,9 +26,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5514;
       }
       
-      public function initExchangeObjectMovePricedMessage(param1:uint=0, param2:int=0, param3:int=0) : ExchangeObjectMovePricedMessage {
-         super.initExchangeObjectMoveMessage(param1,param2);
-         this.price = param3;
+      public function initExchangeObjectMovePricedMessage(objectUID:uint=0, quantity:int=0, price:int=0) : ExchangeObjectMovePricedMessage {
+         super.initExchangeObjectMoveMessage(objectUID,quantity);
+         this.price = price;
          this._isInitialized = true;
          return this;
       }
@@ -39,32 +39,32 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeObjectMovePricedMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeObjectMovePricedMessage(output);
       }
       
-      public function serializeAs_ExchangeObjectMovePricedMessage(param1:IDataOutput) : void {
-         super.serializeAs_ExchangeObjectMoveMessage(param1);
-         param1.writeInt(this.price);
+      public function serializeAs_ExchangeObjectMovePricedMessage(output:IDataOutput) : void {
+         super.serializeAs_ExchangeObjectMoveMessage(output);
+         output.writeInt(this.price);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeObjectMovePricedMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeObjectMovePricedMessage(input);
       }
       
-      public function deserializeAs_ExchangeObjectMovePricedMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.price = param1.readInt();
+      public function deserializeAs_ExchangeObjectMovePricedMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.price = input.readInt();
       }
    }
 }

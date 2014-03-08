@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.context.fight.challenge
          return 5614;
       }
       
-      public function initChallengeTargetsListRequestMessage(param1:uint=0) : ChallengeTargetsListRequestMessage {
-         this.challengeId = param1;
+      public function initChallengeTargetsListRequestMessage(challengeId:uint=0) : ChallengeTargetsListRequestMessage {
+         this.challengeId = challengeId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.context.fight.challenge
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ChallengeTargetsListRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ChallengeTargetsListRequestMessage(output);
       }
       
-      public function serializeAs_ChallengeTargetsListRequestMessage(param1:IDataOutput) : void {
+      public function serializeAs_ChallengeTargetsListRequestMessage(output:IDataOutput) : void {
          if(this.challengeId < 0)
          {
             throw new Error("Forbidden value (" + this.challengeId + ") on element challengeId.");
          }
          else
          {
-            param1.writeShort(this.challengeId);
+            output.writeShort(this.challengeId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ChallengeTargetsListRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ChallengeTargetsListRequestMessage(input);
       }
       
-      public function deserializeAs_ChallengeTargetsListRequestMessage(param1:IDataInput) : void {
-         this.challengeId = param1.readShort();
+      public function deserializeAs_ChallengeTargetsListRequestMessage(input:IDataInput) : void {
+         this.challengeId = input.readShort();
          if(this.challengeId < 0)
          {
             throw new Error("Forbidden value (" + this.challengeId + ") on element of ChallengeTargetsListRequestMessage.challengeId.");

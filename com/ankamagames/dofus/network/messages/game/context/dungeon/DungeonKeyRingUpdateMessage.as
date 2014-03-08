@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
          return 6296;
       }
       
-      public function initDungeonKeyRingUpdateMessage(param1:uint=0, param2:Boolean=false) : DungeonKeyRingUpdateMessage {
-         this.dungeonId = param1;
-         this.available = param2;
+      public function initDungeonKeyRingUpdateMessage(dungeonId:uint=0, available:Boolean=false) : DungeonKeyRingUpdateMessage {
+         this.dungeonId = dungeonId;
+         this.available = available;
          this._isInitialized = true;
          return this;
       }
@@ -42,46 +42,46 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_DungeonKeyRingUpdateMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_DungeonKeyRingUpdateMessage(output);
       }
       
-      public function serializeAs_DungeonKeyRingUpdateMessage(param1:IDataOutput) : void {
+      public function serializeAs_DungeonKeyRingUpdateMessage(output:IDataOutput) : void {
          if(this.dungeonId < 0)
          {
             throw new Error("Forbidden value (" + this.dungeonId + ") on element dungeonId.");
          }
          else
          {
-            param1.writeShort(this.dungeonId);
-            param1.writeBoolean(this.available);
+            output.writeShort(this.dungeonId);
+            output.writeBoolean(this.available);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_DungeonKeyRingUpdateMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_DungeonKeyRingUpdateMessage(input);
       }
       
-      public function deserializeAs_DungeonKeyRingUpdateMessage(param1:IDataInput) : void {
-         this.dungeonId = param1.readShort();
+      public function deserializeAs_DungeonKeyRingUpdateMessage(input:IDataInput) : void {
+         this.dungeonId = input.readShort();
          if(this.dungeonId < 0)
          {
             throw new Error("Forbidden value (" + this.dungeonId + ") on element of DungeonKeyRingUpdateMessage.dungeonId.");
          }
          else
          {
-            this.available = param1.readBoolean();
+            this.available = input.readBoolean();
             return;
          }
       }

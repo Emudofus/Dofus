@@ -15,15 +15,15 @@ package com.ankamagames.jerakine.handlers.messages
          super();
       }
       
-      public static function create(param1:InteractiveObject, param2:Event, param3:HumanInputMessage=null) : HumanInputMessage {
-         if(!param3)
+      public static function create(target:InteractiveObject, nativeEvent:Event, instance:HumanInputMessage=null) : HumanInputMessage {
+         if(!instance)
          {
-            param3 = new HumanInputMessage();
+            instance = new HumanInputMessage();
          }
-         param3._target = param1;
-         param3._nativeEvent = param2;
-         param3._frameId = FrameIdManager.frameId;
-         return param3;
+         instance._target = target;
+         instance._nativeEvent = nativeEvent;
+         instance._frameId = FrameIdManager.frameId;
+         return instance;
       }
       
       protected var _target:InteractiveObject;
@@ -50,20 +50,20 @@ package com.ankamagames.jerakine.handlers.messages
          return this._canceled;
       }
       
-      public function set canceled(param1:Boolean) : void {
+      public function set canceled(value:Boolean) : void {
          if(this.bubbling)
          {
             throw new InvalidCancelError("Can\'t cancel a bubbling message.");
          }
          else
          {
-            if((this._canceled) && !param1)
+            if((this._canceled) && (!value))
             {
                throw new InvalidCancelError("Can\'t uncancel a canceled message.");
             }
             else
             {
-               this._canceled = param1;
+               this._canceled = value;
                return;
             }
          }
@@ -78,12 +78,12 @@ package com.ankamagames.jerakine.handlers.messages
          this._nativeEvent = null;
       }
       
-      public function addAction(param1:Action) : void {
+      public function addAction(action:Action) : void {
          if(this._actions == null)
          {
             this._actions = new Array();
          }
-         this._actions.push(param1);
+         this._actions.push(action);
       }
    }
 }

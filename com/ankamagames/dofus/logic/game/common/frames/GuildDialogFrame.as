@@ -44,75 +44,73 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:GuildCreationValidAction = null;
-         var _loc3_:GuildCreationValidMessage = null;
-         var _loc4_:GuildModificationValidAction = null;
-         var _loc5_:GuildModificationValidMessage = null;
-         var _loc6_:GuildModificationNameValidAction = null;
-         var _loc7_:GuildModificationNameValidMessage = null;
-         var _loc8_:GuildModificationEmblemValidAction = null;
-         var _loc9_:GuildModificationEmblemValidMessage = null;
-         var _loc10_:GuildInvitationAnswerAction = null;
-         var _loc11_:GuildInvitationAnswerMessage = null;
-         var _loc12_:LeaveDialogMessage = null;
+      public function process(msg:Message) : Boolean {
+         var gcva:GuildCreationValidAction = null;
+         var gcvmsg:GuildCreationValidMessage = null;
+         var gmva:GuildModificationValidAction = null;
+         var gmvmsg:GuildModificationValidMessage = null;
+         var gmnva:GuildModificationNameValidAction = null;
+         var gmnvmsg:GuildModificationNameValidMessage = null;
+         var gmeva:GuildModificationEmblemValidAction = null;
+         var gmevmsg:GuildModificationEmblemValidMessage = null;
+         var giaa:GuildInvitationAnswerAction = null;
+         var giamsg:GuildInvitationAnswerMessage = null;
+         var ldm:LeaveDialogMessage = null;
          switch(true)
          {
-            case param1 is GuildCreationValidAction:
-               _loc2_ = param1 as GuildCreationValidAction;
+            case msg is GuildCreationValidAction:
+               gcva = msg as GuildCreationValidAction;
                this.guildEmblem = new GuildEmblem();
-               this.guildEmblem.symbolShape = _loc2_.upEmblemId;
-               this.guildEmblem.symbolColor = _loc2_.upColorEmblem;
-               this.guildEmblem.backgroundShape = _loc2_.backEmblemId;
-               this.guildEmblem.backgroundColor = _loc2_.backColorEmblem;
-               _loc3_ = new GuildCreationValidMessage();
-               _loc3_.initGuildCreationValidMessage(_loc2_.guildName,this.guildEmblem);
-               ConnectionsHandler.getConnection().send(_loc3_);
+               this.guildEmblem.symbolShape = gcva.upEmblemId;
+               this.guildEmblem.symbolColor = gcva.upColorEmblem;
+               this.guildEmblem.backgroundShape = gcva.backEmblemId;
+               this.guildEmblem.backgroundColor = gcva.backColorEmblem;
+               gcvmsg = new GuildCreationValidMessage();
+               gcvmsg.initGuildCreationValidMessage(gcva.guildName,this.guildEmblem);
+               ConnectionsHandler.getConnection().send(gcvmsg);
                return true;
-            case param1 is GuildModificationValidAction:
-               _loc4_ = param1 as GuildModificationValidAction;
+            case msg is GuildModificationValidAction:
+               gmva = msg as GuildModificationValidAction;
                this.guildEmblem = new GuildEmblem();
-               this.guildEmblem.symbolShape = _loc4_.upEmblemId;
-               this.guildEmblem.symbolColor = _loc4_.upColorEmblem;
-               this.guildEmblem.backgroundShape = _loc4_.backEmblemId;
-               this.guildEmblem.backgroundColor = _loc4_.backColorEmblem;
-               _loc5_ = new GuildModificationValidMessage();
-               _loc5_.initGuildModificationValidMessage(_loc4_.guildName,this.guildEmblem);
-               ConnectionsHandler.getConnection().send(_loc5_);
+               this.guildEmblem.symbolShape = gmva.upEmblemId;
+               this.guildEmblem.symbolColor = gmva.upColorEmblem;
+               this.guildEmblem.backgroundShape = gmva.backEmblemId;
+               this.guildEmblem.backgroundColor = gmva.backColorEmblem;
+               gmvmsg = new GuildModificationValidMessage();
+               gmvmsg.initGuildModificationValidMessage(gmva.guildName,this.guildEmblem);
+               ConnectionsHandler.getConnection().send(gmvmsg);
                return true;
-            case param1 is GuildModificationNameValidAction:
-               _loc6_ = param1 as GuildModificationNameValidAction;
-               _loc7_ = new GuildModificationNameValidMessage();
-               _loc7_.initGuildModificationNameValidMessage(_loc6_.guildName);
-               ConnectionsHandler.getConnection().send(_loc7_);
+            case msg is GuildModificationNameValidAction:
+               gmnva = msg as GuildModificationNameValidAction;
+               gmnvmsg = new GuildModificationNameValidMessage();
+               gmnvmsg.initGuildModificationNameValidMessage(gmnva.guildName);
+               ConnectionsHandler.getConnection().send(gmnvmsg);
                return true;
-            case param1 is GuildModificationEmblemValidAction:
-               _loc8_ = param1 as GuildModificationEmblemValidAction;
+            case msg is GuildModificationEmblemValidAction:
+               gmeva = msg as GuildModificationEmblemValidAction;
                this.guildEmblem = new GuildEmblem();
-               this.guildEmblem.symbolShape = _loc8_.upEmblemId;
-               this.guildEmblem.symbolColor = _loc8_.upColorEmblem;
-               this.guildEmblem.backgroundShape = _loc8_.backEmblemId;
-               this.guildEmblem.backgroundColor = _loc8_.backColorEmblem;
-               _loc9_ = new GuildModificationEmblemValidMessage();
-               _loc9_.initGuildModificationEmblemValidMessage(this.guildEmblem);
-               ConnectionsHandler.getConnection().send(_loc9_);
+               this.guildEmblem.symbolShape = gmeva.upEmblemId;
+               this.guildEmblem.symbolColor = gmeva.upColorEmblem;
+               this.guildEmblem.backgroundShape = gmeva.backEmblemId;
+               this.guildEmblem.backgroundColor = gmeva.backColorEmblem;
+               gmevmsg = new GuildModificationEmblemValidMessage();
+               gmevmsg.initGuildModificationEmblemValidMessage(this.guildEmblem);
+               ConnectionsHandler.getConnection().send(gmevmsg);
                return true;
-            case param1 is GuildInvitationAnswerAction:
-               _loc10_ = param1 as GuildInvitationAnswerAction;
-               _loc11_ = new GuildInvitationAnswerMessage();
-               _loc11_.initGuildInvitationAnswerMessage(_loc10_.accept);
-               ConnectionsHandler.getConnection().send(_loc11_);
+            case msg is GuildInvitationAnswerAction:
+               giaa = msg as GuildInvitationAnswerAction;
+               giamsg = new GuildInvitationAnswerMessage();
+               giamsg.initGuildInvitationAnswerMessage(giaa.accept);
+               ConnectionsHandler.getConnection().send(giamsg);
                this.leaveDialog();
                return true;
-            case param1 is LeaveDialogMessage:
-               _loc12_ = param1 as LeaveDialogMessage;
-               if(_loc12_.dialogType == DialogTypeEnum.DIALOG_GUILD_CREATE || _loc12_.dialogType == DialogTypeEnum.DIALOG_GUILD_INVITATION || _loc12_.dialogType == DialogTypeEnum.DIALOG_GUILD_RENAME)
+            case msg is LeaveDialogMessage:
+               ldm = msg as LeaveDialogMessage;
+               if((ldm.dialogType == DialogTypeEnum.DIALOG_GUILD_CREATE) || (ldm.dialogType == DialogTypeEnum.DIALOG_GUILD_INVITATION) || (ldm.dialogType == DialogTypeEnum.DIALOG_GUILD_RENAME))
                {
                   this.leaveDialog();
                }
                return true;
-            default:
-               return false;
          }
       }
       

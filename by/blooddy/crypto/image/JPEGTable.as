@@ -15,19 +15,19 @@ package by.blooddy.crypto.image
       
       private static var _jpegTable:ByteArray;
       
-      public static function getTable(param1:uint=60) : ByteArray {
-         if(param1 > 100)
+      public static function getTable(quality:uint=60) : ByteArray {
+         if(quality > 100)
          {
             Error.throwError(RangeError,2006,"quality");
          }
-         if(param1 < 1)
+         if(quality < 1)
          {
-            param1 = 1;
+            quality = 1;
          }
-         var _loc2_:ByteArray = _quantTables[param1];
-         if(!_loc2_)
+         var quantTable:ByteArray = _quantTables[quality];
+         if(!quantTable)
          {
-            _loc2_ = JPEGTableHelper.createQuantTable(param1);
+            quantTable = JPEGTableHelper.createQuantTable(quality);
             if(!_jpegTable)
             {
                _jpegTable = new ByteArray();
@@ -36,11 +36,11 @@ package by.blooddy.crypto.image
                _jpegTable.writeBytes(JPEGTableHelper.createCategoryTable());
             }
          }
-         var _loc3_:ByteArray = new ByteArray();
-         _loc3_.writeBytes(_loc2_);
-         _loc3_.writeBytes(_jpegTable);
-         _loc3_.position = 0;
-         return _loc3_;
+         var result:ByteArray = new ByteArray();
+         result.writeBytes(quantTable);
+         result.writeBytes(_jpegTable);
+         result.position = 0;
+         return result;
       }
    }
 }

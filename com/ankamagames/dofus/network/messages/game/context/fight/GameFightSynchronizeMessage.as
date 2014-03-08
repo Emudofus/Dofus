@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.context.fight
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,8 +31,8 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 5921;
       }
       
-      public function initGameFightSynchronizeMessage(param1:Vector.<GameFightFighterInformations>=null) : GameFightSynchronizeMessage {
-         this.fighters = param1;
+      public function initGameFightSynchronizeMessage(fighters:Vector.<GameFightFighterInformations>=null) : GameFightSynchronizeMessage {
+         this.fighters = fighters;
          this._isInitialized = true;
          return this;
       }
@@ -42,47 +42,47 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightSynchronizeMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightSynchronizeMessage(output);
       }
       
-      public function serializeAs_GameFightSynchronizeMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.fighters.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.fighters.length)
+      public function serializeAs_GameFightSynchronizeMessage(output:IDataOutput) : void {
+         output.writeShort(this.fighters.length);
+         var _i1:uint = 0;
+         while(_i1 < this.fighters.length)
          {
-            param1.writeShort((this.fighters[_loc2_] as GameFightFighterInformations).getTypeId());
-            (this.fighters[_loc2_] as GameFightFighterInformations).serialize(param1);
-            _loc2_++;
+            output.writeShort((this.fighters[_i1] as GameFightFighterInformations).getTypeId());
+            (this.fighters[_i1] as GameFightFighterInformations).serialize(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightSynchronizeMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightSynchronizeMessage(input);
       }
       
-      public function deserializeAs_GameFightSynchronizeMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         var _loc5_:GameFightFighterInformations = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_GameFightSynchronizeMessage(input:IDataInput) : void {
+         var _id1:uint = 0;
+         var _item1:GameFightFighterInformations = null;
+         var _fightersLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _fightersLen)
          {
-            _loc4_ = param1.readUnsignedShort();
-            _loc5_ = ProtocolTypeManager.getInstance(GameFightFighterInformations,_loc4_);
-            _loc5_.deserialize(param1);
-            this.fighters.push(_loc5_);
-            _loc3_++;
+            _id1 = input.readUnsignedShort();
+            _item1 = ProtocolTypeManager.getInstance(GameFightFighterInformations,_id1);
+            _item1.deserialize(input);
+            this.fighters.push(_item1);
+            _i1++;
          }
       }
    }

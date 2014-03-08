@@ -7,54 +7,52 @@ package com.ankamagames.tiphon.display
    public class RasterizedSyncAnimation extends RasterizedAnimation
    {
       
-      public function RasterizedSyncAnimation(param1:MovieClip, param2:String) {
-         var _loc3_:String = null;
-         super(param1,param2);
-         _target = param1;
+      public function RasterizedSyncAnimation(target:MovieClip, lookCode:String) {
+         var animationName:String = null;
+         super(target,lookCode);
+         _target = target;
          _totalFrames = _target.totalFrames;
-         spriteHandler = (param1 as ScriptedAnimation).spriteHandler;
+         spriteHandler = (target as ScriptedAnimation).spriteHandler;
          switch(spriteHandler.getDirection())
          {
             case 1:
             case 3:
-               _loc3_ = spriteHandler.getAnimation() + "_1";
+               animationName = spriteHandler.getAnimation() + "_1";
                break;
             case 5:
             case 7:
-               _loc3_ = spriteHandler.getAnimation() + "_5";
+               animationName = spriteHandler.getAnimation() + "_5";
                break;
-            default:
-               _loc3_ = spriteHandler.getAnimation() + "_" + spriteHandler.getDirection();
          }
          if(spriteHandler != null)
          {
-            spriteHandler.tiphonEventManager.parseLabels(currentScene,_loc3_);
+            spriteHandler.tiphonEventManager.parseLabels(currentScene,animationName);
          }
       }
       
       private static var _events:Dictionary = new Dictionary(true);
       
-      override public function gotoAndStop(param1:Object, param2:String=null) : void {
-         var _loc3_:uint = param1 as uint;
-         if(_loc3_ > 0)
+      override public function gotoAndStop(frame:Object, scene:String=null) : void {
+         var targetFrame:uint = frame as uint;
+         if(targetFrame > 0)
          {
-            _loc3_--;
+            targetFrame--;
          }
-         this.displayFrame(_loc3_ % _totalFrames);
+         this.displayFrame(targetFrame % _totalFrames);
       }
       
-      override public function gotoAndPlay(param1:Object, param2:String=null) : void {
-         this.gotoAndStop(param1,param2);
+      override public function gotoAndPlay(frame:Object, scene:String=null) : void {
+         this.gotoAndStop(frame,scene);
          play();
       }
       
-      override protected function displayFrame(param1:uint) : Boolean {
-         var _loc2_:Boolean = super.displayFrame(param1);
-         if(_loc2_)
+      override protected function displayFrame(frameIndex:uint) : Boolean {
+         var changed:Boolean = super.displayFrame(frameIndex);
+         if(changed)
          {
-            spriteHandler.tiphonEventManager.dispatchEvents(param1);
+            spriteHandler.tiphonEventManager.dispatchEvents(frameIndex);
          }
-         return _loc2_;
+         return changed;
       }
    }
 }

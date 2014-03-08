@@ -41,132 +41,132 @@ package com.ankamagames.dofus.logic.common.managers
       
       private static var _arrowPositions:Dictionary = new Dictionary();
       
-      public static function showArrow(param1:String, param2:String, param3:int=0, param4:int=0, param5:int=5, param6:int=0) : MovieClip {
-         var _loc9_:UiRootContainer = null;
-         var _loc10_:DisplayObject = null;
-         var _loc11_:Rectangle = null;
-         var _loc12_:String = null;
-         var _loc7_:MovieClip = getArrow(param6 == 1);
-         var _loc8_:DisplayObjectContainer = Berilia.getInstance().docMain.getChildAt(param5) as DisplayObjectContainer;
-         _loc8_.addChild(_loc7_);
-         if(isNaN(Number(param1)))
+      public static function showArrow(uiName:String, componentName:String, pos:int=0, reverse:int=0, strata:int=5, loop:int=0) : MovieClip {
+         var uirc:UiRootContainer = null;
+         var displayObject:DisplayObject = null;
+         var rect:Rectangle = null;
+         var id:String = null;
+         var arrow:MovieClip = getArrow(loop == 1);
+         var container:DisplayObjectContainer = Berilia.getInstance().docMain.getChildAt(strata) as DisplayObjectContainer;
+         container.addChild(arrow);
+         if(isNaN(Number(uiName)))
          {
-            _loc9_ = Berilia.getInstance().getUi(param1);
-            if(_loc9_)
+            uirc = Berilia.getInstance().getUi(uiName);
+            if(uirc)
             {
-               _loc10_ = _loc9_.getElement(param2);
-               if((_loc10_) && (_loc10_.visible))
+               displayObject = uirc.getElement(componentName);
+               if((displayObject) && (displayObject.visible))
                {
-                  _loc11_ = _loc10_.getRect(_loc8_);
-                  _loc12_ = param1 + "_" + param2;
-                  if(_arrowPositions[_loc12_])
+                  rect = displayObject.getRect(container);
+                  id = uiName + "_" + componentName;
+                  if(_arrowPositions[id])
                   {
-                     _loc7_.x = _arrowPositions[_loc12_].x;
-                     _loc7_.y = _arrowPositions[_loc12_].y;
+                     arrow.x = _arrowPositions[id].x;
+                     arrow.y = _arrowPositions[id].y;
                   }
                   else
                   {
-                     place(_arrowClip,_loc11_,param3);
+                     place(_arrowClip,rect,pos);
                   }
                }
             }
-            if(param4 == 1)
+            if(reverse == 1)
             {
                _arrowClip.scaleX = _arrowClip.scaleX * -1;
             }
-            if(param6)
+            if(loop)
             {
                _displayLastArrow = true;
-               _lastArrowX = _loc7_.x;
-               _lastArrowY = _loc7_.y;
-               _lastArrowPos = param3;
-               _lastStrata = param5;
+               _lastArrowX = arrow.x;
+               _lastArrowY = arrow.y;
+               _lastArrowPos = pos;
+               _lastStrata = strata;
                _lastReverse = _arrowClip.scaleX;
             }
             return _arrowClip;
          }
-         return showAbsoluteArrow(new Rectangle(int(param1),int(param2)),param3,param4,param5,param6);
+         return showAbsoluteArrow(new Rectangle(int(uiName),int(componentName)),pos,reverse,strata,loop);
       }
       
-      public static function showAbsoluteArrow(param1:Rectangle, param2:int=0, param3:int=0, param4:int=5, param5:int=0) : MovieClip {
-         var _loc6_:MovieClip = getArrow(param5 == 1);
-         DisplayObjectContainer(Berilia.getInstance().docMain.getChildAt(param4)).addChild(_loc6_);
-         place(_loc6_,param1,param2);
-         if(param3 == 1)
+      public static function showAbsoluteArrow(targetRect:Rectangle, pos:int=0, reverse:int=0, strata:int=5, loop:int=0) : MovieClip {
+         var arrow:MovieClip = getArrow(loop == 1);
+         DisplayObjectContainer(Berilia.getInstance().docMain.getChildAt(strata)).addChild(arrow);
+         place(arrow,targetRect,pos);
+         if(reverse == 1)
          {
             _arrowClip.scaleX = _arrowClip.scaleX * -1;
          }
-         if(param5)
+         if(loop)
          {
             _displayLastArrow = true;
-            _lastArrowX = _loc6_.x;
-            _lastArrowY = _loc6_.y;
-            _lastArrowPos = param2;
-            _lastStrata = param4;
+            _lastArrowX = arrow.x;
+            _lastArrowY = arrow.y;
+            _lastArrowPos = pos;
+            _lastStrata = strata;
             _lastReverse = _arrowClip.scaleX;
          }
-         return _loc6_;
+         return arrow;
       }
       
-      public static function setArrowPosition(param1:String, param2:String, param3:Point) : void {
-         _arrowPositions[param1 + "_" + param2] = param3;
+      public static function setArrowPosition(pUiName:String, pComponentName:String, pPosition:Point) : void {
+         _arrowPositions[pUiName + "_" + pComponentName] = pPosition;
       }
       
-      public static function showMapTransition(param1:int, param2:int, param3:int, param4:int=0, param5:int=5, param6:int=0) : MovieClip {
-         var _loc7_:MovieClip = null;
-         var _loc8_:uint = 0;
-         var _loc9_:uint = 0;
-         var _loc10_:uint = 0;
-         if(param1 == -1 || param1 == PlayedCharacterManager.getInstance().currentMap.mapId)
+      public static function showMapTransition(mapId:int, shapeOrientation:int, position:int, reverse:int=0, strata:int=5, loop:int=0) : MovieClip {
+         var arrow:MovieClip = null;
+         var x:uint = 0;
+         var y:uint = 0;
+         var orientation:uint = 0;
+         if((mapId == -1) || (mapId == PlayedCharacterManager.getInstance().currentMap.mapId))
          {
-            _loc7_ = getArrow(param6 == 1);
-            DisplayObjectContainer(Berilia.getInstance().docMain.getChildAt(param5)).addChild(_loc7_);
-            switch(param2)
+            arrow = getArrow(loop == 1);
+            DisplayObjectContainer(Berilia.getInstance().docMain.getChildAt(strata)).addChild(arrow);
+            switch(shapeOrientation)
             {
                case DirectionsEnum.DOWN:
-                  _loc8_ = param3;
-                  _loc9_ = 880;
-                  _loc10_ = 1;
+                  x = position;
+                  y = 880;
+                  orientation = 1;
                   break;
                case DirectionsEnum.LEFT:
-                  _loc8_ = 0;
-                  _loc9_ = param3;
-                  _loc10_ = 5;
+                  x = 0;
+                  y = position;
+                  orientation = 5;
                   break;
                case DirectionsEnum.UP:
-                  _loc8_ = param3;
-                  _loc9_ = 0;
-                  _loc10_ = 7;
+                  x = position;
+                  y = 0;
+                  orientation = 7;
                   break;
                case DirectionsEnum.RIGHT:
-                  _loc8_ = 1280;
-                  _loc9_ = param3;
-                  _loc10_ = 1;
+                  x = 1280;
+                  y = position;
+                  orientation = 1;
                   break;
             }
-            place(_loc7_,new Rectangle(_loc8_,_loc9_),_loc10_);
-            if(param4 == 1)
+            place(arrow,new Rectangle(x,y),orientation);
+            if(reverse == 1)
             {
                _arrowClip.scaleX = _arrowClip.scaleX * -1;
             }
-            if(param6)
+            if(loop)
             {
                _displayLastArrow = true;
-               _lastArrowX = _loc7_.x;
-               _lastArrowY = _loc7_.y;
-               _lastArrowPos = _loc10_;
-               _lastStrata = param5;
+               _lastArrowX = arrow.x;
+               _lastArrowY = arrow.y;
+               _lastArrowPos = orientation;
+               _lastStrata = strata;
                _lastReverse = _arrowClip.scaleX;
             }
-            return _loc7_;
+            return arrow;
          }
          return null;
       }
       
-      public static function destroyArrow(param1:Event=null) : void {
-         if(param1)
+      public static function destroyArrow(E:Event=null) : void {
+         if(E)
          {
-            param1.currentTarget.removeEventListener(TimerEvent.TIMER,destroyArrow);
+            E.currentTarget.removeEventListener(TimerEvent.TIMER,destroyArrow);
             if(_displayLastArrow)
             {
                (Berilia.getInstance().docMain.getChildAt(_lastStrata) as DisplayObjectContainer).addChild(_arrowClip);
@@ -189,7 +189,7 @@ package com.ankamagames.dofus.logic.common.managers
          }
       }
       
-      private static function getArrow(param1:Boolean=false) : MovieClip {
+      private static function getArrow(loop:Boolean=false) : MovieClip {
          if(_arrowClip)
          {
             _arrowClip.gotoAndPlay(1);
@@ -200,7 +200,7 @@ package com.ankamagames.dofus.logic.common.managers
             _arrowClip.mouseEnabled = false;
             _arrowClip.mouseChildren = false;
          }
-         if(param1)
+         if(loop)
          {
             if(_arrowTimer)
             {
@@ -223,92 +223,92 @@ package com.ankamagames.dofus.logic.common.managers
          return _arrowClip;
       }
       
-      public static function place(param1:MovieClip, param2:Rectangle, param3:int) : void {
-         if(param3 == 0)
+      public static function place(arrow:MovieClip, rect:Rectangle, pos:int) : void {
+         if(pos == 0)
          {
-            param1.scaleX = 1;
-            param1.scaleY = 1;
-            param1.x = int(param2.x);
-            param1.y = int(param2.y);
+            arrow.scaleX = 1;
+            arrow.scaleY = 1;
+            arrow.x = int(rect.x);
+            arrow.y = int(rect.y);
          }
          else
          {
-            if(param3 == 1)
+            if(pos == 1)
             {
-               param1.scaleX = 1;
-               param1.scaleY = 1;
-               param1.x = int(param2.x + param2.width / 2);
-               param1.y = int(param2.y);
+               arrow.scaleX = 1;
+               arrow.scaleY = 1;
+               arrow.x = int(rect.x + rect.width / 2);
+               arrow.y = int(rect.y);
             }
             else
             {
-               if(param3 == 2)
+               if(pos == 2)
                {
-                  param1.scaleX = -1;
-                  param1.scaleY = 1;
-                  param1.x = int(param2.x + param2.width);
-                  param1.y = int(param2.y);
+                  arrow.scaleX = -1;
+                  arrow.scaleY = 1;
+                  arrow.x = int(rect.x + rect.width);
+                  arrow.y = int(rect.y);
                }
                else
                {
-                  if(param3 == 3)
+                  if(pos == 3)
                   {
-                     param1.scaleX = 1;
-                     param1.scaleY = 1;
-                     param1.x = int(param2.x);
-                     param1.y = int(param2.y + param2.height / 2);
+                     arrow.scaleX = 1;
+                     arrow.scaleY = 1;
+                     arrow.x = int(rect.x);
+                     arrow.y = int(rect.y + rect.height / 2);
                   }
                   else
                   {
-                     if(param3 == 4)
+                     if(pos == 4)
                      {
-                        param1.scaleX = 1;
-                        param1.scaleY = 1;
-                        param1.x = int(param2.x + param2.width / 2);
-                        param1.y = int(param2.y + param2.height / 2);
+                        arrow.scaleX = 1;
+                        arrow.scaleY = 1;
+                        arrow.x = int(rect.x + rect.width / 2);
+                        arrow.y = int(rect.y + rect.height / 2);
                      }
                      else
                      {
-                        if(param3 == 5)
+                        if(pos == 5)
                         {
-                           param1.scaleX = -1;
-                           param1.scaleY = 1;
-                           param1.x = int(param2.x + param2.width);
-                           param1.y = int(param2.y + param2.height / 2);
+                           arrow.scaleX = -1;
+                           arrow.scaleY = 1;
+                           arrow.x = int(rect.x + rect.width);
+                           arrow.y = int(rect.y + rect.height / 2);
                         }
                         else
                         {
-                           if(param3 == 6)
+                           if(pos == 6)
                            {
-                              param1.scaleX = 1;
-                              param1.scaleY = -1;
-                              param1.x = int(param2.x);
-                              param1.y = int(param2.y + param2.height);
+                              arrow.scaleX = 1;
+                              arrow.scaleY = -1;
+                              arrow.x = int(rect.x);
+                              arrow.y = int(rect.y + rect.height);
                            }
                            else
                            {
-                              if(param3 == 7)
+                              if(pos == 7)
                               {
-                                 param1.scaleX = 1;
-                                 param1.scaleY = -1;
-                                 param1.x = int(param2.x + param2.width / 2);
-                                 param1.y = int(param2.y + param2.height);
+                                 arrow.scaleX = 1;
+                                 arrow.scaleY = -1;
+                                 arrow.x = int(rect.x + rect.width / 2);
+                                 arrow.y = int(rect.y + rect.height);
                               }
                               else
                               {
-                                 if(param3 == 8)
+                                 if(pos == 8)
                                  {
-                                    param1.scaleY = -1;
-                                    param1.scaleX = -1;
-                                    param1.x = int(param2.x + param2.width);
-                                    param1.y = int(param2.y + param2.height);
+                                    arrow.scaleY = -1;
+                                    arrow.scaleX = -1;
+                                    arrow.x = int(rect.x + rect.width);
+                                    arrow.y = int(rect.y + rect.height);
                                  }
                                  else
                                  {
-                                    param1.scaleX = 1;
-                                    param1.scaleY = 1;
-                                    param1.x = int(param2.x);
-                                    param1.y = int(param2.y);
+                                    arrow.scaleX = 1;
+                                    arrow.scaleY = 1;
+                                    arrow.x = int(rect.x);
+                                    arrow.y = int(rect.y);
                                  }
                               }
                            }

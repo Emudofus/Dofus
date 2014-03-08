@@ -29,10 +29,10 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 1030;
       }
       
-      public function initGameActionFightPointsVariationMessage(param1:uint=0, param2:int=0, param3:int=0, param4:int=0) : GameActionFightPointsVariationMessage {
-         super.initAbstractGameActionMessage(param1,param2);
-         this.targetId = param3;
-         this.delta = param4;
+      public function initGameActionFightPointsVariationMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, delta:int=0) : GameActionFightPointsVariationMessage {
+         super.initAbstractGameActionMessage(actionId,sourceId);
+         this.targetId = targetId;
+         this.delta = delta;
          this._isInitialized = true;
          return this;
       }
@@ -44,34 +44,34 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameActionFightPointsVariationMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameActionFightPointsVariationMessage(output);
       }
       
-      public function serializeAs_GameActionFightPointsVariationMessage(param1:IDataOutput) : void {
-         super.serializeAs_AbstractGameActionMessage(param1);
-         param1.writeInt(this.targetId);
-         param1.writeShort(this.delta);
+      public function serializeAs_GameActionFightPointsVariationMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractGameActionMessage(output);
+         output.writeInt(this.targetId);
+         output.writeShort(this.delta);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameActionFightPointsVariationMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameActionFightPointsVariationMessage(input);
       }
       
-      public function deserializeAs_GameActionFightPointsVariationMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.targetId = param1.readInt();
-         this.delta = param1.readShort();
+      public function deserializeAs_GameActionFightPointsVariationMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.targetId = input.readInt();
+         this.delta = input.readShort();
       }
    }
 }

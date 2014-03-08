@@ -7,13 +7,13 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class KamaItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function KamaItemCriterion(param1:String) {
-         super(param1);
+      public function KamaItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get text() : String {
-         var _loc1_:String = I18n.getUiText("ui.common.kamas");
-         return _loc1_ + " " + _operator.text + " " + _criterionValue;
+         var readableCriterionRef:String = I18n.getUiText("ui.common.kamas");
+         return readableCriterionRef + " " + _operator.text + " " + _criterionValue;
       }
       
       override public function get isRespected() : Boolean {
@@ -21,8 +21,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:KamaItemCriterion = new KamaItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:KamaItemCriterion = new KamaItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {

@@ -14,11 +14,11 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightInvisibleTemporarilyDetectedStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightInvisibleTemporarilyDetectedStep(param1:AnimatedCharacter, param2:int) {
+      public function FightInvisibleTemporarilyDetectedStep(target:AnimatedCharacter, cellId:int) {
          super();
-         var _loc3_:int = EntitiesManager.getInstance().getFreeEntityId();
-         this._duplicateSprite = new AnimatedCharacter(_loc3_,param1.look.clone());
-         this._cellId = param2;
+         var id:int = EntitiesManager.getInstance().getFreeEntityId();
+         this._duplicateSprite = new AnimatedCharacter(id,target.look.clone());
+         this._cellId = cellId;
          this._fadeTimer = new Timer(25,40);
          this._fadeTimer.addEventListener(TimerEvent.TIMER,this.onFade);
       }
@@ -52,7 +52,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          }
       }
       
-      private function onFade(param1:Event) : void {
+      private function onFade(e:Event) : void {
          if(!this._duplicateSprite)
          {
             return;

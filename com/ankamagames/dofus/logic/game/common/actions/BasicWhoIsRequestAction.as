@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:String, param2:Boolean) : BasicWhoIsRequestAction {
-         var _loc3_:BasicWhoIsRequestAction = new BasicWhoIsRequestAction();
-         _loc3_.playerName = param1;
-         _loc3_.verbose = param2;
-         return _loc3_;
+      public static function create(playerName:String, verbose:Boolean) : BasicWhoIsRequestAction {
+         var a:BasicWhoIsRequestAction = new BasicWhoIsRequestAction();
+         a.playerName = playerName;
+         a.verbose = verbose;
+         return a;
       }
       
       public var playerName:String;

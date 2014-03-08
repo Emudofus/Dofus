@@ -9,13 +9,13 @@ package com.ankamagames.dofus.logic.game.common.actions.craft
          super();
       }
       
-      public static function create(param1:Boolean, param2:uint, param3:Boolean, param4:int) : ExchangeItemObjectAddAsPaymentAction {
-         var _loc5_:ExchangeItemObjectAddAsPaymentAction = new ExchangeItemObjectAddAsPaymentAction();
-         _loc5_.onlySuccess = param1;
-         _loc5_.objectUID = param2;
-         _loc5_.quantity = param4;
-         _loc5_.isAdd = param3;
-         return _loc5_;
+      public static function create(pOnlySuccess:Boolean, pObjectUID:uint, pIsAdd:Boolean, pQuantity:int) : ExchangeItemObjectAddAsPaymentAction {
+         var action:ExchangeItemObjectAddAsPaymentAction = new ExchangeItemObjectAddAsPaymentAction();
+         action.onlySuccess = pOnlySuccess;
+         action.objectUID = pObjectUID;
+         action.quantity = pQuantity;
+         action.isAdd = pIsAdd;
+         return action;
       }
       
       public var onlySuccess:Boolean;

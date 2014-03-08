@@ -22,54 +22,54 @@ package com.ankamagames.dofus.misc.utils
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CustomLoadingScreen));
       
-      public static function recover(param1:DataStoreType, param2:String) : CustomLoadingScreen {
-         var _loc3_:CustomLoadingScreen = StoreDataManager.getInstance().getData(param1,"loading_" + param2) as CustomLoadingScreen;
-         return _loc3_;
+      public static function recover(dataStore:DataStoreType, name:String) : CustomLoadingScreen {
+         var storedCustomLoadingScreen:CustomLoadingScreen = StoreDataManager.getInstance().getData(dataStore,"loading_" + name) as CustomLoadingScreen;
+         return storedCustomLoadingScreen;
       }
       
-      public static function loadFromXml(param1:XML) : CustomLoadingScreen {
-         var _loc2_:CustomLoadingScreen = new CustomLoadingScreen();
-         _loc2_.name = param1.@name;
-         if(!_loc2_.name && param1.child("name").length() > 0)
+      public static function loadFromXml(xml:XML) : CustomLoadingScreen {
+         var cls:CustomLoadingScreen = new CustomLoadingScreen();
+         cls.name = xml.@name;
+         if((!cls.name) && (xml.child("name").length() > 0))
          {
-            _loc2_.name = param1.name;
+            cls.name = xml.name;
          }
-         if(param1.child("img").length() > 0)
+         if(xml.child("img").length() > 0)
          {
-            _loc2_.backgroundUrl = param1.img;
+            cls.backgroundUrl = xml.img;
          }
-         if(param1.child("background").length() > 0)
+         if(xml.child("background").length() > 0)
          {
-            _loc2_.backgroundUrl = param1.background;
+            cls.backgroundUrl = xml.background;
          }
-         if(param1.child("foreground").length() > 0)
+         if(xml.child("foreground").length() > 0)
          {
-            _loc2_.foregroundUrl = param1.foreground;
+            cls.foregroundUrl = xml.foreground;
          }
-         if(param1.child("url").length() > 0)
+         if(xml.child("url").length() > 0)
          {
-            _loc2_.linkUrl = param1.url;
+            cls.linkUrl = xml.url;
          }
-         if(param1.child("begin").length() > 0)
+         if(xml.child("begin").length() > 0)
          {
-            _loc2_.begin = new Date(param1.begin.@year,param1.begin.@month-1,param1.begin.@day,param1.begin.@hour,param1.begin.@minute);
+            cls.begin = new Date(xml.begin.@year,xml.begin.@month - 1,xml.begin.@day,xml.begin.@hour,xml.begin.@minute);
          }
-         if(param1.child("end").length() > 0)
+         if(xml.child("end").length() > 0)
          {
-            _loc2_.end = new Date(param1.end.@year,param1.end.@month-1,param1.end.@day,param1.end.@hour,param1.end.@minute);
+            cls.end = new Date(xml.end.@year,xml.end.@month - 1,xml.end.@day,xml.end.@hour,xml.end.@minute);
          }
-         if(param1.child("count").length() > 0)
+         if(xml.child("count").length() > 0)
          {
-            _loc2_.countMax = param1.count;
+            cls.countMax = xml.count;
          }
-         if(param1.child("screen").length() > 0)
+         if(xml.child("screen").length() > 0)
          {
-            _loc2_.screen = param1.screen;
+            cls.screen = xml.screen;
          }
-         _loc2_.count = 0;
-         var _loc3_:String = XmlConfig.getInstance().getEntry("config.lang.current");
-         _loc2_.lang = _loc3_;
-         return _loc2_;
+         cls.count = 0;
+         var lang:String = XmlConfig.getInstance().getEntry("config.lang.current");
+         cls.lang = lang;
+         return cls;
       }
       
       public var name:String;
@@ -123,11 +123,11 @@ package com.ankamagames.dofus.misc.utils
          }
       }
       
-      public function store(param1:Boolean=false) : void {
+      public function store(storeAsCurrent:Boolean=false) : void {
          if(this.dataStore)
          {
             StoreDataManager.getInstance().setData(this.dataStore,"loading_" + this.name,this);
-            if(param1)
+            if(storeAsCurrent)
             {
                StoreDataManager.getInstance().setData(this.dataStore,"currentLoadingScreen",this.name);
             }
@@ -147,36 +147,36 @@ package com.ankamagames.dofus.misc.utils
       }
       
       public function canBeRead() : Boolean {
-         var _loc1_:Date = new Date();
-         if((!this.begin || this.begin.time < _loc1_.time) && (!this.end || this.end.time > _loc1_.time) && (this.countMax == -1 || this.countMax == 0 || this.count < this.countMax))
+         var currentDate:Date = new Date();
+         if(((!this.begin) || (this.begin.time < currentDate.time)) && ((!this.end) || (this.end.time > currentDate.time)) && ((this.countMax == -1) || (this.countMax == 0) || (this.count < this.countMax)))
          {
             return true;
          }
          return false;
       }
       
-      public function canBeReadOnScreen(param1:Boolean) : Boolean {
-         return (this.canBeRead()) && (this.screen == 3 || (param1) && this.screen == 1 || !param1 && this.screen == 2);
+      public function canBeReadOnScreen(beforeLogin:Boolean) : Boolean {
+         return (this.canBeRead()) && ((this.screen == 3) || (beforeLogin) && (this.screen == 1) || (!beforeLogin) && (this.screen == 2));
       }
       
-      private function onComplete(param1:Event) : void {
-         var _loc2_:URLLoader = param1.target as URLLoader;
-         _loc2_.removeEventListener(Event.COMPLETE,this.onComplete);
-         switch(param1.target)
+      private function onComplete(e:Event) : void {
+         var urlLoader:URLLoader = e.target as URLLoader;
+         urlLoader.removeEventListener(Event.COMPLETE,this.onComplete);
+         switch(e.target)
          {
             case this._backgroundUrlLoader:
-               this.backgroundImg = _loc2_.data;
+               this.backgroundImg = urlLoader.data;
                this.store();
                break;
             case this._foregroundUrlLoader:
-               this.foregroundImg = _loc2_.data;
+               this.foregroundImg = urlLoader.data;
                this.store();
                break;
          }
       }
       
-      private function onIOError(param1:IOErrorEvent) : void {
-         _log.error("invalid bitmap : " + param1);
+      private function onIOError(e:IOErrorEvent) : void {
+         _log.error("invalid bitmap : " + e);
       }
    }
 }

@@ -89,12 +89,12 @@ package by.blooddy.crypto.image
          _loc6_.position = _loc7_ + 4;
          _loc6_.writeBytes(_loc6_,3010,416);
          _loc7_ = 202274;
-         var _loc10_:* = 202288;
-         var _loc11_:* = 7;
-         var _loc12_:* = 0;
-         var _loc13_:* = 0;
-         var _loc14_:* = 0;
-         var _loc15_:* = 0;
+         var _loc10_:int = 202288;
+         var _loc11_:int = 7;
+         var _loc12_:int = 0;
+         var _loc13_:int = 0;
+         var _loc14_:int = 0;
+         var _loc15_:int = 0;
          _loc8_ = 0;
          do
          {
@@ -1310,7 +1310,7 @@ package by.blooddy.crypto.image
                                                       {
                                                          break;
                                                       }
-                                                      if((1 << _loc11_ + 1-1 & 1 << _loc22_) != 0)
+                                                      if(((1 << _loc11_ + 1) - 1 & 1 << _loc22_) != 0)
                                                       {
                                                          _loc12_ = _loc12_ | 1 << _loc11_;
                                                       }

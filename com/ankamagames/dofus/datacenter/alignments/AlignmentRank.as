@@ -19,8 +19,8 @@ package com.ankamagames.dofus.datacenter.alignments
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlignmentRank));
       
-      public static function getAlignmentRankById(param1:int) : AlignmentRank {
-         return GameData.getObject(MODULE,param1) as AlignmentRank;
+      public static function getAlignmentRankById(id:int) : AlignmentRank {
+         return GameData.getObject(MODULE,id) as AlignmentRank;
       }
       
       public static function getAlignmentRanks() : Array {

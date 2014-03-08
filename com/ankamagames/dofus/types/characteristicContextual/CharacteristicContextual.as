@@ -19,8 +19,8 @@ package com.ankamagames.dofus.types.characteristicContextual
          return this._referedEntity;
       }
       
-      public function set referedEntity(param1:IEntity) : void {
-         this._referedEntity = param1;
+      public function set referedEntity(oEntity:IEntity) : void {
+         this._referedEntity = oEntity;
       }
       
       public function remove() : void {

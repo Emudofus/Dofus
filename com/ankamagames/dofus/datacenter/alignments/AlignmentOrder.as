@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.alignments
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlignmentOrder));
       
-      public static function getAlignmentOrderById(param1:int) : AlignmentOrder {
-         return GameData.getObject(MODULE,param1) as AlignmentOrder;
+      public static function getAlignmentOrderById(id:int) : AlignmentOrder {
+         return GameData.getObject(MODULE,id) as AlignmentOrder;
       }
       
       public static function getAlignmentOrders() : Array {

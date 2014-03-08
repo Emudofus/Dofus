@@ -11,31 +11,29 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         switch(cmd)
          {
             case "cleartexturecache":
-               if(param3.length > 0)
+               if(args.length > 0)
                {
-                  param1.output("No arguments needed.");
+                  console.output("No arguments needed.");
                }
                Berilia.getInstance().cache.clear();
-               param1.output("Texture cache cleared.");
+               console.output("Texture cache cleared.");
                break;
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "cleartexturecache":
                return "Empty the textures cache.";
-            default:
-               return "No help for command \'" + param1 + "\'";
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return [];
       }
    }

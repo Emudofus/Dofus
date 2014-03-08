@@ -13,10 +13,10 @@ package com.ankamagames.berilia.types.data
    public class MapArea extends Rectangle
    {
       
-      public function MapArea(param1:Uri, param2:Number, param3:Number, param4:Number, param5:Number, param6:Map) {
-         this.src = param1;
-         this.parent = param6;
-         super(param2,param3,param4,param5);
+      public function MapArea(src:Uri, x:Number, y:Number, width:Number, height:Number, parent:Map) {
+         this.src = src;
+         this.parent = parent;
+         super(x,y,width,height);
       }
       
       private static var _mapLoader:ParallelRessourceLoader = new ParallelRessourceLoader(10);
@@ -47,7 +47,7 @@ package com.ankamagames.berilia.types.data
             this._freeTimer.stop();
             this._freeTimer = null;
          }
-         if(!this._bitmap || !this._bitmap.bitmapData)
+         if((!this._bitmap) || (!this._bitmap.bitmapData))
          {
             if(_freeBitmap.length)
             {
@@ -65,9 +65,9 @@ package com.ankamagames.berilia.types.data
          return this._bitmap;
       }
       
-      public function free(param1:Boolean=false) : void {
+      public function free(force:Boolean=false) : void {
          this._active = false;
-         if(param1)
+         if(force)
          {
             this.onDeathCountDown(null);
             return;
@@ -80,7 +80,7 @@ package com.ankamagames.berilia.types.data
          this._freeTimer.start();
       }
       
-      private function onDeathCountDown(param1:Event) : void {
+      private function onDeathCountDown(e:Event) : void {
          if(this._freeTimer)
          {
             this._freeTimer.removeEventListener(TimerEvent.TIMER,this.onDeathCountDown);
@@ -107,15 +107,15 @@ package com.ankamagames.berilia.types.data
          }
       }
       
-      private function onLoad(param1:ResourceLoadedEvent) : void {
-         var _loc2_:* = false;
-         if((this._active) && param1.uri == this.src)
+      private function onLoad(e:ResourceLoadedEvent) : void {
+         var checkScale:* = false;
+         if((this._active) && (e.uri == this.src))
          {
-            this._bitmap.bitmapData = param1.resource;
-            _loc2_ = !(this._bitmap.width == this._bitmap.height);
+            this._bitmap.bitmapData = e.resource;
+            checkScale = !(this._bitmap.width == this._bitmap.height);
             this._bitmap.width = width + 1;
             this._bitmap.height = height + 1;
-            if(!_loc2_)
+            if(!checkScale)
             {
                return;
             }
@@ -140,7 +140,7 @@ package com.ankamagames.berilia.types.data
                   }
                }
             }
-            if(!(this._bitmap.scaleX == this._bitmap.scaleY) && (currentScale))
+            if((!(this._bitmap.scaleX == this._bitmap.scaleY)) && (currentScale))
             {
                this._bitmap.scaleX = this._bitmap.scaleY = currentScale;
             }

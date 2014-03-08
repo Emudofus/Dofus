@@ -3,10 +3,10 @@ package com.ankamagames.jerakine.logger.targets
    class LoggerHistoryElement extends Object
    {
       
-      function LoggerHistoryElement(param1:int, param2:String) {
+      function LoggerHistoryElement(level:int, message:String) {
          super();
-         this.m_level = param1;
-         this.m_message = param2;
+         this.m_level = level;
+         this.m_message = message;
       }
       
       private var m_level:int;

@@ -9,16 +9,16 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    public class StorageQuestCategory extends StorageGenericView
    {
       
-      public function StorageQuestCategory(param1:HookLock) {
-         super(param1);
+      public function StorageQuestCategory(hookLock:HookLock) {
+         super(hookLock);
       }
       
       override public function get name() : String {
          return "storageQuest";
       }
       
-      override public function isListening(param1:ItemWrapper) : Boolean {
-         return (super.isListening(param1)) && param1.category == StorageOptionManager.QUEST_CATEGORY;
+      override public function isListening(item:ItemWrapper) : Boolean {
+         return (super.isListening(item)) && (item.category == StorageOptionManager.QUEST_CATEGORY);
       }
       
       override public function updateView() : void {

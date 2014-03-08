@@ -21,10 +21,10 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 457;
       }
       
-      public function initGameFightFighterTaxCollectorLightInformations(param1:int=0, param2:uint=0, param3:int=0, param4:Boolean=false, param5:Boolean=false, param6:uint=0, param7:uint=0) : GameFightFighterTaxCollectorLightInformations {
-         super.initGameFightFighterLightInformations(param1,param2,param3,param4,param5);
-         this.firstNameId = param6;
-         this.lastNameId = param7;
+      public function initGameFightFighterTaxCollectorLightInformations(id:int=0, level:uint=0, breed:int=0, sex:Boolean=false, alive:Boolean=false, firstNameId:uint=0, lastNameId:uint=0) : GameFightFighterTaxCollectorLightInformations {
+         super.initGameFightFighterLightInformations(id,level,breed,sex,alive);
+         this.firstNameId = firstNameId;
+         this.lastNameId = lastNameId;
          return this;
       }
       
@@ -34,45 +34,45 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.lastNameId = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightFighterTaxCollectorLightInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightFighterTaxCollectorLightInformations(output);
       }
       
-      public function serializeAs_GameFightFighterTaxCollectorLightInformations(param1:IDataOutput) : void {
-         super.serializeAs_GameFightFighterLightInformations(param1);
+      public function serializeAs_GameFightFighterTaxCollectorLightInformations(output:IDataOutput) : void {
+         super.serializeAs_GameFightFighterLightInformations(output);
          if(this.firstNameId < 0)
          {
             throw new Error("Forbidden value (" + this.firstNameId + ") on element firstNameId.");
          }
          else
          {
-            param1.writeShort(this.firstNameId);
+            output.writeShort(this.firstNameId);
             if(this.lastNameId < 0)
             {
                throw new Error("Forbidden value (" + this.lastNameId + ") on element lastNameId.");
             }
             else
             {
-               param1.writeShort(this.lastNameId);
+               output.writeShort(this.lastNameId);
                return;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightFighterTaxCollectorLightInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightFighterTaxCollectorLightInformations(input);
       }
       
-      public function deserializeAs_GameFightFighterTaxCollectorLightInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.firstNameId = param1.readShort();
+      public function deserializeAs_GameFightFighterTaxCollectorLightInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.firstNameId = input.readShort();
          if(this.firstNameId < 0)
          {
             throw new Error("Forbidden value (" + this.firstNameId + ") on element of GameFightFighterTaxCollectorLightInformations.firstNameId.");
          }
          else
          {
-            this.lastNameId = param1.readShort();
+            this.lastNameId = input.readShort();
             if(this.lastNameId < 0)
             {
                throw new Error("Forbidden value (" + this.lastNameId + ") on element of GameFightFighterTaxCollectorLightInformations.lastNameId.");

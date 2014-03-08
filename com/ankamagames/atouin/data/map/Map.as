@@ -121,23 +121,23 @@ package com.ankamagames.atouin.data.map
          return this._failed;
       }
       
-      public function getGfxList(param1:Boolean=false) : Array {
+      public function getGfxList(skipBackground:Boolean=false) : Array {
          if(!this._gfxList)
          {
-            this.computeGfxList(param1);
+            this.computeGfxList(skipBackground);
          }
          return this._gfxList;
       }
       
-      public function getGfxCount(param1:uint) : uint {
+      public function getGfxCount(gfxId:uint) : uint {
          if(!this._gfxList)
          {
             this.computeGfxList();
          }
-         return this._gfxCount[param1];
+         return this._gfxCount[gfxId];
       }
       
-      public function fromRaw(param1:IDataInput, param2:ByteArray=null) : void {
+      public function fromRaw(raw:IDataInput, decryptionKey:ByteArray=null) : void {
          var i:int = 0;
          var header:int = 0;
          var bg:Fixture = null;
@@ -147,8 +147,6 @@ package com.ankamagames.atouin.data.map
          var dataLen:uint = 0;
          var encryptedData:ByteArray = null;
          var fg:Fixture = null;
-         var raw:IDataInput = param1;
-         var decryptionKey:ByteArray = param2;
          try
          {
             header = raw.readByte();
@@ -377,79 +375,79 @@ package com.ankamagames.atouin.data.map
          }
       }
       
-      private function computeGfxList(param1:Boolean=false) : void {
-         var _loc5_:* = 0;
-         var _loc6_:* = 0;
-         var _loc7_:* = 0;
-         var _loc8_:Array = null;
-         var _loc9_:* = 0;
-         var _loc10_:Array = null;
-         var _loc11_:* = 0;
-         var _loc12_:Layer = null;
-         var _loc13_:Cell = null;
-         var _loc14_:BasicElement = null;
-         var _loc15_:* = 0;
-         var _loc16_:GraphicalElementData = null;
-         var _loc17_:NormalGraphicalElementData = null;
-         var _loc18_:String = null;
-         var _loc2_:Elements = Elements.getInstance();
-         var _loc3_:Array = new Array();
+      private function computeGfxList(skipBackground:Boolean=false) : void {
+         var l:* = 0;
+         var c:* = 0;
+         var e:* = 0;
+         var lsCell:Array = null;
+         var numCell:* = 0;
+         var lsElement:Array = null;
+         var numElement:* = 0;
+         var layer:Layer = null;
+         var cell:Cell = null;
+         var element:BasicElement = null;
+         var elementId:* = 0;
+         var elementData:GraphicalElementData = null;
+         var graphicalElementData:NormalGraphicalElementData = null;
+         var s:String = null;
+         var ele:Elements = Elements.getInstance();
+         var gfxList:Array = new Array();
          this._gfxCount = new Array();
-         var _loc4_:int = this.layers.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var numLayer:int = this.layers.length;
+         l = 0;
+         while(l < numLayer)
          {
-            _loc12_ = this.layers[_loc5_];
-            if(!((param1) && _loc5_ == 0))
+            layer = this.layers[l];
+            if(!((skipBackground) && (l == 0)))
             {
-               _loc8_ = _loc12_.cells;
-               _loc9_ = _loc8_.length;
-               _loc6_ = 0;
-               while(_loc6_ < _loc9_)
+               lsCell = layer.cells;
+               numCell = lsCell.length;
+               c = 0;
+               while(c < numCell)
                {
-                  _loc13_ = _loc8_[_loc6_];
-                  _loc10_ = _loc13_.elements;
-                  _loc11_ = _loc10_.length;
-                  _loc7_ = 0;
-                  while(_loc7_ < _loc11_)
+                  cell = lsCell[c];
+                  lsElement = cell.elements;
+                  numElement = lsElement.length;
+                  e = 0;
+                  while(e < numElement)
                   {
-                     _loc14_ = _loc10_[_loc7_];
-                     if(_loc14_.elementType == ElementTypesEnum.GRAPHICAL)
+                     element = lsElement[e];
+                     if(element.elementType == ElementTypesEnum.GRAPHICAL)
                      {
-                        _loc15_ = GraphicalElement(_loc14_).elementId;
-                        _loc16_ = _loc2_.getElementData(_loc15_);
-                        if(_loc16_ == null)
+                        elementId = GraphicalElement(element).elementId;
+                        elementData = ele.getElementData(elementId);
+                        if(elementData == null)
                         {
-                           _log.error("Unknown graphical element ID " + _loc15_);
+                           _log.error("Unknown graphical element ID " + elementId);
                         }
                         else
                         {
-                           if(_loc16_ is NormalGraphicalElementData)
+                           if(elementData is NormalGraphicalElementData)
                            {
-                              _loc17_ = _loc16_ as NormalGraphicalElementData;
-                              _loc3_[_loc17_.gfxId] = _loc17_;
-                              if(this._gfxCount[_loc17_.gfxId])
+                              graphicalElementData = elementData as NormalGraphicalElementData;
+                              gfxList[graphicalElementData.gfxId] = graphicalElementData;
+                              if(this._gfxCount[graphicalElementData.gfxId])
                               {
-                                 this._gfxCount[_loc17_.gfxId]++;
+                                 this._gfxCount[graphicalElementData.gfxId]++;
                               }
                               else
                               {
-                                 this._gfxCount[_loc17_.gfxId] = 1;
+                                 this._gfxCount[graphicalElementData.gfxId] = 1;
                               }
                            }
                         }
                      }
-                     _loc7_++;
+                     e++;
                   }
-                  _loc6_++;
+                  c++;
                }
             }
-            _loc5_++;
+            l++;
          }
          this._gfxList = new Array();
-         for (_loc18_ in _loc3_)
+         for (s in gfxList)
          {
-            this._gfxList.push(_loc3_[_loc18_]);
+            this._gfxList.push(gfxList[s]);
          }
       }
    }

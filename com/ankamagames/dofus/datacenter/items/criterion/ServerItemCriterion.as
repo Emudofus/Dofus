@@ -8,19 +8,19 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class ServerItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function ServerItemCriterion(param1:String) {
-         super(param1);
+      public function ServerItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get text() : String {
-         var _loc1_:String = Server.getServerById(_criterionValue).name;
-         var _loc2_:String = I18n.getUiText("ui.header.server");
-         return _loc2_ + " " + _operator.text + " " + _loc1_;
+         var readableCriterionValue:String = Server.getServerById(_criterionValue).name;
+         var readableCriterionRef:String = I18n.getUiText("ui.header.server");
+         return readableCriterionRef + " " + _operator.text + " " + readableCriterionValue;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:ServerItemCriterion = new ServerItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:ServerItemCriterion = new ServerItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {

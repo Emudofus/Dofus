@@ -1,12 +1,12 @@
 package com.ankamagames.jerakine.utils.display
 {
    import com.ankamagames.jerakine.logger.Logger;
-   import __AS3__.vec.Vector;
    import flash.display.MovieClip;
    import flash.utils.Timer;
    import flash.events.TimerEvent;
    import flash.events.Event;
    import flash.display.DisplayObjectContainer;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    
@@ -27,8 +27,8 @@ package com.ankamagames.jerakine.utils.display
       
       private static var _groupId:int = 0;
       
-      public static function Init(param1:Class) : void {
-         ScriptedAnimation = param1;
+      public static function Init(scriptedAnimation:Class) : void {
+         ScriptedAnimation = scriptedAnimation;
          if(!_garbageTimer)
          {
             _garbageTimer = new Timer(10000);
@@ -37,138 +37,138 @@ package com.ankamagames.jerakine.utils.display
          }
       }
       
-      private static function onGarbageTimer(param1:Event) : void {
-         var _loc3_:MovieClip = null;
-         var _loc2_:* = 0;
-         while(_loc2_ < _clipList.length)
+      private static function onGarbageTimer(E:Event) : void {
+         var movieClip:MovieClip = null;
+         var i:int = 0;
+         while(i < _clipList.length)
          {
-            _loc3_ = _clipList[_loc2_];
-            if(!_loc3_.stage)
+            movieClip = _clipList[i];
+            if(!movieClip.stage)
             {
-               uncontrolFps(_loc3_,false);
+               uncontrolFps(movieClip,false);
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      public static function controlFps(param1:MovieClip, param2:uint, param3:Boolean=false) : MovieClip {
-         if(!MovieClipUtils.isSingleFrame(param1))
+      public static function controlFps(clip:MovieClip, framerate:uint, forbidRecursivity:Boolean=false) : MovieClip {
+         if(!MovieClipUtils.isSingleFrame(clip))
          {
             _groupId++;
-            controlSingleClip(param1,_groupId,param2,param3);
+            controlSingleClip(clip,_groupId,framerate,forbidRecursivity);
          }
-         return param1;
+         return clip;
       }
       
-      public static function uncontrolFps(param1:DisplayObjectContainer, param2:Boolean=true) : void {
-         var _loc4_:* = 0;
-         var _loc5_:Vector.<MovieClip> = null;
-         var _loc6_:* = 0;
-         var _loc7_:* = 0;
-         var _loc8_:MovieClip = null;
-         if(!param1)
+      public static function uncontrolFps(displayObject:DisplayObjectContainer, group:Boolean=true) : void {
+         var groupId:* = 0;
+         var buffer:Vector.<MovieClip> = null;
+         var num:* = 0;
+         var i:* = 0;
+         var mc:MovieClip = null;
+         if(!displayObject)
          {
             return;
          }
-         MovieClipUtils.stopMovieClip(param1);
-         var _loc3_:MovieClip = param1 as MovieClip;
-         if((param2) && (_loc3_))
+         MovieClipUtils.stopMovieClip(displayObject);
+         var movieClip:MovieClip = displayObject as MovieClip;
+         if((group) && (movieClip))
          {
-            _loc4_ = _loc3_.groupId;
-            if(_loc4_)
+            groupId = movieClip.groupId;
+            if(groupId)
             {
-               _loc5_ = new Vector.<MovieClip>();
-               _loc6_ = _clipList.length;
-               _loc7_ = -1;
-               while(++_loc7_ < _loc6_)
+               buffer = new Vector.<MovieClip>();
+               num = _clipList.length;
+               i = -1;
+               while(++i < num)
                {
-                  _loc8_ = _clipList[_loc7_];
-                  if(_loc8_.groupId == _loc4_)
+                  mc = _clipList[i];
+                  if(mc.groupId == groupId)
                   {
-                     _loc8_.isControled = null;
-                     _clipList.splice(_loc7_,1);
-                     _loc7_--;
-                     _loc6_--;
+                     mc.isControled = null;
+                     _clipList.splice(i,1);
+                     i--;
+                     num--;
                   }
                }
             }
          }
-         removeClip(_loc3_);
+         removeClip(movieClip);
       }
       
-      private static function removeClip(param1:MovieClip) : void {
-         var _loc2_:int = _clipList.indexOf(param1);
-         if(_loc2_ != -1)
+      private static function removeClip(mc:MovieClip) : void {
+         var index:int = _clipList.indexOf(mc);
+         if(index != -1)
          {
-            _clipList.splice(_loc2_,1);
+            _clipList.splice(index,1);
          }
       }
       
-      private static function controlSingleClip(param1:DisplayObjectContainer, param2:int, param3:uint, param4:Boolean=false, param5:Boolean=false) : void {
-         var _loc8_:* = 0;
-         var _loc9_:* = 0;
-         var _loc10_:DisplayObjectContainer = null;
-         if((param1) && !param4)
+      private static function controlSingleClip(clip:DisplayObjectContainer, id:int, framerate:uint, forbidRecursivity:Boolean=false, recursive:Boolean=false) : void {
+         var i:* = 0;
+         var numChildren:* = 0;
+         var child:DisplayObjectContainer = null;
+         if((clip) && (!forbidRecursivity))
          {
-            _loc8_ = -1;
-            _loc9_ = param1.numChildren;
-            while(++_loc8_ < _loc9_)
+            i = -1;
+            numChildren = clip.numChildren;
+            while(++i < numChildren)
             {
-               _loc10_ = param1.getChildAt(_loc8_) as DisplayObjectContainer;
-               if(_loc10_)
+               child = clip.getChildAt(i) as DisplayObjectContainer;
+               if(child)
                {
-                  controlSingleClip(_loc10_,param2,param3,true,true);
+                  controlSingleClip(child,id,framerate,true,true);
                }
             }
          }
-         if((param5) && param1 is ScriptedAnimation)
+         if((recursive) && (clip is ScriptedAnimation))
          {
             return;
          }
-         var _loc6_:MovieClip = param1 as MovieClip;
-         if(!_loc6_ || _loc6_.totalFrames == 1 || !(_clipList.indexOf(_loc6_) == -1))
+         var movieClip:MovieClip = clip as MovieClip;
+         if((!movieClip) || (movieClip.totalFrames == 1) || (!(_clipList.indexOf(movieClip) == -1)))
          {
             return;
          }
-         _loc6_.groupId = param2;
-         var _loc7_:int = _loc6_.currentFrame > 0?_loc6_.currentFrame:1;
-         _loc6_.gotoAndStop(_loc7_);
-         if(_loc6_ is ScriptedAnimation)
+         movieClip.groupId = id;
+         var startFrame:int = movieClip.currentFrame > 0?movieClip.currentFrame:1;
+         movieClip.gotoAndStop(startFrame);
+         if(movieClip is ScriptedAnimation)
          {
-            _loc6_.playEventAtFrame(_loc7_);
+            movieClip.playEventAtFrame(startFrame);
          }
-         _clipList.push(_loc6_);
-         _loc6_.groupId = param2;
-         _loc6_.isControled = true;
+         _clipList.push(movieClip);
+         movieClip.groupId = id;
+         movieClip.isControled = true;
       }
       
       public static function nextFrame() : void {
-         var _loc3_:MovieClip = null;
-         var _loc4_:* = 0;
-         var _loc5_:* = 0;
-         var _loc1_:int = _clipList.length;
-         var _loc2_:* = -1;
-         while(++_loc2_ < _loc1_)
+         var movieClip:MovieClip = null;
+         var frame:* = 0;
+         var diff:* = 0;
+         var num:int = _clipList.length;
+         var i:int = -1;
+         while(++i < num)
          {
-            _loc3_ = _clipList[_loc2_];
-            _loc4_ = _loc3_.currentFrame + 1;
-            if(_loc4_ > _loc3_.totalFrames)
+            movieClip = _clipList[i];
+            frame = movieClip.currentFrame + 1;
+            if(frame > movieClip.totalFrames)
             {
-               _loc4_ = 1;
+               frame = 1;
             }
-            _loc3_.gotoAndStop(_loc4_);
-            if(_loc3_ is ScriptedAnimation)
+            movieClip.gotoAndStop(frame);
+            if(movieClip is ScriptedAnimation)
             {
-               _loc3_.playEventAtFrame(_loc4_);
+               movieClip.playEventAtFrame(frame);
             }
-            _loc5_ = _loc1_ - _clipList.length;
-            if(_loc5_)
+            diff = num - _clipList.length;
+            if(diff)
             {
-               _loc1_ = _loc1_ - _loc5_;
-               _loc2_ = _loc2_ - _loc5_;
-               if(_loc2_ < 0)
+               num = num - diff;
+               i = i - diff;
+               if(i < 0)
                {
-                  _loc2_ = 0;
+                  i = 0;
                }
             }
          }

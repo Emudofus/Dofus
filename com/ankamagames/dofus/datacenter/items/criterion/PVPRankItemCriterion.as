@@ -6,8 +6,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class PVPRankItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function PVPRankItemCriterion(param1:String) {
-         super(param1);
+      public function PVPRankItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get text() : String {
@@ -15,8 +15,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:PVPRankItemCriterion = new PVPRankItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:PVPRankItemCriterion = new PVPRankItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {

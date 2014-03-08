@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.lockable
          return 5671;
       }
       
-      public function initLockableStateUpdateAbstractMessage(param1:Boolean=false) : LockableStateUpdateAbstractMessage {
-         this.locked = param1;
+      public function initLockableStateUpdateAbstractMessage(locked:Boolean=false) : LockableStateUpdateAbstractMessage {
+         this.locked = locked;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.lockable
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_LockableStateUpdateAbstractMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_LockableStateUpdateAbstractMessage(output);
       }
       
-      public function serializeAs_LockableStateUpdateAbstractMessage(param1:IDataOutput) : void {
-         param1.writeBoolean(this.locked);
+      public function serializeAs_LockableStateUpdateAbstractMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.locked);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_LockableStateUpdateAbstractMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_LockableStateUpdateAbstractMessage(input);
       }
       
-      public function deserializeAs_LockableStateUpdateAbstractMessage(param1:IDataInput) : void {
-         this.locked = param1.readBoolean();
+      public function deserializeAs_LockableStateUpdateAbstractMessage(input:IDataInput) : void {
+         this.locked = input.readBoolean();
       }
    }
 }

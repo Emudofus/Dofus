@@ -5,10 +5,10 @@ package com.ankamagames.berilia.types.data
    public class OldMessage extends Object
    {
       
-      public function OldMessage(param1:Hook, param2:Array) {
+      public function OldMessage(pHook:Hook, pArgs:Array) {
          super();
-         this.hook = param1;
-         this.args = param2;
+         this.hook = pHook;
+         this.args = pArgs;
          MEMORY_LOG[this] = 1;
       }
       

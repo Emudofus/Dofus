@@ -2,8 +2,8 @@ package com.ankamagames.dofus.uiApi
 {
    import com.ankamagames.berilia.interfaces.IApi;
    import com.ankamagames.jerakine.logger.Logger;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
    import com.ankamagames.dofus.datacenter.livingObjects.Pet;
    import com.ankamagames.dofus.datacenter.mounts.RideFood;
@@ -34,103 +34,103 @@ package com.ankamagames.dofus.uiApi
       
       public static const ITEM_TYPE_TO_SERVER_POSITION:Array = [[],[0],[1],[2,4],[3],[5],[],[15],[1],[],[6],[7],[8],[9,10,11,12,13,14],[],[20],[21],[22,23],[24,25],[26],[27],[16],[],[28]];
       
-      public static function itemSuperTypeToServerPosition(param1:uint) : Array {
-         return ITEM_TYPE_TO_SERVER_POSITION[param1];
+      public static function itemSuperTypeToServerPosition(superTypeId:uint) : Array {
+         return ITEM_TYPE_TO_SERVER_POSITION[superTypeId];
       }
       
-      public static function getLivingObjectFood(param1:int) : Vector.<ItemWrapper> {
-         var _loc6_:ItemWrapper = null;
-         var _loc2_:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
-         var _loc3_:Vector.<ItemWrapper> = InventoryManager.getInstance().inventory.getView("storage").content;
-         var _loc4_:int = _loc3_.length;
-         var _loc5_:* = 0;
-         while(_loc5_ < _loc4_)
+      public static function getLivingObjectFood(itemType:int) : Vector.<ItemWrapper> {
+         var item:ItemWrapper = null;
+         var itemList:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
+         var inventory:Vector.<ItemWrapper> = InventoryManager.getInstance().inventory.getView("storage").content;
+         var nb:int = inventory.length;
+         var i:int = 0;
+         while(i < nb)
          {
-            _loc6_ = _loc3_[_loc5_];
-            if(!_loc6_.isLivingObject && _loc6_.type.id == param1)
+            item = inventory[i];
+            if((!item.isLivingObject) && (item.type.id == itemType))
             {
-               _loc2_.push(_loc6_);
+               itemList.push(item);
             }
-            _loc5_++;
+            i++;
          }
-         return _loc2_;
+         return itemList;
       }
       
-      public static function getPetFood(param1:int) : Vector.<ItemWrapper> {
-         var _loc4_:Vector.<ItemWrapper> = null;
-         var _loc5_:Vector.<int> = null;
-         var _loc6_:Vector.<int> = null;
-         var _loc7_:* = 0;
-         var _loc8_:* = 0;
-         var _loc9_:ItemWrapper = null;
-         var _loc2_:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
-         var _loc3_:Pet = Pet.getPetById(param1);
-         if(_loc3_)
+      public static function getPetFood(id:int) : Vector.<ItemWrapper> {
+         var inventory:Vector.<ItemWrapper> = null;
+         var foodItems:Vector.<int> = null;
+         var foodTypeItems:Vector.<int> = null;
+         var nb:* = 0;
+         var i:* = 0;
+         var item:ItemWrapper = null;
+         var itemList:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
+         var pet:Pet = Pet.getPetById(id);
+         if(pet)
          {
-            _loc4_ = InventoryManager.getInstance().inventory.getView("storage").content;
-            _loc5_ = Pet.getPetById(param1).foodItems;
-            _loc6_ = Pet.getPetById(param1).foodTypes;
-            _loc7_ = _loc4_.length;
-            _loc8_ = 0;
-            while(_loc8_ < _loc7_)
+            inventory = InventoryManager.getInstance().inventory.getView("storage").content;
+            foodItems = Pet.getPetById(id).foodItems;
+            foodTypeItems = Pet.getPetById(id).foodTypes;
+            nb = inventory.length;
+            i = 0;
+            while(i < nb)
             {
-               _loc9_ = _loc4_[_loc8_];
-               if(_loc5_.indexOf(_loc9_.objectGID) > -1 || _loc6_.indexOf(_loc9_.typeId) > -1)
+               item = inventory[i];
+               if((foodItems.indexOf(item.objectGID) > -1) || (foodTypeItems.indexOf(item.typeId) > -1))
                {
-                  _loc2_.push(_loc9_);
+                  itemList.push(item);
                }
-               _loc8_++;
+               i++;
             }
          }
-         return _loc2_;
+         return itemList;
       }
       
       public static function getRideFoods() : Array {
-         var _loc6_:RideFood = null;
-         var _loc7_:ItemWrapper = null;
-         var _loc8_:Item = null;
-         var _loc1_:Array = new Array();
-         var _loc2_:Vector.<ItemWrapper> = InventoryManager.getInstance().inventory.getView("storage").content;
-         var _loc3_:Array = RideFood.getRideFoods();
-         var _loc4_:Array = new Array();
-         var _loc5_:Array = new Array();
-         for each (_loc6_ in _loc3_)
+         var rideFood:RideFood = null;
+         var item:ItemWrapper = null;
+         var it:Item = null;
+         var itemList:Array = new Array();
+         var inventory:Vector.<ItemWrapper> = InventoryManager.getInstance().inventory.getView("storage").content;
+         var rideFoods:Array = RideFood.getRideFoods();
+         var gids:Array = new Array();
+         var typeIds:Array = new Array();
+         for each (rideFood in rideFoods)
          {
-            if(_loc6_.gid != 0)
+            if(rideFood.gid != 0)
             {
-               _loc4_.push(_loc6_.gid);
+               gids.push(rideFood.gid);
             }
-            if(_loc6_.typeId != 0)
+            if(rideFood.typeId != 0)
             {
-               _loc5_.push(_loc6_.typeId);
+               typeIds.push(rideFood.typeId);
             }
          }
-         for each (_loc7_ in _loc2_)
+         for each (item in inventory)
          {
-            _loc8_ = Item.getItemById(_loc7_.objectGID);
-            if(!(_loc4_.indexOf(_loc7_.objectGID) == -1) || !(_loc5_.indexOf(_loc8_.typeId) == -1))
+            it = Item.getItemById(item.objectGID);
+            if((!(gids.indexOf(item.objectGID) == -1)) || (!(typeIds.indexOf(it.typeId) == -1)))
             {
-               _loc1_.push(_loc7_);
+               itemList.push(item);
             }
          }
-         return _loc1_;
+         return itemList;
       }
       
-      public static function getViewContent(param1:String) : Vector.<ItemWrapper> {
-         var _loc2_:IInventoryView = InventoryManager.getInstance().inventory.getView(param1);
-         if(_loc2_)
+      public static function getViewContent(name:String) : Vector.<ItemWrapper> {
+         var view:IInventoryView = InventoryManager.getInstance().inventory.getView(name);
+         if(view)
          {
-            return _loc2_.content;
+            return view.content;
          }
          return null;
       }
       
-      public static function getShortcutBarContent(param1:uint) : Array {
-         if(param1 == ShortcutBarEnum.GENERAL_SHORTCUT_BAR)
+      public static function getShortcutBarContent(barType:uint) : Array {
+         if(barType == ShortcutBarEnum.GENERAL_SHORTCUT_BAR)
          {
             return InventoryManager.getInstance().shortcutBarItems;
          }
-         if(param1 == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
+         if(barType == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
          {
             return InventoryManager.getInstance().shortcutBarSpells;
          }
@@ -145,65 +145,65 @@ package com.ankamagames.dofus.uiApi
          return null;
       }
       
-      public static function getBestEquipablePosition(param1:Object) : int {
-         var _loc3_:Object = null;
-         var _loc4_:* = 0;
-         var _loc5_:* = 0;
-         var _loc6_:* = 0;
-         var _loc7_:* = 0;
-         var _loc2_:Object = itemSuperTypeToServerPosition(param1.type.superTypeId);
-         if((_loc2_) && (_loc2_.length))
+      public static function getBestEquipablePosition(item:Object) : int {
+         var equipement:Object = null;
+         var freeSlot:* = 0;
+         var pos:* = 0;
+         var typeId:* = 0;
+         var lastIndex:* = 0;
+         var possiblePosition:Object = itemSuperTypeToServerPosition(item.type.superTypeId);
+         if((possiblePosition) && (possiblePosition.length))
          {
-            _loc3_ = getViewContent("equipment");
-            _loc4_ = -1;
-            for each (_loc5_ in _loc2_)
+            equipement = getViewContent("equipment");
+            freeSlot = -1;
+            for each (pos in possiblePosition)
             {
-               _loc6_ = param1.typeId;
-               if((_loc3_[_loc5_]) && (_loc3_[_loc5_].objectGID == param1.objectGID) && ((!(param1.typeId == 9)) || (param1.belongsToSet)))
+               typeId = item.typeId;
+               if((equipement[pos]) && (equipement[pos].objectGID == item.objectGID) && ((!(item.typeId == 9)) || (item.belongsToSet)))
                {
-                  _loc4_ = _loc5_;
+                  freeSlot = pos;
                   break;
                }
             }
-            if(_loc4_ == -1)
+            if(freeSlot == -1)
             {
-               for each (_loc5_ in _loc2_)
+               for each (pos in possiblePosition)
                {
-                  if(!_loc3_[_loc5_])
+                  if(!equipement[pos])
                   {
-                     _loc4_ = _loc5_;
+                     freeSlot = pos;
                      break;
                   }
                }
             }
-            if(_loc4_ == -1)
+            if(freeSlot == -1)
             {
-               if(!_lastItemPosition[param1.type.superTypeId])
+               if(!_lastItemPosition[item.type.superTypeId])
                {
-                  _lastItemPosition[param1.type.superTypeId] = 0;
+                  _lastItemPosition[item.type.superTypeId] = 0;
                }
-               _loc7_ = ++_lastItemPosition[param1.type.superTypeId];
-               if(_loc7_ >= _loc2_.length)
+               lastIndex = ++_lastItemPosition[item.type.superTypeId];
+               if(lastIndex >= possiblePosition.length)
                {
-                  _loc7_ = 0;
+                  lastIndex = 0;
                }
-               _lastItemPosition[param1.type.superTypeId] = _loc7_;
-               _loc4_ = _loc2_[_loc7_];
+               _lastItemPosition[item.type.superTypeId] = lastIndex;
+               freeSlot = possiblePosition[lastIndex];
             }
          }
-         return _loc4_;
+         return freeSlot;
       }
       
-      public static function addItemMask(param1:int, param2:String, param3:int) : void {
-         InventoryManager.getInstance().inventory.addItemMask(param1,param2,param3);
+      public static function addItemMask(itemUID:int, name:String, quantity:int) : void {
+         InventoryManager.getInstance().inventory.addItemMask(itemUID,name,quantity);
       }
       
-      public static function removeItemMask(param1:int, param2:String) : void {
-         InventoryManager.getInstance().inventory.removeItemMask(param1,param2);
+      public static function removeItemMask(itemUID:int, name:String) : void {
+         InventoryManager.getInstance().inventory.removeItemMask(itemUID,name);
       }
       
-      public static function removeAllItemMasks(param1:String) : void {
-         InventoryManager.getInstance().inventory.removeAllItemMasks(param1);
+      public static function removeAllItemMasks(name:String) : void {
+         InventoryManager.getInstance().inventory.removeAllItemMasks(name);
       }
       
       public static function releaseHooks() : void {
@@ -215,57 +215,57 @@ package com.ankamagames.dofus.uiApi
       }
       
       public static function dracoTurkyInventoryWeight() : uint {
-         var _loc1_:MountFrame = Kernel.getWorker().getFrame(MountFrame) as MountFrame;
-         return _loc1_.inventoryWeight;
+         var mf:MountFrame = Kernel.getWorker().getFrame(MountFrame) as MountFrame;
+         return mf.inventoryWeight;
       }
       
       public static function dracoTurkyMaxInventoryWeight() : uint {
-         var _loc1_:MountFrame = Kernel.getWorker().getFrame(MountFrame) as MountFrame;
-         return _loc1_.inventoryMaxWeight;
+         var mf:MountFrame = Kernel.getWorker().getFrame(MountFrame) as MountFrame;
+         return mf.inventoryMaxWeight;
       }
       
-      public static function getStorageTypes(param1:int) : Array {
-         var _loc4_:Object = null;
-         var _loc2_:Array = new Array();
-         var _loc3_:Dictionary = StorageOptionManager.getInstance().getCategoryTypes(param1);
-         if(!_loc3_)
+      public static function getStorageTypes(category:int) : Array {
+         var entry:Object = null;
+         var array:Array = new Array();
+         var dict:Dictionary = StorageOptionManager.getInstance().getCategoryTypes(category);
+         if(!dict)
          {
             return null;
          }
-         for each (_loc4_ in _loc3_)
+         for each (entry in dict)
          {
-            _loc2_.push(_loc4_);
+            array.push(entry);
          }
-         _loc2_.sort(sortStorageTypes);
-         return _loc2_;
+         array.sort(sortStorageTypes);
+         return array;
       }
       
-      private static function sortStorageTypes(param1:Object, param2:Object) : int {
-         return -StringUtils.noAccent(param2.name).localeCompare(StringUtils.noAccent(param1.name));
+      private static function sortStorageTypes(a:Object, b:Object) : int {
+         return -StringUtils.noAccent(b.name).localeCompare(StringUtils.noAccent(a.name));
       }
       
-      public static function getBankStorageTypes(param1:int) : Array {
-         var _loc4_:Object = null;
-         var _loc2_:Array = new Array();
-         var _loc3_:Dictionary = StorageOptionManager.getInstance().getBankCategoryTypes(param1);
-         if(!_loc3_)
+      public static function getBankStorageTypes(category:int) : Array {
+         var entry:Object = null;
+         var array:Array = new Array();
+         var dict:Dictionary = StorageOptionManager.getInstance().getBankCategoryTypes(category);
+         if(!dict)
          {
             return null;
          }
-         for each (_loc4_ in _loc3_)
+         for each (entry in dict)
          {
-            _loc2_.push(_loc4_);
+            array.push(entry);
          }
-         _loc2_.sortOn("name");
-         return _loc2_;
+         array.sortOn("name");
+         return array;
       }
       
-      public static function setDisplayedCategory(param1:int) : void {
-         StorageOptionManager.getInstance().category = param1;
+      public static function setDisplayedCategory(category:int) : void {
+         StorageOptionManager.getInstance().category = category;
       }
       
-      public static function setDisplayedBankCategory(param1:int) : void {
-         StorageOptionManager.getInstance().bankCategory = param1;
+      public static function setDisplayedBankCategory(category:int) : void {
+         StorageOptionManager.getInstance().bankCategory = category;
       }
       
       public static function getDisplayedCategory() : int {
@@ -276,12 +276,12 @@ package com.ankamagames.dofus.uiApi
          return StorageOptionManager.getInstance().bankCategory;
       }
       
-      public static function setStorageFilter(param1:int) : void {
-         StorageOptionManager.getInstance().filter = param1;
+      public static function setStorageFilter(typeId:int) : void {
+         StorageOptionManager.getInstance().filter = typeId;
       }
       
-      public static function setBankStorageFilter(param1:int) : void {
-         StorageOptionManager.getInstance().bankFilter = param1;
+      public static function setBankStorageFilter(typeId:int) : void {
+         StorageOptionManager.getInstance().bankFilter = typeId;
       }
       
       public static function getStorageFilter() : int {
@@ -300,18 +300,18 @@ package com.ankamagames.dofus.uiApi
          StorageOptionManager.getInstance().updateBankStorageView();
       }
       
-      public static function sort(param1:int, param2:Boolean) : void {
-         StorageOptionManager.getInstance().sortRevert = param2;
-         StorageOptionManager.getInstance().sortField = param1;
+      public static function sort(sortField:int, revert:Boolean) : void {
+         StorageOptionManager.getInstance().sortRevert = revert;
+         StorageOptionManager.getInstance().sortField = sortField;
       }
       
       public static function resetSort() : void {
          StorageOptionManager.getInstance().resetSort();
       }
       
-      public static function sortBank(param1:int, param2:Boolean) : void {
-         StorageOptionManager.getInstance().sortBankRevert = param2;
-         StorageOptionManager.getInstance().sortBankField = param1;
+      public static function sortBank(sortField:int, revert:Boolean) : void {
+         StorageOptionManager.getInstance().sortBankRevert = revert;
+         StorageOptionManager.getInstance().sortBankField = sortField;
       }
       
       public static function resetBankSort() : void {
@@ -334,14 +334,14 @@ package com.ankamagames.dofus.uiApi
          StorageOptionManager.getInstance().sortBankField = StorageOptionManager.SORT_FIELD_NONE;
       }
       
-      public static function enableBidHouseFilter(param1:Object, param2:uint) : void {
-         var _loc4_:uint = 0;
-         var _loc3_:Vector.<uint> = new Vector.<uint>();
-         for each (_loc4_ in param1)
+      public static function enableBidHouseFilter(allowedTypes:Object, maxItemLevel:uint) : void {
+         var entry:uint = 0;
+         var vtypes:Vector.<uint> = new Vector.<uint>();
+         for each (entry in allowedTypes)
          {
-            _loc3_.push(_loc4_);
+            vtypes.push(entry);
          }
-         StorageOptionManager.getInstance().enableBidHouseFilter(_loc3_,param2);
+         StorageOptionManager.getInstance().enableBidHouseFilter(vtypes,maxItemLevel);
       }
       
       public static function disableBidHouseFilter() : void {
@@ -352,16 +352,16 @@ package com.ankamagames.dofus.uiApi
          return StorageOptionManager.getInstance().getIsBidHouseFilterEnabled();
       }
       
-      public static function enableSmithMagicFilter(param1:Object) : void {
-         StorageOptionManager.getInstance().enableSmithMagicFilter(param1 as Skill);
+      public static function enableSmithMagicFilter(skill:Object) : void {
+         StorageOptionManager.getInstance().enableSmithMagicFilter(skill as Skill);
       }
       
       public static function disableSmithMagicFilter() : void {
          StorageOptionManager.getInstance().disableSmithMagicFilter();
       }
       
-      public static function enableCraftFilter(param1:Object, param2:int) : void {
-         StorageOptionManager.getInstance().enableCraftFilter(param1 as Skill,param2);
+      public static function enableCraftFilter(skill:Object, slotCount:int) : void {
+         StorageOptionManager.getInstance().enableCraftFilter(skill as Skill,slotCount);
       }
       
       public static function disableCraftFilter() : void {
@@ -372,8 +372,8 @@ package com.ankamagames.dofus.uiApi
          return StorageOptionManager.getInstance().getIsSmithMagicFilterEnabled();
       }
       
-      public static function getItemMaskCount(param1:int, param2:String) : int {
-         return InventoryManager.getInstance().inventory.getItemMaskCount(param1,param2);
+      public static function getItemMaskCount(objectUID:int, mask:String) : int {
+         return InventoryManager.getInstance().inventory.getItemMaskCount(objectUID,mask);
       }
    }
 }

@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.social
       }
       
       public static function create() : JoinSpouseAction {
-         var _loc1_:JoinSpouseAction = new JoinSpouseAction();
-         return _loc1_;
+         var a:JoinSpouseAction = new JoinSpouseAction();
+         return a;
       }
    }
 }

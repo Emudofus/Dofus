@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 711;
       }
       
-      public function initGameFightRemoveTeamMemberMessage(param1:uint=0, param2:uint=2, param3:int=0) : GameFightRemoveTeamMemberMessage {
-         this.fightId = param1;
-         this.teamId = param2;
-         this.charId = param3;
+      public function initGameFightRemoveTeamMemberMessage(fightId:uint=0, teamId:uint=2, charId:int=0) : GameFightRemoveTeamMemberMessage {
+         this.fightId = fightId;
+         this.teamId = teamId;
+         this.charId = charId;
          this._isInitialized = true;
          return this;
       }
@@ -46,54 +46,54 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightRemoveTeamMemberMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightRemoveTeamMemberMessage(output);
       }
       
-      public function serializeAs_GameFightRemoveTeamMemberMessage(param1:IDataOutput) : void {
+      public function serializeAs_GameFightRemoveTeamMemberMessage(output:IDataOutput) : void {
          if(this.fightId < 0)
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
          }
          else
          {
-            param1.writeShort(this.fightId);
-            param1.writeByte(this.teamId);
-            param1.writeInt(this.charId);
+            output.writeShort(this.fightId);
+            output.writeByte(this.teamId);
+            output.writeInt(this.charId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightRemoveTeamMemberMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightRemoveTeamMemberMessage(input);
       }
       
-      public function deserializeAs_GameFightRemoveTeamMemberMessage(param1:IDataInput) : void {
-         this.fightId = param1.readShort();
+      public function deserializeAs_GameFightRemoveTeamMemberMessage(input:IDataInput) : void {
+         this.fightId = input.readShort();
          if(this.fightId < 0)
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element of GameFightRemoveTeamMemberMessage.fightId.");
          }
          else
          {
-            this.teamId = param1.readByte();
+            this.teamId = input.readByte();
             if(this.teamId < 0)
             {
                throw new Error("Forbidden value (" + this.teamId + ") on element of GameFightRemoveTeamMemberMessage.teamId.");
             }
             else
             {
-               this.charId = param1.readInt();
+               this.charId = input.readInt();
                return;
             }
          }

@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.chat
          super();
       }
       
-      public static function create(param1:uint) : ChatRefreshChatAction {
-         var _loc2_:ChatRefreshChatAction = new ChatRefreshChatAction();
-         _loc2_.currentTab = param1;
-         return _loc2_;
+      public static function create(currentTab:uint) : ChatRefreshChatAction {
+         var a:ChatRefreshChatAction = new ChatRefreshChatAction();
+         a.currentTab = currentTab;
+         return a;
       }
       
       public var currentTab:uint;

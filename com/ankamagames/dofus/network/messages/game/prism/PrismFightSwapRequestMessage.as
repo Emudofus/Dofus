@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 5901;
       }
       
-      public function initPrismFightSwapRequestMessage(param1:uint=0, param2:uint=0) : PrismFightSwapRequestMessage {
-         this.subAreaId = param1;
-         this.targetId = param2;
+      public function initPrismFightSwapRequestMessage(subAreaId:uint=0, targetId:uint=0) : PrismFightSwapRequestMessage {
+         this.subAreaId = subAreaId;
+         this.targetId = targetId;
          this._isInitialized = true;
          return this;
       }
@@ -42,53 +42,53 @@ package com.ankamagames.dofus.network.messages.game.prism
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PrismFightSwapRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismFightSwapRequestMessage(output);
       }
       
-      public function serializeAs_PrismFightSwapRequestMessage(param1:IDataOutput) : void {
+      public function serializeAs_PrismFightSwapRequestMessage(output:IDataOutput) : void {
          if(this.subAreaId < 0)
          {
             throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
          }
          else
          {
-            param1.writeShort(this.subAreaId);
+            output.writeShort(this.subAreaId);
             if(this.targetId < 0)
             {
                throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
             }
             else
             {
-               param1.writeInt(this.targetId);
+               output.writeInt(this.targetId);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PrismFightSwapRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismFightSwapRequestMessage(input);
       }
       
-      public function deserializeAs_PrismFightSwapRequestMessage(param1:IDataInput) : void {
-         this.subAreaId = param1.readShort();
+      public function deserializeAs_PrismFightSwapRequestMessage(input:IDataInput) : void {
+         this.subAreaId = input.readShort();
          if(this.subAreaId < 0)
          {
             throw new Error("Forbidden value (" + this.subAreaId + ") on element of PrismFightSwapRequestMessage.subAreaId.");
          }
          else
          {
-            this.targetId = param1.readInt();
+            this.targetId = input.readInt();
             if(this.targetId < 0)
             {
                throw new Error("Forbidden value (" + this.targetId + ") on element of PrismFightSwapRequestMessage.targetId.");

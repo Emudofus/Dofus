@@ -8,31 +8,32 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class BreedItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function BreedItemCriterion(param1:String) {
-         super(param1);
+      public function BreedItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get text() : String {
-         var _loc1_:String = Breed.getBreedById(Number(_criterionValue)).shortName;
+         var readableCriterionRef:String = Breed.getBreedById(Number(_criterionValue)).shortName;
          if(_operator.text == ItemCriterionOperator.EQUAL)
          {
-            return I18n.getUiText("ui.tooltip.beABreed",[_loc1_]);
+            return I18n.getUiText("ui.tooltip.beABreed",[readableCriterionRef]);
          }
          if(_operator.text == ItemCriterionOperator.DIFFERENT)
          {
-            return I18n.getUiText("ui.tooltip.dontBeABreed",[_loc1_]);
+            return I18n.getUiText("ui.tooltip.dontBeABreed",[readableCriterionRef]);
          }
+         trace("Le critère \'" + _operator.text + "\' n\'est pas correct pour la race (\'=\' ou \'!\')");
          return "";
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:BreedItemCriterion = new BreedItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:BreedItemCriterion = new BreedItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {
-         var _loc1_:int = PlayedCharacterManager.getInstance().infos.breed;
-         return _loc1_;
+         var breed:int = PlayedCharacterManager.getInstance().infos.breed;
+         return breed;
       }
    }
 }

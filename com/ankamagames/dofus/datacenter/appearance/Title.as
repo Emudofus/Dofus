@@ -14,8 +14,8 @@ package com.ankamagames.dofus.datacenter.appearance
       
       public static const MODULE:String = "Titles";
       
-      public static function getTitleById(param1:int) : Title {
-         return GameData.getObject(MODULE,param1) as Title;
+      public static function getTitleById(id:int) : Title {
+         return GameData.getObject(MODULE,id) as Title;
       }
       
       public static function getAllTitle() : Array {
@@ -37,7 +37,7 @@ package com.ankamagames.dofus.datacenter.appearance
       private var _nameF:String;
       
       public function get name() : String {
-         if(!PlayedCharacterManager.getInstance() || !PlayedCharacterManager.getInstance().infos || PlayedCharacterManager.getInstance().infos.sex == 0)
+         if((!PlayedCharacterManager.getInstance()) || (!PlayedCharacterManager.getInstance().infos) || (PlayedCharacterManager.getInstance().infos.sex == 0))
          {
             if(!this._nameM)
             {

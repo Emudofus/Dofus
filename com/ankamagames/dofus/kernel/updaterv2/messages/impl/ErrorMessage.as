@@ -13,9 +13,9 @@ package com.ankamagames.dofus.kernel.updaterv2.messages.impl
       
       private var _message:String;
       
-      public function deserialize(param1:Object) : void {
-         this._type = param1["_type"];
-         this._message = param1["error"];
+      public function deserialize(data:Object) : void {
+         this._type = data["_type"];
+         this._message = data["error"];
       }
       
       public function get type() : int {

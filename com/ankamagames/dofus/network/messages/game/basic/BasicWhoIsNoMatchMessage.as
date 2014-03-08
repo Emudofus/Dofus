@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 179;
       }
       
-      public function initBasicWhoIsNoMatchMessage(param1:String="") : BasicWhoIsNoMatchMessage {
-         this.search = param1;
+      public function initBasicWhoIsNoMatchMessage(search:String="") : BasicWhoIsNoMatchMessage {
+         this.search = search;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.basic
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_BasicWhoIsNoMatchMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_BasicWhoIsNoMatchMessage(output);
       }
       
-      public function serializeAs_BasicWhoIsNoMatchMessage(param1:IDataOutput) : void {
-         param1.writeUTF(this.search);
+      public function serializeAs_BasicWhoIsNoMatchMessage(output:IDataOutput) : void {
+         output.writeUTF(this.search);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_BasicWhoIsNoMatchMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_BasicWhoIsNoMatchMessage(input);
       }
       
-      public function deserializeAs_BasicWhoIsNoMatchMessage(param1:IDataInput) : void {
-         this.search = param1.readUTF();
+      public function deserializeAs_BasicWhoIsNoMatchMessage(input:IDataInput) : void {
+         this.search = input.readUTF();
       }
    }
 }

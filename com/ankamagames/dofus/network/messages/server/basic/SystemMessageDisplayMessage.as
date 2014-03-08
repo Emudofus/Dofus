@@ -2,7 +2,7 @@ package com.ankamagames.dofus.network.messages.server.basic
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,10 +33,10 @@ package com.ankamagames.dofus.network.messages.server.basic
          return 189;
       }
       
-      public function initSystemMessageDisplayMessage(param1:Boolean=false, param2:uint=0, param3:Vector.<String>=null) : SystemMessageDisplayMessage {
-         this.hangUp = param1;
-         this.msgId = param2;
-         this.parameters = param3;
+      public function initSystemMessageDisplayMessage(hangUp:Boolean=false, msgId:uint=0, parameters:Vector.<String>=null) : SystemMessageDisplayMessage {
+         this.hangUp = hangUp;
+         this.msgId = msgId;
+         this.parameters = parameters;
          this._isInitialized = true;
          return this;
       }
@@ -48,61 +48,61 @@ package com.ankamagames.dofus.network.messages.server.basic
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_SystemMessageDisplayMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SystemMessageDisplayMessage(output);
       }
       
-      public function serializeAs_SystemMessageDisplayMessage(param1:IDataOutput) : void {
-         param1.writeBoolean(this.hangUp);
+      public function serializeAs_SystemMessageDisplayMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.hangUp);
          if(this.msgId < 0)
          {
             throw new Error("Forbidden value (" + this.msgId + ") on element msgId.");
          }
          else
          {
-            param1.writeShort(this.msgId);
-            param1.writeShort(this.parameters.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.parameters.length)
+            output.writeShort(this.msgId);
+            output.writeShort(this.parameters.length);
+            _i3 = 0;
+            while(_i3 < this.parameters.length)
             {
-               param1.writeUTF(this.parameters[_loc2_]);
-               _loc2_++;
+               output.writeUTF(this.parameters[_i3]);
+               _i3++;
             }
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_SystemMessageDisplayMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SystemMessageDisplayMessage(input);
       }
       
-      public function deserializeAs_SystemMessageDisplayMessage(param1:IDataInput) : void {
-         var _loc4_:String = null;
-         this.hangUp = param1.readBoolean();
-         this.msgId = param1.readShort();
+      public function deserializeAs_SystemMessageDisplayMessage(input:IDataInput) : void {
+         var _val3:String = null;
+         this.hangUp = input.readBoolean();
+         this.msgId = input.readShort();
          if(this.msgId < 0)
          {
             throw new Error("Forbidden value (" + this.msgId + ") on element of SystemMessageDisplayMessage.msgId.");
          }
          else
          {
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            _parametersLen = input.readUnsignedShort();
+            _i3 = 0;
+            while(_i3 < _parametersLen)
             {
-               _loc4_ = param1.readUTF();
-               this.parameters.push(_loc4_);
-               _loc3_++;
+               _val3 = input.readUTF();
+               this.parameters.push(_val3);
+               _i3++;
             }
             return;
          }

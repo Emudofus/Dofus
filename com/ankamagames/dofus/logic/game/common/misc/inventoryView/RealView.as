@@ -8,37 +8,37 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    public class RealView extends ListView
    {
       
-      public function RealView(param1:IHookLock) {
-         super(param1);
+      public function RealView(hookLock:IHookLock) {
+         super(hookLock);
       }
       
       override public function get name() : String {
          return "real";
       }
       
-      override public function addItem(param1:ItemWrapper, param2:int) : void {
-         super.addItem(param1,param2);
-         _hookLock.addHook(InventoryHookList.ObjectAdded,[param1]);
+      override public function addItem(item:ItemWrapper, invisible:int) : void {
+         super.addItem(item,invisible);
+         _hookLock.addHook(InventoryHookList.ObjectAdded,[item]);
          this.updateView();
       }
       
-      override public function removeItem(param1:ItemWrapper, param2:int) : void {
-         super.removeItem(param1,param2);
-         _hookLock.addHook(InventoryHookList.ObjectDeleted,[param1]);
+      override public function removeItem(item:ItemWrapper, invisible:int) : void {
+         super.removeItem(item,invisible);
+         _hookLock.addHook(InventoryHookList.ObjectDeleted,[item]);
          this.updateView();
       }
       
-      override public function modifyItem(param1:ItemWrapper, param2:ItemWrapper, param3:int) : void {
-         super.modifyItem(param1,param2,param3);
-         _hookLock.addHook(InventoryHookList.ObjectModified,[param1]);
-         if(param1.quantity != param2.quantity)
+      override public function modifyItem(item:ItemWrapper, oldItem:ItemWrapper, invisible:int) : void {
+         super.modifyItem(item,oldItem,invisible);
+         _hookLock.addHook(InventoryHookList.ObjectModified,[item]);
+         if(item.quantity != oldItem.quantity)
          {
-            _hookLock.addHook(InventoryHookList.ObjectQuantity,[param1,param1.quantity,param2.quantity]);
+            _hookLock.addHook(InventoryHookList.ObjectQuantity,[item,item.quantity,oldItem.quantity]);
          }
          this.updateView();
       }
       
-      override public function isListening(param1:ItemWrapper) : Boolean {
+      override public function isListening(item:ItemWrapper) : Boolean {
          return true;
       }
       

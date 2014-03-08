@@ -9,16 +9,16 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    public class BankFilteredView extends StorageGenericView
    {
       
-      public function BankFilteredView(param1:HookLock) {
-         super(param1);
+      public function BankFilteredView(hookLock:HookLock) {
+         super(hookLock);
       }
       
       override public function get name() : String {
          return "bankFiltered";
       }
       
-      override public function isListening(param1:ItemWrapper) : Boolean {
-         return (super.isListening(param1)) && (StorageOptionManager.getInstance().hasBankFilter()) && param1.typeId == StorageOptionManager.getInstance().bankFilter;
+      override public function isListening(item:ItemWrapper) : Boolean {
+         return (super.isListening(item)) && (StorageOptionManager.getInstance().hasBankFilter()) && (item.typeId == StorageOptionManager.getInstance().bankFilter);
       }
       
       override public function updateView() : void {

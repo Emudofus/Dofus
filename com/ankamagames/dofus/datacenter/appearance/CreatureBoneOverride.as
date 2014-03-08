@@ -12,9 +12,9 @@ package com.ankamagames.dofus.datacenter.appearance
       
       public static const MODULE:String = "CreatureBonesOverrides";
       
-      public static function getCreatureBones(param1:int) : int {
-         var _loc2_:CreatureBoneOverride = GameData.getObject(MODULE,param1) as CreatureBoneOverride;
-         return _loc2_?_loc2_.creatureBoneId:0;
+      public static function getCreatureBones(pBoneId:int) : int {
+         var bonesOverride:CreatureBoneOverride = GameData.getObject(MODULE,pBoneId) as CreatureBoneOverride;
+         return bonesOverride?bonesOverride.creatureBoneId:0;
       }
       
       public static function getAllCreatureBonesOverrides() : Array {

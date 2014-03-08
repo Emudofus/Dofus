@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.chat
          super();
       }
       
-      public static function create(param1:String) : ChatCommandAction {
-         var _loc2_:ChatCommandAction = new ChatCommandAction();
-         _loc2_.command = param1;
-         return _loc2_;
+      public static function create(command:String) : ChatCommandAction {
+         var a:ChatCommandAction = new ChatCommandAction();
+         a.command = command;
+         return a;
       }
       
       public var command:String;

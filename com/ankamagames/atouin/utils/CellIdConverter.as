@@ -15,52 +15,52 @@ package com.ankamagames.atouin.utils
       private static var _bInit:Boolean = false;
       
       private static function init() : void {
-         var _loc4_:* = 0;
+         var b:* = 0;
          _bInit = true;
-         var _loc1_:* = 0;
-         var _loc2_:* = 0;
-         var _loc3_:* = 0;
-         var _loc5_:* = 0;
-         while(_loc5_ < AtouinConstants.MAP_HEIGHT)
+         var startX:int = 0;
+         var startY:int = 0;
+         var cell:int = 0;
+         var a:int = 0;
+         while(a < AtouinConstants.MAP_HEIGHT)
          {
-            _loc4_ = 0;
-            while(_loc4_ < AtouinConstants.MAP_WIDTH)
+            b = 0;
+            while(b < AtouinConstants.MAP_WIDTH)
             {
-               CELLPOS[_loc3_] = new Point(_loc1_ + _loc4_,_loc2_ + _loc4_);
-               _loc3_++;
-               _loc4_++;
+               CELLPOS[cell] = new Point(startX + b,startY + b);
+               cell++;
+               b++;
             }
-            _loc1_++;
-            _loc4_ = 0;
-            while(_loc4_ < AtouinConstants.MAP_WIDTH)
+            startX++;
+            b = 0;
+            while(b < AtouinConstants.MAP_WIDTH)
             {
-               CELLPOS[_loc3_] = new Point(_loc1_ + _loc4_,_loc2_ + _loc4_);
-               _loc3_++;
-               _loc4_++;
+               CELLPOS[cell] = new Point(startX + b,startY + b);
+               cell++;
+               b++;
             }
-            _loc2_--;
-            _loc5_++;
+            startY--;
+            a++;
          }
       }
       
-      public static function coordToCellId(param1:int, param2:int) : uint {
+      public static function coordToCellId(x:int, y:int) : uint {
          if(!_bInit)
          {
             init();
          }
-         return (param1 - param2) * AtouinConstants.MAP_WIDTH + param2 + (param1 - param2) / 2;
+         return (x - y) * AtouinConstants.MAP_WIDTH + y + (x - y) / 2;
       }
       
-      public static function cellIdToCoord(param1:uint) : Point {
+      public static function cellIdToCoord(cellId:uint) : Point {
          if(!_bInit)
          {
             init();
          }
-         if(!CELLPOS[param1])
+         if(!CELLPOS[cellId])
          {
             return null;
          }
-         return CELLPOS[param1];
+         return CELLPOS[cellId];
       }
    }
 }

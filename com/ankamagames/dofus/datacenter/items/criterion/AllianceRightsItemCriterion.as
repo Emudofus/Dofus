@@ -9,12 +9,12 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class AllianceRightsItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function AllianceRightsItemCriterion(param1:String) {
-         super(param1);
+      public function AllianceRightsItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get isRespected() : Boolean {
-         var _loc2_:* = false;
+         var hasThisRight:* = false;
          if(!AllianceFrame.getInstance().hasAlliance)
          {
             if(_operator.text == ItemCriterionOperator.DIFFERENT)
@@ -23,65 +23,61 @@ package com.ankamagames.dofus.datacenter.items.criterion
             }
             return false;
          }
-         var _loc1_:AllianceWrapper = AllianceFrame.getInstance().alliance;
+         var alliance:AllianceWrapper = AllianceFrame.getInstance().alliance;
          switch(criterionValue)
          {
             case AllianceRightsBitEnum.ALLIANCE_RIGHT_BOSS:
-               _loc2_ = _loc1_.isBoss;
+               hasThisRight = alliance.isBoss;
                break;
-            default:
-               _loc2_ = true;
          }
          switch(_operator.text)
          {
             case ItemCriterionOperator.EQUAL:
-               return _loc2_;
+               return hasThisRight;
             case ItemCriterionOperator.DIFFERENT:
-               return !_loc2_;
-            default:
-               return false;
+               return !hasThisRight;
          }
       }
       
       override public function get text() : String {
-         var _loc1_:String = null;
-         var _loc2_:String = null;
+         var readableCriterion:String = null;
+         var readableCriterionValue:String = null;
          switch(criterionValue)
          {
             case AllianceRightsBitEnum.ALLIANCE_RIGHT_BOSS:
-               _loc2_ = I18n.getUiText("ui.guild.right.leader");
+               readableCriterionValue = I18n.getUiText("ui.guild.right.leader");
                break;
             case AllianceRightsBitEnum.ALLIANCE_RIGHT_KICK_GUILDS:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsBann");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsBann");
                break;
             case AllianceRightsBitEnum.ALLIANCE_RIGHT_MANAGE_PRISMS:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsSetAlliancePrism");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsSetAlliancePrism");
                break;
             case AllianceRightsBitEnum.ALLIANCE_RIGHT_MANAGE_RIGHTS:
-               _loc2_ = I18n.getUiText("ui.social.guildManageRights");
+               readableCriterionValue = I18n.getUiText("ui.social.guildManageRights");
                break;
             case AllianceRightsBitEnum.ALLIANCE_RIGHT_RECRUIT_GUILDS:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsInvit");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsInvit");
                break;
             case AllianceRightsBitEnum.ALLIANCE_RIGHT_TALK_IN_CHAN:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsTalkInAllianceChannel");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsTalkInAllianceChannel");
                break;
          }
          switch(_operator.text)
          {
             case ItemCriterionOperator.EQUAL:
-               _loc1_ = I18n.getUiText("ui.criterion.allianceRights",[_loc2_]);
+               readableCriterion = I18n.getUiText("ui.criterion.allianceRights",[readableCriterionValue]);
                break;
             case ItemCriterionOperator.DIFFERENT:
-               _loc1_ = I18n.getUiText("ui.criterion.notAllianceRights",[_loc2_]);
+               readableCriterion = I18n.getUiText("ui.criterion.notAllianceRights",[readableCriterionValue]);
                break;
          }
-         return _loc1_;
+         return readableCriterion;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:AllianceRightsItemCriterion = new AllianceRightsItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:AllianceRightsItemCriterion = new AllianceRightsItemCriterion(this.basicText);
+         return clonedCriterion;
       }
    }
 }

@@ -33,11 +33,11 @@ package com.ankamagames.dofus.network.messages.game.character.stats
          return 6321;
       }
       
-      public function initCharacterExperienceGainMessage(param1:Number=0, param2:Number=0, param3:Number=0, param4:Number=0) : CharacterExperienceGainMessage {
-         this.experienceCharacter = param1;
-         this.experienceMount = param2;
-         this.experienceGuild = param3;
-         this.experienceIncarnation = param4;
+      public function initCharacterExperienceGainMessage(experienceCharacter:Number=0, experienceMount:Number=0, experienceGuild:Number=0, experienceIncarnation:Number=0) : CharacterExperienceGainMessage {
+         this.experienceCharacter = experienceCharacter;
+         this.experienceMount = experienceMount;
+         this.experienceGuild = experienceGuild;
+         this.experienceIncarnation = experienceIncarnation;
          this._isInitialized = true;
          return this;
       }
@@ -50,49 +50,49 @@ package com.ankamagames.dofus.network.messages.game.character.stats
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CharacterExperienceGainMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterExperienceGainMessage(output);
       }
       
-      public function serializeAs_CharacterExperienceGainMessage(param1:IDataOutput) : void {
+      public function serializeAs_CharacterExperienceGainMessage(output:IDataOutput) : void {
          if(this.experienceCharacter < 0)
          {
             throw new Error("Forbidden value (" + this.experienceCharacter + ") on element experienceCharacter.");
          }
          else
          {
-            param1.writeDouble(this.experienceCharacter);
+            output.writeDouble(this.experienceCharacter);
             if(this.experienceMount < 0)
             {
                throw new Error("Forbidden value (" + this.experienceMount + ") on element experienceMount.");
             }
             else
             {
-               param1.writeDouble(this.experienceMount);
+               output.writeDouble(this.experienceMount);
                if(this.experienceGuild < 0)
                {
                   throw new Error("Forbidden value (" + this.experienceGuild + ") on element experienceGuild.");
                }
                else
                {
-                  param1.writeDouble(this.experienceGuild);
+                  output.writeDouble(this.experienceGuild);
                   if(this.experienceIncarnation < 0)
                   {
                      throw new Error("Forbidden value (" + this.experienceIncarnation + ") on element experienceIncarnation.");
                   }
                   else
                   {
-                     param1.writeDouble(this.experienceIncarnation);
+                     output.writeDouble(this.experienceIncarnation);
                      return;
                   }
                }
@@ -100,33 +100,33 @@ package com.ankamagames.dofus.network.messages.game.character.stats
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CharacterExperienceGainMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterExperienceGainMessage(input);
       }
       
-      public function deserializeAs_CharacterExperienceGainMessage(param1:IDataInput) : void {
-         this.experienceCharacter = param1.readDouble();
+      public function deserializeAs_CharacterExperienceGainMessage(input:IDataInput) : void {
+         this.experienceCharacter = input.readDouble();
          if(this.experienceCharacter < 0)
          {
             throw new Error("Forbidden value (" + this.experienceCharacter + ") on element of CharacterExperienceGainMessage.experienceCharacter.");
          }
          else
          {
-            this.experienceMount = param1.readDouble();
+            this.experienceMount = input.readDouble();
             if(this.experienceMount < 0)
             {
                throw new Error("Forbidden value (" + this.experienceMount + ") on element of CharacterExperienceGainMessage.experienceMount.");
             }
             else
             {
-               this.experienceGuild = param1.readDouble();
+               this.experienceGuild = input.readDouble();
                if(this.experienceGuild < 0)
                {
                   throw new Error("Forbidden value (" + this.experienceGuild + ") on element of CharacterExperienceGainMessage.experienceGuild.");
                }
                else
                {
-                  this.experienceIncarnation = param1.readDouble();
+                  this.experienceIncarnation = input.readDouble();
                   if(this.experienceIncarnation < 0)
                   {
                      throw new Error("Forbidden value (" + this.experienceIncarnation + ") on element of CharacterExperienceGainMessage.experienceIncarnation.");

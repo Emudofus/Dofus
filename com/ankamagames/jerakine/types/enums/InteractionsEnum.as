@@ -20,8 +20,8 @@ package com.ankamagames.jerakine.types.enums
       
       public static const OUT:uint = 1 << 2;
       
-      public static function getEvents(param1:uint) : Array {
-         switch(param1)
+      public static function getEvents(interactionType:uint) : Array {
+         switch(interactionType)
          {
             case CLICK:
                return [MouseEvent.CLICK];
@@ -29,13 +29,11 @@ package com.ankamagames.jerakine.types.enums
                return [MouseEvent.MOUSE_OVER];
             case OUT:
                return [MouseEvent.MOUSE_OUT,Event.REMOVED_FROM_STAGE];
-            default:
-               throw new JerakineError("Unknown interaction type " + param1 + ".");
          }
       }
       
-      public static function getMessage(param1:String) : Class {
-         switch(param1)
+      public static function getMessage(eventType:String) : Class {
+         switch(eventType)
          {
             case MouseEvent.CLICK:
                return EntityClickMessage;
@@ -44,8 +42,6 @@ package com.ankamagames.jerakine.types.enums
             case Event.REMOVED_FROM_STAGE:
             case MouseEvent.MOUSE_OUT:
                return EntityMouseOutMessage;
-            default:
-               throw new JerakineError("Unknown event type for an interaction \'" + param1 + "\'.");
          }
       }
    }

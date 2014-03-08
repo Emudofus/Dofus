@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6327;
       }
       
-      public function initGuildModificationNameValidMessage(param1:String="") : GuildModificationNameValidMessage {
-         this.guildName = param1;
+      public function initGuildModificationNameValidMessage(guildName:String="") : GuildModificationNameValidMessage {
+         this.guildName = guildName;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.guild
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildModificationNameValidMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildModificationNameValidMessage(output);
       }
       
-      public function serializeAs_GuildModificationNameValidMessage(param1:IDataOutput) : void {
-         param1.writeUTF(this.guildName);
+      public function serializeAs_GuildModificationNameValidMessage(output:IDataOutput) : void {
+         output.writeUTF(this.guildName);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildModificationNameValidMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildModificationNameValidMessage(input);
       }
       
-      public function deserializeAs_GuildModificationNameValidMessage(param1:IDataInput) : void {
-         this.guildName = param1.readUTF();
+      public function deserializeAs_GuildModificationNameValidMessage(input:IDataInput) : void {
+         this.guildName = input.readUTF();
       }
    }
 }

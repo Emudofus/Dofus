@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5965;
       }
       
-      public function initExchangeHandleMountStableMessage(param1:int=0, param2:uint=0) : ExchangeHandleMountStableMessage {
-         this.actionType = param1;
-         this.rideId = param2;
+      public function initExchangeHandleMountStableMessage(actionType:int=0, rideId:uint=0) : ExchangeHandleMountStableMessage {
+         this.actionType = actionType;
+         this.rideId = rideId;
          this._isInitialized = true;
          return this;
       }
@@ -42,40 +42,40 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeHandleMountStableMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeHandleMountStableMessage(output);
       }
       
-      public function serializeAs_ExchangeHandleMountStableMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.actionType);
+      public function serializeAs_ExchangeHandleMountStableMessage(output:IDataOutput) : void {
+         output.writeByte(this.actionType);
          if(this.rideId < 0)
          {
             throw new Error("Forbidden value (" + this.rideId + ") on element rideId.");
          }
          else
          {
-            param1.writeInt(this.rideId);
+            output.writeInt(this.rideId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeHandleMountStableMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeHandleMountStableMessage(input);
       }
       
-      public function deserializeAs_ExchangeHandleMountStableMessage(param1:IDataInput) : void {
-         this.actionType = param1.readByte();
-         this.rideId = param1.readInt();
+      public function deserializeAs_ExchangeHandleMountStableMessage(input:IDataInput) : void {
+         this.actionType = input.readByte();
+         this.rideId = input.readInt();
          if(this.rideId < 0)
          {
             throw new Error("Forbidden value (" + this.rideId + ") on element of ExchangeHandleMountStableMessage.rideId.");

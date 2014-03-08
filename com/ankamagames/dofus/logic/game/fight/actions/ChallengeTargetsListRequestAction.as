@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.fight.actions
          super();
       }
       
-      public static function create(param1:uint) : ChallengeTargetsListRequestAction {
-         var _loc2_:ChallengeTargetsListRequestAction = new ChallengeTargetsListRequestAction();
-         _loc2_.challengeId = param1;
-         return _loc2_;
+      public static function create(challengeId:uint) : ChallengeTargetsListRequestAction {
+         var a:ChallengeTargetsListRequestAction = new ChallengeTargetsListRequestAction();
+         a.challengeId = challengeId;
+         return a;
       }
       
       public var challengeId:uint;

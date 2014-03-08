@@ -27,9 +27,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6188;
       }
       
-      public function initExchangeCraftResultMagicWithObjectDescMessage(param1:uint=0, param2:ObjectItemNotInContainer=null, param3:int=0) : ExchangeCraftResultMagicWithObjectDescMessage {
-         super.initExchangeCraftResultWithObjectDescMessage(param1,param2);
-         this.magicPoolStatus = param3;
+      public function initExchangeCraftResultMagicWithObjectDescMessage(craftResult:uint=0, objectInfo:ObjectItemNotInContainer=null, magicPoolStatus:int=0) : ExchangeCraftResultMagicWithObjectDescMessage {
+         super.initExchangeCraftResultWithObjectDescMessage(craftResult,objectInfo);
+         this.magicPoolStatus = magicPoolStatus;
          this._isInitialized = true;
          return this;
       }
@@ -40,32 +40,32 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeCraftResultMagicWithObjectDescMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeCraftResultMagicWithObjectDescMessage(output);
       }
       
-      public function serializeAs_ExchangeCraftResultMagicWithObjectDescMessage(param1:IDataOutput) : void {
-         super.serializeAs_ExchangeCraftResultWithObjectDescMessage(param1);
-         param1.writeByte(this.magicPoolStatus);
+      public function serializeAs_ExchangeCraftResultMagicWithObjectDescMessage(output:IDataOutput) : void {
+         super.serializeAs_ExchangeCraftResultWithObjectDescMessage(output);
+         output.writeByte(this.magicPoolStatus);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeCraftResultMagicWithObjectDescMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeCraftResultMagicWithObjectDescMessage(input);
       }
       
-      public function deserializeAs_ExchangeCraftResultMagicWithObjectDescMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.magicPoolStatus = param1.readByte();
+      public function deserializeAs_ExchangeCraftResultMagicWithObjectDescMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.magicPoolStatus = input.readByte();
       }
    }
 }

@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.connection.actions
          super();
       }
       
-      public static function create(param1:String) : AcquaintanceSearchAction {
-         var _loc2_:AcquaintanceSearchAction = new AcquaintanceSearchAction();
-         _loc2_.friendName = param1;
-         return _loc2_;
+      public static function create(friendName:String) : AcquaintanceSearchAction {
+         var a:AcquaintanceSearchAction = new AcquaintanceSearchAction();
+         a.friendName = friendName;
+         return a;
       }
       
       public var friendName:String;

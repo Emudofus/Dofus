@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.almanach
          return 6341;
       }
       
-      public function initAlmanachCalendarDateMessage(param1:int=0) : AlmanachCalendarDateMessage {
-         this.date = param1;
+      public function initAlmanachCalendarDateMessage(date:int=0) : AlmanachCalendarDateMessage {
+         this.date = date;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.almanach
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AlmanachCalendarDateMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AlmanachCalendarDateMessage(output);
       }
       
-      public function serializeAs_AlmanachCalendarDateMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.date);
+      public function serializeAs_AlmanachCalendarDateMessage(output:IDataOutput) : void {
+         output.writeInt(this.date);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AlmanachCalendarDateMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AlmanachCalendarDateMessage(input);
       }
       
-      public function deserializeAs_AlmanachCalendarDateMessage(param1:IDataInput) : void {
-         this.date = param1.readInt();
+      public function deserializeAs_AlmanachCalendarDateMessage(input:IDataInput) : void {
+         this.date = input.readInt();
       }
    }
 }

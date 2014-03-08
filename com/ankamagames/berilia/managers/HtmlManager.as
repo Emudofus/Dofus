@@ -28,223 +28,217 @@ package com.ankamagames.berilia.managers
       
       public static const INLINE_CSS_VERSION:String = "inline";
       
-      public static function changeCssHandler(param1:String) : void {
-         switch(param1)
+      public static function changeCssHandler(val:String) : void {
+         switch(val)
          {
             case OLD_FASHION:
             case INLINE_CSS_VERSION:
-               htmlVersion = param1;
+               htmlVersion = val;
                break;
-            default:
-               htmlVersion = OLD_FASHION;
          }
       }
       
-      public static function addTag(param1:String, param2:String, param3:Object=null) : String {
+      public static function addTag(pText:String, pBalise:String, pStyle:Object=null) : String {
          if(htmlVersion == INLINE_CSS_VERSION)
          {
-            if(isTagValide(param2))
+            if(isTagValide(pBalise))
             {
-               return "<" + param2 + " " + formateStyleWithInlineCss(param3) + ">" + param1 + "</" + param2 + ">";
+               return "<" + pBalise + " " + formateStyleWithInlineCss(pStyle) + ">" + pText + "</" + pBalise + ">";
             }
-            trace("ERROR TAG: \"" + param2 + "\" NOT VALID !!");
-            return param1;
+            trace("ERROR TAG: \"" + pBalise + "\" NOT VALID !!");
+            return pText;
          }
-         if(param3 == null)
+         if(pStyle == null)
          {
-            param3 = new Object();
+            pStyle = new Object();
          }
-         if(param2 == BOLD)
+         if(pBalise == BOLD)
          {
-            param3[BOLD] = true;
+            pStyle[BOLD] = true;
          }
-         if(param2 == ITALIC)
+         if(pBalise == ITALIC)
          {
-            param3[ITALIC] = true;
+            pStyle[ITALIC] = true;
          }
-         if(param2 == UNDERLINE)
+         if(pBalise == UNDERLINE)
          {
-            param3["text-decoration"] = UNDERLINE;
+            pStyle["text-decoration"] = UNDERLINE;
          }
-         return formateStyleWithTags(param1,param3);
+         return formateStyleWithTags(pText,pStyle);
       }
       
-      private static function formateStyleWithInlineCss(param1:Object=null) : String {
-         var _loc2_:* = "";
-         if(param1 != null)
+      private static function formateStyleWithInlineCss(pStyle:Object=null) : String {
+         var htmlText:String = "";
+         if(pStyle != null)
          {
-            _loc2_ = _loc2_ + " style=\"";
-            if(param1[COLOR])
+            htmlText = htmlText + " style=\"";
+            if(pStyle[COLOR])
             {
-               _loc2_ = _loc2_ + ("color:" + getHexaColor(param1[COLOR]) + ";");
+               htmlText = htmlText + ("color:" + getHexaColor(pStyle[COLOR]) + ";");
             }
-            if(param1[ITALIC])
+            if(pStyle[ITALIC])
             {
-               _loc2_ = _loc2_ + ("font-style:" + param1[ITALIC] + ";");
+               htmlText = htmlText + ("font-style:" + pStyle[ITALIC] + ";");
             }
-            if(param1[BOLD])
+            if(pStyle[BOLD])
             {
-               _loc2_ = _loc2_ + "font-weight: bold;";
+               htmlText = htmlText + "font-weight: bold;";
             }
-            _loc2_ = _loc2_ + "\"";
+            htmlText = htmlText + "\"";
          }
-         return _loc2_;
+         return htmlText;
       }
       
-      private static function formateStyleWithTags(param1:String, param2:Object=null) : String {
-         var _loc3_:* = "";
-         if(param2 != null)
+      private static function formateStyleWithTags(pText:String, pStyle:Object=null) : String {
+         var htmlText:String = "";
+         if(pStyle != null)
          {
-            if(param2[COLOR])
+            if(pStyle[COLOR])
             {
-               _loc3_ = _loc3_ + ("<font color=\"" + getHexaColor(param2[COLOR]) + "\">");
+               htmlText = htmlText + ("<font color=\"" + getHexaColor(pStyle[COLOR]) + "\">");
             }
-            if(param2[ITALIC])
+            if(pStyle[ITALIC])
             {
-               _loc3_ = _loc3_ + "<i>";
+               htmlText = htmlText + "<i>";
             }
-            if(param2[BOLD])
+            if(pStyle[BOLD])
             {
-               _loc3_ = _loc3_ + "<b>";
+               htmlText = htmlText + "<b>";
             }
-            if(param2["text-decoration"] == UNDERLINE || param2["textDecoration"] == UNDERLINE)
+            if((pStyle["text-decoration"] == UNDERLINE) || (pStyle["textDecoration"] == UNDERLINE))
             {
-               _loc3_ = _loc3_ + "<u>";
+               htmlText = htmlText + "<u>";
             }
-            _loc3_ = _loc3_ + param1;
-            if(param2["text-decoration"] == UNDERLINE || param2["textDecoration"] == UNDERLINE)
+            htmlText = htmlText + pText;
+            if((pStyle["text-decoration"] == UNDERLINE) || (pStyle["textDecoration"] == UNDERLINE))
             {
-               _loc3_ = _loc3_ + "</u>";
+               htmlText = htmlText + "</u>";
             }
-            if(param2[BOLD])
+            if(pStyle[BOLD])
             {
-               _loc3_ = _loc3_ + "</b>";
+               htmlText = htmlText + "</b>";
             }
-            if(param2[ITALIC])
+            if(pStyle[ITALIC])
             {
-               _loc3_ = _loc3_ + "</i>";
+               htmlText = htmlText + "</i>";
             }
-            if(param2[COLOR])
+            if(pStyle[COLOR])
             {
-               _loc3_ = _loc3_ + "</font>";
+               htmlText = htmlText + "</font>";
             }
          }
          else
          {
-            _loc3_ = param1;
+            htmlText = pText;
          }
-         return _loc3_;
+         return htmlText;
       }
       
-      private static function getHexaColor(param1:*) : String {
-         var _loc2_:* = "";
+      private static function getHexaColor(pColor:*) : String {
+         var hexaColor:String = "";
          switch(true)
          {
-            case param1 is int:
-            case param1 is uint:
-               _loc2_ = "#" + param1.toString(16);
+            case pColor is int:
+            case pColor is uint:
+               hexaColor = "#" + pColor.toString(16);
                break;
-            case param1 is String:
-               if(param1.indexOf("#") == 0)
+            case pColor is String:
+               if(pColor.indexOf("#") == 0)
                {
-                  _loc2_ = String(param1);
+                  hexaColor = String(pColor);
                }
                else
                {
-                  _loc2_ = param1.replace("0x","#");
+                  hexaColor = pColor.replace("0x","#");
                }
                break;
-            default:
-               _loc2_ = "#FF0000";
          }
-         return _loc2_;
+         return hexaColor;
       }
       
-      public static function addLink(param1:String, param2:String="", param3:Object=null, param4:Boolean=false) : String {
-         if(htmlVersion == INLINE_CSS_VERSION || (param4))
+      public static function addLink(pText:String, pHref:String="", pStyle:Object=null, pForceInlineCss:Boolean=false) : String {
+         if((htmlVersion == INLINE_CSS_VERSION) || (pForceInlineCss))
          {
-            if(param3 != null)
+            if(pStyle != null)
             {
-               return "<" + LINK + " href=\'" + param2 + "\'" + formateStyleWithInlineCss(param3) + ">" + param1 + "</" + LINK + ">";
+               return "<" + LINK + " href=\'" + pHref + "\'" + formateStyleWithInlineCss(pStyle) + ">" + pText + "</" + LINK + ">";
             }
-            return "<" + LINK + " href=\'" + param2 + "\'>" + param1 + "</" + LINK + ">";
+            return "<" + LINK + " href=\'" + pHref + "\'>" + pText + "</" + LINK + ">";
          }
-         return "<" + LINK + " href=\'" + param2 + "\'><b>" + param1 + "</b></" + LINK + ">";
+         return "<" + LINK + " href=\'" + pHref + "\'><b>" + pText + "</b></" + LINK + ">";
       }
       
-      public static function removeStyle(param1:String, param2:String, param3:Boolean=false) : String {
-         return param1;
+      public static function removeStyle(pText:String, pBalise:String, pAllOccurrences:Boolean=false) : String {
+         return pText;
       }
       
-      public static function addStyleToWords(param1:String, param2:String, param3:String) : String {
-         return param1;
+      public static function addStyleToWords(pParagraphe:String, pText:String, pBalise:String) : String {
+         return pParagraphe;
       }
       
-      private static function isTagValide(param1:String) : Boolean {
-         switch(param1)
+      private static function isTagValide(pTag:String) : Boolean {
+         switch(pTag)
          {
             case SPAN:
                return true;
-            default:
-               return false;
          }
       }
       
-      public static function parseStyle(param1:String) : Array {
-         var _loc4_:String = null;
-         var _loc5_:Array = null;
-         var _loc2_:Array = new Array();
-         var _loc3_:Array = param1.split(";");
-         for each (_loc4_ in _loc3_)
+      public static function parseStyle(val:String) : Array {
+         var val1:String = null;
+         var tab2:Array = null;
+         var style:Array = new Array();
+         var tab1:Array = val.split(";");
+         for each (val1 in tab1)
          {
-            _loc5_ = _loc4_.split(":");
-            if(_loc5_[0] != "")
+            tab2 = val1.split(":");
+            if(tab2[0] != "")
             {
-               _loc2_[_loc5_[0]] = StringUtil.trim(_loc5_[1]);
+               style[tab2[0]] = StringUtil.trim(tab2[1]);
             }
          }
-         return _loc2_;
+         return style;
       }
       
-      public static function formateSpan(param1:SpanElement, param2:String) : SpanElement {
-         var _loc3_:Array = parseStyle(param2);
-         if(_loc3_["font-weight"])
+      public static function formateSpan(span:SpanElement, pStyle:String) : SpanElement {
+         var style:Array = parseStyle(pStyle);
+         if(style["font-weight"])
          {
-            param1.fontWeight = _loc3_["font-weight"];
+            span.fontWeight = style["font-weight"];
          }
-         if(_loc3_["color"])
+         if(style["color"])
          {
-            param1.color = _loc3_["color"];
+            span.color = style["color"];
          }
-         if(_loc3_["background-color"])
+         if(style["background-color"])
          {
-            param1.backgroundColor = _loc3_["background-color"];
+            span.backgroundColor = style["background-color"];
          }
-         if(_loc3_["text-decoration"])
+         if(style["text-decoration"])
          {
-            param1.textDecoration = _loc3_["text-decoration"];
+            span.textDecoration = style["text-decoration"];
          }
-         if(_loc3_["font-style"])
+         if(style["font-style"])
          {
-            param1.fontStyle = _loc3_["font-style"];
+            span.fontStyle = style["font-style"];
          }
-         return param1;
+         return span;
       }
       
-      public static function addValueToInlineStyle(param1:String, param2:String, param3:String) : String {
-         if(param1.length > 0)
+      public static function addValueToInlineStyle(inlineStyle:String, data:String, value:String) : String {
+         if(inlineStyle.length > 0)
          {
-            if(param1.charAt(param1.length-1) != ";")
+            if(inlineStyle.charAt(inlineStyle.length - 1) != ";")
             {
-               param1 = param1 + ";";
+               inlineStyle = inlineStyle + ";";
             }
-            param1 = param1 + (param2 + ":" + param3 + ";");
+            inlineStyle = inlineStyle + (data + ":" + value + ";");
          }
          else
          {
-            param1 = param2 + ":" + param3 + ";";
+            inlineStyle = data + ":" + value + ";";
          }
-         return param1;
+         return inlineStyle;
       }
    }
 }

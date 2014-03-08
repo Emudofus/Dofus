@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.connection.actions
          super();
       }
       
-      public static function create(param1:String) : NicknameChoiceRequestAction {
-         var _loc2_:NicknameChoiceRequestAction = new NicknameChoiceRequestAction();
-         _loc2_.nickname = param1;
-         return _loc2_;
+      public static function create(nickname:String) : NicknameChoiceRequestAction {
+         var a:NicknameChoiceRequestAction = new NicknameChoiceRequestAction();
+         a.nickname = nickname;
+         return a;
       }
       
       public var nickname:String;

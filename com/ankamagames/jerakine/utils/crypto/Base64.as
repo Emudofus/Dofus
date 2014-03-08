@@ -10,23 +10,23 @@ package com.ankamagames.jerakine.utils.crypto
          super();
       }
       
-      public static function encode(param1:String) : String {
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.writeUTFBytes(param1);
-         return by.blooddy.crypto.Base64.encode(_loc2_);
+      public static function encode(data:String) : String {
+         var bytes:ByteArray = new ByteArray();
+         bytes.writeUTFBytes(data);
+         return by.blooddy.crypto.Base64.encode(bytes);
       }
       
-      public static function encodeByteArray(param1:ByteArray) : String {
-         return by.blooddy.crypto.Base64.encode(param1);
+      public static function encodeByteArray(data:ByteArray) : String {
+         return by.blooddy.crypto.Base64.encode(data);
       }
       
-      public static function decode(param1:String) : String {
-         var _loc2_:ByteArray = by.blooddy.crypto.Base64.decode(param1);
-         return _loc2_.readUTFBytes(_loc2_.length);
+      public static function decode(data:String) : String {
+         var bytes:ByteArray = by.blooddy.crypto.Base64.decode(data);
+         return bytes.readUTFBytes(bytes.length);
       }
       
-      public static function decodeToByteArray(param1:String) : ByteArray {
-         return by.blooddy.crypto.Base64.decode(param1);
+      public static function decodeToByteArray(data:String) : ByteArray {
+         return by.blooddy.crypto.Base64.decode(data);
       }
    }
 }

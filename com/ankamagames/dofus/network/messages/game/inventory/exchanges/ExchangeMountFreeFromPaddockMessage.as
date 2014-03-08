@@ -33,11 +33,11 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6055;
       }
       
-      public function initExchangeMountFreeFromPaddockMessage(param1:String="", param2:int=0, param3:int=0, param4:String="") : ExchangeMountFreeFromPaddockMessage {
-         this.name = param1;
-         this.worldX = param2;
-         this.worldY = param3;
-         this.liberator = param4;
+      public function initExchangeMountFreeFromPaddockMessage(name:String="", worldX:int=0, worldY:int=0, liberator:String="") : ExchangeMountFreeFromPaddockMessage {
+         this.name = name;
+         this.worldX = worldX;
+         this.worldY = worldY;
+         this.liberator = liberator;
          this._isInitialized = true;
          return this;
       }
@@ -50,63 +50,63 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeMountFreeFromPaddockMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeMountFreeFromPaddockMessage(output);
       }
       
-      public function serializeAs_ExchangeMountFreeFromPaddockMessage(param1:IDataOutput) : void {
-         param1.writeUTF(this.name);
-         if(this.worldX < -255 || this.worldX > 255)
+      public function serializeAs_ExchangeMountFreeFromPaddockMessage(output:IDataOutput) : void {
+         output.writeUTF(this.name);
+         if((this.worldX < -255) || (this.worldX > 255))
          {
             throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
          }
          else
          {
-            param1.writeShort(this.worldX);
-            if(this.worldY < -255 || this.worldY > 255)
+            output.writeShort(this.worldX);
+            if((this.worldY < -255) || (this.worldY > 255))
             {
                throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
             }
             else
             {
-               param1.writeShort(this.worldY);
-               param1.writeUTF(this.liberator);
+               output.writeShort(this.worldY);
+               output.writeUTF(this.liberator);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeMountFreeFromPaddockMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeMountFreeFromPaddockMessage(input);
       }
       
-      public function deserializeAs_ExchangeMountFreeFromPaddockMessage(param1:IDataInput) : void {
-         this.name = param1.readUTF();
-         this.worldX = param1.readShort();
-         if(this.worldX < -255 || this.worldX > 255)
+      public function deserializeAs_ExchangeMountFreeFromPaddockMessage(input:IDataInput) : void {
+         this.name = input.readUTF();
+         this.worldX = input.readShort();
+         if((this.worldX < -255) || (this.worldX > 255))
          {
             throw new Error("Forbidden value (" + this.worldX + ") on element of ExchangeMountFreeFromPaddockMessage.worldX.");
          }
          else
          {
-            this.worldY = param1.readShort();
-            if(this.worldY < -255 || this.worldY > 255)
+            this.worldY = input.readShort();
+            if((this.worldY < -255) || (this.worldY > 255))
             {
                throw new Error("Forbidden value (" + this.worldY + ") on element of ExchangeMountFreeFromPaddockMessage.worldY.");
             }
             else
             {
-               this.liberator = param1.readUTF();
+               this.liberator = input.readUTF();
                return;
             }
          }

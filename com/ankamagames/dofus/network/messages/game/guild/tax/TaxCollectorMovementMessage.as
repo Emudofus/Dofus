@@ -35,11 +35,11 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5633;
       }
       
-      public function initTaxCollectorMovementMessage(param1:Boolean=false, param2:TaxCollectorBasicInformations=null, param3:uint=0, param4:String="") : TaxCollectorMovementMessage {
-         this.hireOrFire = param1;
-         this.basicInfos = param2;
-         this.playerId = param3;
-         this.playerName = param4;
+      public function initTaxCollectorMovementMessage(hireOrFire:Boolean=false, basicInfos:TaxCollectorBasicInformations=null, playerId:uint=0, playerName:String="") : TaxCollectorMovementMessage {
+         this.hireOrFire = hireOrFire;
+         this.basicInfos = basicInfos;
+         this.playerId = playerId;
+         this.playerName = playerName;
          this._isInitialized = true;
          return this;
       }
@@ -51,51 +51,51 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_TaxCollectorMovementMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TaxCollectorMovementMessage(output);
       }
       
-      public function serializeAs_TaxCollectorMovementMessage(param1:IDataOutput) : void {
-         param1.writeBoolean(this.hireOrFire);
-         this.basicInfos.serializeAs_TaxCollectorBasicInformations(param1);
+      public function serializeAs_TaxCollectorMovementMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.hireOrFire);
+         this.basicInfos.serializeAs_TaxCollectorBasicInformations(output);
          if(this.playerId < 0)
          {
             throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
          }
          else
          {
-            param1.writeInt(this.playerId);
-            param1.writeUTF(this.playerName);
+            output.writeInt(this.playerId);
+            output.writeUTF(this.playerName);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_TaxCollectorMovementMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TaxCollectorMovementMessage(input);
       }
       
-      public function deserializeAs_TaxCollectorMovementMessage(param1:IDataInput) : void {
-         this.hireOrFire = param1.readBoolean();
+      public function deserializeAs_TaxCollectorMovementMessage(input:IDataInput) : void {
+         this.hireOrFire = input.readBoolean();
          this.basicInfos = new TaxCollectorBasicInformations();
-         this.basicInfos.deserialize(param1);
-         this.playerId = param1.readInt();
+         this.basicInfos.deserialize(input);
+         this.playerId = input.readInt();
          if(this.playerId < 0)
          {
             throw new Error("Forbidden value (" + this.playerId + ") on element of TaxCollectorMovementMessage.playerId.");
          }
          else
          {
-            this.playerName = param1.readUTF();
+            this.playerName = input.readUTF();
             return;
          }
       }

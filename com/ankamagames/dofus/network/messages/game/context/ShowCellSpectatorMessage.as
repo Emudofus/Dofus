@@ -26,9 +26,9 @@ package com.ankamagames.dofus.network.messages.game.context
          return 6158;
       }
       
-      public function initShowCellSpectatorMessage(param1:int=0, param2:uint=0, param3:String="") : ShowCellSpectatorMessage {
-         super.initShowCellMessage(param1,param2);
-         this.playerName = param3;
+      public function initShowCellSpectatorMessage(sourceId:int=0, cellId:uint=0, playerName:String="") : ShowCellSpectatorMessage {
+         super.initShowCellMessage(sourceId,cellId);
+         this.playerName = playerName;
          this._isInitialized = true;
          return this;
       }
@@ -39,32 +39,32 @@ package com.ankamagames.dofus.network.messages.game.context
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ShowCellSpectatorMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ShowCellSpectatorMessage(output);
       }
       
-      public function serializeAs_ShowCellSpectatorMessage(param1:IDataOutput) : void {
-         super.serializeAs_ShowCellMessage(param1);
-         param1.writeUTF(this.playerName);
+      public function serializeAs_ShowCellSpectatorMessage(output:IDataOutput) : void {
+         super.serializeAs_ShowCellMessage(output);
+         output.writeUTF(this.playerName);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ShowCellSpectatorMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ShowCellSpectatorMessage(input);
       }
       
-      public function deserializeAs_ShowCellSpectatorMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.playerName = param1.readUTF();
+      public function deserializeAs_ShowCellSpectatorMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.playerName = input.readUTF();
       }
    }
 }

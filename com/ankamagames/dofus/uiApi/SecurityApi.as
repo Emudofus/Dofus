@@ -10,21 +10,21 @@ package com.ankamagames.dofus.uiApi
          super();
       }
       
-      public static function askSecureModeCode(param1:Function) : void {
-         SecureModeManager.getInstance().askCode(param1);
+      public static function askSecureModeCode(callback:Function) : void {
+         SecureModeManager.getInstance().askCode(callback);
       }
       
-      public static function sendSecureModeCode(param1:String, param2:Function, param3:String=null) : void {
-         SecureModeManager.getInstance().computerName = param3;
-         SecureModeManager.getInstance().sendCode(param1,param2);
+      public static function sendSecureModeCode(code:String, callback:Function, computerName:String=null) : void {
+         SecureModeManager.getInstance().computerName = computerName;
+         SecureModeManager.getInstance().sendCode(code,callback);
       }
       
       public static function SecureModeisActive() : Boolean {
          return SecureModeManager.getInstance().active;
       }
       
-      public static function setShieldLevel(param1:uint) : void {
-         SecureModeManager.getInstance().shieldLevel = param1;
+      public static function setShieldLevel(level:uint) : void {
+         SecureModeManager.getInstance().shieldLevel = level;
       }
       
       public static function getShieldLevel() : uint {

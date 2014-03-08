@@ -24,11 +24,11 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 420;
       }
       
-      public function initGuildInAllianceInformations(param1:uint=0, param2:String="", param3:GuildEmblem=null, param4:uint=0, param5:uint=0, param6:Boolean=false) : GuildInAllianceInformations {
-         super.initGuildInformations(param1,param2,param3);
-         this.guildLevel = param4;
-         this.nbMembers = param5;
-         this.enabled = param6;
+      public function initGuildInAllianceInformations(guildId:uint=0, guildName:String="", guildEmblem:GuildEmblem=null, guildLevel:uint=0, nbMembers:uint=0, enabled:Boolean=false) : GuildInAllianceInformations {
+         super.initGuildInformations(guildId,guildName,guildEmblem);
+         this.guildLevel = guildLevel;
+         this.nbMembers = nbMembers;
+         this.enabled = enabled;
          return this;
       }
       
@@ -39,53 +39,53 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.enabled = false;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildInAllianceInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildInAllianceInformations(output);
       }
       
-      public function serializeAs_GuildInAllianceInformations(param1:IDataOutput) : void {
-         super.serializeAs_GuildInformations(param1);
-         if(this.guildLevel < 0 || this.guildLevel > 65535)
+      public function serializeAs_GuildInAllianceInformations(output:IDataOutput) : void {
+         super.serializeAs_GuildInformations(output);
+         if((this.guildLevel < 0) || (this.guildLevel > 65535))
          {
             throw new Error("Forbidden value (" + this.guildLevel + ") on element guildLevel.");
          }
          else
          {
-            param1.writeShort(this.guildLevel);
-            if(this.nbMembers < 0 || this.nbMembers > 65535)
+            output.writeShort(this.guildLevel);
+            if((this.nbMembers < 0) || (this.nbMembers > 65535))
             {
                throw new Error("Forbidden value (" + this.nbMembers + ") on element nbMembers.");
             }
             else
             {
-               param1.writeShort(this.nbMembers);
-               param1.writeBoolean(this.enabled);
+               output.writeShort(this.nbMembers);
+               output.writeBoolean(this.enabled);
                return;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildInAllianceInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildInAllianceInformations(input);
       }
       
-      public function deserializeAs_GuildInAllianceInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.guildLevel = param1.readUnsignedShort();
-         if(this.guildLevel < 0 || this.guildLevel > 65535)
+      public function deserializeAs_GuildInAllianceInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.guildLevel = input.readUnsignedShort();
+         if((this.guildLevel < 0) || (this.guildLevel > 65535))
          {
             throw new Error("Forbidden value (" + this.guildLevel + ") on element of GuildInAllianceInformations.guildLevel.");
          }
          else
          {
-            this.nbMembers = param1.readUnsignedShort();
-            if(this.nbMembers < 0 || this.nbMembers > 65535)
+            this.nbMembers = input.readUnsignedShort();
+            if((this.nbMembers < 0) || (this.nbMembers > 65535))
             {
                throw new Error("Forbidden value (" + this.nbMembers + ") on element of GuildInAllianceInformations.nbMembers.");
             }
             else
             {
-               this.enabled = param1.readBoolean();
+               this.enabled = input.readBoolean();
                return;
             }
          }

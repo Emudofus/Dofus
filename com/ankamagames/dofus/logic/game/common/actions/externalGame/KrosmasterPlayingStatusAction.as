@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.externalGame
          super();
       }
       
-      public static function create(param1:Boolean) : KrosmasterPlayingStatusAction {
-         var _loc2_:KrosmasterPlayingStatusAction = new KrosmasterPlayingStatusAction();
-         _loc2_.playing = param1;
-         return _loc2_;
+      public static function create(playing:Boolean) : KrosmasterPlayingStatusAction {
+         var action:KrosmasterPlayingStatusAction = new KrosmasterPlayingStatusAction();
+         action.playing = playing;
+         return action;
       }
       
       public var playing:Boolean;

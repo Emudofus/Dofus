@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.craft
          super();
       }
       
-      public static function create(param1:uint) : ExchangeSetCraftRecipeAction {
-         var _loc2_:ExchangeSetCraftRecipeAction = new ExchangeSetCraftRecipeAction();
-         _loc2_.recipeId = param1;
-         return _loc2_;
+      public static function create(recipeId:uint) : ExchangeSetCraftRecipeAction {
+         var action:ExchangeSetCraftRecipeAction = new ExchangeSetCraftRecipeAction();
+         action.recipeId = recipeId;
+         return action;
       }
       
       public var recipeId:uint;

@@ -10,48 +10,48 @@ package com.ankamagames.jerakine.types
          super();
       }
       
-      public static function fromXml(param1:String, param2:String, param3:Function) : LangMetaData {
-         var _loc7_:XML = null;
-         var _loc4_:XML = new XML(param1);
-         var _loc5_:LangMetaData = new LangMetaData();
-         var _loc6_:* = false;
-         if(_loc4_..filesActions..clearOnlyNotUpToDate.toString() == "true")
+      public static function fromXml(sXml:String, sUrlProvider:String, checkFunction:Function) : LangMetaData {
+         var file:XML = null;
+         var xml:XML = new XML(sXml);
+         var metaData:LangMetaData = new LangMetaData();
+         var bHaveVersionData:Boolean = false;
+         if(xml..filesActions..clearOnlyNotUpToDate.toString() == "true")
          {
-            _loc5_.clearOnlyNotUpToDate = true;
+            metaData.clearOnlyNotUpToDate = true;
          }
-         if(_loc4_..filesActions..clearOnlyNotUpToDate.toString() == "false")
+         if(xml..filesActions..clearOnlyNotUpToDate.toString() == "false")
          {
-            _loc5_.clearOnlyNotUpToDate = false;
+            metaData.clearOnlyNotUpToDate = false;
          }
-         if(_loc4_..filesActions..loadAllFile.toString() == "true")
+         if(xml..filesActions..loadAllFile.toString() == "true")
          {
-            _loc5_.loadAllFile = true;
+            metaData.loadAllFile = true;
          }
-         if(_loc4_..filesActions..loadAllFile.toString() == "false")
+         if(xml..filesActions..loadAllFile.toString() == "false")
          {
-            _loc5_.loadAllFile = false;
+            metaData.loadAllFile = false;
          }
-         if(_loc4_..filesActions..clearAllFile.toString() == "true")
+         if(xml..filesActions..clearAllFile.toString() == "true")
          {
-            _loc5_.clearAllFile = true;
+            metaData.clearAllFile = true;
          }
-         if(_loc4_..filesActions..clearAllFile.toString() == "false")
+         if(xml..filesActions..clearAllFile.toString() == "false")
          {
-            _loc5_.clearAllFile = false;
+            metaData.clearAllFile = false;
          }
-         for each (_loc7_ in _loc4_..filesVersions..file)
+         for each (file in xml..filesVersions..file)
          {
-            _loc6_ = true;
-            if((_loc5_.clearAllFile) || !_loc5_.clearOnlyNotUpToDate || !param3(FileUtils.getFileStartName(param2) + "." + _loc7_..@name,_loc7_.toString()))
+            bHaveVersionData = true;
+            if((metaData.clearAllFile) || (!metaData.clearOnlyNotUpToDate) || (!checkFunction(FileUtils.getFileStartName(sUrlProvider) + "." + file..@name,file.toString())))
             {
-               _loc5_.addFile(_loc7_..@name,_loc7_.toString());
+               metaData.addFile(file..@name,file.toString());
             }
          }
-         if(!_loc6_)
+         if(!bHaveVersionData)
          {
-            _loc5_.loadAllFile = true;
+            metaData.loadAllFile = true;
          }
-         return _loc5_;
+         return metaData;
       }
       
       private var _nFileCount:uint = 0;
@@ -64,9 +64,9 @@ package com.ankamagames.jerakine.types
       
       public var clearFile:Array;
       
-      public function addFile(param1:String, param2:String) : void {
+      public function addFile(sFilename:String, sVersion:String) : void {
          this._nFileCount++;
-         this.clearFile[param1] = param2;
+         this.clearFile[sFilename] = sVersion;
       }
       
       public function get clearFileCount() : uint {

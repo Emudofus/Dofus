@@ -49,8 +49,7 @@ package com.ankamagames.berilia.utils.web
          return this._rootPath;
       }
       
-      public function init(param1:File) : Boolean {
-         var rootPath:File = param1;
+      public function init(rootPath:File) : Boolean {
          this._rootPath = rootPath.nativePath;
          if(this._usedPort)
          {
@@ -81,18 +80,18 @@ package com.ankamagames.berilia.utils.web
          return false;
       }
       
-      public function getUrlTo(param1:String) : String {
-         var param1:String = StringUtils.convertLatinToUtf(param1);
-         return "http://localhost:" + this._usedPort + "/" + param1;
+      public function getUrlTo(target:String) : String {
+         var target:String = StringUtils.convertLatinToUtf(target);
+         return "http://localhost:" + this._usedPort + "/" + target;
       }
       
       public function close() : void {
-         var _loc1_:HttpSocket = null;
-         for each (_loc1_ in this._sockets)
+         var httpSocket:HttpSocket = null;
+         for each (httpSocket in this._sockets)
          {
-            _loc1_.tearDown();
+            httpSocket.tearDown();
          }
-         if(!(this._server == null) && (this._server.bound))
+         if((!(this._server == null)) && (this._server.bound))
          {
             this._server.removeEventListener(Event.CONNECT,this.onConnect);
             this._server.close();
@@ -101,15 +100,15 @@ package com.ankamagames.berilia.utils.web
          }
       }
       
-      private function onConnect(param1:Event) : void {
-         var _loc2_:HttpSocket = new HttpSocket(Object(param1).socket,this._rootPath);
-         _loc2_.addEventListener(Event.COMPLETE,this.onHttpSocketComplete);
-         this._sockets.push(_loc2_);
+      private function onConnect(event:Event) : void {
+         var htppSocket:HttpSocket = new HttpSocket(Object(event).socket,this._rootPath);
+         htppSocket.addEventListener(Event.COMPLETE,this.onHttpSocketComplete);
+         this._sockets.push(htppSocket);
       }
       
-      private function onHttpSocketComplete(param1:Event) : void {
-         var _loc2_:HttpSocket = param1.target as HttpSocket;
-         this._sockets.splice(this._sockets.indexOf(_loc2_),1);
+      private function onHttpSocketComplete(e:Event) : void {
+         var httpSocketToRemove:HttpSocket = e.target as HttpSocket;
+         this._sockets.splice(this._sockets.indexOf(httpSocketToRemove),1);
       }
    }
 }

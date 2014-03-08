@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.tinsel
          return 6368;
       }
       
-      public function initOrnamentGainedMessage(param1:uint=0) : OrnamentGainedMessage {
-         this.ornamentId = param1;
+      public function initOrnamentGainedMessage(ornamentId:uint=0) : OrnamentGainedMessage {
+         this.ornamentId = ornamentId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.tinsel
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_OrnamentGainedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_OrnamentGainedMessage(output);
       }
       
-      public function serializeAs_OrnamentGainedMessage(param1:IDataOutput) : void {
+      public function serializeAs_OrnamentGainedMessage(output:IDataOutput) : void {
          if(this.ornamentId < 0)
          {
             throw new Error("Forbidden value (" + this.ornamentId + ") on element ornamentId.");
          }
          else
          {
-            param1.writeShort(this.ornamentId);
+            output.writeShort(this.ornamentId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_OrnamentGainedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_OrnamentGainedMessage(input);
       }
       
-      public function deserializeAs_OrnamentGainedMessage(param1:IDataInput) : void {
-         this.ornamentId = param1.readShort();
+      public function deserializeAs_OrnamentGainedMessage(input:IDataInput) : void {
+         this.ornamentId = input.readShort();
          if(this.ornamentId < 0)
          {
             throw new Error("Forbidden value (" + this.ornamentId + ") on element of OrnamentGainedMessage.ornamentId.");

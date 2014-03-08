@@ -11,19 +11,19 @@ package com.ankamagames.dofus.internalDatacenter.spells
    public class EffectsListWrapper extends Object implements IDataCenter
    {
       
-      public function EffectsListWrapper(param1:Array) {
-         var _loc2_:BasicBuff = null;
-         var _loc3_:EffectInstance = null;
-         var _loc4_:Effect = null;
-         var _loc5_:* = 0;
+      public function EffectsListWrapper(buffs:Array) {
+         var buff:BasicBuff = null;
+         var effect:EffectInstance = null;
+         var effectData:Effect = null;
+         var category:* = 0;
          super();
          this._categories = new Array();
-         for each (_loc2_ in param1)
+         for each (buff in buffs)
          {
-            _loc3_ = _loc2_.effects;
-            _loc4_ = Effect.getEffectById(_loc3_.effectId);
-            _loc5_ = _loc3_.trigger?CATEGORY_TRIGGERED:this.getCategory(_loc4_);
-            this.addBuff(_loc5_,_loc2_);
+            effect = buff.effects;
+            effectData = Effect.getEffectById(effect.effectId);
+            category = effect.trigger?CATEGORY_TRIGGERED:this.getCategory(effectData);
+            this.addBuff(category,buff);
          }
       }
       
@@ -46,48 +46,48 @@ package com.ankamagames.dofus.internalDatacenter.spells
       public var effects:Vector.<EffectInstance>;
       
       public function get categories() : Array {
-         var _loc2_:String = null;
-         var _loc1_:Array = new Array();
-         for (_loc2_ in this._categories)
+         var c:String = null;
+         var cat:Array = new Array();
+         for (c in this._categories)
          {
-            if(this._categories[_loc2_].length > 0 && _loc1_[_loc2_] == null)
+            if((this._categories[c].length > 0) && (cat[c] == null))
             {
-               _loc1_.push(_loc2_);
+               cat.push(c);
             }
          }
-         _loc1_.sort();
-         return _loc1_;
+         cat.sort();
+         return cat;
       }
       
-      public function getBuffs(param1:int) : Array {
-         return this._categories[param1];
+      public function getBuffs(category:int) : Array {
+         return this._categories[category];
       }
       
       public function get buffArray() : Array {
          return this._categories;
       }
       
-      private function addBuff(param1:int, param2:BasicBuff) : void {
-         var _loc3_:BasicBuff = null;
-         var _loc4_:Effect = null;
-         if(!this._categories[param1])
+      private function addBuff(category:int, buff:BasicBuff) : void {
+         var b:BasicBuff = null;
+         var e:Effect = null;
+         if(!this._categories[category])
          {
-            this._categories[param1] = new Array();
+            this._categories[category] = new Array();
          }
-         for each (_loc3_ in this._categories[param1])
+         for each (b in this._categories[category])
          {
-            _loc4_ = Effect.getEffectById(param2.actionId);
-            if((_loc4_.useDice) && _loc3_.actionId == param2.actionId && param2.trigger == false && !(param2 is StateBuff))
+            e = Effect.getEffectById(buff.actionId);
+            if((e.useDice) && (b.actionId == buff.actionId) && (buff.trigger == false) && (!(buff is StateBuff)))
             {
-               if(!(param2.effects is EffectInstanceInteger))
+               if(!(buff.effects is EffectInstanceInteger))
                {
                   throw new Error("Tentative de cumulation d\'effets ambigue");
                }
                else
                {
-                  _loc3_.param1 = _loc3_.param1 + param2.param1;
-                  _loc3_.param2 = _loc3_.param2 + param2.param2;
-                  _loc3_.param3 = _loc3_.param3 + param2.param3;
+                  b.param1 = b.param1 + buff.param1;
+                  b.param2 = b.param2 + buff.param2;
+                  b.param3 = b.param3 + buff.param3;
                   return;
                }
             }
@@ -96,26 +96,26 @@ package com.ankamagames.dofus.internalDatacenter.spells
                continue;
             }
          }
-         _loc3_ = param2.clone();
-         this._categories[param1].push(_loc3_);
+         b = buff.clone();
+         this._categories[category].push(b);
       }
       
-      private function getCategory(param1:Effect) : int {
-         if(param1.characteristic == 71)
+      private function getCategory(effect:Effect) : int {
+         if(effect.characteristic == 71)
          {
             return CATEGORY_STATE;
          }
-         if(param1.operator == "-")
+         if(effect.operator == "-")
          {
-            if(param1.active)
+            if(effect.active)
             {
                return CATEGORY_ACTIVE_MALUS;
             }
             return CATEGORY_PASSIVE_MALUS;
          }
-         if(param1.operator == "+")
+         if(effect.operator == "+")
          {
-            if(param1.active)
+            if(effect.active)
             {
                return CATEGORY_ACTIVE_BONUS;
             }

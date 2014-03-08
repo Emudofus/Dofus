@@ -17,19 +17,19 @@ package com.ankamagames.dofus.datacenter.effects.instances
       public var minutes:uint;
       
       override public function clone() : EffectInstance {
-         var _loc1_:EffectInstanceDuration = new EffectInstanceDuration();
-         _loc1_.rawZone = rawZone;
-         _loc1_.effectId = effectId;
-         _loc1_.duration = duration;
-         _loc1_.delay = delay;
-         _loc1_.days = this.days;
-         _loc1_.hours = this.hours;
-         _loc1_.minutes = this.minutes;
-         _loc1_.random = random;
-         _loc1_.group = group;
-         _loc1_.targetId = targetId;
-         _loc1_.targetMask = targetMask;
-         return _loc1_;
+         var o:EffectInstanceDuration = new EffectInstanceDuration();
+         o.rawZone = rawZone;
+         o.effectId = effectId;
+         o.duration = duration;
+         o.delay = delay;
+         o.days = this.days;
+         o.hours = this.hours;
+         o.minutes = this.minutes;
+         o.random = random;
+         o.group = group;
+         o.targetId = targetId;
+         o.targetMask = targetMask;
+         return o;
       }
       
       override public function get parameter0() : Object {
@@ -44,17 +44,17 @@ package com.ankamagames.dofus.datacenter.effects.instances
          return this.minutes;
       }
       
-      override public function setParameter(param1:uint, param2:*) : void {
-         switch(param1)
+      override public function setParameter(paramIndex:uint, value:*) : void {
+         switch(paramIndex)
          {
             case 0:
-               this.days = uint(param2);
+               this.days = uint(value);
                break;
             case 1:
-               this.hours = uint(param2);
+               this.hours = uint(value);
                break;
             case 2:
-               this.minutes = uint(param2);
+               this.minutes = uint(value);
                break;
          }
       }

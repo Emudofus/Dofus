@@ -21,8 +21,8 @@ package com.ankamagames.dofus.kernel.updaterv2.messages.impl
          return this._step;
       }
       
-      public function deserialize(param1:Object) : void {
-         this._step = param1["step"];
+      public function deserialize(data:Object) : void {
+         this._step = data["step"];
       }
       
       public function toString() : String {

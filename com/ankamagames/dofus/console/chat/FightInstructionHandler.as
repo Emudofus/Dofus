@@ -19,80 +19,80 @@ package com.ankamagames.dofus.console.chat
          super();
       }
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         var _loc4_:String = null;
-         var _loc5_:uint = 0;
-         var _loc6_:GameFightOptionToggleMessage = null;
-         var _loc7_:* = 0;
-         var _loc8_:GameContextKickMessage = null;
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var player:String = null;
+         var option:uint = 0;
+         var gfotmsg:GameFightOptionToggleMessage = null;
+         var fighterId:* = 0;
+         var gckmsg:GameContextKickMessage = null;
+         switch(cmd)
          {
             case "spectator":
                if(PlayedCharacterManager.getInstance().isFighting)
                {
-                  _loc5_ = FightOptionsEnum.FIGHT_OPTION_SET_SECRET;
-                  _loc6_ = new GameFightOptionToggleMessage();
-                  _loc6_.initGameFightOptionToggleMessage(_loc5_);
-                  ConnectionsHandler.getConnection().send(_loc6_);
+                  option = FightOptionsEnum.FIGHT_OPTION_SET_SECRET;
+                  gfotmsg = new GameFightOptionToggleMessage();
+                  gfotmsg.initGameFightOptionToggleMessage(option);
+                  ConnectionsHandler.getConnection().send(gfotmsg);
                }
                break;
             case "list":
-               this.listFighters(param1);
+               this.listFighters(console);
                break;
             case "players":
-               this.listFighters(param1);
+               this.listFighters(console);
                break;
             case "kick":
-               if(param3.length != 2)
+               if(args.length != 2)
                {
                   return;
                }
-               _loc4_ = param3[1];
+               player = args[1];
                if(FightContextFrame.preFightIsActive)
                {
-                  _loc7_ = this.getFighterId(_loc4_);
-                  if(_loc7_ != 0)
+                  fighterId = this.getFighterId(player);
+                  if(fighterId != 0)
                   {
-                     _loc8_ = new GameContextKickMessage();
-                     _loc8_.initGameContextKickMessage(1);
-                     ConnectionsHandler.getConnection().send(_loc8_);
+                     gckmsg = new GameContextKickMessage();
+                     gckmsg.initGameContextKickMessage(1);
+                     ConnectionsHandler.getConnection().send(gckmsg);
                   }
                }
                break;
          }
       }
       
-      private function getFighterId(param1:String) : int {
-         var _loc4_:* = 0;
-         var _loc2_:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
-         var _loc3_:Vector.<int> = _loc2_.battleFrame.fightersList;
-         for each (_loc4_ in _loc3_)
+      private function getFighterId(name:String) : int {
+         var fighterId:* = 0;
+         var fightFrame:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
+         var fighters:Vector.<int> = fightFrame.battleFrame.fightersList;
+         for each (fighterId in fighters)
          {
-            if(_loc2_.getFighterName(_loc4_) == param1)
+            if(fightFrame.getFighterName(fighterId) == name)
             {
-               return _loc4_;
+               return fighterId;
             }
          }
          return 0;
       }
       
-      private function listFighters(param1:ConsoleHandler) : void {
-         var _loc2_:FightContextFrame = null;
-         var _loc3_:Vector.<int> = null;
-         var _loc4_:* = 0;
+      private function listFighters(console:ConsoleHandler) : void {
+         var fightFrame:FightContextFrame = null;
+         var fighters:Vector.<int> = null;
+         var fighterId:* = 0;
          if(PlayedCharacterManager.getInstance().isFighting)
          {
-            _loc2_ = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
-            _loc3_ = _loc2_.battleFrame.fightersList;
-            for each (_loc4_ in _loc3_)
+            fightFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
+            fighters = fightFrame.battleFrame.fightersList;
+            for each (fighterId in fighters)
             {
-               param1.output(_loc2_.getFighterName(_loc4_));
+               console.output(fightFrame.getFighterName(fighterId));
             }
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "spectator":
                return I18n.getUiText("ui.chat.console.help.spectator");
@@ -102,12 +102,10 @@ package com.ankamagames.dofus.console.chat
                return I18n.getUiText("ui.chat.console.help.list");
             case "kick":
                return I18n.getUiText("ui.chat.console.help.kick");
-            default:
-               return I18n.getUiText("ui.chat.console.noHelp",[param1]);
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return [];
       }
    }

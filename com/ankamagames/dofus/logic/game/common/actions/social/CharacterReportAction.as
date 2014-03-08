@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.social
          super();
       }
       
-      public static function create(param1:uint, param2:uint) : CharacterReportAction {
-         var _loc3_:CharacterReportAction = new CharacterReportAction();
-         _loc3_.reportedId = param1;
-         _loc3_.reason = param2;
-         return _loc3_;
+      public static function create(reportedId:uint, reason:uint) : CharacterReportAction {
+         var a:CharacterReportAction = new CharacterReportAction();
+         a.reportedId = reportedId;
+         a.reason = reason;
+         return a;
       }
       
       public var reportedId:uint;

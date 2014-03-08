@@ -4,10 +4,10 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.logic.game.common.misc.HookLock;
    import flash.utils.Dictionary;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.items.Item;
    import com.ankamagames.dofus.logic.game.common.misc.Inventory;
    import com.ankamagames.dofus.logic.game.common.managers.StorageOptionManager;
@@ -17,11 +17,11 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    public class StorageGenericView extends Object implements IStorageView
    {
       
-      public function StorageGenericView(param1:HookLock) {
+      public function StorageGenericView(hookLock:HookLock) {
          this._typesQty = new Dictionary();
          this._types = new Dictionary();
          super();
-         this._hookLock = param1;
+         this._hookLock = hookLock;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StorageView));
@@ -42,8 +42,8 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
       
       protected var _types:Dictionary;
       
-      public function initialize(param1:Vector.<ItemWrapper>) : void {
-         var _loc2_:ItemWrapper = null;
+      public function initialize(items:Vector.<ItemWrapper>) : void {
+         var item:ItemWrapper = null;
          if(!this._content)
          {
             this._content = new Vector.<ItemWrapper>();
@@ -55,11 +55,11 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          this._typesQty = new Dictionary();
          this._types = new Dictionary();
          this._sortedContent = null;
-         for each (_loc2_ in param1)
+         for each (item in items)
          {
-            if(this.isListening(_loc2_))
+            if(this.isListening(item))
             {
-               this.addItem(_loc2_,0);
+               this.addItem(item,0);
             }
          }
          this._content.sort(this.sortItemsByIndex);
@@ -82,264 +82,262 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          return this._types;
       }
       
-      public function addItem(param1:ItemWrapper, param2:int) : void {
-         var _loc3_:ItemWrapper = param1.clone();
-         _loc3_.quantity = _loc3_.quantity - param2;
-         this._content.unshift(_loc3_);
+      public function addItem(item:ItemWrapper, invisible:int) : void {
+         var clone:ItemWrapper = item.clone();
+         clone.quantity = clone.quantity - invisible;
+         this._content.unshift(clone);
          if(this._sortedContent)
          {
-            this._sortedContent.unshift(_loc3_);
+            this._sortedContent.unshift(clone);
          }
-         if((this._typesQty[param1.typeId]) && this._typesQty[param1.typeId] > 0)
+         if((this._typesQty[item.typeId]) && (this._typesQty[item.typeId] > 0))
          {
-            this._typesQty[param1.typeId]++;
+            this._typesQty[item.typeId]++;
          }
          else
          {
-            this._typesQty[param1.typeId] = 1;
-            this._types[param1.typeId] = param1.type;
+            this._typesQty[item.typeId] = 1;
+            this._types[item.typeId] = item.type;
          }
          this.updateView();
       }
       
-      public function removeItem(param1:ItemWrapper, param2:int) : void {
-         var _loc3_:int = this.getItemIndex(param1);
-         if(_loc3_ == -1)
+      public function removeItem(item:ItemWrapper, invisible:int) : void {
+         var idx:int = this.getItemIndex(item);
+         if(idx == -1)
          {
             return;
          }
-         if((this._typesQty[param1.typeId]) && this._typesQty[param1.typeId] > 0)
+         if((this._typesQty[item.typeId]) && (this._typesQty[item.typeId] > 0))
          {
-            this._typesQty[param1.typeId]--;
-            if(this._typesQty[param1.typeId] == 0)
+            this._typesQty[item.typeId]--;
+            if(this._typesQty[item.typeId] == 0)
             {
-               delete this._types[[param1.typeId]];
+               delete this._types[[item.typeId]];
             }
          }
-         this._content.splice(_loc3_,1);
+         this._content.splice(idx,1);
          if(this._sortedContent)
          {
-            _loc3_ = this.getItemIndex(param1,this._sortedContent);
-            if(_loc3_ != -1)
+            idx = this.getItemIndex(item,this._sortedContent);
+            if(idx != -1)
             {
-               this._sortedContent.splice(_loc3_,1);
+               this._sortedContent.splice(idx,1);
             }
          }
          this.updateView();
       }
       
-      public function modifyItem(param1:ItemWrapper, param2:ItemWrapper, param3:int) : void {
-         var _loc5_:ItemWrapper = null;
-         var _loc4_:int = this.getItemIndex(param1);
-         if(_loc4_ != -1)
+      public function modifyItem(item:ItemWrapper, oldItem:ItemWrapper, invisible:int) : void {
+         var iw:ItemWrapper = null;
+         var idx:int = this.getItemIndex(item);
+         if(idx != -1)
          {
-            _loc5_ = this._content[_loc4_];
-            if(_loc5_.quantity == param1.quantity - param3)
+            iw = this._content[idx];
+            if(iw.quantity == item.quantity - invisible)
             {
-               _loc5_.update(param1.position,param1.objectUID,param1.objectGID,_loc5_.quantity,param1.effectsList);
+               iw.update(item.position,item.objectUID,item.objectGID,iw.quantity,item.effectsList);
                this.updateView();
             }
             else
             {
-               if(param1.quantity <= param3)
+               if(item.quantity <= invisible)
                {
-                  this.removeItem(_loc5_,param3);
+                  this.removeItem(iw,invisible);
                }
                else
                {
-                  _loc5_.update(param1.position,param1.objectUID,param1.objectGID,param1.quantity - param3,param1.effectsList);
+                  iw.update(item.position,item.objectUID,item.objectGID,item.quantity - invisible,item.effectsList);
                   this.updateView();
                }
             }
          }
          else
          {
-            if(param3 < param1.quantity)
+            if(invisible < item.quantity)
             {
-               this.addItem(param1,param3);
+               this.addItem(item,invisible);
             }
          }
       }
       
-      public function isListening(param1:ItemWrapper) : Boolean {
-         return param1.position == 63 && !(Item.getItemById(param1.objectGID).typeId == Inventory.HIDDEN_TYPE_ID);
+      public function isListening(item:ItemWrapper) : Boolean {
+         return (item.position == 63) && (!(Item.getItemById(item.objectGID).typeId == Inventory.HIDDEN_TYPE_ID));
       }
       
       public function getItemTypes() : Dictionary {
          return this._types;
       }
       
-      protected function getItemIndex(param1:ItemWrapper, param2:Vector.<ItemWrapper>=null) : int {
-         var _loc4_:ItemWrapper = null;
-         if(param2 == null)
+      protected function getItemIndex(item:ItemWrapper, list:Vector.<ItemWrapper>=null) : int {
+         var iw:ItemWrapper = null;
+         if(list == null)
          {
-            param2 = this._content;
+            list = this._content;
          }
-         var _loc3_:* = 0;
-         while(_loc3_ < param2.length)
+         var i:int = 0;
+         while(i < list.length)
          {
-            _loc4_ = param2[_loc3_];
-            if(_loc4_.objectUID == param1.objectUID)
+            iw = list[i];
+            if(iw.objectUID == item.objectUID)
             {
-               return _loc3_;
+               return i;
             }
-            _loc3_++;
+            i++;
          }
          return -1;
       }
       
-      private function sortItemsByIndex(param1:ItemWrapper, param2:ItemWrapper) : int {
-         if(param1.sortOrder > param2.sortOrder)
+      private function sortItemsByIndex(a:ItemWrapper, b:ItemWrapper) : int {
+         if(a.sortOrder > b.sortOrder)
          {
             return -1;
          }
-         if(param1.sortOrder == param2.sortOrder)
+         if(a.sortOrder == b.sortOrder)
          {
             return 0;
          }
          return 1;
       }
       
-      private function compareFunction(param1:ItemWrapper, param2:ItemWrapper, param3:uint=0) : int {
-         var _loc4_:* = 0;
-         switch(this._sortFieldsCache[param3])
+      private function compareFunction(a:ItemWrapper, b:ItemWrapper, sortDepth:uint=0) : int {
+         var returnValue:* = 0;
+         switch(this._sortFieldsCache[sortDepth])
          {
             case StorageOptionManager.SORT_FIELD_NAME:
                if(!this._sortRevertCache)
                {
-                  _loc4_ = param1.name > param2.name?1:param1.name < param2.name?-1:0;
+                  returnValue = a.name > b.name?1:a.name < b.name?-1:0;
                }
                else
                {
-                  _loc4_ = param1.name < param2.name?1:param1.name > param2.name?-1:0;
+                  returnValue = a.name < b.name?1:a.name > b.name?-1:0;
                }
                break;
             case StorageOptionManager.SORT_FIELD_WEIGHT:
                if(!this._sortRevertCache)
                {
-                  _loc4_ = param1.weight < param2.weight?1:param1.weight > param2.weight?-1:0;
+                  returnValue = a.weight < b.weight?1:a.weight > b.weight?-1:0;
                }
                else
                {
-                  _loc4_ = param1.weight > param2.weight?1:param1.weight < param2.weight?-1:0;
+                  returnValue = a.weight > b.weight?1:a.weight < b.weight?-1:0;
                }
                break;
             case StorageOptionManager.SORT_FIELD_LOT_WEIGHT:
                if(!this._sortRevertCache)
                {
-                  _loc4_ = param1.weight * param1.quantity < param2.weight * param2.quantity?1:param1.weight * param1.quantity > param2.weight * param2.quantity?-1:0;
+                  returnValue = a.weight * a.quantity < b.weight * b.quantity?1:a.weight * a.quantity > b.weight * b.quantity?-1:0;
                }
                else
                {
-                  _loc4_ = param1.weight * param1.quantity > param2.weight * param2.quantity?1:param1.weight * param1.quantity < param2.weight * param2.quantity?-1:0;
+                  returnValue = a.weight * a.quantity > b.weight * b.quantity?1:a.weight * a.quantity < b.weight * b.quantity?-1:0;
                }
                break;
             case StorageOptionManager.SORT_FIELD_QUANTITY:
                if(!this._sortRevertCache)
                {
-                  _loc4_ = param1.quantity < param2.quantity?1:param1.quantity > param2.quantity?-1:0;
+                  returnValue = a.quantity < b.quantity?1:a.quantity > b.quantity?-1:0;
                }
                else
                {
-                  _loc4_ = param1.quantity > param2.quantity?1:param1.quantity < param2.quantity?-1:0;
+                  returnValue = a.quantity > b.quantity?1:a.quantity < b.quantity?-1:0;
                }
                break;
             case StorageOptionManager.SORT_FIELD_DEFAULT:
                if(!this._sortRevertCache)
                {
-                  _loc4_ = param1.objectUID < param2.objectUID?1:param1.objectUID > param2.objectUID?-1:0;
+                  returnValue = a.objectUID < b.objectUID?1:a.objectUID > b.objectUID?-1:0;
                }
                else
                {
-                  _loc4_ = param1.objectUID > param2.objectUID?1:param1.objectUID < param2.objectUID?-1:0;
+                  returnValue = a.objectUID > b.objectUID?1:a.objectUID < b.objectUID?-1:0;
                }
                break;
             case StorageOptionManager.SORT_FIELD_AVERAGEPRICE:
                if(!this._sortRevertCache)
                {
-                  _loc4_ = this.getItemAveragePrice(param1.objectGID) < this.getItemAveragePrice(param2.objectGID)?1:this.getItemAveragePrice(param1.objectGID) > this.getItemAveragePrice(param2.objectGID)?-1:0;
+                  returnValue = this.getItemAveragePrice(a.objectGID) < this.getItemAveragePrice(b.objectGID)?1:this.getItemAveragePrice(a.objectGID) > this.getItemAveragePrice(b.objectGID)?-1:0;
                }
                else
                {
-                  _loc4_ = this.getItemAveragePrice(param1.objectGID) > this.getItemAveragePrice(param2.objectGID)?1:this.getItemAveragePrice(param1.objectGID) < this.getItemAveragePrice(param2.objectGID)?-1:0;
+                  returnValue = this.getItemAveragePrice(a.objectGID) > this.getItemAveragePrice(b.objectGID)?1:this.getItemAveragePrice(a.objectGID) < this.getItemAveragePrice(b.objectGID)?-1:0;
                }
                break;
             case StorageOptionManager.SORT_FIELD_LOT_AVERAGEPRICE:
                if(!this._sortRevertCache)
                {
-                  _loc4_ = this.getItemAveragePrice(param1.objectGID) * param1.quantity < this.getItemAveragePrice(param2.objectGID) * param2.quantity?1:this.getItemAveragePrice(param1.objectGID) * param1.quantity > this.getItemAveragePrice(param2.objectGID) * param2.quantity?-1:0;
+                  returnValue = this.getItemAveragePrice(a.objectGID) * a.quantity < this.getItemAveragePrice(b.objectGID) * b.quantity?1:this.getItemAveragePrice(a.objectGID) * a.quantity > this.getItemAveragePrice(b.objectGID) * b.quantity?-1:0;
                }
                else
                {
-                  _loc4_ = this.getItemAveragePrice(param1.objectGID) * param1.quantity > this.getItemAveragePrice(param2.objectGID) * param2.quantity?1:this.getItemAveragePrice(param1.objectGID) * param1.quantity < this.getItemAveragePrice(param2.objectGID) * param2.quantity?-1:0;
+                  returnValue = this.getItemAveragePrice(a.objectGID) * a.quantity > this.getItemAveragePrice(b.objectGID) * b.quantity?1:this.getItemAveragePrice(a.objectGID) * a.quantity < this.getItemAveragePrice(b.objectGID) * b.quantity?-1:0;
                }
                break;
             case StorageOptionManager.SORT_FIELD_LEVEL:
                if(!this._sortRevertCache)
                {
-                  _loc4_ = param1.level < param2.level?1:param1.level > param2.level?-1:0;
+                  returnValue = a.level < b.level?1:a.level > b.level?-1:0;
                }
                else
                {
-                  _loc4_ = param1.level > param2.level?1:param1.level < param2.level?-1:0;
+                  returnValue = a.level > b.level?1:a.level < b.level?-1:0;
                }
                break;
             case StorageOptionManager.SORT_FIELD_ITEM_TYPE:
                if(!this._sortRevertCache)
                {
-                  _loc4_ = param1.type.name > param2.type.name?1:param1.type.name < param2.type.name?-1:0;
+                  returnValue = a.type.name > b.type.name?1:a.type.name < b.type.name?-1:0;
                }
                else
                {
-                  _loc4_ = param1.type.name < param2.type.name?1:param1.type.name > param2.type.name?-1:0;
+                  returnValue = a.type.name < b.type.name?1:a.type.name > b.type.name?-1:0;
                }
                break;
-            default:
-               _loc4_ = 0;
          }
-         if(_loc4_ != 0)
+         if(returnValue != 0)
          {
-            return _loc4_;
+            return returnValue;
          }
-         if(param3 == this._sortFieldsCache.length-1)
+         if(sortDepth == this._sortFieldsCache.length - 1)
          {
             return 0;
          }
-         return this.compareFunction(param1,param2,++param3);
+         return this.compareFunction(a,b,++sortDepth);
       }
       
-      private function getItemAveragePrice(param1:uint) : int {
-         var _loc2_:AveragePricesFrame = Kernel.getWorker().getFrame(AveragePricesFrame) as AveragePricesFrame;
-         return _loc2_.pricesData.items["item" + param1];
+      private function getItemAveragePrice(pItemGID:uint) : int {
+         var avgPricesFrame:AveragePricesFrame = Kernel.getWorker().getFrame(AveragePricesFrame) as AveragePricesFrame;
+         return avgPricesFrame.pricesData.items["item" + pItemGID];
       }
       
       public function updateView() : void {
-         var _loc2_:* = 0;
-         var _loc3_:* = 0;
-         var _loc4_:ItemWrapper = null;
-         var _loc1_:* = true;
-         if((this._sortFieldsCache) && this._sortFieldsCache.length == this.sortFields().length)
+         var i:* = 0;
+         var len:* = 0;
+         var iw:ItemWrapper = null;
+         var sameSort:Boolean = true;
+         if((this._sortFieldsCache) && (this._sortFieldsCache.length == this.sortFields().length))
          {
-            _loc3_ = this._sortFieldsCache.length;
-            _loc2_ = 0;
-            while(_loc2_ < _loc3_)
+            len = this._sortFieldsCache.length;
+            i = 0;
+            while(i < len)
             {
-               if(this._sortFieldsCache[_loc2_] != this.sortFields()[_loc2_])
+               if(this._sortFieldsCache[i] != this.sortFields()[i])
                {
-                  _loc1_ = false;
+                  sameSort = false;
                   break;
                }
-               _loc2_++;
+               i++;
             }
          }
          else
          {
-            _loc1_ = false;
+            sameSort = false;
          }
          this._sortFieldsCache = this.sortFields();
          if(this._sortFieldsCache[0] != StorageOptionManager.SORT_FIELD_NONE)
          {
-            if(!_loc1_)
+            if(!sameSort)
             {
                this._sortRevertCache = this.sortRevert();
             }
@@ -353,9 +351,9 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
             if(!this._sortedContent)
             {
                this._sortedContent = new Vector.<ItemWrapper>();
-               for each (_loc4_ in this._content)
+               for each (iw in this._content)
                {
-                  this._sortedContent.push(_loc4_);
+                  this._sortedContent.push(iw);
                }
             }
             this._sortedContent.sort(this.compareFunction);

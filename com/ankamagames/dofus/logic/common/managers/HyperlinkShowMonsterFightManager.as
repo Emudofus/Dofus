@@ -19,23 +19,23 @@ package com.ankamagames.dofus.logic.common.managers
          super();
       }
       
-      public static function showEntity(param1:int) : void {
-         var _loc3_:DisplayObject = null;
-         var _loc2_:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-         if(_loc2_)
+      public static function showEntity(entityId:int) : void {
+         var entity:DisplayObject = null;
+         var fightEntitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         if(fightEntitiesFrame)
          {
-            _loc3_ = DofusEntities.getEntity(param1) as DisplayObject;
-            if(_loc3_)
+            entity = DofusEntities.getEntity(entityId) as DisplayObject;
+            if(entity)
             {
-               HyperlinkShowCellManager.showCell((_loc3_ as IEntity).position.cellId);
+               HyperlinkShowCellManager.showCell((entity as IEntity).position.cellId);
             }
          }
       }
       
-      public static function rollOver(param1:int, param2:int, param3:int) : void {
-         var _loc4_:Rectangle = new Rectangle(param1,param2,10,10);
-         var _loc5_:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.whereAreYou"));
-         TooltipManager.show(_loc5_,_loc4_,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
+      public static function rollOver(pX:int, pY:int, entityId:int) : void {
+         var target:Rectangle = new Rectangle(pX,pY,10,10);
+         var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.whereAreYou"));
+         TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
       }
    }
 }

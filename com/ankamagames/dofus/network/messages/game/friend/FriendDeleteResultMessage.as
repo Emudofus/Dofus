@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5601;
       }
       
-      public function initFriendDeleteResultMessage(param1:Boolean=false, param2:String="") : FriendDeleteResultMessage {
-         this.success = param1;
-         this.name = param2;
+      public function initFriendDeleteResultMessage(success:Boolean=false, name:String="") : FriendDeleteResultMessage {
+         this.success = success;
+         this.name = name;
          this._isInitialized = true;
          return this;
       }
@@ -42,32 +42,32 @@ package com.ankamagames.dofus.network.messages.game.friend
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FriendDeleteResultMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FriendDeleteResultMessage(output);
       }
       
-      public function serializeAs_FriendDeleteResultMessage(param1:IDataOutput) : void {
-         param1.writeBoolean(this.success);
-         param1.writeUTF(this.name);
+      public function serializeAs_FriendDeleteResultMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.success);
+         output.writeUTF(this.name);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FriendDeleteResultMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FriendDeleteResultMessage(input);
       }
       
-      public function deserializeAs_FriendDeleteResultMessage(param1:IDataInput) : void {
-         this.success = param1.readBoolean();
-         this.name = param1.readUTF();
+      public function deserializeAs_FriendDeleteResultMessage(input:IDataInput) : void {
+         this.success = input.readBoolean();
+         this.name = input.readUTF();
       }
    }
 }

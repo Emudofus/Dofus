@@ -18,7 +18,7 @@ package com.ankamagames.atouin.types
    public class DataMapContainer extends Object
    {
       
-      public function DataMapContainer(param1:Map) {
+      public function DataMapContainer(mapData:Map) {
          super();
          if(!this._spMap)
          {
@@ -27,10 +27,10 @@ package com.ankamagames.atouin.types
             _aInteractiveCell = new Array();
          }
          Atouin.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onOptionChange);
-         this.id = param1.id;
+         this.id = mapData.id;
          this.layerDepth = new Array();
          this._aCell = new Array();
-         this._map = param1;
+         this._map = mapData;
          this._animatedElement = new Array();
          this._allowAnimatedGfx = Atouin.getInstance().options.allowAnimatedGfx;
       }
@@ -64,121 +64,121 @@ package com.ankamagames.atouin.types
       public var rendered:Boolean = false;
       
       public function removeContainer() : void {
-         var _loc1_:Sprite = null;
-         var _loc2_:Sprite = null;
-         var _loc3_:CellReference = null;
-         var _loc4_:uint = 0;
-         var _loc5_:uint = 0;
-         while(_loc5_ < this._aCell.length)
+         var sprite:Sprite = null;
+         var parentSprite:Sprite = null;
+         var cellReference:CellReference = null;
+         var i:uint = 0;
+         var k:uint = 0;
+         while(k < this._aCell.length)
          {
-            _loc3_ = this._aCell[_loc5_];
-            if(_loc3_)
+            cellReference = this._aCell[k];
+            if(cellReference)
             {
-               _loc4_ = 0;
-               while(_loc4_ < _loc3_.listSprites.length)
+               i = 0;
+               while(i < cellReference.listSprites.length)
                {
-                  if(_loc3_.listSprites[_loc4_] is Sprite)
+                  if(cellReference.listSprites[i] is Sprite)
                   {
-                     _loc1_ = _loc3_.listSprites[_loc4_];
-                     if(_loc1_)
+                     sprite = cellReference.listSprites[i];
+                     if(sprite)
                      {
-                        _loc1_.cacheAsBitmap = false;
-                        _loc2_ = Sprite(_loc1_.parent);
-                        if(_loc2_)
+                        sprite.cacheAsBitmap = false;
+                        parentSprite = Sprite(sprite.parent);
+                        if(parentSprite)
                         {
-                           _loc2_.removeChild(_loc1_);
-                           delete _loc3_.listSprites[[_loc4_]];
-                           if(!_loc2_.numChildren)
+                           parentSprite.removeChild(sprite);
+                           delete cellReference.listSprites[[i]];
+                           if(!parentSprite.numChildren)
                            {
-                              _loc2_.parent.removeChild(_loc2_);
+                              parentSprite.parent.removeChild(parentSprite);
                            }
                         }
                      }
                   }
-                  _loc4_++;
+                  i++;
                }
-               delete this._aCell[[_loc5_]];
+               delete this._aCell[[k]];
             }
-            _loc5_++;
+            k++;
          }
          Atouin.getInstance().options.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onOptionChange);
       }
       
-      public function getCellReference(param1:uint) : CellReference {
-         if(!this._aCell[param1])
+      public function getCellReference(nId:uint) : CellReference {
+         if(!this._aCell[nId])
          {
-            this._aCell[param1] = new CellReference(param1);
+            this._aCell[nId] = new CellReference(nId);
          }
-         return this._aCell[param1];
+         return this._aCell[nId];
       }
       
-      public function isRegisteredCell(param1:uint) : Boolean {
-         return !(this._aCell[param1] == null);
+      public function isRegisteredCell(nId:uint) : Boolean {
+         return !(this._aCell[nId] == null);
       }
       
       public function getCell() : Array {
          return this._aCell;
       }
       
-      public function getLayer(param1:int) : LayerContainer {
-         if(!this._aLayers[param1])
+      public function getLayer(nId:int) : LayerContainer {
+         if(!this._aLayers[nId])
          {
-            this._aLayers[param1] = new LayerContainer(param1);
+            this._aLayers[nId] = new LayerContainer(nId);
          }
-         return this._aLayers[param1];
+         return this._aLayers[nId];
       }
       
-      public function clean(param1:Boolean=false) : Boolean {
-         var _loc2_:Sprite = null;
-         var _loc3_:Sprite = null;
-         var _loc4_:CellReference = null;
-         var _loc5_:uint = 0;
-         var _loc6_:Array = null;
-         var _loc7_:String = null;
-         var _loc8_:WorldPoint = null;
-         if(!param1)
+      public function clean(bForceCleaning:Boolean=false) : Boolean {
+         var sprite:Sprite = null;
+         var parentSprite:Sprite = null;
+         var cellReference:CellReference = null;
+         var i:uint = 0;
+         var provider:Array = null;
+         var k:String = null;
+         var p:WorldPoint = null;
+         if(!bForceCleaning)
          {
-            _loc6_ = VisibleCellDetection.detectCell(false,this._map,WorldPoint.fromMapId(this.id),Atouin.getInstance().options.frustum,MapDisplayManager.getInstance().currentMapPoint).cell;
+            provider = VisibleCellDetection.detectCell(false,this._map,WorldPoint.fromMapId(this.id),Atouin.getInstance().options.frustum,MapDisplayManager.getInstance().currentMapPoint).cell;
          }
          else
          {
-            _loc6_ = new Array();
-            _loc5_ = 0;
-            while(_loc5_ < this._aCell.length)
+            provider = new Array();
+            i = 0;
+            while(i < this._aCell.length)
             {
-               _loc6_[_loc5_] = _loc5_;
-               _loc5_++;
+               provider[i] = i;
+               i++;
             }
          }
-         for (_loc7_ in _loc6_)
+         for (k in provider)
          {
-            _loc4_ = this._aCell[_loc7_];
-            if(_loc4_)
+            cellReference = this._aCell[k];
+            if(cellReference)
             {
-               _loc5_ = 0;
-               while(_loc5_ < _loc4_.listSprites.length)
+               i = 0;
+               while(i < cellReference.listSprites.length)
                {
-                  _loc2_ = _loc4_.listSprites[_loc5_];
-                  if(_loc2_)
+                  sprite = cellReference.listSprites[i];
+                  if(sprite)
                   {
-                     _loc2_.cacheAsBitmap = false;
-                     _loc3_ = Sprite(_loc2_.parent);
-                     _loc3_.removeChild(_loc2_);
-                     delete _loc4_.listSprites[[_loc5_]];
-                     if(!_loc3_.numChildren)
+                     sprite.cacheAsBitmap = false;
+                     parentSprite = Sprite(sprite.parent);
+                     parentSprite.removeChild(sprite);
+                     delete cellReference.listSprites[[i]];
+                     if(!parentSprite.numChildren)
                      {
-                        _loc3_.parent.removeChild(_loc3_);
+                        parentSprite.parent.removeChild(parentSprite);
                      }
                   }
-                  _loc5_++;
+                  i++;
                }
-               delete this._aCell[[_loc7_]];
+               delete this._aCell[[k]];
             }
          }
-         _loc8_ = WorldPoint.fromMapId(this._map.id);
-         _loc8_.x = _loc8_.x - MapDisplayManager.getInstance().currentMapPoint.x;
-         _loc8_.y = _loc8_.y - MapDisplayManager.getInstance().currentMapPoint.y;
-         return Math.abs(_loc8_.x) > 1 || Math.abs(_loc8_.y) > 1;
+         p = WorldPoint.fromMapId(this._map.id);
+         p.x = p.x - MapDisplayManager.getInstance().currentMapPoint.x;
+         p.y = p.y - MapDisplayManager.getInstance().currentMapPoint.y;
+         return (Math.abs(p.x) > 1) || (Math.abs(p.y) > 1);
       }
       
       public function get mapContainer() : Sprite {
@@ -189,30 +189,30 @@ package com.ankamagames.atouin.types
          return this._map;
       }
       
-      public function addAnimatedElement(param1:WorldEntitySprite, param2:EntityGraphicalElementData) : void {
-         var _loc3_:Object = 
+      public function addAnimatedElement(element:WorldEntitySprite, data:EntityGraphicalElementData) : void {
+         var d:Object = 
             {
-               "element":param1,
-               "data":param2
+               "element":element,
+               "data":data
             };
-         this._animatedElement.push(_loc3_);
-         this.updateAnimatedElement(_loc3_);
+         this._animatedElement.push(d);
+         this.updateAnimatedElement(d);
       }
       
-      public function setTemporaryAnimatedElementState(param1:Boolean) : void {
-         var _loc2_:Object = null;
-         this._temporaryEnable = param1;
-         for each (_loc2_ in this._animatedElement)
+      public function setTemporaryAnimatedElementState(active:Boolean) : void {
+         var d:Object = null;
+         this._temporaryEnable = active;
+         for each (d in this._animatedElement)
          {
-            this.updateAnimatedElement(_loc2_);
+            this.updateAnimatedElement(d);
          }
       }
       
       public function updateAllAnimatedElement() : void {
-         var _loc1_:Object = null;
-         for each (_loc1_ in this._animatedElement)
+         var d:Object = null;
+         for each (d in this._animatedElement)
          {
-            this.updateAnimatedElement(_loc1_);
+            this.updateAnimatedElement(d);
          }
       }
       
@@ -224,12 +224,12 @@ package com.ankamagames.atouin.types
          return this._spMap.y;
       }
       
-      public function set x(param1:Number) : void {
-         this._spMap.x = param1;
+      public function set x(nValue:Number) : void {
+         this._spMap.x = nValue;
       }
       
-      public function set y(param1:Number) : void {
-         this._spMap.y = param1;
+      public function set y(nValue:Number) : void {
+         this._spMap.y = nValue;
       }
       
       public function get scaleX() : Number {
@@ -240,112 +240,112 @@ package com.ankamagames.atouin.types
          return this._spMap.scaleY;
       }
       
-      public function set scaleX(param1:Number) : void {
-         this._spMap.scaleX = param1;
+      public function set scaleX(nValue:Number) : void {
+         this._spMap.scaleX = nValue;
       }
       
-      public function set scaleY(param1:Number) : void {
-         this._spMap.scaleX = param1;
+      public function set scaleY(nValue:Number) : void {
+         this._spMap.scaleX = nValue;
       }
       
-      public function addChild(param1:DisplayObject) : DisplayObject {
-         return this._spMap.addChild(param1);
+      public function addChild(item:DisplayObject) : DisplayObject {
+         return this._spMap.addChild(item);
       }
       
-      public function addChildAt(param1:DisplayObject, param2:int) : DisplayObject {
-         return this._spMap.addChildAt(param1,param2);
+      public function addChildAt(item:DisplayObject, index:int) : DisplayObject {
+         return this._spMap.addChildAt(item,index);
       }
       
-      public function getChildIndex(param1:DisplayObject) : int {
-         return this._spMap.getChildIndex(param1);
+      public function getChildIndex(item:DisplayObject) : int {
+         return this._spMap.getChildIndex(item);
       }
       
-      public function contains(param1:DisplayObject) : Boolean {
-         return this._spMap.contains(param1);
+      public function contains(item:DisplayObject) : Boolean {
+         return this._spMap.contains(item);
       }
       
-      public function getChildByName(param1:String) : DisplayObject {
-         return this._spMap.getChildByName(param1);
+      public function getChildByName(name:String) : DisplayObject {
+         return this._spMap.getChildByName(name);
       }
       
-      public function removeChild(param1:DisplayObject) : DisplayObject {
-         if((param1.parent) && param1.parent == this._spMap)
+      public function removeChild(item:DisplayObject) : DisplayObject {
+         if((item.parent) && (item.parent == this._spMap))
          {
-            return this._spMap.removeChild(param1);
+            return this._spMap.removeChild(item);
          }
          return null;
       }
       
-      private function updateAnimatedElement(param1:Object) : void {
-         var _loc2_:WorldEntitySprite = param1.element;
-         var _loc3_:EntityGraphicalElementData = param1.data;
-         var _loc4_:Boolean = (this._temporaryEnable) && (this._allowAnimatedGfx);
-         if((_loc4_) && (_loc3_.playAnimation))
+      private function updateAnimatedElement(target:Object) : void {
+         var ts:WorldEntitySprite = target.element;
+         var eed:EntityGraphicalElementData = target.data;
+         var allowAnimatedGfx:Boolean = (this._temporaryEnable) && (this._allowAnimatedGfx);
+         if((allowAnimatedGfx) && (eed.playAnimation))
          {
-            if(_loc3_.maxDelay > 0)
+            if(eed.maxDelay > 0)
             {
-               AnimatedElementManager.removeAnimatedElement(_loc2_);
-               AnimatedElementManager.addAnimatedElement(_loc2_,_loc3_.minDelay * 1000,_loc3_.maxDelay * 1000);
-               if(_loc3_.playAnimStatic)
+               AnimatedElementManager.removeAnimatedElement(ts);
+               AnimatedElementManager.addAnimatedElement(ts,eed.minDelay * 1000,eed.maxDelay * 1000);
+               if(eed.playAnimStatic)
                {
-                  _loc2_.setAnimation("AnimStatique");
+                  ts.setAnimation("AnimStatique");
                }
             }
             else
             {
-               if(_loc2_.getAnimation() != "AnimStart")
+               if(ts.getAnimation() != "AnimStart")
                {
-                  _loc2_.setAnimation("AnimStart");
+                  ts.setAnimation("AnimStart");
                }
                else
                {
-                  _loc2_.restartAnimation();
+                  ts.restartAnimation();
                }
             }
          }
          else
          {
-            AnimatedElementManager.removeAnimatedElement(_loc2_);
-            if(_loc3_.playAnimation)
+            AnimatedElementManager.removeAnimatedElement(ts);
+            if(eed.playAnimation)
             {
-               if(_loc2_.hasAnimation("AnimStatique"))
+               if(ts.hasAnimation("AnimStatique"))
                {
-                  _loc2_.setAnimation("AnimStatique");
+                  ts.setAnimation("AnimStatique");
                }
                else
                {
-                  _loc2_.stopAnimation();
+                  ts.stopAnimation();
                }
             }
             else
             {
-               _loc2_.stopAnimation();
+               ts.stopAnimation();
             }
          }
       }
       
-      private function onEntityRendered(param1:TiphonEvent) : void {
-         var _loc2_:Object = null;
-         for each (_loc2_ in this._animatedElement)
+      private function onEntityRendered(e:TiphonEvent) : void {
+         var d:Object = null;
+         for each (d in this._animatedElement)
          {
-            if(_loc2_.element == param1.sprite)
+            if(d.element == e.sprite)
             {
-               param1.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityRendered);
-               this.updateAnimatedElement(_loc2_);
+               e.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityRendered);
+               this.updateAnimatedElement(d);
                break;
             }
          }
-         param1.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityRendered);
+         e.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityRendered);
       }
       
-      private function onOptionChange(param1:PropertyChangeEvent) : void {
-         var _loc2_:Object = null;
-         if(param1.propertyName == "allowAnimatedGfx")
+      private function onOptionChange(e:PropertyChangeEvent) : void {
+         var d:Object = null;
+         if(e.propertyName == "allowAnimatedGfx")
          {
-            this._allowAnimatedGfx = param1.propertyValue;
-            for each (_loc2_ in this._animatedElement)
+            this._allowAnimatedGfx = e.propertyValue;
+            for each (d in this._animatedElement)
             {
-               this.updateAnimatedElement(_loc2_);
+               this.updateAnimatedElement(d);
             }
          }
       }

@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
          return 6098;
       }
       
-      public function initQuestObjectiveValidatedMessage(param1:uint=0, param2:uint=0) : QuestObjectiveValidatedMessage {
-         this.questId = param1;
-         this.objectiveId = param2;
+      public function initQuestObjectiveValidatedMessage(questId:uint=0, objectiveId:uint=0) : QuestObjectiveValidatedMessage {
+         this.questId = questId;
+         this.objectiveId = objectiveId;
          this._isInitialized = true;
          return this;
       }
@@ -42,54 +42,54 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_QuestObjectiveValidatedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_QuestObjectiveValidatedMessage(output);
       }
       
-      public function serializeAs_QuestObjectiveValidatedMessage(param1:IDataOutput) : void {
-         if(this.questId < 0 || this.questId > 65535)
+      public function serializeAs_QuestObjectiveValidatedMessage(output:IDataOutput) : void {
+         if((this.questId < 0) || (this.questId > 65535))
          {
             throw new Error("Forbidden value (" + this.questId + ") on element questId.");
          }
          else
          {
-            param1.writeShort(this.questId);
-            if(this.objectiveId < 0 || this.objectiveId > 65535)
+            output.writeShort(this.questId);
+            if((this.objectiveId < 0) || (this.objectiveId > 65535))
             {
                throw new Error("Forbidden value (" + this.objectiveId + ") on element objectiveId.");
             }
             else
             {
-               param1.writeShort(this.objectiveId);
+               output.writeShort(this.objectiveId);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_QuestObjectiveValidatedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_QuestObjectiveValidatedMessage(input);
       }
       
-      public function deserializeAs_QuestObjectiveValidatedMessage(param1:IDataInput) : void {
-         this.questId = param1.readUnsignedShort();
-         if(this.questId < 0 || this.questId > 65535)
+      public function deserializeAs_QuestObjectiveValidatedMessage(input:IDataInput) : void {
+         this.questId = input.readUnsignedShort();
+         if((this.questId < 0) || (this.questId > 65535))
          {
             throw new Error("Forbidden value (" + this.questId + ") on element of QuestObjectiveValidatedMessage.questId.");
          }
          else
          {
-            this.objectiveId = param1.readUnsignedShort();
-            if(this.objectiveId < 0 || this.objectiveId > 65535)
+            this.objectiveId = input.readUnsignedShort();
+            if((this.objectiveId < 0) || (this.objectiveId > 65535))
             {
                throw new Error("Forbidden value (" + this.objectiveId + ") on element of QuestObjectiveValidatedMessage.objectiveId.");
             }

@@ -28,76 +28,76 @@ package com.ankamagames.jerakine.data
       
       protected const _log:Logger = Log.getLogger(getQualifiedClassName(AbstractDataManager));
       
-      public function getObject(param1:uint) : Object {
-         var _loc5_:* = undefined;
-         var _loc6_:* = undefined;
-         var _loc7_:CustomSharedObject = null;
-         var _loc2_:String = this._soPrefix + param1;
-         if(this._cacheKey.contains(_loc2_))
+      public function getObject(key:uint) : Object {
+         var v:* = undefined;
+         var foo:* = undefined;
+         var so:CustomSharedObject = null;
+         var realKey:String = this._soPrefix + key;
+         if(this._cacheKey.contains(realKey))
          {
-            return this._cacheKey.peek(_loc2_);
+            return this._cacheKey.peek(realKey);
          }
-         var _loc3_:uint = StoreDataManager.getInstance().getData(JerakineConstants.DATASTORE_FILES_INFO,this._soPrefix + "_chunkLength");
-         var _loc4_:String = this._soPrefix + Math.floor(param1 / _loc3_);
-         if(this._cacheSO.contains(_loc4_))
+         var chunkLength:uint = StoreDataManager.getInstance().getData(JerakineConstants.DATASTORE_FILES_INFO,this._soPrefix + "_chunkLength");
+         var soName:String = this._soPrefix + Math.floor(key / chunkLength);
+         if(this._cacheSO.contains(soName))
          {
-            _loc6_ = this._cacheSO.peek(_loc4_);
-            _loc5_ = CustomSharedObject(this._cacheSO.peek(_loc4_)).data[DATA_KEY][param1];
-            this._cacheKey.store(_loc2_,_loc5_);
-            return _loc5_;
+            foo = this._cacheSO.peek(soName);
+            v = CustomSharedObject(this._cacheSO.peek(soName)).data[DATA_KEY][key];
+            this._cacheKey.store(realKey,v);
+            return v;
          }
-         _loc7_ = CustomSharedObject.getLocal(_loc4_);
-         if(!_loc7_ || !_loc7_.data[DATA_KEY])
+         so = CustomSharedObject.getLocal(soName);
+         if((!so) || (!so.data[DATA_KEY]))
          {
             return null;
          }
-         this._cacheSO.store(_loc4_,_loc7_);
-         _loc5_ = _loc7_.data[DATA_KEY][param1];
-         this._cacheKey.store(_loc2_,_loc5_);
-         return _loc5_;
+         this._cacheSO.store(soName,so);
+         v = so.data[DATA_KEY][key];
+         this._cacheKey.store(realKey,v);
+         return v;
       }
       
       public function getObjects() : Array {
-         var _loc3_:String = null;
-         var _loc4_:uint = 0;
-         var _loc5_:CustomSharedObject = null;
-         var _loc1_:Array = StoreDataManager.getInstance().getData(JerakineConstants.DATASTORE_FILES_INFO,this._soPrefix + "_filelist");
-         if(!_loc1_)
+         var soName:String = null;
+         var fileNum:uint = 0;
+         var so:CustomSharedObject = null;
+         var fileList:Array = StoreDataManager.getInstance().getData(JerakineConstants.DATASTORE_FILES_INFO,this._soPrefix + "_filelist");
+         if(!fileList)
          {
             return null;
          }
-         var _loc2_:Array = new Array();
-         for each (_loc4_ in _loc1_)
+         var data:Array = new Array();
+         for each (fileNum in fileList)
          {
-            _loc3_ = this._soPrefix + _loc4_;
-            if(this._cacheSO.contains(_loc3_))
+            soName = this._soPrefix + fileNum;
+            if(this._cacheSO.contains(soName))
             {
-               _loc2_ = _loc2_.concat(CustomSharedObject(this._cacheSO.peek(_loc3_)).data[DATA_KEY]);
+               data = data.concat(CustomSharedObject(this._cacheSO.peek(soName)).data[DATA_KEY]);
             }
             else
             {
-               _loc5_ = CustomSharedObject.getLocal(_loc3_);
-               if(!(!_loc5_ || !_loc5_.data[DATA_KEY]))
+               so = CustomSharedObject.getLocal(soName);
+               if(!((!so) || (!so.data[DATA_KEY])))
                {
-                  this._cacheSO.store(_loc3_,_loc5_);
-                  _loc2_ = _loc2_.concat(_loc5_.data[DATA_KEY]);
+                  this._cacheSO.store(soName,so);
+                  data = data.concat(so.data[DATA_KEY]);
                }
             }
          }
-         return _loc2_;
+         return data;
       }
       
-      function init(param1:uint, param2:uint, param3:String="") : void {
-         if(param2 == uint.MAX_VALUE)
+      function init(soCacheSize:uint, keyCacheSize:uint, soPrefix:String="") : void {
+         if(keyCacheSize == uint.MAX_VALUE)
          {
             this._cacheKey = new InfiniteCache();
          }
          else
          {
-            this._cacheKey = Cache.create(param2,new LruGarbageCollector(),getQualifiedClassName(this) + "_key");
+            this._cacheKey = Cache.create(keyCacheSize,new LruGarbageCollector(),getQualifiedClassName(this) + "_key");
          }
-         this._cacheSO = Cache.create(param1,new LruGarbageCollector(),getQualifiedClassName(this) + "_so");
-         this._soPrefix = param3;
+         this._cacheSO = Cache.create(soCacheSize,new LruGarbageCollector(),getQualifiedClassName(this) + "_so");
+         this._soPrefix = soPrefix;
       }
    }
 }

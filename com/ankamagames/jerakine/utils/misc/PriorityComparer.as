@@ -7,12 +7,12 @@ package com.ankamagames.jerakine.utils.misc
          super();
       }
       
-      public static function compare(param1:Prioritizable, param2:Prioritizable) : Number {
-         if(param1.priority > param2.priority)
+      public static function compare(x:Prioritizable, y:Prioritizable) : Number {
+         if(x.priority > y.priority)
          {
             return -1;
          }
-         if(param1.priority < param2.priority)
+         if(x.priority < y.priority)
          {
             return 1;
          }

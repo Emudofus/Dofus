@@ -15,13 +15,13 @@ package com.ankamagames.dofus.misc.utils.mapeditor
    import flash.utils.setTimeout;
    import com.ankamagames.atouin.resources.adapters.MapsAdapter;
    import com.ankamagames.atouin.resources.adapters.ElementsAdapter;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
    import com.ankamagames.dofus.datacenter.world.SubArea;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
    import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
    import com.ankamagames.jerakine.types.Uri;
    import com.ankamagames.jerakine.resources.ResourceObserverWrapper;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.misc.EntityLookAdapter;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    import com.ankamagames.dofus.datacenter.npcs.Npc;
@@ -70,7 +70,7 @@ package com.ankamagames.dofus.misc.utils.mapeditor
          this._mapEditorConnector.addEventListener(ProgressEvent.SOCKET_DATA,this.onDataProgress);
       }
       
-      private function displayPopup(param1:String, param2:uint, param3:Boolean=false) : void {
+      private function displayPopup(txt:String, color:uint, autoClose:Boolean=false) : void {
          if(this._currentPopup)
          {
             this.closePopup();
@@ -78,102 +78,102 @@ package com.ankamagames.dofus.misc.utils.mapeditor
          this._currentPopup = new Sprite();
          this._currentPopup.mouseChildren = false;
          this._currentPopup.addEventListener(MouseEvent.CLICK,this.closePopup);
-         var _loc4_:TextField = new TextField();
-         _loc4_.defaultTextFormat = new TextFormat("Verdana",12,0,true);
-         _loc4_.autoSize = TextFieldAutoSize.LEFT;
-         _loc4_.height = 30;
-         _loc4_.text = param1;
-         this._currentPopup.addChild(_loc4_);
-         this._currentPopup.graphics.beginFill(param2);
+         var tf:TextField = new TextField();
+         tf.defaultTextFormat = new TextFormat("Verdana",12,0,true);
+         tf.autoSize = TextFieldAutoSize.LEFT;
+         tf.height = 30;
+         tf.text = txt;
+         this._currentPopup.addChild(tf);
+         this._currentPopup.graphics.beginFill(color);
          this._currentPopup.graphics.lineStyle(1,6710886);
-         this._currentPopup.graphics.drawRect(-5,-5,20 + _loc4_.textWidth,_loc4_.height + 10);
+         this._currentPopup.graphics.drawRect(-5,-5,20 + tf.textWidth,tf.height + 10);
          this._currentPopup.graphics.endFill();
          StageShareManager.stage.addChild(this._currentPopup);
-         this._currentPopup.x = (StageShareManager.startWidth - _loc4_.textWidth) / 2;
+         this._currentPopup.x = (StageShareManager.startWidth - tf.textWidth) / 2;
          this._currentPopup.y = 10;
-         if(param3)
+         if(autoClose)
          {
             setTimeout(this.closePopup,5000,null,this._currentPopup);
          }
       }
       
-      private function closePopup(param1:Event=null, param2:Sprite=null) : void {
-         if(!param2)
+      private function closePopup(e:Event=null, currentPopup:Sprite=null) : void {
+         if(!currentPopup)
          {
-            param2 = this._currentPopup;
+            currentPopup = this._currentPopup;
          }
-         if(!param2)
+         if(!currentPopup)
          {
             return;
          }
-         param2.removeEventListener(MouseEvent.CLICK,this.closePopup);
-         if(param2.parent)
+         currentPopup.removeEventListener(MouseEvent.CLICK,this.closePopup);
+         if(currentPopup.parent)
          {
-            param2.parent.removeChild(param2);
+            currentPopup.parent.removeChild(currentPopup);
          }
-         if(param2 == this._currentPopup)
+         if(currentPopup == this._currentPopup)
          {
             this._currentPopup = null;
          }
       }
       
-      private function onNewData(param1:MapEditorDataEvent) : void {
-         var _loc2_:MapsAdapter = null;
-         var _loc3_:ElementsAdapter = null;
-         var _loc4_:uint = 0;
-         var _loc5_:uint = 0;
-         var _loc6_:Vector.<GameRolePlayActorInformations> = null;
-         var _loc7_:MapComplementaryInformationsDataMessage = null;
-         var _loc8_:SubArea = null;
-         var _loc9_:uint = 0;
-         var _loc10_:GameRolePlayNpcInformations = null;
-         var _loc11_:* = 0;
-         var _loc12_:* = 0;
-         var _loc13_:* = 0;
-         var _loc14_:EntityDispositionInformations = null;
-         this.displayPopup("Données provenant de l\'éditeur " + param1.data.type,COLOR_CONNECTED);
-         switch(param1.data.type)
+      private function onNewData(e:MapEditorDataEvent) : void {
+         var ma:MapsAdapter = null;
+         var ea:ElementsAdapter = null;
+         var mapId:uint = 0;
+         var npcCount:uint = 0;
+         var npcInfos:Vector.<GameRolePlayActorInformations> = null;
+         var mciMsg:MapComplementaryInformationsDataMessage = null;
+         var subArea:SubArea = null;
+         var npcInd:uint = 0;
+         var npcInfo:GameRolePlayNpcInformations = null;
+         var cellId:* = 0;
+         var npcId:* = 0;
+         var direction:* = 0;
+         var entityDisposition:EntityDispositionInformations = null;
+         this.displayPopup("Données provenant de l\'éditeur " + e.data.type,COLOR_CONNECTED);
+         switch(e.data.type)
          {
             case MapEditorMessage.MESSAGE_TYPE_DLM:
                this.displayPopup("Rendu d\'une map provenant de l\'éditeur",COLOR_CONNECTED);
                _log.info("Rendu d\'une map provenant de l\'éditeur");
-               _loc2_ = new MapsAdapter();
-               _loc2_.loadFromData(new Uri(),param1.data.data,new ResourceObserverWrapper(this.onDmlLoaded),false);
+               ma = new MapsAdapter();
+               ma.loadFromData(new Uri(),e.data.data,new ResourceObserverWrapper(this.onDmlLoaded),false);
                break;
             case MapEditorMessage.MESSAGE_TYPE_ELE:
                this.displayPopup("Donnée sur les éléments",COLOR_CONNECTED);
                _log.info("Parsing du fichier .ele provenant de l\'éditeur");
-               _loc3_ = new ElementsAdapter();
-               _loc3_.loadFromData(new Uri(),param1.data.data,new ResourceObserverWrapper(),false);
+               ea = new ElementsAdapter();
+               ea.loadFromData(new Uri(),e.data.data,new ResourceObserverWrapper(),false);
                break;
             case MapEditorMessage.MESSAGE_TYPE_NPC:
-               _loc4_ = param1.data.data.readInt();
-               _loc5_ = param1.data.data.readInt();
-               _loc6_ = new Vector.<GameRolePlayActorInformations>();
-               _loc9_ = 0;
-               while(_loc9_ < _loc5_)
+               mapId = e.data.data.readInt();
+               npcCount = e.data.data.readInt();
+               npcInfos = new Vector.<GameRolePlayActorInformations>();
+               npcInd = 0;
+               while(npcInd < npcCount)
                {
-                  _loc10_ = new GameRolePlayNpcInformations();
-                  _loc11_ = param1.data.data.readShort();
-                  _loc12_ = param1.data.data.readInt();
-                  _loc13_ = param1.data.data.readByte();
-                  _loc14_ = new EntityDispositionInformations();
-                  _loc14_.initEntityDispositionInformations(_loc11_,_loc13_);
-                  _loc10_.initGameRolePlayNpcInformations(_loc12_,EntityLookAdapter.toNetwork(TiphonEntityLook.fromString(Npc.getNpcById(_loc12_).look)),_loc14_,_loc12_);
-                  _loc6_.push(_loc10_);
-                  _loc9_++;
+                  npcInfo = new GameRolePlayNpcInformations();
+                  cellId = e.data.data.readShort();
+                  npcId = e.data.data.readInt();
+                  direction = e.data.data.readByte();
+                  entityDisposition = new EntityDispositionInformations();
+                  entityDisposition.initEntityDispositionInformations(cellId,direction);
+                  npcInfo.initGameRolePlayNpcInformations(npcId,EntityLookAdapter.toNetwork(TiphonEntityLook.fromString(Npc.getNpcById(npcId).look)),entityDisposition,npcId);
+                  npcInfos.push(npcInfo);
+                  npcInd++;
                }
-               _loc7_ = new MapComplementaryInformationsDataMessage();
-               _loc8_ = SubArea.getSubAreaByMapId(_loc4_);
-               _loc7_.initMapComplementaryInformationsDataMessage(_loc8_?_loc8_.id:0,_loc4_,new Vector.<HouseInformations>(),_loc6_,new Vector.<InteractiveElement>(),new Vector.<StatedElement>(),new Vector.<MapObstacle>(),new Vector.<FightCommonInformations>());
+               mciMsg = new MapComplementaryInformationsDataMessage();
+               subArea = SubArea.getSubAreaByMapId(mapId);
+               mciMsg.initMapComplementaryInformationsDataMessage(subArea?subArea.id:0,mapId,new Vector.<HouseInformations>(),npcInfos,new Vector.<InteractiveElement>(),new Vector.<StatedElement>(),new Vector.<MapObstacle>(),new Vector.<FightCommonInformations>());
                if(this._lastRenderedId == MapDisplayManager.getInstance().currentRenderId)
                {
-                  Kernel.getWorker().process(_loc7_);
+                  Kernel.getWorker().process(mciMsg);
                   this._currentNpcInfos = null;
                }
                else
                {
-                  this._currentNpcInfos = _loc7_;
+                  this._currentNpcInfos = mciMsg;
                }
                break;
             case MapEditorMessage.MESSAGE_TYPE_HELLO:
@@ -186,9 +186,9 @@ package com.ankamagames.dofus.misc.utils.mapeditor
       
       private var _lastRenderedId:uint;
       
-      private function onMapRenderEnd(param1:RenderMapEvent) : void {
-         this._lastRenderedId = param1.renderId;
-         if((this._currentNpcInfos) && param1.renderId == this._currentRenderId)
+      private function onMapRenderEnd(e:RenderMapEvent) : void {
+         this._lastRenderedId = e.renderId;
+         if((this._currentNpcInfos) && (e.renderId == this._currentRenderId))
          {
             Kernel.getWorker().process(this._currentNpcInfos);
             this._currentNpcInfos = null;
@@ -196,25 +196,25 @@ package com.ankamagames.dofus.misc.utils.mapeditor
          this.displayPopup("Taille des picto : " + StringUtils.formateIntToString(uint(MapDisplayManager.getInstance().renderer.gfxMemorySize / 1024)) + " Ko",COLOR_CONNECTED);
       }
       
-      private function onDmlLoaded(param1:Uri, param2:uint, param3:*) : void {
+      private function onDmlLoaded(uri:Uri, resourceType:uint, resource:*) : void {
          MapDisplayManager.getInstance().renderer.useDefautState = true;
-         var _loc4_:Map = new Map();
-         _loc4_.fromRaw(param3);
-         this._currentRenderId = MapDisplayManager.getInstance().fromMap(_loc4_);
+         var map:Map = new Map();
+         map.fromRaw(resource);
+         this._currentRenderId = MapDisplayManager.getInstance().fromMap(map);
       }
       
-      private function onConnect(param1:Event) : void {
+      private function onConnect(e:Event) : void {
          this.displayPopup("Connecté à l\'éditeur",COLOR_CONNECTED);
          _log.info("Connecté à l\'éditeur de map");
          MapDisplayManager.getInstance().renderer.addEventListener(RenderMapEvent.MAP_RENDER_END,this.onMapRenderEnd);
       }
       
-      private function onDataProgress(param1:Event) : void {
+      private function onDataProgress(e:Event) : void {
          this.displayPopup("Réception de données",COLOR_CONNECTED);
          _log.info("Réception de données");
       }
       
-      private function onClose(param1:Event) : void {
+      private function onClose(e:Event) : void {
          this.displayPopup("Connexion à l\'éditeur de map perdue",COLOR_CLOSE);
          _log.info("Connexion à l\'éditeur de map perdue");
       }

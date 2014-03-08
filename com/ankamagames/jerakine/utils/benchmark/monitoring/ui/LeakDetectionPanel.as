@@ -47,105 +47,105 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          graphics.endFill();
       }
       
-      public function watchObject(param1:Object, param2:uint, param3:Boolean=false) : void {
-         var _loc6_:List = null;
-         var _loc7_:List = null;
-         var _loc8_:List = null;
-         var _loc9_:XML = null;
-         var _loc10_:String = null;
-         var _loc11_:XML = null;
-         var _loc4_:String = getQualifiedClassName(param1).split("::")[1];
-         var _loc5_:MonitoredObject = this._listDataObject[_loc4_];
-         if(_loc5_ == null)
+      public function watchObject(o:Object, pColor:uint, incrementParents:Boolean=false) : void {
+         var list:List = null;
+         var firstList:List = null;
+         var secondList:List = null;
+         var type:XML = null;
+         var c:String = null;
+         var ex:XML = null;
+         var objectName:String = getQualifiedClassName(o).split("::")[1];
+         var mObject:MonitoredObject = this._listDataObject[objectName];
+         if(mObject == null)
          {
-            if(param3)
+            if(incrementParents)
             {
-               _loc6_ = new List(_loc4_);
-               _loc7_ = _loc6_;
-               _loc9_ = describeType(param1);
-               for each (_loc11_ in _loc9_.extendsClass)
+               list = new List(objectName);
+               firstList = list;
+               type = describeType(o);
+               for each (ex in type.extendsClass)
                {
-                  _loc10_ = _loc11_.@type.toString().split("::")[1];
-                  if(this._listDataObject[_loc10_] != null)
+                  c = ex.@type.toString().split("::")[1];
+                  if(this._listDataObject[c] != null)
                   {
-                     _loc7_.next = this._listDataObject[_loc10_].extendsClass;
+                     firstList.next = this._listDataObject[c].extendsClass;
                      break;
                   }
-                  _loc8_ = new List(_loc10_);
-                  _loc7_.next = _loc8_;
-                  _loc8_ = _loc7_;
+                  secondList = new List(c);
+                  firstList.next = secondList;
+                  secondList = firstList;
                }
             }
-            _loc5_ = new MonitoredObject(_loc4_,param2,_loc6_);
-            this._listDataObject[_loc4_] = _loc5_;
-            if((param3) && !(_loc6_ == null))
+            mObject = new MonitoredObject(objectName,pColor,list);
+            this._listDataObject[objectName] = mObject;
+            if((incrementParents) && (!(list == null)))
             {
-               this.updateParents(_loc6_,_loc5_);
+               this.updateParents(list,mObject);
             }
          }
          else
          {
-            if(_loc5_.color == 16777215)
+            if(mObject.color == 16777215)
             {
-               _loc5_.color = param2;
+               mObject.color = pColor;
             }
          }
-         _loc5_.addNewValue(param1);
+         mObject.addNewValue(o);
       }
       
-      private function updateParents(param1:List, param2:Object) : void {
-         var _loc3_:List = param1;
-         if(_loc3_ != null)
+      private function updateParents(pList:List, o:Object) : void {
+         var list:List = pList;
+         if(list != null)
          {
             do
             {
-                  if(_loc3_.value != null)
+                  if(list.value != null)
                   {
-                     this.updateParent(_loc3_.value.toString(),param2,_loc3_.next);
+                     this.updateParent(list.value.toString(),o,list.next);
                   }
-               }while((_loc3_ = _loc3_.next) != null);
+               }while((list = list.next) != null);
                
             }
          }
          
-         private function updateParent(param1:String, param2:Object, param3:List) : void {
-            var _loc4_:MonitoredObject = this._listDataObject[param1];
-            if(_loc4_ == null)
+         private function updateParent(pName:String, pValue:Object, pList:List) : void {
+            var mObject:MonitoredObject = this._listDataObject[pName];
+            if(mObject == null)
             {
-               _loc4_ = new MonitoredObject(param1,16777215,param3);
-               this._listDataObject[param1] = _loc4_;
+               mObject = new MonitoredObject(pName,16777215,pList);
+               this._listDataObject[pName] = mObject;
             }
-            _loc4_.addNewValue(param2);
+            mObject.addNewValue(pValue);
          }
          
          public function updateData() : void {
-            var _loc2_:MonitoredObject = null;
-            var _loc1_:* = "";
-            for each (_loc2_ in this._listDataObject)
+            var mo:MonitoredObject = null;
+            var str:String = "";
+            for each (mo in this._listDataObject)
             {
-               _loc2_.update();
-               _loc1_ = _loc1_ + ("<font face=\'Verdana\' size=\'15\' color=\'#" + _loc2_.color.toString(16) + "\' >");
-               if(_loc2_.selected)
+               mo.update();
+               str = str + ("<font face=\'Verdana\' size=\'15\' color=\'#" + mo.color.toString(16) + "\' >");
+               if(mo.selected)
                {
-                  _loc1_ = _loc1_ + "(*) ";
+                  str = str + "(*) ";
                }
-               _loc1_ = _loc1_ + ("<a href=\'event:" + _loc2_.name + "\'>[" + _loc2_.name + "]</a> : " + FpsManagerUtils.countKeys(_loc2_.list));
-               _loc1_ = _loc1_ + "</font>\n";
+               str = str + ("<a href=\'event:" + mo.name + "\'>[" + mo.name + "]</a> : " + FpsManagerUtils.countKeys(mo.list));
+               str = str + "</font>\n";
             }
-            this._dataTf.htmlText = _loc1_;
+            this._dataTf.htmlText = str;
             this._dataTf.width = this._dataTf.textWidth + 10;
             this.drawBG();
          }
          
-         private function linkHandler(param1:TextEvent) : void {
-            var _loc2_:MonitoredObject = this._listDataObject[param1.text];
-            if(_loc2_ == null)
+         private function linkHandler(pEvt:TextEvent) : void {
+            var mo:MonitoredObject = this._listDataObject[pEvt.text];
+            if(mo == null)
             {
                return;
             }
-            var _loc3_:FpsManagerEvent = new FpsManagerEvent("follow");
-            _loc3_.data = _loc2_;
-            dispatchEvent(_loc3_);
+            var evt:FpsManagerEvent = new FpsManagerEvent("follow");
+            evt.data = mo;
+            dispatchEvent(evt);
          }
       }
    }

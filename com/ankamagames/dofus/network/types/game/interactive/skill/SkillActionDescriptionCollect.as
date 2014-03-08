@@ -21,10 +21,10 @@ package com.ankamagames.dofus.network.types.game.interactive.skill
          return 99;
       }
       
-      public function initSkillActionDescriptionCollect(param1:uint=0, param2:uint=0, param3:uint=0, param4:uint=0) : SkillActionDescriptionCollect {
-         super.initSkillActionDescriptionTimed(param1,param2);
-         this.min = param3;
-         this.max = param4;
+      public function initSkillActionDescriptionCollect(skillId:uint=0, time:uint=0, min:uint=0, max:uint=0) : SkillActionDescriptionCollect {
+         super.initSkillActionDescriptionTimed(skillId,time);
+         this.min = min;
+         this.max = max;
          return this;
       }
       
@@ -34,45 +34,45 @@ package com.ankamagames.dofus.network.types.game.interactive.skill
          this.max = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_SkillActionDescriptionCollect(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SkillActionDescriptionCollect(output);
       }
       
-      public function serializeAs_SkillActionDescriptionCollect(param1:IDataOutput) : void {
-         super.serializeAs_SkillActionDescriptionTimed(param1);
+      public function serializeAs_SkillActionDescriptionCollect(output:IDataOutput) : void {
+         super.serializeAs_SkillActionDescriptionTimed(output);
          if(this.min < 0)
          {
             throw new Error("Forbidden value (" + this.min + ") on element min.");
          }
          else
          {
-            param1.writeShort(this.min);
+            output.writeShort(this.min);
             if(this.max < 0)
             {
                throw new Error("Forbidden value (" + this.max + ") on element max.");
             }
             else
             {
-               param1.writeShort(this.max);
+               output.writeShort(this.max);
                return;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_SkillActionDescriptionCollect(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SkillActionDescriptionCollect(input);
       }
       
-      public function deserializeAs_SkillActionDescriptionCollect(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.min = param1.readShort();
+      public function deserializeAs_SkillActionDescriptionCollect(input:IDataInput) : void {
+         super.deserialize(input);
+         this.min = input.readShort();
          if(this.min < 0)
          {
             throw new Error("Forbidden value (" + this.min + ") on element of SkillActionDescriptionCollect.min.");
          }
          else
          {
-            this.max = param1.readShort();
+            this.max = input.readShort();
             if(this.max < 0)
             {
                throw new Error("Forbidden value (" + this.max + ") on element of SkillActionDescriptionCollect.max.");

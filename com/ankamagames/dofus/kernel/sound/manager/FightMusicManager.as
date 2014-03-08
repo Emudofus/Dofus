@@ -55,20 +55,20 @@ package com.ankamagames.dofus.kernel.sound.manager
       }
       
       public function startFight() : void {
-         var _loc2_:GameContextActorInformations = null;
-         var _loc3_:GameFightMonsterInformations = null;
-         var _loc4_:Monster = null;
+         var entity:GameContextActorInformations = null;
+         var monster:GameFightMonsterInformations = null;
+         var monsterData:Monster = null;
          this._hasBoss = false;
-         var _loc1_:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-         if(_loc1_)
+         var entitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         if(entitiesFrame)
          {
-            for each (_loc2_ in _loc1_.getEntitiesDictionnary())
+            for each (entity in entitiesFrame.getEntitiesDictionnary())
             {
-               if(_loc2_ is GameFightMonsterInformations)
+               if(entity is GameFightMonsterInformations)
                {
-                  _loc3_ = _loc2_ as GameFightMonsterInformations;
-                  _loc4_ = Monster.getMonsterById(_loc3_.creatureGenericId);
-                  if(_loc4_.isBoss)
+                  monster = entity as GameFightMonsterInformations;
+                  monsterData = Monster.getMonsterById(monster.creatureGenericId);
+                  if(monsterData.isBoss)
                   {
                      this._hasBoss = true;
                   }
@@ -78,120 +78,120 @@ package com.ankamagames.dofus.kernel.sound.manager
       }
       
       public function playFightMusic() : void {
-         var _loc1_:AmbientSound = null;
-         var _loc2_:uint = 0;
-         var _loc3_:String = null;
-         var _loc4_:Uri = null;
-         var _loc5_:VolumeFadeEffect = null;
+         var sound:AmbientSound = null;
+         var busId:uint = 0;
+         var soundPath:String = null;
+         var soundUri:Uri = null;
+         var fadeCurrentMusic:VolumeFadeEffect = null;
          if(!SoundManager.getInstance().manager.soundIsActivate)
          {
             return;
          }
-         if(SoundManager.getInstance().manager is RegSoundManager && !RegConnectionManager.getInstance().isMain)
+         if((SoundManager.getInstance().manager is RegSoundManager) && (!RegConnectionManager.getInstance().isMain))
          {
             return;
          }
          if((this._hasBoss) && (this._bossMusic))
          {
-            _loc1_ = this._bossMusic;
+            sound = this._bossMusic;
          }
          else
          {
-            _loc1_ = this._fightMusic;
+            sound = this._fightMusic;
          }
-         if(_loc1_)
+         if(sound)
          {
-            _loc2_ = SoundUtil.getBusIdBySoundId(String(_loc1_.id));
-            _loc3_ = SoundUtil.getConfigEntryByBusId(_loc2_);
-            _loc4_ = new Uri(_loc3_ + _loc1_.id + ".mp3");
+            busId = SoundUtil.getBusIdBySoundId(String(sound.id));
+            soundPath = SoundUtil.getConfigEntryByBusId(busId);
+            soundUri = new Uri(soundPath + sound.id + ".mp3");
             if(SoundManager.getInstance().manager is ClassicSoundManager)
             {
-               this._actualFightMusic = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,_loc4_);
+               this._actualFightMusic = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,soundUri);
             }
             if(SoundManager.getInstance().manager is RegSoundManager)
             {
-               this._actualFightMusic = new SoundDofus(String(_loc1_.id));
+               this._actualFightMusic = new SoundDofus(String(sound.id));
             }
-            this._actualFightMusic.busId = _loc2_;
+            this._actualFightMusic.busId = busId;
             this._actualFightMusic.volume = 1;
             this._actualFightMusic.currentFadeVolume = 0;
-            _loc5_ = new VolumeFadeEffect(-1,1,TubulSoundConfiguration.TIME_FADE_IN_MUSIC);
-            this._actualFightMusic.play(true,0,_loc5_);
+            fadeCurrentMusic = new VolumeFadeEffect(-1,1,TubulSoundConfiguration.TIME_FADE_IN_MUSIC);
+            this._actualFightMusic.play(true,0,fadeCurrentMusic);
          }
       }
       
       public function stopFightMusic() : void {
-         if(!SoundManager.getInstance().manager.soundIsActivate || this._actualFightMusic == null)
+         if((!SoundManager.getInstance().manager.soundIsActivate) || (this._actualFightMusic == null))
          {
             return;
          }
-         if(SoundManager.getInstance().manager is RegSoundManager && !RegConnectionManager.getInstance().isMain)
+         if((SoundManager.getInstance().manager is RegSoundManager) && (!RegConnectionManager.getInstance().isMain))
          {
             return;
          }
-         var _loc1_:VolumeFadeEffect = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_OUT_MUSIC);
-         this._actualFightMusic.stop(_loc1_);
+         var stopFadeMusic:VolumeFadeEffect = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_OUT_MUSIC);
+         this._actualFightMusic.stop(stopFadeMusic);
          SoundManager.getInstance().manager.fadeBusVolume(TubulSoundConfiguration.BUS_AMBIENT_2D_ID,SoundManager.getInstance().options["volumeAmbientSound"],TubulSoundConfiguration.TIME_FADE_IN_MUSIC * 2);
          SoundManager.getInstance().manager.fadeBusVolume(TubulSoundConfiguration.BUS_MUSIC_ID,SoundManager.getInstance().options["volumeMusic"],TubulSoundConfiguration.TIME_FADE_IN_MUSIC * 2);
       }
       
-      public function setFightSounds(param1:Vector.<AmbientSound>, param2:Vector.<AmbientSound>) : void {
-         var _loc4_:AmbientSound = null;
-         this._fightMusics = param1;
-         this._bossMusics = param2;
-         var _loc3_:* = "";
-         if(this._fightMusics.length == 0 && this._bossMusics.length == 0)
+      public function setFightSounds(pFightMusic:Vector.<AmbientSound>, pBossMusic:Vector.<AmbientSound>) : void {
+         var asound:AmbientSound = null;
+         this._fightMusics = pFightMusic;
+         this._bossMusics = pBossMusic;
+         var logText:String = "";
+         if((this._fightMusics.length == 0) && (this._bossMusics.length == 0))
          {
-            _loc3_ = "Ni musique de combat, ni musique de boss ???";
+            logText = "Ni musique de combat, ni musique de boss ???";
          }
          else
          {
-            _loc3_ = "Cette map contient les musiques de combat : ";
-            for each (_loc4_ in this._fightMusics)
+            logText = "Cette map contient les musiques de combat : ";
+            for each (asound in this._fightMusics)
             {
-               _loc3_ = _loc3_ + (_loc4_.id + ", ");
+               logText = logText + (asound.id + ", ");
             }
-            _loc3_ = " et les musiques de boss d\'id : ";
-            for each (_loc4_ in this._bossMusics)
+            logText = " et les musiques de boss d\'id : ";
+            for each (asound in this._bossMusics)
             {
-               _loc3_ = _loc3_ + (_loc4_.id + ", ");
+               logText = logText + (asound.id + ", ");
             }
          }
-         _log.info(_loc3_);
+         _log.info(logText);
       }
       
       public function selectValidSounds() : void {
-         var _loc2_:AmbientSound = null;
-         var _loc3_:* = 0;
-         var _loc1_:* = 0;
-         for each (_loc2_ in this._fightMusics)
+         var ambientSound:AmbientSound = null;
+         var rnd:* = 0;
+         var count:int = 0;
+         for each (ambientSound in this._fightMusics)
          {
-            _loc1_++;
+            count++;
          }
-         _loc3_ = int(Math.random() * _loc1_);
-         for each (_loc2_ in this._fightMusics)
+         rnd = int(Math.random() * count);
+         for each (ambientSound in this._fightMusics)
          {
-            if(_loc3_ == 0)
+            if(rnd == 0)
             {
-               this._fightMusic = _loc2_;
+               this._fightMusic = ambientSound;
                break;
             }
-            _loc3_--;
+            rnd--;
          }
-         _loc1_ = 0;
-         for each (_loc2_ in this._bossMusics)
+         count = 0;
+         for each (ambientSound in this._bossMusics)
          {
-            _loc1_++;
+            count++;
          }
-         _loc3_ = int(Math.random() * _loc1_);
-         for each (_loc2_ in this._bossMusics)
+         rnd = int(Math.random() * count);
+         for each (ambientSound in this._bossMusics)
          {
-            if(_loc3_ == 0)
+            if(rnd == 0)
             {
-               this._bossMusic = _loc2_;
+               this._bossMusic = ambientSound;
                break;
             }
-            _loc3_--;
+            rnd--;
          }
       }
       

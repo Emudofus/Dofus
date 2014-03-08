@@ -24,7 +24,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.actions.NumericWhoIsRequestAction;
    import com.ankamagames.dofus.network.messages.game.basic.NumericWhoIsRequestMessage;
    import com.ankamagames.dofus.logic.game.common.actions.chat.ChatTextOutputAction;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
    import com.ankamagames.dofus.network.messages.game.chat.ChatServerWithObjectMessage;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
@@ -88,6 +87,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.jerakine.utils.misc.StringUtils;
    import com.ankamagames.jerakine.data.I18n;
+   import __AS3__.vec.*;
    import com.ankamagames.berilia.managers.SecureCenter;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
    import com.ankamagames.berilia.managers.KernelEventsManager;
@@ -195,18 +195,18 @@ package com.ankamagames.dofus.logic.game.common.frames
       private var _aSmilies:Array;
       
       public function pushed() : Boolean {
-         var _loc1_:Object = null;
-         var _loc2_:Smiley = null;
-         var _loc3_:String = null;
-         var _loc4_:Array = null;
-         var _loc5_:uint = 0;
-         var _loc6_:* = undefined;
-         var _loc7_:OptionManager = null;
-         var _loc8_:* = 0;
-         var _loc10_:SmileyWrapper = null;
-         var _loc11_:Date = null;
-         var _loc12_:Array = null;
-         var _loc13_:MoodSmileyRequestAction = null;
+         var i:Object = null;
+         var smiley:Smiley = null;
+         var lang:String = null;
+         var censoreds:Array = null;
+         var wordCount:uint = 0;
+         var word:* = undefined;
+         var chatOpt:OptionManager = null;
+         var id:* = 0;
+         var smileyW:SmileyWrapper = null;
+         var date:Date = null;
+         var arrayMood:Array = null;
+         var action:MoodSmileyRequestAction = null;
          this._options = new ChatOptions();
          this.setDisplayOptions(this._options);
          this._aChannels = ChatChannel.getChannels();
@@ -215,60 +215,60 @@ package com.ankamagames.dofus.logic.game.common.frames
          this._aParagraphesByChannel = new Array();
          this._aSmilies = new Array();
          this._aCensoredWords = new Dictionary();
-         for (_loc1_ in this._aChannels)
+         for (i in this._aChannels)
          {
-            this._aMessagesByChannel[this._aChannels[_loc1_].id] = new Array();
-            this._aParagraphesByChannel[this._aChannels[_loc1_].id] = new Array();
+            this._aMessagesByChannel[this._aChannels[i].id] = new Array();
+            this._aParagraphesByChannel[this._aChannels[i].id] = new Array();
          }
          this._aMessagesByChannel[RED_CHANNEL_ID] = new Array();
          this._aParagraphesByChannel[RED_CHANNEL_ID] = new Array();
          ConsolesManager.registerConsole("chat",new ConsoleHandler(Kernel.getWorker(),false,true),new ChatConsoleInstructionRegistrar());
-         for each (_loc2_ in Smiley.getSmileys())
+         for each (smiley in Smiley.getSmileys())
          {
-            if(_loc2_.forPlayers)
+            if(smiley.forPlayers)
             {
-               _loc10_ = SmileyWrapper.create(_loc2_.id,_loc2_.gfxId,_loc2_.order);
-               this._aSmilies.push(_loc10_);
+               smileyW = SmileyWrapper.create(smiley.id,smiley.gfxId,smiley.order);
+               this._aSmilies.push(smileyW);
             }
          }
          this._aSmilies.sortOn("order",Array.NUMERIC);
-         _loc3_ = XmlConfig.getInstance().getEntry("config.lang.current");
-         _loc4_ = CensoredWord.getCensoredWords();
-         _loc5_ = 0;
-         for each (_loc6_ in _loc4_)
+         lang = XmlConfig.getInstance().getEntry("config.lang.current");
+         censoreds = CensoredWord.getCensoredWords();
+         wordCount = 0;
+         for each (word in censoreds)
          {
-            if(_loc6_)
+            if(word)
             {
-               if(_loc6_.language == _loc3_)
+               if(word.language == lang)
                {
-                  _loc5_++;
-                  if(_loc6_.deepLooking)
+                  wordCount++;
+                  if(word.deepLooking)
                   {
-                     this._aCensoredWords[_loc6_.word] = 2;
+                     this._aCensoredWords[word.word] = 2;
                   }
                   else
                   {
-                     this._aCensoredWords[_loc6_.word] = 1;
+                     this._aCensoredWords[word.word] = 1;
                   }
                }
             }
          }
-         _loc7_ = OptionManager.getOptionManager("chat");
-         _loc8_ = PlayedCharacterManager.getInstance().id;
-         if(!_loc7_["moodSmiley_" + _loc8_])
+         chatOpt = OptionManager.getOptionManager("chat");
+         id = PlayedCharacterManager.getInstance().id;
+         if(!chatOpt["moodSmiley_" + id])
          {
-            _loc7_.add("moodSmiley_" + _loc8_,"");
+            chatOpt.add("moodSmiley_" + id,"");
          }
-         var _loc9_:String = _loc7_["moodSmiley_" + _loc8_];
-         if((_loc9_) && !(_loc9_ == ""))
+         var moodSmileyId:String = chatOpt["moodSmiley_" + id];
+         if((moodSmileyId) && (!(moodSmileyId == "")))
          {
-            _loc11_ = new Date();
-            _loc12_ = _loc9_.split("_");
-            if(int(_loc12_[0]) > 0 && Number(_loc12_[1]) < _loc11_.time + 604800000)
+            date = new Date();
+            arrayMood = moodSmileyId.split("_");
+            if((int(arrayMood[0]) > 0) && (Number(arrayMood[1]) < date.time + 604800000))
             {
-               _loc13_ = new MoodSmileyRequestAction();
-               _loc13_.smileyId = int(_loc12_[0]);
-               this.process(_loc13_);
+               action = new MoodSmileyRequestAction();
+               action.smileyId = int(arrayMood[0]);
+               this.process(action);
             }
          }
          return true;
@@ -302,8 +302,8 @@ package com.ankamagames.dofus.logic.game.common.frames
          return this._aSmilies;
       }
       
-      public function set maxMessagesStored(param1:int) : void {
-         this._maxMessagesStored = param1;
+      public function set maxMessagesStored(val:int) : void {
+         this._maxMessagesStored = val;
       }
       
       public function get maxMessagesStored() : int {
@@ -318,7 +318,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          return this._ankaboxEnabled;
       }
       
-      public function process(param1:Message) : Boolean {
+      public function process(msg:Message) : Boolean {
          var content:String = null;
          var bwira:BasicWhoIsRequestAction = null;
          var search:String = null;
@@ -459,13 +459,12 @@ package com.ankamagames.dofus.logic.game.common.frames
          var parameter:String = null;
          var nbsmsgNid:uint = 0;
          var object:ObjectItemQuantity = null;
-         var msg:Message = param1;
          switch(true)
          {
             case msg is BasicWhoIsRequestAction:
                bwira = msg as BasicWhoIsRequestAction;
                search = bwira.playerName;
-               if(search.length >= 1 && search.length <= ProtocolConstantsEnum.MAX_PLAYER_OR_ACCOUNT_NAME_LEN)
+               if((search.length >= 1) && (search.length <= ProtocolConstantsEnum.MAX_PLAYER_OR_ACCOUNT_NAME_LEN))
                {
                   bwirmsg = new BasicWhoIsRequestMessage();
                   bwirmsg.initBasicWhoIsRequestMessage(bwira.verbose,bwira.playerName);
@@ -604,7 +603,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                         worldMapId = PlayedCharacterManager.getInstance().currentWorldMap.id;
                      }
                   }
-                  if(!isNaN(posX) && !isNaN(posY) && !isNaN(worldMapId))
+                  if((!isNaN(posX)) && (!isNaN(posY)) && (!isNaN(worldMapId)))
                   {
                      replace = false;
                      content = leftBlock + "{map," + int(posX) + "," + int(posY) + "," + worldMapId + "}" + rightBlock;
@@ -647,7 +646,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                }
                else
                {
-                  if(ctoa.receiverName.length < 2 || ctoa.receiverName.length > 31)
+                  if((ctoa.receiverName.length < 2) || (ctoa.receiverName.length > 31))
                   {
                      KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,I18n.getUiText("ui.chat.error.1"),ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,this.getTimestamp());
                      return true;
@@ -680,7 +679,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is ChatServerWithObjectMessage:
                scwomsg = msg as ChatServerWithObjectMessage;
                AccountManager.getInstance().setAccount(scwomsg.senderName,scwomsg.senderAccountId);
-               if(!(scwomsg.channel == RED_CHANNEL_ID) && !(scwomsg.channel == ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE) && ((this.socialFrame.isIgnored(scwomsg.senderName,scwomsg.senderAccountId)) || (this.socialFrame.isEnemy(scwomsg.senderName))))
+               if((!(scwomsg.channel == RED_CHANNEL_ID)) && (!(scwomsg.channel == ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE)) && ((this.socialFrame.isIgnored(scwomsg.senderName,scwomsg.senderAccountId)) || (this.socialFrame.isEnemy(scwomsg.senderName))))
                {
                   return true;
                }
@@ -690,7 +689,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   {
                      this.playAlertSound(GUILD_SOUND);
                   }
-                  if(scwomsg.channel == ChatActivableChannelsEnum.CHANNEL_PARTY || scwomsg.channel == ChatActivableChannelsEnum.CHANNEL_ARENA)
+                  if((scwomsg.channel == ChatActivableChannelsEnum.CHANNEL_PARTY) || (scwomsg.channel == ChatActivableChannelsEnum.CHANNEL_ARENA))
                   {
                      this.playAlertSound(PARTY_SOUND);
                   }
@@ -721,7 +720,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   {
                      this.playAlertSound(GUILD_SOUND);
                   }
-                  if(casmsg.channel == ChatActivableChannelsEnum.CHANNEL_PARTY || casmsg.channel == ChatActivableChannelsEnum.CHANNEL_ARENA)
+                  if((casmsg.channel == ChatActivableChannelsEnum.CHANNEL_PARTY) || (casmsg.channel == ChatActivableChannelsEnum.CHANNEL_ARENA))
                   {
                      this.playAlertSound(PARTY_SOUND);
                   }
@@ -740,7 +739,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is ChatServerMessage:
                csmsg = msg as ChatServerMessage;
                AccountManager.getInstance().setAccount(csmsg.senderName,csmsg.senderAccountId);
-               if(!(csmsg.channel == RED_CHANNEL_ID) && !(csmsg.channel == ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE) && ((this.socialFrame.isIgnored(csmsg.senderName,csmsg.senderAccountId)) || (this.socialFrame.isEnemy(csmsg.senderName))))
+               if((!(csmsg.channel == RED_CHANNEL_ID)) && (!(csmsg.channel == ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE)) && ((this.socialFrame.isIgnored(csmsg.senderName,csmsg.senderAccountId)) || (this.socialFrame.isEnemy(csmsg.senderName))))
                {
                   return true;
                }
@@ -750,7 +749,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   {
                      this.playAlertSound(GUILD_SOUND);
                   }
-                  if(csmsg.channel == ChatActivableChannelsEnum.CHANNEL_PARTY || csmsg.channel == ChatActivableChannelsEnum.CHANNEL_ARENA)
+                  if((csmsg.channel == ChatActivableChannelsEnum.CHANNEL_PARTY) || (csmsg.channel == ChatActivableChannelsEnum.CHANNEL_ARENA))
                   {
                      this.playAlertSound(PARTY_SOUND);
                   }
@@ -772,7 +771,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                }
                else
                {
-                  if(content.charAt(0) == "*" && content.charAt(content.length-1) == "*")
+                  if((content.charAt(0) == "*") && (content.charAt(content.length - 1) == "*"))
                   {
                      thinking = true;
                      bubbleContent = newContent[1].substr(1,content.length - 2);
@@ -780,7 +779,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                }
                KernelEventsManager.getInstance().processCallback(ChatHookList.ChatServer,csmsg.channel,csmsg.senderId,csmsg.senderName,content,this.getRealTimestamp(csmsg.timestamp),csmsg.fingerprint,false);
                this.saveMessage(csmsg.channel,csmsg.content,content,this.getRealTimestamp(csmsg.timestamp),csmsg.fingerprint,csmsg.senderId,csmsg.senderName);
-               if((Kernel.getWorker().contains(FightBattleFrame)) || content.substr(0,3).toLowerCase() == "/me")
+               if((Kernel.getWorker().contains(FightBattleFrame)) || (content.substr(0,3).toLowerCase() == "/me"))
                {
                   return true;
                }
@@ -803,7 +802,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                      tooltipTarget = speakerEntity as TiphonSprite;
                      rider = (speakerEntity as TiphonSprite).getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0) as TiphonSprite;
                      isCreatureMode = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame)) && (RoleplayEntitiesFrame(Kernel.getWorker().getFrame(RoleplayEntitiesFrame)).isCreatureMode);
-                     if((rider) && !isCreatureMode)
+                     if((rider) && (!isCreatureMode))
                      {
                         tooltipTarget = rider;
                      }
@@ -865,7 +864,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   textId = InfoMessage.getInfoMessageById(timsg.msgType * 10000 + timsg.msgId).textId;
                   if(param != null)
                   {
-                     if((param[0]) && !(param[0].indexOf("~") == -1))
+                     if((param[0]) && (!(param[0].indexOf("~") == -1)))
                      {
                         params = param[0].split("~");
                      }
@@ -969,8 +968,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                      contentErr = I18n.getUiText("ui.chat.error." + cemsg.reason);
                      break;
                   case ChatErrorEnum.CHAT_ERROR_ALLIANCE:
-                  default:
                      contentErr = I18n.getUiText("ui.chat.error.0");
+                     break;
                }
                KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,contentErr,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,timestampErr);
                return true;
@@ -1305,8 +1304,6 @@ package com.ankamagames.dofus.logic.game.common.frames
                   this._aParagraphesByChannel[indTabChan] = new Array();
                }
                return true;
-            default:
-               return false;
          }
       }
       
@@ -1330,60 +1327,60 @@ package com.ankamagames.dofus.logic.game.common.frames
          return this._options;
       }
       
-      public function setDisplayOptions(param1:ChatOptions) : void {
-         this._options = param1;
+      public function setDisplayOptions(opt:ChatOptions) : void {
+         this._options = opt;
       }
       
       private function onCssLoaded() : void {
-         var _loc2_:Object = null;
-         var _loc1_:ExtendedStyleSheet = CssManager.getInstance().getCss(this._cssUri);
-         var _loc3_:* = 0;
-         while(_loc3_ < 13)
+         var styleObj:Object = null;
+         var _ssSheet:ExtendedStyleSheet = CssManager.getInstance().getCss(this._cssUri);
+         var i:int = 0;
+         while(i < 13)
          {
-            _loc2_ = _loc1_.getStyle("p" + _loc3_);
-            this._aChatColors[_loc3_] = uint(this.color0x(_loc2_["color"]));
-            _loc3_++;
+            styleObj = _ssSheet.getStyle("p" + i);
+            this._aChatColors[i] = uint(this.color0x(styleObj["color"]));
+            i++;
          }
-         _loc2_ = _loc1_.getStyle("p");
-         this._aChatColors.push(uint(this.color0x(_loc2_["color"])));
+         styleObj = _ssSheet.getStyle("p");
+         this._aChatColors.push(uint(this.color0x(styleObj["color"])));
       }
       
-      private function color0x(param1:String) : String {
-         return param1.replace("#","0x");
+      private function color0x(color:String) : String {
+         return color.replace("#","0x");
       }
       
-      private function displayCarac(param1:CharacterBaseCharacteristic) : String {
-         var _loc2_:int = param1.alignGiftBonus + param1.contextModif + param1.objectsAndMountBonus;
-         var _loc3_:* = "+";
-         if(_loc2_ < 0)
+      private function displayCarac(pCarac:CharacterBaseCharacteristic) : String {
+         var bonuses:int = pCarac.alignGiftBonus + pCarac.contextModif + pCarac.objectsAndMountBonus;
+         var signe:String = "+";
+         if(bonuses < 0)
          {
-            _loc3_ = "";
+            signe = "";
          }
-         return param1.base + " (" + _loc3_ + _loc2_ + ")";
+         return pCarac.base + " (" + signe + bonuses + ")";
       }
       
-      private function playAlertSound(param1:uint) : void {
+      private function playAlertSound(pType:uint) : void {
          if(Kernel.getWorker().getFrame(LoadingModuleFrame) as LoadingModuleFrame)
          {
             return;
          }
-         var _loc2_:SoundApi = new SoundApi();
-         switch(param1)
+         var sapi:SoundApi = new SoundApi();
+         switch(pType)
          {
             case GUILD_SOUND:
-               if(_loc2_.playSoundForGuildMessage())
+               if(sapi.playSoundForGuildMessage())
                {
                   SoundManager.getInstance().manager.playUISound(UISoundEnum.GUILD_CHAT_MESSAGE);
                }
                break;
             case PARTY_SOUND:
-               if(_loc2_.playSoundForGuildMessage())
+               if(sapi.playSoundForGuildMessage())
                {
                   SoundManager.getInstance().manager.playUISound(UISoundEnum.PARTY_CHAT_MESSAGE);
                }
                break;
             case PRIVATE_SOUND:
-               if(_loc2_.playSoundForGuildMessage())
+               if(sapi.playSoundForGuildMessage())
                {
                   SoundManager.getInstance().manager.playUISound(UISoundEnum.PRIVATE_CHAT_MESSAGE);
                }
@@ -1394,64 +1391,64 @@ package com.ankamagames.dofus.logic.game.common.frames
          }
       }
       
-      private function saveMessage(param1:int=0, param2:String="", param3:String="", param4:Number=0, param5:String="", param6:uint=0, param7:String="", param8:Vector.<ItemWrapper>=null, param9:String="", param10:uint=0, param11:uint=0, param12:Array=null, param13:Boolean=false) : void {
-         var _loc14_:Object = null;
-         var _loc16_:uint = 0;
-         var _loc17_:uint = 0;
-         if(param9 != "")
+      private function saveMessage(channel:int=0, baseContent:String="", content:String="", timestamp:Number=0, fingerprint:String="", senderId:uint=0, senderName:String="", objects:Vector.<ItemWrapper>=null, receiverName:String="", receiverId:uint=0, textKey:uint=0, params:Array=null, admin:Boolean=false) : void {
+         var sentence:Object = null;
+         var max:uint = 0;
+         var i:uint = 0;
+         if(receiverName != "")
          {
-            _loc14_ = new ChatSentenceWithRecipient(this._msgUId,param2,param3,param1,param4,param5,param6,param7,param9,param10,param8);
+            sentence = new ChatSentenceWithRecipient(this._msgUId,baseContent,content,channel,timestamp,fingerprint,senderId,senderName,receiverName,receiverId,objects);
          }
          else
          {
-            if(param7 != "")
+            if(senderName != "")
             {
-               _loc14_ = new ChatSentenceWithSource(this._msgUId,param2,param3,param1,param4,param5,param6,param7,param8,param13);
+               sentence = new ChatSentenceWithSource(this._msgUId,baseContent,content,channel,timestamp,fingerprint,senderId,senderName,objects,admin);
             }
             else
             {
-               if(param11 != 0)
+               if(textKey != 0)
                {
-                  _loc14_ = new ChatInformationSentence(this._msgUId,param2,param3,param1,param4,param5,param11,param12);
+                  sentence = new ChatInformationSentence(this._msgUId,baseContent,content,channel,timestamp,fingerprint,textKey,params);
                }
                else
                {
-                  _loc14_ = new BasicChatSentence(this._msgUId,param2,param3,param1,param4,param5);
+                  sentence = new BasicChatSentence(this._msgUId,baseContent,content,channel,timestamp,fingerprint);
                }
             }
          }
-         this._aMessagesByChannel[param1].push(_loc14_);
-         var _loc15_:uint = 0;
-         if(this._aMessagesByChannel[param1].length > this._maxMessagesStored)
+         this._aMessagesByChannel[channel].push(sentence);
+         var removedSentences:uint = 0;
+         if(this._aMessagesByChannel[channel].length > this._maxMessagesStored)
          {
-            _loc16_ = this._aMessagesByChannel[param1].length - this._maxMessagesStored;
-            _loc17_ = 0;
-            while(_loc17_ < _loc16_)
+            max = this._aMessagesByChannel[channel].length - this._maxMessagesStored;
+            i = 0;
+            while(i < max)
             {
-               _loc15_++;
-               _loc17_++;
+               removedSentences++;
+               i++;
             }
          }
          this._msgUId++;
-         KernelEventsManager.getInstance().processCallback(ChatHookList.NewMessage,param1,_loc15_);
+         KernelEventsManager.getInstance().processCallback(ChatHookList.NewMessage,channel,removedSentences);
       }
       
-      public function addParagraphToHistory(param1:int, param2:Object) : void {
-         if(param2 != null)
+      public function addParagraphToHistory(channel:int, p:Object) : void {
+         if(p != null)
          {
-            param2.id = this._msgUId;
-            this._aParagraphesByChannel[param1].push(param2);
+            p.id = this._msgUId;
+            this._aParagraphesByChannel[channel].push(p);
          }
       }
       
-      public function removeLinesFromHistory(param1:int, param2:int) : void {
-         var _loc3_:* = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param1)
+      public function removeLinesFromHistory(value:int, channel:int) : void {
+         var i:* = 0;
+         i = 0;
+         while(i < value)
          {
-            this._aMessagesByChannel[param2].shift();
-            this._aParagraphesByChannel[param2].shift();
-            _loc3_++;
+            this._aMessagesByChannel[channel].shift();
+            this._aParagraphesByChannel[channel].shift();
+            i++;
          }
       }
       
@@ -1459,174 +1456,173 @@ package com.ankamagames.dofus.logic.game.common.frames
          return TimeManager.getInstance().getTimestamp();
       }
       
-      private function getRealTimestamp(param1:Number) : Number {
-         return param1 * 1000 + TimeManager.getInstance().timezoneOffset;
+      private function getRealTimestamp(time:Number) : Number {
+         return time * 1000 + TimeManager.getInstance().timezoneOffset;
       }
       
-      public function getTimestampServerByRealTimestamp(param1:Number) : Number {
-         return (param1 - TimeManager.getInstance().timezoneOffset) / 1000;
+      public function getTimestampServerByRealTimestamp(realTimeStamp:Number) : Number {
+         return (realTimeStamp - TimeManager.getInstance().timezoneOffset) / 1000;
       }
       
-      public function checkCensored(param1:String, param2:uint, param3:uint, param4:String) : Array {
-         var _loc12_:String = null;
-         var _loc13_:uint = 0;
-         var _loc14_:Array = null;
-         var _loc15_:String = null;
-         var _loc16_:String = null;
-         var _loc17_:Array = null;
-         var _loc18_:* = false;
-         var _loc19_:Array = null;
-         var _loc20_:String = null;
-         var _loc21_:String = null;
-         var _loc22_:String = null;
-         var _loc23_:* = 0;
-         var _loc24_:String = null;
-         var _loc25_:* = 0;
-         var _loc26_:String = null;
-         var _loc27_:String = null;
-         var _loc28_:String = null;
-         var _loc29_:* = 0;
-         var _loc30_:String = null;
-         var _loc31_:Object = null;
-         var _loc32_:String = null;
-         var _loc5_:String = param1;
-         if((((OptionManager.getOptionManager("chat").filterInsult) && (!(param2 == 8))) && (!(param2 == 10))) && (!(param2 == 11)) && !(param2 == 666))
+      public function checkCensored(word:String, channel:uint, senderId:uint, senderName:String) : Array {
+         var wordl:String = null;
+         var nAddWarning:uint = 0;
+         var newContent:Array = null;
+         var lang:String = null;
+         var finalText:String = null;
+         var safeChars:Array = null;
+         var indexOfMethod:* = false;
+         var wordsToCheck:Array = null;
+         var wordi:String = null;
+         var testword:String = null;
+         var finalWord:String = null;
+         var ichar:* = 0;
+         var forbiddenWord:String = null;
+         var iichar:* = 0;
+         var safeReplace:String = null;
+         var upperContent:String = null;
+         var searchedWord:String = null;
+         var pos:* = 0;
+         var finalWordl:String = null;
+         var result:Object = null;
+         var warning:String = null;
+         var content:String = word;
+         if((((OptionManager.getOptionManager("chat").filterInsult) && (!(channel == 8))) && (!(channel == 10))) && (!(channel == 11)) && (!(channel == 666)))
          {
-            _loc15_ = XmlConfig.getInstance().getEntry("config.lang.current");
-            _loc16_ = "";
-            _loc17_ = ["&","%","?","#","§","!"];
-            _loc18_ = _loc15_ == "ja";
-            if(!_loc18_)
+            lang = XmlConfig.getInstance().getEntry("config.lang.current");
+            finalText = "";
+            safeChars = ["&","%","?","#","§","!"];
+            indexOfMethod = lang == "ja";
+            if(!indexOfMethod)
             {
-               _loc19_ = _loc5_.split(" ");
-               for each (_loc20_ in _loc19_)
+               wordsToCheck = content.split(" ");
+               for each (wordi in wordsToCheck)
                {
-                  _loc21_ = _loc20_.toLowerCase();
-                  _loc22_ = "";
+                  testword = wordi.toLowerCase();
+                  finalWord = "";
                   if(this._aCensoredWords)
                   {
-                     if(this._aCensoredWords[_loc21_])
+                     if(this._aCensoredWords[testword])
                      {
-                        _loc23_ = 0;
-                        while(_loc23_ < _loc21_.length)
+                        ichar = 0;
+                        while(ichar < testword.length)
                         {
-                           _loc22_ = _loc22_ + _loc17_[_loc21_.charCodeAt(_loc23_) % 5];
-                           _loc23_++;
+                           finalWord = finalWord + safeChars[testword.charCodeAt(ichar) % 5];
+                           ichar++;
                         }
                      }
                      else
                      {
-                        for (_loc24_ in this._aCensoredWords)
+                        for (forbiddenWord in this._aCensoredWords)
                         {
-                           if(this._aCensoredWords[_loc24_] == 2)
+                           if(this._aCensoredWords[forbiddenWord] == 2)
                            {
-                              if(_loc21_.indexOf(_loc24_) != -1)
+                              if(testword.indexOf(forbiddenWord) != -1)
                               {
-                                 _loc25_ = 0;
-                                 while(_loc25_ < _loc21_.length)
+                                 iichar = 0;
+                                 while(iichar < testword.length)
                                  {
-                                    _loc22_ = _loc22_ + _loc17_[_loc21_.charCodeAt(_loc25_) % 5];
-                                    _loc25_++;
+                                    finalWord = finalWord + safeChars[testword.charCodeAt(iichar) % 5];
+                                    iichar++;
                                  }
                               }
-                              continue;
                            }
                         }
                      }
                   }
-                  if(_loc22_ == "")
+                  if(finalWord == "")
                   {
-                     _loc22_ = _loc20_;
+                     finalWord = wordi;
                   }
-                  _loc16_ = _loc16_ + (_loc22_ + " ");
+                  finalText = finalText + (finalWord + " ");
                }
-               _loc5_ = _loc16_.slice(0,_loc16_.length-1);
+               content = finalText.slice(0,finalText.length - 1);
             }
             else
             {
-               _loc26_ = "&%?§!&?&%§!&%!&%?#§!";
-               _loc27_ = _loc5_.toUpperCase();
-               for (_loc28_ in this._aCensoredWords)
+               safeReplace = "&%?§!&?&%§!&%!&%?#§!";
+               upperContent = content.toUpperCase();
+               for (searchedWord in this._aCensoredWords)
                {
-                  _loc29_ = 0;
-                  while(_loc29_ != -1)
+                  pos = 0;
+                  while(pos != -1)
                   {
-                     _loc29_ = _loc27_.indexOf(_loc28_);
-                     if(_loc29_ != -1)
+                     pos = upperContent.indexOf(searchedWord);
+                     if(pos != -1)
                      {
-                        _loc5_ = _loc5_.substr(0,_loc29_) + _loc26_.substr(0,_loc28_.length) + _loc5_.substr(_loc29_ + _loc28_.length);
-                        _loc27_ = _loc5_.toUpperCase();
+                        content = content.substr(0,pos) + safeReplace.substr(0,searchedWord.length) + content.substr(pos + searchedWord.length);
+                        upperContent = content.toUpperCase();
                      }
                   }
                }
             }
          }
-         var _loc6_:Array = _loc5_.split(" ");
-         var _loc7_:* = "";
-         var _loc8_:* = false;
-         var _loc9_:* = "";
-         var _loc10_:* = "";
-         var _loc11_:* = "";
-         for each (_loc12_ in _loc6_)
+         var aText:Array = content.split(" ");
+         var finalText2:String = "";
+         var isLink:Boolean = false;
+         var wordBeginning:String = "";
+         var wordEnd:String = "";
+         var wordLink:String = "";
+         for each (wordl in aText)
          {
-            _loc30_ = "";
-            _loc31_ = this.needToFormateUrl(_loc12_);
-            if(_loc31_.formate)
+            finalWordl = "";
+            result = this.needToFormateUrl(wordl);
+            if(result.formate)
             {
-               _loc30_ = _loc30_ + HtmlManager.addLink("[" + _loc31_.url + "]","event:chatLinkRelease," + _loc31_.url + "," + param3 + "," + param4,{"bold":true});
-               _loc8_ = true;
+               finalWordl = finalWordl + HtmlManager.addLink("[" + result.url + "]","event:chatLinkRelease," + result.url + "," + senderId + "," + senderName,{"bold":true});
+               isLink = true;
             }
-            if(_loc30_ == "")
+            if(finalWordl == "")
             {
-               _loc30_ = _loc12_;
+               finalWordl = wordl;
             }
-            _loc7_ = _loc7_ + (_loc30_ + " ");
+            finalText2 = finalText2 + (finalWordl + " ");
          }
-         _loc5_ = _loc7_.slice(0,_loc7_.length-1);
-         _loc13_ = 0;
-         _loc14_ = new Array();
-         if(_loc13_ > 0)
+         content = finalText2.slice(0,finalText2.length - 1);
+         nAddWarning = 0;
+         newContent = new Array();
+         if(nAddWarning > 0)
          {
-            _loc32_ = I18n.getUiText("ui.popup.warning");
-            _loc14_[0] = _loc5_ + " [" + HtmlManager.addLink(I18n.getUiText("ui.popup.warning"),"event:chatWarning",{"color":XmlConfig.getInstance().getEntry("colors.hyperlink.warning")}) + "]";
-            _loc14_[1] = _loc5_ + " [" + _loc32_ + "]";
+            warning = I18n.getUiText("ui.popup.warning");
+            newContent[0] = content + " [" + HtmlManager.addLink(I18n.getUiText("ui.popup.warning"),"event:chatWarning",{"color":XmlConfig.getInstance().getEntry("colors.hyperlink.warning")}) + "]";
+            newContent[1] = content + " [" + warning + "]";
          }
          else
          {
-            _loc14_[0] = _loc5_;
-            _loc14_[1] = _loc5_;
+            newContent[0] = content;
+            newContent[1] = content;
          }
-         return _loc14_;
+         return newContent;
       }
       
-      public function needToFormateUrl(param1:String) : Object {
-         var _loc2_:String = param1.replace("&amp;amp;","&");
-         var _loc3_:* = !(_loc2_ == param1);
-         var _loc4_:RegExp = new RegExp(URL_MATCHER);
-         var _loc5_:Object = _loc4_.exec(_loc2_);
-         var _loc6_:Object = new Object();
-         _loc6_.formate = false;
-         if(_loc5_)
+      public function needToFormateUrl(inStr:String) : Object {
+         var str:String = inStr.replace("&amp;amp;","&");
+         var needReplaceAmp:Boolean = !(str == inStr);
+         var myPattern:RegExp = new RegExp(URL_MATCHER);
+         var result:Object = myPattern.exec(str);
+         var objResult:Object = new Object();
+         objResult.formate = false;
+         if(result)
          {
-            if(_loc3_)
+            if(needReplaceAmp)
             {
-               _loc6_.url = _loc5_[0].replace("&","&amp;amp;");
+               objResult.url = result[0].replace("&","&amp;amp;");
             }
             else
             {
-               _loc6_.url = _loc5_[0];
+               objResult.url = result[0];
             }
-            _loc6_.index = _loc5_.index;
-            if(_loc5_[2] == undefined && _loc5_[8] == undefined && _loc5_[7].split(".").length >= 2 && LINK_TLDS.indexOf(_loc5_[11]) == -1)
+            objResult.index = result.index;
+            if((result[2] == undefined) && (result[8] == undefined) && (result[7].split(".").length >= 2) && (LINK_TLDS.indexOf(result[11]) == -1))
             {
-               _loc6_.formate = false;
+               objResult.formate = false;
             }
             else
             {
-               _loc6_.formate = true;
+               objResult.formate = true;
             }
          }
-         return _loc6_;
+         return objResult;
       }
    }
 }

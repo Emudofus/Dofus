@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.world
       
       public static const MODULE:String = "WorldMaps";
       
-      public static function getWorldMapById(param1:int) : WorldMap {
-         return GameData.getObject(MODULE,param1) as WorldMap;
+      public static function getWorldMapById(id:int) : WorldMap {
+         return GameData.getObject(MODULE,id) as WorldMap;
       }
       
       public static function getAllWorldMaps() : Array {

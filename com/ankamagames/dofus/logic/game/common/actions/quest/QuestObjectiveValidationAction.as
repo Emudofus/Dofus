@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.quest
          super();
       }
       
-      public static function create(param1:int, param2:int) : QuestObjectiveValidationAction {
-         var _loc3_:QuestObjectiveValidationAction = new QuestObjectiveValidationAction();
-         _loc3_.questId = param1;
-         _loc3_.objectiveId = param2;
-         return _loc3_;
+      public static function create(questId:int, objectiveId:int) : QuestObjectiveValidationAction {
+         var a:QuestObjectiveValidationAction = new QuestObjectiveValidationAction();
+         a.questId = questId;
+         a.objectiveId = objectiveId;
+         return a;
       }
       
       public var questId:int;

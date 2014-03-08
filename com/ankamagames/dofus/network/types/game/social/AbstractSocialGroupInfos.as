@@ -24,16 +24,16 @@ package com.ankamagames.dofus.network.types.game.social
       public function reset() : void {
       }
       
-      public function serialize(param1:IDataOutput) : void {
+      public function serialize(output:IDataOutput) : void {
       }
       
-      public function serializeAs_AbstractSocialGroupInfos(param1:IDataOutput) : void {
+      public function serializeAs_AbstractSocialGroupInfos(output:IDataOutput) : void {
       }
       
-      public function deserialize(param1:IDataInput) : void {
+      public function deserialize(input:IDataInput) : void {
       }
       
-      public function deserializeAs_AbstractSocialGroupInfos(param1:IDataInput) : void {
+      public function deserializeAs_AbstractSocialGroupInfos(input:IDataInput) : void {
       }
    }
 }

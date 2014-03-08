@@ -79,21 +79,21 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:GameMapMovementMessage = null;
-         var _loc3_:IEntity = null;
-         var _loc4_:RoleplayEntitiesFrame = null;
-         var _loc5_:TiphonSprite = null;
-         var _loc6_:MovementPath = null;
-         var _loc7_:EntityMovementCompleteMessage = null;
-         var _loc8_:EntityMovementStoppedMessage = null;
-         var _loc9_:TeleportOnSameMapMessage = null;
-         var _loc10_:IEntity = null;
-         var _loc11_:GameMapMovementConfirmMessage = null;
-         var _loc12_:GameMapMovementCancelMessage = null;
+      public function process(msg:Message) : Boolean {
+         var gmmmsg:GameMapMovementMessage = null;
+         var movedEntity:IEntity = null;
+         var rpEntitiesFrame:RoleplayEntitiesFrame = null;
+         var tiphonSpr:TiphonSprite = null;
+         var entityPath:MovementPath = null;
+         var emcmsg:EntityMovementCompleteMessage = null;
+         var emsmsg:EntityMovementStoppedMessage = null;
+         var tosmmsg:TeleportOnSameMapMessage = null;
+         var teleportedEntity:IEntity = null;
+         var gmmcmsg:GameMapMovementConfirmMessage = null;
+         var canceledMoveMessage:GameMapMovementCancelMessage = null;
          switch(true)
          {
-            case param1 is GameMapNoMovementMessage:
+            case msg is GameMapNoMovementMessage:
                this._isRequestingMovement = false;
                if(this._followingIe)
                {
@@ -101,38 +101,38 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   this._followingIe = null;
                }
                return true;
-            case param1 is GameMapMovementMessage:
-               _loc2_ = param1 as GameMapMovementMessage;
-               _loc3_ = DofusEntities.getEntity(_loc2_.actorId);
-               if(!_loc3_)
+            case msg is GameMapMovementMessage:
+               gmmmsg = msg as GameMapMovementMessage;
+               movedEntity = DofusEntities.getEntity(gmmmsg.actorId);
+               if(!movedEntity)
                {
-                  _log.warn("The entity " + _loc2_.actorId + " moved before it was added to the scene. Aborting movement.");
+                  _log.warn("The entity " + gmmmsg.actorId + " moved before it was added to the scene. Aborting movement.");
                   return true;
                }
-               _loc4_ = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-               _loc5_ = _loc3_ as TiphonSprite;
-               if(((_loc5_) && (!_loc4_.isCreatureMode)) && (_loc5_.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0)) && !_loc5_.getSubEntityBehavior(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER))
+               rpEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+               tiphonSpr = movedEntity as TiphonSprite;
+               if(((tiphonSpr) && (!rpEntitiesFrame.isCreatureMode)) && (tiphonSpr.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0)) && (!tiphonSpr.getSubEntityBehavior(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER)))
                {
-                  _loc5_.setSubEntityBehaviour(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,new RiderBehavior());
+                  tiphonSpr.setSubEntityBehaviour(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,new RiderBehavior());
                }
-               delete _loc4_.lastStaticAnimations[[_loc2_.actorId]];
-               TooltipManager.hide("smiley" + _loc2_.actorId);
-               TooltipManager.hide("msg" + _loc2_.actorId);
-               if(_loc3_.id == PlayedCharacterManager.getInstance().id)
+               delete rpEntitiesFrame.lastStaticAnimations[[gmmmsg.actorId]];
+               TooltipManager.hide("smiley" + gmmmsg.actorId);
+               TooltipManager.hide("msg" + gmmmsg.actorId);
+               if(movedEntity.id == PlayedCharacterManager.getInstance().id)
                {
                   this._isRequestingMovement = false;
                   KernelEventsManager.getInstance().processCallback(TriggerHookList.PlayerMove);
                }
-               _loc6_ = MapMovementAdapter.getClientMovement(_loc2_.keyMovements);
-               (_loc3_ as IMovable).move(_loc6_);
+               entityPath = MapMovementAdapter.getClientMovement(gmmmsg.keyMovements);
+               (movedEntity as IMovable).move(entityPath);
                return true;
-            case param1 is EntityMovementCompleteMessage:
-               _loc7_ = param1 as EntityMovementCompleteMessage;
-               if(_loc7_.entity.id == PlayedCharacterManager.getInstance().id)
+            case msg is EntityMovementCompleteMessage:
+               emcmsg = msg as EntityMovementCompleteMessage;
+               if(emcmsg.entity.id == PlayedCharacterManager.getInstance().id)
                {
-                  _loc11_ = new GameMapMovementConfirmMessage();
-                  ConnectionsHandler.getConnection().send(_loc11_);
-                  if(this._wantToChangeMap >= 0 && _loc7_.entity.position.cellId == this._destinationPoint)
+                  gmmcmsg = new GameMapMovementConfirmMessage();
+                  ConnectionsHandler.getConnection().send(gmmcmsg);
+                  if((this._wantToChangeMap >= 0) && (emcmsg.entity.position.cellId == this._destinationPoint))
                   {
                      this.askMapChange();
                      this._isRequestingMovement = false;
@@ -145,13 +145,13 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   Kernel.getWorker().process(new CharacterMovementStoppedMessage());
                }
                return true;
-            case param1 is EntityMovementStoppedMessage:
-               _loc8_ = param1 as EntityMovementStoppedMessage;
-               if(_loc8_.entity.id == PlayedCharacterManager.getInstance().id)
+            case msg is EntityMovementStoppedMessage:
+               emsmsg = msg as EntityMovementStoppedMessage;
+               if(emsmsg.entity.id == PlayedCharacterManager.getInstance().id)
                {
-                  _loc12_ = new GameMapMovementCancelMessage();
-                  _loc12_.initGameMapMovementCancelMessage(_loc8_.entity.position.cellId);
-                  ConnectionsHandler.getConnection().send(_loc12_);
+                  canceledMoveMessage = new GameMapMovementCancelMessage();
+                  canceledMoveMessage.initGameMapMovementCancelMessage(emsmsg.entity.position.cellId);
+                  ConnectionsHandler.getConnection().send(canceledMoveMessage);
                   this._isRequestingMovement = false;
                   if(this._followingMove)
                   {
@@ -165,25 +165,23 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                         case this._followingMessage is PlayerFightRequestAction:
                            Kernel.getWorker().process(this._followingMessage);
                            break;
-                        default:
-                           ConnectionsHandler.getConnection().send(this._followingMessage);
                      }
                      this._followingMessage = null;
                   }
                }
                return true;
-            case param1 is TeleportOnSameMapMessage:
-               _loc9_ = param1 as TeleportOnSameMapMessage;
-               _loc10_ = DofusEntities.getEntity(_loc9_.targetId);
-               if(_loc10_)
+            case msg is TeleportOnSameMapMessage:
+               tosmmsg = msg as TeleportOnSameMapMessage;
+               teleportedEntity = DofusEntities.getEntity(tosmmsg.targetId);
+               if(teleportedEntity)
                {
-                  if(_loc10_ is IMovable)
+                  if(teleportedEntity is IMovable)
                   {
-                     if(IMovable(_loc10_).isMoving)
+                     if(IMovable(teleportedEntity).isMoving)
                      {
-                        IMovable(_loc10_).stop(true);
+                        IMovable(teleportedEntity).stop(true);
                      }
-                     (_loc10_ as IMovable).jump(MapPoint.fromCellId(_loc9_.cellId));
+                     (teleportedEntity as IMovable).jump(MapPoint.fromCellId(tosmmsg.cellId));
                   }
                   else
                   {
@@ -195,8 +193,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   _log.warn("Received a teleportation request for a non-existing entity. Aborting.");
                }
                return true;
-            default:
-               return false;
          }
       }
       
@@ -204,67 +200,67 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          return true;
       }
       
-      function setNextMoveMapChange(param1:int) : void {
-         this._wantToChangeMap = param1;
+      function setNextMoveMapChange(mapId:int) : void {
+         this._wantToChangeMap = mapId;
       }
       
       function resetNextMoveMapChange() : void {
          this._wantToChangeMap = -1;
       }
       
-      function setFollowingInteraction(param1:Object) : void {
-         this._followingIe = param1;
+      function setFollowingInteraction(interaction:Object) : void {
+         this._followingIe = interaction;
       }
       
-      public function setFollowingMessage(param1:*) : void {
-         if(!(param1 is INetworkMessage || param1 is Action))
+      public function setFollowingMessage(message:*) : void {
+         if(!((message is INetworkMessage) || (message is Action)))
          {
             throw new Error("The message is neither INetworkMessage or Action");
          }
          else
          {
-            this._followingMessage = param1;
+            this._followingMessage = message;
             return;
          }
       }
       
-      function askMoveTo(param1:MapPoint) : Boolean {
+      function askMoveTo(cell:MapPoint) : Boolean {
          if(this._isRequestingMovement)
          {
             return false;
          }
-         var _loc2_:uint = getTimer();
-         if(this._latestMovementRequest + CONSECUTIVE_MOVEMENT_DELAY > _loc2_)
+         var now:uint = getTimer();
+         if(this._latestMovementRequest + CONSECUTIVE_MOVEMENT_DELAY > now)
          {
             return false;
          }
          this._isRequestingMovement = true;
-         var _loc3_:IEntity = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
-         if(!_loc3_)
+         var playerEntity:IEntity = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
+         if(!playerEntity)
          {
             _log.warn("The player tried to move before its character was added to the scene. Aborting.");
             this._isRequestingMovement = false;
             return false;
          }
-         this._destinationPoint = param1.cellId;
-         if(IMovable(_loc3_).isMoving)
+         this._destinationPoint = cell.cellId;
+         if(IMovable(playerEntity).isMoving)
          {
-            IMovable(_loc3_).stop();
-            if(_loc3_ is AnimatedCharacter)
+            IMovable(playerEntity).stop();
+            if(playerEntity is AnimatedCharacter)
             {
-               (_loc3_ as AnimatedCharacter).getRootEntity();
+               (playerEntity as AnimatedCharacter).getRootEntity();
             }
-            this._followingMove = param1;
+            this._followingMove = cell;
             return false;
          }
-         Pathfinding.findPath(DataMapProvider.getInstance(),_loc3_.position,param1,!PlayedCharacterManager.getInstance().restrictions.cantWalk8Directions,true,this.sendPath);
+         Pathfinding.findPath(DataMapProvider.getInstance(),playerEntity.position,cell,!PlayedCharacterManager.getInstance().restrictions.cantWalk8Directions,true,this.sendPath);
          return true;
       }
       
-      private function sendPath(param1:MovementPath) : void {
-         if(param1.start.cellId == param1.end.cellId)
+      private function sendPath(path:MovementPath) : void {
+         if(path.start.cellId == path.end.cellId)
          {
-            _log.warn("Discarding a movement path that begins and ends on the same cell (" + param1.start.cellId + ").");
+            _log.warn("Discarding a movement path that begins and ends on the same cell (" + path.start.cellId + ").");
             this._isRequestingMovement = false;
             if(this._followingIe)
             {
@@ -273,28 +269,28 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             }
             return;
          }
-         var _loc2_:GameMapMovementRequestMessage = new GameMapMovementRequestMessage();
-         _loc2_.initGameMapMovementRequestMessage(MapMovementAdapter.getServerMovement(param1),PlayedCharacterManager.getInstance().currentMap.mapId);
-         ConnectionsHandler.getConnection().send(_loc2_);
+         var gmmrmsg:GameMapMovementRequestMessage = new GameMapMovementRequestMessage();
+         gmmrmsg.initGameMapMovementRequestMessage(MapMovementAdapter.getServerMovement(path),PlayedCharacterManager.getInstance().currentMap.mapId);
+         ConnectionsHandler.getConnection().send(gmmrmsg);
          this._latestMovementRequest = getTimer();
       }
       
       function askMapChange() : void {
-         var _loc1_:ChangeMapMessage = new ChangeMapMessage();
-         _loc1_.initChangeMapMessage(this._wantToChangeMap);
-         ConnectionsHandler.getConnection().send(_loc1_);
+         var cmmsg:ChangeMapMessage = new ChangeMapMessage();
+         cmmsg.initChangeMapMessage(this._wantToChangeMap);
+         ConnectionsHandler.getConnection().send(cmmsg);
          this._wantToChangeMap = -1;
       }
       
-      function activateSkill(param1:uint, param2:InteractiveElement) : void {
-         var _loc4_:InteractiveUseRequestMessage = null;
-         var _loc3_:RoleplayInteractivesFrame = Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame;
-         if(((_loc3_) && (!(_loc3_.currentRequestedElementId == param2.elementId))) && (!_loc3_.usingInteractive) && !_loc3_.isElementChangingState(param2.elementId))
+      function activateSkill(skillInstanceId:uint, ie:InteractiveElement) : void {
+         var iurmsg:InteractiveUseRequestMessage = null;
+         var rpInteractivesFrame:RoleplayInteractivesFrame = Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame;
+         if(((rpInteractivesFrame) && (!(rpInteractivesFrame.currentRequestedElementId == ie.elementId))) && (!rpInteractivesFrame.usingInteractive) && (!rpInteractivesFrame.isElementChangingState(ie.elementId)))
          {
-            _loc3_.currentRequestedElementId = param2.elementId;
-            _loc4_ = new InteractiveUseRequestMessage();
-            _loc4_.initInteractiveUseRequestMessage(param2.elementId,param1);
-            ConnectionsHandler.getConnection().send(_loc4_);
+            rpInteractivesFrame.currentRequestedElementId = ie.elementId;
+            iurmsg = new InteractiveUseRequestMessage();
+            iurmsg.initInteractiveUseRequestMessage(ie.elementId,skillInstanceId);
+            ConnectionsHandler.getConnection().send(iurmsg);
          }
       }
    }

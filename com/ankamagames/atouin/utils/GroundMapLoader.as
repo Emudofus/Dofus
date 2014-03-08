@@ -20,13 +20,9 @@ package com.ankamagames.atouin.utils
    public class GroundMapLoader extends Object
    {
       
-      public function GroundMapLoader(param1:Map, param2:File, param3:Function, param4:Function) {
+      public function GroundMapLoader(map:Map, file:File, callBack:Function, errorCallBack:Function) {
          var fileStream:FileStream = null;
          var rawJPG:ByteArray = null;
-         var map:Map = param1;
-         var file:File = param2;
-         var callBack:Function = param3;
-         var errorCallBack:Function = param4;
          super();
          try
          {
@@ -59,7 +55,7 @@ package com.ankamagames.atouin.utils
       
       private static const _log:Logger = Log.getLogger(getQualifiedClassName(GroundMapLoader));
       
-      public static function loadGroundMap(param1:Map, param2:File, param3:Function, param4:Function) : void {
+      public static function loadGroundMap(map:Map, file:File, callBack:Function, errorCallBack:Function) : void {
       }
       
       private var _callBack:Function;
@@ -74,14 +70,13 @@ package com.ankamagames.atouin.utils
       
       private var _time:int = 0;
       
-      private function onJPGReady(param1:Event) : void {
+      private function onJPGReady(e:Event) : void {
          var bitmap:Bitmap = null;
-         var e:Event = param1;
          try
          {
             this._groundIsLoaded = true;
             bitmap = this._loader.content as Bitmap;
-            if(this._map.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_LOW_QUALITY || this._map.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_MEDIUM_QUALITY)
+            if((this._map.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_LOW_QUALITY) || (this._map.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_MEDIUM_QUALITY))
             {
                bitmap.width = AtouinConstants.RESOLUTION_HIGH_QUALITY.x;
                bitmap.height = AtouinConstants.RESOLUTION_HIGH_QUALITY.y;
@@ -100,7 +95,7 @@ package com.ankamagames.atouin.utils
             onError(null);
          }
          return;
-         if(this._map.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_LOW_QUALITY || this._map.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_MEDIUM_QUALITY)
+         if((this._map.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_LOW_QUALITY) || (this._map.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_MEDIUM_QUALITY))
          {
             bitmap.width = AtouinConstants.RESOLUTION_HIGH_QUALITY.x;
             bitmap.height = AtouinConstants.RESOLUTION_HIGH_QUALITY.y;
@@ -111,7 +106,7 @@ package com.ankamagames.atouin.utils
          this._callBack(bitmap);
       }
       
-      private function onError(param1:Event) : void {
+      private function onError(e:Event) : void {
          _log.info("On a pas pu charger la map :/");
          this._errorCallBack(this._map.id);
          this._loader.contentLoaderInfo.removeEventListener(Event.INIT,this.onJPGReady);
@@ -119,14 +114,14 @@ package com.ankamagames.atouin.utils
          this._loader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS,this.onProgress);
       }
       
-      private function onProgress(param1:ProgressEvent) : void {
-         if(param1.bytesLoaded == param1.bytesTotal)
+      private function onProgress(e:ProgressEvent) : void {
+         if(e.bytesLoaded == e.bytesTotal)
          {
             EnterFrameDispatcher.addEventListener(this.check,"GroundMapLoader");
          }
       }
       
-      private function check(param1:Event) : void {
+      private function check(e:Event) : void {
          if(this._time > 5)
          {
             if(!this._groundIsLoaded)

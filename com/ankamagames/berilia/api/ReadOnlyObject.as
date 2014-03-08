@@ -10,6 +10,7 @@ package com.ankamagames.berilia.api
    import flash.errors.IllegalOperationError;
    import flash.utils.flash_proxy;
    import com.ankamagames.jerakine.utils.misc.CallWithParameters;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.interfaces.ISecurizable;
    import com.ankamagames.jerakine.interfaces.ICustomSecureObject;
    import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
@@ -19,15 +20,15 @@ package com.ankamagames.berilia.api
    public dynamic class ReadOnlyObject extends Proxy implements Secure
    {
       
-      public function ReadOnlyObject(param1:Object, param2:Object) {
+      public function ReadOnlyObject(o:Object, accessKey:Object) {
          super();
-         SecureCenter.checkAccessKey(param2);
-         this._object = param1;
-         this._getQualifiedClassName = getQualifiedClassName(param1);
-         if(!((this._properties) && (param1 is Array || param1 is Vector.<*>)))
+         SecureCenter.checkAccessKey(accessKey);
+         this._object = o;
+         this._getQualifiedClassName = getQualifiedClassName(o);
+         if(!((this._properties) && ((o is Array) || (o is Vector.<*>))))
          {
             this._properties = DescribeTypeCache.getVariables(this._object);
-            if((_createdObjectProperties[this._getQualifiedClassName]) || this._getQualifiedClassName == "Object")
+            if((_createdObjectProperties[this._getQualifiedClassName]) || (this._getQualifiedClassName == "Object"))
             {
                return;
             }
@@ -47,26 +48,26 @@ package com.ankamagames.berilia.api
       
       private static const _readOnlyObjectExist:Dictionary = new Dictionary(true);
       
-      public static function create(param1:Object) : ReadOnlyObject {
-         var _loc3_:* = undefined;
-         if(param1 is ReadOnlyObject)
+      public static function create(o:Object) : ReadOnlyObject {
+         var roo:* = undefined;
+         if(o is ReadOnlyObject)
          {
-            return param1 as ReadOnlyObject;
+            return o as ReadOnlyObject;
          }
-         if(_readOnlyObjectExist[param1])
+         if(_readOnlyObjectExist[o])
          {
-            for (_loc3_ in _readOnlyObjectList)
+            for (roo in _readOnlyObjectList)
             {
-               if((_loc3_) && _loc3_._object == param1)
+               if((roo) && (roo._object == o))
                {
-                  return _loc3_;
+                  return roo;
                }
             }
          }
-         var _loc2_:ReadOnlyObject = new ReadOnlyObject(param1,SecureCenter.ACCESS_KEY);
-         _readOnlyObjectList[_loc2_] = true;
-         _readOnlyObjectExist[param1] = true;
-         return _loc2_;
+         var newReadOnlyObject:ReadOnlyObject = new ReadOnlyObject(o,SecureCenter.ACCESS_KEY);
+         _readOnlyObjectList[newReadOnlyObject] = true;
+         _readOnlyObjectExist[o] = true;
+         return newReadOnlyObject;
       }
       
       private var _object:Object;
@@ -78,17 +79,17 @@ package com.ankamagames.berilia.api
       private var _simplyfiedQualifiedClassName:String;
       
       public function get simplyfiedQualifiedClassName() : String {
-         var _loc1_:Array = null;
+         var splitedClassName:Array = null;
          if(this._simplyfiedQualifiedClassName == null)
          {
-            _loc1_ = this._getQualifiedClassName.split("::");
-            this._simplyfiedQualifiedClassName = _loc1_[_loc1_.length-1];
+            splitedClassName = this._getQualifiedClassName.split("::");
+            this._simplyfiedQualifiedClassName = splitedClassName[splitedClassName.length - 1];
          }
          return this._simplyfiedQualifiedClassName;
       }
       
-      public function getObject(param1:Object) : * {
-         if(param1 != SecureCenter.ACCESS_KEY)
+      public function getObject(accessKey:Object) : * {
+         if(accessKey != SecureCenter.ACCESS_KEY)
          {
             throw new IllegalOperationError();
          }
@@ -100,9 +101,8 @@ package com.ankamagames.berilia.api
       
       private var _testHaveOP:Boolean = true;
       
-      override flash_proxy function callProperty(param1:*, ... rest) : * {
+      override flash_proxy function callProperty(name:*, ... rest) : * {
          var haveOP:Boolean = false;
-         var name:* = param1;
          switch(QName(name).localName)
          {
             case "toString":
@@ -130,112 +130,97 @@ package com.ankamagames.berilia.api
             case "propertyIsEnumerable":
                return CallWithParameters.callR(this._object.propertyIsEnumerable,rest);
             case "indexOf":
-               if(this._object is Dictionary || this._object is Array || this._object is Vector.<*> || this._object is Vector.<uint> || this._object is Vector.<int> || this._object is Vector.<Number> || this._object is Vector.<Boolean>)
+               if((this._object is Dictionary) || (this._object is Array) || (this._object is Vector.<*>) || (this._object is Vector.<uint>) || (this._object is Vector.<int>) || (this._object is Vector.<Number>) || (this._object is Vector.<Boolean>))
                {
                   return CallWithParameters.callR(this._object.indexOf,rest);
                }
                _log.error("Try to use \'indexOf\' method on a simple ReadOnlyObject.");
                return null;
-            default:
-               e = new Error();
-               if(e.getStackTrace())
-               {
-                  _log.error("Cannot call method on ReadOnlyObject : " + name + ", " + e.getStackTrace().split("at ")[2]);
-               }
-               else
-               {
-                  _log.error("Cannot call method on ReadOnlyObject : " + name + ", no stack trace available");
-               }
-               return null;
          }
       }
       
-      override flash_proxy function getProperty(param1:*) : * {
-         if(this._object[param1] === null)
+      override flash_proxy function getProperty(name:*) : * {
+         if(this._object[name] === null)
          {
             return null;
          }
-         var _loc2_:* = this._object[param1];
+         var o:* = this._object[name];
          switch(true)
          {
-            case _loc2_ is uint:
-            case _loc2_ is int:
-            case _loc2_ is Number:
-            case _loc2_ is String:
-            case _loc2_ is Boolean:
-               return _loc2_;
-            case _loc2_ == null:
-            case _loc2_ == undefined:
-            case _loc2_ is Secure:
-               return _loc2_;
-            case _loc2_ is ISecurizable:
-               return (_loc2_ as ISecurizable).getSecureObject();
-            default:
-               return SecureCenter.secure(_loc2_);
+            case o is uint:
+            case o is int:
+            case o is Number:
+            case o is String:
+            case o is Boolean:
+               return o;
+            case o == null:
+            case o == undefined:
+            case o is Secure:
+               return o;
+            case o is ISecurizable:
+               return (o as ISecurizable).getSecureObject();
          }
       }
       
-      override flash_proxy function nextNameIndex(param1:int) : int {
-         var _loc2_:* = undefined;
-         if(param1 == 0 && (this._object is Dictionary || this._object is Array || this._object is Vector.<*> || this._object is Vector.<uint> || this._object is Vector.<int> || this._object is Vector.<Number> || this._object is Vector.<Boolean>))
+      override flash_proxy function nextNameIndex(index:int) : int {
+         var x:* = undefined;
+         if((index == 0) && ((this._object is Dictionary) || (this._object is Array) || (this._object is Vector.<*>) || (this._object is Vector.<uint>) || (this._object is Vector.<int>) || (this._object is Vector.<Number>) || (this._object is Vector.<Boolean>)))
          {
             this._properties = new Array();
-            for (_loc2_ in this._object)
+            for (x in this._object)
             {
-               this._properties.push(_loc2_);
+               this._properties.push(x);
             }
          }
-         if(param1 < this._properties.length)
+         if(index < this._properties.length)
          {
-            return param1 + 1;
+            return index + 1;
          }
          return 0;
       }
       
-      override flash_proxy function nextValue(param1:int) : * {
-         var _loc2_:* = this._properties[param1-1];
-         var _loc3_:* = this._object[_loc2_];
+      override flash_proxy function nextValue(index:int) : * {
+         var prop:* = this._properties[index - 1];
+         var o:* = this._object[prop];
          switch(true)
          {
-            case _loc3_ == null:
-            case _loc3_ is uint:
-            case _loc3_ is int:
-            case _loc3_ is Number:
-            case _loc3_ is String:
-            case _loc3_ is Boolean:
-            case _loc3_ == undefined:
-            case _loc3_ is Secure:
-               return _loc3_;
-            case _loc3_ is ISecurizable:
-               return (_loc3_ as ISecurizable).getSecureObject();
-            default:
-               return SecureCenter.secure(_loc3_);
+            case o == null:
+            case o is uint:
+            case o is int:
+            case o is Number:
+            case o is String:
+            case o is Boolean:
+            case o == undefined:
+            case o is Secure:
+               return o;
+            case o is ISecurizable:
+               return (o as ISecurizable).getSecureObject();
          }
       }
       
-      override flash_proxy function nextName(param1:int) : String {
-         return this._properties[param1-1];
+      override flash_proxy function nextName(index:int) : String {
+         return this._properties[index - 1];
       }
       
-      override flash_proxy function setProperty(param1:*, param2:*) : void {
-         if(this._object is ICustomSecureObject && (DescribeTypeCache.getTags(this._object)[param1.localName]["Untrusted"]))
+      override flash_proxy function setProperty(name:*, value:*) : void {
+         if((this._object is ICustomSecureObject) && (DescribeTypeCache.getTags(this._object)[name.localName]["Untrusted"]))
          {
-            this._object[param1] = param2;
+            this._object[name] = value;
             return;
          }
-         var _loc3_:Error = new Error();
-         if(_loc3_.getStackTrace())
+         var e:Error = new Error();
+         if(e.getStackTrace())
          {
-            _log.error("Cannot set property on ReadOnlyObject : " + param1 + ", " + _loc3_.getStackTrace().split("at ")[2]);
+            _log.error("Cannot set property on ReadOnlyObject : " + name + ", " + e.getStackTrace().split("at ")[2]);
          }
          else
          {
-            _log.error("Cannot set property on ReadOnlyObject : " + param1 + ", no stack trace available");
+            _log.error("Cannot set property on ReadOnlyObject : " + name + ", no stack trace available");
          }
       }
       
-      override flash_proxy function hasProperty(param1:*) : Boolean {
-         return this._object.hasOwnProperty(param1);
+      override flash_proxy function hasProperty(name:*) : Boolean {
+         return this._object.hasOwnProperty(name);
       }
    }
 }

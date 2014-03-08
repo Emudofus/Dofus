@@ -4,11 +4,11 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestActiveInformations;
    import flash.utils.Dictionary;
    import com.ankamagames.dofus.network.types.game.achievement.AchievementRewardable;
    import com.ankamagames.jerakine.types.enums.Priority;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.quest.Achievement;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.quest.QuestListRequestMessage;
@@ -106,8 +106,8 @@ package com.ankamagames.dofus.logic.game.common.frames
          return this._completedQuests;
       }
       
-      public function getQuestInformations(param1:uint) : Object {
-         return this._questsInformations[param1];
+      public function getQuestInformations(questId:uint) : Object {
+         return this._questsInformations[questId];
       }
       
       public function get rewardableAchievements() : Vector.<AchievementRewardable> {
@@ -121,328 +121,326 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:QuestListRequestMessage = null;
-         var _loc3_:QuestListMessage = null;
-         var _loc4_:QuestInfosRequestAction = null;
-         var _loc5_:QuestStepInfoRequestMessage = null;
-         var _loc6_:QuestStepInfoMessage = null;
-         var _loc7_:QuestStartRequestAction = null;
-         var _loc8_:QuestStartRequestMessage = null;
-         var _loc9_:QuestObjectiveValidationAction = null;
-         var _loc10_:QuestObjectiveValidationMessage = null;
-         var _loc11_:GuidedModeReturnRequestMessage = null;
-         var _loc12_:GuidedModeQuitRequestMessage = null;
-         var _loc13_:QuestStartedMessage = null;
-         var _loc14_:QuestValidatedMessage = null;
-         var _loc15_:Quest = null;
-         var _loc16_:QuestObjectiveValidatedMessage = null;
-         var _loc17_:QuestStepValidatedMessage = null;
-         var _loc18_:Object = null;
-         var _loc19_:QuestStepStartedMessage = null;
-         var _loc20_:NotificationUpdateFlagAction = null;
-         var _loc21_:NotificationUpdateFlagMessage = null;
-         var _loc22_:NotificationResetMessage = null;
-         var _loc23_:AchievementListMessage = null;
-         var _loc24_:* = 0;
-         var _loc25_:AchievementDetailedListRequestAction = null;
-         var _loc26_:AchievementDetailedListRequestMessage = null;
-         var _loc27_:AchievementDetailedListMessage = null;
-         var _loc28_:AchievementDetailsRequestAction = null;
-         var _loc29_:AchievementDetailsRequestMessage = null;
-         var _loc30_:AchievementDetailsMessage = null;
-         var _loc31_:AchievementFinishedInformationMessage = null;
-         var _loc32_:String = null;
-         var _loc33_:AchievementFinishedMessage = null;
-         var _loc34_:AchievementRewardable = null;
-         var _loc35_:String = null;
-         var _loc36_:AchievementRewardRequestAction = null;
-         var _loc37_:AchievementRewardRequestMessage = null;
-         var _loc38_:AchievementRewardSuccessMessage = null;
-         var _loc39_:* = 0;
-         var _loc40_:AchievementRewardErrorMessage = null;
-         var _loc41_:QuestActiveDetailedInformations = null;
-         var _loc42_:QuestObjectiveInformations = null;
-         var _loc43_:Array = null;
-         var _loc44_:* = 0;
-         var _loc45_:* = 0;
-         var _loc46_:Object = null;
-         var _loc47_:* = 0;
-         var _loc48_:QuestActiveInformations = null;
-         var _loc49_:QuestStep = null;
-         var _loc50_:* = 0;
-         var _loc51_:* = 0;
-         var _loc52_:* = 0;
-         var _loc53_:AchievementRewardable = null;
-         var _loc54_:AchievementRewardable = null;
+      public function process(msg:Message) : Boolean {
+         var qlrmsg:QuestListRequestMessage = null;
+         var qlmsg:QuestListMessage = null;
+         var qira:QuestInfosRequestAction = null;
+         var qsirmsg:QuestStepInfoRequestMessage = null;
+         var qsimsg:QuestStepInfoMessage = null;
+         var qsra:QuestStartRequestAction = null;
+         var qsrmsg:QuestStartRequestMessage = null;
+         var qova:QuestObjectiveValidationAction = null;
+         var qovmsg:QuestObjectiveValidationMessage = null;
+         var gmrrmsg:GuidedModeReturnRequestMessage = null;
+         var gmqrmsg:GuidedModeQuitRequestMessage = null;
+         var qsmsg:QuestStartedMessage = null;
+         var qvmsg:QuestValidatedMessage = null;
+         var questValidated:Quest = null;
+         var qovmsg2:QuestObjectiveValidatedMessage = null;
+         var qsvmsg:QuestStepValidatedMessage = null;
+         var objectivesIds:Object = null;
+         var qssmsg:QuestStepStartedMessage = null;
+         var nufa:NotificationUpdateFlagAction = null;
+         var nufmsg:NotificationUpdateFlagMessage = null;
+         var nrmsg:NotificationResetMessage = null;
+         var almsg:AchievementListMessage = null;
+         var points:* = 0;
+         var adlra:AchievementDetailedListRequestAction = null;
+         var adlrmsg:AchievementDetailedListRequestMessage = null;
+         var adlmsg:AchievementDetailedListMessage = null;
+         var adra:AchievementDetailsRequestAction = null;
+         var adrmsg:AchievementDetailsRequestMessage = null;
+         var admsg:AchievementDetailsMessage = null;
+         var afimsg:AchievementFinishedInformationMessage = null;
+         var info3:String = null;
+         var afmsg:AchievementFinishedMessage = null;
+         var rewardableAchievement:AchievementRewardable = null;
+         var info:String = null;
+         var arra:AchievementRewardRequestAction = null;
+         var arrmsg:AchievementRewardRequestMessage = null;
+         var arsmsg:AchievementRewardSuccessMessage = null;
+         var rewardedAchievementIndex:* = 0;
+         var aremsg:AchievementRewardErrorMessage = null;
+         var stepsInfos:QuestActiveDetailedInformations = null;
+         var obj:QuestObjectiveInformations = null;
+         var dialogParams:Array = null;
+         var nbParams:* = 0;
+         var i:* = 0;
+         var compl:Object = null;
+         var index:* = 0;
+         var activeQuest:QuestActiveInformations = null;
+         var step:QuestStep = null;
+         var questStepObjId:* = 0;
+         var stepObjId:* = 0;
+         var finishAchId:* = 0;
+         var rewAch:AchievementRewardable = null;
+         var achievementRewardable:AchievementRewardable = null;
          switch(true)
          {
-            case param1 is QuestListRequestAction:
-               _loc2_ = new QuestListRequestMessage();
-               _loc2_.initQuestListRequestMessage();
-               ConnectionsHandler.getConnection().send(_loc2_);
+            case msg is QuestListRequestAction:
+               qlrmsg = new QuestListRequestMessage();
+               qlrmsg.initQuestListRequestMessage();
+               ConnectionsHandler.getConnection().send(qlrmsg);
                return true;
-            case param1 is QuestListMessage:
-               _loc3_ = param1 as QuestListMessage;
-               this._activeQuests = _loc3_.activeQuests;
-               this._completedQuests = _loc3_.finishedQuestsIds;
+            case msg is QuestListMessage:
+               qlmsg = msg as QuestListMessage;
+               this._activeQuests = qlmsg.activeQuests;
+               this._completedQuests = qlmsg.finishedQuestsIds;
                KernelEventsManager.getInstance().processCallback(QuestHookList.QuestListUpdated);
                return true;
-            case param1 is QuestInfosRequestAction:
-               _loc4_ = param1 as QuestInfosRequestAction;
-               _loc5_ = new QuestStepInfoRequestMessage();
-               _loc5_.initQuestStepInfoRequestMessage(_loc4_.questId);
-               ConnectionsHandler.getConnection().send(_loc5_);
+            case msg is QuestInfosRequestAction:
+               qira = msg as QuestInfosRequestAction;
+               qsirmsg = new QuestStepInfoRequestMessage();
+               qsirmsg.initQuestStepInfoRequestMessage(qira.questId);
+               ConnectionsHandler.getConnection().send(qsirmsg);
                return true;
-            case param1 is QuestStepInfoMessage:
-               _loc6_ = param1 as QuestStepInfoMessage;
-               if(_loc6_.infos is QuestActiveDetailedInformations)
+            case msg is QuestStepInfoMessage:
+               qsimsg = msg as QuestStepInfoMessage;
+               if(qsimsg.infos is QuestActiveDetailedInformations)
                {
-                  _loc41_ = _loc6_.infos as QuestActiveDetailedInformations;
-                  this._questsInformations[_loc41_.questId] = 
+                  stepsInfos = qsimsg.infos as QuestActiveDetailedInformations;
+                  this._questsInformations[stepsInfos.questId] = 
                      {
-                        "questId":_loc41_.questId,
-                        "stepId":_loc41_.stepId
+                        "questId":stepsInfos.questId,
+                        "stepId":stepsInfos.stepId
                      };
-                  this._questsInformations[_loc41_.questId].objectives = new Array();
-                  this._questsInformations[_loc41_.questId].objectivesData = new Array();
-                  this._questsInformations[_loc41_.questId].objectivesDialogParams = new Array();
-                  for each (_loc42_ in _loc41_.objectives)
+                  this._questsInformations[stepsInfos.questId].objectives = new Array();
+                  this._questsInformations[stepsInfos.questId].objectivesData = new Array();
+                  this._questsInformations[stepsInfos.questId].objectivesDialogParams = new Array();
+                  for each (obj in stepsInfos.objectives)
                   {
-                     this._questsInformations[_loc41_.questId].objectives[_loc42_.objectiveId] = _loc42_.objectiveStatus;
-                     if((_loc42_.dialogParams) && _loc42_.dialogParams.length > 0)
+                     this._questsInformations[stepsInfos.questId].objectives[obj.objectiveId] = obj.objectiveStatus;
+                     if((obj.dialogParams) && (obj.dialogParams.length > 0))
                      {
-                        _loc43_ = new Array();
-                        _loc44_ = _loc42_.dialogParams.length;
-                        _loc45_ = 0;
-                        while(_loc45_ < _loc44_)
+                        dialogParams = new Array();
+                        nbParams = obj.dialogParams.length;
+                        i = 0;
+                        while(i < nbParams)
                         {
-                           _loc43_.push(_loc42_.dialogParams[_loc45_]);
-                           _loc45_++;
+                           dialogParams.push(obj.dialogParams[i]);
+                           i++;
                         }
                      }
-                     this._questsInformations[_loc41_.questId].objectivesDialogParams[_loc42_.objectiveId] = _loc43_;
-                     if(_loc42_ is QuestObjectiveInformationsWithCompletion)
+                     this._questsInformations[stepsInfos.questId].objectivesDialogParams[obj.objectiveId] = dialogParams;
+                     if(obj is QuestObjectiveInformationsWithCompletion)
                      {
-                        _loc46_ = new Object();
-                        _loc46_.current = (_loc42_ as QuestObjectiveInformationsWithCompletion).curCompletion;
-                        _loc46_.max = (_loc42_ as QuestObjectiveInformationsWithCompletion).maxCompletion;
-                        this._questsInformations[_loc41_.questId].objectivesData[_loc42_.objectiveId] = _loc46_;
+                        compl = new Object();
+                        compl.current = (obj as QuestObjectiveInformationsWithCompletion).curCompletion;
+                        compl.max = (obj as QuestObjectiveInformationsWithCompletion).maxCompletion;
+                        this._questsInformations[stepsInfos.questId].objectivesData[obj.objectiveId] = compl;
                      }
                   }
-                  KernelEventsManager.getInstance().processCallback(QuestHookList.QuestInfosUpdated,_loc41_.questId,true);
+                  KernelEventsManager.getInstance().processCallback(QuestHookList.QuestInfosUpdated,stepsInfos.questId,true);
                }
                else
                {
-                  if(_loc6_.infos is QuestActiveInformations)
+                  if(qsimsg.infos is QuestActiveInformations)
                   {
-                     KernelEventsManager.getInstance().processCallback(QuestHookList.QuestInfosUpdated,(_loc6_.infos as QuestActiveInformations).questId,false);
+                     KernelEventsManager.getInstance().processCallback(QuestHookList.QuestInfosUpdated,(qsimsg.infos as QuestActiveInformations).questId,false);
                   }
                }
                return true;
-            case param1 is QuestStartRequestAction:
-               _loc7_ = param1 as QuestStartRequestAction;
-               _loc8_ = new QuestStartRequestMessage();
-               _loc8_.initQuestStartRequestMessage(_loc7_.questId);
-               ConnectionsHandler.getConnection().send(_loc8_);
+            case msg is QuestStartRequestAction:
+               qsra = msg as QuestStartRequestAction;
+               qsrmsg = new QuestStartRequestMessage();
+               qsrmsg.initQuestStartRequestMessage(qsra.questId);
+               ConnectionsHandler.getConnection().send(qsrmsg);
                return true;
-            case param1 is QuestObjectiveValidationAction:
-               _loc9_ = param1 as QuestObjectiveValidationAction;
-               _loc10_ = new QuestObjectiveValidationMessage();
-               _loc10_.initQuestObjectiveValidationMessage(_loc9_.questId,_loc9_.objectiveId);
-               ConnectionsHandler.getConnection().send(_loc10_);
+            case msg is QuestObjectiveValidationAction:
+               qova = msg as QuestObjectiveValidationAction;
+               qovmsg = new QuestObjectiveValidationMessage();
+               qovmsg.initQuestObjectiveValidationMessage(qova.questId,qova.objectiveId);
+               ConnectionsHandler.getConnection().send(qovmsg);
                return true;
-            case param1 is GuidedModeReturnRequestAction:
-               _loc11_ = new GuidedModeReturnRequestMessage();
-               _loc11_.initGuidedModeReturnRequestMessage();
-               ConnectionsHandler.getConnection().send(_loc11_);
+            case msg is GuidedModeReturnRequestAction:
+               gmrrmsg = new GuidedModeReturnRequestMessage();
+               gmrrmsg.initGuidedModeReturnRequestMessage();
+               ConnectionsHandler.getConnection().send(gmrrmsg);
                return true;
-            case param1 is GuidedModeQuitRequestAction:
-               _loc12_ = new GuidedModeQuitRequestMessage();
-               _loc12_.initGuidedModeQuitRequestMessage();
-               ConnectionsHandler.getConnection().send(_loc12_);
+            case msg is GuidedModeQuitRequestAction:
+               gmqrmsg = new GuidedModeQuitRequestMessage();
+               gmqrmsg.initGuidedModeQuitRequestMessage();
+               ConnectionsHandler.getConnection().send(gmqrmsg);
                return true;
-            case param1 is QuestStartedMessage:
-               _loc13_ = param1 as QuestStartedMessage;
-               KernelEventsManager.getInstance().processCallback(QuestHookList.QuestStarted,_loc13_.questId);
+            case msg is QuestStartedMessage:
+               qsmsg = msg as QuestStartedMessage;
+               KernelEventsManager.getInstance().processCallback(QuestHookList.QuestStarted,qsmsg.questId);
                return true;
-            case param1 is QuestValidatedMessage:
-               _loc14_ = param1 as QuestValidatedMessage;
-               KernelEventsManager.getInstance().processCallback(QuestHookList.QuestValidated,_loc14_.questId);
+            case msg is QuestValidatedMessage:
+               qvmsg = msg as QuestValidatedMessage;
+               KernelEventsManager.getInstance().processCallback(QuestHookList.QuestValidated,qvmsg.questId);
                if(!this._completedQuests)
                {
                   this._completedQuests = new Vector.<uint>();
                }
                else
                {
-                  for each (_loc48_ in this._activeQuests)
+                  for each (activeQuest in this._activeQuests)
                   {
-                     if(_loc48_.questId == _loc14_.questId)
+                     if(activeQuest.questId == qvmsg.questId)
                      {
                         break;
                      }
-                     _loc47_++;
+                     index++;
                   }
-                  if((this._activeQuests) && _loc47_ < this._activeQuests.length)
+                  if((this._activeQuests) && (index < this._activeQuests.length))
                   {
-                     this._activeQuests.splice(_loc47_,1);
+                     this._activeQuests.splice(index,1);
                   }
                }
-               this._completedQuests.push(_loc14_.questId);
-               _loc15_ = Quest.getQuestById(_loc14_.questId);
-               for each (_loc49_ in _loc15_.steps)
+               this._completedQuests.push(qvmsg.questId);
+               questValidated = Quest.getQuestById(qvmsg.questId);
+               for each (step in questValidated.steps)
                {
-                  for each (_loc50_ in _loc49_.objectiveIds)
+                  for each (questStepObjId in step.objectiveIds)
                   {
-                     KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag,"flag_srv" + CompassTypeEnum.COMPASS_TYPE_QUEST + "_" + _loc14_.questId + "_" + _loc50_,PlayedCharacterManager.getInstance().currentWorldMap.id);
+                     KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag,"flag_srv" + CompassTypeEnum.COMPASS_TYPE_QUEST + "_" + qvmsg.questId + "_" + questStepObjId,PlayedCharacterManager.getInstance().currentWorldMap.id);
                   }
                }
                return true;
-            case param1 is QuestObjectiveValidatedMessage:
-               _loc16_ = param1 as QuestObjectiveValidatedMessage;
-               KernelEventsManager.getInstance().processCallback(QuestHookList.QuestObjectiveValidated,_loc16_.questId,_loc16_.objectiveId);
-               KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag,"flag_srv" + CompassTypeEnum.COMPASS_TYPE_QUEST + "_" + _loc16_.questId + "_" + _loc16_.objectiveId,PlayedCharacterManager.getInstance().currentWorldMap.id);
+            case msg is QuestObjectiveValidatedMessage:
+               qovmsg2 = msg as QuestObjectiveValidatedMessage;
+               KernelEventsManager.getInstance().processCallback(QuestHookList.QuestObjectiveValidated,qovmsg2.questId,qovmsg2.objectiveId);
+               KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag,"flag_srv" + CompassTypeEnum.COMPASS_TYPE_QUEST + "_" + qovmsg2.questId + "_" + qovmsg2.objectiveId,PlayedCharacterManager.getInstance().currentWorldMap.id);
                return true;
-            case param1 is QuestStepValidatedMessage:
-               _loc17_ = param1 as QuestStepValidatedMessage;
-               if(this._questsInformations[_loc17_.questId])
+            case msg is QuestStepValidatedMessage:
+               qsvmsg = msg as QuestStepValidatedMessage;
+               if(this._questsInformations[qsvmsg.questId])
                {
-                  this._questsInformations[_loc17_.questId].stepId = _loc17_.stepId;
+                  this._questsInformations[qsvmsg.questId].stepId = qsvmsg.stepId;
                }
-               _loc18_ = QuestStep.getQuestStepById(_loc17_.stepId).objectiveIds;
-               for each (_loc51_ in _loc18_)
+               objectivesIds = QuestStep.getQuestStepById(qsvmsg.stepId).objectiveIds;
+               for each (stepObjId in objectivesIds)
                {
-                  KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag,"flag_srv" + CompassTypeEnum.COMPASS_TYPE_QUEST + "_" + _loc17_.questId + "_" + _loc51_,PlayedCharacterManager.getInstance().currentWorldMap.id);
+                  KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag,"flag_srv" + CompassTypeEnum.COMPASS_TYPE_QUEST + "_" + qsvmsg.questId + "_" + stepObjId,PlayedCharacterManager.getInstance().currentWorldMap.id);
                }
-               KernelEventsManager.getInstance().processCallback(QuestHookList.QuestStepValidated,_loc17_.questId,_loc17_.stepId);
+               KernelEventsManager.getInstance().processCallback(QuestHookList.QuestStepValidated,qsvmsg.questId,qsvmsg.stepId);
                return true;
-            case param1 is QuestStepStartedMessage:
-               _loc19_ = param1 as QuestStepStartedMessage;
-               if(this._questsInformations[_loc19_.questId])
+            case msg is QuestStepStartedMessage:
+               qssmsg = msg as QuestStepStartedMessage;
+               if(this._questsInformations[qssmsg.questId])
                {
-                  this._questsInformations[_loc19_.questId].stepId = _loc19_.stepId;
+                  this._questsInformations[qssmsg.questId].stepId = qssmsg.stepId;
                }
-               KernelEventsManager.getInstance().processCallback(QuestHookList.QuestStepStarted,_loc19_.questId,_loc19_.stepId);
+               KernelEventsManager.getInstance().processCallback(QuestHookList.QuestStepStarted,qssmsg.questId,qssmsg.stepId);
                return true;
-            case param1 is NotificationUpdateFlagAction:
-               _loc20_ = param1 as NotificationUpdateFlagAction;
-               _loc21_ = new NotificationUpdateFlagMessage();
-               _loc21_.initNotificationUpdateFlagMessage(_loc20_.index);
-               ConnectionsHandler.getConnection().send(_loc21_);
+            case msg is NotificationUpdateFlagAction:
+               nufa = msg as NotificationUpdateFlagAction;
+               nufmsg = new NotificationUpdateFlagMessage();
+               nufmsg.initNotificationUpdateFlagMessage(nufa.index);
+               ConnectionsHandler.getConnection().send(nufmsg);
                return true;
-            case param1 is NotificationResetAction:
+            case msg is NotificationResetAction:
                notificationList = new Array();
-               _loc22_ = new NotificationResetMessage();
-               _loc22_.initNotificationResetMessage();
-               ConnectionsHandler.getConnection().send(_loc22_);
+               nrmsg = new NotificationResetMessage();
+               nrmsg.initNotificationResetMessage();
+               ConnectionsHandler.getConnection().send(nrmsg);
                KernelEventsManager.getInstance().processCallback(HookList.NotificationReset);
                return true;
-            case param1 is AchievementListMessage:
-               _loc23_ = param1 as AchievementListMessage;
-               this._finishedAchievementsIds = _loc23_.finishedAchievementsIds;
-               this._rewardableAchievements = _loc23_.rewardableAchievements;
-               for each (_loc52_ in this._finishedAchievementsIds)
+            case msg is AchievementListMessage:
+               almsg = msg as AchievementListMessage;
+               this._finishedAchievementsIds = almsg.finishedAchievementsIds;
+               this._rewardableAchievements = almsg.rewardableAchievements;
+               for each (finishAchId in this._finishedAchievementsIds)
                {
-                  if(Achievement.getAchievementById(_loc52_))
+                  if(Achievement.getAchievementById(finishAchId))
                   {
-                     _loc24_ = _loc24_ + Achievement.getAchievementById(_loc52_).points;
+                     points = points + Achievement.getAchievementById(finishAchId).points;
                   }
                   else
                   {
-                     _log.warn("Succés " + _loc52_ + " non exporté");
+                     _log.warn("Succés " + finishAchId + " non exporté");
                   }
                }
-               for each (_loc53_ in this._rewardableAchievements)
+               for each (rewAch in this._rewardableAchievements)
                {
-                  if(Achievement.getAchievementById(_loc53_.id))
+                  if(Achievement.getAchievementById(rewAch.id))
                   {
-                     _loc24_ = _loc24_ + Achievement.getAchievementById(_loc53_.id).points;
-                     this._finishedAchievementsIds.push(_loc53_.id);
+                     points = points + Achievement.getAchievementById(rewAch.id).points;
+                     this._finishedAchievementsIds.push(rewAch.id);
                   }
                   else
                   {
-                     _log.warn("Succés " + _loc53_.id + " non exporté");
+                     _log.warn("Succés " + rewAch.id + " non exporté");
                   }
                }
                KernelEventsManager.getInstance().processCallback(QuestHookList.AchievementList,this._finishedAchievementsIds);
-               if(!this._rewardableAchievementsVisible && this._rewardableAchievements.length > 0)
+               if((!this._rewardableAchievementsVisible) && (this._rewardableAchievements.length > 0))
                {
                   this._rewardableAchievementsVisible = true;
                   KernelEventsManager.getInstance().processCallback(QuestHookList.RewardableAchievementsVisible,this._rewardableAchievementsVisible);
                }
                PlayedCharacterManager.getInstance().achievementPercent = Math.floor(this._finishedAchievementsIds.length / this._nbAllAchievements * 100);
-               PlayedCharacterManager.getInstance().achievementPoints = _loc24_;
+               PlayedCharacterManager.getInstance().achievementPoints = points;
                return true;
-            case param1 is AchievementDetailedListRequestAction:
-               _loc25_ = param1 as AchievementDetailedListRequestAction;
-               _loc26_ = new AchievementDetailedListRequestMessage();
-               _loc26_.initAchievementDetailedListRequestMessage(_loc25_.categoryId);
-               ConnectionsHandler.getConnection().send(_loc26_);
+            case msg is AchievementDetailedListRequestAction:
+               adlra = msg as AchievementDetailedListRequestAction;
+               adlrmsg = new AchievementDetailedListRequestMessage();
+               adlrmsg.initAchievementDetailedListRequestMessage(adlra.categoryId);
+               ConnectionsHandler.getConnection().send(adlrmsg);
                return true;
-            case param1 is AchievementDetailedListMessage:
-               _loc27_ = param1 as AchievementDetailedListMessage;
-               KernelEventsManager.getInstance().processCallback(QuestHookList.AchievementDetailedList,_loc27_.finishedAchievements,_loc27_.startedAchievements);
+            case msg is AchievementDetailedListMessage:
+               adlmsg = msg as AchievementDetailedListMessage;
+               KernelEventsManager.getInstance().processCallback(QuestHookList.AchievementDetailedList,adlmsg.finishedAchievements,adlmsg.startedAchievements);
                return true;
-            case param1 is AchievementDetailsRequestAction:
-               _loc28_ = param1 as AchievementDetailsRequestAction;
-               _loc29_ = new AchievementDetailsRequestMessage();
-               _loc29_.initAchievementDetailsRequestMessage(_loc28_.achievementId);
-               ConnectionsHandler.getConnection().send(_loc29_);
+            case msg is AchievementDetailsRequestAction:
+               adra = msg as AchievementDetailsRequestAction;
+               adrmsg = new AchievementDetailsRequestMessage();
+               adrmsg.initAchievementDetailsRequestMessage(adra.achievementId);
+               ConnectionsHandler.getConnection().send(adrmsg);
                return true;
-            case param1 is AchievementDetailsMessage:
-               _loc30_ = param1 as AchievementDetailsMessage;
-               KernelEventsManager.getInstance().processCallback(QuestHookList.AchievementDetails,_loc30_.achievement);
+            case msg is AchievementDetailsMessage:
+               admsg = msg as AchievementDetailsMessage;
+               KernelEventsManager.getInstance().processCallback(QuestHookList.AchievementDetails,admsg.achievement);
                return true;
-            case param1 is AchievementFinishedInformationMessage:
-               _loc31_ = param1 as AchievementFinishedInformationMessage;
-               _loc32_ = ParamsDecoder.applyParams(I18n.getUiText("ui.achievement.characterUnlocksAchievement",["{player," + _loc31_.name + "," + _loc31_.playerId + "}"]),[_loc31_.name,_loc31_.id]);
-               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,_loc32_,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+            case msg is AchievementFinishedInformationMessage:
+               afimsg = msg as AchievementFinishedInformationMessage;
+               info3 = ParamsDecoder.applyParams(I18n.getUiText("ui.achievement.characterUnlocksAchievement",["{player," + afimsg.name + "," + afimsg.playerId + "}"]),[afimsg.name,afimsg.id]);
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,info3,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                return true;
-            case param1 is AchievementFinishedMessage:
-               _loc33_ = param1 as AchievementFinishedMessage;
-               KernelEventsManager.getInstance().processCallback(QuestHookList.AchievementFinished,_loc33_.id);
-               this._finishedAchievementsIds.push(_loc33_.id);
-               _loc34_ = new AchievementRewardable();
-               this._rewardableAchievements.push(_loc34_.initAchievementRewardable(_loc33_.id,_loc33_.finishedlevel));
+            case msg is AchievementFinishedMessage:
+               afmsg = msg as AchievementFinishedMessage;
+               KernelEventsManager.getInstance().processCallback(QuestHookList.AchievementFinished,afmsg.id);
+               this._finishedAchievementsIds.push(afmsg.id);
+               rewardableAchievement = new AchievementRewardable();
+               this._rewardableAchievements.push(rewardableAchievement.initAchievementRewardable(afmsg.id,afmsg.finishedlevel));
                if(!this._rewardableAchievementsVisible)
                {
                   this._rewardableAchievementsVisible = true;
                   KernelEventsManager.getInstance().processCallback(QuestHookList.RewardableAchievementsVisible,this._rewardableAchievementsVisible);
                }
-               _loc35_ = ParamsDecoder.applyParams(I18n.getUiText("ui.achievement.achievementUnlockWithLink"),[_loc33_.id]);
-               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,_loc35_,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               info = ParamsDecoder.applyParams(I18n.getUiText("ui.achievement.achievementUnlockWithLink"),[afmsg.id]);
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,info,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                PlayedCharacterManager.getInstance().achievementPercent = Math.floor(this._finishedAchievementsIds.length / this._nbAllAchievements * 100);
-               PlayedCharacterManager.getInstance().achievementPoints = PlayedCharacterManager.getInstance().achievementPoints + Achievement.getAchievementById(_loc33_.id).points;
+               PlayedCharacterManager.getInstance().achievementPoints = PlayedCharacterManager.getInstance().achievementPoints + Achievement.getAchievementById(afmsg.id).points;
                return true;
-            case param1 is AchievementRewardRequestAction:
-               _loc36_ = param1 as AchievementRewardRequestAction;
-               _loc37_ = new AchievementRewardRequestMessage();
-               _loc37_.initAchievementRewardRequestMessage(_loc36_.achievementId);
-               ConnectionsHandler.getConnection().send(_loc37_);
+            case msg is AchievementRewardRequestAction:
+               arra = msg as AchievementRewardRequestAction;
+               arrmsg = new AchievementRewardRequestMessage();
+               arrmsg.initAchievementRewardRequestMessage(arra.achievementId);
+               ConnectionsHandler.getConnection().send(arrmsg);
                return true;
-            case param1 is AchievementRewardSuccessMessage:
-               _loc38_ = param1 as AchievementRewardSuccessMessage;
-               for each (_loc54_ in this._rewardableAchievements)
+            case msg is AchievementRewardSuccessMessage:
+               arsmsg = msg as AchievementRewardSuccessMessage;
+               for each (achievementRewardable in this._rewardableAchievements)
                {
-                  if(_loc54_.id == _loc38_.achievementId)
+                  if(achievementRewardable.id == arsmsg.achievementId)
                   {
-                     _loc39_ = this._rewardableAchievements.indexOf(_loc54_);
+                     rewardedAchievementIndex = this._rewardableAchievements.indexOf(achievementRewardable);
                      break;
                   }
                }
-               this._rewardableAchievements.splice(_loc39_,1);
-               KernelEventsManager.getInstance().processCallback(QuestHookList.AchievementRewardSuccess,_loc38_.achievementId);
-               if((this._rewardableAchievementsVisible) && this._rewardableAchievements.length == 0)
+               this._rewardableAchievements.splice(rewardedAchievementIndex,1);
+               KernelEventsManager.getInstance().processCallback(QuestHookList.AchievementRewardSuccess,arsmsg.achievementId);
+               if((this._rewardableAchievementsVisible) && (this._rewardableAchievements.length == 0))
                {
                   this._rewardableAchievementsVisible = false;
                   KernelEventsManager.getInstance().processCallback(QuestHookList.RewardableAchievementsVisible,this._rewardableAchievementsVisible);
                }
                return true;
-            case param1 is AchievementRewardErrorMessage:
-               _loc40_ = param1 as AchievementRewardErrorMessage;
+            case msg is AchievementRewardErrorMessage:
+               aremsg = msg as AchievementRewardErrorMessage;
                return true;
-            default:
-               return false;
          }
       }
       

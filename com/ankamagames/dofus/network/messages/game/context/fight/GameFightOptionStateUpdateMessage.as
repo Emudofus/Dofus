@@ -33,11 +33,11 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 5927;
       }
       
-      public function initGameFightOptionStateUpdateMessage(param1:uint=0, param2:uint=2, param3:uint=3, param4:Boolean=false) : GameFightOptionStateUpdateMessage {
-         this.fightId = param1;
-         this.teamId = param2;
-         this.option = param3;
-         this.state = param4;
+      public function initGameFightOptionStateUpdateMessage(fightId:uint=0, teamId:uint=2, option:uint=3, state:Boolean=false) : GameFightOptionStateUpdateMessage {
+         this.fightId = fightId;
+         this.teamId = teamId;
+         this.option = option;
+         this.state = state;
          this._isInitialized = true;
          return this;
       }
@@ -50,62 +50,62 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightOptionStateUpdateMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightOptionStateUpdateMessage(output);
       }
       
-      public function serializeAs_GameFightOptionStateUpdateMessage(param1:IDataOutput) : void {
+      public function serializeAs_GameFightOptionStateUpdateMessage(output:IDataOutput) : void {
          if(this.fightId < 0)
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
          }
          else
          {
-            param1.writeShort(this.fightId);
-            param1.writeByte(this.teamId);
-            param1.writeByte(this.option);
-            param1.writeBoolean(this.state);
+            output.writeShort(this.fightId);
+            output.writeByte(this.teamId);
+            output.writeByte(this.option);
+            output.writeBoolean(this.state);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightOptionStateUpdateMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightOptionStateUpdateMessage(input);
       }
       
-      public function deserializeAs_GameFightOptionStateUpdateMessage(param1:IDataInput) : void {
-         this.fightId = param1.readShort();
+      public function deserializeAs_GameFightOptionStateUpdateMessage(input:IDataInput) : void {
+         this.fightId = input.readShort();
          if(this.fightId < 0)
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element of GameFightOptionStateUpdateMessage.fightId.");
          }
          else
          {
-            this.teamId = param1.readByte();
+            this.teamId = input.readByte();
             if(this.teamId < 0)
             {
                throw new Error("Forbidden value (" + this.teamId + ") on element of GameFightOptionStateUpdateMessage.teamId.");
             }
             else
             {
-               this.option = param1.readByte();
+               this.option = input.readByte();
                if(this.option < 0)
                {
                   throw new Error("Forbidden value (" + this.option + ") on element of GameFightOptionStateUpdateMessage.option.");
                }
                else
                {
-                  this.state = param1.readBoolean();
+                  this.state = input.readBoolean();
                   return;
                }
             }

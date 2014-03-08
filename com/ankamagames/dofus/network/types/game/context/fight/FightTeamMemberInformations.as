@@ -19,8 +19,8 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 44;
       }
       
-      public function initFightTeamMemberInformations(param1:int=0) : FightTeamMemberInformations {
-         this.id = param1;
+      public function initFightTeamMemberInformations(id:int=0) : FightTeamMemberInformations {
+         this.id = id;
          return this;
       }
       
@@ -28,20 +28,20 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.id = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FightTeamMemberInformations(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FightTeamMemberInformations(output);
       }
       
-      public function serializeAs_FightTeamMemberInformations(param1:IDataOutput) : void {
-         param1.writeInt(this.id);
+      public function serializeAs_FightTeamMemberInformations(output:IDataOutput) : void {
+         output.writeInt(this.id);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FightTeamMemberInformations(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FightTeamMemberInformations(input);
       }
       
-      public function deserializeAs_FightTeamMemberInformations(param1:IDataInput) : void {
-         this.id = param1.readInt();
+      public function deserializeAs_FightTeamMemberInformations(input:IDataInput) : void {
+         this.id = input.readInt();
       }
    }
 }

@@ -1,7 +1,7 @@
 package com.ankamagames.dofus.network.types.game.context.fight
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -27,11 +27,11 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 364;
       }
       
-      public function initGameFightResumeSlaveInfo(param1:int=0, param2:Vector.<GameFightSpellCooldown>=null, param3:uint=0, param4:uint=0) : GameFightResumeSlaveInfo {
-         this.slaveId = param1;
-         this.spellCooldowns = param2;
-         this.summonCount = param3;
-         this.bombCount = param4;
+      public function initGameFightResumeSlaveInfo(slaveId:int=0, spellCooldowns:Vector.<GameFightSpellCooldown>=null, summonCount:uint=0, bombCount:uint=0) : GameFightResumeSlaveInfo {
+         this.slaveId = slaveId;
+         this.spellCooldowns = spellCooldowns;
+         this.summonCount = summonCount;
+         this.bombCount = bombCount;
          return this;
       }
       
@@ -42,18 +42,18 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.bombCount = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightResumeSlaveInfo(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightResumeSlaveInfo(output);
       }
       
-      public function serializeAs_GameFightResumeSlaveInfo(param1:IDataOutput) : void {
-         param1.writeInt(this.slaveId);
-         param1.writeShort(this.spellCooldowns.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.spellCooldowns.length)
+      public function serializeAs_GameFightResumeSlaveInfo(output:IDataOutput) : void {
+         output.writeInt(this.slaveId);
+         output.writeShort(this.spellCooldowns.length);
+         var _i2:uint = 0;
+         while(_i2 < this.spellCooldowns.length)
          {
-            (this.spellCooldowns[_loc2_] as GameFightSpellCooldown).serializeAs_GameFightSpellCooldown(param1);
-            _loc2_++;
+            (this.spellCooldowns[_i2] as GameFightSpellCooldown).serializeAs_GameFightSpellCooldown(output);
+            _i2++;
          }
          if(this.summonCount < 0)
          {
@@ -61,43 +61,43 @@ package com.ankamagames.dofus.network.types.game.context.fight
          }
          else
          {
-            param1.writeByte(this.summonCount);
+            output.writeByte(this.summonCount);
             if(this.bombCount < 0)
             {
                throw new Error("Forbidden value (" + this.bombCount + ") on element bombCount.");
             }
             else
             {
-               param1.writeByte(this.bombCount);
+               output.writeByte(this.bombCount);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightResumeSlaveInfo(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightResumeSlaveInfo(input);
       }
       
-      public function deserializeAs_GameFightResumeSlaveInfo(param1:IDataInput) : void {
-         var _loc4_:GameFightSpellCooldown = null;
-         this.slaveId = param1.readInt();
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_GameFightResumeSlaveInfo(input:IDataInput) : void {
+         var _item2:GameFightSpellCooldown = null;
+         this.slaveId = input.readInt();
+         var _spellCooldownsLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2 < _spellCooldownsLen)
          {
-            _loc4_ = new GameFightSpellCooldown();
-            _loc4_.deserialize(param1);
-            this.spellCooldowns.push(_loc4_);
-            _loc3_++;
+            _item2 = new GameFightSpellCooldown();
+            _item2.deserialize(input);
+            this.spellCooldowns.push(_item2);
+            _i2++;
          }
-         this.summonCount = param1.readByte();
+         this.summonCount = input.readByte();
          if(this.summonCount < 0)
          {
             throw new Error("Forbidden value (" + this.summonCount + ") on element of GameFightResumeSlaveInfo.summonCount.");
          }
          else
          {
-            this.bombCount = param1.readByte();
+            this.bombCount = input.readByte();
             if(this.bombCount < 0)
             {
                throw new Error("Forbidden value (" + this.bombCount + ") on element of GameFightResumeSlaveInfo.bombCount.");

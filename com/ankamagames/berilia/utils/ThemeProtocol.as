@@ -15,22 +15,22 @@ package com.ankamagames.berilia.utils
       
       private static var _themePath:String;
       
-      override protected function loadDirectly(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:Class) : void {
-         var _loc5_:String = null;
-         getAdapter(param1,param4);
+      override protected function loadDirectly(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, forcedAdapter:Class) : void {
+         var path:String = null;
+         getAdapter(uri,forcedAdapter);
          if(!_themePath)
          {
             _themePath = XmlConfig.getInstance().getEntry("config.ui.skin");
          }
-         if(param1.protocol == "theme")
+         if(uri.protocol == "theme")
          {
-            _loc5_ = _themePath + param1.path;
+            path = _themePath + uri.path;
          }
          else
          {
-            _loc5_ = param1.path;
+            path = uri.path;
          }
-         _adapter.loadDirectly(param1,extractPath(_loc5_.split("file://").join("")),param2,param3);
+         _adapter.loadDirectly(uri,extractPath(path.split("file://").join("")),observer,dispatchProgress);
       }
    }
 }

@@ -41,398 +41,398 @@ package com.ankamagames.dofus.misc.utils
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ParamsDecoder));
       
-      public static function applyParams(param1:String, param2:Array, param3:String="%") : String {
-         var _loc10_:String = null;
-         var _loc4_:* = false;
-         var _loc5_:* = false;
-         var _loc6_:* = "";
-         var _loc7_:* = "";
-         var _loc8_:* = "";
-         var _loc9_:uint = 0;
-         while(_loc9_ < param1.length)
+      public static function applyParams(txt:String, params:Array, replace:String="%") : String {
+         var c:String = null;
+         var lectureType:Boolean = false;
+         var lectureId:Boolean = false;
+         var type:String = "";
+         var id:String = "";
+         var s:String = "";
+         var i:uint = 0;
+         while(i < txt.length)
          {
-            _loc10_ = param1.charAt(_loc9_);
-            if(_loc10_ == "$")
+            c = txt.charAt(i);
+            if(c == "$")
             {
-               _loc4_ = true;
+               lectureType = true;
             }
             else
             {
-               if(_loc10_ == param3)
+               if(c == replace)
                {
-                  if(_loc9_ + 1 < param1.length && param1.charAt(_loc9_ + 1) == param3)
+                  if((i + 1 < txt.length) && (txt.charAt(i + 1) == replace))
                   {
-                     _loc5_ = false;
-                     _loc4_ = false;
-                     _loc9_++;
+                     lectureId = false;
+                     lectureType = false;
+                     i++;
                   }
                   else
                   {
-                     _loc4_ = false;
-                     _loc5_ = true;
+                     lectureType = false;
+                     lectureId = true;
                   }
                }
             }
-            if(_loc4_)
+            if(lectureType)
             {
-               _loc6_ = _loc6_ + _loc10_;
+               type = type + c;
             }
             else
             {
-               if(_loc5_)
+               if(lectureId)
                {
-                  if(_loc10_ == param3)
+                  if(c == replace)
                   {
-                     if(_loc7_.length == 0)
+                     if(id.length == 0)
                      {
-                        _loc7_ = _loc7_ + _loc10_;
+                        id = id + c;
                      }
                      else
                      {
-                        _loc8_ = _loc8_ + processReplace(_loc6_,_loc7_,param2);
-                        _loc6_ = "";
-                        _loc7_ = "" + _loc10_;
+                        s = s + processReplace(type,id,params);
+                        type = "";
+                        id = "" + c;
                      }
                   }
                   else
                   {
-                     if(_loc10_ >= "0" && _loc10_ <= "9")
+                     if((c >= "0") && (c <= "9"))
                      {
-                        _loc7_ = _loc7_ + _loc10_;
-                        if(_loc9_ + 1 == param1.length)
+                        id = id + c;
+                        if(i + 1 == txt.length)
                         {
-                           _loc5_ = false;
-                           _loc8_ = _loc8_ + processReplace(_loc6_,_loc7_,param2);
-                           _loc6_ = "";
-                           _loc7_ = "";
+                           lectureId = false;
+                           s = s + processReplace(type,id,params);
+                           type = "";
+                           id = "";
                         }
                      }
                      else
                      {
-                        _loc5_ = false;
-                        _loc8_ = _loc8_ + processReplace(_loc6_,_loc7_,param2);
-                        _loc6_ = "";
-                        _loc7_ = "";
-                        _loc8_ = _loc8_ + _loc10_;
+                        lectureId = false;
+                        s = s + processReplace(type,id,params);
+                        type = "";
+                        id = "";
+                        s = s + c;
                      }
                   }
                }
                else
                {
-                  if(_loc7_ != "")
+                  if(id != "")
                   {
-                     _loc8_ = _loc8_ + processReplace(_loc6_,_loc7_,param2);
-                     _loc6_ = "";
-                     _loc7_ = "";
+                     s = s + processReplace(type,id,params);
+                     type = "";
+                     id = "";
                   }
-                  _loc8_ = _loc8_ + _loc10_;
+                  s = s + c;
                }
             }
-            _loc9_++;
+            i++;
          }
-         return _loc8_;
+         return s;
       }
       
-      private static function processReplace(param1:String, param2:String, param3:Array) : String {
-         var _loc5_:* = 0;
-         var _loc6_:Item = null;
-         var _loc7_:ItemType = null;
-         var _loc8_:Job = null;
-         var _loc9_:Quest = null;
-         var _loc10_:Achievement = null;
-         var _loc11_:Title = null;
-         var _loc12_:Ornament = null;
-         var _loc13_:Spell = null;
-         var _loc14_:SpellState = null;
-         var _loc15_:Breed = null;
-         var _loc16_:Area = null;
-         var _loc17_:SubArea = null;
-         var _loc18_:MapPosition = null;
-         var _loc19_:Emoticon = null;
-         var _loc20_:Monster = null;
-         var _loc21_:MonsterRace = null;
-         var _loc22_:MonsterSuperRace = null;
-         var _loc23_:Challenge = null;
-         var _loc24_:AlignmentSide = null;
-         var _loc25_:Array = null;
-         var _loc26_:Dungeon = null;
-         var _loc27_:ItemWrapper = null;
-         var _loc4_:* = "";
-         _loc5_ = int(Number(param2.substr(1)))-1;
-         if(param1 == "")
+      private static function processReplace(type:String, id:String, params:Array) : String {
+         var nid:* = 0;
+         var item:Item = null;
+         var itemType:ItemType = null;
+         var job:Job = null;
+         var quest:Quest = null;
+         var achievement:Achievement = null;
+         var title:Title = null;
+         var ornament:Ornament = null;
+         var spell:Spell = null;
+         var spellState:SpellState = null;
+         var breed:Breed = null;
+         var area:Area = null;
+         var subArea:SubArea = null;
+         var map:MapPosition = null;
+         var emote:Emoticon = null;
+         var monster:Monster = null;
+         var monsterRace:MonsterRace = null;
+         var monsterSuperRace:MonsterSuperRace = null;
+         var challenge:Challenge = null;
+         var alignmentSide:AlignmentSide = null;
+         var stats:Array = null;
+         var dungeon:Dungeon = null;
+         var itemw:ItemWrapper = null;
+         var newString:String = "";
+         nid = int(Number(id.substr(1))) - 1;
+         if(type == "")
          {
-            _loc4_ = param3[_loc5_];
+            newString = params[nid];
          }
          else
          {
-            switch(param1)
+            switch(type)
             {
                case "$item":
-                  _loc6_ = Item.getItemById(param3[_loc5_]);
-                  if(_loc6_)
+                  item = Item.getItemById(params[nid]);
+                  if(item)
                   {
-                     _loc27_ = ItemWrapper.create(0,0,param3[_loc5_],0,null,false);
-                     _loc4_ = HyperlinkItemManager.newChatItem(_loc27_);
+                     itemw = ItemWrapper.create(0,0,params[nid],0,null,false);
+                     newString = HyperlinkItemManager.newChatItem(itemw);
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$itemType":
-                  _loc7_ = ItemType.getItemTypeById(param3[_loc5_]);
-                  if(_loc7_)
+                  itemType = ItemType.getItemTypeById(params[nid]);
+                  if(itemType)
                   {
-                     _loc4_ = _loc7_.name;
+                     newString = itemType.name;
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$quantity":
-                  _loc4_ = StringUtils.formateIntToString(int(param3[_loc5_]));
+                  newString = StringUtils.formateIntToString(int(params[nid]));
                   break;
                case "$job":
-                  _loc8_ = Job.getJobById(param3[_loc5_]);
-                  if(_loc8_)
+                  job = Job.getJobById(params[nid]);
+                  if(job)
                   {
-                     _loc4_ = _loc8_.name;
+                     newString = job.name;
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$quest":
-                  _loc9_ = Quest.getQuestById(param3[_loc5_]);
-                  if(_loc9_)
+                  quest = Quest.getQuestById(params[nid]);
+                  if(quest)
                   {
-                     _loc4_ = HyperlinkShowQuestManager.addQuest(_loc9_.id);
+                     newString = HyperlinkShowQuestManager.addQuest(quest.id);
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$achievement":
-                  _loc10_ = Achievement.getAchievementById(param3[_loc5_]);
-                  if(_loc10_)
+                  achievement = Achievement.getAchievementById(params[nid]);
+                  if(achievement)
                   {
-                     _loc4_ = HyperlinkShowAchievementManager.addAchievement(_loc10_.id);
+                     newString = HyperlinkShowAchievementManager.addAchievement(achievement.id);
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$title":
-                  _loc11_ = Title.getTitleById(param3[_loc5_]);
-                  if(_loc11_)
+                  title = Title.getTitleById(params[nid]);
+                  if(title)
                   {
-                     _loc4_ = HyperlinkShowTitleManager.addTitle(_loc11_.id);
+                     newString = HyperlinkShowTitleManager.addTitle(title.id);
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$ornament":
-                  _loc12_ = Ornament.getOrnamentById(param3[_loc5_]);
-                  if(_loc12_)
+                  ornament = Ornament.getOrnamentById(params[nid]);
+                  if(ornament)
                   {
-                     _loc4_ = HyperlinkShowOrnamentManager.addOrnament(_loc12_.id);
+                     newString = HyperlinkShowOrnamentManager.addOrnament(ornament.id);
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$spell":
-                  _loc13_ = Spell.getSpellById(param3[_loc5_]);
-                  if(_loc13_)
+                  spell = Spell.getSpellById(params[nid]);
+                  if(spell)
                   {
-                     _loc4_ = _loc13_.name;
+                     newString = spell.name;
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$spellState":
-                  _loc14_ = SpellState.getSpellStateById(param3[_loc5_]);
-                  if(_loc14_)
+                  spellState = SpellState.getSpellStateById(params[nid]);
+                  if(spellState)
                   {
-                     _loc4_ = _loc14_.name;
+                     newString = spellState.name;
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$breed":
-                  _loc15_ = Breed.getBreedById(param3[_loc5_]);
-                  if(_loc15_)
+                  breed = Breed.getBreedById(params[nid]);
+                  if(breed)
                   {
-                     _loc4_ = _loc15_.shortName;
+                     newString = breed.shortName;
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$area":
-                  _loc16_ = Area.getAreaById(param3[_loc5_]);
-                  if(_loc16_)
+                  area = Area.getAreaById(params[nid]);
+                  if(area)
                   {
-                     _loc4_ = _loc16_.name;
+                     newString = area.name;
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$subarea":
-                  _loc17_ = SubArea.getSubAreaById(param3[_loc5_]);
-                  if(_loc17_)
+                  subArea = SubArea.getSubAreaById(params[nid]);
+                  if(subArea)
                   {
-                     _loc4_ = "{subArea," + param3[_loc5_] + "}";
+                     newString = "{subArea," + params[nid] + "}";
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$map":
-                  _loc18_ = MapPosition.getMapPositionById(param3[_loc5_]);
-                  if(_loc18_)
+                  map = MapPosition.getMapPositionById(params[nid]);
+                  if(map)
                   {
-                     if(_loc18_.name)
+                     if(map.name)
                      {
-                        _loc4_ = _loc18_.name;
+                        newString = map.name;
                      }
                      else
                      {
-                        _loc4_ = "{map," + int(_loc18_.posX) + "," + int(_loc18_.posY) + "," + int(_loc18_.worldMap) + "}";
+                        newString = "{map," + int(map.posX) + "," + int(map.posY) + "," + int(map.worldMap) + "}";
                      }
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$emote":
-                  _loc19_ = Emoticon.getEmoticonById(param3[_loc5_]);
-                  if(_loc19_)
+                  emote = Emoticon.getEmoticonById(params[nid]);
+                  if(emote)
                   {
-                     _loc4_ = _loc19_.name;
+                     newString = emote.name;
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$monster":
-                  _loc20_ = Monster.getMonsterById(param3[_loc5_]);
-                  if(_loc20_)
+                  monster = Monster.getMonsterById(params[nid]);
+                  if(monster)
                   {
-                     _loc4_ = _loc20_.name;
+                     newString = monster.name;
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$monsterRace":
-                  _loc21_ = MonsterRace.getMonsterRaceById(param3[_loc5_]);
-                  if(_loc21_)
+                  monsterRace = MonsterRace.getMonsterRaceById(params[nid]);
+                  if(monsterRace)
                   {
-                     _loc4_ = _loc21_.name;
+                     newString = monsterRace.name;
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$monsterSuperRace":
-                  _loc22_ = MonsterSuperRace.getMonsterSuperRaceById(param3[_loc5_]);
-                  if(_loc22_)
+                  monsterSuperRace = MonsterSuperRace.getMonsterSuperRaceById(params[nid]);
+                  if(monsterSuperRace)
                   {
-                     _loc4_ = _loc22_.name;
+                     newString = monsterSuperRace.name;
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$challenge":
-                  _loc23_ = Challenge.getChallengeById(param3[_loc5_]);
-                  if(_loc23_)
+                  challenge = Challenge.getChallengeById(params[nid]);
+                  if(challenge)
                   {
-                     _loc4_ = _loc23_.name;
+                     newString = challenge.name;
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$alignment":
-                  _loc24_ = AlignmentSide.getAlignmentSideById(param3[_loc5_]);
-                  if(_loc24_)
+                  alignmentSide = AlignmentSide.getAlignmentSideById(params[nid]);
+                  if(alignmentSide)
                   {
-                     _loc4_ = _loc24_.name;
+                     newString = alignmentSide.name;
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$stat":
-                  _loc25_ = I18n.getUiText("ui.item.characteristics").split(",");
-                  if(_loc25_[param3[_loc5_]])
+                  stats = I18n.getUiText("ui.item.characteristics").split(",");
+                  if(stats[params[nid]])
                   {
-                     _loc4_ = _loc25_[param3[_loc5_]];
+                     newString = stats[params[nid]];
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
                case "$dungeon":
-                  _loc26_ = Dungeon.getDungeonById(param3[_loc5_]);
-                  if(_loc26_)
+                  dungeon = Dungeon.getDungeonById(params[nid]);
+                  if(dungeon)
                   {
-                     _loc4_ = _loc26_.name;
+                     newString = dungeon.name;
                   }
                   else
                   {
-                     _log.error(param1 + " " + param3[_loc5_] + " introuvable");
-                     _loc4_ = "";
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
                   }
                   break;
             }
          }
-         return _loc4_;
+         return newString;
       }
    }
 }

@@ -29,8 +29,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5904;
       }
       
-      public function initExchangeStartedBidBuyerMessage(param1:SellerBuyerDescriptor=null) : ExchangeStartedBidBuyerMessage {
-         this.buyerDescriptor = param1;
+      public function initExchangeStartedBidBuyerMessage(buyerDescriptor:SellerBuyerDescriptor=null) : ExchangeStartedBidBuyerMessage {
+         this.buyerDescriptor = buyerDescriptor;
          this._isInitialized = true;
          return this;
       }
@@ -40,31 +40,31 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeStartedBidBuyerMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeStartedBidBuyerMessage(output);
       }
       
-      public function serializeAs_ExchangeStartedBidBuyerMessage(param1:IDataOutput) : void {
-         this.buyerDescriptor.serializeAs_SellerBuyerDescriptor(param1);
+      public function serializeAs_ExchangeStartedBidBuyerMessage(output:IDataOutput) : void {
+         this.buyerDescriptor.serializeAs_SellerBuyerDescriptor(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeStartedBidBuyerMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeStartedBidBuyerMessage(input);
       }
       
-      public function deserializeAs_ExchangeStartedBidBuyerMessage(param1:IDataInput) : void {
+      public function deserializeAs_ExchangeStartedBidBuyerMessage(input:IDataInput) : void {
          this.buyerDescriptor = new SellerBuyerDescriptor();
-         this.buyerDescriptor.deserialize(param1);
+         this.buyerDescriptor.deserialize(input);
       }
    }
 }

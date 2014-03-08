@@ -6,9 +6,9 @@ package com.ankamagames.jerakine.messages.events
    public class FramePulledEvent extends Event
    {
       
-      public function FramePulledEvent(param1:Frame) {
+      public function FramePulledEvent(frame:Frame) {
          super(EVENT_FRAME_PULLED,false,false);
-         this._frame = param1;
+         this._frame = frame;
       }
       
       public static const EVENT_FRAME_PULLED:String = "event_frame_pulled";

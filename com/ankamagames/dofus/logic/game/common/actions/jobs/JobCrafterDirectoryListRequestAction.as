@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.jobs
          super();
       }
       
-      public static function create(param1:uint) : JobCrafterDirectoryListRequestAction {
-         var _loc2_:JobCrafterDirectoryListRequestAction = new JobCrafterDirectoryListRequestAction();
-         _loc2_.jobId = param1;
-         return _loc2_;
+      public static function create(jobId:uint) : JobCrafterDirectoryListRequestAction {
+         var act:JobCrafterDirectoryListRequestAction = new JobCrafterDirectoryListRequestAction();
+         act.jobId = jobId;
+         return act;
       }
       
       public var jobId:uint;

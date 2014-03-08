@@ -7,9 +7,9 @@ package com.ankamagames.dofus.kernel.updaterv2.messages.impl
    public class GetComponentsListMessage extends Object implements IUpdaterOutputMessage
    {
       
-      public function GetComponentsListMessage(param1:String="game") {
+      public function GetComponentsListMessage(project:String="game") {
          super();
-         this._project = param1;
+         this._project = project;
       }
       
       private var _project:String;

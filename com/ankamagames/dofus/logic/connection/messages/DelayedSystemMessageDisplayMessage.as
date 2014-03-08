@@ -11,10 +11,10 @@ package com.ankamagames.dofus.logic.connection.messages
          super();
       }
       
-      public function initDelayedSystemMessageDisplayMessage(param1:Boolean=false, param2:uint=0, param3:Vector.<String>=null) : DelayedSystemMessageDisplayMessage {
-         this.hangUp = param1;
-         this.msgId = param2;
-         this.parameters = param3;
+      public function initDelayedSystemMessageDisplayMessage(hangUp:Boolean=false, msgId:uint=0, parameters:Vector.<String>=null) : DelayedSystemMessageDisplayMessage {
+         this.hangUp = hangUp;
+         this.msgId = msgId;
+         this.parameters = parameters;
          return this;
       }
    }

@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.tinsel
          return 6373;
       }
       
-      public function initTitleSelectErrorMessage(param1:uint=0) : TitleSelectErrorMessage {
-         this.reason = param1;
+      public function initTitleSelectErrorMessage(reason:uint=0) : TitleSelectErrorMessage {
+         this.reason = reason;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.tinsel
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_TitleSelectErrorMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TitleSelectErrorMessage(output);
       }
       
-      public function serializeAs_TitleSelectErrorMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.reason);
+      public function serializeAs_TitleSelectErrorMessage(output:IDataOutput) : void {
+         output.writeByte(this.reason);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_TitleSelectErrorMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TitleSelectErrorMessage(input);
       }
       
-      public function deserializeAs_TitleSelectErrorMessage(param1:IDataInput) : void {
-         this.reason = param1.readByte();
+      public function deserializeAs_TitleSelectErrorMessage(input:IDataInput) : void {
+         this.reason = input.readByte();
          if(this.reason < 0)
          {
             throw new Error("Forbidden value (" + this.reason + ") on element of TitleSelectErrorMessage.reason.");

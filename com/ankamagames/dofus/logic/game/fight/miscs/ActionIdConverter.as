@@ -912,20 +912,20 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          }
       }
       
-      public static function getActionStatName(param1:int) : String {
+      public static function getActionStatName(actionId:int) : String {
          initialize();
-         if(_actionInfos[param1])
+         if(_actionInfos[actionId])
          {
-            return _actionInfos[param1][0];
+            return _actionInfos[actionId][0];
          }
          return null;
       }
       
-      public static function getIsABoost(param1:int) : Boolean {
+      public static function getIsABoost(actionId:int) : Boolean {
          initialize();
-         if(_actionInfos[param1])
+         if(_actionInfos[actionId])
          {
-            return _actionInfos[param1][1];
+            return _actionInfos[actionId][1];
          }
          return false;
       }

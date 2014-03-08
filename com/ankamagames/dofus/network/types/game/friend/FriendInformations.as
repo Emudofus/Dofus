@@ -23,11 +23,11 @@ package com.ankamagames.dofus.network.types.game.friend
          return 78;
       }
       
-      public function initFriendInformations(param1:uint=0, param2:String="", param3:uint=99, param4:uint=0, param5:int=0) : FriendInformations {
-         super.initAbstractContactInformations(param1,param2);
-         this.playerState = param3;
-         this.lastConnection = param4;
-         this.achievementPoints = param5;
+      public function initFriendInformations(accountId:uint=0, accountName:String="", playerState:uint=99, lastConnection:uint=0, achievementPoints:int=0) : FriendInformations {
+         super.initAbstractContactInformations(accountId,accountName);
+         this.playerState = playerState;
+         this.lastConnection = lastConnection;
+         this.achievementPoints = achievementPoints;
          return this;
       }
       
@@ -38,46 +38,46 @@ package com.ankamagames.dofus.network.types.game.friend
          this.achievementPoints = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FriendInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FriendInformations(output);
       }
       
-      public function serializeAs_FriendInformations(param1:IDataOutput) : void {
-         super.serializeAs_AbstractContactInformations(param1);
-         param1.writeByte(this.playerState);
+      public function serializeAs_FriendInformations(output:IDataOutput) : void {
+         super.serializeAs_AbstractContactInformations(output);
+         output.writeByte(this.playerState);
          if(this.lastConnection < 0)
          {
             throw new Error("Forbidden value (" + this.lastConnection + ") on element lastConnection.");
          }
          else
          {
-            param1.writeInt(this.lastConnection);
-            param1.writeInt(this.achievementPoints);
+            output.writeInt(this.lastConnection);
+            output.writeInt(this.achievementPoints);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FriendInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FriendInformations(input);
       }
       
-      public function deserializeAs_FriendInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.playerState = param1.readByte();
+      public function deserializeAs_FriendInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.playerState = input.readByte();
          if(this.playerState < 0)
          {
             throw new Error("Forbidden value (" + this.playerState + ") on element of FriendInformations.playerState.");
          }
          else
          {
-            this.lastConnection = param1.readInt();
+            this.lastConnection = input.readInt();
             if(this.lastConnection < 0)
             {
                throw new Error("Forbidden value (" + this.lastConnection + ") on element of FriendInformations.lastConnection.");
             }
             else
             {
-               this.achievementPoints = param1.readInt();
+               this.achievementPoints = input.readInt();
                return;
             }
          }

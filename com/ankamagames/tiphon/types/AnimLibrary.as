@@ -6,20 +6,20 @@ package com.ankamagames.tiphon.types
    public class AnimLibrary extends GraphicLibrary
    {
       
-      public function AnimLibrary(param1:uint, param2:Boolean=false) {
-         super(param1,param2);
+      public function AnimLibrary(pGfxId:uint, isBone:Boolean=false) {
+         super(pGfxId,isBone);
       }
       
-      override public function addSwl(param1:Swl, param2:String) : void {
-         var _loc3_:String = null;
-         var _loc4_:Array = null;
-         super.addSwl(param1,param2);
-         for each (_loc3_ in param1.getDefinitions())
+      override public function addSwl(swl:Swl, url:String) : void {
+         var className:String = null;
+         var animInfo:Array = null;
+         super.addSwl(swl,url);
+         for each (className in swl.getDefinitions())
          {
-            if(_loc3_.indexOf("_to_") != -1)
+            if(className.indexOf("_to_") != -1)
             {
-               _loc4_ = _loc3_.split("_");
-               BoneIndexManager.getInstance().addTransition(gfxId,_loc4_[0],_loc4_[2],parseInt(_loc4_[3]),_loc4_[0] + "_to_" + _loc4_[2]);
+               animInfo = className.split("_");
+               BoneIndexManager.getInstance().addTransition(gfxId,animInfo[0],animInfo[2],parseInt(animInfo[3]),animInfo[0] + "_to_" + animInfo[2]);
             }
          }
       }

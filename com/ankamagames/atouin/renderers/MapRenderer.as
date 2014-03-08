@@ -84,8 +84,8 @@ package com.ankamagames.atouin.renderers
    public class MapRenderer extends EventDispatcher
    {
       
-      public function MapRenderer(param1:DisplayObjectContainer, param2:Elements) {
-         var _loc4_:* = undefined;
+      public function MapRenderer(container:DisplayObjectContainer, elements:Elements) {
+         var val:* = undefined;
          this._bitmapsGfx = [];
          this._swfGfx = [];
          this._swfApplicationDomain = new Array();
@@ -97,29 +97,29 @@ package com.ankamagames.atouin.renderers
          this._destPoint = new Point();
          this._clTrans = new ColorTransform();
          super();
-         this._container = param1;
+         this._container = container;
          if(isNaN(_groundGlobalScaleRatio))
          {
-            _loc4_ = XmlConfig.getInstance().getEntry("config.gfx.world.scaleRatio");
-            _groundGlobalScaleRatio = _loc4_ == null?1:parseFloat(_loc4_);
+            val = XmlConfig.getInstance().getEntry("config.gfx.world.scaleRatio");
+            _groundGlobalScaleRatio = val == null?1:parseFloat(val);
          }
          if(_bitmapOffsetPoint == null)
          {
             _bitmapOffsetPoint = StageShareManager.stage.localToGlobal(new Point(this._container.x,this._container.y));
          }
-         this._elements = param2;
+         this._elements = elements;
          this._icm = InteractiveCellManager.getInstance();
          this._gfxPath = Atouin.getInstance().options.elementsPath;
          this._gfxSubPathJpg = Atouin.getInstance().options.jpgSubPath;
          this._gfxSubPathPng = Atouin.getInstance().options.pngSubPath;
          this._particlesPath = Atouin.getInstance().options.particlesScriptsPath;
          this._extension = Atouin.getInstance().options.mapPictoExtension;
-         var _loc3_:Shape = new Shape();
-         _loc3_.graphics.lineStyle(1,8947848);
-         _loc3_.graphics.beginFill(2236962);
-         _loc3_.graphics.drawRect(0,0,600,10);
-         _loc3_.x = 0;
-         _loc3_.y = 0;
+         var downloadProgressBarBorder:Shape = new Shape();
+         downloadProgressBarBorder.graphics.lineStyle(1,8947848);
+         downloadProgressBarBorder.graphics.beginFill(2236962);
+         downloadProgressBarBorder.graphics.drawRect(0,0,600,10);
+         downloadProgressBarBorder.x = 0;
+         downloadProgressBarBorder.y = 0;
          this._downloadProgressBar = new Shape();
          this._downloadProgressBar.graphics.beginFill(10077440);
          this._downloadProgressBar.graphics.drawRect(0,0,597,7);
@@ -127,7 +127,7 @@ package com.ankamagames.atouin.renderers
          this._downloadProgressBar.x = 2;
          this._downloadProgressBar.y = 2;
          this._progressBarCtr = new Sprite();
-         this._progressBarCtr.addChild(_loc3_);
+         this._progressBarCtr.addChild(downloadProgressBarBorder);
          this._progressBarCtr.addChild(this._downloadProgressBar);
          this._progressBarCtr.x = (StageShareManager.startWidth - this._progressBarCtr.width) / 2;
          this._progressBarCtr.y = (StageShareManager.startHeight - this._progressBarCtr.height) / 2;
@@ -258,72 +258,72 @@ package com.ankamagames.atouin.renderers
          return this._identifiedElements;
       }
       
-      public function initRenderContainer(param1:DisplayObjectContainer) : void {
-         this._container = param1;
+      public function initRenderContainer(container:DisplayObjectContainer) : void {
+         this._container = container;
       }
       
-      public function render(param1:DataMapContainer, param2:Boolean=false, param3:uint=0, param4:Boolean=true) : void {
-         var _loc12_:Uri = null;
-         var _loc14_:* = false;
-         var _loc15_:NormalGraphicalElementData = null;
-         var _loc16_:ApplicationDomain = null;
-         var _loc17_:GraphicalElementData = null;
-         var _loc18_:Fixture = null;
-         var _loc19_:* = 0;
+      public function render(dataContainer:DataMapContainer, forceReloadWithoutCache:Boolean=false, renderId:uint=0, renderFixture:Boolean=true) : void {
+         var uri:Uri = null;
+         var isJpg:* = false;
+         var nged:NormalGraphicalElementData = null;
+         var applicationDomain:ApplicationDomain = null;
+         var elementData:GraphicalElementData = null;
+         var bg:Fixture = null;
+         var cacheStatus:* = 0;
          this._cancelRender = false;
-         this._renderFixture = param4;
-         this._renderBackgroundColor = param4;
+         this._renderFixture = renderFixture;
+         this._renderBackgroundColor = renderFixture;
          this._downloadTimer.reset();
          this._gfxMemorySize = 0;
          this._fileLoaded = 0;
-         this._renderId = param3;
+         this._renderId = renderId;
          Atouin.getInstance().cancelZoom();
          AnimatedElementManager.reset();
          boundingBoxElements = new Array();
          this._allowAnimatedGfx = Atouin.getInstance().options.allowAnimatedGfx;
          this._debugLayer = Atouin.getInstance().options.debugLayer;
          this._allowParticlesFx = Atouin.getInstance().options.allowParticlesFx;
-         var _loc5_:* = !this._mapLoaded;
+         var newLoader:Boolean = !this._mapLoaded;
          this._mapLoaded = false;
          this._groundIsLoaded = false;
          this._mapIsReady = false;
-         this._map = param1.dataMap;
+         this._map = dataContainer.dataMap;
          this._downloadProgressBar.scaleX = 0;
-         this._forceReloadWithoutCache = param2;
-         var _loc6_:int = AirScanner.isStreamingVersion()?0:Atouin.getInstance().options.groundCacheMode;
-         if(param2)
+         this._forceReloadWithoutCache = forceReloadWithoutCache;
+         var groundCacheMode:int = AirScanner.isStreamingVersion()?0:Atouin.getInstance().options.groundCacheMode;
+         if(forceReloadWithoutCache)
          {
             this._skipGroundCache = true;
             this._hasGroundJPG = false;
          }
          else
          {
-            this._skipGroundCache = DataGroundMapManager.mapsCurrentlyRendered() > AtouinConstants.MAX_GROUND_CACHE_MEMORY || _loc6_ == 0;
-            this._map.groundCacheCurrentlyUsed = _loc6_;
-            if((_loc6_) && !this._skipGroundCache)
+            this._skipGroundCache = (DataGroundMapManager.mapsCurrentlyRendered() > AtouinConstants.MAX_GROUND_CACHE_MEMORY) || (groundCacheMode == 0);
+            this._map.groundCacheCurrentlyUsed = groundCacheMode;
+            if((groundCacheMode) && (!this._skipGroundCache))
             {
-               _loc19_ = DataGroundMapManager.loadGroundMap(this._map,this.groundMapLoaded,this.groundMapNotLoaded);
-               if(_loc19_ == GroundCache.GROUND_CACHE_AVAILABLE)
+               cacheStatus = DataGroundMapManager.loadGroundMap(this._map,this.groundMapLoaded,this.groundMapNotLoaded);
+               if(cacheStatus == GroundCache.GROUND_CACHE_AVAILABLE)
                {
                   this._hasGroundJPG = true;
                }
                else
                {
-                  if(_loc19_ == GroundCache.GROUND_CACHE_NOT_AVAILABLE)
+                  if(cacheStatus == GroundCache.GROUND_CACHE_NOT_AVAILABLE)
                   {
                      this._hasGroundJPG = false;
                   }
                   else
                   {
-                     if(_loc19_ == GroundCache.GROUND_CACHE_ERROR)
+                     if(cacheStatus == GroundCache.GROUND_CACHE_ERROR)
                      {
                         this._hasGroundJPG = false;
-                        _loc6_ = 0;
+                        groundCacheMode = 0;
                         Atouin.getInstance().options.groundCacheMode = 0;
                      }
                      else
                      {
-                        if(_loc19_ == GroundCache.GROUND_CACHE_SKIP)
+                        if(cacheStatus == GroundCache.GROUND_CACHE_SKIP)
                         {
                            this._skipGroundCache = true;
                            this._hasGroundJPG = false;
@@ -342,96 +342,96 @@ package com.ankamagames.atouin.renderers
             Atouin.getInstance().worldContainer.visible = false;
          }
          this._cacheRef = new Array();
-         var _loc7_:Array = new Array();
-         var _loc8_:Array = new Array();
+         var bitmapsGfx:Array = new Array();
+         var swfGfx:Array = new Array();
          this._useSmooth = Atouin.getInstance().options.useSmooth;
-         this._dataMapContainer = param1;
+         this._dataMapContainer = dataContainer;
          this._identifiedElements = new Dictionary(true);
          this._loadedGfxListCount = 0;
          this._hasSwfGxf = false;
          this._hasBitmapGxf = false;
-         var _loc9_:Array = new Array();
-         var _loc10_:Array = new Array();
-         var _loc11_:Array = this._map.getGfxList(this._hasGroundJPG);
-         var _loc13_:LoaderContext = new LoaderContext();
-         AirScanner.allowByteCodeExecution(_loc13_,true);
-         for each (_loc17_ in _loc11_)
+         var gfxUri:Array = new Array();
+         var swfUri:Array = new Array();
+         var gfxList:Array = this._map.getGfxList(this._hasGroundJPG);
+         var lc:LoaderContext = new LoaderContext();
+         AirScanner.allowByteCodeExecution(lc,true);
+         for each (elementData in gfxList)
          {
-            if(_loc17_ is NormalGraphicalElementData)
+            if(elementData is NormalGraphicalElementData)
             {
-               _loc15_ = _loc17_ as NormalGraphicalElementData;
-               if(_loc15_ is AnimatedGraphicalElementData)
+               nged = elementData as NormalGraphicalElementData;
+               if(nged is AnimatedGraphicalElementData)
                {
-                  _loc16_ = new ApplicationDomain();
-                  _loc12_ = new Uri(this._gfxPath + "/swf/" + _loc15_.gfxId + ".swf");
-                  _loc12_.loaderContext = new LoaderContext(false,_loc16_);
-                  AirScanner.allowByteCodeExecution(_loc12_.loaderContext,true);
-                  _loc10_.push(_loc12_);
+                  applicationDomain = new ApplicationDomain();
+                  uri = new Uri(this._gfxPath + "/swf/" + nged.gfxId + ".swf");
+                  uri.loaderContext = new LoaderContext(false,applicationDomain);
+                  AirScanner.allowByteCodeExecution(uri.loaderContext,true);
+                  swfUri.push(uri);
                   this._hasSwfGxf = true;
-                  _loc12_.tag = _loc15_.gfxId;
-                  this._cacheRef[_loc15_.gfxId] = "RES_" + _loc12_.toSum();
-                  this._swfApplicationDomain[_loc15_.gfxId] = _loc16_;
+                  uri.tag = nged.gfxId;
+                  this._cacheRef[nged.gfxId] = "RES_" + uri.toSum();
+                  this._swfApplicationDomain[nged.gfxId] = applicationDomain;
                }
                else
                {
-                  if(this._bitmapsGfx[_loc15_.gfxId])
+                  if(this._bitmapsGfx[nged.gfxId])
                   {
-                     _loc7_[_loc15_.gfxId] = this._bitmapsGfx[_loc15_.gfxId];
+                     bitmapsGfx[nged.gfxId] = this._bitmapsGfx[nged.gfxId];
                   }
                   else
                   {
-                     _loc14_ = Elements.getInstance().isJpg(_loc15_.gfxId);
-                     _loc12_ = new Uri(this._gfxPath + "/" + (_loc14_?this._gfxSubPathJpg:this._gfxSubPathPng) + "/" + _loc15_.gfxId + "." + (_loc14_?"jpg":this._extension));
-                     _loc9_.push(_loc12_);
+                     isJpg = Elements.getInstance().isJpg(nged.gfxId);
+                     uri = new Uri(this._gfxPath + "/" + (isJpg?this._gfxSubPathJpg:this._gfxSubPathPng) + "/" + nged.gfxId + "." + (isJpg?"jpg":this._extension));
+                     gfxUri.push(uri);
                      this._hasBitmapGxf = true;
-                     _loc12_.tag = _loc15_.gfxId;
-                     this._cacheRef[_loc15_.gfxId] = "RES_" + _loc12_.toSum();
+                     uri.tag = nged.gfxId;
+                     this._cacheRef[nged.gfxId] = "RES_" + uri.toSum();
                   }
                }
             }
          }
-         if(!this._hasGroundJPG && (param4))
+         if((!this._hasGroundJPG) && (renderFixture))
          {
-            for each (_loc18_ in this._map.backgroundFixtures)
+            for each (bg in this._map.backgroundFixtures)
             {
-               if(this._bitmapsGfx[_loc18_.fixtureId])
+               if(this._bitmapsGfx[bg.fixtureId])
                {
-                  _loc7_[_loc18_.fixtureId] = this._bitmapsGfx[_loc18_.fixtureId];
+                  bitmapsGfx[bg.fixtureId] = this._bitmapsGfx[bg.fixtureId];
                }
                else
                {
-                  _loc14_ = Elements.getInstance().isJpg(_loc18_.fixtureId);
-                  _loc12_ = new Uri(this._gfxPath + "/" + (_loc14_?this._gfxSubPathJpg:this._gfxSubPathPng) + "/" + _loc18_.fixtureId + "." + (_loc14_?"jpg":this._extension));
-                  _loc12_.tag = _loc18_.fixtureId;
-                  _loc9_.push(_loc12_);
+                  isJpg = Elements.getInstance().isJpg(bg.fixtureId);
+                  uri = new Uri(this._gfxPath + "/" + (isJpg?this._gfxSubPathJpg:this._gfxSubPathPng) + "/" + bg.fixtureId + "." + (isJpg?"jpg":this._extension));
+                  uri.tag = bg.fixtureId;
+                  gfxUri.push(uri);
                   this._hasBitmapGxf = true;
-                  this._cacheRef[_loc18_.fixtureId] = "RES_" + _loc12_.toSum();
+                  this._cacheRef[bg.fixtureId] = "RES_" + uri.toSum();
                }
             }
          }
-         if(param4)
+         if(renderFixture)
          {
-            for each (_loc18_ in this._map.foregroundFixtures)
+            for each (bg in this._map.foregroundFixtures)
             {
-               if(this._bitmapsGfx[_loc18_.fixtureId])
+               if(this._bitmapsGfx[bg.fixtureId])
                {
-                  _loc7_[_loc18_.fixtureId] = this._bitmapsGfx[_loc18_.fixtureId];
+                  bitmapsGfx[bg.fixtureId] = this._bitmapsGfx[bg.fixtureId];
                }
                else
                {
-                  _loc14_ = Elements.getInstance().isJpg(_loc18_.fixtureId);
-                  _loc12_ = new Uri(this._gfxPath + "/" + (_loc14_?this._gfxSubPathJpg:this._gfxSubPathPng) + "/" + _loc18_.fixtureId + "." + (_loc14_?"jpg":this._extension));
-                  _loc12_.tag = _loc18_.fixtureId;
-                  _loc9_.push(_loc12_);
+                  isJpg = Elements.getInstance().isJpg(bg.fixtureId);
+                  uri = new Uri(this._gfxPath + "/" + (isJpg?this._gfxSubPathJpg:this._gfxSubPathPng) + "/" + bg.fixtureId + "." + (isJpg?"jpg":this._extension));
+                  uri.tag = bg.fixtureId;
+                  gfxUri.push(uri);
                   this._hasBitmapGxf = true;
-                  this._cacheRef[_loc18_.fixtureId] = "RES_" + _loc12_.toSum();
+                  this._cacheRef[bg.fixtureId] = "RES_" + uri.toSum();
                }
             }
          }
          dispatchEvent(new RenderMapEvent(RenderMapEvent.GFX_LOADING_START,false,false,this._map.id,this._renderId));
-         this._bitmapsGfx = _loc7_;
+         this._bitmapsGfx = bitmapsGfx;
          this._swfGfx = new Array();
-         if(_loc5_)
+         if(newLoader)
          {
             this._gfxLoader.removeEventListener(ResourceLoaderProgressEvent.LOADER_COMPLETE,this.onAllGfxLoaded);
             this._gfxLoader.removeEventListener(ResourceLoadedEvent.LOADED,this.onBitmapGfxLoaded);
@@ -450,11 +450,11 @@ package com.ankamagames.atouin.renderers
             this._swfLoader.addEventListener(ResourceLoadedEvent.LOADED,this.onSwfGfxLoaded,false,0,true);
             this._swfLoader.addEventListener(ResourceErrorEvent.ERROR,this.onGfxError,false,0,true);
          }
-         this._fileToLoad = _loc9_.length + _loc10_.length;
-         this._gfxLoader.load(_loc9_);
-         this._swfLoader.load(_loc10_,null,AdvancedSwfAdapter);
+         this._fileToLoad = gfxUri.length + swfUri.length;
+         this._gfxLoader.load(gfxUri);
+         this._swfLoader.load(swfUri,null,AdvancedSwfAdapter);
          this._downloadTimer.start();
-         if(_loc9_.length == 0 && _loc10_.length == 0)
+         if((gfxUri.length == 0) && (swfUri.length == 0))
          {
             this.onAllGfxLoaded(null);
          }
@@ -484,17 +484,17 @@ package com.ankamagames.atouin.renderers
          }
       }
       
-      public function modeTactic(param1:Boolean) : void {
-         var _loc2_:Object = null;
-         var _loc3_:DisplayObject = null;
-         var _loc4_:* = 0;
-         if((param1) && !(this._container.opaqueBackground == 0))
+      public function modeTactic(activated:Boolean) : void {
+         var o:Object = null;
+         var layerCtr:DisplayObject = null;
+         var i:* = 0;
+         if((activated) && (!(this._container.opaqueBackground == 0)))
          {
             this._container.opaqueBackground = 0;
          }
          else
          {
-            if(!param1 && (this._map))
+            if((!activated) && (this._map))
             {
                if(this._renderBackgroundColor)
                {
@@ -502,51 +502,51 @@ package com.ankamagames.atouin.renderers
                }
             }
          }
-         this._tacticModeActivated = param1;
-         if((!param1) && (this._layersData) && this._layersData.length > 0)
+         this._tacticModeActivated = activated;
+         if((!activated) && (this._layersData) && (this._layersData.length > 0))
          {
-            for each (_loc2_ in this._layersData)
+            for each (o in this._layersData)
             {
-               _loc2_.data.visible = true;
+               o.data.visible = true;
             }
             this._layersData = null;
          }
          else
          {
-            if((param1) && (this._groundIsLoaded))
+            if((activated) && (this._groundIsLoaded))
             {
                this._layersData = new Array();
-               _loc2_ = new Object();
-               _loc2_.data = this._container.getChildAt(0);
-               _loc2_.index = 0;
-               this._layersData.push(_loc2_);
-               _loc2_.data.visible = false;
+               o = new Object();
+               o.data = this._container.getChildAt(0);
+               o.index = 0;
+               this._layersData.push(o);
+               o.data.visible = false;
             }
             else
             {
-               if(param1)
+               if(activated)
                {
                   this._layersData = new Array();
-                  while(!(this._container.getChildAt(_loc4_) is LayerContainer))
+                  while(!(this._container.getChildAt(i) is LayerContainer))
                   {
-                     _loc2_ = new Object();
-                     _loc3_ = this._container.getChildAt(_loc4_);
-                     _loc2_.data = _loc3_;
-                     _loc2_.index = _loc4_;
-                     this._layersData.push(_loc2_);
-                     _loc3_.visible = false;
-                     _loc4_++;
+                     o = new Object();
+                     layerCtr = this._container.getChildAt(i);
+                     o.data = layerCtr;
+                     o.index = i;
+                     this._layersData.push(o);
+                     layerCtr.visible = false;
+                     i++;
                   }
                }
             }
          }
-         if((param1) && !(this._bitmapForegroundContainer == null))
+         if((activated) && (!(this._bitmapForegroundContainer == null)))
          {
             this._bitmapForegroundContainer.visible = false;
          }
          else
          {
-            if(!param1 && !(this._bitmapForegroundContainer == null))
+            if((!activated) && (!(this._bitmapForegroundContainer == null)))
             {
                this._bitmapForegroundContainer.visible = true;
             }
@@ -613,10 +613,10 @@ package com.ankamagames.atouin.renderers
             skipLayer = groundOnly;
             if(layer.cellsCount != 0)
             {
-               if((layer.cells[layer.cells.length-1] as Cell).cellId != AtouinConstants.MAP_CELLS_COUNT-1)
+               if((layer.cells[layer.cells.length - 1] as Cell).cellId != AtouinConstants.MAP_CELLS_COUNT - 1)
                {
                   endCell = new Cell(layer);
-                  endCell.cellId = AtouinConstants.MAP_CELLS_COUNT-1;
+                  endCell.cellId = AtouinConstants.MAP_CELLS_COUNT - 1;
                   endCell.elementsCount = 0;
                   endCell.elements = [];
                   layer.cells.push(endCell);
@@ -660,7 +660,7 @@ package com.ankamagames.atouin.renderers
                      cellCtr.y = cellCtr.startY = int(Math.round(cellPnt.y)) * (cellCtr is CellContainer?_groundGlobalScaleRatio:1);
                      if(!skipLayer)
                      {
-                        if(!this._hasGroundJPG || !groundLayer)
+                        if((!this._hasGroundJPG) || (!groundLayer))
                         {
                            cellDisabled = this.addCellBitmapsElements(cell,cellCtr,hideFg,groundLayer);
                         }
@@ -679,7 +679,7 @@ package com.ankamagames.atouin.renderers
                   }
                   else
                   {
-                     if(!this._hasGroundJPG && (groundLayer))
+                     if((!this._hasGroundJPG) && (groundLayer))
                      {
                         this.drawGround(groundLayerCtr,cellCtr as BitmapCellContainer);
                      }
@@ -692,7 +692,7 @@ package com.ankamagames.atouin.renderers
                   {
                      this._dataMapContainer.getCellReference(currentCellId).heightestDecor = cellCtr as Sprite;
                   }
-                  if(!aInteractiveCell[currentCellId] && !(layerId == Layer.LAYER_ADDITIONAL_DECOR))
+                  if((!aInteractiveCell[currentCellId]) && (!(layerId == Layer.LAYER_ADDITIONAL_DECOR)))
                   {
                      aInteractiveCell[currentCellId] = true;
                      cellInteractionCtr = this._icm.getCell(currentCellId);
@@ -724,7 +724,7 @@ package com.ankamagames.atouin.renderers
                }
                else
                {
-                  if(!this._hasGroundJPG && (groundLayer))
+                  if((!this._hasGroundJPG) && (groundLayer))
                   {
                      reelBmpDt = new BitmapData(AtouinConstants.RESOLUTION_HIGH_QUALITY.x,AtouinConstants.RESOLUTION_HIGH_QUALITY.y,!this._renderBackgroundColor,this._renderBackgroundColor?this._map.backgroundColor:0);
                      m = new Matrix();
@@ -737,7 +737,7 @@ package com.ankamagames.atouin.renderers
                      this._container.addChild(tmp);
                   }
                }
-               if(!this._skipGroundCache && !this._hasGroundJPG && layerId == Layer.LAYER_GROUND)
+               if((!this._skipGroundCache) && (!this._hasGroundJPG) && (layerId == Layer.LAYER_GROUND))
                {
                   try
                   {
@@ -766,13 +766,13 @@ package com.ankamagames.atouin.renderers
          this._container.addChild(selectionContainer);
          selectionContainer.mouseEnabled = false;
          selectionContainer.mouseChildren = false;
-         if(!this._hasGroundJPG || (this._groundIsLoaded))
+         if((!this._hasGroundJPG) || (this._groundIsLoaded))
          {
             dispatchEvent(new RenderMapEvent(RenderMapEvent.MAP_RENDER_END,false,false,this._map.id,this._renderId));
             Atouin.getInstance().worldContainer.visible = true;
          }
          var atouin:Atouin = Atouin.getInstance();
-         if(!(this._map.zoomScale == 1) && (atouin.options.useInsideAutoZoom))
+         if((!(this._map.zoomScale == 1)) && (atouin.options.useInsideAutoZoom))
          {
             atouin.rootContainer.scaleX = this._map.zoomScale;
             atouin.rootContainer.scaleY = this._map.zoomScale;
@@ -789,68 +789,68 @@ package com.ankamagames.atouin.renderers
       
       private var colorTransform:ColorTransform;
       
-      private function drawGround(param1:Bitmap, param2:BitmapCellContainer) : void {
-         var _loc4_:Object = null;
-         var _loc5_:BitmapData = null;
-         var _loc6_:* = false;
-         var _loc7_:* = 0;
-         var _loc3_:BitmapData = param1.bitmapData;
-         var _loc8_:int = param2.numChildren;
-         _loc3_.lock();
-         _loc7_ = 0;
-         while(_loc7_ < _loc8_)
+      private function drawGround(groundLayerCtr:Bitmap, cellCtr:BitmapCellContainer) : void {
+         var data:Object = null;
+         var bmpdt:BitmapData = null;
+         var hasColorTransform:* = false;
+         var i:* = 0;
+         var ground:BitmapData = groundLayerCtr.bitmapData;
+         var len:int = cellCtr.numChildren;
+         ground.lock();
+         i = 0;
+         while(i < len)
          {
-            if(!(param2.bitmaps[_loc7_] is BitmapData || param2.bitmaps[_loc7_] is Bitmap))
+            if(!((cellCtr.bitmaps[i] is BitmapData) || (cellCtr.bitmaps[i] is Bitmap)))
             {
-               _log.error("Attention, un élément non bitmap tente d\'être ajouter au sol " + param2.bitmaps[_loc7_]);
+               _log.error("Attention, un élément non bitmap tente d\'être ajouter au sol " + cellCtr.bitmaps[i]);
             }
             else
             {
-               _loc5_ = param2.bitmaps[_loc7_] is Bitmap?Bitmap(param2.bitmaps[_loc7_]).bitmapData:param2.bitmaps[_loc7_];
-               _loc4_ = param2.datas[_loc7_];
-               if(!(_loc5_ == null || _loc4_ == null))
+               bmpdt = cellCtr.bitmaps[i] is Bitmap?Bitmap(cellCtr.bitmaps[i]).bitmapData:cellCtr.bitmaps[i];
+               data = cellCtr.datas[i];
+               if(!((bmpdt == null) || (data == null)))
                {
-                  if(param2.colorTransforms[_loc7_] != null)
+                  if(cellCtr.colorTransforms[i] != null)
                   {
-                     _loc6_ = true;
-                     this.colorTransform.redMultiplier = param2.colorTransforms[_loc7_].red;
-                     this.colorTransform.greenMultiplier = param2.colorTransforms[_loc7_].green;
-                     this.colorTransform.blueMultiplier = param2.colorTransforms[_loc7_].blue;
-                     this.colorTransform.alphaMultiplier = param2.colorTransforms[_loc7_].alpha;
+                     hasColorTransform = true;
+                     this.colorTransform.redMultiplier = cellCtr.colorTransforms[i].red;
+                     this.colorTransform.greenMultiplier = cellCtr.colorTransforms[i].green;
+                     this.colorTransform.blueMultiplier = cellCtr.colorTransforms[i].blue;
+                     this.colorTransform.alphaMultiplier = cellCtr.colorTransforms[i].alpha;
                   }
                   else
                   {
-                     _loc6_ = false;
+                     hasColorTransform = false;
                   }
-                  this._destPoint.x = _loc4_.x + param2.x;
+                  this._destPoint.x = data.x + cellCtr.x;
                   if(_groundGlobalScaleRatio != 1)
                   {
                      this._destPoint.x = this._destPoint.x * _groundGlobalScaleRatio;
                   }
                   this._destPoint.x = this._destPoint.x + _bitmapOffsetPoint.x;
-                  this._destPoint.y = _loc4_.y + param2.y;
+                  this._destPoint.y = data.y + cellCtr.y;
                   if(_groundGlobalScaleRatio != 1)
                   {
                      this._destPoint.y = this._destPoint.y * _groundGlobalScaleRatio;
                   }
-                  this._srcRect.width = _loc5_.width;
-                  this._srcRect.height = _loc5_.height;
-                  if(!(_loc4_.scaleX == 1) || !(_loc4_.scaleY == 1) || (_loc6_))
+                  this._srcRect.width = bmpdt.width;
+                  this._srcRect.height = bmpdt.height;
+                  if((!(data.scaleX == 1)) || (!(data.scaleY == 1)) || (hasColorTransform))
                   {
                      this._m.identity();
-                     this._m.scale(_loc4_.scaleX,_loc4_.scaleY);
+                     this._m.scale(data.scaleX,data.scaleY);
                      this._m.translate(this._destPoint.x,this._destPoint.y);
-                     _loc3_.draw(_loc5_,this._m,this.colorTransform,null,null,false);
+                     ground.draw(bmpdt,this._m,this.colorTransform,null,null,false);
                   }
                   else
                   {
-                     _loc3_.copyPixels(_loc5_,this._srcRect,this._destPoint);
+                     ground.copyPixels(bmpdt,this._srcRect,this._destPoint);
                   }
                }
             }
-            _loc7_++;
+            i++;
          }
-         _loc3_.unlock();
+         ground.unlock();
       }
       
       private var _m:Matrix;
@@ -859,7 +859,7 @@ package com.ankamagames.atouin.renderers
       
       private var _destPoint:Point;
       
-      private function groundMapLoaded(param1:Bitmap) : void {
+      private function groundMapLoaded(ground:Bitmap) : void {
          this._groundIsLoaded = true;
          if(this._mapIsReady)
          {
@@ -868,22 +868,22 @@ package com.ankamagames.atouin.renderers
          }
          if(!this._tacticModeActivated)
          {
-            param1.x = param1.x - _bitmapOffsetPoint.x;
-            this._container.addChildAt(param1,0);
+            ground.x = ground.x - _bitmapOffsetPoint.x;
+            this._container.addChildAt(ground,0);
          }
-         param1.smoothing = true;
+         ground.smoothing = true;
       }
       
-      private function groundMapNotLoaded(param1:int) : void {
-         var _loc2_:MapDisplayManager = null;
-         if(this._map.id == param1)
+      private function groundMapNotLoaded(mapId:int) : void {
+         var mapDisplayManager:MapDisplayManager = null;
+         if(this._map.id == mapId)
          {
-            _loc2_ = MapDisplayManager.getInstance();
-            _loc2_.display(_loc2_.currentMapPoint,true);
+            mapDisplayManager = MapDisplayManager.getInstance();
+            mapDisplayManager.display(mapDisplayManager.currentMapPoint,true);
          }
       }
       
-      private function addCellBitmapsElements(param1:Cell, param2:ICellContainer, param3:Boolean=false, param4:Boolean=false) : Boolean {
+      private function addCellBitmapsElements(cell:Cell, cellCtr:ICellContainer, transparent:Boolean=false, ground:Boolean=false) : Boolean {
          var elementDo:Object = null;
          var data:VisualData = null;
          var colors:Object = null;
@@ -906,10 +906,6 @@ package com.ankamagames.atouin.renderers
          var elementDOC:DisplayObjectContainer = null;
          var bmp:Bitmap = null;
          var shape:Shape = null;
-         var cell:Cell = param1;
-         var cellCtr:ICellContainer = param2;
-         var transparent:Boolean = param3;
-         var ground:Boolean = param4;
          var disabled:Boolean = false;
          var mouseChildren:Boolean = false;
          var cacheAsBitmap:Boolean = true;
@@ -1019,7 +1015,7 @@ package com.ankamagames.atouin.renderers
                               (elementDo as DisplayObjectContainer).mouseChildren = false;
                            }
                         }
-                        if(ed is BlendedGraphicalElementData && (elementDo.hasOwnProperty("blendMode")))
+                        if((ed is BlendedGraphicalElementData) && (elementDo.hasOwnProperty("blendMode")))
                         {
                            elementDo.blendMode = (ed as BlendedGraphicalElementData).blendMode;
                            elementDo.cacheAsBitmap = false;
@@ -1093,7 +1089,7 @@ package com.ankamagames.atouin.renderers
                   if(ge.identifier > 0)
                   {
                      elemenForDebug = elementDo as DisplayObject;
-                     if(!(elementDo is InteractiveObject) || elementDo is DisplayObjectContainer)
+                     if((!(elementDo is InteractiveObject)) || (elementDo is DisplayObjectContainer))
                      {
                         namedSprite = new SpriteWrapper(elementDo as DisplayObject,ge.identifier);
                         namedSprite.alpha = elementDo.alpha;
@@ -1145,7 +1141,7 @@ package com.ankamagames.atouin.renderers
                continue;
             }
          }
-         if((this._pictoAsBitmap) && !hasBlendMode)
+         if((this._pictoAsBitmap) && (!hasBlendMode))
          {
             cellCtr.cacheAsBitmap = cacheAsBitmap;
             if(cacheAsBitmap)
@@ -1163,50 +1159,50 @@ package com.ankamagames.atouin.renderers
       
       private var _ceilBitmapData:BitmapData;
       
-      private function renderFixture(param1:Array, param2:Bitmap) : void {
-         var _loc4_:BitmapData = null;
-         var _loc5_:Fixture = null;
-         var _loc6_:* = NaN;
-         var _loc7_:* = NaN;
-         var _loc8_:* = NaN;
-         var _loc9_:* = NaN;
-         if(param1 == null || param1.length == 0 || !this._renderFixture)
+      private function renderFixture(fixtures:Array, container:Bitmap) : void {
+         var bmpdt:BitmapData = null;
+         var fixture:Fixture = null;
+         var width:* = NaN;
+         var height:* = NaN;
+         var halfWidth:* = NaN;
+         var halfHeight:* = NaN;
+         if((fixtures == null) || (fixtures.length == 0) || (!this._renderFixture))
          {
             return;
          }
-         var _loc3_:Boolean = OptionManager.getOptionManager("atouin").useSmooth;
-         for each (_loc5_ in param1)
+         var smoothing:Boolean = OptionManager.getOptionManager("atouin").useSmooth;
+         for each (fixture in fixtures)
          {
-            _loc4_ = this._bitmapsGfx[_loc5_.fixtureId];
-            if(!_loc4_)
+            bmpdt = this._bitmapsGfx[fixture.fixtureId];
+            if(!bmpdt)
             {
-               ErrorManager.addError("Fixture " + _loc5_.fixtureId + " file is missing ");
+               ErrorManager.addError("Fixture " + fixture.fixtureId + " file is missing ");
             }
             else
             {
-               _loc6_ = _loc4_.width;
-               _loc7_ = _loc4_.height;
-               _loc8_ = _loc6_ * 0.5;
-               _loc9_ = _loc7_ * 0.5;
+               width = bmpdt.width;
+               height = bmpdt.height;
+               halfWidth = width * 0.5;
+               halfHeight = height * 0.5;
                this._m.identity();
-               this._m.translate(-_loc8_,-_loc9_);
-               this._m.scale(_loc5_.xScale / 1000,_loc5_.yScale / 1000);
-               this._m.rotate(_loc5_.rotation / 100 * Math.PI / 180);
-               this._m.translate(_loc5_.offset.x + _bitmapOffsetPoint.x + _loc8_ + AtouinConstants.CELL_HALF_WIDTH,_loc5_.offset.y + AtouinConstants.CELL_HEIGHT + _loc9_);
-               param2.bitmapData.lock();
-               if((_loc5_.redMultiplier) || (_loc5_.greenMultiplier) || (_loc5_.blueMultiplier) || !(_loc5_.alpha == 1))
+               this._m.translate(-halfWidth,-halfHeight);
+               this._m.scale(fixture.xScale / 1000,fixture.yScale / 1000);
+               this._m.rotate(fixture.rotation / 100 * Math.PI / 180);
+               this._m.translate(fixture.offset.x + _bitmapOffsetPoint.x + halfWidth + AtouinConstants.CELL_HALF_WIDTH,fixture.offset.y + AtouinConstants.CELL_HEIGHT + halfHeight);
+               container.bitmapData.lock();
+               if((fixture.redMultiplier) || (fixture.greenMultiplier) || (fixture.blueMultiplier) || (!(fixture.alpha == 1)))
                {
-                  this._clTrans.redMultiplier = _loc5_.redMultiplier / 127 + 1;
-                  this._clTrans.greenMultiplier = _loc5_.greenMultiplier / 127 + 1;
-                  this._clTrans.blueMultiplier = _loc5_.blueMultiplier / 127 + 1;
-                  this._clTrans.alphaMultiplier = _loc5_.alpha / 255;
-                  param2.bitmapData.draw(_loc4_,this._m,this._clTrans,null,null,_loc3_);
+                  this._clTrans.redMultiplier = fixture.redMultiplier / 127 + 1;
+                  this._clTrans.greenMultiplier = fixture.greenMultiplier / 127 + 1;
+                  this._clTrans.blueMultiplier = fixture.blueMultiplier / 127 + 1;
+                  this._clTrans.alphaMultiplier = fixture.alpha / 255;
+                  container.bitmapData.draw(bmpdt,this._m,this._clTrans,null,null,smoothing);
                }
                else
                {
-                  param2.bitmapData.draw(_loc4_,this._m,null,null,null,_loc3_);
+                  container.bitmapData.draw(bmpdt,this._m,null,null,null,smoothing);
                }
-               param2.bitmapData.unlock();
+               container.bitmapData.unlock();
             }
          }
       }
@@ -1217,13 +1213,13 @@ package com.ankamagames.atouin.renderers
          return this._container;
       }
       
-      private function onAllGfxLoaded(param1:ResourceLoaderProgressEvent) : void {
+      private function onAllGfxLoaded(e:ResourceLoaderProgressEvent) : void {
          if(this._cancelRender)
          {
             return;
          }
          this._loadedGfxListCount++;
-         if((this._hasBitmapGxf) && (this._hasSwfGxf) && !(this._loadedGfxListCount == 2))
+         if((this._hasBitmapGxf) && (this._hasSwfGxf) && (!(this._loadedGfxListCount == 2)))
          {
             return;
          }
@@ -1232,7 +1228,7 @@ package com.ankamagames.atouin.renderers
          this.makeMap();
       }
       
-      private function onBitmapGfxLoaded(param1:ResourceLoadedEvent) : void {
+      private function onBitmapGfxLoaded(e:ResourceLoadedEvent) : void {
          if(this._cancelRender)
          {
             return;
@@ -1240,24 +1236,24 @@ package com.ankamagames.atouin.renderers
          this._fileLoaded++;
          this._downloadProgressBar.scaleX = this._fileLoaded / this._fileToLoad;
          dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS,false,false,this._fileLoaded,this._fileToLoad));
-         this._bitmapsGfx[param1.uri.tag] = param1.resource;
-         this._gfxMemorySize = this._gfxMemorySize + BitmapData(param1.resource).width * BitmapData(param1.resource).height * 4;
-         MEMORY_LOG_1[param1.resource] = 1;
+         this._bitmapsGfx[e.uri.tag] = e.resource;
+         this._gfxMemorySize = this._gfxMemorySize + BitmapData(e.resource).width * BitmapData(e.resource).height * 4;
+         MEMORY_LOG_1[e.resource] = 1;
       }
       
-      private function onSwfGfxLoaded(param1:ResourceLoadedEvent) : void {
+      private function onSwfGfxLoaded(e:ResourceLoadedEvent) : void {
          this._fileLoaded++;
          this._downloadProgressBar.scaleX = this._fileLoaded / this._fileToLoad;
          dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS,false,false,this._fileLoaded,this._fileToLoad));
-         this._swfGfx[param1.uri.tag] = param1.resource;
-         MEMORY_LOG_2[param1.resource] = 1;
+         this._swfGfx[e.uri.tag] = e.resource;
+         MEMORY_LOG_2[e.resource] = 1;
       }
       
-      private function onGfxError(param1:ResourceErrorEvent) : void {
-         _log.error("Unable to load " + param1.uri);
+      private function onGfxError(e:ResourceErrorEvent) : void {
+         _log.error("Unable to load " + e.uri);
       }
       
-      private function onDownloadTimer(param1:TimerEvent) : void {
+      private function onDownloadTimer(e:TimerEvent) : void {
          if(Atouin.getInstance().options.showProgressBar)
          {
             this._container.addChild(this._progressBarCtr);

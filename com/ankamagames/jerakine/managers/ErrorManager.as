@@ -27,13 +27,9 @@ package com.ankamagames.jerakine.managers
       
       public static var lastTryFunctionParams:Array;
       
-      public static function tryFunction(param1:Function, param2:Array=null, param3:String=null, param4:Object=null) : * {
+      public static function tryFunction(fct:Function, params:Array=null, complementaryInformations:String=null, context:Object=null) : * {
          var result:* = undefined;
          var result2:* = undefined;
-         var fct:Function = param1;
-         var params:Array = param2;
-         var complementaryInformations:String = param3;
-         var context:Object = param4;
          if(!catchError)
          {
             lastTryFunctionHasException = true;
@@ -58,39 +54,39 @@ package com.ankamagames.jerakine.managers
          }
       }
       
-      public static function addError(param1:String=null, param2:*=null, param3:Boolean=true) : void {
-         if(!param2)
+      public static function addError(txt:String=null, error:*=null, show:Boolean=true) : void {
+         if(!error)
          {
-            param2 = new Error();
+            error = new Error();
          }
-         if(!param1)
+         if(!txt)
          {
-            param1 = "";
+            txt = "";
          }
-         eventDispatcher.dispatchEvent(new ErrorReportedEvent(param2,param1,param3));
+         eventDispatcher.dispatchEvent(new ErrorReportedEvent(error,txt,show));
       }
       
-      public static function registerLoaderInfo(param1:LoaderInfo) : void {
+      public static function registerLoaderInfo(loaderInfo:LoaderInfo) : void {
          if(!ApplicationDomain.currentDomain.hasDefinition("flash.events::UncaughtErrorEvent"))
          {
             return;
          }
-         var _loc2_:Object = ApplicationDomain.currentDomain.getDefinition("flash.events::UncaughtErrorEvent");
+         var UncaughtErrorEvent:Object = ApplicationDomain.currentDomain.getDefinition("flash.events::UncaughtErrorEvent");
          if(catchError)
          {
-            param1["uncaughtErrorEvents"].addEventListener(_loc2_.UNCAUGHT_ERROR,onUncaughtError,false,0,true);
+            loaderInfo["uncaughtErrorEvents"].addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR,onUncaughtError,false,0,true);
          }
       }
       
-      private static function onUncaughtError(param1:Object) : void {
-         param1.preventDefault();
-         if(param1.error is Error)
+      private static function onUncaughtError(event:Object) : void {
+         event.preventDefault();
+         if(event.error is Error)
          {
-            addError(null,param1.error,showPopup);
+            addError(null,event.error,showPopup);
          }
          else
          {
-            addError(param1.error,new EmptyError(),showPopup);
+            addError(event.error,new EmptyError(),showPopup);
          }
       }
    }

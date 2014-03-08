@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6357;
       }
       
-      public function initAchievementDetailedListRequestMessage(param1:uint=0) : AchievementDetailedListRequestMessage {
-         this.categoryId = param1;
+      public function initAchievementDetailedListRequestMessage(categoryId:uint=0) : AchievementDetailedListRequestMessage {
+         this.categoryId = categoryId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.achievement
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AchievementDetailedListRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AchievementDetailedListRequestMessage(output);
       }
       
-      public function serializeAs_AchievementDetailedListRequestMessage(param1:IDataOutput) : void {
+      public function serializeAs_AchievementDetailedListRequestMessage(output:IDataOutput) : void {
          if(this.categoryId < 0)
          {
             throw new Error("Forbidden value (" + this.categoryId + ") on element categoryId.");
          }
          else
          {
-            param1.writeShort(this.categoryId);
+            output.writeShort(this.categoryId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AchievementDetailedListRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AchievementDetailedListRequestMessage(input);
       }
       
-      public function deserializeAs_AchievementDetailedListRequestMessage(param1:IDataInput) : void {
-         this.categoryId = param1.readShort();
+      public function deserializeAs_AchievementDetailedListRequestMessage(input:IDataInput) : void {
+         this.categoryId = input.readShort();
          if(this.categoryId < 0)
          {
             throw new Error("Forbidden value (" + this.categoryId + ") on element of AchievementDetailedListRequestMessage.categoryId.");

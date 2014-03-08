@@ -43,12 +43,12 @@ package com.ankamagames.jerakine.utils.system
          return this._cpu;
       }
       
-      public function notifyUser(param1:Boolean=false) : void {
-         var _loc2_:NativeWindow = null;
+      public function notifyUser(always:Boolean=false) : void {
+         var currentWindow:NativeWindow = null;
          try
          {
-            _loc2_ = NativeApplication.nativeApplication.openedWindows[0];
-            if((param1) || !_loc2_.active)
+            currentWindow = NativeApplication.nativeApplication.openedWindows[0];
+            if((always) || (!currentWindow.active))
             {
                if(this.os == OperatingSystem.MAC_OS)
                {
@@ -56,7 +56,7 @@ package com.ankamagames.jerakine.utils.system
                }
                else
                {
-                  _loc2_.notifyUser(NotificationType.CRITICAL);
+                  currentWindow.notifyUser(NotificationType.CRITICAL);
                }
             }
          }
@@ -64,7 +64,7 @@ package com.ankamagames.jerakine.utils.system
          {
          }
          return;
-         if((param1) || !_loc2_.active)
+         if((always) || (!currentWindow.active))
          {
             if(this.os == OperatingSystem.MAC_OS)
             {
@@ -72,31 +72,31 @@ package com.ankamagames.jerakine.utils.system
             }
             else
             {
-               _loc2_.notifyUser(NotificationType.CRITICAL);
+               currentWindow.notifyUser(NotificationType.CRITICAL);
             }
          }
       }
       
       private function parseSystemInfo() : void {
-         var _loc1_:String = Capabilities.os;
-         if(_loc1_ == OperatingSystem.LINUX)
+         var cos:String = Capabilities.os;
+         if(cos == OperatingSystem.LINUX)
          {
             this._os = OperatingSystem.LINUX;
             this._version = "unknow";
          }
          else
          {
-            if(_loc1_.substr(0,OperatingSystem.MAC_OS.length) == OperatingSystem.MAC_OS)
+            if(cos.substr(0,OperatingSystem.MAC_OS.length) == OperatingSystem.MAC_OS)
             {
                this._os = OperatingSystem.MAC_OS;
-               this._version = _loc1_.substr(OperatingSystem.MAC_OS.length + 1);
+               this._version = cos.substr(OperatingSystem.MAC_OS.length + 1);
             }
             else
             {
-               if(_loc1_.substr(0,OperatingSystem.WINDOWS.length) == OperatingSystem.WINDOWS)
+               if(cos.substr(0,OperatingSystem.WINDOWS.length) == OperatingSystem.WINDOWS)
                {
                   this._os = OperatingSystem.WINDOWS;
-                  this._version = _loc1_.substr(OperatingSystem.WINDOWS.length + 1);
+                  this._version = cos.substr(OperatingSystem.WINDOWS.length + 1);
                }
             }
          }

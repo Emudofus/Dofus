@@ -7,10 +7,10 @@ package com.ankamagames.dofus.logic.game.common.steps
    public class LookAtStep extends AbstractSequencable
    {
       
-      public function LookAtStep(param1:AnimatedCharacter, param2:Array) {
+      public function LookAtStep(pEntity:AnimatedCharacter, pArgs:Array) {
          super();
-         this._entity = param1;
-         this._args = param2;
+         this._entity = pEntity;
+         this._args = pArgs;
       }
       
       private var _entity:AnimatedCharacter;

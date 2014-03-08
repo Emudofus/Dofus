@@ -41,14 +41,14 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5918;
       }
       
-      public function initTaxCollectorAttackedMessage(param1:uint=0, param2:uint=0, param3:int=0, param4:int=0, param5:int=0, param6:uint=0, param7:BasicGuildInformations=null) : TaxCollectorAttackedMessage {
-         this.firstNameId = param1;
-         this.lastNameId = param2;
-         this.worldX = param3;
-         this.worldY = param4;
-         this.mapId = param5;
-         this.subAreaId = param6;
-         this.guild = param7;
+      public function initTaxCollectorAttackedMessage(firstNameId:uint=0, lastNameId:uint=0, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0, guild:BasicGuildInformations=null) : TaxCollectorAttackedMessage {
+         this.firstNameId = firstNameId;
+         this.lastNameId = lastNameId;
+         this.worldX = worldX;
+         this.worldY = worldY;
+         this.mapId = mapId;
+         this.subAreaId = subAreaId;
+         this.guild = guild;
          this._isInitialized = true;
          return this;
       }
@@ -64,58 +64,58 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_TaxCollectorAttackedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TaxCollectorAttackedMessage(output);
       }
       
-      public function serializeAs_TaxCollectorAttackedMessage(param1:IDataOutput) : void {
+      public function serializeAs_TaxCollectorAttackedMessage(output:IDataOutput) : void {
          if(this.firstNameId < 0)
          {
             throw new Error("Forbidden value (" + this.firstNameId + ") on element firstNameId.");
          }
          else
          {
-            param1.writeShort(this.firstNameId);
+            output.writeShort(this.firstNameId);
             if(this.lastNameId < 0)
             {
                throw new Error("Forbidden value (" + this.lastNameId + ") on element lastNameId.");
             }
             else
             {
-               param1.writeShort(this.lastNameId);
-               if(this.worldX < -255 || this.worldX > 255)
+               output.writeShort(this.lastNameId);
+               if((this.worldX < -255) || (this.worldX > 255))
                {
                   throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
                }
                else
                {
-                  param1.writeShort(this.worldX);
-                  if(this.worldY < -255 || this.worldY > 255)
+                  output.writeShort(this.worldX);
+                  if((this.worldY < -255) || (this.worldY > 255))
                   {
                      throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
                   }
                   else
                   {
-                     param1.writeShort(this.worldY);
-                     param1.writeInt(this.mapId);
+                     output.writeShort(this.worldY);
+                     output.writeInt(this.mapId);
                      if(this.subAreaId < 0)
                      {
                         throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
                      }
                      else
                      {
-                        param1.writeShort(this.subAreaId);
-                        this.guild.serializeAs_BasicGuildInformations(param1);
+                        output.writeShort(this.subAreaId);
+                        this.guild.serializeAs_BasicGuildInformations(output);
                         return;
                      }
                   }
@@ -124,41 +124,41 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_TaxCollectorAttackedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TaxCollectorAttackedMessage(input);
       }
       
-      public function deserializeAs_TaxCollectorAttackedMessage(param1:IDataInput) : void {
-         this.firstNameId = param1.readShort();
+      public function deserializeAs_TaxCollectorAttackedMessage(input:IDataInput) : void {
+         this.firstNameId = input.readShort();
          if(this.firstNameId < 0)
          {
             throw new Error("Forbidden value (" + this.firstNameId + ") on element of TaxCollectorAttackedMessage.firstNameId.");
          }
          else
          {
-            this.lastNameId = param1.readShort();
+            this.lastNameId = input.readShort();
             if(this.lastNameId < 0)
             {
                throw new Error("Forbidden value (" + this.lastNameId + ") on element of TaxCollectorAttackedMessage.lastNameId.");
             }
             else
             {
-               this.worldX = param1.readShort();
-               if(this.worldX < -255 || this.worldX > 255)
+               this.worldX = input.readShort();
+               if((this.worldX < -255) || (this.worldX > 255))
                {
                   throw new Error("Forbidden value (" + this.worldX + ") on element of TaxCollectorAttackedMessage.worldX.");
                }
                else
                {
-                  this.worldY = param1.readShort();
-                  if(this.worldY < -255 || this.worldY > 255)
+                  this.worldY = input.readShort();
+                  if((this.worldY < -255) || (this.worldY > 255))
                   {
                      throw new Error("Forbidden value (" + this.worldY + ") on element of TaxCollectorAttackedMessage.worldY.");
                   }
                   else
                   {
-                     this.mapId = param1.readInt();
-                     this.subAreaId = param1.readShort();
+                     this.mapId = input.readInt();
+                     this.subAreaId = input.readShort();
                      if(this.subAreaId < 0)
                      {
                         throw new Error("Forbidden value (" + this.subAreaId + ") on element of TaxCollectorAttackedMessage.subAreaId.");
@@ -166,7 +166,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
                      else
                      {
                         this.guild = new BasicGuildInformations();
-                        this.guild.deserialize(param1);
+                        this.guild.deserialize(input);
                         return;
                      }
                   }

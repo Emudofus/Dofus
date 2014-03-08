@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6061;
       }
       
-      public function initGuildMemberOnlineStatusMessage(param1:uint=0, param2:Boolean=false) : GuildMemberOnlineStatusMessage {
-         this.memberId = param1;
-         this.online = param2;
+      public function initGuildMemberOnlineStatusMessage(memberId:uint=0, online:Boolean=false) : GuildMemberOnlineStatusMessage {
+         this.memberId = memberId;
+         this.online = online;
          this._isInitialized = true;
          return this;
       }
@@ -42,46 +42,46 @@ package com.ankamagames.dofus.network.messages.game.guild
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildMemberOnlineStatusMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildMemberOnlineStatusMessage(output);
       }
       
-      public function serializeAs_GuildMemberOnlineStatusMessage(param1:IDataOutput) : void {
+      public function serializeAs_GuildMemberOnlineStatusMessage(output:IDataOutput) : void {
          if(this.memberId < 0)
          {
             throw new Error("Forbidden value (" + this.memberId + ") on element memberId.");
          }
          else
          {
-            param1.writeInt(this.memberId);
-            param1.writeBoolean(this.online);
+            output.writeInt(this.memberId);
+            output.writeBoolean(this.online);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildMemberOnlineStatusMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildMemberOnlineStatusMessage(input);
       }
       
-      public function deserializeAs_GuildMemberOnlineStatusMessage(param1:IDataInput) : void {
-         this.memberId = param1.readInt();
+      public function deserializeAs_GuildMemberOnlineStatusMessage(input:IDataInput) : void {
+         this.memberId = input.readInt();
          if(this.memberId < 0)
          {
             throw new Error("Forbidden value (" + this.memberId + ") on element of GuildMemberOnlineStatusMessage.memberId.");
          }
          else
          {
-            this.online = param1.readBoolean();
+            this.online = input.readBoolean();
             return;
          }
       }

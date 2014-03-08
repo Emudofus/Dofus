@@ -6,12 +6,12 @@ package com.ankamagames.jerakine.types
    public class ASwf extends Object
    {
       
-      public function ASwf(param1:DisplayObject, param2:ApplicationDomain, param3:Number, param4:Number) {
+      public function ASwf(content:DisplayObject, appDomain:ApplicationDomain, loaderWidth:Number, loaderHeight:Number) {
          super();
-         this._content = param1;
-         this._appDomain = param2;
-         this._loaderWidth = param3;
-         this._loaderHeight = param4;
+         this._content = content;
+         this._appDomain = appDomain;
+         this._loaderWidth = loaderWidth;
+         this._loaderHeight = loaderHeight;
       }
       
       private var _content:DisplayObject;

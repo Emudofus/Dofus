@@ -40,10 +40,8 @@ package com.ankamagames.dofus.misc.utils
    public class LoadingScreen extends UiRootContainer implements FinalizableUIComponent, IResourceObserver
    {
       
-      public function LoadingScreen(param1:Boolean=false, param2:Boolean=false) {
+      public function LoadingScreen(showBigVersion:Boolean=false, beforeLogin:Boolean=false) {
          var adapter:BitmapAdapter = null;
-         var showBigVersion:Boolean = param1;
-         var beforeLogin:Boolean = param2;
          this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
          this._levelColor = new Array(8158332,9216860,11556943,16737792);
          this._background = LoadingScreen__background;
@@ -97,11 +95,6 @@ package com.ankamagames.dofus.misc.utils
          else
          {
             this._customLoadingScreen = null;
-         }
-         if((this._customLoadingScreen) && (this._customLoadingScreen.canBeReadOnScreen(beforeLogin)))
-         {
-            this.finalizeInitialization();
-            return;
          }
          this.finalizeInitialization();
       }
@@ -194,21 +187,21 @@ package com.ankamagames.dofus.misc.utils
          return true;
       }
       
-      public function set finalized(param1:Boolean) : void {
+      public function set finalized(b:Boolean) : void {
       }
       
-      public function set value(param1:Number) : void {
-         if(param1 < 0)
+      public function set value(v:Number) : void {
+         if(v < 0)
          {
-            param1 = 0;
+            v = 0;
          }
-         if(param1 > 100)
+         if(v > 100)
          {
-            param1 = 100;
+            v = 100;
          }
-         Dofus.getInstance().strProgress = param1;
-         this._value = param1;
-         this._progressClip.gotoAndStop(Math.round(param1) + 2);
+         Dofus.getInstance().strProgress = v;
+         this._value = v;
+         this._progressClip.gotoAndStop(Math.round(v) + 2);
       }
       
       public function get value() : Number {
@@ -219,16 +212,16 @@ package com.ankamagames.dofus.misc.utils
       }
       
       private function finalizeInitialization() : void {
-         var _loc3_:Bitmap = null;
-         var _loc6_:TextField = null;
+         var logo:Bitmap = null;
+         var buildsInfoBig:TextField = null;
          this._logTf = new TextField();
          this._logTf.width = StageShareManager.startWidth;
          this._logTf.height = 500;
          this._logTf.x = 10;
          this._logTf.y = 300;
-         var _loc1_:String = FontManager.initialized?FontManager.getInstance().getFontClassName("Tahoma"):"Tahoma";
-         this._logTf.setTextFormat(new TextFormat(_loc1_));
-         this._logTf.defaultTextFormat = new TextFormat(_loc1_);
+         var font:String = FontManager.initialized?FontManager.getInstance().getFontClassName("Tahoma"):"Tahoma";
+         this._logTf.setTextFormat(new TextFormat(font));
+         this._logTf.defaultTextFormat = new TextFormat(font);
          this._logTf.multiline = true;
          addChild(this._logTf);
          this._logTf.visible = false;
@@ -239,7 +232,7 @@ package com.ankamagames.dofus.misc.utils
             this._backgroundContainer.useHandCursor = true;
             this._backgroundContainer.addEventListener(MouseEvent.CLICK,this.onClick);
          }
-         if(!this._backgroundBitmap && !this._customLoadingScreen)
+         if((!this._backgroundBitmap) && (!this._customLoadingScreen))
          {
             this._backgroundBitmap = this._backgroundContainer.addChild(new Capabilities.language == "ja"?this._defaultBackground:this._background()) as Bitmap;
             this._backgroundBitmap.smoothing = true;
@@ -251,16 +244,16 @@ package com.ankamagames.dofus.misc.utils
          addChild(new this._bandeau_haut());
          if(USE_FORGROUND)
          {
-            if(!this._foregroundBitmap && !this._customLoadingScreen)
+            if((!this._foregroundBitmap) && (!this._customLoadingScreen))
             {
                this._foregroundBitmap = this._foregroundContainer.addChild(new Capabilities.language == "ja"?this._defaultForeground:this._foreground()) as Bitmap;
                this._foregroundBitmap.smoothing = true;
             }
          }
-         var _loc2_:Bitmap = new this._bandeau_bas();
-         _loc2_.y = StageShareManager.startHeight - _loc2_.height;
-         _loc2_.smoothing = true;
-         addChild(_loc2_);
+         var bandeauBas:Bitmap = new this._bandeau_bas();
+         bandeauBas.y = StageShareManager.startHeight - bandeauBas.height;
+         bandeauBas.smoothing = true;
+         addChild(bandeauBas);
          this._tipsBackgroundBitmap = new this._tipsBackground();
          this._tipsBackgroundBitmap.x = 89;
          this._tipsBackgroundBitmap.y = 933;
@@ -271,7 +264,7 @@ package com.ankamagames.dofus.misc.utils
          this._tipsTextField.y = this._tipsBackgroundBitmap.y + 10;
          this._tipsTextField.width = this._tipsBackgroundBitmap.width - 20;
          this._tipsTextField.height = this._tipsBackgroundBitmap.height;
-         this._tipsTextField.defaultTextFormat = new TextFormat(_loc1_,19,10066329,null,null,null,null,null,"center");
+         this._tipsTextField.defaultTextFormat = new TextFormat(font,19,10066329,null,null,null,null,null,"center");
          this._tipsTextField.embedFonts = true;
          this._tipsTextField.selectable = false;
          this._tipsTextField.visible = false;
@@ -282,45 +275,41 @@ package com.ankamagames.dofus.misc.utils
          switch(Capabilities.language)
          {
             case "ja":
-               _loc3_ = new this._logoJp();
-               _loc3_.x = 8;
-               _loc3_.y = -30;
+               logo = new this._logoJp();
+               logo.x = 8;
+               logo.y = -30;
                break;
             case "ru":
-               _loc3_ = new this._logoRu();
-               _loc3_.x = 8;
-               _loc3_.y = 8;
+               logo = new this._logoRu();
+               logo.x = 8;
+               logo.y = 8;
                break;
-            default:
-               _loc3_ = new this._logoFr();
-               _loc3_.x = 8;
-               _loc3_.y = -30;
          }
-         _loc3_.smoothing = true;
-         addChild(_loc3_);
+         logo.smoothing = true;
+         addChild(logo);
          this._progressClip = new this._dofusProgress();
          this._progressClip.x = 608;
          this._progressClip.y = 821;
          this._progressClip.scaleX = this._progressClip.scaleY = 0.5;
          addChild(this._progressClip);
-         var _loc4_:TextField = new TextField();
-         _loc4_.appendText("Dofus " + BuildInfos.BUILD_VERSION + "\n");
-         _loc4_.appendText("Mode " + BuildTypeParser.getTypeName(BuildInfos.BUILD_TYPE) + "\n");
-         _loc4_.appendText(BuildInfos.BUILD_DATE + "\n");
-         _loc4_.appendText("Player " + Capabilities.version);
-         _loc4_.height = 200;
-         _loc4_.width = 300;
-         _loc4_.selectable = false;
-         _loc4_.setTextFormat(new TextFormat(_loc1_,null,null,null,null,null,null,null,"right"));
-         _loc4_.textColor = 7829367;
-         _loc4_.y = 5;
-         _loc4_.x = StageShareManager.startWidth - _loc4_.width;
-         addChild(_loc4_);
-         var _loc5_:DisplayObject = new this._btnLog();
-         _loc5_.x = 5;
-         _loc5_.y = StageShareManager.startHeight - _loc5_.height - 5;
-         _loc5_.addEventListener(MouseEvent.CLICK,this.onLogClick);
-         addChild(_loc5_);
+         var buildsInfo:TextField = new TextField();
+         buildsInfo.appendText("Dofus " + BuildInfos.BUILD_VERSION + "\n");
+         buildsInfo.appendText("Mode " + BuildTypeParser.getTypeName(BuildInfos.BUILD_TYPE) + "\n");
+         buildsInfo.appendText(BuildInfos.BUILD_DATE + "\n");
+         buildsInfo.appendText("Player " + Capabilities.version);
+         buildsInfo.height = 200;
+         buildsInfo.width = 300;
+         buildsInfo.selectable = false;
+         buildsInfo.setTextFormat(new TextFormat(font,null,null,null,null,null,null,null,"right"));
+         buildsInfo.textColor = 7829367;
+         buildsInfo.y = 5;
+         buildsInfo.x = StageShareManager.startWidth - buildsInfo.width;
+         addChild(buildsInfo);
+         var btnLog:DisplayObject = new this._btnLog();
+         btnLog.x = 5;
+         btnLog.y = StageShareManager.startHeight - btnLog.height - 5;
+         btnLog.addEventListener(MouseEvent.CLICK,this.onLogClick);
+         addChild(btnLog);
          this._btnContinueClip = new this._btnContinue() as SimpleButton;
          this._btnContinueClip.x = this._progressClip.x + (this._progressClip.width - this._btnContinueClip.width) / 2;
          this._btnContinueClip.y = this._progressClip.y + this._progressClip.height + 30;
@@ -330,55 +319,55 @@ package com.ankamagames.dofus.misc.utils
          graphics.beginFill(0);
          graphics.drawRect(0,0,width,height);
          graphics.endFill();
-         if(BuildInfos.BUILD_TYPE > BuildTypeEnum.RELEASE && (this._showBigVersion))
+         if((BuildInfos.BUILD_TYPE > BuildTypeEnum.RELEASE) && (this._showBigVersion))
          {
-            _loc6_ = new TextField();
-            _loc6_.appendText(BuildTypeParser.getTypeName(BuildInfos.BUILD_TYPE) + " version");
-            _loc6_.x = 300;
-            _loc6_.y = 30;
-            _loc6_.width = 400;
-            _loc6_.selectable = false;
-            _loc6_.setTextFormat(new TextFormat(_loc1_,30,BuildTypeParser.getTypeColor(BuildInfos.BUILD_TYPE),true));
-            addChild(_loc6_);
+            buildsInfoBig = new TextField();
+            buildsInfoBig.appendText(BuildTypeParser.getTypeName(BuildInfos.BUILD_TYPE) + " version");
+            buildsInfoBig.x = 300;
+            buildsInfoBig.y = 30;
+            buildsInfoBig.width = 400;
+            buildsInfoBig.selectable = false;
+            buildsInfoBig.setTextFormat(new TextFormat(font,30,BuildTypeParser.getTypeColor(BuildInfos.BUILD_TYPE),true));
+            addChild(buildsInfoBig);
          }
          iAmFinalized(this);
       }
       
-      private function displayAchievmentProgressBar(param1:AchievementListMessage) : void {
-         var _loc4_:* = NaN;
-         var _loc5_:AchievementCategory = null;
-         var _loc8_:AchievementCategory = null;
-         var _loc9_:uint = 0;
-         var _loc10_:String = null;
-         var _loc2_:Array = AchievementCategory.getAchievementCategories();
-         var _loc3_:* = false;
-         while(!_loc3_)
+      private function displayAchievmentProgressBar(achievmentsInfo:AchievementListMessage) : void {
+         var randomIndex:* = NaN;
+         var category:AchievementCategory = null;
+         var tempCat:AchievementCategory = null;
+         var tempId:uint = 0;
+         var font:String = null;
+         var achievementsCategories:Array = AchievementCategory.getAchievementCategories();
+         var isAParent:Boolean = false;
+         while(!isAParent)
          {
-            _loc4_ = Math.round(Math.random() * (_loc2_.length-1));
-            _loc5_ = _loc2_[_loc4_];
-            if(_loc5_.parentId > 0)
+            randomIndex = Math.round(Math.random() * (achievementsCategories.length - 1));
+            category = achievementsCategories[randomIndex];
+            if(category.parentId > 0)
             {
-               _loc2_.splice(_loc4_,1);
+               achievementsCategories.splice(randomIndex,1);
             }
             else
             {
-               _loc3_ = true;
+               isAParent = true;
             }
          }
-         _loc2_ = AchievementCategory.getAchievementCategories();
-         var _loc6_:* = 0;
-         var _loc7_:* = 0;
-         for each (_loc8_ in _loc2_)
+         achievementsCategories = AchievementCategory.getAchievementCategories();
+         var finishedAchievement:int = 0;
+         var totalAchievement:int = 0;
+         for each (tempCat in achievementsCategories)
          {
-            if(_loc8_.parentId == _loc5_.id || _loc8_.id == _loc5_.id)
+            if((tempCat.parentId == category.id) || (tempCat.id == category.id))
             {
-               for each (_loc9_ in _loc8_.achievementIds)
+               for each (tempId in tempCat.achievementIds)
                {
-                  if(param1.finishedAchievementsIds.indexOf(_loc9_) != -1)
+                  if(achievmentsInfo.finishedAchievementsIds.indexOf(tempId) != -1)
                   {
-                     _loc6_++;
+                     finishedAchievement++;
                   }
-                  _loc7_++;
+                  totalAchievement++;
                }
             }
          }
@@ -389,21 +378,21 @@ package com.ankamagames.dofus.misc.utils
          this._tipsBackgroundBitmap.y = this._tipsBackgroundBitmap.y - 18;
          this._tipsBackgroundBitmap.height = this._tipsBackgroundBitmap.height - 200;
          this._tipsTextField.y = this._tipsBackgroundBitmap.y + 10;
-         _loc10_ = FontManager.initialized?FontManager.getInstance().getFontClassName("Tahoma"):"Tahoma";
+         font = FontManager.initialized?FontManager.getInstance().getFontClassName("Tahoma"):"Tahoma";
          this._achievementLabel.x = this._tipsBackgroundBitmap.x;
-         this._achievementLabel.defaultTextFormat = new TextFormat(_loc10_,19,16777215,null,null,null,null,null,"center");
+         this._achievementLabel.defaultTextFormat = new TextFormat(font,19,16777215,null,null,null,null,null,"center");
          this._achievementLabel.embedFonts = true;
          this._achievementLabel.selectable = false;
          this._achievementLabel.visible = true;
          this._achievementLabel.multiline = false;
-         this._achievementLabel.text = I18n.getUiText("ui.achievement.achievement") + I18n.getUiText("ui.common.colon") + _loc5_.name;
+         this._achievementLabel.text = I18n.getUiText("ui.achievement.achievement") + I18n.getUiText("ui.common.colon") + category.name;
          this._achievementLabel.autoSize = TextFieldAutoSize.LEFT;
-         this._achievementNumbersLabel.defaultTextFormat = new TextFormat(_loc10_,19,16777215,null,null,null,null,null,"center");
+         this._achievementNumbersLabel.defaultTextFormat = new TextFormat(font,19,16777215,null,null,null,null,null,"center");
          this._achievementNumbersLabel.embedFonts = true;
          this._achievementNumbersLabel.selectable = false;
          this._achievementNumbersLabel.visible = true;
          this._achievementNumbersLabel.multiline = false;
-         this._achievementNumbersLabel.text = _loc6_ + " / " + _loc7_;
+         this._achievementNumbersLabel.text = finishedAchievement + " / " + totalAchievement;
          this._achievementNumbersLabel.autoSize = TextFieldAutoSize.LEFT;
          this._achievementNumbersLabel.x = this._tipsBackgroundBitmap.x + this._tipsBackgroundBitmap.width - this._achievementNumbersLabel.width;
          this._progressBarBackground.height = -3;
@@ -416,11 +405,11 @@ package com.ankamagames.dofus.misc.utils
          this._progressBar.x = this._progressBarBackground.x;
          this._progressBar.y = this._progressBarBackground.y;
          this._progressBarBackground.width = this._tipsBackgroundBitmap.x + this._tipsBackgroundBitmap.width - this._achievementNumbersLabel.width - this._progressBarBackground.x - 5;
-         var _loc11_:ColorTransform = new ColorTransform();
-         _loc11_.color = uint(_loc5_.color);
-         this._progressBar.transform.colorTransform = _loc11_;
-         var _loc12_:Number = _loc6_ / _loc7_;
-         this._progressBar.width = _loc12_ * this._progressBarBackground.width;
+         var colorTransfom:ColorTransform = new ColorTransform();
+         colorTransfom.color = uint(category.color);
+         this._progressBar.transform.colorTransform = colorTransfom;
+         var achievementPercent:Number = finishedAchievement / totalAchievement;
+         this._progressBar.width = achievementPercent * this._progressBarBackground.width;
          this._progressBar.visible = true;
          this._progressBarBackground.visible = true;
          addChild(this._progressBarBackground);
@@ -429,28 +418,28 @@ package com.ankamagames.dofus.misc.utils
          addChild(this._achievementNumbersLabel);
       }
       
-      public function log(param1:String, param2:uint) : void {
-         var _loc3_:ColorTransform = null;
-         if(param2 == ERROR || param2 == WARNING)
+      public function log(text:String, level:uint) : void {
+         var tc:ColorTransform = null;
+         if((level == ERROR) || (level == WARNING))
          {
-            _loc3_ = new ColorTransform();
-            _loc3_.color = this._levelColor[param2];
-            this._progressClip.transform.colorTransform = _loc3_;
+            tc = new ColorTransform();
+            tc.color = this._levelColor[level];
+            this._progressClip.transform.colorTransform = tc;
             this.showLog(true);
          }
-         this._logTf.htmlText = "<p><font color=\"#" + uint(this._levelColor[param2]).toString(16) + "\">" + param1 + "</font></p>" + this._logTf.htmlText;
+         this._logTf.htmlText = "<p><font color=\"#" + uint(this._levelColor[level]).toString(16) + "\">" + text + "</font></p>" + this._logTf.htmlText;
       }
       
-      public function showLog(param1:Boolean) : void {
+      public function showLog(b:Boolean) : void {
          if(this._foregroundBitmap)
          {
-            this._foregroundBitmap.visible = !param1;
+            this._foregroundBitmap.visible = !b;
          }
          if(this._backgroundBitmap)
          {
-            this._backgroundBitmap.visible = !param1;
+            this._backgroundBitmap.visible = !b;
          }
-         this._logTf.visible = param1;
+         this._logTf.visible = b;
       }
       
       public function hideTips() : void {
@@ -458,42 +447,42 @@ package com.ankamagames.dofus.misc.utils
          this._tipsBackgroundBitmap.visible = false;
       }
       
-      public function set useEmbedFont(param1:Boolean) : void {
+      public function set useEmbedFont(b:Boolean) : void {
          this._tipsTextField.embedFonts = false;
       }
       
-      public function set tip(param1:String) : void {
+      public function set tip(txt:String) : void {
          this._tipsTextField.visible = true;
          this._tipsBackgroundBitmap.visible = true;
-         this._tipsTextField.htmlText = param1;
+         this._tipsTextField.htmlText = txt;
       }
       
-      public function set continueCallbak(param1:Function) : void {
+      public function set continueCallbak(cb:Function) : void {
          this._btnContinueClip.visible = true;
          this.showLog(true);
          this.hideTips();
-         this._continueCallBack = param1;
+         this._continueCallBack = cb;
       }
       
-      private function onLogClick(param1:Event) : void {
+      private function onLogClick(e:Event) : void {
          this.showLog(!this._logTf.visible);
       }
       
-      private function onContinueClick(param1:Event) : void {
+      private function onContinueClick(e:Event) : void {
          this._continueCallBack();
       }
       
-      public function onLoaded(param1:Uri, param2:uint, param3:*) : void {
+      public function onLoaded(uri:Uri, resourceType:uint, resource:*) : void {
          if(this._customLoadingScreen)
          {
-            switch(param1.toString())
+            switch(uri.toString())
             {
                case new Uri(this._customLoadingScreen.backgroundUrl).toString():
                   if(this._backgroundBitmap)
                   {
                      this._backgroundContainer.removeChild(this._backgroundBitmap);
                   }
-                  this._backgroundBitmap = new Bitmap(param3 as BitmapData);
+                  this._backgroundBitmap = new Bitmap(resource as BitmapData);
                   this._backgroundBitmap.smoothing = true;
                   this._backgroundContainer.addChild(this._backgroundBitmap);
                   break;
@@ -502,7 +491,7 @@ package com.ankamagames.dofus.misc.utils
                   {
                      this._foregroundContainer.removeChild(this._foregroundBitmap);
                   }
-                  this._foregroundBitmap = new Bitmap(param3 as BitmapData);
+                  this._foregroundBitmap = new Bitmap(resource as BitmapData);
                   this._foregroundBitmap.smoothing = true;
                   this._foregroundContainer.addChild(this._foregroundBitmap);
                   break;
@@ -510,75 +499,75 @@ package com.ankamagames.dofus.misc.utils
          }
       }
       
-      public function onClick(param1:MouseEvent) : void {
+      public function onClick(e:MouseEvent) : void {
          if((this._customLoadingScreen) && (this._customLoadingScreen.canBeReadOnScreen(this._beforeLogin)) && (this._customLoadingScreen.linkUrl))
          {
             navigateToURL(new URLRequest(this._customLoadingScreen.linkUrl));
          }
       }
       
-      public function onFailed(param1:Uri, param2:String, param3:uint) : void {
-         _log.error("Failed to load custom loading screen picture (" + param1.toString() + ")");
+      public function onFailed(uri:Uri, errorMsg:String, errorCode:uint) : void {
+         _log.error("Failed to load custom loading screen picture (" + uri.toString() + ")");
       }
       
-      public function onProgress(param1:Uri, param2:uint, param3:uint) : void {
+      public function onProgress(uri:Uri, bytesLoaded:uint, bytesTotal:uint) : void {
       }
       
-      public function onEnterFrame(param1:Event) : void {
-         var _loc5_:* = 0;
-         var _loc2_:Vector.<Message> = Kernel.getWorker().pausedQueue;
-         var _loc3_:Array = ConnectionsHandler.getConnection().getPauseBuffer();
-         var _loc4_:AchievementListMessage = null;
-         if(_loc2_.length > this._workerbufferSize)
+      public function onEnterFrame(e:Event) : void {
+         var i:* = 0;
+         var workerMessageBuffer:Vector.<Message> = Kernel.getWorker().pausedQueue;
+         var connectionMessageBuffer:Array = ConnectionsHandler.getConnection().getPauseBuffer();
+         var achievmentsInfo:AchievementListMessage = null;
+         if(workerMessageBuffer.length > this._workerbufferSize)
          {
             if(this._workerbufferSize <= 0)
             {
-               _loc5_ = 0;
+               i = 0;
             }
             else
             {
-               _loc5_ = this._workerbufferSize-1;
+               i = this._workerbufferSize - 1;
             }
-            this._workerbufferSize = _loc2_.length;
-            while(_loc5_ < this._workerbufferSize)
+            this._workerbufferSize = workerMessageBuffer.length;
+            while(i < this._workerbufferSize)
             {
-               if(_loc2_[_loc5_] is AchievementListMessage)
+               if(workerMessageBuffer[i] is AchievementListMessage)
                {
-                  _loc4_ = _loc2_[_loc5_] as AchievementListMessage;
+                  achievmentsInfo = workerMessageBuffer[i] as AchievementListMessage;
                   break;
                }
-               _loc5_++;
+               i++;
             }
          }
-         if(!_loc4_ && _loc3_.length > this._connectionBufferSize)
+         if((!achievmentsInfo) && (connectionMessageBuffer.length > this._connectionBufferSize))
          {
             if(this._connectionBufferSize <= 0)
             {
-               _loc5_ = 0;
+               i = 0;
             }
             else
             {
-               _loc5_ = this._connectionBufferSize-1;
+               i = this._connectionBufferSize - 1;
             }
-            this._connectionBufferSize = _loc3_.length;
-            while(_loc5_ < this._connectionBufferSize)
+            this._connectionBufferSize = connectionMessageBuffer.length;
+            while(i < this._connectionBufferSize)
             {
-               if(_loc3_[_loc5_] is AchievementListMessage)
+               if(connectionMessageBuffer[i] is AchievementListMessage)
                {
-                  _loc4_ = _loc3_[_loc5_] as AchievementListMessage;
+                  achievmentsInfo = connectionMessageBuffer[i] as AchievementListMessage;
                   break;
                }
-               _loc5_++;
+               i++;
             }
          }
-         if(_loc4_)
+         if(achievmentsInfo)
          {
             EnterFrameDispatcher.removeEventListener(this.onEnterFrame);
-            this.displayAchievmentProgressBar(_loc4_);
+            this.displayAchievmentProgressBar(achievmentsInfo);
          }
       }
       
-      private function onRemoveFromStage(param1:Event) : void {
+      private function onRemoveFromStage(e:Event) : void {
          EnterFrameDispatcher.removeEventListener(this.onEnterFrame);
          removeEventListener(Event.REMOVED_FROM_STAGE,this.onRemoveFromStage);
       }

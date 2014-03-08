@@ -29,10 +29,10 @@ package com.ankamagames.dofus.network.messages.game.atlas.compass
          return 6013;
       }
       
-      public function initCompassUpdatePvpSeekMessage(param1:uint=0, param2:MapCoordinates=null, param3:uint=0, param4:String="") : CompassUpdatePvpSeekMessage {
-         super.initCompassUpdateMessage(param1,param2);
-         this.memberId = param3;
-         this.memberName = param4;
+      public function initCompassUpdatePvpSeekMessage(type:uint=0, coords:MapCoordinates=null, memberId:uint=0, memberName:String="") : CompassUpdatePvpSeekMessage {
+         super.initCompassUpdateMessage(type,coords);
+         this.memberId = memberId;
+         this.memberName = memberName;
          this._isInitialized = true;
          return this;
       }
@@ -44,48 +44,48 @@ package com.ankamagames.dofus.network.messages.game.atlas.compass
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CompassUpdatePvpSeekMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CompassUpdatePvpSeekMessage(output);
       }
       
-      public function serializeAs_CompassUpdatePvpSeekMessage(param1:IDataOutput) : void {
-         super.serializeAs_CompassUpdateMessage(param1);
+      public function serializeAs_CompassUpdatePvpSeekMessage(output:IDataOutput) : void {
+         super.serializeAs_CompassUpdateMessage(output);
          if(this.memberId < 0)
          {
             throw new Error("Forbidden value (" + this.memberId + ") on element memberId.");
          }
          else
          {
-            param1.writeInt(this.memberId);
-            param1.writeUTF(this.memberName);
+            output.writeInt(this.memberId);
+            output.writeUTF(this.memberName);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CompassUpdatePvpSeekMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CompassUpdatePvpSeekMessage(input);
       }
       
-      public function deserializeAs_CompassUpdatePvpSeekMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.memberId = param1.readInt();
+      public function deserializeAs_CompassUpdatePvpSeekMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.memberId = input.readInt();
          if(this.memberId < 0)
          {
             throw new Error("Forbidden value (" + this.memberId + ") on element of CompassUpdatePvpSeekMessage.memberId.");
          }
          else
          {
-            this.memberName = param1.readUTF();
+            this.memberName = input.readUTF();
             return;
          }
       }

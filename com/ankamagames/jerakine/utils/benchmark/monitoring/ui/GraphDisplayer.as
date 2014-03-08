@@ -49,16 +49,16 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          this._txtSprite.mouseEnabled = false;
          this._txtSprite.x = FpsManagerConst.PADDING_LEFT;
          this._txtSprite.y = FpsManagerConst.PADDING_TOP;
-         var _loc1_:TextFormat = new TextFormat("Verdana",13);
-         _loc1_.color = 16777215;
+         var tf:TextFormat = new TextFormat("Verdana",13);
+         tf.color = 16777215;
          this._fpsTf = new TextField();
-         this._fpsTf.defaultTextFormat = _loc1_;
+         this._fpsTf.defaultTextFormat = tf;
          this._fpsTf.selectable = false;
          this._fpsTf.text = StageShareManager.stage.frameRate + " FPS";
          this._txtSprite.addChild(this._fpsTf);
          this._memTf = new TextField();
          this._memTf.y = 30;
-         this._memTf.defaultTextFormat = _loc1_;
+         this._memTf.defaultTextFormat = tf;
          this._memTf.selectable = false;
          this._memTf.text = "00 MB";
          this._txtSprite.addChild(this._memTf);
@@ -75,165 +75,165 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          this._graphDisplay = new Bitmap(new BitmapData(FpsManagerConst.BOX_WIDTH,FpsManagerConst.BOX_HEIGHT,true,0));
          this._graphDisplay.smoothing = true;
          addChild(this._graphDisplay);
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(0,0.4);
-         _loc1_.graphics.drawRoundRect(0,0,FpsManagerConst.BOX_FILTER_WIDTH,FpsManagerConst.BOX_HEIGHT,8,8);
-         addChild(_loc1_);
+         var spr:Sprite = new Sprite();
+         spr.graphics.beginFill(0,0.4);
+         spr.graphics.drawRoundRect(0,0,FpsManagerConst.BOX_FILTER_WIDTH,FpsManagerConst.BOX_HEIGHT,8,8);
+         addChild(spr);
       }
       
-      public function update(param1:Boolean=true) : void {
-         var _loc3_:* = 0;
-         var _loc4_:uint = 0;
-         var _loc5_:Graph = null;
+      public function update(graphicalUpdate:Boolean=true) : void {
+         var py:* = 0;
+         var color:uint = 0;
+         var g:Graph = null;
          this.addConstValue(FpsManagerConst.SPECIAL_GRAPH[1].name,1000 / StageShareManager.stage.frameRate);
-         if(!param1)
+         if(!graphicalUpdate)
          {
             return;
          }
-         var _loc2_:int = FpsManagerConst.BOX_WIDTH-1;
+         var px:int = FpsManagerConst.BOX_WIDTH - 1;
          this._graphDisplay.bitmapData.lock();
          this._graphDisplay.bitmapData.scroll(-1,0);
-         this._graphDisplay.bitmapData.fillRect(new Rectangle(_loc2_,1,1,FpsManagerConst.BOX_HEIGHT),16711680);
-         for each (_loc5_ in this._graphToDisplay)
+         this._graphDisplay.bitmapData.fillRect(new Rectangle(px,1,1,FpsManagerConst.BOX_HEIGHT),16711680);
+         for each (g in this._graphToDisplay)
          {
-            if(!FpsManagerUtils.isSpecialGraph(_loc5_.indice))
+            if(!FpsManagerUtils.isSpecialGraph(g.indice))
             {
-               this.addConstValue(_loc5_.indice);
+               this.addConstValue(g.indice);
             }
-            _loc5_.setNewFrame();
-            if(!(_loc5_.points.length == 0 || !_loc5_.graphVisible))
+            g.setNewFrame();
+            if(!((g.points.length == 0) || (!g.graphVisible)))
             {
-               _loc3_ = this.formateValue(_loc5_.points[_loc5_.points.length-1]);
-               _loc4_ = FpsManagerUtils.addAlphaToColor(_loc5_.color,4.294967295E9);
-               if(_loc5_.points.length >= 2)
+               py = this.formateValue(g.points[g.points.length - 1]);
+               color = FpsManagerUtils.addAlphaToColor(g.color,4.294967295E9);
+               if(g.points.length >= 2)
                {
-                  this.linkGraphValues(_loc2_,_loc3_,this.formateValue(_loc5_.points[_loc5_.points.length - 2]),_loc4_);
+                  this.linkGraphValues(px,py,this.formateValue(g.points[g.points.length - 2]),color);
                }
-               this._graphDisplay.bitmapData.setPixel32(_loc2_,_loc3_,_loc3_ == 1?4.29490176E9:_loc4_);
+               this._graphDisplay.bitmapData.setPixel32(px,py,py == 1?4.29490176E9:color);
             }
          }
          this._graphDisplay.bitmapData.unlock();
       }
       
-      public function updateFpsValue(param1:Number) : void {
-         this._fpsTf.text = param1.toFixed(1) + " FPS";
+      public function updateFpsValue(fpsValue:Number) : void {
+         this._fpsTf.text = fpsValue.toFixed(1) + " FPS";
       }
       
       public function get memory() : String {
          return this._memTf.text;
       }
       
-      public function set memory(param1:String) : void {
-         this._memTf.text = param1;
+      public function set memory(val:String) : void {
+         this._memTf.text = val;
       }
       
-      public function startTracking(param1:String, param2:uint=16777215) : void {
-         var _loc3_:Graph = this._graphToDisplay[param1];
-         if(_loc3_ == null)
+      public function startTracking(pIndice:String, pColor:uint=16777215) : void {
+         var graph:Graph = this._graphToDisplay[pIndice];
+         if(graph == null)
          {
-            _loc3_ = new Graph(param1,param2);
-            _loc3_.addEventListener("showGraph",this.showGraph);
-            _loc3_.addEventListener("hideGraph",this.hideGraph);
-            if(!FpsManagerUtils.isSpecialGraph(param1))
+            graph = new Graph(pIndice,pColor);
+            graph.addEventListener("showGraph",this.showGraph);
+            graph.addEventListener("hideGraph",this.hideGraph);
+            if(!FpsManagerUtils.isSpecialGraph(pIndice))
             {
-               _loc3_.setMenuPosition((FpsManagerUtils.countKeys(this._graphToDisplay) - FpsManagerUtils.numberOfSpecialGraphDisplayed(this._graphToDisplay)) * 24,-25);
+               graph.setMenuPosition((FpsManagerUtils.countKeys(this._graphToDisplay) - FpsManagerUtils.numberOfSpecialGraphDisplayed(this._graphToDisplay)) * 24,-25);
             }
-            this._graphSpr.addChild(_loc3_);
-            this._graphToDisplay[param1] = _loc3_;
+            this._graphSpr.addChild(graph);
+            this._graphToDisplay[pIndice] = graph;
          }
-         _loc3_.startTime = getTimer();
+         graph.startTime = getTimer();
       }
       
-      public function stopTracking(param1:String) : void {
-         var _loc2_:Graph = this._graphToDisplay[param1];
-         if(_loc2_ == null)
+      public function stopTracking(pIndice:String) : void {
+         var graph:Graph = this._graphToDisplay[pIndice];
+         if(graph == null)
          {
             return;
          }
-         var _loc3_:int = getTimer() - _loc2_.startTime;
-         _loc2_.insertNewValue(_loc3_);
-         _loc2_.startTime = 0;
-         if(_loc2_.points.length > FpsManagerConst.BOX_WIDTH)
+         var step:int = getTimer() - graph.startTime;
+         graph.insertNewValue(step);
+         graph.startTime = 0;
+         if(graph.points.length > FpsManagerConst.BOX_WIDTH)
          {
-            _loc2_.points.shift();
+            graph.points.shift();
          }
       }
       
-      public function addConstValue(param1:String, param2:int=0) : void {
-         var _loc3_:Graph = this._graphToDisplay[param1];
-         if(_loc3_ == null)
+      public function addConstValue(pIndice:String, cst:int=0) : void {
+         var graph:Graph = this._graphToDisplay[pIndice];
+         if(graph == null)
          {
             return;
          }
-         _loc3_.insertNewValue(param2);
-         if(_loc3_.points.length > FpsManagerConst.BOX_WIDTH)
+         graph.insertNewValue(cst);
+         if(graph.points.length > FpsManagerConst.BOX_WIDTH)
          {
-            _loc3_.points.shift();
+            graph.points.shift();
          }
       }
       
-      private function showGraph(param1:Event) : void {
-         var _loc5_:* = 0;
-         var _loc6_:* = 0;
-         var _loc2_:Graph = param1.currentTarget as Graph;
-         var _loc3_:int = _loc2_.points.length;
-         var _loc4_:* = 0;
-         var _loc7_:uint = FpsManagerUtils.addAlphaToColor(_loc2_.color,4.294967295E9);
+      private function showGraph(pEvt:Event) : void {
+         var px:* = 0;
+         var py:* = 0;
+         var g:Graph = pEvt.currentTarget as Graph;
+         var len:int = g.points.length;
+         var it:int = 0;
+         var color:uint = FpsManagerUtils.addAlphaToColor(g.color,4.294967295E9);
          this._graphDisplay.bitmapData.lock();
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         it = 0;
+         while(it < len)
          {
-            _loc5_ = _loc3_ < FpsManagerConst.BOX_WIDTH?FpsManagerConst.BOX_WIDTH - _loc3_ + _loc4_:_loc4_;
-            _loc6_ = this.formateValue(_loc2_.points[_loc4_]);
-            if(_loc2_.points.length >= 2)
+            px = len < FpsManagerConst.BOX_WIDTH?FpsManagerConst.BOX_WIDTH - len + it:it;
+            py = this.formateValue(g.points[it]);
+            if(g.points.length >= 2)
             {
-               this.linkGraphValues(_loc5_,_loc6_,this.formateValue(_loc2_.points[_loc2_.points.length - 2]),_loc7_);
+               this.linkGraphValues(px,py,this.formateValue(g.points[g.points.length - 2]),color);
             }
-            this._graphDisplay.bitmapData.setPixel32(_loc5_,_loc6_,_loc7_);
-            _loc4_++;
+            this._graphDisplay.bitmapData.setPixel32(px,py,color);
+            it++;
          }
          this._graphDisplay.bitmapData.unlock();
       }
       
-      private function hideGraph(param1:Event) : void {
+      private function hideGraph(pEvt:Event) : void {
       }
       
-      private function formateValue(param1:int) : int {
-         var _loc2_:int = FpsManagerConst.BOX_HEIGHT-1;
-         if(param1 < 1)
+      private function formateValue(py:int) : int {
+         var bottom:int = FpsManagerConst.BOX_HEIGHT - 1;
+         if(py < 1)
          {
-            param1 = 1;
+            py = 1;
          }
          else
          {
-            if(param1 > _loc2_)
+            if(py > bottom)
             {
-               param1 = _loc2_;
+               py = bottom;
             }
          }
-         return param1 * -1 + FpsManagerConst.BOX_HEIGHT;
+         return py * -1 + FpsManagerConst.BOX_HEIGHT;
       }
       
-      private function linkGraphValues(param1:int, param2:int, param3:int, param4:uint) : void {
-         if(Math.abs(param2 - param3) > 1)
+      private function linkGraphValues(px:int, py1:int, py2:int, pColor:uint) : void {
+         if(Math.abs(py1 - py2) > 1)
          {
-            this._graphDisplay.bitmapData.fillRect(new Rectangle(param1-1,(param2 > param3?param3:param2) + 1,1,Math.abs(param2 - param3)-1),param4);
+            this._graphDisplay.bitmapData.fillRect(new Rectangle(px - 1,(py1 > py2?py2:py1) + 1,1,Math.abs(py1 - py2) - 1),pColor);
          }
       }
       
       public function getExternalGraphs() : Array {
-         var _loc2_:Graph = null;
-         var _loc1_:Array = new Array();
-         for each (_loc2_ in this._graphToDisplay)
+         var g:Graph = null;
+         var datas:Array = new Array();
+         for each (g in this._graphToDisplay)
          {
-            _loc1_.push(
+            datas.push(
                {
-                  "name":_loc2_.indice,
-                  "points":_loc2_.points,
-                  "color":_loc2_.color
+                  "name":g.indice,
+                  "points":g.points,
+                  "color":g.color
                });
          }
-         return _loc1_;
+         return datas;
       }
    }
 }

@@ -3,8 +3,8 @@ package com.hurlant.crypto.tls
    public class TLSError extends Error
    {
       
-      public function TLSError(param1:String, param2:int) {
-         super(param1,param2);
+      public function TLSError(message:String, id:int) {
+         super(message,id);
       }
       
       public static const close_notify:uint = 0;

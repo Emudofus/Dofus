@@ -6,8 +6,8 @@ package com.ankamagames.tubul.events
    public class MP3SoundEvent extends Event
    {
       
-      public function MP3SoundEvent(param1:String, param2:Boolean=false, param3:Boolean=false) {
-         super(param1,param2,param3);
+      public function MP3SoundEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
       }
       
       public static const SOON_END_OF_FILE:String = "SOON_END_OF_FILE";
@@ -15,9 +15,9 @@ package com.ankamagames.tubul.events
       public var sound:ISound;
       
       override public function clone() : Event {
-         var _loc1_:MP3SoundEvent = new MP3SoundEvent(type,bubbles,cancelable);
-         _loc1_.sound = this.sound;
-         return _loc1_;
+         var mse:MP3SoundEvent = new MP3SoundEvent(type,bubbles,cancelable);
+         mse.sound = this.sound;
+         return mse;
       }
    }
 }

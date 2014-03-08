@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.common.actions
          super();
       }
       
-      public static function create(param1:String) : AgreementAgreedAction {
-         var _loc2_:AgreementAgreedAction = new AgreementAgreedAction();
-         _loc2_.fileName = param1;
-         return _loc2_;
+      public static function create(fileName:String) : AgreementAgreedAction {
+         var a:AgreementAgreedAction = new AgreementAgreedAction();
+         a.fileName = fileName;
+         return a;
       }
       
       public var fileName:String;

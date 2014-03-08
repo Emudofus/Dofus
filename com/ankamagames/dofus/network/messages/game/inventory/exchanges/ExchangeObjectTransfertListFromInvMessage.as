@@ -2,7 +2,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,8 +29,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6183;
       }
       
-      public function initExchangeObjectTransfertListFromInvMessage(param1:Vector.<uint>=null) : ExchangeObjectTransfertListFromInvMessage {
-         this.ids = param1;
+      public function initExchangeObjectTransfertListFromInvMessage(ids:Vector.<uint>=null) : ExchangeObjectTransfertListFromInvMessage {
+         this.ids = ids;
          this._isInitialized = true;
          return this;
       }
@@ -40,57 +40,57 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeObjectTransfertListFromInvMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeObjectTransfertListFromInvMessage(output);
       }
       
-      public function serializeAs_ExchangeObjectTransfertListFromInvMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.ids.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.ids.length)
+      public function serializeAs_ExchangeObjectTransfertListFromInvMessage(output:IDataOutput) : void {
+         output.writeShort(this.ids.length);
+         var _i1:uint = 0;
+         while(_i1 < this.ids.length)
          {
-            if(this.ids[_loc2_] < 0)
+            if(this.ids[_i1] < 0)
             {
-               throw new Error("Forbidden value (" + this.ids[_loc2_] + ") on element 1 (starting at 1) of ids.");
+               throw new Error("Forbidden value (" + this.ids[_i1] + ") on element 1 (starting at 1) of ids.");
             }
             else
             {
-               param1.writeInt(this.ids[_loc2_]);
-               _loc2_++;
+               output.writeInt(this.ids[_i1]);
+               _i1++;
                continue;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeObjectTransfertListFromInvMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeObjectTransfertListFromInvMessage(input);
       }
       
-      public function deserializeAs_ExchangeObjectTransfertListFromInvMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_ExchangeObjectTransfertListFromInvMessage(input:IDataInput) : void {
+         var _val1:uint = 0;
+         var _idsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _idsLen)
          {
-            _loc4_ = param1.readInt();
-            if(_loc4_ < 0)
+            _val1 = input.readInt();
+            if(_val1 < 0)
             {
-               throw new Error("Forbidden value (" + _loc4_ + ") on elements of ids.");
+               throw new Error("Forbidden value (" + _val1 + ") on elements of ids.");
             }
             else
             {
-               this.ids.push(_loc4_);
-               _loc3_++;
+               this.ids.push(_val1);
+               _i1++;
                continue;
             }
          }

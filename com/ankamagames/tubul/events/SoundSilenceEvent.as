@@ -5,8 +5,8 @@ package com.ankamagames.tubul.events
    public class SoundSilenceEvent extends Event
    {
       
-      public function SoundSilenceEvent(param1:String, param2:Boolean=false, param3:Boolean=false) {
-         super(param1,param2,param3);
+      public function SoundSilenceEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
       }
       
       public static const START:String = "start";
@@ -14,8 +14,8 @@ package com.ankamagames.tubul.events
       public static const COMPLETE:String = "complete";
       
       override public function clone() : Event {
-         var _loc1_:SoundSilenceEvent = new SoundSilenceEvent(this.type,this.bubbles,this.cancelable);
-         return _loc1_;
+         var e:SoundSilenceEvent = new SoundSilenceEvent(this.type,this.bubbles,this.cancelable);
+         return e;
       }
    }
 }

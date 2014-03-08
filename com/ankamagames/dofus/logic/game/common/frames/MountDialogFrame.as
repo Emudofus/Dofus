@@ -42,21 +42,19 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:ExchangeLeaveMessage = null;
+      public function process(msg:Message) : Boolean {
+         var elm:ExchangeLeaveMessage = null;
          switch(true)
          {
-            case param1 is ExchangeMountStableErrorMessage:
+            case msg is ExchangeMountStableErrorMessage:
                return true;
-            case param1 is ExchangeLeaveMessage:
-               _loc2_ = param1 as ExchangeLeaveMessage;
-               if(_loc2_.dialogType == DialogTypeEnum.DIALOG_EXCHANGE)
+            case msg is ExchangeLeaveMessage:
+               elm = msg as ExchangeLeaveMessage;
+               if(elm.dialogType == DialogTypeEnum.DIALOG_EXCHANGE)
                {
                   Kernel.getWorker().removeFrame(this);
                }
                return true;
-            default:
-               return false;
          }
       }
       

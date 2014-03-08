@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6031;
       }
       
-      public function initExchangeRemovedPaymentForCraftMessage(param1:Boolean=false, param2:uint=0) : ExchangeRemovedPaymentForCraftMessage {
-         this.onlySuccess = param1;
-         this.objectUID = param2;
+      public function initExchangeRemovedPaymentForCraftMessage(onlySuccess:Boolean=false, objectUID:uint=0) : ExchangeRemovedPaymentForCraftMessage {
+         this.onlySuccess = onlySuccess;
+         this.objectUID = objectUID;
          this._isInitialized = true;
          return this;
       }
@@ -42,40 +42,40 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeRemovedPaymentForCraftMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeRemovedPaymentForCraftMessage(output);
       }
       
-      public function serializeAs_ExchangeRemovedPaymentForCraftMessage(param1:IDataOutput) : void {
-         param1.writeBoolean(this.onlySuccess);
+      public function serializeAs_ExchangeRemovedPaymentForCraftMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.onlySuccess);
          if(this.objectUID < 0)
          {
             throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
          }
          else
          {
-            param1.writeInt(this.objectUID);
+            output.writeInt(this.objectUID);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeRemovedPaymentForCraftMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeRemovedPaymentForCraftMessage(input);
       }
       
-      public function deserializeAs_ExchangeRemovedPaymentForCraftMessage(param1:IDataInput) : void {
-         this.onlySuccess = param1.readBoolean();
-         this.objectUID = param1.readInt();
+      public function deserializeAs_ExchangeRemovedPaymentForCraftMessage(input:IDataInput) : void {
+         this.onlySuccess = input.readBoolean();
+         this.objectUID = input.readInt();
          if(this.objectUID < 0)
          {
             throw new Error("Forbidden value (" + this.objectUID + ") on element of ExchangeRemovedPaymentForCraftMessage.objectUID.");

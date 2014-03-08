@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.connection
          return 41;
       }
       
-      public function initSelectedServerRefusedMessage(param1:int=0, param2:uint=1, param3:uint=1) : SelectedServerRefusedMessage {
-         this.serverId = param1;
-         this.error = param2;
-         this.serverStatus = param3;
+      public function initSelectedServerRefusedMessage(serverId:int=0, error:uint=1, serverStatus:uint=1) : SelectedServerRefusedMessage {
+         this.serverId = serverId;
+         this.error = error;
+         this.serverStatus = serverStatus;
          this._isInitialized = true;
          return this;
       }
@@ -46,40 +46,40 @@ package com.ankamagames.dofus.network.messages.connection
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_SelectedServerRefusedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SelectedServerRefusedMessage(output);
       }
       
-      public function serializeAs_SelectedServerRefusedMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.serverId);
-         param1.writeByte(this.error);
-         param1.writeByte(this.serverStatus);
+      public function serializeAs_SelectedServerRefusedMessage(output:IDataOutput) : void {
+         output.writeShort(this.serverId);
+         output.writeByte(this.error);
+         output.writeByte(this.serverStatus);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_SelectedServerRefusedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SelectedServerRefusedMessage(input);
       }
       
-      public function deserializeAs_SelectedServerRefusedMessage(param1:IDataInput) : void {
-         this.serverId = param1.readShort();
-         this.error = param1.readByte();
+      public function deserializeAs_SelectedServerRefusedMessage(input:IDataInput) : void {
+         this.serverId = input.readShort();
+         this.error = input.readByte();
          if(this.error < 0)
          {
             throw new Error("Forbidden value (" + this.error + ") on element of SelectedServerRefusedMessage.error.");
          }
          else
          {
-            this.serverStatus = param1.readByte();
+            this.serverStatus = input.readByte();
             if(this.serverStatus < 0)
             {
                throw new Error("Forbidden value (" + this.serverStatus + ") on element of SelectedServerRefusedMessage.serverStatus.");

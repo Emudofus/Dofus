@@ -10,12 +10,12 @@ package com.ankamagames.dofus.types.entities
    public class CheckPointEntity extends Sprite implements IEntity, IDisplayable
    {
       
-      public function CheckPointEntity(param1:Sprite=null, param2:MapPoint=null) {
+      public function CheckPointEntity(spr:Sprite=null, pos:MapPoint=null) {
          super();
-         this._position = param2;
-         if(param1 != null)
+         this._position = pos;
+         if(spr != null)
          {
-            this._displayedObject = param1;
+            this._displayedObject = spr;
             addChild(this._displayedObject);
          }
       }
@@ -32,23 +32,23 @@ package com.ankamagames.dofus.types.entities
          return this._id;
       }
       
-      public function set id(param1:int) : void {
-         this._id = param1;
+      public function set id(nValue:int) : void {
+         this._id = nValue;
       }
       
       public function get position() : MapPoint {
          return this._position;
       }
       
-      public function set position(param1:MapPoint) : void {
-         this._position = param1;
+      public function set position(oValue:MapPoint) : void {
+         this._position = oValue;
       }
       
       public function get displayBehaviors() : IDisplayBehavior {
          return null;
       }
       
-      public function set displayBehaviors(param1:IDisplayBehavior) : void {
+      public function set displayBehaviors(oValue:IDisplayBehavior) : void {
       }
       
       public function get absoluteBounds() : IRectangle {
@@ -59,7 +59,7 @@ package com.ankamagames.dofus.types.entities
          return this._displayed;
       }
       
-      public function display(param1:uint=0) : void {
+      public function display(strata:uint=0) : void {
          this._displayed = true;
       }
       

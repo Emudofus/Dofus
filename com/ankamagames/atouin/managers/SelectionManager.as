@@ -7,9 +7,9 @@ package com.ankamagames.atouin.managers
    import com.ankamagames.jerakine.types.events.PropertyChangeEvent;
    import com.ankamagames.atouin.types.Selection;
    import com.ankamagames.atouin.AtouinConstants;
-   import __AS3__.vec.Vector;
    import com.ankamagames.atouin.renderers.ZoneDARenderer;
    import com.ankamagames.atouin.enums.PlacementStrataEnums;
+   import __AS3__.vec.*;
    import com.ankamagames.atouin.utils.errors.AtouinError;
    
    public class SelectionManager extends Object
@@ -47,95 +47,95 @@ package com.ankamagames.atouin.managers
          Atouin.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
       }
       
-      public function addSelection(param1:Selection, param2:String, param3:uint=561.0) : void {
-         if(this._aSelection[param2])
+      public function addSelection(s:Selection, name:String, cellId:uint=561.0) : void {
+         if(this._aSelection[name])
          {
-            Selection(this._aSelection[param2]).remove();
+            Selection(this._aSelection[name]).remove();
          }
-         this._aSelection[param2] = param1;
-         if(param3 != AtouinConstants.MAP_CELLS_COUNT + 1)
+         this._aSelection[name] = s;
+         if(cellId != AtouinConstants.MAP_CELLS_COUNT + 1)
          {
-            this.update(param2,param3);
+            this.update(name,cellId);
          }
       }
       
-      public function getSelection(param1:String) : Selection {
-         return this._aSelection[param1];
+      public function getSelection(name:String) : Selection {
+         return this._aSelection[name];
       }
       
-      public function update(param1:String, param2:uint=0, param3:Boolean=false) : void {
-         var _loc5_:Vector.<uint> = null;
-         var _loc6_:Vector.<uint> = null;
-         var _loc4_:Selection = this.getSelection(param1);
-         if(!_loc4_)
+      public function update(name:String, cellId:uint=0, updateStrata:Boolean=false) : void {
+         var aCell:Vector.<uint> = null;
+         var aOldCells:Vector.<uint> = null;
+         var s:Selection = this.getSelection(name);
+         if(!s)
          {
             return;
          }
-         if(_loc4_.zone)
+         if(s.zone)
          {
-            _loc5_ = _loc4_.zone.getCells(param2);
-            _loc6_ = !_loc4_.cells?null:_loc4_.cells.concat();
-            _loc4_.remove(_loc6_);
-            _loc4_.cells = _loc5_;
-            if(_loc4_.renderer)
+            aCell = s.zone.getCells(cellId);
+            aOldCells = !s.cells?null:s.cells.concat();
+            s.remove(aOldCells);
+            s.cells = aCell;
+            if(s.renderer)
             {
-               _loc4_.update(param3);
+               s.update(updateStrata);
             }
             else
             {
-               _log.error("No renderer set for selection [" + param1 + "]");
+               _log.error("No renderer set for selection [" + name + "]");
             }
          }
          else
          {
-            _log.error("No zone set for selection [" + param1 + "]");
+            _log.error("No zone set for selection [" + name + "]");
          }
       }
       
-      public function isInside(param1:uint, param2:String) : Boolean {
-         var _loc3_:Selection = this.getSelection(param2);
-         if(!_loc3_)
+      public function isInside(cellId:uint, selectionName:String) : Boolean {
+         var s:Selection = this.getSelection(selectionName);
+         if(!s)
          {
             return false;
          }
-         return _loc3_.isInside(param1);
+         return s.isInside(cellId);
       }
       
-      private function onPropertyChanged(param1:PropertyChangeEvent) : void {
-         var _loc2_:Selection = null;
-         var _loc3_:ZoneDARenderer = null;
-         if(param1.propertyName == "transparentOverlayMode")
+      private function onPropertyChanged(pEvent:PropertyChangeEvent) : void {
+         var s:Selection = null;
+         var renderer:ZoneDARenderer = null;
+         if(pEvent.propertyName == "transparentOverlayMode")
          {
-            for each (_loc2_ in this._aSelection)
+            for each (s in this._aSelection)
             {
-               _loc3_ = _loc2_.renderer as ZoneDARenderer;
-               if((_loc3_) && (_loc2_.visible) && !_loc3_.fixedStrata)
+               renderer = s.renderer as ZoneDARenderer;
+               if((renderer) && (s.visible) && (!renderer.fixedStrata))
                {
-                  if(param1.propertyValue == true)
+                  if(pEvent.propertyValue == true)
                   {
-                     _loc3_.currentStrata = PlacementStrataEnums.STRATA_NO_Z_ORDER;
+                     renderer.currentStrata = PlacementStrataEnums.STRATA_NO_Z_ORDER;
                   }
                   else
                   {
-                     _loc3_.restoreStrata();
+                     renderer.restoreStrata();
                   }
-                  _loc2_.update(true);
+                  s.update(true);
                }
             }
          }
       }
       
-      private function diff(param1:Vector.<uint>, param2:Vector.<uint>) : Vector.<uint> {
-         var _loc4_:* = undefined;
-         var _loc3_:Vector.<uint> = new Vector.<uint>();
-         for each (_loc4_ in param2)
+      private function diff(a1:Vector.<uint>, a2:Vector.<uint>) : Vector.<uint> {
+         var elem:* = undefined;
+         var res:Vector.<uint> = new Vector.<uint>();
+         for each (elem in a2)
          {
-            if(-1 == param1.indexOf(_loc4_))
+            if(-1 == a1.indexOf(elem))
             {
-               _loc3_.push(_loc4_);
+               res.push(elem);
             }
          }
-         return _loc3_;
+         return res;
       }
    }
 }

@@ -3,7 +3,6 @@ package com.ankamagames.dofus.console.moduleLogger
    import flash.display.Sprite;
    import flash.display.Shape;
    import flash.text.TextField;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import flash.events.Event;
    import flash.utils.getTimer;
@@ -13,6 +12,7 @@ package com.ankamagames.dofus.console.moduleLogger
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
    import com.ankamagames.dofus.console.moduleLUA.ConsoleLUA;
+   import __AS3__.vec.*;
    
    public final class ModuleDebugManager extends Object
    {
@@ -49,8 +49,8 @@ package com.ankamagames.dofus.console.moduleLogger
       
       private static var _console3:ConsoleIcon;
       
-      public static function display(param1:Boolean) : void {
-         if(param1)
+      public static function display(yes:Boolean) : void {
+         if(yes)
          {
             if(!_ui)
             {
@@ -68,38 +68,38 @@ package com.ankamagames.dofus.console.moduleLogger
          }
       }
       
-      private static function loop(param1:Event) : void {
+      private static function loop(e:Event) : void {
          if(!_ui.stage)
          {
             StageShareManager.stage.removeEventListener(Event.ENTER_FRAME,loop);
             return;
          }
-         var _loc2_:int = getTimer();
-         if(_loc2_ - _lastSecond > 1000)
+         var time:int = getTimer();
+         if(time - _lastSecond > 1000)
          {
             _textField.htmlText = "<font color=\'#7C87D1\'>fps : " + _numImages + "</font>\n<font color=\'#00BBBB\'>mem : " + int(System.totalMemory / 100000) / 10 + " mb</font>";
             _numImages = 0;
-            _lastSecond = _loc2_;
+            _lastSecond = time;
          }
          else
          {
             _numImages++;
          }
-         var _loc3_:int = _loc2_ - _lastValue;
-         _valuesList.push(-_loc3_);
+         var newValue:int = time - _lastValue;
+         _valuesList.push(-newValue);
          if(_valuesList.length > WIDTH)
          {
             _valuesList.shift();
          }
-         _lastValue = _loc2_;
+         _lastValue = time;
          _fpsShape.graphics.clear();
          _fpsShape.graphics.lineStyle(1,16777215,1,true);
          _fpsShape.graphics.moveTo(0,_valuesList[0]);
-         var _loc4_:int = _valuesList.length;
-         var _loc5_:* = 0;
-         while(++_loc5_ < _loc4_)
+         var num:int = _valuesList.length;
+         var i:int = 0;
+         while(++i < num)
          {
-            _fpsShape.graphics.lineTo(_loc5_,_valuesList[_loc5_]);
+            _fpsShape.graphics.lineTo(i,_valuesList[i]);
          }
       }
       
@@ -115,18 +115,18 @@ package com.ankamagames.dofus.console.moduleLogger
             _fpsShape = new Shape();
             _ui.addChild(_fpsShape);
             _fpsShape.y = 20;
-            _loc1_ = new Sprite();
-            _ui.addChild(_loc1_);
-            _loc1_.graphics.beginFill(0,0.7);
-            _loc1_.graphics.lineTo(0,HEIGHT);
-            _loc1_.graphics.lineTo(WIDTH,HEIGHT);
-            _loc1_.graphics.lineTo(WIDTH,0);
-            _loc1_.graphics.endFill();
-            _loc1_.graphics.lineStyle(2);
-            _loc1_.graphics.moveTo(0,0);
-            _loc1_.graphics.lineTo(0,HEIGHT);
-            _loc1_.graphics.lineTo(WIDTH,HEIGHT);
-            _loc1_.graphics.lineTo(WIDTH,0);
+            bg = new Sprite();
+            _ui.addChild(bg);
+            bg.graphics.beginFill(0,0.7);
+            bg.graphics.lineTo(0,HEIGHT);
+            bg.graphics.lineTo(WIDTH,HEIGHT);
+            bg.graphics.lineTo(WIDTH,0);
+            bg.graphics.endFill();
+            bg.graphics.lineStyle(2);
+            bg.graphics.moveTo(0,0);
+            bg.graphics.lineTo(0,HEIGHT);
+            bg.graphics.lineTo(WIDTH,HEIGHT);
+            bg.graphics.lineTo(WIDTH,0);
             _textField = new TextField();
             _ui.addChild(_textField);
             _textField.multiline = true;
@@ -134,9 +134,9 @@ package com.ankamagames.dofus.console.moduleLogger
             _textField.mouseEnabled = false;
             _textField.width = WIDTH;
             _textField.height = HEIGHT;
-            _loc2_ = new TextFormat("Courier New",15,12763866);
-            _loc2_.leading = -2;
-            _textField.defaultTextFormat = _loc2_;
+            format = new TextFormat("Courier New",15,12763866);
+            format.leading = -2;
+            _textField.defaultTextFormat = format;
             _console1 = new ConsoleIcon("screen",16,"Open/close Module Console");
             _console1.x = WIDTH - (_console1.width + 2);
             _console1.y = HEIGHT - (_console1.height * 2 + 4);
@@ -152,39 +152,39 @@ package com.ankamagames.dofus.console.moduleLogger
             _console3.y = HEIGHT - (_console3.height + 2);
             _console3.addEventListener(MouseEvent.MOUSE_DOWN,onOpenLuaConsole);
             _ui.addChild(_console3);
-            _loc1_.addEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
+            bg.addEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
             return;
          }
       }
       
-      private static function onOpenLogConsole(param1:Event) : void {
+      private static function onOpenLogConsole(e:Event) : void {
          KernelEventsManager.getInstance().processCallback(HookList.ToggleConsole);
       }
       
-      private static function onOpenConsole(param1:Event) : void {
+      private static function onOpenConsole(e:Event) : void {
          Console.getInstance().toggleDisplay();
       }
       
-      private static function onOpenLuaConsole(param1:Event) : void {
+      private static function onOpenLuaConsole(e:Event) : void {
          ConsoleLUA.getInstance().toggleDisplay();
       }
       
-      private static function onMouseDown(param1:Event) : void {
+      private static function onMouseDown(e:Event) : void {
          _offSetX = _ui.mouseX;
          _offSetY = _ui.mouseY;
          _ui.stage.addEventListener(MouseEvent.MOUSE_UP,onMouseUp);
          _ui.stage.addEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
       }
       
-      private static function onMouseUp(param1:Event) : void {
+      private static function onMouseUp(e:Event) : void {
          _ui.stage.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp);
          _ui.stage.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
       }
       
-      private static function onMouseMove(param1:MouseEvent) : void {
+      private static function onMouseMove(e:MouseEvent) : void {
          _ui.x = _ui.stage.mouseX - _offSetX;
          _ui.y = _ui.stage.mouseY - _offSetY;
-         param1.updateAfterEvent();
+         e.updateAfterEvent();
       }
    }
 }

@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.approach.actions
       }
       
       public static function create() : SubscribersGiftListRequestAction {
-         var _loc1_:SubscribersGiftListRequestAction = new SubscribersGiftListRequestAction();
-         return _loc1_;
+         var action:SubscribersGiftListRequestAction = new SubscribersGiftListRequestAction();
+         return action;
       }
    }
 }

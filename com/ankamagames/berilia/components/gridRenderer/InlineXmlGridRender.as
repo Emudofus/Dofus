@@ -9,38 +9,38 @@ package com.ankamagames.berilia.components.gridRenderer
    public class InlineXmlGridRender extends MultiGridRenderer
    {
       
-      public function InlineXmlGridRender(param1:String) {
+      public function InlineXmlGridRender(args:String) {
          super(null);
-         var _loc2_:Array = param1.split(",");
-         _updateFunctionName = _loc2_[0];
-         if(_loc2_[1])
+         var params:Array = args.split(",");
+         _updateFunctionName = params[0];
+         if(params[1])
          {
             _bgColor1 = new ColorTransform();
-            _color1 = parseInt(_loc2_[1],16);
+            _color1 = parseInt(params[1],16);
             _bgColor1.color = _color1;
          }
-         if(_loc2_[2])
+         if(params[2])
          {
             _bgColor2 = new ColorTransform();
-            _color2 = parseInt(_loc2_[2],16);
+            _color2 = parseInt(params[2],16);
             _bgColor2.color = _color2;
          }
          _defaultLineType = "default";
       }
       
-      override public function update(param1:*, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint=0) : void {
-         super.update(param1,param2,param3,param4,param5);
+      override public function update(data:*, index:uint, target:DisplayObject, selected:Boolean, subIndex:uint=0) : void {
+         super.update(data,index,target,selected,subIndex);
       }
       
-      override protected function uiUpdate(param1:UiRootContainer, param2:DisplayObject, param3:*, param4:Boolean, param5:uint) : void {
-         if(DisplayObjectContainer(param2).numChildren)
+      override protected function uiUpdate(ui:UiRootContainer, target:DisplayObject, data:*, selected:Boolean, subIndex:uint) : void {
+         if(DisplayObjectContainer(target).numChildren)
          {
-            param1.uiClass[_updateFunctionName](SecureCenter.secure(param3),_cptNameReferences[DisplayObjectContainer(param2).getChildAt(0)],param4);
+            ui.uiClass[_updateFunctionName](SecureCenter.secure(data),_cptNameReferences[DisplayObjectContainer(target).getChildAt(0)],selected);
          }
       }
       
-      override public function renderModificator(param1:Array) : Array {
-         _containerDefinition["default"] = param1[0];
+      override public function renderModificator(childs:Array) : Array {
+         _containerDefinition["default"] = childs[0];
          return [];
       }
    }

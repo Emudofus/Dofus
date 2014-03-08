@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6021;
       }
       
-      public function initExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(param1:Boolean=false) : ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage {
-         this.allow = param1;
+      public function initExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(allow:Boolean=false) : ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage {
+         this.allow = allow;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(output);
       }
       
-      public function serializeAs_ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(param1:IDataOutput) : void {
-         param1.writeBoolean(this.allow);
+      public function serializeAs_ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.allow);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(input);
       }
       
-      public function deserializeAs_ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(param1:IDataInput) : void {
-         this.allow = param1.readBoolean();
+      public function deserializeAs_ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(input:IDataInput) : void {
+         this.allow = input.readBoolean();
       }
    }
 }

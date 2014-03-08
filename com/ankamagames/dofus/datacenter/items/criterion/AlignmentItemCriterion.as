@@ -8,24 +8,24 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class AlignmentItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function AlignmentItemCriterion(param1:String) {
-         super(param1);
+      public function AlignmentItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get text() : String {
-         var _loc1_:String = AlignmentSide.getAlignmentSideById(int(_criterionValue)).name;
-         var _loc2_:String = I18n.getUiText("ui.common.alignment");
-         var _loc3_:* = ":";
+         var readableCriterionValue:String = AlignmentSide.getAlignmentSideById(int(_criterionValue)).name;
+         var readableCriterionRef:String = I18n.getUiText("ui.common.alignment");
+         var readableOperator:String = ":";
          if(_operator.text == ItemCriterionOperator.DIFFERENT)
          {
-            _loc3_ = I18n.getUiText("ui.common.differentFrom") + I18n.getUiText("ui.common.colon");
+            readableOperator = I18n.getUiText("ui.common.differentFrom") + I18n.getUiText("ui.common.colon");
          }
-         return _loc2_ + " " + _loc3_ + " " + _loc1_;
+         return readableCriterionRef + " " + readableOperator + " " + readableCriterionValue;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:AlignmentItemCriterion = new AlignmentItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:AlignmentItemCriterion = new AlignmentItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {

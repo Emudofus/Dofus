@@ -47,12 +47,12 @@ package com.ankamagames.dofus.uiApi
       
       private var _ttCallbacks:Dictionary;
       
-      public function set module(param1:UiModule) : void {
-         this._module = param1;
+      public function set module(value:UiModule) : void {
+         this._module = value;
       }
       
-      public function set currentUi(param1:UiRootContainer) : void {
-         this._currentUi = param1;
+      public function set currentUi(value:UiRootContainer) : void {
+         this._currentUi = value;
       }
       
       public function destroy() : void {
@@ -60,131 +60,131 @@ package com.ankamagames.dofus.uiApi
          this._currentUi = null;
       }
       
-      public function setDefaultTooltipUiScript(param1:String, param2:String) : void {
-         var _loc3_:UiModule = UiModuleManager.getInstance().getModule(param1);
-         if(!_loc3_)
+      public function setDefaultTooltipUiScript(module:String, ui:String) : void {
+         var m:UiModule = UiModuleManager.getInstance().getModule(module);
+         if(!m)
          {
-            throw new ApiError("Module " + param1 + " doesn\'t exist");
+            throw new ApiError("Module " + module + " doesn\'t exist");
          }
          else
          {
-            _loc4_ = _loc3_.getUi(param2);
-            if(!_loc4_)
+            uiData = m.getUi(ui);
+            if(!uiData)
             {
-               throw new ApiError("UI " + param2 + " doesn\'t exist in module " + param1);
+               throw new ApiError("UI " + ui + " doesn\'t exist in module " + module);
             }
             else
             {
-               TooltipManager.defaultTooltipUiScript = _loc4_.uiClass;
+               TooltipManager.defaultTooltipUiScript = uiData.uiClass;
                return;
             }
          }
       }
       
-      public function createTooltip(param1:String, param2:String, param3:String=null) : Tooltip {
-         var _loc4_:Tooltip = null;
-         if(param1.substr(-4,4) != ".txt")
+      public function createTooltip(baseUri:String, containerUri:String, separatorUri:String=null) : Tooltip {
+         var t:Tooltip = null;
+         if(baseUri.substr(-4,4) != ".txt")
          {
-            throw new ApiError("ChunkData support only [.txt] file, found " + param1);
+            throw new ApiError("ChunkData support only [.txt] file, found " + baseUri);
          }
          else
          {
-            if(param2.substr(-4,4) != ".txt")
+            if(containerUri.substr(-4,4) != ".txt")
             {
-               throw new ApiError("ChunkData support only [.txt] file, found " + param2);
+               throw new ApiError("ChunkData support only [.txt] file, found " + containerUri);
             }
             else
             {
-               if(param3)
+               if(separatorUri)
                {
-                  if(param3.substr(-4,4) != ".txt")
+                  if(separatorUri.substr(-4,4) != ".txt")
                   {
-                     throw new ApiError("ChunkData support only [.txt] file, found " + param3);
+                     throw new ApiError("ChunkData support only [.txt] file, found " + separatorUri);
                   }
                   else
                   {
-                     _loc4_ = new Tooltip(new Uri(this._module.rootPath + "/" + param1),new Uri(this._module.rootPath + "/" + param2),new Uri(this._module.rootPath + "/" + param3));
+                     t = new Tooltip(new Uri(this._module.rootPath + "/" + baseUri),new Uri(this._module.rootPath + "/" + containerUri),new Uri(this._module.rootPath + "/" + separatorUri));
                   }
                }
                else
                {
-                  _loc4_ = new Tooltip(new Uri(this._module.rootPath + "/" + param1),new Uri(this._module.rootPath + "/" + param2));
+                  t = new Tooltip(new Uri(this._module.rootPath + "/" + baseUri),new Uri(this._module.rootPath + "/" + containerUri));
                }
-               return _loc4_;
+               return t;
             }
          }
       }
       
-      public function createTooltipBlock(param1:Function, param2:Function) : TooltipBlock {
-         var _loc3_:TooltipBlock = new TooltipBlock();
-         _loc3_.onAllChunkLoadedCallback = param1;
-         _loc3_.contentGetter = param2;
-         return _loc3_;
+      public function createTooltipBlock(onAllChunkLoadedCallback:Function, contentGetter:Function) : TooltipBlock {
+         var tb:TooltipBlock = new TooltipBlock();
+         tb.onAllChunkLoadedCallback = onAllChunkLoadedCallback;
+         tb.contentGetter = contentGetter;
+         return tb;
       }
       
-      public function registerTooltipAssoc(param1:*, param2:String) : void {
-         TooltipsFactory.registerAssoc(param1,param2);
+      public function registerTooltipAssoc(targetClass:*, makerName:String) : void {
+         TooltipsFactory.registerAssoc(targetClass,makerName);
       }
       
-      public function registerTooltipMaker(param1:String, param2:Class, param3:Class=null) : void {
-         if(CheckCompatibility.isCompatible(ITooltipMaker,param2))
+      public function registerTooltipMaker(makerName:String, makerClass:Class, scriptClass:Class=null) : void {
+         if(CheckCompatibility.isCompatible(ITooltipMaker,makerClass))
          {
-            TooltipsFactory.registerMaker(param1,param2,param3);
+            TooltipsFactory.registerMaker(makerName,makerClass,scriptClass);
             return;
          }
-         throw new ApiError(param1 + " maker class is not compatible with ITooltipMaker");
+         throw new ApiError(makerName + " maker class is not compatible with ITooltipMaker");
       }
       
-      public function createChunkData(param1:String, param2:String) : ChunkData {
-         var _loc3_:Uri = new Uri(this._module.rootPath + "/" + param2);
-         if(_loc3_.fileType.toLowerCase() != "txt")
+      public function createChunkData(name:String, uri:String) : ChunkData {
+         var newUri:Uri = new Uri(this._module.rootPath + "/" + uri);
+         if(newUri.fileType.toLowerCase() != "txt")
          {
-            throw new ApiError("ChunkData support only [.txt] file, found " + param2);
+            throw new ApiError("ChunkData support only [.txt] file, found " + uri);
          }
          else
          {
-            return new ChunkData(param1,_loc3_);
+            return new ChunkData(name,newUri);
          }
       }
       
-      public function place(param1:*, param2:uint=6, param3:uint=0, param4:int=3, param5:Boolean=false, param6:int=-1, param7:Boolean=true) : void {
-         if((param1) && (CheckCompatibility.isCompatible(IRectangle,param1)))
+      public function place(target:*, point:uint=6, relativePoint:uint=0, offset:int=3, checkSuperposition:Boolean=false, cellId:int=-1, alwaysDisplayed:Boolean=true) : void {
+         if((target) && (CheckCompatibility.isCompatible(IRectangle,target)))
          {
             if(this._currentUi.ready)
             {
-               this.placeTooltip(this._currentUi,param1,param2,param3,param4,param5,param6,param7);
+               this.placeTooltip(this._currentUi,target,point,relativePoint,offset,checkSuperposition,cellId,alwaysDisplayed);
             }
             else
             {
                this._currentUi.removeEventListener(UiRenderEvent.UIRenderComplete,this.onTooltipReady);
-               this._ttCallbacks[this._currentUi] = new Callback(this.placeTooltip,this._currentUi,param1,param2,param3,param4,param5,param6,param7);
+               this._ttCallbacks[this._currentUi] = new Callback(this.placeTooltip,this._currentUi,target,point,relativePoint,offset,checkSuperposition,cellId,alwaysDisplayed);
                this._currentUi.addEventListener(UiRenderEvent.UIRenderComplete,this.onTooltipReady);
             }
          }
       }
       
-      private function placeTooltip(param1:UiRootContainer, param2:*, param3:uint, param4:uint, param5:int, param6:Boolean, param7:int, param8:Boolean) : void {
-         TooltipPlacer.place(param1,param2,param3,param4,param5,param8);
-         if((param6) && !(param7 == -1))
+      private function placeTooltip(pTooltipUi:UiRootContainer, pTarget:*, pPoint:uint, pRelativePoint:uint, pOffset:int, pCheckSuperposition:Boolean, pCellId:int, pAlwaysDisplayed:Boolean) : void {
+         TooltipPlacer.place(pTooltipUi,pTarget,pPoint,pRelativePoint,pOffset,pAlwaysDisplayed);
+         if((pCheckSuperposition) && (!(pCellId == -1)))
          {
-            TooltipPlacer.addTooltipPosition(param1,param2,param7);
+            TooltipPlacer.addTooltipPosition(pTooltipUi,pTarget,pCellId);
          }
       }
       
-      public function placeArrow(param1:*) : Object {
-         if((param1) && (CheckCompatibility.isCompatible(IRectangle,param1)))
+      public function placeArrow(target:*) : Object {
+         if((target) && (CheckCompatibility.isCompatible(IRectangle,target)))
          {
-            return TooltipPlacer.placeWithArrow(this._currentUi,param1);
+            return TooltipPlacer.placeWithArrow(this._currentUi,target);
          }
          return null;
       }
       
-      public function getSpellTooltipInfo(param1:SpellWrapper, param2:String=null) : Object {
-         return new SpellTooltipInfo(param1,param2);
+      public function getSpellTooltipInfo(spellWrapper:SpellWrapper, shortcutKey:String=null) : Object {
+         return new SpellTooltipInfo(spellWrapper,shortcutKey);
       }
       
-      public function getItemTooltipInfo(param1:ItemWrapper, param2:String=null) : Object {
-         return new ItemTooltipInfo(param1,param2);
+      public function getItemTooltipInfo(itemWrapper:ItemWrapper, shortcutKey:String=null) : Object {
+         return new ItemTooltipInfo(itemWrapper,shortcutKey);
       }
       
       public function getSpellTooltipCache() : int {
@@ -195,8 +195,8 @@ package com.ankamagames.dofus.uiApi
          PlayedCharacterUpdatesFrame.SPELL_TOOLTIP_CACHE_NUM++;
       }
       
-      public function createTooltipRectangle(param1:Number=0, param2:Number=0, param3:Number=0, param4:Number=0) : TooltipRectangle {
-         return new TooltipRectangle(param1,param2,param3,param4);
+      public function createTooltipRectangle(x:Number=0, y:Number=0, width:Number=0, height:Number=0) : TooltipRectangle {
+         return new TooltipRectangle(x,y,width,height);
       }
       
       public function createSpellSettings() : SpellTooltipSettings {
@@ -207,11 +207,11 @@ package com.ankamagames.dofus.uiApi
          return new ItemTooltipSettings();
       }
       
-      private function onTooltipReady(param1:UiRenderEvent) : void {
-         var _loc2_:UiRootContainer = param1.currentTarget as UiRootContainer;
-         _loc2_.removeEventListener(UiRenderEvent.UIRenderComplete,this.onTooltipReady);
-         (this._ttCallbacks[_loc2_] as Callback).exec();
-         delete this._ttCallbacks[[_loc2_]];
+      private function onTooltipReady(pEvent:UiRenderEvent) : void {
+         var currentUi:UiRootContainer = pEvent.currentTarget as UiRootContainer;
+         currentUi.removeEventListener(UiRenderEvent.UIRenderComplete,this.onTooltipReady);
+         (this._ttCallbacks[currentUi] as Callback).exec();
+         delete this._ttCallbacks[[currentUi]];
       }
    }
 }

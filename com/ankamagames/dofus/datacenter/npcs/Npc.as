@@ -19,8 +19,8 @@ package com.ankamagames.dofus.datacenter.npcs
       
       public static const MODULE:String = "Npcs";
       
-      public static function getNpcById(param1:int) : Npc {
-         return GameData.getObject(MODULE,param1) as Npc;
+      public static function getNpcById(id:int) : Npc {
+         return GameData.getObject(MODULE,id) as Npc;
       }
       
       public static function getNpcs() : Array {

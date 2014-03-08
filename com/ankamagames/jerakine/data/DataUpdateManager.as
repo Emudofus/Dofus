@@ -47,10 +47,10 @@ package com.ankamagames.jerakine.data
       
       private var _datastoreList:Array;
       
-      public function init(param1:Uri, param2:Boolean=false) : void {
-         this._metaFileListe = param1;
+      public function init(metaFileListe:Uri, clearAll:Boolean=false) : void {
+         this._metaFileListe = metaFileListe;
          this._storeKey = "version_" + this._metaFileListe.uri;
-         this._clearAll = param2;
+         this._clearAll = clearAll;
          if(this._clearAll)
          {
             this.clear();
@@ -75,30 +75,30 @@ package com.ankamagames.jerakine.data
       public function clear() : void {
       }
       
-      protected function checkFileVersion(param1:String, param2:String) : Boolean {
-         return this._versions[param1] == param2;
+      protected function checkFileVersion(sFileName:String, sVersion:String) : Boolean {
+         return this._versions[sFileName] == sVersion;
       }
       
-      protected function onLoaded(param1:ResourceLoadedEvent) : void {
-         var _loc2_:LangMetaData = null;
-         var _loc3_:Uri = null;
-         var _loc4_:Object = null;
-         var _loc5_:String = null;
-         switch(param1.uri.fileType)
+      protected function onLoaded(e:ResourceLoadedEvent) : void {
+         var meta:LangMetaData = null;
+         var uri:Uri = null;
+         var container:Object = null;
+         var file:String = null;
+         switch(e.uri.fileType)
          {
             case "meta":
-               _loc2_ = LangMetaData.fromXml(param1.resource,param1.uri.uri,this.checkFileVersion);
-               for (_loc5_ in _loc2_.clearFile)
+               meta = LangMetaData.fromXml(e.resource,e.uri.uri,this.checkFileVersion);
+               for (file in meta.clearFile)
                {
-                  _loc3_ = new Uri(FileUtils.getFilePath(param1.uri.path) + "/" + _loc5_);
-                  _loc3_.tag = 
+                  uri = new Uri(FileUtils.getFilePath(e.uri.path) + "/" + file);
+                  uri.tag = 
                      {
-                        "version":_loc2_.clearFile[_loc5_],
-                        "file":FileUtils.getFileStartName(param1.uri.uri) + "." + _loc5_
+                        "version":meta.clearFile[file],
+                        "file":FileUtils.getFileStartName(e.uri.uri) + "." + file
                      };
-                  this._files.push(_loc3_);
+                  this._files.push(uri);
                }
-               if(_loc2_.clearFileCount)
+               if(meta.clearFileCount)
                {
                   this._loader.load(this._files);
                }
@@ -109,24 +109,24 @@ package com.ankamagames.jerakine.data
                break;
             case "swf":
                this._dataFilesLoaded = true;
-               _loc4_ = param1.resource;
-               StoreDataManager.getInstance().setData(JerakineConstants.DATASTORE_FILES_INFO,_loc4_.moduleName + "_filelist",_loc4_.fileList);
-               StoreDataManager.getInstance().setData(JerakineConstants.DATASTORE_FILES_INFO,_loc4_.moduleName + "_chunkLength",_loc4_.chunkLength);
+               container = e.resource;
+               StoreDataManager.getInstance().setData(JerakineConstants.DATASTORE_FILES_INFO,container.moduleName + "_filelist",container.fileList);
+               StoreDataManager.getInstance().setData(JerakineConstants.DATASTORE_FILES_INFO,container.moduleName + "_chunkLength",container.chunkLength);
                this._loadedFileCount++;
-               this.processFileData(_loc4_,param1.uri);
+               this.processFileData(container,e.uri);
                break;
          }
       }
       
-      protected function processFileData(param1:Object, param2:Uri) : void {
+      protected function processFileData(container:Object, uri:Uri) : void {
       }
       
-      private function onLoadFailed(param1:ResourceErrorEvent) : void {
-         this._log.error("Failed " + param1.uri);
-         dispatchEvent(new FileEvent(FileEvent.ERROR,param1.uri.uri,false));
+      private function onLoadFailed(e:ResourceErrorEvent) : void {
+         this._log.error("Failed " + e.uri);
+         dispatchEvent(new FileEvent(FileEvent.ERROR,e.uri.uri,false));
       }
       
-      private function onComplete(param1:ResourceLoaderProgressEvent) : void {
+      private function onComplete(e:ResourceLoaderProgressEvent) : void {
          if(this._dataFilesLoaded)
          {
             dispatchEvent(new Event(Event.COMPLETE));

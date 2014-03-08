@@ -36,10 +36,10 @@ package com.ankamagames.dofus.internalDatacenter.items
          return true;
       }
       
-      override public function clone(param1:Class=null) : ItemWrapper {
-         var _loc2_:ItemWrapper = super.clone(WeaponWrapper);
-         _weaponUtil.copy(this,_loc2_);
-         return _loc2_;
+      override public function clone(baseClass:Class=null) : ItemWrapper {
+         var result:ItemWrapper = super.clone(WeaponWrapper);
+         _weaponUtil.copy(this,result);
+         return result;
       }
    }
 }

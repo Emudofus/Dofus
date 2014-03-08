@@ -19,10 +19,10 @@ package com.ankamagames.dofus.types.entities
       
       private var _animation:String;
       
-      public function updateFromParentEntity(param1:TiphonSprite, param2:BehaviorData) : void {
-         this._subentity = param1;
-         this._parentData = param2;
-         this._animation = param2.animation;
+      public function updateFromParentEntity(target:TiphonSprite, parentData:BehaviorData) : void {
+         this._subentity = target;
+         this._parentData = parentData;
+         this._animation = parentData.animation;
          switch(true)
          {
             case !(this._parentData.animation.indexOf(AnimationEnum.ANIM_STATIQUE) == -1):
@@ -30,17 +30,17 @@ package com.ankamagames.dofus.types.entities
             case !(this._parentData.animation.indexOf(AnimationEnum.ANIM_ATTAQUE_BASE) == -1):
             case !(this._parentData.animation.indexOf(AnimationEnum.ANIM_MORT) == -1):
             case !(this._parentData.animation.indexOf("AnimEmote") == -1):
-               if(!param1.hasAnimation(param2.animation,param2.direction))
+               if(!target.hasAnimation(parentData.animation,parentData.direction))
                {
                   this._animation = AnimationEnum.ANIM_STATIQUE;
                }
                break;
          }
-         if((this._subentity) && !this._subentity.hasAnimation(this._animation,this._parentData.direction))
+         if((this._subentity) && (!this._subentity.hasAnimation(this._animation,this._parentData.direction)))
          {
             this._animation = AnimationEnum.ANIM_STATIQUE;
          }
-         param2.parent.addEventListener(TiphonEvent.RENDER_FATHER_SUCCEED,this.onFatherRendered,false,0,true);
+         parentData.parent.addEventListener(TiphonEvent.RENDER_FATHER_SUCCEED,this.onFatherRendered,false,0,true);
       }
       
       public function remove() : void {
@@ -52,8 +52,8 @@ package com.ankamagames.dofus.types.entities
          this._parentData = null;
       }
       
-      private function onFatherRendered(param1:TiphonEvent) : void {
-         var _loc2_:TiphonSprite = param1.target as TiphonSprite;
+      private function onFatherRendered(e:TiphonEvent) : void {
+         var p:TiphonSprite = e.target as TiphonSprite;
          this._parentData.parent.removeEventListener(TiphonEvent.RENDER_FATHER_SUCCEED,this.onFatherRendered);
          this._subentity.setAnimationAndDirection(this._animation,this._parentData.direction);
       }

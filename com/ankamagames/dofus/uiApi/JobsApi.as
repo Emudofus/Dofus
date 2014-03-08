@@ -3,7 +3,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.berilia.interfaces.IApi;
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.berilia.types.data.UiModule;
-   import flash.globalization.Collator;
    import com.ankamagames.dofus.logic.game.common.frames.JobsFrame;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.common.frames.AveragePricesFrame;
@@ -18,17 +17,18 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.datacenter.items.Item;
    import com.ankamagames.dofus.datacenter.items.ItemType;
    import com.ankamagames.dofus.network.types.game.context.roleplay.job.JobExperience;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.jobs.Recipe;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import flash.utils.Dictionary;
    import com.ankamagames.jerakine.utils.misc.StringUtils;
    import com.ankamagames.dofus.internalDatacenter.jobs.RecipeWithSkill;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.misc.utils.GameDataQuery;
    import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
    import com.ankamagames.dofus.network.types.game.interactive.InteractiveElementSkill;
    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayContextFrame;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
+   import flash.globalization.Collator;
    import com.ankamagames.jerakine.data.XmlConfig;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
@@ -45,10 +45,8 @@ package com.ankamagames.dofus.uiApi
       
       private var _module:UiModule;
       
-      private var _stringSorter:Collator;
-      
-      public function set module(param1:UiModule) : void {
-         this._module = param1;
+      public function set module(value:UiModule) : void {
+         this._module = value;
       }
       
       private function get jobsFrame() : JobsFrame {
@@ -64,751 +62,745 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function getKnownJobs() : Array {
-         var _loc3_:KnownJob = null;
-         var _loc4_:uint = 0;
-         var _loc5_:uint = 0;
+         var kj:KnownJob = null;
+         var incr:uint = 0;
+         var iJ:uint = 0;
          if(!PlayedCharacterManager.getInstance().jobs)
          {
             return null;
          }
-         var _loc1_:Array = new Array();
-         var _loc2_:Array = new Array();
-         for each (_loc3_ in PlayedCharacterManager.getInstance().jobs)
+         var knownJobs:Array = new Array();
+         var result:Array = new Array();
+         for each (kj in PlayedCharacterManager.getInstance().jobs)
          {
-            if(_loc3_ != null)
+            if(kj != null)
             {
-               _loc1_[_loc3_.jobPosition] = Job.getJobById(_loc3_.jobDescription.jobId);
+               knownJobs[kj.jobPosition] = Job.getJobById(kj.jobDescription.jobId);
             }
          }
-         _loc4_ = 0;
-         _loc5_ = 0;
-         while(_loc5_ < 6)
+         incr = 0;
+         iJ = 0;
+         while(iJ < 6)
          {
-            if((_loc1_[_loc5_]) && _loc1_[_loc5_].specializationOfId == 0)
+            if((knownJobs[iJ]) && (knownJobs[iJ].specializationOfId == 0))
             {
-               _loc2_.push(_loc1_[_loc5_]);
+               result.push(knownJobs[iJ]);
             }
-            _loc5_++;
+            iJ++;
          }
-         var _loc6_:uint = 0;
-         while(_loc6_ < 6)
+         var iJ2:uint = 0;
+         while(iJ2 < 6)
          {
-            if((_loc1_[_loc6_]) && _loc1_[_loc6_].specializationOfId > 0)
+            if((knownJobs[iJ2]) && (knownJobs[iJ2].specializationOfId > 0))
             {
-               _loc2_[3 + _loc4_] = _loc1_[_loc6_];
-               _loc4_++;
+               result[3 + incr] = knownJobs[iJ2];
+               incr++;
             }
-            _loc6_++;
+            iJ2++;
          }
-         return _loc2_;
+         return result;
       }
       
-      public function getJobSkills(param1:Job) : Array {
-         var _loc5_:SkillActionDescription = null;
-         var _loc2_:JobDescription = this.getJobDescription(param1.id);
-         if(!_loc2_)
+      public function getJobSkills(job:Job) : Array {
+         var sd:SkillActionDescription = null;
+         var jd:JobDescription = this.getJobDescription(job.id);
+         if(!jd)
          {
             return null;
          }
-         var _loc3_:Array = new Array(_loc2_.skills.length);
-         var _loc4_:uint = 0;
-         for each (_loc5_ in _loc2_.skills)
+         var jobSkills:Array = new Array(jd.skills.length);
+         var index:uint = 0;
+         for each (sd in jd.skills)
          {
-            _loc3_[_loc4_++] = Skill.getSkillById(_loc5_.skillId);
+            jobSkills[index++] = Skill.getSkillById(sd.skillId);
          }
-         return _loc3_;
+         return jobSkills;
       }
       
-      public function getJobSkillType(param1:Job, param2:Skill) : String {
-         var _loc3_:JobDescription = this.getJobDescription(param1.id);
-         if(!_loc3_)
+      public function getJobSkillType(job:Job, skill:Skill) : String {
+         var jd:JobDescription = this.getJobDescription(job.id);
+         if(!jd)
          {
             return "unknown";
          }
-         var _loc4_:SkillActionDescription = this.getSkillActionDescription(_loc3_,param2.id);
-         if(!_loc4_)
+         var sd:SkillActionDescription = this.getSkillActionDescription(jd,skill.id);
+         if(!sd)
          {
             return "unknown";
          }
          switch(true)
          {
-            case _loc4_ is SkillActionDescriptionCollect:
+            case sd is SkillActionDescriptionCollect:
                return "collect";
-            case _loc4_ is SkillActionDescriptionCraft:
+            case sd is SkillActionDescriptionCraft:
                return "craft";
-            default:
-               this._log.warn("Unknown SkillActionDescription type : " + _loc4_);
-               return "unknown";
          }
       }
       
-      public function getJobCollectSkillInfos(param1:Job, param2:Skill) : Object {
-         var _loc3_:JobDescription = this.getJobDescription(param1.id);
-         if(!_loc3_)
+      public function getJobCollectSkillInfos(job:Job, skill:Skill) : Object {
+         var jd:JobDescription = this.getJobDescription(job.id);
+         if(!jd)
          {
             return null;
          }
-         var _loc4_:SkillActionDescription = this.getSkillActionDescription(_loc3_,param2.id);
-         if(!_loc4_)
+         var sd:SkillActionDescription = this.getSkillActionDescription(jd,skill.id);
+         if(!sd)
          {
             return null;
          }
-         if(!(_loc4_ is SkillActionDescriptionCollect))
+         if(!(sd is SkillActionDescriptionCollect))
          {
             return null;
          }
-         var _loc5_:SkillActionDescriptionCollect = _loc4_ as SkillActionDescriptionCollect;
-         var _loc6_:Object = new Object();
-         _loc6_.time = _loc5_.time / 10;
-         _loc6_.minResources = _loc5_.min;
-         _loc6_.maxResources = _loc5_.max;
-         _loc6_.resourceItem = Item.getItemById(param2.gatheredRessourceItem);
-         return _loc6_;
+         var sdc:SkillActionDescriptionCollect = sd as SkillActionDescriptionCollect;
+         var infos:Object = new Object();
+         infos.time = sdc.time / 10;
+         infos.minResources = sdc.min;
+         infos.maxResources = sdc.max;
+         infos.resourceItem = Item.getItemById(skill.gatheredRessourceItem);
+         return infos;
       }
       
-      public function getMaxSlotsByJobId(param1:int) : int {
-         var _loc4_:SkillActionDescription = null;
-         var _loc5_:SkillActionDescriptionCraft = null;
-         var _loc2_:JobDescription = this.getJobDescription(param1);
-         var _loc3_:* = 0;
-         if(!_loc2_)
+      public function getMaxSlotsByJobId(jobId:int) : int {
+         var sd:SkillActionDescription = null;
+         var sdc:SkillActionDescriptionCraft = null;
+         var jd:JobDescription = this.getJobDescription(jobId);
+         var max:int = 0;
+         if(!jd)
          {
             return 0;
          }
-         for each (_loc4_ in _loc2_.skills)
+         for each (sd in jd.skills)
          {
-            if(_loc4_ is SkillActionDescriptionCraft)
+            if(sd is SkillActionDescriptionCraft)
             {
-               _loc5_ = _loc4_ as SkillActionDescriptionCraft;
-               if(_loc5_.maxSlots > _loc3_)
+               sdc = sd as SkillActionDescriptionCraft;
+               if(sdc.maxSlots > max)
                {
-                  _loc3_ = _loc5_.maxSlots;
+                  max = sdc.maxSlots;
                }
             }
          }
-         return _loc3_;
+         return max;
       }
       
-      public function getJobCraftSkillInfos(param1:Job, param2:Skill) : Object {
-         var _loc3_:JobDescription = this.getJobDescription(param1.id);
-         if(!_loc3_)
+      public function getJobCraftSkillInfos(job:Job, skill:Skill) : Object {
+         var jd:JobDescription = this.getJobDescription(job.id);
+         if(!jd)
          {
             return null;
          }
-         var _loc4_:SkillActionDescription = this.getSkillActionDescription(_loc3_,param2.id);
-         if(!_loc4_)
+         var sd:SkillActionDescription = this.getSkillActionDescription(jd,skill.id);
+         if(!sd)
          {
             return null;
          }
-         if(!(_loc4_ is SkillActionDescriptionCraft))
+         if(!(sd is SkillActionDescriptionCraft))
          {
             return null;
          }
-         var _loc5_:SkillActionDescriptionCraft = _loc4_ as SkillActionDescriptionCraft;
-         var _loc6_:Object = new Object();
-         _loc6_.maxSlots = _loc5_.maxSlots;
-         _loc6_.probability = _loc5_.probability;
-         if(param2.modifiableItemType > -1)
+         var sdc:SkillActionDescriptionCraft = sd as SkillActionDescriptionCraft;
+         var infos:Object = new Object();
+         infos.maxSlots = sdc.maxSlots;
+         infos.probability = sdc.probability;
+         if(skill.modifiableItemType > -1)
          {
-            _loc6_.modifiableItemType = ItemType.getItemTypeById(param2.modifiableItemType);
+            infos.modifiableItemType = ItemType.getItemTypeById(skill.modifiableItemType);
          }
-         return _loc6_;
+         return infos;
       }
       
-      public function getJobExperience(param1:Job) : Object {
-         var _loc2_:JobExperience = this.getJobExp(param1.id);
-         if(!_loc2_)
+      public function getJobExperience(job:Job) : Object {
+         var je:JobExperience = this.getJobExp(job.id);
+         if(!je)
          {
             return null;
          }
-         var _loc3_:Object = new Object();
-         _loc3_.currentLevel = _loc2_.jobLevel;
-         _loc3_.currentExperience = _loc2_.jobXP;
-         _loc3_.levelExperienceFloor = _loc2_.jobXpLevelFloor;
-         _loc3_.levelExperienceCeil = _loc2_.jobXpNextLevelFloor;
-         return _loc3_;
+         var xp:Object = new Object();
+         xp.currentLevel = je.jobLevel;
+         xp.currentExperience = je.jobXP;
+         xp.levelExperienceFloor = je.jobXpLevelFloor;
+         xp.levelExperienceCeil = je.jobXpNextLevelFloor;
+         return xp;
       }
       
-      public function getSkillFromId(param1:int) : Object {
-         return Skill.getSkillById(param1);
+      public function getSkillFromId(skillId:int) : Object {
+         return Skill.getSkillById(skillId);
       }
       
-      public function getJobRecipes(param1:Job, param2:Array=null, param3:Skill=null, param4:String=null) : Array {
-         var _loc8_:SkillActionDescription = null;
-         var _loc9_:Vector.<uint> = null;
-         var _loc10_:Object = null;
-         var _loc11_:Object = null;
-         var _loc12_:uint = 0;
-         var _loc13_:Vector.<int> = null;
-         var _loc14_:* = 0;
-         var _loc15_:Recipe = null;
-         var _loc16_:uint = 0;
-         var _loc17_:* = false;
-         var _loc18_:uint = 0;
-         var _loc19_:uint = 0;
-         var _loc20_:ItemWrapper = null;
-         var _loc5_:JobDescription = this.getJobDescription(param1.id);
-         if(!_loc5_)
+      public function getJobRecipes(job:Job, validSlotsCount:Array=null, skill:Skill=null, search:String=null) : Array {
+         var sd:SkillActionDescription = null;
+         var vectoruint:Vector.<uint> = null;
+         var tempSortedArray:Object = null;
+         var recipeWithSkill:Object = null;
+         var recipeId:uint = 0;
+         var craftables:Vector.<int> = null;
+         var result:* = 0;
+         var recipe:Recipe = null;
+         var recipeSlots:uint = 0;
+         var allowed:* = false;
+         var i:uint = 0;
+         var allowedCount:uint = 0;
+         var ingredient:ItemWrapper = null;
+         var jd:JobDescription = this.getJobDescription(job.id);
+         if(!jd)
          {
             return null;
          }
-         if(param4)
+         if(search)
          {
-            param4 = param4.toLowerCase();
+            search = search.toLowerCase();
          }
-         var _loc6_:Dictionary = new Dictionary(true);
-         var _loc7_:Array = new Array();
-         if(param2)
+         var recipes:Dictionary = new Dictionary(true);
+         var recipesResult:Array = new Array();
+         if(validSlotsCount)
          {
-            param2.sort(Array.NUMERIC);
+            validSlotsCount.sort(Array.NUMERIC);
          }
-         for each (_loc8_ in _loc5_.skills)
+         for each (sd in jd.skills)
          {
-            if(!((param3) && !(_loc8_.skillId == param3.id)))
+            if(!((skill) && (!(sd.skillId == skill.id))))
             {
-               _loc13_ = Skill.getSkillById(_loc8_.skillId).craftableItemIds;
-               for each (_loc14_ in _loc13_)
+               craftables = Skill.getSkillById(sd.skillId).craftableItemIds;
+               for each (result in craftables)
                {
-                  _loc15_ = Recipe.getRecipeByResultId(_loc14_);
-                  if(_loc15_)
+                  recipe = Recipe.getRecipeByResultId(result);
+                  if(recipe)
                   {
-                     _loc16_ = _loc15_.ingredientIds.length;
-                     _loc17_ = false;
-                     if(param2)
+                     recipeSlots = recipe.ingredientIds.length;
+                     allowed = false;
+                     if(validSlotsCount)
                      {
-                        _loc18_ = 0;
-                        while(_loc18_ < param2.length)
+                        i = 0;
+                        while(i < validSlotsCount.length)
                         {
-                           _loc19_ = param2[_loc18_];
-                           if(_loc19_ == _loc16_)
+                           allowedCount = validSlotsCount[i];
+                           if(allowedCount == recipeSlots)
                            {
-                              _loc17_ = true;
+                              allowed = true;
                            }
                            else
                            {
-                              if(_loc19_ > _loc16_)
+                              if(allowedCount > recipeSlots)
                               {
                                  break;
                               }
                            }
-                           _loc18_++;
+                           i++;
                         }
                      }
                      else
                      {
-                        _loc17_ = true;
+                        allowed = true;
                      }
-                     if(_loc17_)
+                     if(allowed)
                      {
-                        if(param4)
+                        if(search)
                         {
-                           if(StringUtils.noAccent(Item.getItemById(_loc14_).name).toLowerCase().indexOf(StringUtils.noAccent(param4)) != -1)
+                           if(StringUtils.noAccent(Item.getItemById(result).name).toLowerCase().indexOf(StringUtils.noAccent(search)) != -1)
                            {
-                              _loc6_[_loc15_.resultId] = new RecipeWithSkill(_loc15_,Skill.getSkillById(_loc8_.skillId));
+                              recipes[recipe.resultId] = new RecipeWithSkill(recipe,Skill.getSkillById(sd.skillId));
                            }
                            else
                            {
-                              for each (_loc20_ in _loc15_.ingredients)
+                              for each (ingredient in recipe.ingredients)
                               {
-                                 if(StringUtils.noAccent(_loc20_.name).toLowerCase().indexOf(StringUtils.noAccent(param4)) != -1)
+                                 if(StringUtils.noAccent(ingredient.name).toLowerCase().indexOf(StringUtils.noAccent(search)) != -1)
                                  {
-                                    _loc6_[_loc15_.resultId] = new RecipeWithSkill(_loc15_,Skill.getSkillById(_loc8_.skillId));
+                                    recipes[recipe.resultId] = new RecipeWithSkill(recipe,Skill.getSkillById(sd.skillId));
                                  }
                               }
                            }
                         }
                         else
                         {
-                           _loc6_[_loc15_.resultId] = new RecipeWithSkill(_loc15_,Skill.getSkillById(_loc8_.skillId));
+                           recipes[recipe.resultId] = new RecipeWithSkill(recipe,Skill.getSkillById(sd.skillId));
                         }
                      }
                   }
                }
             }
          }
-         _loc9_ = new Vector.<uint>();
-         for each (_loc11_ in _loc6_)
+         vectoruint = new Vector.<uint>();
+         for each (recipeWithSkill in recipes)
          {
-            if(_loc11_)
+            if(recipeWithSkill)
             {
-               _loc9_.push(_loc11_.recipe.resultId);
+               vectoruint.push(recipeWithSkill.recipe.resultId);
             }
          }
-         _loc10_ = GameDataQuery.sort(Item,_loc9_,["recipeSlots","level","name"],[false,false,true]);
-         for each (_loc12_ in _loc10_)
+         tempSortedArray = GameDataQuery.sort(Item,vectoruint,["recipeSlots","level","name"],[false,false,true]);
+         for each (recipeId in tempSortedArray)
          {
-            _loc7_.push(_loc6_[_loc12_]);
+            recipesResult.push(recipes[recipeId]);
          }
-         return _loc7_;
+         return recipesResult;
       }
       
-      public function getRecipe(param1:uint) : Recipe {
-         return Recipe.getRecipeByResultId(param1);
+      public function getRecipe(objectId:uint) : Recipe {
+         return Recipe.getRecipeByResultId(objectId);
       }
       
-      public function getRecipesList(param1:uint) : Array {
-         var _loc2_:Array = Item.getItemById(param1).recipes;
-         if(_loc2_)
+      public function getRecipesList(objectId:uint) : Array {
+         var recipeList:Array = Item.getItemById(objectId).recipes;
+         if(recipeList)
          {
-            return _loc2_;
+            return recipeList;
          }
          return new Array();
       }
       
-      public function getJobName(param1:uint) : String {
-         return Job.getJobById(param1).name;
+      public function getJobName(pJobId:uint) : String {
+         return Job.getJobById(pJobId).name;
       }
       
-      public function getJob(param1:uint) : Object {
-         return Job.getJobById(param1);
+      public function getJob(pJobId:uint) : Object {
+         return Job.getJobById(pJobId);
       }
       
-      public function getJobCrafterDirectorySettingsById(param1:uint) : Object {
-         var _loc2_:Object = null;
-         for each (_loc2_ in this.jobsFrame.settings)
+      public function getJobCrafterDirectorySettingsById(jobId:uint) : Object {
+         var job:Object = null;
+         for each (job in this.jobsFrame.settings)
          {
-            if((_loc2_) && param1 == _loc2_.jobId)
+            if((job) && (jobId == job.jobId))
             {
-               return _loc2_;
+               return job;
             }
          }
          return null;
       }
       
-      public function getJobCrafterDirectorySettingsByIndex(param1:uint) : Object {
-         return this.jobsFrame.settings[param1];
+      public function getJobCrafterDirectorySettingsByIndex(jobIndex:uint) : Object {
+         return this.jobsFrame.settings[jobIndex];
       }
       
-      public function getUsableSkillsInMap(param1:int) : Array {
-         var _loc6_:* = false;
-         var _loc7_:uint = 0;
-         var _loc8_:InteractiveElement = null;
-         var _loc9_:InteractiveElementSkill = null;
-         var _loc10_:InteractiveElementSkill = null;
-         var _loc2_:Array = new Array();
-         var _loc3_:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-         var _loc4_:Vector.<InteractiveElement> = _loc3_.entitiesFrame.interactiveElements;
-         var _loc5_:Vector.<uint> = _loc3_.getMultiCraftSkills(param1);
-         for each (_loc7_ in _loc5_)
+      public function getUsableSkillsInMap(playerId:int) : Array {
+         var hasSkill:* = false;
+         var skillId:uint = 0;
+         var ie:InteractiveElement = null;
+         var interactiveSkill:InteractiveElementSkill = null;
+         var interactiveSkill2:InteractiveElementSkill = null;
+         var usableSkills:Array = new Array();
+         var rpContextFrame:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+         var ies:Vector.<InteractiveElement> = rpContextFrame.entitiesFrame.interactiveElements;
+         var skills:Vector.<uint> = rpContextFrame.getMultiCraftSkills(playerId);
+         for each (skillId in skills)
          {
-            _loc6_ = false;
-            for each (_loc8_ in _loc4_)
+            hasSkill = false;
+            for each (ie in ies)
             {
-               for each (_loc9_ in _loc8_.enabledSkills)
+               for each (interactiveSkill in ie.enabledSkills)
                {
-                  if(_loc7_ == _loc9_.skillId && _loc2_.indexOf(_loc9_.skillId) == -1)
+                  if((skillId == interactiveSkill.skillId) && (usableSkills.indexOf(interactiveSkill.skillId) == -1))
                   {
-                     _loc6_ = true;
+                     hasSkill = true;
                      break;
                   }
                }
-               for each (_loc10_ in _loc8_.disabledSkills)
+               for each (interactiveSkill2 in ie.disabledSkills)
                {
-                  if(_loc7_ == _loc10_.skillId && _loc2_.indexOf(_loc10_.skillId) == -1)
+                  if((skillId == interactiveSkill2.skillId) && (usableSkills.indexOf(interactiveSkill2.skillId) == -1))
                   {
-                     _loc6_ = true;
+                     hasSkill = true;
                      break;
                   }
                }
-               if(_loc6_)
+               if(hasSkill)
                {
                   break;
                }
             }
-            if(_loc6_)
+            if(hasSkill)
             {
-               _loc2_.push(Skill.getSkillById(_loc7_));
+               usableSkills.push(Skill.getSkillById(skillId));
             }
          }
-         return _loc2_;
+         return usableSkills;
       }
       
-      public function getKnownJob(param1:uint) : KnownJob {
+      public function getKnownJob(jobId:uint) : KnownJob {
          if(!PlayedCharacterManager.getInstance().jobs)
          {
             return null;
          }
-         var _loc2_:KnownJob = PlayedCharacterManager.getInstance().jobs[param1] as KnownJob;
-         if(!_loc2_)
+         var kj:KnownJob = PlayedCharacterManager.getInstance().jobs[jobId] as KnownJob;
+         if(!kj)
          {
             return null;
          }
-         return _loc2_;
+         return kj;
       }
       
-      public function getRecipesByJob(param1:Array, param2:Array, param3:int=0, param4:Boolean=false, param5:Boolean=false, param6:Boolean=false, param7:int=0, param8:String="level", param9:Boolean=true, param10:Array=null) : Vector.<Recipe> {
-         var _loc12_:Array = null;
-         var _loc13_:Array = null;
-         var _loc15_:String = null;
-         var _loc16_:Vector.<ItemWrapper> = null;
-         var _loc18_:ItemWrapper = null;
-         var _loc20_:Recipe = null;
-         var _loc22_:* = 0;
-         var _loc23_:* = 0;
-         var _loc24_:* = 0;
-         var _loc25_:Job = null;
-         var _loc26_:Object = null;
-         var _loc27_:* = undefined;
-         var _loc28_:uint = 0;
-         var _loc29_:Vector.<ItemWrapper> = null;
-         var _loc30_:* = 0;
-         var _loc31_:* = 0;
-         var _loc32_:* = 0;
-         var _loc33_:* = 0;
-         var _loc34_:* = 0;
-         var _loc35_:Array = null;
-         var _loc36_:* = 0;
-         var _loc37_:* = 0;
-         var _loc38_:* = 0;
-         var _loc39_:uint = 0;
-         var _loc40_:uint = 0;
-         var _loc11_:Vector.<Recipe> = new Vector.<Recipe>();
-         _loc13_ = new Array();
-         var _loc14_:Array = PlayedCharacterManager.getInstance().jobs;
-         for (_loc15_ in _loc14_)
+      public function getRecipesByJob(details:Array, jobMaxSlots:Array, jobId:int=0, fromBank:Boolean=false, onlyRecipeWithXP:Boolean=false, onlyKnownJobs:Boolean=false, missingIngredientsTolerance:int=0, sortCriteria:String="level", sortDescending:Boolean=true, filterTypes:Array=null) : Vector.<Recipe> {
+         var allRecipes:Array = null;
+         var knownJobIds:Array = null;
+         var key:String = null;
+         var resourceItems:Vector.<ItemWrapper> = null;
+         var ingredient:ItemWrapper = null;
+         var recipe:Recipe = null;
+         var resultTypeId:* = 0;
+         var knownJobId:* = 0;
+         var slotMax:* = 0;
+         var job:Job = null;
+         var skills:Object = null;
+         var skill:* = undefined;
+         var slot:uint = 0;
+         var bagItems:Vector.<ItemWrapper> = null;
+         var totalIngredients:* = 0;
+         var requiredQty:* = 0;
+         var totalQty:* = 0;
+         var foundIngredients:* = 0;
+         var foundIngredientsQty:* = 0;
+         var occurences:Array = null;
+         var missingIngredients:* = 0;
+         var j:* = 0;
+         var xp:* = 0;
+         var potentialMaxOccurence:uint = 0;
+         var val:uint = 0;
+         var recipes:Vector.<Recipe> = new Vector.<Recipe>();
+         this._log.debug("getRecipesByJob()");
+         this._log.debug("1. Gettings jobs and calculating maxSlots...");
+         knownJobIds = new Array();
+         var knownJobs:Array = PlayedCharacterManager.getInstance().jobs;
+         for (key in knownJobs)
          {
-            _loc23_ = int(_loc15_);
-            _loc13_.push(_loc23_);
-            _loc24_ = 0;
-            _loc25_ = this.getJob(_loc23_) as Job;
-            _loc26_ = this.getJobSkills(_loc25_);
-            for each (_loc27_ in _loc26_)
+            knownJobId = int(key);
+            knownJobIds.push(knownJobId);
+            slotMax = 0;
+            job = this.getJob(knownJobId) as Job;
+            skills = this.getJobSkills(job);
+            for each (skill in skills)
             {
-               if(this.getJobSkillType(_loc25_,_loc27_) == "craft")
+               if(this.getJobSkillType(job,skill) == "craft")
                {
-                  _loc28_ = this.getJobCraftSkillInfos(_loc25_,_loc27_).maxSlots;
-                  if(_loc28_ > _loc24_)
+                  slot = this.getJobCraftSkillInfos(job,skill).maxSlots;
+                  if(slot > slotMax)
                   {
-                     _loc24_ = _loc28_;
+                     slotMax = slot;
                   }
                }
             }
-            param2[_loc23_] = _loc24_;
+            jobMaxSlots[knownJobId] = slotMax;
          }
-         if(param6)
+         if(onlyKnownJobs)
          {
-            if(param3 > 0 && _loc13_.indexOf(param3) == -1)
+            if((jobId > 0) && (knownJobIds.indexOf(jobId) == -1))
             {
-               return _loc11_;
+               return recipes;
             }
          }
-         if(param4)
+         this._log.debug("2. Getting main inventory items...");
+         if(fromBank)
          {
-            _loc16_ = InventoryManager.getInstance().bankInventory.getView("bank").content;
+            resourceItems = InventoryManager.getInstance().bankInventory.getView("bank").content;
          }
          else
          {
-            _loc16_ = InventoryManager.getInstance().inventory.getView("storage").content;
+            resourceItems = InventoryManager.getInstance().inventory.getView("storage").content;
          }
-         var _loc17_:int = _loc16_.length;
-         var _loc19_:* = 0;
-         while(_loc19_ < _loc17_)
+         var l:int = resourceItems.length;
+         this._log.debug("  > length: " + l);
+         var i:int = 0;
+         while(i < l)
          {
-            _loc18_ = _loc16_[_loc19_];
-            if(!_loc18_.linked)
+            ingredient = resourceItems[i];
+            if(!ingredient.linked)
             {
-               if(!param1[_loc18_.objectGID])
+               if(!details[ingredient.objectGID])
                {
-                  param1[_loc18_.objectGID] = 
+                  details[ingredient.objectGID] = 
                      {
-                        "totalQuantity":_loc18_.quantity,
-                        "stackUidList":[_loc18_.objectUID],
-                        "stackQtyList":[_loc18_.quantity],
+                        "totalQuantity":ingredient.quantity,
+                        "stackUidList":[ingredient.objectUID],
+                        "stackQtyList":[ingredient.quantity],
                         "fromBag":[false],
-                        "storageTotalQuantity":_loc18_.quantity
+                        "storageTotalQuantity":ingredient.quantity
                      };
                }
                else
                {
-                  param1[_loc18_.objectGID].totalQuantity = param1[_loc18_.objectGID].totalQuantity + _loc18_.quantity;
-                  param1[_loc18_.objectGID].stackUidList.push(_loc18_.objectUID);
-                  param1[_loc18_.objectGID].stackQtyList.push(_loc18_.quantity);
-                  param1[_loc18_.objectGID].fromBag.push(false);
-                  param1[_loc18_.objectGID].storageTotalQuantity = param1[_loc18_.objectGID].storageTotalQuantity + _loc18_.quantity;
+                  details[ingredient.objectGID].totalQuantity = details[ingredient.objectGID].totalQuantity + ingredient.quantity;
+                  details[ingredient.objectGID].stackUidList.push(ingredient.objectUID);
+                  details[ingredient.objectGID].stackQtyList.push(ingredient.quantity);
+                  details[ingredient.objectGID].fromBag.push(false);
+                  details[ingredient.objectGID].storageTotalQuantity = details[ingredient.objectGID].storageTotalQuantity + ingredient.quantity;
                }
             }
-            _loc19_++;
+            i++;
          }
-         if(param4)
+         if(fromBank)
          {
-            _loc29_ = InventoryManager.getInstance().inventory.getView("storage").content;
-            _loc17_ = _loc29_.length;
-            _loc19_ = 0;
-            while(_loc19_ < _loc17_)
+            this._log.debug("2b. Getting secondary inventory items...");
+            bagItems = InventoryManager.getInstance().inventory.getView("storage").content;
+            l = bagItems.length;
+            this._log.debug("  > length: " + l);
+            i = 0;
+            while(i < l)
             {
-               _loc18_ = _loc29_[_loc19_];
-               if(!_loc18_.linked)
+               ingredient = bagItems[i];
+               if(!ingredient.linked)
                {
-                  if(!param1[_loc18_.objectGID])
+                  if(!details[ingredient.objectGID])
                   {
-                     param1[_loc18_.objectGID] = 
+                     details[ingredient.objectGID] = 
                         {
-                           "totalQuantity":_loc18_.quantity,
-                           "stackUidList":[_loc18_.objectUID],
-                           "stackQtyList":[_loc18_.quantity],
+                           "totalQuantity":ingredient.quantity,
+                           "stackUidList":[ingredient.objectUID],
+                           "stackQtyList":[ingredient.quantity],
                            "fromBag":[true]
                         };
                   }
                   else
                   {
-                     param1[_loc18_.objectGID].totalQuantity = param1[_loc18_.objectGID].totalQuantity + _loc18_.quantity;
-                     param1[_loc18_.objectGID].stackUidList.push(_loc18_.objectUID);
-                     param1[_loc18_.objectGID].stackQtyList.push(_loc18_.quantity);
-                     param1[_loc18_.objectGID].fromBag.push(true);
+                     details[ingredient.objectGID].totalQuantity = details[ingredient.objectGID].totalQuantity + ingredient.quantity;
+                     details[ingredient.objectGID].stackUidList.push(ingredient.objectUID);
+                     details[ingredient.objectGID].stackQtyList.push(ingredient.quantity);
+                     details[ingredient.objectGID].fromBag.push(true);
                   }
                }
-               _loc19_++;
+               i++;
             }
          }
-         if(param3 == 0)
+         this._log.debug("3. Getting recipes...");
+         if(jobId == 0)
          {
-            _loc12_ = Recipe.getAllRecipes();
+            allRecipes = Recipe.getAllRecipes();
          }
          else
          {
-            _loc12_ = Recipe.getRecipesByJobId(param3);
+            allRecipes = Recipe.getRecipesByJobId(jobId);
          }
-         _loc17_ = _loc12_.length;
-         var _loc21_:Dictionary = new Dictionary(true);
-         _loc19_ = 0;
-         for(;_loc19_ < _loc17_;_loc19_++)
+         l = allRecipes.length;
+         var resultTypes:Dictionary = new Dictionary(true);
+         this._log.debug("4. Iterating on recipes...");
+         this._log.debug("  > length: " + l);
+         i = 0;
+         for(;i < l;i++)
          {
-            _loc20_ = _loc12_[_loc19_];
-            _loc30_ = _loc20_.ingredientIds.length;
-            if(!(!_loc20_.job || _loc20_.jobId == 1 || (param6) && param3 == 0 && _loc13_.indexOf(_loc20_.jobId) == -1))
+            recipe = allRecipes[i];
+            totalIngredients = recipe.ingredientIds.length;
+            if(!((!recipe.job) || (recipe.jobId == 1) || (onlyKnownJobs) && (jobId == 0) && (knownJobIds.indexOf(recipe.jobId) == -1)))
             {
-               if(param5)
+               if(onlyRecipeWithXP)
                {
-                  _loc38_ = 0;
-                  if(_loc13_.indexOf(_loc20_.jobId) == -1 || !param2[_loc20_.jobId])
+                  xp = 0;
+                  if((knownJobIds.indexOf(recipe.jobId) == -1) || (!jobMaxSlots[recipe.jobId]))
                   {
                      continue;
                   }
-                  if(param2[_loc20_.jobId] - _loc30_ < 4)
+                  if(jobMaxSlots[recipe.jobId] - totalIngredients < 4)
                   {
-                     switch(_loc30_)
+                     switch(totalIngredients)
                      {
                         case 2:
-                           _loc38_ = 10;
+                           xp = 10;
                            break;
                         case 3:
-                           _loc38_ = 25;
+                           xp = 25;
                            break;
                         case 4:
-                           _loc38_ = 50;
+                           xp = 50;
                            break;
                         case 5:
-                           _loc38_ = 100;
+                           xp = 100;
                            break;
                         case 6:
-                           _loc38_ = 250;
+                           xp = 250;
                            break;
                         case 7:
-                           _loc38_ = 500;
+                           xp = 500;
                            break;
                         case 8:
-                           _loc38_ = 1000;
+                           xp = 1000;
                            break;
-                        default:
-                           _loc38_ = 1;
                      }
                   }
-                  if(_loc38_ == 0)
+                  if(xp == 0)
                   {
                      continue;
                   }
                }
-               _loc31_ = 0;
-               _loc32_ = 0;
-               _loc33_ = 0;
-               _loc34_ = 0;
-               _loc35_ = new Array();
-               _loc36_ = param7;
-               _loc37_ = 0;
-               while(_loc37_ < _loc30_)
+               requiredQty = 0;
+               totalQty = 0;
+               foundIngredients = 0;
+               foundIngredientsQty = 0;
+               occurences = new Array();
+               missingIngredients = missingIngredientsTolerance;
+               j = 0;
+               while(j < totalIngredients)
                {
-                  _loc31_ = _loc31_ + _loc20_.quantities[_loc37_];
-                  if(param1[_loc20_.ingredientIds[_loc37_]])
+                  requiredQty = requiredQty + recipe.quantities[j];
+                  if(details[recipe.ingredientIds[j]])
                   {
-                     _loc32_ = param1[_loc20_.ingredientIds[_loc37_]].totalQuantity;
+                     totalQty = details[recipe.ingredientIds[j]].totalQuantity;
                   }
                   else
                   {
-                     _loc32_ = 0;
+                     totalQty = 0;
                   }
-                  if(_loc32_)
+                  if(totalQty)
                   {
-                     if(_loc32_ >= _loc20_.quantities[_loc37_])
+                     if(totalQty >= recipe.quantities[j])
                      {
-                        _loc35_.push(int(_loc32_ / _loc20_.quantities[_loc37_]));
-                        _loc34_ = _loc34_ + _loc20_.quantities[_loc37_];
-                        _loc33_++;
+                        occurences.push(int(totalQty / recipe.quantities[j]));
+                        foundIngredientsQty = foundIngredientsQty + recipe.quantities[j];
+                        foundIngredients++;
                      }
                      else
                      {
-                        _loc35_.push(0);
-                        _loc36_--;
+                        occurences.push(0);
+                        missingIngredients--;
                      }
                   }
                   else
                   {
-                     if(_loc36_ > 0)
+                     if(missingIngredients > 0)
                      {
-                        _loc35_.push(0);
-                        _loc36_--;
+                        occurences.push(0);
+                        missingIngredients--;
                      }
                   }
-                  _loc37_++;
+                  j++;
                }
-               if(_loc33_ == _loc20_.ingredientIds.length && _loc34_ >= _loc31_ || param7 > 0 && _loc33_ >= 1 && _loc33_ + param7 >= _loc20_.ingredientIds.length)
+               if((foundIngredients == recipe.ingredientIds.length) && (foundIngredientsQty >= requiredQty) || (missingIngredientsTolerance > 0) && (foundIngredients >= 1) && (foundIngredients + missingIngredientsTolerance >= recipe.ingredientIds.length))
                {
-                  _loc11_.push(_loc20_);
-                  _loc21_[_loc20_.resultTypeId] = _loc20_.resultTypeId;
-                  _loc35_.sort(Array.NUMERIC);
-                  if(!param1[_loc20_.resultId])
+                  recipes.push(recipe);
+                  resultTypes[recipe.resultTypeId] = recipe.resultTypeId;
+                  occurences.sort(Array.NUMERIC);
+                  if(!details[recipe.resultId])
                   {
-                     param1[_loc20_.resultId] = {"actualMaxOccurence":_loc35_[0]};
+                     details[recipe.resultId] = {"actualMaxOccurence":occurences[0]};
                   }
                   else
                   {
-                     param1[_loc20_.resultId].actualMaxOccurence = _loc35_[0];
+                     details[recipe.resultId].actualMaxOccurence = occurences[0];
                   }
-                  if(param4)
+                  if(fromBank)
                   {
-                     _loc39_ = 0;
-                     for each (_loc40_ in _loc35_)
+                     potentialMaxOccurence = 0;
+                     for each (val in occurences)
                      {
-                        if(_loc40_ != 0)
+                        if(val != 0)
                         {
-                           _loc39_ = _loc40_;
+                           potentialMaxOccurence = val;
                            break;
                         }
                      }
-                     param1[_loc20_.resultId].potentialMaxOccurence = _loc39_;
+                     details[recipe.resultId].potentialMaxOccurence = potentialMaxOccurence;
                   }
                   continue;
                }
                continue;
             }
          }
-         for each (_loc22_ in _loc21_)
+         this._log.debug("5. Creating type objects...");
+         for each (resultTypeId in resultTypes)
          {
-            param10[_loc22_] = ItemType.getItemTypeById(_loc21_[_loc22_]);
+            filterTypes[resultTypeId] = ItemType.getItemTypeById(resultTypes[resultTypeId]);
          }
-         _loc11_.fixed = true;
-         this.sortRecipes(_loc11_,param8,param9?1:-1);
-         return _loc11_;
+         recipes.fixed = true;
+         this._log.debug("6. Sorting recipes...");
+         this.sortRecipes(recipes,sortCriteria,sortDescending?1:-1);
+         this._log.debug("7. Recipes list ready!");
+         this._log.debug("---------------------------------------------");
+         return recipes;
       }
       
-      public function sortRecipesByCriteria(param1:Object, param2:String, param3:Boolean) : Object {
-         this.sortRecipes(param1,param2,param3?1:-1);
-         return param1;
-      }
+      private var stringSorter:Collator;
       
-      private function sortRecipes(param1:Object, param2:String, param3:int=1) : void {
-         if(!this._stringSorter)
+      private function sortRecipes(recipes:Vector.<Recipe>, criteria:String, way:int=1) : void {
+         if(!this.stringSorter)
          {
-            this._stringSorter = new Collator(XmlConfig.getInstance().getEntry("config.lang.current"));
+            this.stringSorter = new Collator(XmlConfig.getInstance().getEntry("config.lang.current"));
          }
-         switch(param2)
+         switch(criteria)
          {
             case "ingredients":
-               param1.sort(this.compareIngredients(param3));
+               recipes.sort(this.compareIngredients(way));
                break;
             case "level":
-               param1.sort(this.compareLevel(param3));
+               recipes.sort(this.compareLevel(way));
                break;
             case "price":
-               param1.sort(this.comparePrice(param3));
+               recipes.sort(this.comparePrice(way));
                break;
          }
       }
       
-      private function compareIngredients(param1:int=1) : Function {
-         var way:int = param1;
-         return function(param1:Recipe, param2:Recipe):Number
+      private function compareIngredients(way:int=1) : Function {
+         return function(a:Recipe, b:Recipe):Number
          {
-            var _loc3_:* = param1.ingredientIds.length;
-            var _loc4_:* = param2.ingredientIds.length;
-            if(_loc3_ < _loc4_)
+            var aL:* = a.ingredientIds.length;
+            var bL:* = b.ingredientIds.length;
+            if(aL < bL)
             {
                return -way;
             }
-            if(_loc3_ > _loc4_)
+            if(aL > bL)
             {
                return way;
             }
-            return _stringSorter.compare(param1.resultName,param2.resultName);
+            return stringSorter.compare(a.resultName,b.resultName);
          };
       }
       
-      private function compareLevel(param1:int=1) : Function {
-         var way:int = param1;
-         return function(param1:Recipe, param2:Recipe):Number
+      private function compareLevel(way:int=1) : Function {
+         return function(a:Recipe, b:Recipe):Number
          {
-            if(param1.resultLevel < param2.resultLevel)
+            if(a.resultLevel < b.resultLevel)
             {
                return -way;
             }
-            if(param1.resultLevel > param2.resultLevel)
+            if(a.resultLevel > b.resultLevel)
             {
                return way;
             }
-            return _stringSorter.compare(param1.resultName,param2.resultName);
+            return stringSorter.compare(a.resultName,b.resultName);
          };
       }
       
-      private function comparePrice(param1:int=1) : Function {
-         var way:int = param1;
-         return function(param1:Recipe, param2:Recipe):Number
+      private function comparePrice(way:int=1) : Function {
+         return function(a:Recipe, b:Recipe):Number
          {
-            var _loc3_:* = averagePricesFrame.pricesData.items["item" + param1.resultId];
-            var _loc4_:* = averagePricesFrame.pricesData.items["item" + param2.resultId];
-            if(!_loc3_)
-            {
-               _loc3_ = way == 1?int.MAX_VALUE:0;
-            }
-            if(!_loc4_)
-            {
-               _loc4_ = way == 1?int.MAX_VALUE:0;
-            }
-            if(_loc3_ < _loc4_)
+            var aL:* = averagePricesFrame.pricesData.items["item" + a.resultId];
+            var bL:* = averagePricesFrame.pricesData.items["item" + b.resultId];
+            if(aL < bL)
             {
                return -way;
             }
-            if(_loc3_ > _loc4_)
+            if(aL > bL)
             {
                return way;
             }
-            return _stringSorter.compare(param1.resultName,param2.resultName);
+            return stringSorter.compare(a.resultName,b.resultName);
          };
       }
       
-      private function getJobDescription(param1:uint) : JobDescription {
-         var _loc2_:KnownJob = this.getKnownJob(param1);
-         if(!_loc2_)
+      private function getJobDescription(jobId:uint) : JobDescription {
+         var kj:KnownJob = this.getKnownJob(jobId);
+         if(!kj)
          {
             return null;
          }
-         return _loc2_.jobDescription;
+         return kj.jobDescription;
       }
       
-      private function getJobExp(param1:uint) : JobExperience {
-         var _loc2_:KnownJob = this.getKnownJob(param1);
-         if(!_loc2_)
+      private function getJobExp(jobId:uint) : JobExperience {
+         var kj:KnownJob = this.getKnownJob(jobId);
+         if(!kj)
          {
             return null;
          }
-         return _loc2_.jobExperience;
+         return kj.jobExperience;
       }
       
-      private function getSkillActionDescription(param1:JobDescription, param2:uint) : SkillActionDescription {
-         var _loc3_:SkillActionDescription = null;
-         for each (_loc3_ in param1.skills)
+      private function getSkillActionDescription(jd:JobDescription, skillId:uint) : SkillActionDescription {
+         var sd:SkillActionDescription = null;
+         for each (sd in jd.skills)
          {
-            if(_loc3_.skillId == param2)
+            if(sd.skillId == skillId)
             {
-               return _loc3_;
+               return sd;
             }
          }
          return null;

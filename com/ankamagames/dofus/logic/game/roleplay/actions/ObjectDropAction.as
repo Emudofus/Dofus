@@ -9,12 +9,12 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(param1:uint, param2:uint, param3:uint) : ObjectDropAction {
-         var _loc4_:ObjectDropAction = new ObjectDropAction();
-         _loc4_.objectUID = param1;
-         _loc4_.objectGID = param2;
-         _loc4_.quantity = param3;
-         return _loc4_;
+      public static function create(pObjectUID:uint, pObjectGID:uint, pQuantity:uint) : ObjectDropAction {
+         var a:ObjectDropAction = new ObjectDropAction();
+         a.objectUID = pObjectUID;
+         a.objectGID = pObjectGID;
+         a.quantity = pQuantity;
+         return a;
       }
       
       public var objectUID:uint;

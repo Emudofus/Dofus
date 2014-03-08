@@ -33,10 +33,10 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5564;
       }
       
-      public function initGuildJoinedMessage(param1:GuildInformations=null, param2:uint=0, param3:Boolean=false) : GuildJoinedMessage {
-         this.guildInfo = param1;
-         this.memberRights = param2;
-         this.enabled = param3;
+      public function initGuildJoinedMessage(guildInfo:GuildInformations=null, memberRights:uint=0, enabled:Boolean=false) : GuildJoinedMessage {
+         this.guildInfo = guildInfo;
+         this.memberRights = memberRights;
+         this.enabled = enabled;
          this._isInitialized = true;
          return this;
       }
@@ -47,49 +47,49 @@ package com.ankamagames.dofus.network.messages.game.guild
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildJoinedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildJoinedMessage(output);
       }
       
-      public function serializeAs_GuildJoinedMessage(param1:IDataOutput) : void {
-         this.guildInfo.serializeAs_GuildInformations(param1);
-         if(this.memberRights < 0 || this.memberRights > 4.294967295E9)
+      public function serializeAs_GuildJoinedMessage(output:IDataOutput) : void {
+         this.guildInfo.serializeAs_GuildInformations(output);
+         if((this.memberRights < 0) || (this.memberRights > 4.294967295E9))
          {
             throw new Error("Forbidden value (" + this.memberRights + ") on element memberRights.");
          }
          else
          {
-            param1.writeUnsignedInt(this.memberRights);
-            param1.writeBoolean(this.enabled);
+            output.writeUnsignedInt(this.memberRights);
+            output.writeBoolean(this.enabled);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildJoinedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildJoinedMessage(input);
       }
       
-      public function deserializeAs_GuildJoinedMessage(param1:IDataInput) : void {
+      public function deserializeAs_GuildJoinedMessage(input:IDataInput) : void {
          this.guildInfo = new GuildInformations();
-         this.guildInfo.deserialize(param1);
-         this.memberRights = param1.readUnsignedInt();
-         if(this.memberRights < 0 || this.memberRights > 4.294967295E9)
+         this.guildInfo.deserialize(input);
+         this.memberRights = input.readUnsignedInt();
+         if((this.memberRights < 0) || (this.memberRights > 4.294967295E9))
          {
             throw new Error("Forbidden value (" + this.memberRights + ") on element of GuildJoinedMessage.memberRights.");
          }
          else
          {
-            this.enabled = param1.readBoolean();
+            this.enabled = input.readBoolean();
             return;
          }
       }

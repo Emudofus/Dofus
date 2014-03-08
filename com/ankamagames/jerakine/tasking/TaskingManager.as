@@ -3,10 +3,10 @@ package com.ankamagames.jerakine.tasking
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
    import flash.events.Event;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
+   import __AS3__.vec.*;
    
    public final class TaskingManager extends Object
    {
@@ -48,8 +48,8 @@ package com.ankamagames.jerakine.tasking
          return this._queue;
       }
       
-      public function addTask(param1:SplittedTask) : void {
-         this._queue.push(param1);
+      public function addTask(task:SplittedTask) : void {
+         this._queue.push(task);
          if(!this._running)
          {
             EnterFrameDispatcher.addEventListener(this.onEnterFrame,"TaskingManager");
@@ -57,16 +57,16 @@ package com.ankamagames.jerakine.tasking
          }
       }
       
-      private function onEnterFrame(param1:Event) : void {
-         var _loc3_:* = false;
-         var _loc2_:SplittedTask = this._queue[0] as SplittedTask;
-         var _loc4_:uint = 0;
+      private function onEnterFrame(e:Event) : void {
+         var result:* = false;
+         var task:SplittedTask = this._queue[0] as SplittedTask;
+         var iter:uint = 0;
          do
          {
-               _loc3_ = _loc2_.step();
-            }while(++_loc4_ < _loc2_.stepsPerFrame() && !_loc3_);
+               result = task.step();
+            }while((++iter < task.stepsPerFrame()) && (!result));
             
-            if(_loc3_)
+            if(result)
             {
                this._queue.shift();
                if(this._queue.length == 0)

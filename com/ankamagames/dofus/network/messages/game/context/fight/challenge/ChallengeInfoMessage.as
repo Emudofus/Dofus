@@ -33,11 +33,11 @@ package com.ankamagames.dofus.network.messages.game.context.fight.challenge
          return 6022;
       }
       
-      public function initChallengeInfoMessage(param1:uint=0, param2:int=0, param3:uint=0, param4:uint=0) : ChallengeInfoMessage {
-         this.challengeId = param1;
-         this.targetId = param2;
-         this.xpBonus = param3;
-         this.dropBonus = param4;
+      public function initChallengeInfoMessage(challengeId:uint=0, targetId:int=0, xpBonus:uint=0, dropBonus:uint=0) : ChallengeInfoMessage {
+         this.challengeId = challengeId;
+         this.targetId = targetId;
+         this.xpBonus = xpBonus;
+         this.dropBonus = dropBonus;
          this._isInitialized = true;
          return this;
       }
@@ -50,70 +50,70 @@ package com.ankamagames.dofus.network.messages.game.context.fight.challenge
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ChallengeInfoMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ChallengeInfoMessage(output);
       }
       
-      public function serializeAs_ChallengeInfoMessage(param1:IDataOutput) : void {
+      public function serializeAs_ChallengeInfoMessage(output:IDataOutput) : void {
          if(this.challengeId < 0)
          {
             throw new Error("Forbidden value (" + this.challengeId + ") on element challengeId.");
          }
          else
          {
-            param1.writeShort(this.challengeId);
-            param1.writeInt(this.targetId);
+            output.writeShort(this.challengeId);
+            output.writeInt(this.targetId);
             if(this.xpBonus < 0)
             {
                throw new Error("Forbidden value (" + this.xpBonus + ") on element xpBonus.");
             }
             else
             {
-               param1.writeInt(this.xpBonus);
+               output.writeInt(this.xpBonus);
                if(this.dropBonus < 0)
                {
                   throw new Error("Forbidden value (" + this.dropBonus + ") on element dropBonus.");
                }
                else
                {
-                  param1.writeInt(this.dropBonus);
+                  output.writeInt(this.dropBonus);
                   return;
                }
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ChallengeInfoMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ChallengeInfoMessage(input);
       }
       
-      public function deserializeAs_ChallengeInfoMessage(param1:IDataInput) : void {
-         this.challengeId = param1.readShort();
+      public function deserializeAs_ChallengeInfoMessage(input:IDataInput) : void {
+         this.challengeId = input.readShort();
          if(this.challengeId < 0)
          {
             throw new Error("Forbidden value (" + this.challengeId + ") on element of ChallengeInfoMessage.challengeId.");
          }
          else
          {
-            this.targetId = param1.readInt();
-            this.xpBonus = param1.readInt();
+            this.targetId = input.readInt();
+            this.xpBonus = input.readInt();
             if(this.xpBonus < 0)
             {
                throw new Error("Forbidden value (" + this.xpBonus + ") on element of ChallengeInfoMessage.xpBonus.");
             }
             else
             {
-               this.dropBonus = param1.readInt();
+               this.dropBonus = input.readInt();
                if(this.dropBonus < 0)
                {
                   throw new Error("Forbidden value (" + this.dropBonus + ") on element of ChallengeInfoMessage.dropBonus.");

@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions
       }
       
       public static function create() : HouseGuildRightsViewAction {
-         var _loc1_:HouseGuildRightsViewAction = new HouseGuildRightsViewAction();
-         return _loc1_;
+         var action:HouseGuildRightsViewAction = new HouseGuildRightsViewAction();
+         return action;
       }
    }
 }

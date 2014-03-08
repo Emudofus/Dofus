@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 707;
       }
       
-      public function initGameFightOptionToggleMessage(param1:uint=3) : GameFightOptionToggleMessage {
-         this.option = param1;
+      public function initGameFightOptionToggleMessage(option:uint=3) : GameFightOptionToggleMessage {
+         this.option = option;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightOptionToggleMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightOptionToggleMessage(output);
       }
       
-      public function serializeAs_GameFightOptionToggleMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.option);
+      public function serializeAs_GameFightOptionToggleMessage(output:IDataOutput) : void {
+         output.writeByte(this.option);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightOptionToggleMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightOptionToggleMessage(input);
       }
       
-      public function deserializeAs_GameFightOptionToggleMessage(param1:IDataInput) : void {
-         this.option = param1.readByte();
+      public function deserializeAs_GameFightOptionToggleMessage(input:IDataInput) : void {
+         this.option = input.readByte();
          if(this.option < 0)
          {
             throw new Error("Forbidden value (" + this.option + ") on element of GameFightOptionToggleMessage.option.");

@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(param1:int) : NpcDialogReplyAction {
-         var _loc2_:NpcDialogReplyAction = new NpcDialogReplyAction();
-         _loc2_.replyId = param1;
-         return _loc2_;
+      public static function create(replyId:int) : NpcDialogReplyAction {
+         var a:NpcDialogReplyAction = new NpcDialogReplyAction();
+         a.replyId = replyId;
+         return a;
       }
       
       public var replyId:uint;

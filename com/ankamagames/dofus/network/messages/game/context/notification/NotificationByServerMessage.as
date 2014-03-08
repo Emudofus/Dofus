@@ -2,7 +2,7 @@ package com.ankamagames.dofus.network.messages.game.context.notification
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,10 +33,10 @@ package com.ankamagames.dofus.network.messages.game.context.notification
          return 6103;
       }
       
-      public function initNotificationByServerMessage(param1:uint=0, param2:Vector.<String>=null, param3:Boolean=false) : NotificationByServerMessage {
-         this.id = param1;
-         this.parameters = param2;
-         this.forceOpen = param3;
+      public function initNotificationByServerMessage(id:uint=0, parameters:Vector.<String>=null, forceOpen:Boolean=false) : NotificationByServerMessage {
+         this.id = id;
+         this.parameters = parameters;
+         this.forceOpen = forceOpen;
          this._isInitialized = true;
          return this;
       }
@@ -48,62 +48,62 @@ package com.ankamagames.dofus.network.messages.game.context.notification
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_NotificationByServerMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_NotificationByServerMessage(output);
       }
       
-      public function serializeAs_NotificationByServerMessage(param1:IDataOutput) : void {
-         if(this.id < 0 || this.id > 65535)
+      public function serializeAs_NotificationByServerMessage(output:IDataOutput) : void {
+         if((this.id < 0) || (this.id > 65535))
          {
             throw new Error("Forbidden value (" + this.id + ") on element id.");
          }
          else
          {
-            param1.writeShort(this.id);
-            param1.writeShort(this.parameters.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.parameters.length)
+            output.writeShort(this.id);
+            output.writeShort(this.parameters.length);
+            _i2 = 0;
+            while(_i2 < this.parameters.length)
             {
-               param1.writeUTF(this.parameters[_loc2_]);
-               _loc2_++;
+               output.writeUTF(this.parameters[_i2]);
+               _i2++;
             }
-            param1.writeBoolean(this.forceOpen);
+            output.writeBoolean(this.forceOpen);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_NotificationByServerMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_NotificationByServerMessage(input);
       }
       
-      public function deserializeAs_NotificationByServerMessage(param1:IDataInput) : void {
-         var _loc4_:String = null;
-         this.id = param1.readUnsignedShort();
-         if(this.id < 0 || this.id > 65535)
+      public function deserializeAs_NotificationByServerMessage(input:IDataInput) : void {
+         var _val2:String = null;
+         this.id = input.readUnsignedShort();
+         if((this.id < 0) || (this.id > 65535))
          {
             throw new Error("Forbidden value (" + this.id + ") on element of NotificationByServerMessage.id.");
          }
          else
          {
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            _parametersLen = input.readUnsignedShort();
+            _i2 = 0;
+            while(_i2 < _parametersLen)
             {
-               _loc4_ = param1.readUTF();
-               this.parameters.push(_loc4_);
-               _loc3_++;
+               _val2 = input.readUTF();
+               this.parameters.push(_val2);
+               _i2++;
             }
-            this.forceOpen = param1.readBoolean();
+            this.forceOpen = input.readBoolean();
             return;
          }
       }

@@ -25,11 +25,11 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 156;
       }
       
-      public function initGameRolePlayNpcInformations(param1:int=0, param2:EntityLook=null, param3:EntityDispositionInformations=null, param4:uint=0, param5:Boolean=false, param6:uint=0) : GameRolePlayNpcInformations {
-         super.initGameRolePlayActorInformations(param1,param2,param3);
-         this.npcId = param4;
-         this.sex = param5;
-         this.specialArtworkId = param6;
+      public function initGameRolePlayNpcInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, npcId:uint=0, sex:Boolean=false, specialArtworkId:uint=0) : GameRolePlayNpcInformations {
+         super.initGameRolePlayActorInformations(contextualId,look,disposition);
+         this.npcId = npcId;
+         this.sex = sex;
+         this.specialArtworkId = specialArtworkId;
          return this;
       }
       
@@ -40,47 +40,47 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.specialArtworkId = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameRolePlayNpcInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayNpcInformations(output);
       }
       
-      public function serializeAs_GameRolePlayNpcInformations(param1:IDataOutput) : void {
-         super.serializeAs_GameRolePlayActorInformations(param1);
+      public function serializeAs_GameRolePlayNpcInformations(output:IDataOutput) : void {
+         super.serializeAs_GameRolePlayActorInformations(output);
          if(this.npcId < 0)
          {
             throw new Error("Forbidden value (" + this.npcId + ") on element npcId.");
          }
          else
          {
-            param1.writeShort(this.npcId);
-            param1.writeBoolean(this.sex);
+            output.writeShort(this.npcId);
+            output.writeBoolean(this.sex);
             if(this.specialArtworkId < 0)
             {
                throw new Error("Forbidden value (" + this.specialArtworkId + ") on element specialArtworkId.");
             }
             else
             {
-               param1.writeShort(this.specialArtworkId);
+               output.writeShort(this.specialArtworkId);
                return;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameRolePlayNpcInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayNpcInformations(input);
       }
       
-      public function deserializeAs_GameRolePlayNpcInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.npcId = param1.readShort();
+      public function deserializeAs_GameRolePlayNpcInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.npcId = input.readShort();
          if(this.npcId < 0)
          {
             throw new Error("Forbidden value (" + this.npcId + ") on element of GameRolePlayNpcInformations.npcId.");
          }
          else
          {
-            this.sex = param1.readBoolean();
-            this.specialArtworkId = param1.readShort();
+            this.sex = input.readBoolean();
+            this.specialArtworkId = input.readShort();
             if(this.specialArtworkId < 0)
             {
                throw new Error("Forbidden value (" + this.specialArtworkId + ") on element of GameRolePlayNpcInformations.specialArtworkId.");

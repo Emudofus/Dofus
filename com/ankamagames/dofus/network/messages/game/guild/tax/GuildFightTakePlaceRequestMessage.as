@@ -26,9 +26,9 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 6235;
       }
       
-      public function initGuildFightTakePlaceRequestMessage(param1:int=0, param2:int=0) : GuildFightTakePlaceRequestMessage {
-         super.initGuildFightJoinRequestMessage(param1);
-         this.replacedCharacterId = param2;
+      public function initGuildFightTakePlaceRequestMessage(taxCollectorId:int=0, replacedCharacterId:int=0) : GuildFightTakePlaceRequestMessage {
+         super.initGuildFightJoinRequestMessage(taxCollectorId);
+         this.replacedCharacterId = replacedCharacterId;
          this._isInitialized = true;
          return this;
       }
@@ -39,32 +39,32 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildFightTakePlaceRequestMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildFightTakePlaceRequestMessage(output);
       }
       
-      public function serializeAs_GuildFightTakePlaceRequestMessage(param1:IDataOutput) : void {
-         super.serializeAs_GuildFightJoinRequestMessage(param1);
-         param1.writeInt(this.replacedCharacterId);
+      public function serializeAs_GuildFightTakePlaceRequestMessage(output:IDataOutput) : void {
+         super.serializeAs_GuildFightJoinRequestMessage(output);
+         output.writeInt(this.replacedCharacterId);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildFightTakePlaceRequestMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildFightTakePlaceRequestMessage(input);
       }
       
-      public function deserializeAs_GuildFightTakePlaceRequestMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.replacedCharacterId = param1.readInt();
+      public function deserializeAs_GuildFightTakePlaceRequestMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.replacedCharacterId = input.readInt();
       }
    }
 }

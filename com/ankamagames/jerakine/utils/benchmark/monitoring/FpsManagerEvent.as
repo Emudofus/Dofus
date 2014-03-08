@@ -5,8 +5,8 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
    public class FpsManagerEvent extends Event
    {
       
-      public function FpsManagerEvent(param1:String, param2:Boolean=false, param3:Boolean=false) {
-         super(param1,param2,param3);
+      public function FpsManagerEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
       }
       
       public var data:Object;

@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,8 +30,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6033;
       }
       
-      public function initObjectsAddedMessage(param1:Vector.<ObjectItem>=null) : ObjectsAddedMessage {
-         this.object = param1;
+      public function initObjectsAddedMessage(object:Vector.<ObjectItem>=null) : ObjectsAddedMessage {
+         this.object = object;
          this._isInitialized = true;
          return this;
       }
@@ -41,44 +41,44 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ObjectsAddedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectsAddedMessage(output);
       }
       
-      public function serializeAs_ObjectsAddedMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.object.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.object.length)
+      public function serializeAs_ObjectsAddedMessage(output:IDataOutput) : void {
+         output.writeShort(this.object.length);
+         var _i1:uint = 0;
+         while(_i1 < this.object.length)
          {
-            (this.object[_loc2_] as ObjectItem).serializeAs_ObjectItem(param1);
-            _loc2_++;
+            (this.object[_i1] as ObjectItem).serializeAs_ObjectItem(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ObjectsAddedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectsAddedMessage(input);
       }
       
-      public function deserializeAs_ObjectsAddedMessage(param1:IDataInput) : void {
-         var _loc4_:ObjectItem = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_ObjectsAddedMessage(input:IDataInput) : void {
+         var _item1:ObjectItem = null;
+         var _objectLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _objectLen)
          {
-            _loc4_ = new ObjectItem();
-            _loc4_.deserialize(param1);
-            this.object.push(_loc4_);
-            _loc3_++;
+            _item1 = new ObjectItem();
+            _item1.deserialize(input);
+            this.object.push(_item1);
+            _i1++;
          }
       }
    }

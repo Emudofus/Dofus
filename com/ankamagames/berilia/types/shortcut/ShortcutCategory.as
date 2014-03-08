@@ -3,29 +3,29 @@ package com.ankamagames.berilia.types.shortcut
    public class ShortcutCategory extends Object
    {
       
-      public function ShortcutCategory(param1:String, param2:String) {
+      public function ShortcutCategory(name:String, description:String) {
          super();
-         _caterogies[param1] = this;
-         this._name = param1;
-         this._description = param2;
+         _caterogies[name] = this;
+         this._name = name;
+         this._description = description;
       }
       
       private static var _caterogies:Array = new Array();
       
-      public static function create(param1:String, param2:String) : ShortcutCategory {
-         var _loc3_:ShortcutCategory = _caterogies[param1];
-         if(!_loc3_)
+      public static function create(name:String, description:String) : ShortcutCategory {
+         var sc:ShortcutCategory = _caterogies[name];
+         if(!sc)
          {
-            _loc3_ = new ShortcutCategory(param1,param2);
+            sc = new ShortcutCategory(name,description);
          }
          else
          {
-            if(!_caterogies[param1].description)
+            if(!_caterogies[name].description)
             {
-               _caterogies[param1]._description = param2;
+               _caterogies[name]._description = description;
             }
          }
-         return _loc3_;
+         return sc;
       }
       
       private var _name:String;

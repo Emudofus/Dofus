@@ -25,22 +25,22 @@ package com.ankamagames.jerakine.resources.adapters.impl
          super();
       }
       
-      private static function decipherSwf(param1:ByteArray, param2:ByteArray, param3:ByteArray) : void {
-         var _loc5_:* = 0;
-         var _loc6_:* = 0;
-         var _loc4_:uint = 0;
-         while(param2.bytesAvailable > 0)
+      private static function decipherSwf(output:ByteArray, input:ByteArray, key:ByteArray) : void {
+         var b:* = 0;
+         var d:* = 0;
+         var i:uint = 0;
+         while(input.bytesAvailable > 0)
          {
-            _loc5_ = param2.readByte();
-            _loc6_ = _loc5_ ^ param3[_loc4_ % param3.length];
-            param1.writeByte(_loc6_);
-            _loc4_++;
+            b = input.readByte();
+            d = b ^ key[i % key.length];
+            output.writeByte(d);
+            i++;
          }
       }
       
       private var _scriptClass:Class;
       
-      override protected function getResource(param1:String, param2:*) : * {
+      override protected function getResource(dataFormat:String, data:*) : * {
          return this._scriptClass;
       }
       
@@ -48,14 +48,12 @@ package com.ankamagames.jerakine.resources.adapters.impl
          return ResourceType.RESOURCE_DX;
       }
       
-      override protected function process(param1:String, param2:*) : void {
+      override protected function process(dataFormat:String, data:*) : void {
          var file:uint = 0;
          var version:uint = 0;
          var keyLen:int = 0;
          var key:ByteArray = null;
          var swfData:ByteArray = null;
-         var dataFormat:String = param1;
-         var data:* = param2;
          try
          {
             file = data.readByte();
@@ -95,11 +93,11 @@ package com.ankamagames.jerakine.resources.adapters.impl
          return URLLoaderDataFormat.BINARY;
       }
       
-      private function onScriptInit(param1:Event) : void {
-         var _loc2_:ApplicationDomain = (param1.target as LoaderInfo).applicationDomain;
-         if(_loc2_.hasDefinition("Script"))
+      private function onScriptInit(e:Event) : void {
+         var ap:ApplicationDomain = (e.target as LoaderInfo).applicationDomain;
+         if(ap.hasDefinition("Script"))
          {
-            this._scriptClass = _loc2_.getDefinition("Script") as Class;
+            this._scriptClass = ap.getDefinition("Script") as Class;
             dispatchSuccess(null,null);
          }
          else
@@ -108,20 +106,20 @@ package com.ankamagames.jerakine.resources.adapters.impl
          }
       }
       
-      private function onScriptError(param1:ErrorEvent) : void {
-         var _loc2_:uint = ResourceErrorCode.UNKNOWN_ERROR;
-         if(param1 is IOErrorEvent)
+      private function onScriptError(ee:ErrorEvent) : void {
+         var errCode:uint = ResourceErrorCode.UNKNOWN_ERROR;
+         if(ee is IOErrorEvent)
          {
-            _loc2_ = ResourceErrorCode.DX_MALFORMED_BINARY;
+            errCode = ResourceErrorCode.DX_MALFORMED_BINARY;
          }
          else
          {
-            if(param1 is SecurityErrorEvent)
+            if(ee is SecurityErrorEvent)
             {
-               _loc2_ = ResourceErrorCode.DX_SECURITY_ERROR;
+               errCode = ResourceErrorCode.DX_SECURITY_ERROR;
             }
          }
-         dispatchFailure("Script loading from binaries failed: " + param1.text,_loc2_);
+         dispatchFailure("Script loading from binaries failed: " + ee.text,errCode);
       }
    }
 }

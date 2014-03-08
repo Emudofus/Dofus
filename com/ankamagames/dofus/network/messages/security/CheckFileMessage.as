@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.security
          return 6156;
       }
       
-      public function initCheckFileMessage(param1:String="", param2:uint=0, param3:String="") : CheckFileMessage {
-         this.filenameHash = param1;
-         this.type = param2;
-         this.value = param3;
+      public function initCheckFileMessage(filenameHash:String="", type:uint=0, value:String="") : CheckFileMessage {
+         this.filenameHash = filenameHash;
+         this.type = type;
+         this.value = value;
          this._isInitialized = true;
          return this;
       }
@@ -46,40 +46,40 @@ package com.ankamagames.dofus.network.messages.security
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CheckFileMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CheckFileMessage(output);
       }
       
-      public function serializeAs_CheckFileMessage(param1:IDataOutput) : void {
-         param1.writeUTF(this.filenameHash);
-         param1.writeByte(this.type);
-         param1.writeUTF(this.value);
+      public function serializeAs_CheckFileMessage(output:IDataOutput) : void {
+         output.writeUTF(this.filenameHash);
+         output.writeByte(this.type);
+         output.writeUTF(this.value);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CheckFileMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CheckFileMessage(input);
       }
       
-      public function deserializeAs_CheckFileMessage(param1:IDataInput) : void {
-         this.filenameHash = param1.readUTF();
-         this.type = param1.readByte();
+      public function deserializeAs_CheckFileMessage(input:IDataInput) : void {
+         this.filenameHash = input.readUTF();
+         this.type = input.readByte();
          if(this.type < 0)
          {
             throw new Error("Forbidden value (" + this.type + ") on element of CheckFileMessage.type.");
          }
          else
          {
-            this.value = param1.readUTF();
+            this.value = input.readUTF();
             return;
          }
       }

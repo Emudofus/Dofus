@@ -50,98 +50,96 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:JobCrafterDirectoryListRequestAction = null;
-         var _loc3_:JobCrafterDirectoryListRequestMessage = null;
-         var _loc4_:JobCrafterDirectoryEntryRequestAction = null;
-         var _loc5_:JobCrafterDirectoryEntryRequestMessage = null;
-         var _loc6_:JobCrafterContactLookRequestAction = null;
-         var _loc7_:JobCrafterDirectoryListMessage = null;
-         var _loc8_:JobCrafterDirectoryRemoveMessage = null;
-         var _loc9_:JobCrafterDirectoryAddMessage = null;
-         var _loc10_:ExchangeLeaveMessage = null;
-         var _loc11_:ContactLookRequestByIdMessage = null;
-         var _loc12_:JobCrafterDirectoryListEntry = null;
-         var _loc13_:uint = 0;
-         var _loc14_:Object = null;
-         var _loc15_:Object = null;
+      public function process(msg:Message) : Boolean {
+         var jcdlra:JobCrafterDirectoryListRequestAction = null;
+         var jcdlrmsg:JobCrafterDirectoryListRequestMessage = null;
+         var jcdera:JobCrafterDirectoryEntryRequestAction = null;
+         var jcdermsg:JobCrafterDirectoryEntryRequestMessage = null;
+         var jcclra:JobCrafterContactLookRequestAction = null;
+         var jcdlmsg:JobCrafterDirectoryListMessage = null;
+         var jcdrmsg:JobCrafterDirectoryRemoveMessage = null;
+         var jcdamsg:JobCrafterDirectoryAddMessage = null;
+         var elm:ExchangeLeaveMessage = null;
+         var clrbimsg:ContactLookRequestByIdMessage = null;
+         var entry:JobCrafterDirectoryListEntry = null;
+         var i:uint = 0;
+         var jobInfo:Object = null;
+         var iCrafter:Object = null;
          switch(true)
          {
-            case param1 is JobCrafterDirectoryListRequestAction:
-               _loc2_ = param1 as JobCrafterDirectoryListRequestAction;
-               _loc3_ = new JobCrafterDirectoryListRequestMessage();
-               _loc3_.initJobCrafterDirectoryListRequestMessage(_loc2_.jobId);
-               ConnectionsHandler.getConnection().send(_loc3_);
+            case msg is JobCrafterDirectoryListRequestAction:
+               jcdlra = msg as JobCrafterDirectoryListRequestAction;
+               jcdlrmsg = new JobCrafterDirectoryListRequestMessage();
+               jcdlrmsg.initJobCrafterDirectoryListRequestMessage(jcdlra.jobId);
+               ConnectionsHandler.getConnection().send(jcdlrmsg);
                return true;
-            case param1 is JobCrafterDirectoryEntryRequestAction:
-               _loc4_ = param1 as JobCrafterDirectoryEntryRequestAction;
-               _loc5_ = new JobCrafterDirectoryEntryRequestMessage();
-               _loc5_.initJobCrafterDirectoryEntryRequestMessage(_loc4_.playerId);
-               ConnectionsHandler.getConnection().send(_loc5_);
+            case msg is JobCrafterDirectoryEntryRequestAction:
+               jcdera = msg as JobCrafterDirectoryEntryRequestAction;
+               jcdermsg = new JobCrafterDirectoryEntryRequestMessage();
+               jcdermsg.initJobCrafterDirectoryEntryRequestMessage(jcdera.playerId);
+               ConnectionsHandler.getConnection().send(jcdermsg);
                return true;
-            case param1 is JobCrafterContactLookRequestAction:
-               _loc6_ = param1 as JobCrafterContactLookRequestAction;
-               if(_loc6_.crafterId == PlayedCharacterManager.getInstance().id)
+            case msg is JobCrafterContactLookRequestAction:
+               jcclra = msg as JobCrafterContactLookRequestAction;
+               if(jcclra.crafterId == PlayedCharacterManager.getInstance().id)
                {
-                  KernelEventsManager.getInstance().processCallback(CraftHookList.JobCrafterContactLook,_loc6_.crafterId,PlayedCharacterManager.getInstance().infos.name,EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().infos.entityLook));
+                  KernelEventsManager.getInstance().processCallback(CraftHookList.JobCrafterContactLook,jcclra.crafterId,PlayedCharacterManager.getInstance().infos.name,EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().infos.entityLook));
                }
                else
                {
-                  _loc11_ = new ContactLookRequestByIdMessage();
-                  _loc11_.initContactLookRequestByIdMessage(0,SocialContactCategoryEnum.SOCIAL_CONTACT_CRAFTER,_loc6_.crafterId);
-                  ConnectionsHandler.getConnection().send(_loc11_);
+                  clrbimsg = new ContactLookRequestByIdMessage();
+                  clrbimsg.initContactLookRequestByIdMessage(0,SocialContactCategoryEnum.SOCIAL_CONTACT_CRAFTER,jcclra.crafterId);
+                  ConnectionsHandler.getConnection().send(clrbimsg);
                }
                return true;
-            case param1 is JobCrafterDirectoryListMessage:
-               _loc7_ = param1 as JobCrafterDirectoryListMessage;
+            case msg is JobCrafterDirectoryListMessage:
+               jcdlmsg = msg as JobCrafterDirectoryListMessage;
                this._crafterList = new Array();
-               for each (_loc12_ in _loc7_.listEntries)
+               for each (entry in jcdlmsg.listEntries)
                {
-                  this._crafterList.push(CraftsmanWrapper.create(_loc12_));
+                  this._crafterList.push(CraftsmanWrapper.create(entry));
                }
                KernelEventsManager.getInstance().processCallback(CraftHookList.CrafterDirectoryListUpdate,this._crafterList);
                return true;
-            case param1 is JobCrafterDirectoryRemoveMessage:
-               _loc8_ = param1 as JobCrafterDirectoryRemoveMessage;
-               _loc13_ = 0;
-               while(_loc13_ < this._crafterList.length)
+            case msg is JobCrafterDirectoryRemoveMessage:
+               jcdrmsg = msg as JobCrafterDirectoryRemoveMessage;
+               i = 0;
+               while(i < this._crafterList.length)
                {
-                  _loc14_ = this._crafterList[_loc13_];
-                  if(_loc14_.jobId == _loc8_.jobId && _loc14_.playerId == _loc8_.playerId)
+                  jobInfo = this._crafterList[i];
+                  if((jobInfo.jobId == jcdrmsg.jobId) && (jobInfo.playerId == jcdrmsg.playerId))
                   {
-                     this._crafterList.splice(_loc13_,1);
+                     this._crafterList.splice(i,1);
                      break;
                   }
-                  _loc13_++;
+                  i++;
                }
                KernelEventsManager.getInstance().processCallback(CraftHookList.CrafterDirectoryListUpdate,this._crafterList);
                return true;
-            case param1 is JobCrafterDirectoryAddMessage:
-               _loc9_ = param1 as JobCrafterDirectoryAddMessage;
-               for (_loc15_ in this._crafterList)
+            case msg is JobCrafterDirectoryAddMessage:
+               jcdamsg = msg as JobCrafterDirectoryAddMessage;
+               for (iCrafter in this._crafterList)
                {
-                  if(_loc9_.listEntry.playerInfo.playerId == this._crafterList[_loc15_].playerId)
+                  if(jcdamsg.listEntry.playerInfo.playerId == this._crafterList[iCrafter].playerId)
                   {
-                     this._crafterList.splice(_loc15_,1);
+                     this._crafterList.splice(iCrafter,1);
                   }
                }
-               this._crafterList.push(CraftsmanWrapper.create(_loc9_.listEntry));
+               this._crafterList.push(CraftsmanWrapper.create(jcdamsg.listEntry));
                KernelEventsManager.getInstance().processCallback(CraftHookList.CrafterDirectoryListUpdate,this._crafterList);
                return true;
-            case param1 is JobCrafterDirectoryEntryMessage:
+            case msg is JobCrafterDirectoryEntryMessage:
                return false;
-            case param1 is LeaveDialogRequestAction:
+            case msg is LeaveDialogRequestAction:
                ConnectionsHandler.getConnection().send(new LeaveDialogRequestMessage());
                return true;
-            case param1 is ExchangeLeaveMessage:
-               _loc10_ = param1 as ExchangeLeaveMessage;
-               if(_loc10_.dialogType == DialogTypeEnum.DIALOG_EXCHANGE)
+            case msg is ExchangeLeaveMessage:
+               elm = msg as ExchangeLeaveMessage;
+               if(elm.dialogType == DialogTypeEnum.DIALOG_EXCHANGE)
                {
                   Kernel.getWorker().removeFrame(this);
                }
                return true;
-            default:
-               return false;
          }
       }
       

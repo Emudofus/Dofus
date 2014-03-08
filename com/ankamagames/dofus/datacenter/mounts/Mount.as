@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.mounts
       
       private static var MODULE:String = "Mounts";
       
-      public static function getMountById(param1:uint) : Mount {
-         return GameData.getObject(MODULE,param1) as Mount;
+      public static function getMountById(id:uint) : Mount {
+         return GameData.getObject(MODULE,id) as Mount;
       }
       
       public static function getMounts() : Array {

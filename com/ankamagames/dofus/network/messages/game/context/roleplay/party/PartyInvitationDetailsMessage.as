@@ -1,9 +1,9 @@
 package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyInvitationMemberInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyGuestInformations;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -41,14 +41,14 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6263;
       }
       
-      public function initPartyInvitationDetailsMessage(param1:uint=0, param2:uint=0, param3:uint=0, param4:String="", param5:uint=0, param6:Vector.<PartyInvitationMemberInformations>=null, param7:Vector.<PartyGuestInformations>=null) : PartyInvitationDetailsMessage {
-         super.initAbstractPartyMessage(param1);
-         this.partyType = param2;
-         this.fromId = param3;
-         this.fromName = param4;
-         this.leaderId = param5;
-         this.members = param6;
-         this.guests = param7;
+      public function initPartyInvitationDetailsMessage(partyId:uint=0, partyType:uint=0, fromId:uint=0, fromName:String="", leaderId:uint=0, members:Vector.<PartyInvitationMemberInformations>=null, guests:Vector.<PartyGuestInformations>=null) : PartyInvitationDetailsMessage {
+         super.initAbstractPartyMessage(partyId);
+         this.partyType = partyType;
+         this.fromId = fromId;
+         this.fromName = fromName;
+         this.leaderId = leaderId;
+         this.members = members;
+         this.guests = guests;
          this._isInitialized = true;
          return this;
       }
@@ -64,104 +64,104 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PartyInvitationDetailsMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartyInvitationDetailsMessage(output);
       }
       
-      public function serializeAs_PartyInvitationDetailsMessage(param1:IDataOutput) : void {
-         super.serializeAs_AbstractPartyMessage(param1);
-         param1.writeByte(this.partyType);
+      public function serializeAs_PartyInvitationDetailsMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractPartyMessage(output);
+         output.writeByte(this.partyType);
          if(this.fromId < 0)
          {
             throw new Error("Forbidden value (" + this.fromId + ") on element fromId.");
          }
          else
          {
-            param1.writeInt(this.fromId);
-            param1.writeUTF(this.fromName);
+            output.writeInt(this.fromId);
+            output.writeUTF(this.fromName);
             if(this.leaderId < 0)
             {
                throw new Error("Forbidden value (" + this.leaderId + ") on element leaderId.");
             }
             else
             {
-               param1.writeInt(this.leaderId);
-               param1.writeShort(this.members.length);
-               _loc2_ = 0;
-               while(_loc2_ < this.members.length)
+               output.writeInt(this.leaderId);
+               output.writeShort(this.members.length);
+               _i5 = 0;
+               while(_i5 < this.members.length)
                {
-                  (this.members[_loc2_] as PartyInvitationMemberInformations).serializeAs_PartyInvitationMemberInformations(param1);
-                  _loc2_++;
+                  (this.members[_i5] as PartyInvitationMemberInformations).serializeAs_PartyInvitationMemberInformations(output);
+                  _i5++;
                }
-               param1.writeShort(this.guests.length);
-               _loc3_ = 0;
-               while(_loc3_ < this.guests.length)
+               output.writeShort(this.guests.length);
+               _i6 = 0;
+               while(_i6 < this.guests.length)
                {
-                  (this.guests[_loc3_] as PartyGuestInformations).serializeAs_PartyGuestInformations(param1);
-                  _loc3_++;
+                  (this.guests[_i6] as PartyGuestInformations).serializeAs_PartyGuestInformations(output);
+                  _i6++;
                }
                return;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PartyInvitationDetailsMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartyInvitationDetailsMessage(input);
       }
       
-      public function deserializeAs_PartyInvitationDetailsMessage(param1:IDataInput) : void {
-         var _loc6_:PartyInvitationMemberInformations = null;
-         var _loc7_:PartyGuestInformations = null;
-         super.deserialize(param1);
-         this.partyType = param1.readByte();
+      public function deserializeAs_PartyInvitationDetailsMessage(input:IDataInput) : void {
+         var _item5:PartyInvitationMemberInformations = null;
+         var _item6:PartyGuestInformations = null;
+         super.deserialize(input);
+         this.partyType = input.readByte();
          if(this.partyType < 0)
          {
             throw new Error("Forbidden value (" + this.partyType + ") on element of PartyInvitationDetailsMessage.partyType.");
          }
          else
          {
-            this.fromId = param1.readInt();
+            this.fromId = input.readInt();
             if(this.fromId < 0)
             {
                throw new Error("Forbidden value (" + this.fromId + ") on element of PartyInvitationDetailsMessage.fromId.");
             }
             else
             {
-               this.fromName = param1.readUTF();
-               this.leaderId = param1.readInt();
+               this.fromName = input.readUTF();
+               this.leaderId = input.readInt();
                if(this.leaderId < 0)
                {
                   throw new Error("Forbidden value (" + this.leaderId + ") on element of PartyInvitationDetailsMessage.leaderId.");
                }
                else
                {
-                  _loc2_ = param1.readUnsignedShort();
-                  _loc3_ = 0;
-                  while(_loc3_ < _loc2_)
+                  _membersLen = input.readUnsignedShort();
+                  _i5 = 0;
+                  while(_i5 < _membersLen)
                   {
-                     _loc6_ = new PartyInvitationMemberInformations();
-                     _loc6_.deserialize(param1);
-                     this.members.push(_loc6_);
-                     _loc3_++;
+                     _item5 = new PartyInvitationMemberInformations();
+                     _item5.deserialize(input);
+                     this.members.push(_item5);
+                     _i5++;
                   }
-                  _loc4_ = param1.readUnsignedShort();
-                  _loc5_ = 0;
-                  while(_loc5_ < _loc4_)
+                  _guestsLen = input.readUnsignedShort();
+                  _i6 = 0;
+                  while(_i6 < _guestsLen)
                   {
-                     _loc7_ = new PartyGuestInformations();
-                     _loc7_.deserialize(param1);
-                     this.guests.push(_loc7_);
-                     _loc5_++;
+                     _item6 = new PartyGuestInformations();
+                     _item6.deserialize(input);
+                     this.guests.push(_item6);
+                     _i6++;
                   }
                   return;
                }

@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 5616;
       }
       
-      public function initNpcDialogReplyMessage(param1:uint=0) : NpcDialogReplyMessage {
-         this.replyId = param1;
+      public function initNpcDialogReplyMessage(replyId:uint=0) : NpcDialogReplyMessage {
+         this.replyId = replyId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_NpcDialogReplyMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_NpcDialogReplyMessage(output);
       }
       
-      public function serializeAs_NpcDialogReplyMessage(param1:IDataOutput) : void {
+      public function serializeAs_NpcDialogReplyMessage(output:IDataOutput) : void {
          if(this.replyId < 0)
          {
             throw new Error("Forbidden value (" + this.replyId + ") on element replyId.");
          }
          else
          {
-            param1.writeShort(this.replyId);
+            output.writeShort(this.replyId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_NpcDialogReplyMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_NpcDialogReplyMessage(input);
       }
       
-      public function deserializeAs_NpcDialogReplyMessage(param1:IDataInput) : void {
-         this.replyId = param1.readShort();
+      public function deserializeAs_NpcDialogReplyMessage(input:IDataInput) : void {
+         this.replyId = input.readShort();
          if(this.replyId < 0)
          {
             throw new Error("Forbidden value (" + this.replyId + ") on element of NpcDialogReplyMessage.replyId.");

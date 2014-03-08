@@ -72,171 +72,171 @@ package com.ankamagames.dofus.logic.game.common.managers
       }
       
       public function getTimestamp() : Number {
-         var _loc1_:Date = new Date();
-         return _loc1_.getTime() + this.serverTimeLag;
+         var date:Date = new Date();
+         return date.getTime() + this.serverTimeLag;
       }
       
       public function getUtcTimestamp() : Number {
-         var _loc1_:Date = new Date();
-         return _loc1_.getTime() + this.serverUtcTimeLag;
+         var date:Date = new Date();
+         return date.getTime() + this.serverUtcTimeLag;
       }
       
-      public function formatClock(param1:Number, param2:Boolean=false, param3:Boolean=false) : String {
-         var _loc4_:Number = param1;
-         if((param2) && _loc4_ > 0)
+      public function formatClock(time:Number, unchanged:Boolean=false, useTimezoneOffset:Boolean=false) : String {
+         var timeToUse:Number = time;
+         if((unchanged) && (timeToUse > 0))
          {
-            _loc4_ = _loc4_ - this.serverTimeLag;
+            timeToUse = timeToUse - this.serverTimeLag;
          }
-         var _loc5_:Array = this.getDateFromTime(_loc4_,param3);
-         var _loc6_:String = _loc5_[1] >= 10?_loc5_[1].toString():"0" + _loc5_[1];
-         var _loc7_:String = _loc5_[0] >= 10?_loc5_[0].toString():"0" + _loc5_[0];
-         return _loc6_ + ":" + _loc7_;
+         var date:Array = this.getDateFromTime(timeToUse,useTimezoneOffset);
+         var hour:String = date[1] >= 10?date[1].toString():"0" + date[1];
+         var minute:String = date[0] >= 10?date[0].toString():"0" + date[0];
+         return hour + ":" + minute;
       }
       
-      public function formatDateIRL(param1:Number, param2:Boolean=false) : String {
-         var _loc3_:Array = this.getDateFromTime(param1,param2);
-         var _loc4_:String = _loc3_[2] > 9?_loc3_[2].toString():"0" + _loc3_[2];
-         var _loc5_:String = _loc3_[3] > 9?_loc3_[3].toString():"0" + _loc3_[3];
-         return I18n.getUiText("ui.time.dateNumbers",[_loc4_,_loc5_,_loc3_[4]]);
+      public function formatDateIRL(time:Number, useTimezoneOffset:Boolean=false) : String {
+         var date:Array = this.getDateFromTime(time,useTimezoneOffset);
+         var day:String = date[2] > 9?date[2].toString():"0" + date[2];
+         var month:String = date[3] > 9?date[3].toString():"0" + date[3];
+         return I18n.getUiText("ui.time.dateNumbers",[day,month,date[4]]);
       }
       
-      public function formatDateIG(param1:Number) : String {
-         var _loc2_:Array = this.getDateFromTime(param1);
-         var _loc3_:Number = _loc2_[4] + this.dofusTimeYearLag;
-         var _loc4_:String = Month.getMonthById(_loc2_[3]-1).name;
-         return I18n.getUiText("ui.time.dateLetters",[_loc2_[2],_loc4_,_loc3_]);
+      public function formatDateIG(time:Number) : String {
+         var date:Array = this.getDateFromTime(time);
+         var nyear:Number = date[4] + this.dofusTimeYearLag;
+         var month:String = Month.getMonthById(date[3] - 1).name;
+         return I18n.getUiText("ui.time.dateLetters",[date[2],month,nyear]);
       }
       
-      public function getDateIG(param1:Number) : Array {
-         var _loc2_:Array = this.getDateFromTime(param1);
-         var _loc3_:Number = _loc2_[4] + this.dofusTimeYearLag;
-         var _loc4_:String = Month.getMonthById(_loc2_[3]-1).name;
-         return [_loc2_[2],_loc4_,_loc3_];
+      public function getDateIG(time:Number) : Array {
+         var date:Array = this.getDateFromTime(time);
+         var nyear:Number = date[4] + this.dofusTimeYearLag;
+         var month:String = Month.getMonthById(date[3] - 1).name;
+         return [date[2],month,nyear];
       }
       
-      public function getDuration(param1:Number, param2:Boolean=false, param3:Boolean=false) : String {
-         var _loc4_:String = null;
-         var _loc11_:String = null;
-         var _loc12_:String = null;
-         var _loc13_:String = null;
-         var _loc14_:* = NaN;
-         var _loc15_:String = null;
-         var _loc16_:String = null;
-         var _loc17_:String = null;
+      public function getDuration(time:Number, short:Boolean=false, addSeconds:Boolean=false) : String {
+         var result:String = null;
+         var hour:String = null;
+         var minute:String = null;
+         var second:String = null;
+         var nsecond:* = NaN;
+         var day:String = null;
+         var month:String = null;
+         var year:String = null;
          if(!this._bTextInit)
          {
             this.initText();
          }
-         var _loc5_:Date = new Date(param1);
-         if(param3)
+         var date:Date = new Date(time);
+         if(addSeconds)
          {
-            _loc14_ = _loc5_.getUTCSeconds();
+            nsecond = date.getUTCSeconds();
          }
-         var _loc6_:Number = _loc5_.getUTCMinutes();
-         var _loc7_:Number = _loc5_.getUTCHours();
-         var _loc8_:Number = _loc5_.getUTCDate()-1;
-         var _loc9_:Number = _loc5_.getUTCMonth();
-         var _loc10_:Number = _loc5_.getUTCFullYear() - 1970;
-         if(!param2)
+         var nminute:Number = date.getUTCMinutes();
+         var nhour:Number = date.getUTCHours();
+         var nday:Number = date.getUTCDate() - 1;
+         var nmonth:Number = date.getUTCMonth();
+         var nyear:Number = date.getUTCFullYear() - 1970;
+         if(!short)
          {
-            if(param3)
+            if(addSeconds)
             {
-               _loc13_ = _loc14_ > 1?_loc14_ + " " + PatternDecoder.combine(this._nameSeconds,"f",false):_loc14_ + " " + PatternDecoder.combine(this._nameSeconds,"f",true);
+               second = nsecond > 1?nsecond + " " + PatternDecoder.combine(this._nameSeconds,"f",false):nsecond + " " + PatternDecoder.combine(this._nameSeconds,"f",true);
             }
-            _loc12_ = _loc6_ > 1?_loc6_ + " " + PatternDecoder.combine(this._nameMinutes,"f",false):_loc6_ + " " + PatternDecoder.combine(this._nameMinutes,"f",true);
-            _loc11_ = _loc7_ > 1?_loc7_ + " " + PatternDecoder.combine(this._nameHours,"f",false):_loc7_ + " " + PatternDecoder.combine(this._nameHours,"f",true);
-            _loc15_ = _loc8_ > 1?_loc8_ + " " + PatternDecoder.combine(this._nameDays,"f",false):_loc8_ + " " + PatternDecoder.combine(this._nameDays,"f",true);
-            _loc16_ = _loc9_ > 1?_loc9_ + " " + PatternDecoder.combine(this._nameMonths,"f",false):_loc9_ + " " + PatternDecoder.combine(this._nameMonths,"f",true);
-            _loc17_ = _loc10_ > 1?_loc10_ + " " + PatternDecoder.combine(this._nameYears,"f",false):_loc10_ + " " + PatternDecoder.combine(this._nameYears,"f",true);
-            if(_loc10_ == 0)
+            minute = nminute > 1?nminute + " " + PatternDecoder.combine(this._nameMinutes,"f",false):nminute + " " + PatternDecoder.combine(this._nameMinutes,"f",true);
+            hour = nhour > 1?nhour + " " + PatternDecoder.combine(this._nameHours,"f",false):nhour + " " + PatternDecoder.combine(this._nameHours,"f",true);
+            day = nday > 1?nday + " " + PatternDecoder.combine(this._nameDays,"f",false):nday + " " + PatternDecoder.combine(this._nameDays,"f",true);
+            month = nmonth > 1?nmonth + " " + PatternDecoder.combine(this._nameMonths,"f",false):nmonth + " " + PatternDecoder.combine(this._nameMonths,"f",true);
+            year = nyear > 1?nyear + " " + PatternDecoder.combine(this._nameYears,"f",false):nyear + " " + PatternDecoder.combine(this._nameYears,"f",true);
+            if(nyear == 0)
             {
-               if(_loc9_ == 0)
+               if(nmonth == 0)
                {
-                  if(_loc8_ == 0)
+                  if(nday == 0)
                   {
-                     if(_loc7_ == 0)
+                     if(nhour == 0)
                      {
-                        if(param3)
+                        if(addSeconds)
                         {
-                           if(_loc6_ == 0)
+                           if(nminute == 0)
                            {
-                              _loc4_ = _loc13_;
+                              result = second;
                            }
                            else
                            {
-                              _loc4_ = _loc12_ + " " + this._nameAnd + " " + _loc13_;
+                              result = minute + " " + this._nameAnd + " " + second;
                            }
                         }
                         else
                         {
-                           _loc4_ = _loc12_;
+                           result = minute;
                         }
                      }
                      else
                      {
-                        _loc4_ = _loc11_ + " " + this._nameAnd + " " + _loc12_;
+                        result = hour + " " + this._nameAnd + " " + minute;
                      }
                   }
                   else
                   {
-                     _loc4_ = _loc15_ + " " + this._nameAnd + " " + _loc11_;
+                     result = day + " " + this._nameAnd + " " + hour;
                   }
                }
                else
                {
-                  _loc4_ = _loc16_ + " " + this._nameAnd + " " + _loc15_;
+                  result = month + " " + this._nameAnd + " " + day;
                }
             }
             else
             {
-               _loc4_ = _loc17_ + " " + this._nameAnd + " " + _loc16_;
+               result = year + " " + this._nameAnd + " " + month;
             }
-            return _loc4_;
+            return result;
          }
-         _loc11_ = _loc7_ >= 10?_loc7_.toString():"0" + _loc7_;
-         _loc12_ = _loc6_ >= 10?_loc6_.toString():"0" + _loc6_;
-         if(param3)
+         hour = nhour >= 10?nhour.toString():"0" + nhour;
+         minute = nminute >= 10?nminute.toString():"0" + nminute;
+         if(addSeconds)
          {
-            _loc13_ = _loc14_ >= 10?_loc14_.toString():"0" + _loc14_;
-            return _loc11_ + ":" + _loc12_ + ":" + _loc13_;
+            second = nsecond >= 10?nsecond.toString():"0" + nsecond;
+            return hour + ":" + minute + ":" + second;
          }
-         return _loc11_ + ":" + _loc12_;
+         return hour + ":" + minute;
       }
       
-      public function getDateFromTime(param1:Number, param2:Boolean=false) : Array {
-         var _loc3_:Date = null;
-         var _loc4_:* = NaN;
-         var _loc5_:* = NaN;
-         var _loc6_:* = NaN;
-         var _loc7_:* = NaN;
-         var _loc8_:* = NaN;
-         var _loc9_:Date = null;
-         if(param1 == 0)
+      public function getDateFromTime(timeUTC:Number, useTimezoneOffset:Boolean=false) : Array {
+         var date:Date = null;
+         var nday:* = NaN;
+         var nmonth:* = NaN;
+         var nyear:* = NaN;
+         var nhour:* = NaN;
+         var nminute:* = NaN;
+         var date0:Date = null;
+         if(timeUTC == 0)
          {
-            _loc9_ = new Date();
-            _loc3_ = new Date(_loc9_.getTime() + this.serverTimeLag);
+            date0 = new Date();
+            date = new Date(date0.getTime() + this.serverTimeLag);
          }
          else
          {
-            _loc3_ = new Date(param1 + this.serverTimeLag);
+            date = new Date(timeUTC + this.serverTimeLag);
          }
-         if(param2)
+         if(useTimezoneOffset)
          {
-            _loc4_ = _loc3_.getDate();
-            _loc5_ = _loc3_.getMonth() + 1;
-            _loc6_ = _loc3_.getFullYear();
-            _loc7_ = _loc3_.getHours();
-            _loc8_ = _loc3_.getMinutes();
+            nday = date.getDate();
+            nmonth = date.getMonth() + 1;
+            nyear = date.getFullYear();
+            nhour = date.getHours();
+            nminute = date.getMinutes();
          }
          else
          {
-            _loc4_ = _loc3_.getUTCDate();
-            _loc5_ = _loc3_.getUTCMonth() + 1;
-            _loc6_ = _loc3_.getUTCFullYear();
-            _loc7_ = _loc3_.getUTCHours();
-            _loc8_ = _loc3_.getUTCMinutes();
+            nday = date.getUTCDate();
+            nmonth = date.getUTCMonth() + 1;
+            nyear = date.getUTCFullYear();
+            nhour = date.getUTCHours();
+            nminute = date.getUTCMinutes();
          }
-         return [_loc8_,_loc7_,_loc4_,_loc5_,_loc6_];
+         return [nminute,nhour,nday,nmonth,nyear];
       }
       
       private function initText() : void {

@@ -5,12 +5,12 @@ package com.ankamagames.atouin.types
    public class InteractiveCell extends Object
    {
       
-      public function InteractiveCell(param1:uint, param2:DisplayObjectContainer, param3:Number, param4:Number) {
+      public function InteractiveCell(_cellId:uint, _sprite:DisplayObjectContainer, _x:Number, _y:Number) {
          super();
-         this.cellId = param1;
-         this.sprite = param2;
-         this.x = param3;
-         this.y = param4;
+         this.cellId = _cellId;
+         this.sprite = _sprite;
+         this.x = _x;
+         this.y = _y;
       }
       
       public var cellId:uint;

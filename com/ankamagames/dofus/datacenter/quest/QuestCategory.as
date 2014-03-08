@@ -2,8 +2,8 @@ package com.ankamagames.dofus.datacenter.quest
 {
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.data.GameData;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.data.I18n;
+   import __AS3__.vec.*;
    
    public class QuestCategory extends Object implements IDataCenter
    {
@@ -14,8 +14,8 @@ package com.ankamagames.dofus.datacenter.quest
       
       public static const MODULE:String = "QuestCategory";
       
-      public static function getQuestCategoryById(param1:int) : QuestCategory {
-         return GameData.getObject(MODULE,param1) as QuestCategory;
+      public static function getQuestCategoryById(id:int) : QuestCategory {
+         return GameData.getObject(MODULE,id) as QuestCategory;
       }
       
       public static function getQuestCategories() : Array {
@@ -43,17 +43,17 @@ package com.ankamagames.dofus.datacenter.quest
       }
       
       public function get quests() : Vector.<Quest> {
-         var _loc1_:* = 0;
-         var _loc2_:* = 0;
+         var i:* = 0;
+         var len:* = 0;
          if(!this._quests)
          {
-            _loc2_ = this.questIds.length;
-            this._quests = new Vector.<Quest>(_loc2_,true);
-            _loc1_ = 0;
-            while(_loc1_ < _loc2_)
+            len = this.questIds.length;
+            this._quests = new Vector.<Quest>(len,true);
+            i = 0;
+            while(i < len)
             {
-               this._quests[_loc1_] = Quest.getQuestById(this.questIds[_loc1_]);
-               _loc1_ = _loc1_ + 1;
+               this._quests[i] = Quest.getQuestById(this.questIds[i]);
+               i = i + 1;
             }
          }
          return this._quests;

@@ -31,13 +31,13 @@ package com.ankamagames.tubul.resources.adapters
       
       private var _sound:Sound;
       
-      override public function loadDirectly(param1:Uri, param2:String, param3:IResourceObserver, param4:Boolean) : void {
-         this._observer = param3;
-         this._uri = param1;
-         this._dispatchProgress = param4;
+      override public function loadDirectly(uri:Uri, path:String, observer:IResourceObserver, dispatchProgress:Boolean) : void {
+         this._observer = observer;
+         this._uri = uri;
+         this._dispatchProgress = dispatchProgress;
          this._dispatchProgress = true;
          this.prepareLoader();
-         this._sound.load(new URLRequest(param2));
+         this._sound.load(new URLRequest(path));
       }
       
       override public function free() : void {
@@ -46,7 +46,7 @@ package com.ankamagames.tubul.resources.adapters
          this._observer = null;
       }
       
-      override public function loadFromData(param1:Uri, param2:ByteArray, param3:IResourceObserver, param4:Boolean) : void {
+      override public function loadFromData(uri:Uri, data:ByteArray, observer:IResourceObserver, dispatchProgress:Boolean) : void {
          throw new TubulError("loadFromData can\'t be call for an MP3 adapter ! A sound can\'t be load with byteArray");
       }
       
@@ -68,7 +68,7 @@ package com.ankamagames.tubul.resources.adapters
          }
       }
       
-      override protected function getResource(param1:String, param2:*) : * {
+      override protected function getResource(dataFormat:String, data:*) : * {
          return this._sound;
       }
       
@@ -76,18 +76,18 @@ package com.ankamagames.tubul.resources.adapters
          return TubulResourceType.RESOURCE_MP3_SOUND;
       }
       
-      override protected function onComplete(param1:Event) : void {
+      override protected function onComplete(e:Event) : void {
          this.releaseLoader();
          this._observer.onLoaded(this._uri,this.getResourceType(),this._sound);
       }
       
-      override protected function onError(param1:ErrorEvent) : void {
+      override protected function onError(ee:ErrorEvent) : void {
          this.releaseLoader();
-         this._observer.onFailed(this._uri,param1.text,ResourceErrorCode.RESOURCE_NOT_FOUND);
+         this._observer.onFailed(this._uri,ee.text,ResourceErrorCode.RESOURCE_NOT_FOUND);
       }
       
-      override protected function onProgress(param1:ProgressEvent) : void {
-         this._observer.onProgress(this._uri,param1.bytesLoaded,param1.bytesTotal);
+      override protected function onProgress(pe:ProgressEvent) : void {
+         this._observer.onProgress(this._uri,pe.bytesLoaded,pe.bytesTotal);
       }
    }
 }

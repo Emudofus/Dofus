@@ -4,8 +4,8 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.types.enums.Priority;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.network.messages.game.tinsel.TitlesAndOrnamentsListRequestMessage;
    import com.ankamagames.dofus.network.messages.game.tinsel.TitlesAndOrnamentsListMessage;
@@ -79,105 +79,103 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:TitlesAndOrnamentsListRequestMessage = null;
-         var _loc3_:TitlesAndOrnamentsListMessage = null;
-         var _loc4_:TitleGainedMessage = null;
-         var _loc5_:String = null;
-         var _loc6_:TitleLostMessage = null;
-         var _loc7_:* = 0;
-         var _loc8_:OrnamentGainedMessage = null;
-         var _loc9_:String = null;
-         var _loc10_:TitleSelectRequestAction = null;
-         var _loc11_:TitleSelectRequestMessage = null;
-         var _loc12_:TitleSelectedMessage = null;
-         var _loc13_:TitleSelectErrorMessage = null;
-         var _loc14_:OrnamentSelectRequestAction = null;
-         var _loc15_:OrnamentSelectRequestMessage = null;
-         var _loc16_:OrnamentSelectedMessage = null;
-         var _loc17_:OrnamentSelectErrorMessage = null;
-         var _loc18_:* = 0;
+      public function process(msg:Message) : Boolean {
+         var taolrmsg:TitlesAndOrnamentsListRequestMessage = null;
+         var taolmsg:TitlesAndOrnamentsListMessage = null;
+         var tgmsg:TitleGainedMessage = null;
+         var infot:String = null;
+         var tlmsg:TitleLostMessage = null;
+         var indexToDelete:* = 0;
+         var ogmsg:OrnamentGainedMessage = null;
+         var infoo:String = null;
+         var tsra:TitleSelectRequestAction = null;
+         var tsrmsg:TitleSelectRequestMessage = null;
+         var tsmsg:TitleSelectedMessage = null;
+         var tsemsg:TitleSelectErrorMessage = null;
+         var osra:OrnamentSelectRequestAction = null;
+         var osrmsg:OrnamentSelectRequestMessage = null;
+         var osmsg:OrnamentSelectedMessage = null;
+         var osemsg:OrnamentSelectErrorMessage = null;
+         var id:* = 0;
          switch(true)
          {
-            case param1 is TitlesAndOrnamentsListRequestAction:
-               _loc2_ = new TitlesAndOrnamentsListRequestMessage();
-               _loc2_.initTitlesAndOrnamentsListRequestMessage();
-               ConnectionsHandler.getConnection().send(_loc2_);
+            case msg is TitlesAndOrnamentsListRequestAction:
+               taolrmsg = new TitlesAndOrnamentsListRequestMessage();
+               taolrmsg.initTitlesAndOrnamentsListRequestMessage();
+               ConnectionsHandler.getConnection().send(taolrmsg);
                return true;
-            case param1 is TitlesAndOrnamentsListMessage:
-               _loc3_ = param1 as TitlesAndOrnamentsListMessage;
+            case msg is TitlesAndOrnamentsListMessage:
+               taolmsg = msg as TitlesAndOrnamentsListMessage;
                this._titlesOrnamentsAskedBefore = true;
-               this._knownTitles = _loc3_.titles;
-               this._knownOrnaments = _loc3_.ornaments;
-               this._currentTitle = _loc3_.activeTitle;
-               this._currentOrnament = _loc3_.activeOrnament;
+               this._knownTitles = taolmsg.titles;
+               this._knownOrnaments = taolmsg.ornaments;
+               this._currentTitle = taolmsg.activeTitle;
+               this._currentOrnament = taolmsg.activeOrnament;
                KernelEventsManager.getInstance().processCallback(QuestHookList.TitlesListUpdated,this._knownTitles);
                KernelEventsManager.getInstance().processCallback(QuestHookList.OrnamentsListUpdated,this._knownOrnaments);
                return true;
-            case param1 is TitleGainedMessage:
-               _loc4_ = param1 as TitleGainedMessage;
-               this._knownTitles.push(_loc4_.titleId);
-               _loc5_ = ParamsDecoder.applyParams(I18n.getUiText("ui.ornament.titleUnlockWithLink"),[_loc4_.titleId]);
-               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,_loc5_,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+            case msg is TitleGainedMessage:
+               tgmsg = msg as TitleGainedMessage;
+               this._knownTitles.push(tgmsg.titleId);
+               infot = ParamsDecoder.applyParams(I18n.getUiText("ui.ornament.titleUnlockWithLink"),[tgmsg.titleId]);
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,infot,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                KernelEventsManager.getInstance().processCallback(QuestHookList.TitlesListUpdated,this._knownTitles);
                return true;
-            case param1 is TitleLostMessage:
-               _loc6_ = param1 as TitleLostMessage;
-               _loc7_ = 0;
-               for each (_loc18_ in this._knownTitles)
+            case msg is TitleLostMessage:
+               tlmsg = msg as TitleLostMessage;
+               indexToDelete = 0;
+               for each (id in this._knownTitles)
                {
-                  if(_loc18_ == _loc6_.titleId)
+                  if(id == tlmsg.titleId)
                   {
                      break;
                   }
-                  _loc7_++;
+                  indexToDelete++;
                }
-               this._knownTitles.splice(_loc7_,1);
-               if(this._currentTitle == _loc6_.titleId)
+               this._knownTitles.splice(indexToDelete,1);
+               if(this._currentTitle == tlmsg.titleId)
                {
                   this._currentTitle = 0;
                }
                KernelEventsManager.getInstance().processCallback(QuestHookList.TitlesListUpdated,this._knownTitles);
                return true;
-            case param1 is OrnamentGainedMessage:
-               _loc8_ = param1 as OrnamentGainedMessage;
-               this._knownOrnaments.push(_loc8_.ornamentId);
-               _loc9_ = ParamsDecoder.applyParams(I18n.getUiText("ui.ornament.ornamentUnlockWithLink"),[_loc8_.ornamentId]);
-               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,_loc9_,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+            case msg is OrnamentGainedMessage:
+               ogmsg = msg as OrnamentGainedMessage;
+               this._knownOrnaments.push(ogmsg.ornamentId);
+               infoo = ParamsDecoder.applyParams(I18n.getUiText("ui.ornament.ornamentUnlockWithLink"),[ogmsg.ornamentId]);
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,infoo,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                KernelEventsManager.getInstance().processCallback(QuestHookList.OrnamentsListUpdated,this._knownOrnaments);
                return true;
-            case param1 is TitleSelectRequestAction:
-               _loc10_ = param1 as TitleSelectRequestAction;
-               _loc11_ = new TitleSelectRequestMessage();
-               _loc11_.initTitleSelectRequestMessage(_loc10_.titleId);
-               ConnectionsHandler.getConnection().send(_loc11_);
+            case msg is TitleSelectRequestAction:
+               tsra = msg as TitleSelectRequestAction;
+               tsrmsg = new TitleSelectRequestMessage();
+               tsrmsg.initTitleSelectRequestMessage(tsra.titleId);
+               ConnectionsHandler.getConnection().send(tsrmsg);
                return true;
-            case param1 is TitleSelectedMessage:
-               _loc12_ = param1 as TitleSelectedMessage;
-               this._currentTitle = _loc12_.titleId;
+            case msg is TitleSelectedMessage:
+               tsmsg = msg as TitleSelectedMessage;
+               this._currentTitle = tsmsg.titleId;
                KernelEventsManager.getInstance().processCallback(QuestHookList.TitleUpdated,this._currentTitle);
                return true;
-            case param1 is TitleSelectErrorMessage:
-               _loc13_ = param1 as TitleSelectErrorMessage;
+            case msg is TitleSelectErrorMessage:
+               tsemsg = msg as TitleSelectErrorMessage;
                _log.debug("erreur de selection de titre");
                return true;
-            case param1 is OrnamentSelectRequestAction:
-               _loc14_ = param1 as OrnamentSelectRequestAction;
-               _loc15_ = new OrnamentSelectRequestMessage();
-               _loc15_.initOrnamentSelectRequestMessage(_loc14_.ornamentId);
-               ConnectionsHandler.getConnection().send(_loc15_);
+            case msg is OrnamentSelectRequestAction:
+               osra = msg as OrnamentSelectRequestAction;
+               osrmsg = new OrnamentSelectRequestMessage();
+               osrmsg.initOrnamentSelectRequestMessage(osra.ornamentId);
+               ConnectionsHandler.getConnection().send(osrmsg);
                return true;
-            case param1 is OrnamentSelectedMessage:
-               _loc16_ = param1 as OrnamentSelectedMessage;
-               this._currentOrnament = _loc16_.ornamentId;
+            case msg is OrnamentSelectedMessage:
+               osmsg = msg as OrnamentSelectedMessage;
+               this._currentOrnament = osmsg.ornamentId;
                KernelEventsManager.getInstance().processCallback(QuestHookList.OrnamentUpdated,this._currentOrnament);
                return true;
-            case param1 is OrnamentSelectErrorMessage:
-               _loc17_ = param1 as OrnamentSelectErrorMessage;
+            case msg is OrnamentSelectErrorMessage:
+               osemsg = msg as OrnamentSelectErrorMessage;
                _log.debug("erreur de selection d\'ornement");
                return true;
-            default:
-               return false;
          }
       }
       

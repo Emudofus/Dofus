@@ -55,105 +55,133 @@ package com.ankamagames.tiphon.engine
       
       private var _animNameModifier:Function;
       
-      public function init(param1:String) : void {
+      public function init(boneIndexPath:String) : void {
          this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.PARALLEL_LOADER);
          this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onXmlLoaded);
          this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onXmlFailed);
-         this._loader.load(new Uri(param1));
+         this._loader.load(new Uri(boneIndexPath));
       }
       
-      public function setAnimNameModifier(param1:Function) : void {
-         this._animNameModifier = param1;
+      public function setAnimNameModifier(fct:Function) : void {
+         this._animNameModifier = fct;
       }
       
-      public function addTransition(param1:uint, param2:String, param3:String, param4:uint, param5:String) : void {
-         if(!this._transitions[param1])
+      public function addTransition(boneId:uint, startAnim:String, endAnim:String, direction:uint, transitionalAnim:String) : void {
+         if(!this._transitions[boneId])
          {
-            this._transitions[param1] = new Dictionary();
+            this._transitions[boneId] = new Dictionary();
          }
-         this._transitions[param1][param2 + "_" + param3 + "_" + param4] = param5;
+         this._transitions[boneId][startAnim + "_" + endAnim + "_" + direction] = transitionalAnim;
       }
       
-      public function hasTransition(param1:uint, param2:String, param3:String, param4:uint) : Boolean {
+      public function hasTransition(boneId:uint, startAnim:String, endAnim:String, direction:uint) : Boolean {
          if(this._animNameModifier != null)
          {
-            param2 = this._animNameModifier(param1,param2);
-            param3 = this._animNameModifier(param1,param3);
+            startAnim = this._animNameModifier(boneId,startAnim);
+            endAnim = this._animNameModifier(boneId,endAnim);
          }
-         return (this._transitions[param1]) && (!(this._transitions[param1][param2 + "_" + param3 + "_" + param4] == null) || !(this._transitions[param1][param2 + "_" + param3 + "_" + TiphonUtility.getFlipDirection(param4)] == null));
+         return (this._transitions[boneId]) && ((!(this._transitions[boneId][startAnim + "_" + endAnim + "_" + direction] == null)) || (!(this._transitions[boneId][startAnim + "_" + endAnim + "_" + TiphonUtility.getFlipDirection(direction)] == null)));
       }
       
-      public function getTransition(param1:uint, param2:String, param3:String, param4:uint) : String {
+      public function getTransition(boneId:uint, startAnim:String, endAnim:String, direction:uint) : String {
          if(this._animNameModifier != null)
          {
-            param2 = this._animNameModifier(param1,param2);
-            param3 = this._animNameModifier(param1,param3);
+            startAnim = this._animNameModifier(boneId,startAnim);
+            endAnim = this._animNameModifier(boneId,endAnim);
          }
-         if(!this._transitions[param1])
+         if(!this._transitions[boneId])
          {
             return null;
          }
-         if(this._transitions[param1][param2 + "_" + param3 + "_" + param4])
+         if(this._transitions[boneId][startAnim + "_" + endAnim + "_" + direction])
          {
-            return this._transitions[param1][param2 + "_" + param3 + "_" + param4];
+            return this._transitions[boneId][startAnim + "_" + endAnim + "_" + direction];
          }
-         return this._transitions[param1][param2 + "_" + param3 + "_" + TiphonUtility.getFlipDirection(param4)];
+         return this._transitions[boneId][startAnim + "_" + endAnim + "_" + TiphonUtility.getFlipDirection(direction)];
       }
       
-      public function getBoneFile(param1:uint, param2:String) : Uri {
-         if(!this._index[param1] || !this._index[param1][param2])
+      public function getBoneFile(boneId:uint, animName:String) : Uri {
+         if((!this._index[boneId]) || (!this._index[boneId][animName]))
          {
-            return new Uri(TiphonConstants.SWF_SKULL_PATH + param1 + ".swl");
+            return new Uri(TiphonConstants.SWF_SKULL_PATH + boneId + ".swl");
          }
-         return new Uri(TiphonConstants.SWF_SKULL_PATH + this._index[param1][param2]);
+         return new Uri(TiphonConstants.SWF_SKULL_PATH + this._index[boneId][animName]);
       }
       
-      public function hasAnim(param1:uint, param2:String, param3:int) : Boolean {
-         return (this._index[param1]) && (this._index[param1][param2]);
+      public function hasAnim(boneId:uint, animName:String, direction:int) : Boolean {
+         return (this._index[boneId]) && (this._index[boneId][animName]);
       }
       
-      public function hasCustomBone(param1:uint) : Boolean {
-         return this._index[param1];
+      public function hasCustomBone(boneId:uint) : Boolean {
+         return this._index[boneId];
       }
       
-      public function getAllCustomAnimations(param1:int) : Array {
-         var _loc4_:String = null;
-         var _loc2_:Dictionary = this._index[param1];
-         if(!_loc2_)
+      public function getAllCustomAnimations(boneId:int) : Array {
+         var anim:String = null;
+         var animationsList:Dictionary = this._index[boneId];
+         if(!animationsList)
          {
             return null;
          }
-         var _loc3_:Array = new Array();
-         for (_loc4_ in _loc2_)
+         var list:Array = new Array();
+         for (anim in animationsList)
          {
-            _loc3_.push(_loc4_);
+            list.push(anim);
          }
-         return _loc3_;
+         return list;
       }
       
-      private function onXmlLoaded(param1:ResourceLoadedEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      private function onXmlLoaded(e:ResourceLoadedEvent) : void {
+         var group:XML = null;
+         var uri:Uri = null;
+         this._loader.removeEventListener(ResourceLoadedEvent.LOADED,this.onXmlLoaded);
+         this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onSubXmlLoaded);
+         this._loader.addEventListener(ResourceLoaderProgressEvent.LOADER_COMPLETE,this.onAllSubXmlLoaded);
+         var folder:String = FileUtils.getFilePath(e.uri.uri);
+         var xml:XML = e.resource as XML;
+         var subXml:Array = new Array();
+         for each (group in xml..group)
+         {
+            uri = new Uri(folder + "/" + group.@id.toString() + ".xml");
+            uri.tag = parseInt(group.@id.toString());
+            subXml.push(uri);
+         }
+         this._loader.load(subXml);
       }
       
-      private function onSubXmlLoaded(param1:ResourceLoadedEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      private function onSubXmlLoaded(e:ResourceLoadedEvent) : void {
+         var className:String = null;
+         var file:XML = null;
+         var animClass:XML = null;
+         var animInfo:Array = null;
+         var xml:XML = e.resource as XML;
+         for each (file in xml..file)
+         {
+            for each (animClass in file..resource)
+            {
+               className = animClass.@name.toString();
+               if(className.indexOf("Anim") != -1)
+               {
+                  if(!this._index[e.uri.tag])
+                  {
+                     this._index[e.uri.tag] = new Dictionary();
+                  }
+                  this._index[e.uri.tag][className] = file.@name.toString();
+                  if(className.indexOf("_to_") != -1)
+                  {
+                     animInfo = className.split("_");
+                     _self.addTransition(e.uri.tag,animInfo[0],animInfo[2],parseInt(animInfo[3]),animInfo[0] + "_to_" + animInfo[2]);
+                  }
+               }
+            }
+         }
       }
       
-      private function onXmlFailed(param1:ResourceErrorEvent) : void {
-         _log.error("Impossible de charger ou parser le fichier d\'index d\'animation : " + param1.uri);
+      private function onXmlFailed(e:ResourceErrorEvent) : void {
+         _log.error("Impossible de charger ou parser le fichier d\'index d\'animation : " + e.uri);
       }
       
-      private function onAllSubXmlLoaded(param1:ResourceLoaderProgressEvent) : void {
+      private function onAllSubXmlLoaded(e:ResourceLoaderProgressEvent) : void {
          this._loader = null;
          dispatchEvent(new Event(Event.INIT));
       }

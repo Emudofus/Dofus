@@ -17,19 +17,19 @@ package com.ankamagames.berilia.utils
       
       private static var _aCache:Array = new Array();
       
-      public static function init(param1:String, param2:ICache) : ICache {
-         _aCache[param1] = param2;
-         return param2;
+      public static function init(path:String, cacheClass:ICache) : ICache {
+         _aCache[path] = cacheClass;
+         return cacheClass;
       }
       
-      public static function getCacheFromUri(param1:Uri) : ICache {
-         var _loc3_:String = null;
-         var _loc2_:String = param1.normalizedUri;
-         for (_loc3_ in _aCache)
+      public static function getCacheFromUri(uri:Uri) : ICache {
+         var key:String = null;
+         var currentPath:String = uri.normalizedUri;
+         for (key in _aCache)
          {
-            if(_loc2_.indexOf(_loc3_) != -1)
+            if(currentPath.indexOf(key) != -1)
             {
-               return _aCache[_loc3_];
+               return _aCache[key];
             }
          }
          return null;

@@ -30,8 +30,8 @@ package com.ankamagames.dofus.network.messages.game.context.fight.character
          return 6309;
       }
       
-      public function initGameFightRefreshFighterMessage(param1:GameContextActorInformations=null) : GameFightRefreshFighterMessage {
-         this.informations = param1;
+      public function initGameFightRefreshFighterMessage(informations:GameContextActorInformations=null) : GameFightRefreshFighterMessage {
+         this.informations = informations;
          this._isInitialized = true;
          return this;
       }
@@ -41,33 +41,33 @@ package com.ankamagames.dofus.network.messages.game.context.fight.character
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightRefreshFighterMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightRefreshFighterMessage(output);
       }
       
-      public function serializeAs_GameFightRefreshFighterMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.informations.getTypeId());
-         this.informations.serialize(param1);
+      public function serializeAs_GameFightRefreshFighterMessage(output:IDataOutput) : void {
+         output.writeShort(this.informations.getTypeId());
+         this.informations.serialize(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightRefreshFighterMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightRefreshFighterMessage(input);
       }
       
-      public function deserializeAs_GameFightRefreshFighterMessage(param1:IDataInput) : void {
-         var _loc2_:uint = param1.readUnsignedShort();
-         this.informations = ProtocolTypeManager.getInstance(GameContextActorInformations,_loc2_);
-         this.informations.deserialize(param1);
+      public function deserializeAs_GameFightRefreshFighterMessage(input:IDataInput) : void {
+         var _id1:uint = input.readUnsignedShort();
+         this.informations = ProtocolTypeManager.getInstance(GameContextActorInformations,_id1);
+         this.informations.deserialize(input);
       }
    }
 }

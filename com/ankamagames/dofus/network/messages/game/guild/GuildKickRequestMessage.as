@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5887;
       }
       
-      public function initGuildKickRequestMessage(param1:uint=0) : GuildKickRequestMessage {
-         this.kickedId = param1;
+      public function initGuildKickRequestMessage(kickedId:uint=0) : GuildKickRequestMessage {
+         this.kickedId = kickedId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.guild
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildKickRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildKickRequestMessage(output);
       }
       
-      public function serializeAs_GuildKickRequestMessage(param1:IDataOutput) : void {
+      public function serializeAs_GuildKickRequestMessage(output:IDataOutput) : void {
          if(this.kickedId < 0)
          {
             throw new Error("Forbidden value (" + this.kickedId + ") on element kickedId.");
          }
          else
          {
-            param1.writeInt(this.kickedId);
+            output.writeInt(this.kickedId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildKickRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildKickRequestMessage(input);
       }
       
-      public function deserializeAs_GuildKickRequestMessage(param1:IDataInput) : void {
-         this.kickedId = param1.readInt();
+      public function deserializeAs_GuildKickRequestMessage(input:IDataInput) : void {
+         this.kickedId = input.readInt();
          if(this.kickedId < 0)
          {
             throw new Error("Forbidden value (" + this.kickedId + ") on element of GuildKickRequestMessage.kickedId.");

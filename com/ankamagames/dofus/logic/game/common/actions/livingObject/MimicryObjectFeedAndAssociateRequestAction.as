@@ -9,16 +9,16 @@ package com.ankamagames.dofus.logic.game.common.actions.livingObject
          super();
       }
       
-      public static function create(param1:uint, param2:uint, param3:uint, param4:uint, param5:uint, param6:uint, param7:Boolean) : MimicryObjectFeedAndAssociateRequestAction {
-         var _loc8_:MimicryObjectFeedAndAssociateRequestAction = new MimicryObjectFeedAndAssociateRequestAction();
-         _loc8_.mimicryUID = param1;
-         _loc8_.mimicryPos = param2;
-         _loc8_.foodUID = param3;
-         _loc8_.foodPos = param4;
-         _loc8_.hostUID = param5;
-         _loc8_.hostPos = param6;
-         _loc8_.preview = param7;
-         return _loc8_;
+      public static function create(mimicryUID:uint, mimicryPos:uint, foodUID:uint, foodPos:uint, hostUID:uint, hostPos:uint, preview:Boolean) : MimicryObjectFeedAndAssociateRequestAction {
+         var action:MimicryObjectFeedAndAssociateRequestAction = new MimicryObjectFeedAndAssociateRequestAction();
+         action.mimicryUID = mimicryUID;
+         action.mimicryPos = mimicryPos;
+         action.foodUID = foodUID;
+         action.foodPos = foodPos;
+         action.hostUID = hostUID;
+         action.hostPos = hostPos;
+         action.preview = preview;
+         return action;
       }
       
       public var mimicryUID:uint;

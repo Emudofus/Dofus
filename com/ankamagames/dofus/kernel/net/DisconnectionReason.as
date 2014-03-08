@@ -3,10 +3,10 @@ package com.ankamagames.dofus.kernel.net
    public class DisconnectionReason extends Object
    {
       
-      public function DisconnectionReason(param1:Boolean, param2:uint) {
+      public function DisconnectionReason(expected:Boolean, reason:uint) {
          super();
-         this._expected = param1;
-         this._reason = param2;
+         this._expected = expected;
+         this._reason = reason;
       }
       
       private var _expected:Boolean;

@@ -31,11 +31,11 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6312;
       }
       
-      public function initGameActionFightLifePointsLostMessage(param1:uint=0, param2:int=0, param3:int=0, param4:uint=0, param5:uint=0) : GameActionFightLifePointsLostMessage {
-         super.initAbstractGameActionMessage(param1,param2);
-         this.targetId = param3;
-         this.loss = param4;
-         this.permanentDamages = param5;
+      public function initGameActionFightLifePointsLostMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, loss:uint=0, permanentDamages:uint=0) : GameActionFightLifePointsLostMessage {
+         super.initAbstractGameActionMessage(actionId,sourceId);
+         this.targetId = targetId;
+         this.loss = loss;
+         this.permanentDamages = permanentDamages;
          this._isInitialized = true;
          return this;
       }
@@ -48,57 +48,57 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameActionFightLifePointsLostMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameActionFightLifePointsLostMessage(output);
       }
       
-      public function serializeAs_GameActionFightLifePointsLostMessage(param1:IDataOutput) : void {
-         super.serializeAs_AbstractGameActionMessage(param1);
-         param1.writeInt(this.targetId);
+      public function serializeAs_GameActionFightLifePointsLostMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractGameActionMessage(output);
+         output.writeInt(this.targetId);
          if(this.loss < 0)
          {
             throw new Error("Forbidden value (" + this.loss + ") on element loss.");
          }
          else
          {
-            param1.writeShort(this.loss);
+            output.writeShort(this.loss);
             if(this.permanentDamages < 0)
             {
                throw new Error("Forbidden value (" + this.permanentDamages + ") on element permanentDamages.");
             }
             else
             {
-               param1.writeShort(this.permanentDamages);
+               output.writeShort(this.permanentDamages);
                return;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameActionFightLifePointsLostMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameActionFightLifePointsLostMessage(input);
       }
       
-      public function deserializeAs_GameActionFightLifePointsLostMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.targetId = param1.readInt();
-         this.loss = param1.readShort();
+      public function deserializeAs_GameActionFightLifePointsLostMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.targetId = input.readInt();
+         this.loss = input.readShort();
          if(this.loss < 0)
          {
             throw new Error("Forbidden value (" + this.loss + ") on element of GameActionFightLifePointsLostMessage.loss.");
          }
          else
          {
-            this.permanentDamages = param1.readShort();
+            this.permanentDamages = input.readShort();
             if(this.permanentDamages < 0)
             {
                throw new Error("Forbidden value (" + this.permanentDamages + ") on element of GameActionFightLifePointsLostMessage.permanentDamages.");

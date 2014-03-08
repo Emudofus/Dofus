@@ -93,8 +93,8 @@ package com.ankamagames.dofus.logic.game.common.managers
       
       private var _newSort:Boolean;
       
-      public function set category(param1:int) : void {
-         this._categoryFilter = param1;
+      public function set category(cat:int) : void {
+         this._categoryFilter = cat;
          this.updateStorageView();
       }
       
@@ -102,8 +102,8 @@ package com.ankamagames.dofus.logic.game.common.managers
          return this._categoryFilter;
       }
       
-      public function set bankCategory(param1:int) : void {
-         this._bankCategoryFilter = param1;
+      public function set bankCategory(cat:int) : void {
+         this._bankCategoryFilter = cat;
          this.updateBankStorageView();
       }
       
@@ -111,8 +111,8 @@ package com.ankamagames.dofus.logic.game.common.managers
          return this._bankCategoryFilter;
       }
       
-      public function set filter(param1:int) : void {
-         this._filterType = param1;
+      public function set filter(filterType:int) : void {
+         this._filterType = filterType;
          if(this._filterType != -1)
          {
             InventoryManager.getInstance().inventory.refillView("storage","storageFiltered");
@@ -128,8 +128,8 @@ package com.ankamagames.dofus.logic.game.common.managers
          return !(this._filterType == -1);
       }
       
-      public function set bankFilter(param1:int) : void {
-         this._bankFilterType = param1;
+      public function set bankFilter(bankFilterType:int) : void {
+         this._bankFilterType = bankFilterType;
          if(this._bankFilterType != -1)
          {
             InventoryManager.getInstance().bankInventory.refillView("bank","bankFiltered");
@@ -149,20 +149,20 @@ package com.ankamagames.dofus.logic.game.common.managers
          return this._newSort;
       }
       
-      public function set sortField(param1:int) : void {
-         if(this._sortFields.indexOf(param1) == -1)
+      public function set sortField(fieldName:int) : void {
+         if(this._sortFields.indexOf(fieldName) == -1)
          {
-            if(!(param1 == SORT_FIELD_NONE) && this._sortFields.length > 0)
+            if((!(fieldName == SORT_FIELD_NONE)) && (this._sortFields.length > 0))
             {
                this._newSort = false;
             }
-            if(this._sortFields.length <= MAX_SORT_FIELDS-1)
+            if(this._sortFields.length <= MAX_SORT_FIELDS - 1)
             {
-               this._sortFields.push(param1);
+               this._sortFields.push(fieldName);
             }
             else
             {
-               this._sortFields[MAX_SORT_FIELDS-1] = param1;
+               this._sortFields[MAX_SORT_FIELDS - 1] = fieldName;
             }
          }
          else
@@ -186,31 +186,31 @@ package com.ankamagames.dofus.logic.game.common.managers
          this._sortFields = new Array();
       }
       
-      public function set sortRevert(param1:Boolean) : void {
-         this._sortRevert = param1;
+      public function set sortRevert(revert:Boolean) : void {
+         this._sortRevert = revert;
       }
       
       public function get sortRevert() : Boolean {
          return this._sortRevert;
       }
       
-      public function set sortBankField(param1:int) : void {
-         var _loc2_:Vector.<ItemWrapper> = null;
-         var _loc3_:Vector.<ItemWrapper> = null;
-         var _loc4_:ItemWrapper = null;
-         if(this._sortBankFields.indexOf(param1) == -1)
+      public function set sortBankField(fieldName:int) : void {
+         var currentItems:Vector.<ItemWrapper> = null;
+         var itemsDisplayed:Vector.<ItemWrapper> = null;
+         var iw:ItemWrapper = null;
+         if(this._sortBankFields.indexOf(fieldName) == -1)
          {
-            if(!(param1 == SORT_FIELD_NONE) && this._sortBankFields.length > 0)
+            if((!(fieldName == SORT_FIELD_NONE)) && (this._sortBankFields.length > 0))
             {
                this._newSort = false;
             }
-            if(this._sortBankFields.length <= MAX_SORT_FIELDS-1)
+            if(this._sortBankFields.length <= MAX_SORT_FIELDS - 1)
             {
-               this._sortBankFields.push(param1);
+               this._sortBankFields.push(fieldName);
             }
             else
             {
-               this._sortBankFields[MAX_SORT_FIELDS-1] = param1;
+               this._sortBankFields[MAX_SORT_FIELDS - 1] = fieldName;
             }
          }
          else
@@ -220,16 +220,16 @@ package com.ankamagames.dofus.logic.game.common.managers
          this.currentBankView.updateView();
          if(this.hasBankFilter())
          {
-            _loc2_ = this.currentBankView.content;
-            _loc3_ = new Vector.<ItemWrapper>(0);
-            for each (_loc4_ in _loc2_)
+            currentItems = this.currentBankView.content;
+            itemsDisplayed = new Vector.<ItemWrapper>(0);
+            for each (iw in currentItems)
             {
-               if(_loc4_.typeId == this.bankFilter)
+               if(iw.typeId == this.bankFilter)
                {
-                  _loc3_.push(_loc4_.clone());
+                  itemsDisplayed.push(iw.clone());
                }
             }
-            KernelEventsManager.getInstance().processCallback(InventoryHookList.BankViewContent,_loc3_,InventoryManager.getInstance().bankInventory.localKamas);
+            KernelEventsManager.getInstance().processCallback(InventoryHookList.BankViewContent,itemsDisplayed,InventoryManager.getInstance().bankInventory.localKamas);
          }
          this._newSort = false;
       }
@@ -247,8 +247,8 @@ package com.ankamagames.dofus.logic.game.common.managers
          this._sortBankFields = new Array();
       }
       
-      public function set sortBankRevert(param1:Boolean) : void {
-         this._sortBankRevert = param1;
+      public function set sortBankRevert(revert:Boolean) : void {
+         this._sortBankRevert = revert;
       }
       
       public function get sortBankRevert() : Boolean {
@@ -256,21 +256,21 @@ package com.ankamagames.dofus.logic.game.common.managers
       }
       
       public function get currentStorageView() : IStorageView {
-         var _loc1_:IStorageView = null;
-         _loc1_ = this.inventory.getView("storageBidHouseFilter") as IStorageView;
-         if(_loc1_)
+         var view:IStorageView = null;
+         view = this.inventory.getView("storageBidHouseFilter") as IStorageView;
+         if(view)
          {
-            return _loc1_;
+            return view;
          }
-         _loc1_ = this.inventory.getView("storageSmithMagicFilter") as IStorageView;
-         if(_loc1_)
+         view = this.inventory.getView("storageSmithMagicFilter") as IStorageView;
+         if(view)
          {
-            return _loc1_;
+            return view;
          }
-         _loc1_ = this.inventory.getView("storageCraftFilter") as IStorageView;
-         if(_loc1_)
+         view = this.inventory.getView("storageCraftFilter") as IStorageView;
+         if(view)
          {
-            return _loc1_;
+            return view;
          }
          return this.getStorageViewOrFilter();
       }
@@ -287,11 +287,11 @@ package com.ankamagames.dofus.logic.game.common.managers
          return this.getBankView(this.bankCategory);
       }
       
-      public function enableBidHouseFilter(param1:Vector.<uint>, param2:uint) : void {
+      public function enableBidHouseFilter(allowedTypes:Vector.<uint>, maxItemLevel:uint) : void {
          this.disableBidHouseFilter();
-         var _loc3_:String = this.currentStorageView.name;
-         this.inventory.addView(new StorageBidHouseFilterView(this.inventory.hookLock,this.currentStorageView,param1,param2));
-         InventoryManager.getInstance().inventory.refillView(_loc3_,"storageBidHouseFilter");
+         var name:String = this.currentStorageView.name;
+         this.inventory.addView(new StorageBidHouseFilterView(this.inventory.hookLock,this.currentStorageView,allowedTypes,maxItemLevel));
+         InventoryManager.getInstance().inventory.refillView(name,"storageBidHouseFilter");
       }
       
       public function disableBidHouseFilter() : void {
@@ -305,22 +305,22 @@ package com.ankamagames.dofus.logic.game.common.managers
          return !(this.inventory.getView("storageBidHouseFilter") == null);
       }
       
-      public function enableSmithMagicFilter(param1:Skill) : void {
-         var _loc3_:CraftFrame = null;
+      public function enableSmithMagicFilter(skill:Skill) : void {
+         var craftFrame:CraftFrame = null;
          this.disableSmithMagicFilter();
-         if(!param1)
+         if(!skill)
          {
-            _loc3_ = Kernel.getWorker().getFrame(CraftFrame) as CraftFrame;
-            if(!_loc3_)
+            craftFrame = Kernel.getWorker().getFrame(CraftFrame) as CraftFrame;
+            if(!craftFrame)
             {
                _log.error("Activation des filtres de forgemagie alors que la craftFrame n\'est pas active");
                return;
             }
-            param1 = Skill.getSkillById(_loc3_.skillId);
+            skill = Skill.getSkillById(craftFrame.skillId);
          }
-         var _loc2_:String = this.currentStorageView.name;
-         this.inventory.addView(new StorageSmithMagicFilterView(this.inventory.hookLock,this.currentStorageView,param1));
-         InventoryManager.getInstance().inventory.refillView(_loc2_,"storageSmithMagicFilter");
+         var name:String = this.currentStorageView.name;
+         this.inventory.addView(new StorageSmithMagicFilterView(this.inventory.hookLock,this.currentStorageView,skill));
+         InventoryManager.getInstance().inventory.refillView(name,"storageSmithMagicFilter");
       }
       
       public function disableSmithMagicFilter() : void {
@@ -330,22 +330,22 @@ package com.ankamagames.dofus.logic.game.common.managers
          }
       }
       
-      public function enableCraftFilter(param1:Skill, param2:int) : void {
-         var _loc4_:CraftFrame = null;
+      public function enableCraftFilter(skill:Skill, slotCount:int) : void {
+         var craftFrame:CraftFrame = null;
          this.disableCraftFilter();
-         if(!param1)
+         if(!skill)
          {
-            _loc4_ = Kernel.getWorker().getFrame(CraftFrame) as CraftFrame;
-            if(!_loc4_)
+            craftFrame = Kernel.getWorker().getFrame(CraftFrame) as CraftFrame;
+            if(!craftFrame)
             {
                _log.error("Activation des filtres de forgemagie alors que la craftFrame n\'est pas active");
                return;
             }
-            param1 = Skill.getSkillById(_loc4_.skillId);
+            skill = Skill.getSkillById(craftFrame.skillId);
          }
-         var _loc3_:String = this.currentStorageView.name;
-         this.inventory.addView(new StorageCraftFilterView(this.inventory.hookLock,this.currentStorageView,param1.id,param2));
-         InventoryManager.getInstance().inventory.refillView(_loc3_,"storageCraftFilter");
+         var name:String = this.currentStorageView.name;
+         this.inventory.addView(new StorageCraftFilterView(this.inventory.hookLock,this.currentStorageView,skill.id,slotCount));
+         InventoryManager.getInstance().inventory.refillView(name,"storageCraftFilter");
       }
       
       public function disableCraftFilter() : void {
@@ -363,8 +363,8 @@ package com.ankamagames.dofus.logic.game.common.managers
          return !(this.inventory.getView("storageCraftFilter") == null);
       }
       
-      public function getStorageView(param1:int) : IStorageView {
-         switch(param1)
+      public function getStorageView(category:int) : IStorageView {
+         switch(category)
          {
             case EQUIPMENT_CATEGORY:
                return this.inventory.getView("storageEquipment") as IStorageView;
@@ -375,13 +375,12 @@ package com.ankamagames.dofus.logic.game.common.managers
             case QUEST_CATEGORY:
                return this.inventory.getView("storageQuest") as IStorageView;
             case ALL_CATEGORY:
-            default:
                return this.inventory.getView("storage") as IStorageView;
          }
       }
       
-      public function getBankView(param1:int) : IStorageView {
-         switch(param1)
+      public function getBankView(category:int) : IStorageView {
+         switch(category)
          {
             case EQUIPMENT_CATEGORY:
                return InventoryManager.getInstance().bankInventory.getView("bankEquipement") as IStorageView;
@@ -392,17 +391,16 @@ package com.ankamagames.dofus.logic.game.common.managers
             case QUEST_CATEGORY:
                return InventoryManager.getInstance().bankInventory.getView("bankQuest") as IStorageView;
             case ALL_CATEGORY:
-            default:
                return InventoryManager.getInstance().bankInventory.getView("bank") as IStorageView;
          }
       }
       
-      public function getCategoryTypes(param1:uint) : Dictionary {
-         return this.getStorageView(param1).types;
+      public function getCategoryTypes(category:uint) : Dictionary {
+         return this.getStorageView(category).types;
       }
       
-      public function getBankCategoryTypes(param1:uint) : Dictionary {
-         return this.getBankView(param1).types;
+      public function getBankCategoryTypes(category:uint) : Dictionary {
+         return this.getBankView(category).types;
       }
       
       public function updateStorageView() : void {
@@ -425,36 +423,36 @@ package com.ankamagames.dofus.logic.game.common.managers
       }
       
       private function refreshViews() : void {
-         var _loc2_:StorageBidHouseFilterView = null;
-         var _loc3_:StorageSmithMagicFilterView = null;
-         var _loc4_:StorageCraftFilterView = null;
-         var _loc1_:IStorageView = this.getStorageViewOrFilter();
+         var bidHouseFilterView:StorageBidHouseFilterView = null;
+         var smithMagicFilterView:StorageSmithMagicFilterView = null;
+         var craftFilterView:StorageCraftFilterView = null;
+         var parentView:IStorageView = this.getStorageViewOrFilter();
          if(this.getIsBidHouseFilterEnabled())
          {
-            _loc2_ = this.inventory.getView("storageBidHouseFilter") as StorageBidHouseFilterView;
-            _loc2_.parent = _loc1_;
+            bidHouseFilterView = this.inventory.getView("storageBidHouseFilter") as StorageBidHouseFilterView;
+            bidHouseFilterView.parent = parentView;
             this.refreshView("storageBidHouseFilter");
          }
          if(this.getIsSmithMagicFilterEnabled())
          {
-            _loc3_ = this.inventory.getView("storageSmithMagicFilter") as StorageSmithMagicFilterView;
-            _loc3_.parent = _loc1_;
+            smithMagicFilterView = this.inventory.getView("storageSmithMagicFilter") as StorageSmithMagicFilterView;
+            smithMagicFilterView.parent = parentView;
             this.refreshView("storageSmithMagicFilter");
          }
          if(this.getIsCraftFilterEnabled())
          {
-            _loc4_ = this.inventory.getView("storageCraftFilter") as StorageCraftFilterView;
-            _loc4_.parent = _loc1_;
+            craftFilterView = this.inventory.getView("storageCraftFilter") as StorageCraftFilterView;
+            craftFilterView.parent = parentView;
             this.refreshView("storageCraftFilter");
          }
       }
       
-      private function refreshView(param1:String) : void {
-         var _loc2_:IInventoryView = this.inventory.getView(param1);
-         this.inventory.removeView(param1);
-         var _loc3_:String = this.currentStorageView.name;
-         this.inventory.addView(_loc2_);
-         InventoryManager.getInstance().inventory.refillView(_loc3_,param1);
+      private function refreshView(viewName:String) : void {
+         var view:IInventoryView = this.inventory.getView(viewName);
+         this.inventory.removeView(viewName);
+         var name:String = this.currentStorageView.name;
+         this.inventory.addView(view);
+         InventoryManager.getInstance().inventory.refillView(name,viewName);
       }
    }
 }

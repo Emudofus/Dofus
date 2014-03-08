@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6015;
       }
       
-      public function initExchangeItemAutoCraftRemainingMessage(param1:uint=0) : ExchangeItemAutoCraftRemainingMessage {
-         this.count = param1;
+      public function initExchangeItemAutoCraftRemainingMessage(count:uint=0) : ExchangeItemAutoCraftRemainingMessage {
+         this.count = count;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeItemAutoCraftRemainingMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeItemAutoCraftRemainingMessage(output);
       }
       
-      public function serializeAs_ExchangeItemAutoCraftRemainingMessage(param1:IDataOutput) : void {
+      public function serializeAs_ExchangeItemAutoCraftRemainingMessage(output:IDataOutput) : void {
          if(this.count < 0)
          {
             throw new Error("Forbidden value (" + this.count + ") on element count.");
          }
          else
          {
-            param1.writeInt(this.count);
+            output.writeInt(this.count);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeItemAutoCraftRemainingMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeItemAutoCraftRemainingMessage(input);
       }
       
-      public function deserializeAs_ExchangeItemAutoCraftRemainingMessage(param1:IDataInput) : void {
-         this.count = param1.readInt();
+      public function deserializeAs_ExchangeItemAutoCraftRemainingMessage(input:IDataInput) : void {
+         this.count = input.readInt();
          if(this.count < 0)
          {
             throw new Error("Forbidden value (" + this.count + ") on element of ExchangeItemAutoCraftRemainingMessage.count.");

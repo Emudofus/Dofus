@@ -13,45 +13,41 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         switch(cmd)
          {
             case "version":
-               switch(param3[0])
+               switch(args[0])
                {
                   case "revision":
-                     param1.output("Build revision : " + BuildInfos.BUILD_REVISION);
+                     console.output("Build revision : " + BuildInfos.BUILD_REVISION);
                      break;
                   case "patch":
-                     param1.output("Build patch : " + BuildInfos.BUILD_PATCH);
+                     console.output("Build patch : " + BuildInfos.BUILD_PATCH);
                      break;
                   case "date":
-                     param1.output("Build date     : " + BuildInfos.BUILD_DATE);
+                     console.output("Build date     : " + BuildInfos.BUILD_DATE);
                      break;
                   case "protocol":
-                     param1.output("Protocol       : " + Metadata.PROTOCOL_BUILD + " (" + Metadata.PROTOCOL_DATE + ")");
+                     console.output("Protocol       : " + Metadata.PROTOCOL_BUILD + " (" + Metadata.PROTOCOL_DATE + ")");
                      break;
                   case undefined:
-                     param1.output("DOFUS v" + BuildInfos.BUILD_VERSION + " (" + BuildTypeParser.getTypeName(BuildInfos.BUILD_TYPE) + ")");
+                     console.output("DOFUS v" + BuildInfos.BUILD_VERSION + " (" + BuildTypeParser.getTypeName(BuildInfos.BUILD_TYPE) + ")");
                      break;
-                  default:
-                     param1.output("Unknown argument : " + param3[0]);
                }
                break;
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "version":
                return "Get the client version.";
-            default:
-               return "No help for command \'" + param1 + "\'";
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return [];
       }
    }

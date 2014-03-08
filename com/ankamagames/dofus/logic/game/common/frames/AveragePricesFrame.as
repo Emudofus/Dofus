@@ -63,61 +63,59 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:GameContextCreateMessage = null;
-         var _loc3_:ObjectAveragePricesMessage = null;
-         var _loc4_:ObjectAveragePricesErrorMessage = null;
+      public function process(pMsg:Message) : Boolean {
+         var gccm:GameContextCreateMessage = null;
+         var oapm:ObjectAveragePricesMessage = null;
+         var oapem:ObjectAveragePricesErrorMessage = null;
          switch(true)
          {
-            case param1 is GameContextCreateMessage:
-               _loc2_ = param1 as GameContextCreateMessage;
-               if(_loc2_.context == GameContextEnum.ROLE_PLAY && (this.updateAllowed()))
+            case pMsg is GameContextCreateMessage:
+               gccm = pMsg as GameContextCreateMessage;
+               if((gccm.context == GameContextEnum.ROLE_PLAY) && (this.updateAllowed()))
                {
                   this.askPricesData();
                }
                return false;
-            case param1 is ObjectAveragePricesMessage:
-               _loc3_ = param1 as ObjectAveragePricesMessage;
-               this.updatePricesData(_loc3_.ids,_loc3_.avgPrices);
+            case pMsg is ObjectAveragePricesMessage:
+               oapm = pMsg as ObjectAveragePricesMessage;
+               this.updatePricesData(oapm.ids,oapm.avgPrices);
                return true;
-            case param1 is ObjectAveragePricesErrorMessage:
-               _loc4_ = param1 as ObjectAveragePricesErrorMessage;
+            case pMsg is ObjectAveragePricesErrorMessage:
+               oapem = pMsg as ObjectAveragePricesErrorMessage;
                return true;
-            default:
-               return false;
          }
       }
       
-      private function updatePricesData(param1:Vector.<uint>, param2:Vector.<uint>) : void {
-         var _loc3_:int = param1.length;
+      private function updatePricesData(pItemsIds:Vector.<uint>, pItemsAvgPrices:Vector.<uint>) : void {
+         var nbItems:int = pItemsIds.length;
          this._pricesData = 
             {
                "lastUpdate":new Date(),
                "items":{}
             };
-         var _loc4_:* = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         while(i < nbItems)
          {
-            this._pricesData.items["item" + param1[_loc4_]] = param2[_loc4_];
-            _loc4_++;
+            this._pricesData.items["item" + pItemsIds[i]] = pItemsAvgPrices[i];
+            i++;
          }
          StoreDataManager.getInstance().setData(_dataStoreType,this._serverName,this._pricesData);
       }
       
       private function updateAllowed() : Boolean {
-         var _loc3_:Date = null;
-         var _loc4_:String = null;
-         var _loc1_:MiscFrame = Kernel.getWorker().getFrame(MiscFrame) as MiscFrame;
-         var _loc2_:OptionalFeature = OptionalFeature.getOptionalFeatureByKeyword("biz.prices");
-         if(!_loc1_.isOptionalFeatureActive(_loc2_.id))
+         var now:Date = null;
+         var lastUpdateHour:String = null;
+         var misc:MiscFrame = Kernel.getWorker().getFrame(MiscFrame) as MiscFrame;
+         var feature:OptionalFeature = OptionalFeature.getOptionalFeatureByKeyword("biz.prices");
+         if(!misc.isOptionalFeatureActive(feature.id))
          {
             return false;
          }
          if(this.dataAvailable)
          {
-            _loc3_ = new Date();
-            _loc4_ = TimeManager.getInstance().formatClock(this._pricesData.lastUpdate.getTime());
-            if(_loc3_.getFullYear() == this._pricesData.lastUpdate.getFullYear() && _loc3_.getMonth() == this._pricesData.lastUpdate.getMonth() && _loc3_.getDate() == this._pricesData.lastUpdate.getDate())
+            now = new Date();
+            lastUpdateHour = TimeManager.getInstance().formatClock(this._pricesData.lastUpdate.getTime());
+            if((now.getFullYear() == this._pricesData.lastUpdate.getFullYear()) && (now.getMonth() == this._pricesData.lastUpdate.getMonth()) && (now.getDate() == this._pricesData.lastUpdate.getDate()))
             {
                return false;
             }
@@ -126,9 +124,9 @@ package com.ankamagames.dofus.logic.game.common.frames
       }
       
       private function askPricesData() : void {
-         var _loc1_:ObjectAveragePricesGetMessage = new ObjectAveragePricesGetMessage();
-         _loc1_.initObjectAveragePricesGetMessage();
-         ConnectionsHandler.getConnection().send(_loc1_);
+         var oapgm:ObjectAveragePricesGetMessage = new ObjectAveragePricesGetMessage();
+         oapgm.initObjectAveragePricesGetMessage();
+         ConnectionsHandler.getConnection().send(oapgm);
       }
    }
 }

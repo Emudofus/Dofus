@@ -1,7 +1,7 @@
 package com.ankamagames.dofus.network.messages.connection
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -28,9 +28,9 @@ package com.ankamagames.dofus.network.messages.connection
          return 6469;
       }
       
-      public function initSelectedServerDataExtendedMessage(param1:int=0, param2:String="", param3:uint=0, param4:Boolean=false, param5:String="", param6:Vector.<uint>=null) : SelectedServerDataExtendedMessage {
-         super.initSelectedServerDataMessage(param1,param2,param3,param4,param5);
-         this.serverIds = param6;
+      public function initSelectedServerDataExtendedMessage(serverId:int=0, address:String="", port:uint=0, canCreateNewCharacter:Boolean=false, ticket:String="", serverIds:Vector.<uint>=null) : SelectedServerDataExtendedMessage {
+         super.initSelectedServerDataMessage(serverId,address,port,canCreateNewCharacter,ticket);
+         this.serverIds = serverIds;
          this._isInitialized = true;
          return this;
       }
@@ -41,59 +41,59 @@ package com.ankamagames.dofus.network.messages.connection
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_SelectedServerDataExtendedMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SelectedServerDataExtendedMessage(output);
       }
       
-      public function serializeAs_SelectedServerDataExtendedMessage(param1:IDataOutput) : void {
-         super.serializeAs_SelectedServerDataMessage(param1);
-         param1.writeShort(this.serverIds.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.serverIds.length)
+      public function serializeAs_SelectedServerDataExtendedMessage(output:IDataOutput) : void {
+         super.serializeAs_SelectedServerDataMessage(output);
+         output.writeShort(this.serverIds.length);
+         var _i1:uint = 0;
+         while(_i1 < this.serverIds.length)
          {
-            if(this.serverIds[_loc2_] < 0)
+            if(this.serverIds[_i1] < 0)
             {
-               throw new Error("Forbidden value (" + this.serverIds[_loc2_] + ") on element 1 (starting at 1) of serverIds.");
+               throw new Error("Forbidden value (" + this.serverIds[_i1] + ") on element 1 (starting at 1) of serverIds.");
             }
             else
             {
-               param1.writeShort(this.serverIds[_loc2_]);
-               _loc2_++;
+               output.writeShort(this.serverIds[_i1]);
+               _i1++;
                continue;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_SelectedServerDataExtendedMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SelectedServerDataExtendedMessage(input);
       }
       
-      public function deserializeAs_SelectedServerDataExtendedMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         super.deserialize(param1);
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_SelectedServerDataExtendedMessage(input:IDataInput) : void {
+         var _val1:uint = 0;
+         super.deserialize(input);
+         var _serverIdsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _serverIdsLen)
          {
-            _loc4_ = param1.readShort();
-            if(_loc4_ < 0)
+            _val1 = input.readShort();
+            if(_val1 < 0)
             {
-               throw new Error("Forbidden value (" + _loc4_ + ") on elements of serverIds.");
+               throw new Error("Forbidden value (" + _val1 + ") on elements of serverIds.");
             }
             else
             {
-               this.serverIds.push(_loc4_);
-               _loc3_++;
+               this.serverIds.push(_val1);
+               _i1++;
                continue;
             }
          }

@@ -60,95 +60,95 @@ package com.ankamagames.dofus.uiApi
          this._sideOrders = null;
       }
       
-      public function getBalance(param1:uint) : AlignmentBalance {
-         return AlignmentBalance.getAlignmentBalanceById(param1);
+      public function getBalance(balanceId:uint) : AlignmentBalance {
+         return AlignmentBalance.getAlignmentBalanceById(balanceId);
       }
       
       public function getBalances() : Array {
          return AlignmentBalance.getAlignmentBalances();
       }
       
-      public function getEffect(param1:uint) : AlignmentEffect {
-         return AlignmentEffect.getAlignmentEffectById(param1);
+      public function getEffect(effectId:uint) : AlignmentEffect {
+         return AlignmentEffect.getAlignmentEffectById(effectId);
       }
       
-      public function getGift(param1:uint) : AlignmentGift {
-         return AlignmentGift.getAlignmentGiftById(param1);
+      public function getGift(giftId:uint) : AlignmentGift {
+         return AlignmentGift.getAlignmentGiftById(giftId);
       }
       
       public function getGifts() : Array {
          return AlignmentGift.getAlignmentGifts();
       }
       
-      public function getRankGifts(param1:uint) : AlignmentRankJntGift {
-         return AlignmentRankJntGift.getAlignmentRankJntGiftById(param1);
+      public function getRankGifts(rankId:uint) : AlignmentRankJntGift {
+         return AlignmentRankJntGift.getAlignmentRankJntGiftById(rankId);
       }
       
-      public function getGiftEffect(param1:uint) : AlignmentEffect {
-         return this.getEffect(this.getGift(param1).effectId);
+      public function getGiftEffect(giftId:uint) : AlignmentEffect {
+         return this.getEffect(this.getGift(giftId).effectId);
       }
       
-      public function getOrder(param1:uint) : AlignmentOrder {
-         return AlignmentOrder.getAlignmentOrderById(param1);
+      public function getOrder(orderId:uint) : AlignmentOrder {
+         return AlignmentOrder.getAlignmentOrderById(orderId);
       }
       
       public function getOrders() : Array {
          return AlignmentOrder.getAlignmentOrders();
       }
       
-      public function getRank(param1:uint) : AlignmentRank {
-         return AlignmentRank.getAlignmentRankById(param1);
+      public function getRank(rankId:uint) : AlignmentRank {
+         return AlignmentRank.getAlignmentRankById(rankId);
       }
       
       public function getRanks() : Array {
          return AlignmentRank.getAlignmentRanks();
       }
       
-      public function getRankOrder(param1:uint) : AlignmentOrder {
-         return this.getOrder(this.getRank(param1).orderId);
+      public function getRankOrder(rankId:uint) : AlignmentOrder {
+         return this.getOrder(this.getRank(rankId).orderId);
       }
       
-      public function getOrderRanks(param1:uint) : Array {
-         var _loc6_:AlignmentRank = null;
-         var _loc2_:Array = new Array();
-         var _loc3_:Array = AlignmentRank.getAlignmentRanks();
-         var _loc4_:int = _loc3_.length;
-         var _loc5_:* = 0;
-         while(_loc5_ < _loc4_)
+      public function getOrderRanks(orderId:uint) : Array {
+         var alignmentRank:AlignmentRank = null;
+         var listOrderRanks:Array = new Array();
+         var listRanks:Array = AlignmentRank.getAlignmentRanks();
+         var nRanks:int = listRanks.length;
+         var i:int = 0;
+         while(i < nRanks)
          {
-            _loc6_ = _loc3_[_loc5_];
-            if(_loc6_)
+            alignmentRank = listRanks[i];
+            if(alignmentRank)
             {
-               if(_loc6_.orderId == param1)
+               if(alignmentRank.orderId == orderId)
                {
-                  _loc2_.push(_loc6_);
+                  listOrderRanks.push(alignmentRank);
                }
             }
-            _loc5_++;
+            i++;
          }
-         return _loc2_.sortOn("minimumAlignment",Array.NUMERIC);
+         return listOrderRanks.sortOn("minimumAlignment",Array.NUMERIC);
       }
       
-      public function getSide(param1:uint) : AlignmentSide {
-         return AlignmentSide.getAlignmentSideById(param1);
+      public function getSide(sideId:uint) : AlignmentSide {
+         return AlignmentSide.getAlignmentSideById(sideId);
       }
       
-      public function getOrderSide(param1:uint) : AlignmentSide {
-         return this.getSide(this.getOrder(param1).sideId);
+      public function getOrderSide(orderId:uint) : AlignmentSide {
+         return this.getSide(this.getOrder(orderId).sideId);
       }
       
-      public function getSideOrders(param1:uint) : Array {
-         this._sideId = param1;
+      public function getSideOrders(sideId:uint) : Array {
+         this._sideId = sideId;
          AlignmentRank.getAlignmentRanks().forEach(this.filterOrdersBySide);
          return this._sideOrders;
       }
       
-      public function getTitleName(param1:uint, param2:int) : String {
-         return AlignmentTitle.getAlignmentTitlesById(param1).getNameFromGrade(param2);
+      public function getTitleName(sideId:uint, grade:int) : String {
+         return AlignmentTitle.getAlignmentTitlesById(sideId).getNameFromGrade(grade);
       }
       
-      public function getTitleShortName(param1:uint, param2:int) : String {
-         return AlignmentTitle.getAlignmentTitlesById(param1).getShortNameFromGrade(param2);
+      public function getTitleShortName(sideId:uint, grade:int) : String {
+         return AlignmentTitle.getAlignmentTitlesById(sideId).getShortNameFromGrade(grade);
       }
       
       public function getPlayerRank() : int {
@@ -159,34 +159,34 @@ package com.ankamagames.dofus.uiApi
          return this.allianceFrame.alliancesOnTheHill;
       }
       
-      private function filterGiftsByRank(param1:*, param2:int, param3:Array) : void {
-         var _loc4_:Array = null;
-         var _loc5_:Array = null;
-         var _loc6_:* = 0;
-         var _loc7_:* = undefined;
+      private function filterGiftsByRank(rankJntGift:*, index:int, rankJntGifts:Array) : void {
+         var giftsIds:Array = null;
+         var gifts:Array = null;
+         var giftId:* = 0;
+         var gift:* = undefined;
          this._rankGifts = new Array();
-         if(param1.id == this._rankId)
+         if(rankJntGift.id == this._rankId)
          {
-            _loc4_ = param1.gifts;
-            _loc5_ = AlignmentGift.getAlignmentGifts();
-            for each (_loc6_ in _loc4_)
+            giftsIds = rankJntGift.gifts;
+            gifts = AlignmentGift.getAlignmentGifts();
+            for each (giftId in giftsIds)
             {
-               for each (_loc7_ in _loc5_)
+               for each (gift in gifts)
                {
-                  if(_loc6_ == _loc7_.id)
+                  if(giftId == gift.id)
                   {
-                     this._rankGifts.push(_loc7_);
+                     this._rankGifts.push(gift);
                   }
                }
             }
          }
       }
       
-      private function filterOrdersBySide(param1:*, param2:int, param3:Array) : void {
+      private function filterOrdersBySide(order:*, index:int, orders:Array) : void {
          this._sideOrders = new Array();
-         if(param1.sideId == this._sideId)
+         if(order.sideId == this._sideId)
          {
-            this._sideOrders.push(param1);
+            this._sideOrders.push(order);
          }
       }
    }

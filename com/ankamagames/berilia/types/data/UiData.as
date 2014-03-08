@@ -8,13 +8,13 @@ package com.ankamagames.berilia.types.data
    public class UiData extends Object implements IModuleUtil
    {
       
-      public function UiData(param1:UiModule, param2:String, param3:String, param4:String, param5:String=null) {
+      public function UiData(module:UiModule, name:String, file:String, uiClassName:String, uiGroupName:String=null) {
          super();
-         this._module = param1;
-         this._name = param2;
-         this._file = param3;
-         this._uiClassName = param4;
-         this._uiGroupName = param5;
+         this._module = module;
+         this._name = name;
+         this._file = file;
+         this._uiClassName = uiClassName;
+         this._uiGroupName = uiGroupName;
       }
       
       private var _name:String;
@@ -55,14 +55,14 @@ package com.ankamagames.berilia.types.data
          return this._uiGroupName;
       }
       
-      public function set xml(param1:String) : void {
+      public function set xml(v:String) : void {
          if(this._xml)
          {
             throw new BeriliaError("xml cannot be set twice");
          }
          else
          {
-            this._xml = param1;
+            this._xml = v;
             return;
          }
       }
@@ -71,26 +71,26 @@ package com.ankamagames.berilia.types.data
          return this._uiClass;
       }
       
-      public function set uiClass(param1:Class) : void {
+      public function set uiClass(c:Class) : void {
          if(this._uiClass)
          {
             throw new BeriliaError("uiClass cannot be set twice");
          }
          else
          {
-            this._uiClass = param1;
+            this._uiClass = c;
             return;
          }
       }
       
-      public function updateXml(param1:XML, param2:Object) : void {
-         if(param2 != SecureCenter.ACCESS_KEY)
+      public function updateXml(xml:XML, accessKey:Object) : void {
+         if(accessKey != SecureCenter.ACCESS_KEY)
          {
             throw new IllegalOperationError("Wrong access key");
          }
          else
          {
-            this._xml = param1;
+            this._xml = xml;
             return;
          }
       }

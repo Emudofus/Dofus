@@ -1,7 +1,7 @@
 package com.ankamagames.dofus.network.types.game.achievement
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -26,10 +26,10 @@ package com.ankamagames.dofus.network.types.game.achievement
          return 363;
       }
       
-      public function initAchievement(param1:uint=0, param2:Vector.<AchievementObjective>=null, param3:Vector.<AchievementStartedObjective>=null) : Achievement {
-         this.id = param1;
-         this.finishedObjective = param2;
-         this.startedObjectives = param3;
+      public function initAchievement(id:uint=0, finishedObjective:Vector.<AchievementObjective>=null, startedObjectives:Vector.<AchievementStartedObjective>=null) : Achievement {
+         this.id = id;
+         this.finishedObjective = finishedObjective;
+         this.startedObjectives = startedObjectives;
          return this;
       }
       
@@ -39,67 +39,67 @@ package com.ankamagames.dofus.network.types.game.achievement
          this.startedObjectives = new Vector.<AchievementStartedObjective>();
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_Achievement(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_Achievement(output);
       }
       
-      public function serializeAs_Achievement(param1:IDataOutput) : void {
+      public function serializeAs_Achievement(output:IDataOutput) : void {
          if(this.id < 0)
          {
             throw new Error("Forbidden value (" + this.id + ") on element id.");
          }
          else
          {
-            param1.writeShort(this.id);
-            param1.writeShort(this.finishedObjective.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.finishedObjective.length)
+            output.writeShort(this.id);
+            output.writeShort(this.finishedObjective.length);
+            _i2 = 0;
+            while(_i2 < this.finishedObjective.length)
             {
-               (this.finishedObjective[_loc2_] as AchievementObjective).serializeAs_AchievementObjective(param1);
-               _loc2_++;
+               (this.finishedObjective[_i2] as AchievementObjective).serializeAs_AchievementObjective(output);
+               _i2++;
             }
-            param1.writeShort(this.startedObjectives.length);
-            _loc3_ = 0;
-            while(_loc3_ < this.startedObjectives.length)
+            output.writeShort(this.startedObjectives.length);
+            _i3 = 0;
+            while(_i3 < this.startedObjectives.length)
             {
-               (this.startedObjectives[_loc3_] as AchievementStartedObjective).serializeAs_AchievementStartedObjective(param1);
-               _loc3_++;
+               (this.startedObjectives[_i3] as AchievementStartedObjective).serializeAs_AchievementStartedObjective(output);
+               _i3++;
             }
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_Achievement(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_Achievement(input);
       }
       
-      public function deserializeAs_Achievement(param1:IDataInput) : void {
-         var _loc6_:AchievementObjective = null;
-         var _loc7_:AchievementStartedObjective = null;
-         this.id = param1.readShort();
+      public function deserializeAs_Achievement(input:IDataInput) : void {
+         var _item2:AchievementObjective = null;
+         var _item3:AchievementStartedObjective = null;
+         this.id = input.readShort();
          if(this.id < 0)
          {
             throw new Error("Forbidden value (" + this.id + ") on element of Achievement.id.");
          }
          else
          {
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            _finishedObjectiveLen = input.readUnsignedShort();
+            _i2 = 0;
+            while(_i2 < _finishedObjectiveLen)
             {
-               _loc6_ = new AchievementObjective();
-               _loc6_.deserialize(param1);
-               this.finishedObjective.push(_loc6_);
-               _loc3_++;
+               _item2 = new AchievementObjective();
+               _item2.deserialize(input);
+               this.finishedObjective.push(_item2);
+               _i2++;
             }
-            _loc4_ = param1.readUnsignedShort();
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            _startedObjectivesLen = input.readUnsignedShort();
+            _i3 = 0;
+            while(_i3 < _startedObjectivesLen)
             {
-               _loc7_ = new AchievementStartedObjective();
-               _loc7_.deserialize(param1);
-               this.startedObjectives.push(_loc7_);
-               _loc5_++;
+               _item3 = new AchievementStartedObjective();
+               _item3.deserialize(input);
+               this.startedObjectives.push(_item3);
+               _i3++;
             }
             return;
          }

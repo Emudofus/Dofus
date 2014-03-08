@@ -3,11 +3,11 @@ package com.ankamagames.jerakine.json
    public class JSONTokenizer extends Object
    {
       
-      public function JSONTokenizer(param1:String, param2:Boolean) {
+      public function JSONTokenizer(s:String, strict:Boolean) {
          this.controlCharsRegExp = new RegExp("[\\x00-\\x1F]");
          super();
-         this.jsonString = param1;
-         this.strict = param2;
+         this.jsonString = s;
+         this.strict = strict;
          this.loc = 0;
          this.nextChar();
       }
@@ -25,418 +25,407 @@ package com.ankamagames.jerakine.json
       private var controlCharsRegExp:RegExp;
       
       public function getNextToken() : JSONToken {
-         var _loc2_:String = null;
-         var _loc3_:String = null;
-         var _loc4_:String = null;
-         var _loc5_:String = null;
-         var _loc1_:JSONToken = new JSONToken();
+         var possibleTrue:String = null;
+         var possibleFalse:String = null;
+         var possibleNull:String = null;
+         var possibleNaN:String = null;
+         var token:JSONToken = new JSONToken();
          this.skipIgnored();
          switch(this.ch)
          {
             case "{":
-               _loc1_.type = JSONTokenType.LEFT_BRACE;
-               _loc1_.value = "{";
+               token.type = JSONTokenType.LEFT_BRACE;
+               token.value = "{";
                this.nextChar();
                break;
             case "}":
-               _loc1_.type = JSONTokenType.RIGHT_BRACE;
-               _loc1_.value = "}";
+               token.type = JSONTokenType.RIGHT_BRACE;
+               token.value = "}";
                this.nextChar();
                break;
             case "[":
-               _loc1_.type = JSONTokenType.LEFT_BRACKET;
-               _loc1_.value = "[";
+               token.type = JSONTokenType.LEFT_BRACKET;
+               token.value = "[";
                this.nextChar();
                break;
             case "]":
-               _loc1_.type = JSONTokenType.RIGHT_BRACKET;
-               _loc1_.value = "]";
+               token.type = JSONTokenType.RIGHT_BRACKET;
+               token.value = "]";
                this.nextChar();
                break;
             case ",":
-               _loc1_.type = JSONTokenType.COMMA;
-               _loc1_.value = ",";
+               token.type = JSONTokenType.COMMA;
+               token.value = ",";
                this.nextChar();
                break;
             case ":":
-               _loc1_.type = JSONTokenType.COLON;
-               _loc1_.value = ":";
+               token.type = JSONTokenType.COLON;
+               token.value = ":";
                this.nextChar();
                break;
             case "t":
-               _loc2_ = "t" + this.nextChar() + this.nextChar() + this.nextChar();
-               if(_loc2_ == "true")
+               possibleTrue = "t" + this.nextChar() + this.nextChar() + this.nextChar();
+               if(possibleTrue == "true")
                {
-                  _loc1_.type = JSONTokenType.TRUE;
-                  _loc1_.value = true;
+                  token.type = JSONTokenType.TRUE;
+                  token.value = true;
                   this.nextChar();
                }
                else
                {
-                  this.parseError("Expecting \'true\' but found " + _loc2_);
+                  this.parseError("Expecting \'true\' but found " + possibleTrue);
                }
                break;
             case "f":
-               _loc3_ = "f" + this.nextChar() + this.nextChar() + this.nextChar() + this.nextChar();
-               if(_loc3_ == "false")
+               possibleFalse = "f" + this.nextChar() + this.nextChar() + this.nextChar() + this.nextChar();
+               if(possibleFalse == "false")
                {
-                  _loc1_.type = JSONTokenType.FALSE;
-                  _loc1_.value = false;
+                  token.type = JSONTokenType.FALSE;
+                  token.value = false;
                   this.nextChar();
                }
                else
                {
-                  this.parseError("Expecting \'false\' but found " + _loc3_);
+                  this.parseError("Expecting \'false\' but found " + possibleFalse);
                }
                break;
             case "n":
-               _loc4_ = "n" + this.nextChar() + this.nextChar() + this.nextChar();
-               if(_loc4_ == "null")
+               possibleNull = "n" + this.nextChar() + this.nextChar() + this.nextChar();
+               if(possibleNull == "null")
                {
-                  _loc1_.type = JSONTokenType.NULL;
-                  _loc1_.value = null;
+                  token.type = JSONTokenType.NULL;
+                  token.value = null;
                   this.nextChar();
                }
                else
                {
-                  this.parseError("Expecting \'null\' but found " + _loc4_);
+                  this.parseError("Expecting \'null\' but found " + possibleNull);
                }
                break;
             case "N":
-               _loc5_ = "N" + this.nextChar() + this.nextChar();
-               if(_loc5_ == "NaN")
+               possibleNaN = "N" + this.nextChar() + this.nextChar();
+               if(possibleNaN == "NaN")
                {
-                  _loc1_.type = JSONTokenType.NAN;
-                  _loc1_.value = NaN;
+                  token.type = JSONTokenType.NAN;
+                  token.value = NaN;
                   this.nextChar();
                }
                else
                {
-                  this.parseError("Expecting \'NaN\' but found " + _loc5_);
+                  this.parseError("Expecting \'NaN\' but found " + possibleNaN);
                }
                break;
             case "\"":
-               _loc1_ = this.readString();
+               token = this.readString();
                break;
-            default:
-               if((this.isDigit(this.ch)) || this.ch == "-")
-               {
-                  _loc1_ = this.readNumber();
-               }
-               else
-               {
-                  if(this.ch == "")
-                  {
-                     return null;
-                  }
-                  this.parseError("Unexpected " + this.ch + " encountered");
-               }
          }
-         return _loc1_;
+         return token;
       }
       
       private function readString() : JSONToken {
-         var _loc3_:* = 0;
-         var _loc4_:* = 0;
-         var _loc1_:int = this.loc;
-         while(true)
+         var backspaceCount:* = 0;
+         var backspaceIndex:* = 0;
+         var quoteIndex:int = this.loc;
+         do
          {
-            _loc1_ = this.jsonString.indexOf("\"",_loc1_);
-            if(_loc1_ >= 0)
-            {
-               _loc3_ = 0;
-               _loc4_ = _loc1_-1;
-               while(this.jsonString.charAt(_loc4_) == "\\")
+               quoteIndex = this.jsonString.indexOf("\"",quoteIndex);
+               if(quoteIndex >= 0)
                {
-                  _loc3_++;
-                  _loc4_--;
+                  backspaceCount = 0;
+                  backspaceIndex = quoteIndex - 1;
+                  while(this.jsonString.charAt(backspaceIndex) == "\\")
+                  {
+                     backspaceCount++;
+                     backspaceIndex--;
+                  }
+                  if(backspaceCount % 2 == 0)
+                  {
+                     token = new JSONToken();
+                     token.type = JSONTokenType.STRING;
+                     token.value = this.unescapeString(this.jsonString.substr(this.loc,quoteIndex - this.loc));
+                     this.loc = quoteIndex + 1;
+                     this.nextChar();
+                     return token;
+                  }
+                  quoteIndex++;
                }
-               if(_loc3_ % 2 == 0)
+               else
                {
-                  break;
+                  this.parseError("Unterminated string literal");
                }
-               _loc1_++;
-            }
-            else
-            {
-               this.parseError("Unterminated string literal");
-            }
+            }while(true);
+            
+            var token:JSONToken = new JSONToken();
+            token.type = JSONTokenType.STRING;
+            token.value = this.unescapeString(this.jsonString.substr(this.loc,quoteIndex - this.loc));
+            this.loc = quoteIndex + 1;
+            this.nextChar();
+            return token;
          }
-         var _loc2_:JSONToken = new JSONToken();
-         _loc2_.type = JSONTokenType.STRING;
-         _loc2_.value = this.unescapeString(this.jsonString.substr(this.loc,_loc1_ - this.loc));
-         this.loc = _loc1_ + 1;
-         this.nextChar();
-         return _loc2_;
-      }
-      
-      public function unescapeString(param1:String) : String {
-         var _loc6_:* = 0;
-         var _loc7_:String = null;
-         var _loc8_:String = null;
-         var _loc9_:* = 0;
-         var _loc10_:String = null;
-         if((this.strict) && (this.controlCharsRegExp.test(param1)))
-         {
-            this.parseError("String contains unescaped control character (0x00-0x1F)");
-         }
-         var _loc2_:* = "";
-         var _loc3_:* = 0;
-         var _loc4_:* = 0;
-         var _loc5_:int = param1.length;
-         while(true)
-         {
-            _loc3_ = param1.indexOf("\\",_loc4_);
-            if(_loc3_ >= 0)
+         
+         public function unescapeString(input:String) : String {
+            var afterBackslashIndex:* = 0;
+            var escapedChar:String = null;
+            var hexValue:String = null;
+            var i:* = 0;
+            var possibleHexChar:String = null;
+            if((this.strict) && (this.controlCharsRegExp.test(input)))
             {
-               _loc2_ = _loc2_ + param1.substr(_loc4_,_loc3_ - _loc4_);
-               _loc4_ = _loc3_ + 2;
-               _loc6_ = _loc3_ + 1;
-               _loc7_ = param1.charAt(_loc6_);
-               switch(_loc7_)
+               this.parseError("String contains unescaped control character (0x00-0x1F)");
+            }
+            var result:String = "";
+            var backslashIndex:int = 0;
+            var nextSubstringStartPosition:int = 0;
+            var len:int = input.length;
+            while(true)
+            {
+               backslashIndex = input.indexOf("\\",nextSubstringStartPosition);
+               if(backslashIndex >= 0)
                {
-                  case "\"":
-                     _loc2_ = _loc2_ + "\"";
-                     break;
-                  case "\\":
-                     _loc2_ = _loc2_ + "\\";
-                     break;
-                  case "n":
-                     _loc2_ = _loc2_ + "\n";
-                     break;
-                  case "r":
-                     _loc2_ = _loc2_ + "\r";
-                     break;
-                  case "t":
-                     _loc2_ = _loc2_ + "\t";
-                     break;
-                  case "u":
-                     _loc8_ = "";
-                     if(_loc4_ + 4 > _loc5_)
-                     {
-                        this.parseError("Unexpected end of input.  Expecting 4 hex digits after \\u.");
-                     }
-                     _loc9_ = _loc4_;
-                     while(_loc9_ < _loc4_ + 4)
-                     {
-                        _loc10_ = param1.charAt(_loc9_);
-                        if(!this.isHexDigit(_loc10_))
+                  result = result + input.substr(nextSubstringStartPosition,backslashIndex - nextSubstringStartPosition);
+                  nextSubstringStartPosition = backslashIndex + 2;
+                  afterBackslashIndex = backslashIndex + 1;
+                  escapedChar = input.charAt(afterBackslashIndex);
+                  switch(escapedChar)
+                  {
+                     case "\"":
+                        result = result + "\"";
+                        break;
+                     case "\\":
+                        result = result + "\\";
+                        break;
+                     case "n":
+                        result = result + "\n";
+                        break;
+                     case "r":
+                        result = result + "\r";
+                        break;
+                     case "t":
+                        result = result + "\t";
+                        break;
+                     case "u":
+                        hexValue = "";
+                        if(nextSubstringStartPosition + 4 > len)
                         {
-                           this.parseError("Excepted a hex digit, but found: " + _loc10_);
+                           this.parseError("Unexpected end of input.  Expecting 4 hex digits after \\u.");
                         }
-                        _loc8_ = _loc8_ + _loc10_;
-                        _loc9_++;
-                     }
-                     _loc2_ = _loc2_ + String.fromCharCode(parseInt(_loc8_,16));
-                     _loc4_ = _loc4_ + 4;
-                     break;
-                  case "f":
-                     _loc2_ = _loc2_ + "\f";
-                     break;
-                  case "/":
-                     _loc2_ = _loc2_ + "/";
-                     break;
-                  case "b":
-                     _loc2_ = _loc2_ + "\b";
-                     break;
-                  default:
-                     _loc2_ = _loc2_ + ("\\" + _loc7_);
-               }
-               if(_loc4_ >= _loc5_)
-               {
-                  break;
-               }
-               continue;
-            }
-            _loc2_ = _loc2_ + param1.substr(_loc4_);
-            break;
-         }
-         return _loc2_;
-      }
-      
-      private function readNumber() : JSONToken {
-         var _loc3_:JSONToken = null;
-         var _loc1_:* = "";
-         if(this.ch == "-")
-         {
-            _loc1_ = _loc1_ + "-";
-            this.nextChar();
-         }
-         if(!this.isDigit(this.ch))
-         {
-            this.parseError("Expecting a digit");
-         }
-         if(this.ch == "0")
-         {
-            _loc1_ = _loc1_ + this.ch;
-            this.nextChar();
-            if(this.isDigit(this.ch))
-            {
-               this.parseError("A digit cannot immediately follow 0");
-            }
-            else
-            {
-               if(!this.strict && this.ch == "x")
-               {
-                  _loc1_ = _loc1_ + this.ch;
-                  this.nextChar();
-                  if(this.isHexDigit(this.ch))
-                  {
-                     _loc1_ = _loc1_ + this.ch;
-                     this.nextChar();
+                        i = nextSubstringStartPosition;
+                        while(i < nextSubstringStartPosition + 4)
+                        {
+                           possibleHexChar = input.charAt(i);
+                           if(!this.isHexDigit(possibleHexChar))
+                           {
+                              this.parseError("Excepted a hex digit, but found: " + possibleHexChar);
+                           }
+                           hexValue = hexValue + possibleHexChar;
+                           i++;
+                        }
+                        result = result + String.fromCharCode(parseInt(hexValue,16));
+                        nextSubstringStartPosition = nextSubstringStartPosition + 4;
+                        break;
+                     case "f":
+                        result = result + "\f";
+                        break;
+                     case "/":
+                        result = result + "/";
+                        break;
+                     case "b":
+                        result = result + "\b";
+                        break;
                   }
-                  else
+                  if(nextSubstringStartPosition >= len)
                   {
-                     this.parseError("Number in hex format require at least one hex digit after \"0x\"");
+                     break;
                   }
-                  while(this.isHexDigit(this.ch))
-                  {
-                     _loc1_ = _loc1_ + this.ch;
-                     this.nextChar();
-                  }
+                  continue;
                }
+               result = result + input.substr(nextSubstringStartPosition);
+               break;
             }
+            return result;
          }
-         else
-         {
-            while(this.isDigit(this.ch))
+         
+         private function readNumber() : JSONToken {
+            var token:JSONToken = null;
+            var input:String = "";
+            if(this.ch == "-")
             {
-               _loc1_ = _loc1_ + this.ch;
+               input = input + "-";
                this.nextChar();
             }
-         }
-         if(this.ch == ".")
-         {
-            _loc1_ = _loc1_ + ".";
-            this.nextChar();
             if(!this.isDigit(this.ch))
             {
                this.parseError("Expecting a digit");
             }
-            while(this.isDigit(this.ch))
+            if(this.ch == "0")
             {
-               _loc1_ = _loc1_ + this.ch;
+               input = input + this.ch;
                this.nextChar();
-            }
-         }
-         if(this.ch == "e" || this.ch == "E")
-         {
-            _loc1_ = _loc1_ + "e";
-            this.nextChar();
-            if(this.ch == "+" || this.ch == "-")
-            {
-               _loc1_ = _loc1_ + this.ch;
-               this.nextChar();
-            }
-            if(!this.isDigit(this.ch))
-            {
-               this.parseError("Scientific notation number needs exponent value");
-            }
-            while(this.isDigit(this.ch))
-            {
-               _loc1_ = _loc1_ + this.ch;
-               this.nextChar();
-            }
-         }
-         var _loc2_:Number = Number(_loc1_);
-         if((isFinite(_loc2_)) && !isNaN(_loc2_))
-         {
-            _loc3_ = new JSONToken();
-            _loc3_.type = JSONTokenType.NUMBER;
-            _loc3_.value = _loc2_;
-            return _loc3_;
-         }
-         this.parseError("Number " + _loc2_ + " is not valid!");
-         return null;
-      }
-      
-      private function nextChar() : String {
-         return this.ch = this.jsonString.charAt(this.loc++);
-      }
-      
-      private function skipIgnored() : void {
-         var _loc1_:* = 0;
-         do
-         {
-               _loc1_ = this.loc;
-               this.skipWhite();
-               this.skipComments();
-            }while(_loc1_ != this.loc);
-            
-         }
-         
-         private function skipComments() : void {
-            if(this.ch == "/")
-            {
-               this.nextChar();
-               switch(this.ch)
+               if(this.isDigit(this.ch))
                {
-                  case "/":
-                     do
+                  this.parseError("A digit cannot immediately follow 0");
+               }
+               else
+               {
+                  if((!this.strict) && (this.ch == "x"))
+                  {
+                     input = input + this.ch;
+                     this.nextChar();
+                     if(this.isHexDigit(this.ch))
                      {
-                           this.nextChar();
-                        }while(!(this.ch == "\n") && !(this.ch == ""));
-                        
+                        input = input + this.ch;
                         this.nextChar();
-                        break;
-                     case "*":
+                     }
+                     else
+                     {
+                        this.parseError("Number in hex format require at least one hex digit after \"0x\"");
+                     }
+                     while(this.isHexDigit(this.ch))
+                     {
+                        input = input + this.ch;
                         this.nextChar();
-                        while(true)
-                        {
-                           if(this.ch == "*")
-                           {
-                              this.nextChar();
-                              if(this.ch == "/")
-                              {
-                                 break;
-                              }
-                           }
-                           else
-                           {
-                              this.nextChar();
-                           }
-                           if(this.ch == "")
-                           {
-                              this.parseError("Multi-line comment not closed");
-                           }
-                        }
-                        this.nextChar();
-                        break;
-                     default:
-                        this.parseError("Unexpected " + this.ch + " encountered (expecting \'/\' or \'*\' )");
+                     }
                   }
                }
             }
-            
-            private function skipWhite() : void {
-               while(this.isWhiteSpace(this.ch))
+            else
+            {
+               while(this.isDigit(this.ch))
                {
+                  input = input + this.ch;
                   this.nextChar();
                }
             }
-            
-            private function isWhiteSpace(param1:String) : Boolean {
-               if(param1 == " " || param1 == "\t" || param1 == "\n" || param1 == "\r")
+            if(this.ch == ".")
+            {
+               input = input + ".";
+               this.nextChar();
+               if(!this.isDigit(this.ch))
                {
-                  return true;
+                  this.parseError("Expecting a digit");
                }
-               if(!this.strict && param1.charCodeAt(0) == 160)
+               while(this.isDigit(this.ch))
                {
-                  return true;
+                  input = input + this.ch;
+                  this.nextChar();
                }
-               return false;
+            }
+            if((this.ch == "e") || (this.ch == "E"))
+            {
+               input = input + "e";
+               this.nextChar();
+               if((this.ch == "+") || (this.ch == "-"))
+               {
+                  input = input + this.ch;
+                  this.nextChar();
+               }
+               if(!this.isDigit(this.ch))
+               {
+                  this.parseError("Scientific notation number needs exponent value");
+               }
+               while(this.isDigit(this.ch))
+               {
+                  input = input + this.ch;
+                  this.nextChar();
+               }
+            }
+            var num:Number = Number(input);
+            if((isFinite(num)) && (!isNaN(num)))
+            {
+               token = new JSONToken();
+               token.type = JSONTokenType.NUMBER;
+               token.value = num;
+               return token;
+            }
+            this.parseError("Number " + num + " is not valid!");
+            return null;
+         }
+         
+         private function nextChar() : String {
+            return this.ch = this.jsonString.charAt(this.loc++);
+         }
+         
+         private function skipIgnored() : void {
+            var originalLoc:* = 0;
+            do
+            {
+                  originalLoc = this.loc;
+                  this.skipWhite();
+                  this.skipComments();
+               }while(originalLoc != this.loc);
+               
             }
             
-            private function isDigit(param1:String) : Boolean {
-               return param1 >= "0" && param1 <= "9";
-            }
-            
-            private function isHexDigit(param1:String) : Boolean {
-               return (this.isDigit(param1)) || param1 >= "A" && param1 <= "F" || param1 >= "a" && param1 <= "f";
-            }
-            
-            public function parseError(param1:String) : void {
-               throw new JSONParseError(param1,this.loc,this.jsonString);
+            private function skipComments() : void {
+               if(this.ch == "/")
+               {
+                  this.nextChar();
+                  switch(this.ch)
+                  {
+                     case "/":
+                        do
+                        {
+                              this.nextChar();
+                           }while((!(this.ch == "\n")) && (!(this.ch == "")));
+                           
+                           this.nextChar();
+                           break;
+                        case "*":
+                           this.nextChar();
+                           while(true)
+                           {
+                              if(this.ch == "*")
+                              {
+                                 this.nextChar();
+                                 if(this.ch == "/")
+                                 {
+                                    this.nextChar();
+                                    break;
+                                 }
+                              }
+                              else
+                              {
+                                 this.nextChar();
+                              }
+                              if(this.ch == "")
+                              {
+                                 this.parseError("Multi-line comment not closed");
+                              }
+                           }
+                           break;
+                     }
+                  }
+               }
+               
+               private function skipWhite() : void {
+                  while(this.isWhiteSpace(this.ch))
+                  {
+                     this.nextChar();
+                  }
+               }
+               
+               private function isWhiteSpace(ch:String) : Boolean {
+                  if((ch == " ") || (ch == "\t") || (ch == "\n") || (ch == "\r"))
+                  {
+                     return true;
+                  }
+                  if((!this.strict) && (ch.charCodeAt(0) == 160))
+                  {
+                     return true;
+                  }
+                  return false;
+               }
+               
+               private function isDigit(ch:String) : Boolean {
+                  return (ch >= "0") && (ch <= "9");
+               }
+               
+               private function isHexDigit(ch:String) : Boolean {
+                  return (this.isDigit(ch)) || (ch >= "A") && (ch <= "F") || (ch >= "a") && (ch <= "f");
+               }
+               
+               public function parseError(message:String) : void {
+                  throw new JSONParseError(message,this.loc,this.jsonString);
+               }
             }
          }
-      }

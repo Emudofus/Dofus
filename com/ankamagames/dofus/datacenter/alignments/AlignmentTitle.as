@@ -19,8 +19,8 @@ package com.ankamagames.dofus.datacenter.alignments
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlignmentTitle));
       
-      public static function getAlignmentTitlesById(param1:int) : AlignmentTitle {
-         return GameData.getObject(MODULE,param1) as AlignmentTitle;
+      public static function getAlignmentTitlesById(id:int) : AlignmentTitle {
+         return GameData.getObject(MODULE,id) as AlignmentTitle;
       }
       
       public static function getAlignmentTitles() : Array {
@@ -33,12 +33,12 @@ package com.ankamagames.dofus.datacenter.alignments
       
       public var shortsId:Vector.<int>;
       
-      public function getNameFromGrade(param1:int) : String {
-         return I18n.getText(this.namesId[param1]);
+      public function getNameFromGrade(grade:int) : String {
+         return I18n.getText(this.namesId[grade]);
       }
       
-      public function getShortNameFromGrade(param1:int) : String {
-         return I18n.getText(this.shortsId[param1]);
+      public function getShortNameFromGrade(grade:int) : String {
+         return I18n.getText(this.shortsId[grade]);
       }
    }
 }

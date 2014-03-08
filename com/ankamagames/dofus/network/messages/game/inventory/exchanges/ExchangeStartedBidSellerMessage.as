@@ -3,11 +3,11 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.data.items.SellerBuyerDescriptor;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItemToSellInBid;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
+   import __AS3__.vec.*;
    
    public class ExchangeStartedBidSellerMessage extends NetworkMessage implements INetworkMessage
    {
@@ -34,9 +34,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5905;
       }
       
-      public function initExchangeStartedBidSellerMessage(param1:SellerBuyerDescriptor=null, param2:Vector.<ObjectItemToSellInBid>=null) : ExchangeStartedBidSellerMessage {
-         this.sellerDescriptor = param1;
-         this.objectsInfos = param2;
+      public function initExchangeStartedBidSellerMessage(sellerDescriptor:SellerBuyerDescriptor=null, objectsInfos:Vector.<ObjectItemToSellInBid>=null) : ExchangeStartedBidSellerMessage {
+         this.sellerDescriptor = sellerDescriptor;
+         this.objectsInfos = objectsInfos;
          this._isInitialized = true;
          return this;
       }
@@ -46,47 +46,47 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeStartedBidSellerMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeStartedBidSellerMessage(output);
       }
       
-      public function serializeAs_ExchangeStartedBidSellerMessage(param1:IDataOutput) : void {
-         this.sellerDescriptor.serializeAs_SellerBuyerDescriptor(param1);
-         param1.writeShort(this.objectsInfos.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.objectsInfos.length)
+      public function serializeAs_ExchangeStartedBidSellerMessage(output:IDataOutput) : void {
+         this.sellerDescriptor.serializeAs_SellerBuyerDescriptor(output);
+         output.writeShort(this.objectsInfos.length);
+         var _i2:uint = 0;
+         while(_i2 < this.objectsInfos.length)
          {
-            (this.objectsInfos[_loc2_] as ObjectItemToSellInBid).serializeAs_ObjectItemToSellInBid(param1);
-            _loc2_++;
+            (this.objectsInfos[_i2] as ObjectItemToSellInBid).serializeAs_ObjectItemToSellInBid(output);
+            _i2++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeStartedBidSellerMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeStartedBidSellerMessage(input);
       }
       
-      public function deserializeAs_ExchangeStartedBidSellerMessage(param1:IDataInput) : void {
-         var _loc4_:ObjectItemToSellInBid = null;
+      public function deserializeAs_ExchangeStartedBidSellerMessage(input:IDataInput) : void {
+         var _item2:ObjectItemToSellInBid = null;
          this.sellerDescriptor = new SellerBuyerDescriptor();
-         this.sellerDescriptor.deserialize(param1);
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+         this.sellerDescriptor.deserialize(input);
+         var _objectsInfosLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2 < _objectsInfosLen)
          {
-            _loc4_ = new ObjectItemToSellInBid();
-            _loc4_.deserialize(param1);
-            this.objectsInfos.push(_loc4_);
-            _loc3_++;
+            _item2 = new ObjectItemToSellInBid();
+            _item2.deserialize(input);
+            this.objectsInfos.push(_item2);
+            _i2++;
          }
       }
    }

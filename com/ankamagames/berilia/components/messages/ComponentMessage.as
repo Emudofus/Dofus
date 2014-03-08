@@ -12,9 +12,9 @@ package com.ankamagames.berilia.components.messages
    public class ComponentMessage extends Object implements Message
    {
       
-      public function ComponentMessage(param1:InteractiveObject) {
+      public function ComponentMessage(target:InteractiveObject) {
          super();
-         this._target = param1;
+         this._target = target;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ComponentMessage));
@@ -35,20 +35,20 @@ package com.ankamagames.berilia.components.messages
          return this._canceled;
       }
       
-      public function set canceled(param1:Boolean) : void {
+      public function set canceled(value:Boolean) : void {
          if(this.bubbling)
          {
             throw new InvalidCancelError("Can\'t cancel a bubbling message.");
          }
          else
          {
-            if((this._canceled) && !param1)
+            if((this._canceled) && (!value))
             {
                throw new InvalidCancelError("Can\'t uncancel a canceled message.");
             }
             else
             {
-               this._canceled = param1;
+               this._canceled = value;
                return;
             }
          }
@@ -58,12 +58,12 @@ package com.ankamagames.berilia.components.messages
          return this._actions;
       }
       
-      public function addAction(param1:Action) : void {
+      public function addAction(action:Action) : void {
          if(this._actions == null)
          {
             this._actions = new Array();
          }
-         this._actions.push(param1);
+         this._actions.push(action);
       }
    }
 }

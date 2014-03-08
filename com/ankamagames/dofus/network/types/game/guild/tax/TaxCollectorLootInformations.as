@@ -25,11 +25,11 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          return 372;
       }
       
-      public function initTaxCollectorLootInformations(param1:uint=0, param2:Number=0, param3:uint=0, param4:uint=0) : TaxCollectorLootInformations {
-         this.kamas = param1;
-         this.experience = param2;
-         this.pods = param3;
-         this.itemsValue = param4;
+      public function initTaxCollectorLootInformations(kamas:uint=0, experience:Number=0, pods:uint=0, itemsValue:uint=0) : TaxCollectorLootInformations {
+         this.kamas = kamas;
+         this.experience = experience;
+         this.pods = pods;
+         this.itemsValue = itemsValue;
          return this;
       }
       
@@ -40,40 +40,40 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          this.itemsValue = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_TaxCollectorLootInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TaxCollectorLootInformations(output);
       }
       
-      public function serializeAs_TaxCollectorLootInformations(param1:IDataOutput) : void {
-         super.serializeAs_TaxCollectorComplementaryInformations(param1);
+      public function serializeAs_TaxCollectorLootInformations(output:IDataOutput) : void {
+         super.serializeAs_TaxCollectorComplementaryInformations(output);
          if(this.kamas < 0)
          {
             throw new Error("Forbidden value (" + this.kamas + ") on element kamas.");
          }
          else
          {
-            param1.writeInt(this.kamas);
+            output.writeInt(this.kamas);
             if(this.experience < 0)
             {
                throw new Error("Forbidden value (" + this.experience + ") on element experience.");
             }
             else
             {
-               param1.writeDouble(this.experience);
+               output.writeDouble(this.experience);
                if(this.pods < 0)
                {
                   throw new Error("Forbidden value (" + this.pods + ") on element pods.");
                }
                else
                {
-                  param1.writeInt(this.pods);
+                  output.writeInt(this.pods);
                   if(this.itemsValue < 0)
                   {
                      throw new Error("Forbidden value (" + this.itemsValue + ") on element itemsValue.");
                   }
                   else
                   {
-                     param1.writeInt(this.itemsValue);
+                     output.writeInt(this.itemsValue);
                      return;
                   }
                }
@@ -81,34 +81,34 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_TaxCollectorLootInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TaxCollectorLootInformations(input);
       }
       
-      public function deserializeAs_TaxCollectorLootInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.kamas = param1.readInt();
+      public function deserializeAs_TaxCollectorLootInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.kamas = input.readInt();
          if(this.kamas < 0)
          {
             throw new Error("Forbidden value (" + this.kamas + ") on element of TaxCollectorLootInformations.kamas.");
          }
          else
          {
-            this.experience = param1.readDouble();
+            this.experience = input.readDouble();
             if(this.experience < 0)
             {
                throw new Error("Forbidden value (" + this.experience + ") on element of TaxCollectorLootInformations.experience.");
             }
             else
             {
-               this.pods = param1.readInt();
+               this.pods = input.readInt();
                if(this.pods < 0)
                {
                   throw new Error("Forbidden value (" + this.pods + ") on element of TaxCollectorLootInformations.pods.");
                }
                else
                {
-                  this.itemsValue = param1.readInt();
+                  this.itemsValue = input.readInt();
                   if(this.itemsValue < 0)
                   {
                      throw new Error("Forbidden value (" + this.itemsValue + ") on element of TaxCollectorLootInformations.itemsValue.");

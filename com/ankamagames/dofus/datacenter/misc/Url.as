@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.misc
       
       public static const MODULE:String = "Url";
       
-      public static function getUrlById(param1:int) : Url {
-         return GameData.getObject(MODULE,param1) as Url;
+      public static function getUrlById(id:int) : Url {
+         return GameData.getObject(MODULE,id) as Url;
       }
       
       public static function getAllUrl() : Array {
@@ -37,52 +37,52 @@ package com.ankamagames.dofus.datacenter.misc
       public var method:String;
       
       public function get variables() : Object {
-         var _loc3_:Array = null;
-         var _loc4_:String = null;
-         var _loc1_:URLVariables = new URLVariables();
-         var _loc2_:Array = this.param.split(",");
-         for each (_loc4_ in _loc2_)
+         var split2:Array = null;
+         var it:String = null;
+         var data:URLVariables = new URLVariables();
+         var split1:Array = this.param.split(",");
+         for each (it in split1)
          {
-            if(!(_loc4_ == null || _loc4_ == "null"))
+            if(!((it == null) || (it == "null")))
             {
-               _loc3_ = _loc4_.split(":");
-               if(_loc3_[1].charAt(0) == "#")
+               split2 = it.split(":");
+               if(split2[1].charAt(0) == "#")
                {
-                  switch(String(_loc3_[1]).toUpperCase().substr(1))
+                  switch(String(split2[1]).toUpperCase().substr(1))
                   {
                      case "TOKEN":
-                        _loc3_[1] = AuthentificationManager.getInstance().ankamaPortalKey;
+                        split2[1] = AuthentificationManager.getInstance().ankamaPortalKey;
                         break;
                      case "LOGIN":
-                        _loc3_[1] = AuthentificationManager.getInstance().username;
+                        split2[1] = AuthentificationManager.getInstance().username;
                         break;
                      case "NICKNAME":
-                        _loc3_[1] = PlayerManager.getInstance().nickname;
+                        split2[1] = PlayerManager.getInstance().nickname;
                         break;
                      case "GAME":
-                        _loc3_[1] = 1;
+                        split2[1] = 1;
                         break;
                      case "ACCOUNT_ID":
-                        _loc3_[1] = PlayerManager.getInstance().accountId;
+                        split2[1] = PlayerManager.getInstance().accountId;
                         break;
                      case "PLAYER_ID":
-                        _loc3_[1] = PlayedCharacterManager.getInstance().id;
+                        split2[1] = PlayedCharacterManager.getInstance().id;
                         break;
                      case "SERVER_ID":
-                        _loc3_[1] = PlayerManager.getInstance().server.id;
+                        split2[1] = PlayerManager.getInstance().server.id;
                         break;
                      case "LANG":
-                        _loc3_[1] = XmlConfig.getInstance().getEntry("config.lang.current");
+                        split2[1] = XmlConfig.getInstance().getEntry("config.lang.current");
                         break;
                      case "THEME":
-                        _loc3_[1] = OptionManager.getOptionManager("dofus").switchUiSkin;
+                        split2[1] = OptionManager.getOptionManager("dofus").switchUiSkin;
                         break;
                   }
                }
-               _loc1_[_loc3_[0]] = _loc3_[1];
+               data[split2[0]] = split2[1];
             }
          }
-         return _loc1_;
+         return data;
       }
    }
 }

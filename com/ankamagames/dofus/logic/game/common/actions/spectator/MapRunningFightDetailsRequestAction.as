@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.spectator
          super();
       }
       
-      public static function create(param1:uint) : MapRunningFightDetailsRequestAction {
-         var _loc2_:MapRunningFightDetailsRequestAction = new MapRunningFightDetailsRequestAction();
-         _loc2_.fightId = param1;
-         return _loc2_;
+      public static function create(fightId:uint) : MapRunningFightDetailsRequestAction {
+         var a:MapRunningFightDetailsRequestAction = new MapRunningFightDetailsRequestAction();
+         a.fightId = fightId;
+         return a;
       }
       
       public var fightId:uint;

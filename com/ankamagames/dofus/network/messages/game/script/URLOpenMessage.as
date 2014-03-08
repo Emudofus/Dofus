@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.script
          return 6266;
       }
       
-      public function initURLOpenMessage(param1:uint=0) : URLOpenMessage {
-         this.urlId = param1;
+      public function initURLOpenMessage(urlId:uint=0) : URLOpenMessage {
+         this.urlId = urlId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.script
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_URLOpenMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_URLOpenMessage(output);
       }
       
-      public function serializeAs_URLOpenMessage(param1:IDataOutput) : void {
+      public function serializeAs_URLOpenMessage(output:IDataOutput) : void {
          if(this.urlId < 0)
          {
             throw new Error("Forbidden value (" + this.urlId + ") on element urlId.");
          }
          else
          {
-            param1.writeInt(this.urlId);
+            output.writeInt(this.urlId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_URLOpenMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_URLOpenMessage(input);
       }
       
-      public function deserializeAs_URLOpenMessage(param1:IDataInput) : void {
-         this.urlId = param1.readInt();
+      public function deserializeAs_URLOpenMessage(input:IDataInput) : void {
+         this.urlId = input.readInt();
          if(this.urlId < 0)
          {
             throw new Error("Forbidden value (" + this.urlId + ") on element of URLOpenMessage.urlId.");

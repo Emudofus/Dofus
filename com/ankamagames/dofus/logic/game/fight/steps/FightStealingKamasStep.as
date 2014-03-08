@@ -7,11 +7,11 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightStealingKamasStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightStealingKamasStep(param1:int, param2:int, param3:uint) {
+      public function FightStealingKamasStep(robberId:int, victimId:int, amount:uint) {
          super();
-         this._robberId = param1;
-         this._victimId = param2;
-         this._amount = param3;
+         this._robberId = robberId;
+         this._victimId = victimId;
+         this._amount = amount;
       }
       
       private var _robberId:int;

@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.fight.actions
       }
       
       public static function create() : ToggleDematerializationAction {
-         var _loc1_:ToggleDematerializationAction = new ToggleDematerializationAction();
-         return _loc1_;
+         var a:ToggleDematerializationAction = new ToggleDematerializationAction();
+         return a;
       }
    }
 }

@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.humanVendor
       }
       
       public static function create() : ExchangeStartAsVendorRequestAction {
-         var _loc1_:ExchangeStartAsVendorRequestAction = new ExchangeStartAsVendorRequestAction();
-         return _loc1_;
+         var a:ExchangeStartAsVendorRequestAction = new ExchangeStartAsVendorRequestAction();
+         return a;
       }
    }
 }

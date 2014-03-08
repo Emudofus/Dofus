@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3021;
       }
       
-      public function initObjectSetPositionMessage(param1:uint=0, param2:uint=63, param3:uint=0) : ObjectSetPositionMessage {
-         this.objectUID = param1;
-         this.position = param2;
-         this.quantity = param3;
+      public function initObjectSetPositionMessage(objectUID:uint=0, position:uint=63, quantity:uint=0) : ObjectSetPositionMessage {
+         this.objectUID = objectUID;
+         this.position = position;
+         this.quantity = quantity;
          this._isInitialized = true;
          return this;
       }
@@ -46,61 +46,61 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ObjectSetPositionMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectSetPositionMessage(output);
       }
       
-      public function serializeAs_ObjectSetPositionMessage(param1:IDataOutput) : void {
+      public function serializeAs_ObjectSetPositionMessage(output:IDataOutput) : void {
          if(this.objectUID < 0)
          {
             throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
          }
          else
          {
-            param1.writeInt(this.objectUID);
-            param1.writeByte(this.position);
+            output.writeInt(this.objectUID);
+            output.writeByte(this.position);
             if(this.quantity < 0)
             {
                throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
             }
             else
             {
-               param1.writeInt(this.quantity);
+               output.writeInt(this.quantity);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ObjectSetPositionMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectSetPositionMessage(input);
       }
       
-      public function deserializeAs_ObjectSetPositionMessage(param1:IDataInput) : void {
-         this.objectUID = param1.readInt();
+      public function deserializeAs_ObjectSetPositionMessage(input:IDataInput) : void {
+         this.objectUID = input.readInt();
          if(this.objectUID < 0)
          {
             throw new Error("Forbidden value (" + this.objectUID + ") on element of ObjectSetPositionMessage.objectUID.");
          }
          else
          {
-            this.position = param1.readUnsignedByte();
-            if(this.position < 0 || this.position > 255)
+            this.position = input.readUnsignedByte();
+            if((this.position < 0) || (this.position > 255))
             {
                throw new Error("Forbidden value (" + this.position + ") on element of ObjectSetPositionMessage.position.");
             }
             else
             {
-               this.quantity = param1.readInt();
+               this.quantity = input.readInt();
                if(this.quantity < 0)
                {
                   throw new Error("Forbidden value (" + this.quantity + ") on element of ObjectSetPositionMessage.quantity.");

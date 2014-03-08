@@ -12,8 +12,8 @@ package com.ankamagames.jerakine.logger.targets
       
       private var _buffer:Array;
       
-      override public function logEvent(param1:LogEvent) : void {
-         this._buffer.push(param1);
+      override public function logEvent(event:LogEvent) : void {
+         this._buffer.push(event);
       }
       
       public function getBuffer() : Array {

@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
          return 300;
       }
       
-      public function initGameRolePlayRemoveChallengeMessage(param1:int=0) : GameRolePlayRemoveChallengeMessage {
-         this.fightId = param1;
+      public function initGameRolePlayRemoveChallengeMessage(fightId:int=0) : GameRolePlayRemoveChallengeMessage {
+         this.fightId = fightId;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameRolePlayRemoveChallengeMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayRemoveChallengeMessage(output);
       }
       
-      public function serializeAs_GameRolePlayRemoveChallengeMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.fightId);
+      public function serializeAs_GameRolePlayRemoveChallengeMessage(output:IDataOutput) : void {
+         output.writeInt(this.fightId);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameRolePlayRemoveChallengeMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayRemoveChallengeMessage(input);
       }
       
-      public function deserializeAs_GameRolePlayRemoveChallengeMessage(param1:IDataInput) : void {
-         this.fightId = param1.readInt();
+      public function deserializeAs_GameRolePlayRemoveChallengeMessage(input:IDataInput) : void {
+         this.fightId = input.readInt();
       }
    }
 }

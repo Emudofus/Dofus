@@ -3,10 +3,10 @@ package com.ankamagames.tiphon.types
    public class TiphonEventInfo extends Object
    {
       
-      public function TiphonEventInfo(param1:String, param2:String="") {
+      public function TiphonEventInfo(pType:String, pParams:String="") {
          super();
-         this.type = param1;
-         this._params = param2;
+         this.type = pType;
+         this._params = pParams;
       }
       
       public var type:String;
@@ -21,8 +21,8 @@ package com.ankamagames.tiphon.types
       
       private var _direction:int = -1;
       
-      public function set label(param1:String) : void {
-         this._label = param1;
+      public function set label(pLabel:String) : void {
+         this._label = pLabel;
       }
       
       public function get label() : String {
@@ -53,24 +53,24 @@ package com.ankamagames.tiphon.types
          return this._animationType + "_" + this._direction;
       }
       
-      public function set animationName(param1:String) : void {
-         var _loc2_:Array = param1.split("_");
-         var _loc3_:uint = _loc2_.length;
+      public function set animationName(pAnimationName:String) : void {
+         var splited:Array = pAnimationName.split("_");
+         var size:uint = splited.length;
          this._animationType = "";
-         var _loc4_:uint = 0;
-         while(_loc4_ < _loc3_-1)
+         var i:uint = 0;
+         while(i < size - 1)
          {
-            if(_loc4_ > 0)
+            if(i > 0)
             {
-               this._animationType = this._animationType + ("_" + _loc2_[_loc4_]);
+               this._animationType = this._animationType + ("_" + splited[i]);
             }
             else
             {
-               this._animationType = _loc2_[_loc4_];
+               this._animationType = splited[i];
             }
-            _loc4_++;
+            i++;
          }
-         this._direction = _loc2_[_loc2_.length-1];
+         this._direction = splited[splited.length - 1];
          if(this._direction == 3)
          {
             this._direction = 1;

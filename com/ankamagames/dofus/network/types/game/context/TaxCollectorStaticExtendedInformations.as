@@ -22,9 +22,9 @@ package com.ankamagames.dofus.network.types.game.context
          return 440;
       }
       
-      public function initTaxCollectorStaticExtendedInformations(param1:uint=0, param2:uint=0, param3:GuildInformations=null, param4:AllianceInformations=null) : TaxCollectorStaticExtendedInformations {
-         super.initTaxCollectorStaticInformations(param1,param2,param3);
-         this.allianceIdentity = param4;
+      public function initTaxCollectorStaticExtendedInformations(firstNameId:uint=0, lastNameId:uint=0, guildIdentity:GuildInformations=null, allianceIdentity:AllianceInformations=null) : TaxCollectorStaticExtendedInformations {
+         super.initTaxCollectorStaticInformations(firstNameId,lastNameId,guildIdentity);
+         this.allianceIdentity = allianceIdentity;
          return this;
       }
       
@@ -33,23 +33,23 @@ package com.ankamagames.dofus.network.types.game.context
          this.allianceIdentity = new AllianceInformations();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_TaxCollectorStaticExtendedInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TaxCollectorStaticExtendedInformations(output);
       }
       
-      public function serializeAs_TaxCollectorStaticExtendedInformations(param1:IDataOutput) : void {
-         super.serializeAs_TaxCollectorStaticInformations(param1);
-         this.allianceIdentity.serializeAs_AllianceInformations(param1);
+      public function serializeAs_TaxCollectorStaticExtendedInformations(output:IDataOutput) : void {
+         super.serializeAs_TaxCollectorStaticInformations(output);
+         this.allianceIdentity.serializeAs_AllianceInformations(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_TaxCollectorStaticExtendedInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TaxCollectorStaticExtendedInformations(input);
       }
       
-      public function deserializeAs_TaxCollectorStaticExtendedInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_TaxCollectorStaticExtendedInformations(input:IDataInput) : void {
+         super.deserialize(input);
          this.allianceIdentity = new AllianceInformations();
-         this.allianceIdentity.deserialize(param1);
+         this.allianceIdentity.deserialize(input);
       }
    }
 }

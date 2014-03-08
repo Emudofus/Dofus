@@ -26,8 +26,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6337;
       }
       
-      public function initExchangeBidHouseInListUpdatedMessage(param1:int=0, param2:int=0, param3:Vector.<ObjectEffect>=null, param4:Vector.<uint>=null) : ExchangeBidHouseInListUpdatedMessage {
-         super.initExchangeBidHouseInListAddedMessage(param1,param2,param3,param4);
+      public function initExchangeBidHouseInListUpdatedMessage(itemUID:int=0, objGenericId:int=0, effects:Vector.<ObjectEffect>=null, prices:Vector.<uint>=null) : ExchangeBidHouseInListUpdatedMessage {
+         super.initExchangeBidHouseInListAddedMessage(itemUID,objGenericId,effects,prices);
          this._isInitialized = true;
          return this;
       }
@@ -37,30 +37,30 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeBidHouseInListUpdatedMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeBidHouseInListUpdatedMessage(output);
       }
       
-      public function serializeAs_ExchangeBidHouseInListUpdatedMessage(param1:IDataOutput) : void {
-         super.serializeAs_ExchangeBidHouseInListAddedMessage(param1);
+      public function serializeAs_ExchangeBidHouseInListUpdatedMessage(output:IDataOutput) : void {
+         super.serializeAs_ExchangeBidHouseInListAddedMessage(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeBidHouseInListUpdatedMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeBidHouseInListUpdatedMessage(input);
       }
       
-      public function deserializeAs_ExchangeBidHouseInListUpdatedMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_ExchangeBidHouseInListUpdatedMessage(input:IDataInput) : void {
+         super.deserialize(input);
       }
    }
 }

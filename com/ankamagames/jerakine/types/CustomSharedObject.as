@@ -28,57 +28,57 @@ package com.ankamagames.jerakine.types
       
       public static var throwException:Boolean;
       
-      public static function getLocal(param1:String) : CustomSharedObject {
-         if(_cache[param1])
+      public static function getLocal(name:String) : CustomSharedObject {
+         if(_cache[name])
          {
-            return _cache[param1];
+            return _cache[name];
          }
          if(!COMMON_FOLDER)
          {
             COMMON_FOLDER = getCustomSharedObjectDirectory();
          }
-         var _loc2_:CustomSharedObject = new CustomSharedObject();
-         _loc2_._name = param1;
-         _loc2_.getDataFromFile();
-         _cache[param1] = _loc2_;
-         return _loc2_;
+         var cso:CustomSharedObject = new CustomSharedObject();
+         cso._name = name;
+         cso.getDataFromFile();
+         _cache[name] = cso;
+         return cso;
       }
       
       public static function getCustomSharedObjectDirectory() : String {
-         var _loc1_:Array = null;
-         var _loc2_:File = null;
-         var _loc3_:Array = null;
+         var tmp:Array = null;
+         var dir:File = null;
+         var tmp2:Array = null;
          if(!COMMON_FOLDER)
          {
-            _loc1_ = File.applicationDirectory.nativePath.split(File.separator);
+            tmp = File.applicationDirectory.nativePath.split(File.separator);
             if(AirScanner.hasAir())
             {
-               _loc3_ = File.applicationStorageDirectory.nativePath.split(File.separator);
-               _loc3_.pop();
-               _loc3_.pop();
-               COMMON_FOLDER = _loc3_.join(File.separator) + File.separator + _loc1_[_loc1_.length - 2];
+               tmp2 = File.applicationStorageDirectory.nativePath.split(File.separator);
+               tmp2.pop();
+               tmp2.pop();
+               COMMON_FOLDER = tmp2.join(File.separator) + File.separator + tmp[tmp.length - 2];
             }
             else
             {
                COMMON_FOLDER = File.applicationStorageDirectory.nativePath;
             }
             COMMON_FOLDER = COMMON_FOLDER + File.separator;
-            _loc2_ = new File(COMMON_FOLDER);
-            if(!_loc2_.exists)
+            dir = new File(COMMON_FOLDER);
+            if(!dir.exists)
             {
-               _loc2_.createDirectory();
+               dir.createDirectory();
             }
          }
          return COMMON_FOLDER;
       }
       
       public static function closeAll() : void {
-         var _loc1_:CustomSharedObject = null;
-         for each (_loc1_ in _cache)
+         var cso:CustomSharedObject = null;
+         for each (cso in _cache)
          {
-            if(_loc1_)
+            if(cso)
             {
-               _loc1_.data = null;
+               cso.data = null;
             }
          }
          _cache = [];
@@ -105,8 +105,7 @@ package com.ankamagames.jerakine.types
       public function close() : void {
       }
       
-      private function writeData(param1:*) : Boolean {
-         var data:* = param1;
+      private function writeData(data:*) : Boolean {
          try
          {
             this._fileStream.open(this._file,FileMode.WRITE);
@@ -160,10 +159,6 @@ package com.ankamagames.jerakine.types
          else
          {
             this.data = new Object();
-         }
-         if(this._file.exists)
-         {
-            return;
          }
       }
    }

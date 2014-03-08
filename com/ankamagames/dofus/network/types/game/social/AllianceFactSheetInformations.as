@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.social
          return 421;
       }
       
-      public function initAllianceFactSheetInformations(param1:uint=0, param2:String="", param3:String="", param4:GuildEmblem=null, param5:uint=0) : AllianceFactSheetInformations {
-         super.initAllianceInformations(param1,param2,param3,param4);
-         this.creationDate = param5;
+      public function initAllianceFactSheetInformations(allianceId:uint=0, allianceTag:String="", allianceName:String="", allianceEmblem:GuildEmblem=null, creationDate:uint=0) : AllianceFactSheetInformations {
+         super.initAllianceInformations(allianceId,allianceTag,allianceName,allianceEmblem);
+         this.creationDate = creationDate;
          return this;
       }
       
@@ -32,30 +32,30 @@ package com.ankamagames.dofus.network.types.game.social
          this.creationDate = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AllianceFactSheetInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AllianceFactSheetInformations(output);
       }
       
-      public function serializeAs_AllianceFactSheetInformations(param1:IDataOutput) : void {
-         super.serializeAs_AllianceInformations(param1);
+      public function serializeAs_AllianceFactSheetInformations(output:IDataOutput) : void {
+         super.serializeAs_AllianceInformations(output);
          if(this.creationDate < 0)
          {
             throw new Error("Forbidden value (" + this.creationDate + ") on element creationDate.");
          }
          else
          {
-            param1.writeInt(this.creationDate);
+            output.writeInt(this.creationDate);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AllianceFactSheetInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AllianceFactSheetInformations(input);
       }
       
-      public function deserializeAs_AllianceFactSheetInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.creationDate = param1.readInt();
+      public function deserializeAs_AllianceFactSheetInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.creationDate = input.readInt();
          if(this.creationDate < 0)
          {
             throw new Error("Forbidden value (" + this.creationDate + ") on element of AllianceFactSheetInformations.creationDate.");

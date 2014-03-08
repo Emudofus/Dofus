@@ -15,18 +15,18 @@ package com.ankamagames.dofus.datacenter.effects.instances
       public var max:uint;
       
       override public function clone() : EffectInstance {
-         var _loc1_:EffectInstanceMinMax = new EffectInstanceMinMax();
-         _loc1_.rawZone = rawZone;
-         _loc1_.effectId = effectId;
-         _loc1_.duration = duration;
-         _loc1_.delay = delay;
-         _loc1_.min = this.min;
-         _loc1_.max = this.max;
-         _loc1_.random = random;
-         _loc1_.group = group;
-         _loc1_.targetId = targetId;
-         _loc1_.targetMask = targetMask;
-         return _loc1_;
+         var o:EffectInstanceMinMax = new EffectInstanceMinMax();
+         o.rawZone = rawZone;
+         o.effectId = effectId;
+         o.duration = duration;
+         o.delay = delay;
+         o.min = this.min;
+         o.max = this.max;
+         o.random = random;
+         o.group = group;
+         o.targetId = targetId;
+         o.targetMask = targetMask;
+         return o;
       }
       
       override public function get parameter0() : Object {
@@ -34,17 +34,17 @@ package com.ankamagames.dofus.datacenter.effects.instances
       }
       
       override public function get parameter1() : Object {
-         return this.min != this.max?this.max:null;
+         return !(this.min == this.max)?this.max:null;
       }
       
-      override public function setParameter(param1:uint, param2:*) : void {
-         switch(param1)
+      override public function setParameter(paramIndex:uint, value:*) : void {
+         switch(paramIndex)
          {
             case 0:
-               this.min = uint(param2);
+               this.min = uint(value);
                break;
             case 1:
-               this.max = uint(param2);
+               this.max = uint(value);
                break;
          }
       }

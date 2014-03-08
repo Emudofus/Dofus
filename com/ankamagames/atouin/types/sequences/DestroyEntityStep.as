@@ -8,9 +8,9 @@ package com.ankamagames.atouin.types.sequences
    public class DestroyEntityStep extends AbstractSequencable
    {
       
-      public function DestroyEntityStep(param1:IEntity) {
+      public function DestroyEntityStep(entity:IEntity) {
          super();
-         this._entity = param1;
+         this._entity = entity;
       }
       
       private var _entity:IEntity;

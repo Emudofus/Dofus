@@ -13,25 +13,25 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    public class StorageCraftFilterView extends StorageGenericView
    {
       
-      public function StorageCraftFilterView(param1:HookLock, param2:IStorageView, param3:int, param4:int) {
-         var _loc6_:RecipeWithSkill = null;
-         var _loc7_:* = false;
-         var _loc8_:* = 0;
-         super(param1);
-         var _loc5_:Array = Recipe.getAllRecipesForSkillId(param3,param4);
+      public function StorageCraftFilterView(hookLock:HookLock, parentView:IStorageView, skillId:int, slotCount:int) {
+         var recipe:RecipeWithSkill = null;
+         var selected:* = false;
+         var id:* = 0;
+         super(hookLock);
+         var recipies:Array = Recipe.getAllRecipesForSkillId(skillId,slotCount);
          this._ingredients = new Dictionary();
-         for each (_loc6_ in _loc5_)
+         for each (recipe in recipies)
          {
-            _loc7_ = false;
-            for each (_loc8_ in _loc6_.recipe.ingredientIds)
+            selected = false;
+            for each (id in recipe.recipe.ingredientIds)
             {
-               this._ingredients[_loc8_] = true;
+               this._ingredients[id] = true;
             }
          }
          this._ingredients[7508] = true;
-         this._skillId = param3;
-         this._slotCount = param4;
-         this._parent = param2;
+         this._skillId = skillId;
+         this._slotCount = slotCount;
+         this._parent = parentView;
       }
       
       private var _ingredients:Dictionary;
@@ -46,8 +46,8 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          return "storageCraftFilter";
       }
       
-      override public function isListening(param1:ItemWrapper) : Boolean {
-         return (this._parent.isListening(param1)) && (this._ingredients.hasOwnProperty(param1.objectGID));
+      override public function isListening(item:ItemWrapper) : Boolean {
+         return (this._parent.isListening(item)) && (this._ingredients.hasOwnProperty(item.objectGID));
       }
       
       override public function updateView() : void {
@@ -58,8 +58,8 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          }
       }
       
-      public function set parent(param1:IStorageView) : void {
-         this._parent = param1;
+      public function set parent(view:IStorageView) : void {
+         this._parent = view;
       }
       
       public function get parent() : IStorageView {

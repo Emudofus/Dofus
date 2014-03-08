@@ -29,8 +29,8 @@ package com.ankamagames.dofus.network.messages.game.interactive
          return 5709;
       }
       
-      public function initStatedElementUpdatedMessage(param1:StatedElement=null) : StatedElementUpdatedMessage {
-         this.statedElement = param1;
+      public function initStatedElementUpdatedMessage(statedElement:StatedElement=null) : StatedElementUpdatedMessage {
+         this.statedElement = statedElement;
          this._isInitialized = true;
          return this;
       }
@@ -40,31 +40,31 @@ package com.ankamagames.dofus.network.messages.game.interactive
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_StatedElementUpdatedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_StatedElementUpdatedMessage(output);
       }
       
-      public function serializeAs_StatedElementUpdatedMessage(param1:IDataOutput) : void {
-         this.statedElement.serializeAs_StatedElement(param1);
+      public function serializeAs_StatedElementUpdatedMessage(output:IDataOutput) : void {
+         this.statedElement.serializeAs_StatedElement(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_StatedElementUpdatedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_StatedElementUpdatedMessage(input);
       }
       
-      public function deserializeAs_StatedElementUpdatedMessage(param1:IDataInput) : void {
+      public function deserializeAs_StatedElementUpdatedMessage(input:IDataInput) : void {
          this.statedElement = new StatedElement();
-         this.statedElement.deserialize(param1);
+         this.statedElement.deserialize(input);
       }
    }
 }

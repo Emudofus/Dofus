@@ -9,12 +9,12 @@ package com.ankamagames.dofus.logic.game.common.actions.livingObject
          super();
       }
       
-      public static function create(param1:uint, param2:uint, param3:uint) : LivingObjectChangeSkinRequestAction {
-         var _loc4_:LivingObjectChangeSkinRequestAction = new LivingObjectChangeSkinRequestAction();
-         _loc4_.livingUID = param1;
-         _loc4_.livingPosition = param2;
-         _loc4_.skinId = param3;
-         return _loc4_;
+      public static function create(livingUID:uint, livingPosition:uint, skinId:uint) : LivingObjectChangeSkinRequestAction {
+         var action:LivingObjectChangeSkinRequestAction = new LivingObjectChangeSkinRequestAction();
+         action.livingUID = livingUID;
+         action.livingPosition = livingPosition;
+         action.skinId = skinId;
+         return action;
       }
       
       public var livingUID:uint;

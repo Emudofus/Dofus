@@ -36,10 +36,10 @@ package com.ankamagames.dofus.uiApi
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MapApi));
       
       public function getCurrentSubArea() : SubArea {
-         var _loc1_:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-         if(_loc1_)
+         var frame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+         if(frame)
          {
-            return SubArea.getSubAreaById(_loc1_.currentSubAreaId);
+            return SubArea.getSubAreaById(frame.currentSubAreaId);
          }
          return null;
       }
@@ -60,215 +60,224 @@ package com.ankamagames.dofus.uiApi
          return SubArea.getAllSubArea();
       }
       
-      public function getSubArea(param1:uint) : SubArea {
-         return SubArea.getSubAreaById(param1);
+      public function getSubArea(subAreaId:uint) : SubArea {
+         return SubArea.getSubAreaById(subAreaId);
       }
       
-      public function getSubAreaMapIds(param1:uint) : Vector.<uint> {
-         return SubArea.getSubAreaById(param1).mapIds;
+      public function getSubAreaMapIds(subAreaId:uint) : Vector.<uint> {
+         return SubArea.getSubAreaById(subAreaId).mapIds;
       }
       
-      public function getWorldPoint(param1:uint) : WorldPoint {
-         return WorldPoint.fromMapId(param1);
+      public function getWorldPoint(mapId:uint) : WorldPoint {
+         return WorldPoint.fromMapId(mapId);
       }
       
-      public function getMapCoords(param1:uint) : Point {
-         var _loc2_:MapPosition = MapPosition.getMapPositionById(param1);
-         return new Point(_loc2_.posX,_loc2_.posY);
+      public function getMapCoords(mapId:uint) : Point {
+         var mapPosition:MapPosition = MapPosition.getMapPositionById(mapId);
+         return new Point(mapPosition.posX,mapPosition.posY);
       }
       
-      public function getSubAreaShape(param1:uint) : Vector.<int> {
-         var _loc2_:SubArea = SubArea.getSubAreaById(param1);
-         if(_loc2_)
+      public function getSubAreaShape(subAreaId:uint) : Vector.<int> {
+         var subArea:SubArea = SubArea.getSubAreaById(subAreaId);
+         if(subArea)
          {
-            return _loc2_.shape;
+            return subArea.shape;
          }
          return null;
       }
       
       public function getHintIds() : Array {
-         var _loc4_:Hint = null;
-         var _loc5_:Object = null;
-         var _loc6_:MapPosition = null;
-         var _loc1_:Array = Hint.getHints() as Array;
-         var _loc2_:Array = new Array();
-         var _loc3_:* = 0;
-         for each (_loc4_ in _loc1_)
+         var hint:Hint = null;
+         var h:Object = null;
+         var mp:MapPosition = null;
+         var hints:Array = Hint.getHints() as Array;
+         var res:Array = new Array();
+         var i:int = 0;
+         for each (hint in hints)
          {
-            if(_loc4_)
+            if(hint)
             {
-               _loc3_++;
-               _loc5_ = new Object();
-               _loc5_.id = _loc4_.id;
-               _loc5_.category = _loc4_.categoryId;
-               _loc5_.name = _loc4_.name;
-               _loc5_.mapId = _loc4_.mapId;
-               _loc5_.realMapId = _loc4_.realMapId;
-               _loc5_.gfx = _loc4_.gfx;
-               _loc5_.subarea = SubArea.getSubAreaByMapId(_loc4_.mapId);
-               if(_loc5_.subarea)
+               i++;
+               h = new Object();
+               h.id = hint.id;
+               h.category = hint.categoryId;
+               h.name = hint.name;
+               h.mapId = hint.mapId;
+               h.realMapId = hint.realMapId;
+               h.gfx = hint.gfx;
+               h.subarea = SubArea.getSubAreaByMapId(hint.mapId);
+               if(!h.subarea)
                {
-                  _loc6_ = MapPosition.getMapPositionById(_loc4_.mapId);
-                  if(_loc6_)
+                  trace("No subarea found for mapId " + hint.mapId + ", skipping the hint " + hint.id);
+               }
+               else
+               {
+                  mp = MapPosition.getMapPositionById(hint.mapId);
+                  if(!mp)
                   {
-                     _loc5_.x = _loc6_.posX;
-                     _loc5_.y = _loc6_.posY;
-                     _loc5_.outdoor = _loc6_.outdoor;
-                     _loc5_.worldMapId = _loc4_.worldMapId;
-                     _loc2_.push(_loc5_);
+                     trace("No coordinates found for mapId " + hint.mapId + ", skipping the hint " + hint.id);
+                  }
+                  else
+                  {
+                     h.x = mp.posX;
+                     h.y = mp.posY;
+                     h.outdoor = mp.outdoor;
+                     h.worldMapId = hint.worldMapId;
+                     res.push(h);
                   }
                }
             }
          }
-         return _loc2_;
+         return res;
       }
       
-      public function subAreaByMapId(param1:uint) : SubArea {
-         return SubArea.getSubAreaByMapId(param1);
+      public function subAreaByMapId(mapId:uint) : SubArea {
+         return SubArea.getSubAreaByMapId(mapId);
       }
       
-      public function getMapIdByCoord(param1:int, param2:int) : Vector.<int> {
-         return MapPosition.getMapIdByCoord(param1,param2);
+      public function getMapIdByCoord(x:int, y:int) : Vector.<int> {
+         return MapPosition.getMapIdByCoord(x,y);
       }
       
-      public function getMapPositionById(param1:uint) : MapPosition {
-         return MapPosition.getMapPositionById(param1);
+      public function getMapPositionById(mapId:uint) : MapPosition {
+         return MapPosition.getMapPositionById(mapId);
       }
       
-      public function intersects(param1:Object, param2:Object) : Boolean {
-         if(!param1 || !param2)
+      public function intersects(rect1:Object, rect2:Object) : Boolean {
+         if((!rect1) || (!rect2))
          {
             return false;
          }
-         var _loc3_:Rectangle = Rectangle(SecureCenter.unsecure(param1));
-         var _loc4_:Rectangle = Rectangle(SecureCenter.unsecure(param2));
-         if((_loc3_) && (_loc4_))
+         var r1:Rectangle = Rectangle(SecureCenter.unsecure(rect1));
+         var r2:Rectangle = Rectangle(SecureCenter.unsecure(rect2));
+         if((r1) && (r2))
          {
-            return _loc3_.intersects(_loc4_);
+            return r1.intersects(r2);
          }
          return false;
       }
       
-      public function movePlayer(param1:int, param2:int, param3:int=-1) : void {
-         var _loc6_:WorldPoint = null;
-         var _loc7_:uint = 0;
-         var _loc8_:uint = 0;
-         var _loc9_:uint = 0;
-         var _loc10_:uint = 0;
-         var _loc11_:* = false;
-         var _loc12_:Array = null;
-         var _loc13_:uint = 0;
-         var _loc14_:MapPosition = null;
-         var _loc15_:uint = 0;
-         var _loc16_:uint = 0;
-         var _loc17_:* = 0;
-         var _loc18_:UiRootContainer = null;
+      public function movePlayer(x:int, y:int, world:int=-1) : void {
+         var wp:WorldPoint = null;
+         var currentWorldId:uint = 0;
+         var superAreaId:uint = 0;
+         var areaId:uint = 0;
+         var subAreaId:uint = 0;
+         var currentMapIsOutDoor:* = false;
+         var maps:Array = null;
+         var mapId:uint = 0;
+         var mapPosition:MapPosition = null;
+         var order:uint = 0;
+         var worldId:uint = 0;
+         var worldMapId:* = 0;
+         var mapUi:UiRootContainer = null;
          if(!PlayerManager.getInstance().hasRights)
          {
             return;
          }
-         var _loc4_:AdminQuietCommandMessage = new AdminQuietCommandMessage();
-         var _loc5_:Vector.<int> = MapPosition.getMapIdByCoord(param1,param2);
-         if(_loc5_)
+         var aqcmsg:AdminQuietCommandMessage = new AdminQuietCommandMessage();
+         var mapIds:Vector.<int> = MapPosition.getMapIdByCoord(x,y);
+         if(mapIds)
          {
-            _loc7_ = param3 == -1?PlayedCharacterManager.getInstance().currentMap.worldId:param3;
-            _loc8_ = PlayedCharacterManager.getInstance().currentSubArea.area.superArea.id;
-            _loc9_ = PlayedCharacterManager.getInstance().currentSubArea.area.id;
-            _loc10_ = PlayedCharacterManager.getInstance().currentSubArea.id;
-            _loc11_ = MapPosition.getMapPositionById(PlayedCharacterManager.getInstance().currentMap.mapId).outdoor;
-            _loc12_ = [];
-            for each (_loc13_ in _loc5_)
+            currentWorldId = world == -1?PlayedCharacterManager.getInstance().currentMap.worldId:world;
+            superAreaId = PlayedCharacterManager.getInstance().currentSubArea.area.superArea.id;
+            areaId = PlayedCharacterManager.getInstance().currentSubArea.area.id;
+            subAreaId = PlayedCharacterManager.getInstance().currentSubArea.id;
+            currentMapIsOutDoor = MapPosition.getMapPositionById(PlayedCharacterManager.getInstance().currentMap.mapId).outdoor;
+            maps = [];
+            for each (mapId in mapIds)
             {
-               _loc14_ = MapPosition.getMapPositionById(_loc13_);
-               _loc15_ = 0;
-               _loc16_ = WorldPoint.fromMapId(_loc14_.id).worldId;
-               switch(_loc16_)
+               mapPosition = MapPosition.getMapPositionById(mapId);
+               trace(mapPosition.id + " : " + mapPosition.hasPriorityOnWorldmap);
+               order = 0;
+               worldId = WorldPoint.fromMapId(mapPosition.id).worldId;
+               switch(worldId)
                {
                   case 0:
-                     _loc15_ = 40;
+                     order = 40;
                      break;
                   case 3:
-                     _loc15_ = 30;
+                     order = 30;
                      break;
                   case 2:
-                     _loc15_ = 20;
+                     order = 20;
                      break;
                   case 1:
-                     _loc15_ = 10;
+                     order = 10;
                      break;
                }
-               _loc17_ = this.getCurrentWorldMap().id;
-               _loc18_ = Berilia.getInstance().getUi("cartographyUi");
-               if(!_loc18_)
+               worldMapId = this.getCurrentWorldMap().id;
+               mapUi = Berilia.getInstance().getUi("cartographyUi");
+               if(!mapUi)
                {
-                  _loc18_ = Berilia.getInstance().getUi("cartographyPopup");
+                  mapUi = Berilia.getInstance().getUi("cartographyPopup");
                }
-               if(_loc18_)
+               if(mapUi)
                {
-                  _loc17_ = _loc18_.uiClass.currentWorldId;
+                  worldMapId = mapUi.uiClass.currentWorldId;
                }
-               if((_loc14_.subArea) && (_loc14_.subArea.worldmap) && _loc14_.subArea.worldmap.id == _loc17_)
+               if((mapPosition.subArea) && (mapPosition.subArea.worldmap) && (mapPosition.subArea.worldmap.id == worldMapId))
                {
-                  _loc15_ = _loc15_ + 100000;
+                  order = order + 100000;
                }
-               if(_loc14_.hasPriorityOnWorldmap)
+               if(mapPosition.hasPriorityOnWorldmap)
                {
-                  _loc15_ = _loc15_ + 10000;
+                  order = order + 10000;
                }
-               if(_loc14_.outdoor == _loc11_)
+               if(mapPosition.outdoor == currentMapIsOutDoor)
                {
-                  _loc15_++;
+                  order++;
                }
-               if((_loc14_.subArea) && _loc14_.subArea.id == _loc10_)
+               if((mapPosition.subArea) && (mapPosition.subArea.id == subAreaId))
                {
-                  _loc15_ = _loc15_ + 100;
+                  order = order + 100;
                }
-               if((_loc14_.subArea) && (_loc14_.subArea.area) && _loc14_.subArea.area.id == _loc9_)
+               if((mapPosition.subArea) && (mapPosition.subArea.area) && (mapPosition.subArea.area.id == areaId))
                {
-                  _loc15_ = _loc15_ + 50;
+                  order = order + 50;
                }
-               if(((_loc14_.subArea) && (_loc14_.subArea.area)) && (_loc14_.subArea.area.superArea) && _loc14_.subArea.area.superArea.id == _loc8_)
+               if(((mapPosition.subArea) && (mapPosition.subArea.area)) && (mapPosition.subArea.area.superArea) && (mapPosition.subArea.area.superArea.id == superAreaId))
                {
-                  _loc15_ = _loc15_ + 25;
+                  order = order + 25;
                }
-               if(_loc16_ == _loc7_)
+               if(worldId == currentWorldId)
                {
-                  _loc15_ = _loc15_ + 100;
+                  order = order + 100;
                }
-               _loc12_.push(
+               maps.push(
                   {
-                     "id":_loc13_,
-                     "order":_loc15_
+                     "id":mapId,
+                     "order":order
                   });
             }
-            if(_loc12_.length)
+            if(maps.length)
             {
-               _loc12_.sortOn(["order","id"],[Array.NUMERIC,Array.NUMERIC | Array.DESCENDING]);
-               _loc4_.initAdminQuietCommandMessage("moveto " + _loc12_.pop().id);
+               maps.sortOn(["order","id"],[Array.NUMERIC,Array.NUMERIC | Array.DESCENDING]);
+               aqcmsg.initAdminQuietCommandMessage("moveto " + maps.pop().id);
             }
             else
             {
-               _loc4_.initAdminQuietCommandMessage("moveto " + param1 + "," + param2);
+               aqcmsg.initAdminQuietCommandMessage("moveto " + x + "," + y);
             }
          }
          else
          {
-            _loc4_.initAdminQuietCommandMessage("moveto " + param1 + "," + param2);
+            aqcmsg.initAdminQuietCommandMessage("moveto " + x + "," + y);
          }
-         ConnectionsHandler.getConnection().send(_loc4_);
+         ConnectionsHandler.getConnection().send(aqcmsg);
       }
       
-      public function movePlayerOnMapId(param1:uint) : void {
-         var _loc2_:AdminQuietCommandMessage = new AdminQuietCommandMessage();
-         _loc2_.initAdminQuietCommandMessage("moveto " + param1);
+      public function movePlayerOnMapId(mapId:uint) : void {
+         var aqcmsg:AdminQuietCommandMessage = new AdminQuietCommandMessage();
+         aqcmsg.initAdminQuietCommandMessage("moveto " + mapId);
          if(PlayerManager.getInstance().hasRights)
          {
-            ConnectionsHandler.getConnection().send(_loc2_);
+            ConnectionsHandler.getConnection().send(aqcmsg);
          }
       }
       
-      public function getMapReference(param1:uint) : Object {
-         return MapReference.getMapReferenceById(param1);
+      public function getMapReference(refId:uint) : Object {
+         return MapReference.getMapReferenceById(refId);
       }
       
       public function getPhoenixsMaps() : Array {
@@ -276,37 +285,37 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function getClosestPhoenixMap() : uint {
-         var _loc1_:uint = 0;
-         var _loc2_:uint = 0;
-         var _loc3_:MapPosition = null;
-         var _loc4_:* = 0;
-         var _loc6_:* = 0;
-         var _loc7_:* = 0;
-         var _loc5_:* = -1;
-         for each (_loc1_ in FlagManager.getInstance().phoenixs)
+         var mapId:uint = 0;
+         var closestPhoenixMapId:uint = 0;
+         var mapPos:MapPosition = null;
+         var dist:* = 0;
+         var dx:* = 0;
+         var dy:* = 0;
+         var minDist:int = -1;
+         for each (mapId in FlagManager.getInstance().phoenixs)
          {
-            _loc3_ = MapPosition.getMapPositionById(_loc1_);
-            if(_loc3_.worldMap == PlayedCharacterManager.getInstance().currentWorldMap.id)
+            mapPos = MapPosition.getMapPositionById(mapId);
+            if(mapPos.worldMap == PlayedCharacterManager.getInstance().currentWorldMap.id)
             {
-               _loc6_ = _loc3_.posX - PlayedCharacterManager.getInstance().currentMap.outdoorX;
-               _loc7_ = _loc3_.posY - PlayedCharacterManager.getInstance().currentMap.outdoorY;
-               _loc4_ = _loc6_ * _loc6_ + _loc7_ * _loc7_;
-               if(_loc5_ == -1)
+               dx = mapPos.posX - PlayedCharacterManager.getInstance().currentMap.outdoorX;
+               dy = mapPos.posY - PlayedCharacterManager.getInstance().currentMap.outdoorY;
+               dist = dx * dx + dy * dy;
+               if(minDist == -1)
                {
-                  _loc5_ = _loc4_;
-                  _loc2_ = _loc1_;
+                  minDist = dist;
+                  closestPhoenixMapId = mapId;
                }
                else
                {
-                  if(_loc4_ < _loc5_ || _loc4_ == 0)
+                  if((dist < minDist) || (dist == 0))
                   {
-                     _loc5_ = _loc4_;
-                     _loc2_ = _loc1_;
+                     minDist = dist;
+                     closestPhoenixMapId = mapId;
                   }
                }
             }
          }
-         return _loc2_;
+         return closestPhoenixMapId;
       }
       
       public function isInIncarnam() : Boolean {

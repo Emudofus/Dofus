@@ -5,12 +5,12 @@ package com.somerandomdude.colortoolkit.spaces
    public class XYZ extends CoreColor implements IColorSpace
    {
       
-      public function XYZ(param1:Number=0, param2:Number=0, param3:Number=0) {
+      public function XYZ(x:Number=0, y:Number=0, z:Number=0) {
          super();
-         this._x = param1;
-         this._y = param2;
-         this._z = param3;
-         this._color = this.generateColorFromXYZ(param1,param2,param3);
+         this._x = x;
+         this._y = y;
+         this._z = z;
+         this._color = this.generateColorFromXYZ(x,y,z);
       }
       
       private var _x:Number;
@@ -23,20 +23,20 @@ package com.somerandomdude.colortoolkit.spaces
          return this._color;
       }
       
-      public function set color(param1:int) : void {
-         this._color = param1;
-         var _loc2_:XYZ = this.generateXYZFromColor(param1);
-         this._x = _loc2_.x;
-         this._y = _loc2_.y;
-         this._z = _loc2_.z;
+      public function set color(value:int) : void {
+         this._color = value;
+         var xyz:XYZ = this.generateXYZFromColor(value);
+         this._x = xyz.x;
+         this._y = xyz.y;
+         this._z = xyz.z;
       }
       
       public function get x() : Number {
          return this._x;
       }
       
-      public function set x(param1:Number) : void {
-         this._x = param1;
+      public function set x(value:Number) : void {
+         this._x = value;
          this._color = this.generateColorFromXYZ(this._x,this._y,this._z);
       }
       
@@ -44,8 +44,8 @@ package com.somerandomdude.colortoolkit.spaces
          return this._y;
       }
       
-      public function set y(param1:Number) : void {
-         this._y = param1;
+      public function set y(value:Number) : void {
+         this._y = value;
          this._color = this.generateColorFromXYZ(this._x,this._y,this._z);
       }
       
@@ -53,8 +53,8 @@ package com.somerandomdude.colortoolkit.spaces
          return this._z;
       }
       
-      public function set z(param1:Number) : void {
-         this._z = param1;
+      public function set z(value:Number) : void {
+         this._z = value;
          this._color = this.generateColorFromXYZ(this._x,this._y,this._z);
       }
       
@@ -62,75 +62,75 @@ package com.somerandomdude.colortoolkit.spaces
          return new XYZ(this._x,this._y,this._z);
       }
       
-      private function generateColorFromXYZ(param1:Number, param2:Number, param3:Number) : int {
-         var _loc4_:Number = param1 / 100;
-         var _loc5_:Number = param2 / 100;
-         var _loc6_:Number = param3 / 100;
-         var _loc7_:Number = _loc4_ * 3.2406 + _loc5_ * -1.5372 + _loc6_ * -0.4986;
-         var _loc8_:Number = _loc4_ * -0.9689 + _loc5_ * 1.8758 + _loc6_ * 0.0415;
-         var _loc9_:Number = _loc4_ * 0.0557 + _loc5_ * -0.204 + _loc6_ * 1.057;
-         if(_loc7_ > 0.0031308)
+      private function generateColorFromXYZ(xval:Number, yval:Number, zval:Number) : int {
+         var x:Number = xval / 100;
+         var y:Number = yval / 100;
+         var z:Number = zval / 100;
+         var r:Number = x * 3.2406 + y * -1.5372 + z * -0.4986;
+         var g:Number = x * -0.9689 + y * 1.8758 + z * 0.0415;
+         var b:Number = x * 0.0557 + y * -0.204 + z * 1.057;
+         if(r > 0.0031308)
          {
-            _loc7_ = 1.055 * Math.pow(_loc7_,1 / 2.4) - 0.055;
+            r = 1.055 * Math.pow(r,1 / 2.4) - 0.055;
          }
          else
          {
-            _loc7_ = 12.92 * _loc7_;
+            r = 12.92 * r;
          }
-         if(_loc8_ > 0.0031308)
+         if(g > 0.0031308)
          {
-            _loc8_ = 1.055 * Math.pow(_loc8_,1 / 2.4) - 0.055;
+            g = 1.055 * Math.pow(g,1 / 2.4) - 0.055;
          }
          else
          {
-            _loc8_ = 12.92 * _loc8_;
+            g = 12.92 * g;
          }
-         if(_loc9_ > 0.0031308)
+         if(b > 0.0031308)
          {
-            _loc9_ = 1.055 * Math.pow(_loc9_,1 / 2.4) - 0.055;
+            b = 1.055 * Math.pow(b,1 / 2.4) - 0.055;
          }
          else
          {
-            _loc9_ = 12.92 * _loc9_;
+            b = 12.92 * b;
          }
-         var _loc10_:* = Math.round(_loc7_) << 16;
-         var _loc11_:* = Math.round(_loc8_) << 8;
-         var _loc12_:int = Math.round(_loc9_);
-         return _loc10_ | _loc11_ | _loc12_;
+         var cR:int = Math.round(r) << 16;
+         var cG:int = Math.round(g) << 8;
+         var cB:int = Math.round(b);
+         return cR | cG | cB;
       }
       
-      private function generateXYZFromColor(param1:int) : XYZ {
-         var _loc2_:Number = (param1 >> 16 & 255) / 255;
-         var _loc3_:Number = (param1 >> 8 & 255) / 255;
-         var _loc4_:Number = (param1 & 255) / 255;
-         if(_loc2_ > 0.04045)
+      private function generateXYZFromColor(color:int) : XYZ {
+         var r:Number = (color >> 16 & 255) / 255;
+         var g:Number = (color >> 8 & 255) / 255;
+         var b:Number = (color & 255) / 255;
+         if(r > 0.04045)
          {
-            _loc2_ = Math.pow((_loc2_ + 0.055) / 1.055,2.4);
+            r = Math.pow((r + 0.055) / 1.055,2.4);
          }
          else
          {
-            _loc2_ = _loc2_ / 12.92;
+            r = r / 12.92;
          }
-         if(_loc3_ > 0.04045)
+         if(g > 0.04045)
          {
-            _loc3_ = Math.pow((_loc3_ + 0.055) / 1.055,2.4);
+            g = Math.pow((g + 0.055) / 1.055,2.4);
          }
          else
          {
-            _loc3_ = _loc3_ / 12.92;
+            g = g / 12.92;
          }
-         if(_loc4_ > 0.04045)
+         if(b > 0.04045)
          {
-            _loc4_ = Math.pow((_loc4_ + 0.055) / 1.055,2.4);
+            b = Math.pow((b + 0.055) / 1.055,2.4);
          }
          else
          {
-            _loc4_ = _loc4_ / 12.92;
+            b = b / 12.92;
          }
-         _loc2_ = _loc2_ * 100;
-         _loc3_ = _loc3_ * 100;
-         _loc4_ = _loc4_ * 100;
-         return new XYZ(_loc2_ * 0.4124 + _loc3_ * 0.3576 + _loc4_ * 0.1805,_loc2_ * 0.2126 + _loc3_ * 0.7152 + _loc4_ * 0.0722,_loc2_ * 0.0193 + _loc3_ * 0.1192 + _loc4_ * 0.9505);
+         r = r * 100;
+         g = g * 100;
+         b = b * 100;
+         return new XYZ(r * 0.4124 + g * 0.3576 + b * 0.1805,r * 0.2126 + g * 0.7152 + b * 0.0722,r * 0.0193 + g * 0.1192 + b * 0.9505);
       }
    }
 }

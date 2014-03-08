@@ -5,9 +5,9 @@ package com.ankamagames.berilia.types.messages
    public class ThemeLoadedMessage extends Object implements Message
    {
       
-      public function ThemeLoadedMessage(param1:String) {
+      public function ThemeLoadedMessage(themeName:String) {
          super();
-         this._themeName = param1;
+         this._themeName = themeName;
       }
       
       private var _themeName:String;

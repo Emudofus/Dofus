@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5948;
       }
       
-      public function initExchangeBidHouseGenericItemRemovedMessage(param1:int=0) : ExchangeBidHouseGenericItemRemovedMessage {
-         this.objGenericId = param1;
+      public function initExchangeBidHouseGenericItemRemovedMessage(objGenericId:int=0) : ExchangeBidHouseGenericItemRemovedMessage {
+         this.objGenericId = objGenericId;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeBidHouseGenericItemRemovedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeBidHouseGenericItemRemovedMessage(output);
       }
       
-      public function serializeAs_ExchangeBidHouseGenericItemRemovedMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.objGenericId);
+      public function serializeAs_ExchangeBidHouseGenericItemRemovedMessage(output:IDataOutput) : void {
+         output.writeInt(this.objGenericId);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeBidHouseGenericItemRemovedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeBidHouseGenericItemRemovedMessage(input);
       }
       
-      public function deserializeAs_ExchangeBidHouseGenericItemRemovedMessage(param1:IDataInput) : void {
-         this.objGenericId = param1.readInt();
+      public function deserializeAs_ExchangeBidHouseGenericItemRemovedMessage(input:IDataInput) : void {
+         this.objGenericId = input.readInt();
       }
    }
 }

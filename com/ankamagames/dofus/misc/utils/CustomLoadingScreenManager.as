@@ -44,34 +44,34 @@ package com.ankamagames.dofus.misc.utils
       private var _loader:IResourceLoader;
       
       public function get currentLoadingScreen() : CustomLoadingScreen {
-         var _loc1_:String = StoreDataManager.getInstance().getData(this._dataStore,"currentLoadingScreen") as String;
-         var _loc2_:CustomLoadingScreen = CustomLoadingScreen.recover(this._dataStore,_loc1_);
-         var _loc3_:String = XmlConfig.getInstance().getEntry("config.lang.current");
-         if(!_loc3_)
+         var currentName:String = StoreDataManager.getInstance().getData(this._dataStore,"currentLoadingScreen") as String;
+         var current:CustomLoadingScreen = CustomLoadingScreen.recover(this._dataStore,currentName);
+         var lang:String = XmlConfig.getInstance().getEntry("config.lang.current");
+         if(!lang)
          {
-            _loc3_ = StoreDataManager.getInstance().getData(Constants.DATASTORE_LANG_VERSION,"lastLang");
+            lang = StoreDataManager.getInstance().getData(Constants.DATASTORE_LANG_VERSION,"lastLang");
          }
-         if((_loc2_) && !_loc2_.canBeRead())
-         {
-            StoreDataManager.getInstance().setData(this._dataStore,"currentLoadingScreen",null);
-            _loc2_ = null;
-         }
-         if((_loc2_) && !(_loc2_.lang == _loc3_))
+         if((current) && (!current.canBeRead()))
          {
             StoreDataManager.getInstance().setData(this._dataStore,"currentLoadingScreen",null);
-            _loc2_ = null;
+            current = null;
          }
-         return _loc2_;
+         if((current) && (!(current.lang == lang)))
+         {
+            StoreDataManager.getInstance().setData(this._dataStore,"currentLoadingScreen",null);
+            current = null;
+         }
+         return current;
       }
       
       public function get dataStore() : DataStoreType {
          return this._dataStore;
       }
       
-      public function set currentLoadingScreen(param1:CustomLoadingScreen) : void {
-         if(param1)
+      public function set currentLoadingScreen(loadingScreen:CustomLoadingScreen) : void {
+         if(loadingScreen)
          {
-            StoreDataManager.getInstance().setData(this._dataStore,"currentLoadingScreen",param1.name);
+            StoreDataManager.getInstance().setData(this._dataStore,"currentLoadingScreen",loadingScreen.name);
          }
          else
          {
@@ -80,22 +80,21 @@ package com.ankamagames.dofus.misc.utils
       }
       
       public function loadCustomScreenList() : void {
-         var _loc2_:Uri = null;
-         var _loc1_:String = XmlConfig.getInstance().getEntry("config.lang.current");
-         var _loc3_:String = XmlConfig.getInstance().getEntry("config.customLoadingScreen");
-         _loc3_ = _loc3_.split("{lang}").join(_loc1_);
-         _loc2_ = new Uri(_loc3_);
-         this._loader.load(_loc2_);
+         var uri:Uri = null;
+         var lang:String = XmlConfig.getInstance().getEntry("config.lang.current");
+         var url:String = XmlConfig.getInstance().getEntry("config.customLoadingScreen");
+         url = url.split("{lang}").join(lang);
+         uri = new Uri(url);
+         this._loader.load(uri);
       }
       
-      private function onLoad(param1:ResourceLoadedEvent) : void {
+      private function onLoad(e:ResourceLoadedEvent) : void {
          var selected:CustomLoadingScreen = null;
          var xml:XML = null;
          var screens:Array = null;
          var loadingScreenXml:XML = null;
          var oldLoadingScreen:CustomLoadingScreen = null;
          var loadingScreen:CustomLoadingScreen = null;
-         var e:ResourceLoadedEvent = param1;
          if(e.resourceType == ResourceType.RESOURCE_XML)
          {
             selected = null;
@@ -116,7 +115,7 @@ package com.ankamagames.dofus.misc.utils
                   {
                      loadingScreen.count = oldLoadingScreen.count;
                   }
-                  if(!oldLoadingScreen || !(loadingScreen.backgroundUrl == oldLoadingScreen.backgroundUrl) || !oldLoadingScreen.backgroundImg || !(loadingScreen.foregroundUrl == oldLoadingScreen.foregroundUrl) || (oldLoadingScreen.foregroundUrl) && (!oldLoadingScreen.foregroundImg))
+                  if((!oldLoadingScreen) || (!(loadingScreen.backgroundUrl == oldLoadingScreen.backgroundUrl)) || (!oldLoadingScreen.backgroundImg) || (!(loadingScreen.foregroundUrl == oldLoadingScreen.foregroundUrl)) || (oldLoadingScreen.foregroundUrl) && (!oldLoadingScreen.foregroundImg))
                   {
                      loadingScreen.loadData();
                   }
@@ -126,7 +125,7 @@ package com.ankamagames.dofus.misc.utils
                      loadingScreen.foregroundImg = oldLoadingScreen.foregroundImg;
                      loadingScreen.store();
                   }
-                  if(!selected && (loadingScreen.canBeRead()))
+                  if((!selected) && (loadingScreen.canBeRead()))
                   {
                      selected = loadingScreen;
                   }
@@ -152,8 +151,8 @@ package com.ankamagames.dofus.misc.utils
          }
       }
       
-      private function onLoadError(param1:ResourceErrorEvent) : void {
-         _log.error("Can\'t load XML file : " + param1);
+      private function onLoadError(e:ResourceErrorEvent) : void {
+         _log.error("Can\'t load XML file : " + e);
          StoreDataManager.getInstance().setData(this._dataStore,"currentLoadingScreen",null);
       }
    }

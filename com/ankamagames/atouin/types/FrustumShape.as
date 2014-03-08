@@ -5,9 +5,9 @@ package com.ankamagames.atouin.types
    public class FrustumShape extends Sprite
    {
       
-      public function FrustumShape(param1:uint) {
+      public function FrustumShape(direction:uint) {
          super();
-         this._direction = param1;
+         this._direction = direction;
       }
       
       private var _direction:uint;

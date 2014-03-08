@@ -5,10 +5,10 @@ package com.ankamagames.dofus.internalDatacenter.people
    public class IgnoredWrapper extends Object implements IDataCenter
    {
       
-      public function IgnoredWrapper(param1:String, param2:uint) {
+      public function IgnoredWrapper(name:String, accountId:uint) {
          super();
-         this.name = param1;
-         this.accountId = param2;
+         this.name = name;
+         this.accountId = accountId;
       }
       
       public var name:String = "";

@@ -5,10 +5,10 @@ package com.ankamagames.atouin.types.events
    public class RenderMapEvent extends Event
    {
       
-      public function RenderMapEvent(param1:String, param2:Boolean=false, param3:Boolean=false, param4:uint=0, param5:uint=0) {
-         super(param1,param2,param3);
-         this._mapId = param4;
-         this._renderId = param5;
+      public function RenderMapEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false, mapId:uint=0, renderId:uint=0) {
+         super(type,bubbles,cancelable);
+         this._mapId = mapId;
+         this._renderId = renderId;
       }
       
       public static const GFX_LOADING_START:String = "GFX_LOADING_START";

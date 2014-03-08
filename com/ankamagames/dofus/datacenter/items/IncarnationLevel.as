@@ -12,13 +12,13 @@ package com.ankamagames.dofus.datacenter.items
       
       public static const MODULE:String = "IncarnationLevels";
       
-      public static function getIncarnationLevelById(param1:uint) : IncarnationLevel {
-         return GameData.getObject(MODULE,param1) as IncarnationLevel;
+      public static function getIncarnationLevelById(id:uint) : IncarnationLevel {
+         return GameData.getObject(MODULE,id) as IncarnationLevel;
       }
       
-      public static function getIncarnationLevelByIdAndLevel(param1:int, param2:int) : IncarnationLevel {
-         var _loc3_:int = param1 * 100 + param2;
-         return getIncarnationLevelById(_loc3_);
+      public static function getIncarnationLevelByIdAndLevel(incarnationId:int, level:int) : IncarnationLevel {
+         var id:int = incarnationId * 100 + level;
+         return getIncarnationLevelById(id);
       }
       
       public var id:int;

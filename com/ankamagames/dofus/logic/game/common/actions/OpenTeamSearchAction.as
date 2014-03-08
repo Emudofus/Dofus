@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions
       }
       
       public static function create() : OpenTeamSearchAction {
-         var _loc1_:OpenTeamSearchAction = new OpenTeamSearchAction();
-         return _loc1_;
+         var a:OpenTeamSearchAction = new OpenTeamSearchAction();
+         return a;
       }
    }
 }

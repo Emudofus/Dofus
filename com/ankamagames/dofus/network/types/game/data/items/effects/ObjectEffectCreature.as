@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 71;
       }
       
-      public function initObjectEffectCreature(param1:uint=0, param2:uint=0) : ObjectEffectCreature {
-         super.initObjectEffect(param1);
-         this.monsterFamilyId = param2;
+      public function initObjectEffectCreature(actionId:uint=0, monsterFamilyId:uint=0) : ObjectEffectCreature {
+         super.initObjectEffect(actionId);
+         this.monsterFamilyId = monsterFamilyId;
          return this;
       }
       
@@ -30,30 +30,30 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          this.monsterFamilyId = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ObjectEffectCreature(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectEffectCreature(output);
       }
       
-      public function serializeAs_ObjectEffectCreature(param1:IDataOutput) : void {
-         super.serializeAs_ObjectEffect(param1);
+      public function serializeAs_ObjectEffectCreature(output:IDataOutput) : void {
+         super.serializeAs_ObjectEffect(output);
          if(this.monsterFamilyId < 0)
          {
             throw new Error("Forbidden value (" + this.monsterFamilyId + ") on element monsterFamilyId.");
          }
          else
          {
-            param1.writeShort(this.monsterFamilyId);
+            output.writeShort(this.monsterFamilyId);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ObjectEffectCreature(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectEffectCreature(input);
       }
       
-      public function deserializeAs_ObjectEffectCreature(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.monsterFamilyId = param1.readShort();
+      public function deserializeAs_ObjectEffectCreature(input:IDataInput) : void {
+         super.deserialize(input);
+         this.monsterFamilyId = input.readShort();
          if(this.monsterFamilyId < 0)
          {
             throw new Error("Forbidden value (" + this.monsterFamilyId + ") on element of ObjectEffectCreature.monsterFamilyId.");

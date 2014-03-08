@@ -19,8 +19,8 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 76;
       }
       
-      public function initObjectEffect(param1:uint=0) : ObjectEffect {
-         this.actionId = param1;
+      public function initObjectEffect(actionId:uint=0) : ObjectEffect {
+         this.actionId = actionId;
          return this;
       }
       
@@ -28,28 +28,28 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          this.actionId = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ObjectEffect(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectEffect(output);
       }
       
-      public function serializeAs_ObjectEffect(param1:IDataOutput) : void {
+      public function serializeAs_ObjectEffect(output:IDataOutput) : void {
          if(this.actionId < 0)
          {
             throw new Error("Forbidden value (" + this.actionId + ") on element actionId.");
          }
          else
          {
-            param1.writeShort(this.actionId);
+            output.writeShort(this.actionId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ObjectEffect(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectEffect(input);
       }
       
-      public function deserializeAs_ObjectEffect(param1:IDataInput) : void {
-         this.actionId = param1.readShort();
+      public function deserializeAs_ObjectEffect(input:IDataInput) : void {
+         this.actionId = input.readShort();
          if(this.actionId < 0)
          {
             throw new Error("Forbidden value (" + this.actionId + ") on element of ObjectEffect.actionId.");

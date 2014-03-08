@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.shortcut
          return 370;
       }
       
-      public function initShortcutObjectPreset(param1:uint=0, param2:uint=0) : ShortcutObjectPreset {
-         super.initShortcutObject(param1);
-         this.presetId = param2;
+      public function initShortcutObjectPreset(slot:uint=0, presetId:uint=0) : ShortcutObjectPreset {
+         super.initShortcutObject(slot);
+         this.presetId = presetId;
          return this;
       }
       
@@ -30,30 +30,30 @@ package com.ankamagames.dofus.network.types.game.shortcut
          this.presetId = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ShortcutObjectPreset(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ShortcutObjectPreset(output);
       }
       
-      public function serializeAs_ShortcutObjectPreset(param1:IDataOutput) : void {
-         super.serializeAs_ShortcutObject(param1);
+      public function serializeAs_ShortcutObjectPreset(output:IDataOutput) : void {
+         super.serializeAs_ShortcutObject(output);
          if(this.presetId < 0)
          {
             throw new Error("Forbidden value (" + this.presetId + ") on element presetId.");
          }
          else
          {
-            param1.writeByte(this.presetId);
+            output.writeByte(this.presetId);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ShortcutObjectPreset(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ShortcutObjectPreset(input);
       }
       
-      public function deserializeAs_ShortcutObjectPreset(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.presetId = param1.readByte();
+      public function deserializeAs_ShortcutObjectPreset(input:IDataInput) : void {
+         super.deserialize(input);
+         this.presetId = input.readByte();
          if(this.presetId < 0)
          {
             throw new Error("Forbidden value (" + this.presetId + ") on element of ShortcutObjectPreset.presetId.");

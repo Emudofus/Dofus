@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6125;
       }
       
-      public function initExchangeCraftSlotCountIncreasedMessage(param1:uint=0) : ExchangeCraftSlotCountIncreasedMessage {
-         this.newMaxSlot = param1;
+      public function initExchangeCraftSlotCountIncreasedMessage(newMaxSlot:uint=0) : ExchangeCraftSlotCountIncreasedMessage {
+         this.newMaxSlot = newMaxSlot;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeCraftSlotCountIncreasedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeCraftSlotCountIncreasedMessage(output);
       }
       
-      public function serializeAs_ExchangeCraftSlotCountIncreasedMessage(param1:IDataOutput) : void {
+      public function serializeAs_ExchangeCraftSlotCountIncreasedMessage(output:IDataOutput) : void {
          if(this.newMaxSlot < 0)
          {
             throw new Error("Forbidden value (" + this.newMaxSlot + ") on element newMaxSlot.");
          }
          else
          {
-            param1.writeByte(this.newMaxSlot);
+            output.writeByte(this.newMaxSlot);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeCraftSlotCountIncreasedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeCraftSlotCountIncreasedMessage(input);
       }
       
-      public function deserializeAs_ExchangeCraftSlotCountIncreasedMessage(param1:IDataInput) : void {
-         this.newMaxSlot = param1.readByte();
+      public function deserializeAs_ExchangeCraftSlotCountIncreasedMessage(input:IDataInput) : void {
+         this.newMaxSlot = input.readByte();
          if(this.newMaxSlot < 0)
          {
             throw new Error("Forbidden value (" + this.newMaxSlot + ") on element of ExchangeCraftSlotCountIncreasedMessage.newMaxSlot.");

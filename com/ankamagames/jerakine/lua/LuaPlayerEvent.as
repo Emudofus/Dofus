@@ -5,8 +5,8 @@ package com.ankamagames.jerakine.lua
    public class LuaPlayerEvent extends Event
    {
       
-      public function LuaPlayerEvent(param1:String, param2:Boolean=false, param3:Boolean=false) {
-         super(param1,param2,param3);
+      public function LuaPlayerEvent(pType:String, pBubbles:Boolean=false, pCancelable:Boolean=false) {
+         super(pType,pBubbles,pCancelable);
       }
       
       public static const PLAY_SUCCESS:String = "LuaPlayerEvent.PLAY_SUCCESS";

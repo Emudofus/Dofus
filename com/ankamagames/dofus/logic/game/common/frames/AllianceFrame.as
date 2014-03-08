@@ -6,7 +6,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.dofus.internalDatacenter.guild.AllianceWrapper;
    import flash.utils.Dictionary;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.conquest.AllianceOnTheHillWrapper;
    import com.ankamagames.jerakine.types.enums.Priority;
    import com.ankamagames.dofus.internalDatacenter.conquest.PrismSubAreaWrapper;
@@ -81,6 +80,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.PrismHookList;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.misc.lists.AlignmentHookList;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.misc.lists.SocialHookList;
@@ -156,37 +156,37 @@ package com.ankamagames.dofus.logic.game.common.frames
          return this._alliance;
       }
       
-      public function getAllianceById(param1:uint) : AllianceWrapper {
-         var _loc2_:AllianceWrapper = this._allAlliances[param1];
-         if(!_loc2_)
+      public function getAllianceById(id:uint) : AllianceWrapper {
+         var aw:AllianceWrapper = this._allAlliances[id];
+         if(!aw)
          {
-            _loc2_ = AllianceWrapper.getAllianceById(param1);
+            aw = AllianceWrapper.getAllianceById(id);
          }
-         return _loc2_;
+         return aw;
       }
       
-      public function getPrismSubAreaById(param1:uint) : PrismSubAreaWrapper {
-         return PrismSubAreaWrapper.prismList[param1];
+      public function getPrismSubAreaById(id:uint) : PrismSubAreaWrapper {
+         return PrismSubAreaWrapper.prismList[id];
       }
       
       public function get alliancesOnTheHill() : Vector.<AllianceOnTheHillWrapper> {
          return this._alliancesOnTheHill;
       }
       
-      public function _pickup_fighter(param1:Array, param2:uint) : PrismFightersWrapper {
-         var _loc5_:PrismFightersWrapper = null;
-         var _loc3_:uint = 0;
-         var _loc4_:* = false;
-         for each (_loc5_ in param1)
+      public function _pickup_fighter(vec:Array, defenderId:uint) : PrismFightersWrapper {
+         var defender:PrismFightersWrapper = null;
+         var idx:uint = 0;
+         var found:Boolean = false;
+         for each (defender in vec)
          {
-            if(_loc5_.playerCharactersInformations.id == param2)
+            if(defender.playerCharactersInformations.id == defenderId)
             {
-               _loc4_ = true;
+               found = true;
                break;
             }
-            _loc3_++;
+            idx++;
          }
-         return param1.splice(_loc3_,1)[0];
+         return vec.splice(idx,1)[0];
       }
       
       public function pushed() : Boolean {
@@ -202,260 +202,260 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:CurrentMapMessage = null;
-         var _loc3_:SubArea = null;
-         var _loc4_:SubArea = null;
-         var _loc5_:SetEnableAVARequestAction = null;
-         var _loc6_:SetEnableAVARequestMessage = null;
-         var _loc7_:KohUpdateMessage = null;
-         var _loc8_:* = 0;
-         var _loc9_:* = 0;
-         var _loc10_:* = 0;
-         var _loc11_:AllianceOnTheHillWrapper = null;
-         var _loc12_:* = 0;
-         var _loc13_:AllianceModificationStartedMessage = null;
-         var _loc14_:AllianceCreationResultMessage = null;
-         var _loc15_:String = null;
-         var _loc16_:AllianceMembershipMessage = null;
-         var _loc17_:AllianceInvitationAction = null;
-         var _loc18_:AllianceInvitationMessage = null;
-         var _loc19_:AllianceInvitedMessage = null;
-         var _loc20_:AllianceInvitationStateRecruterMessage = null;
-         var _loc21_:AllianceInvitationStateRecrutedMessage = null;
-         var _loc22_:AllianceJoinedMessage = null;
-         var _loc23_:String = null;
-         var _loc24_:AllianceKickRequestAction = null;
-         var _loc25_:AllianceKickRequestMessage = null;
-         var _loc26_:AllianceGuildLeavingMessage = null;
-         var _loc27_:RoleplayEntitiesFrame = null;
-         var _loc28_:AllianceFactsRequestAction = null;
-         var _loc29_:AllianceFactsRequestMessage = null;
-         var _loc30_:AllianceFactsMessage = null;
-         var _loc31_:AllianceWrapper = null;
-         var _loc32_:Vector.<GuildFactSheetWrapper> = null;
-         var _loc33_:GuildFactSheetWrapper = null;
-         var _loc34_:* = 0;
-         var _loc35_:SocialFrame = null;
-         var _loc36_:AllianceFactsErrorMessage = null;
-         var _loc37_:AllianceChangeGuildRightsAction = null;
-         var _loc38_:AllianceChangeGuildRightsMessage = null;
-         var _loc39_:AllianceInsiderInfoRequestAction = null;
-         var _loc40_:AllianceInsiderInfoRequestMessage = null;
-         var _loc41_:AllianceInsiderInfoMessage = null;
-         var _loc42_:Vector.<GuildFactSheetWrapper> = null;
-         var _loc43_:GuildFactSheetWrapper = null;
-         var _loc44_:* = false;
-         var _loc45_:Vector.<uint> = null;
-         var _loc46_:* = 0;
-         var _loc47_:SocialFrame = null;
-         var _loc48_:PrismsListUpdateMessage = null;
-         var _loc49_:PrismSettingsRequestAction = null;
-         var _loc50_:PrismSettingsRequestMessage = null;
-         var _loc51_:PrismSettingsErrorMessage = null;
-         var _loc52_:String = null;
-         var _loc53_:PrismFightJoinLeaveRequestAction = null;
-         var _loc54_:PrismFightJoinLeaveRequestMessage = null;
-         var _loc55_:PrismFightSwapRequestAction = null;
-         var _loc56_:PrismFightSwapRequestMessage = null;
-         var _loc57_:PrismInfoJoinLeaveRequestAction = null;
-         var _loc58_:PrismInfoJoinLeaveRequestMessage = null;
-         var _loc59_:PrismsListRegisterAction = null;
-         var _loc60_:PrismsListRegisterMessage = null;
-         var _loc61_:PrismAttackRequestAction = null;
-         var _loc62_:PrismAttackRequestMessage = null;
-         var _loc63_:PrismUseRequestAction = null;
-         var _loc64_:PrismUseRequestMessage = null;
-         var _loc65_:PrismSetSabotagedRequestAction = null;
-         var _loc66_:PrismSetSabotagedRequestMessage = null;
-         var _loc67_:PrismSetSabotagedRefusedMessage = null;
-         var _loc68_:String = null;
-         var _loc69_:PrismFightDefenderAddMessage = null;
-         var _loc70_:PrismFightDefenderLeaveMessage = null;
-         var _loc71_:PrismFightAttackerAddMessage = null;
-         var _loc72_:PrismFightAttackerRemoveMessage = null;
-         var _loc73_:PrismsListUpdateMessage = null;
-         var _loc74_:Array = null;
-         var _loc75_:PrismSubAreaWrapper = null;
-         var _loc76_:AllianceWrapper = null;
-         var _loc77_:PrismGeolocalizedInformation = null;
-         var _loc78_:AllianceInsiderPrismInformation = null;
-         var _loc79_:AlliancePrismInformation = null;
-         var _loc80_:PrismsListMessage = null;
-         var _loc81_:Vector.<PrismSubAreaWrapper> = null;
-         var _loc82_:PrismFightAddedMessage = null;
-         var _loc83_:PrismFightRemovedMessage = null;
-         var _loc84_:PrismsInfoValidMessage = null;
-         var _loc85_:AlliancePrismDialogQuestionMessage = null;
-         var _loc86_:PrismSubAreaWrapper = null;
-         var _loc87_:PrismSubAreaWrapper = null;
-         var _loc88_:* = 0;
-         var _loc89_:* = 0;
-         var _loc90_:UpdateSelfAgressableStatusMessage = null;
-         var _loc91_:GuildInAllianceInformations = null;
-         var _loc92_:GuildInsiderFactSheetInformations = null;
-         var _loc93_:PrismSubareaEmptyInfo = null;
-         var _loc94_:SocialEntityInFightWrapper = null;
-         var _loc95_:Object = null;
-         var _loc96_:String = null;
-         var _loc97_:PrismSubareaEmptyInfo = null;
-         var _loc98_:* = 0;
-         var _loc99_:* = 0;
-         var _loc100_:String = null;
-         var _loc101_:String = null;
-         var _loc102_:uint = 0;
-         var _loc103_:uint = 0;
-         var _loc104_:PrismSubAreaWrapper = null;
+      public function process(msg:Message) : Boolean {
+         var mcmsg:CurrentMapMessage = null;
+         var oldSubArea:SubArea = null;
+         var newSubArea:SubArea = null;
+         var searact:SetEnableAVARequestAction = null;
+         var searmsg:SetEnableAVARequestMessage = null;
+         var kumsg:KohUpdateMessage = null;
+         var nbAlliances:* = 0;
+         var side:* = 0;
+         var prismAllianceId:* = 0;
+         var allianceOnTheHill:AllianceOnTheHillWrapper = null;
+         var myAllianceId:* = 0;
+         var amsmsg:AllianceModificationStartedMessage = null;
+         var acrmsg:AllianceCreationResultMessage = null;
+         var aerrorMessage:String = null;
+         var ammsg:AllianceMembershipMessage = null;
+         var aia:AllianceInvitationAction = null;
+         var aimsg:AllianceInvitationMessage = null;
+         var aidmsg:AllianceInvitedMessage = null;
+         var aisrermsg:AllianceInvitationStateRecruterMessage = null;
+         var aisredmsg:AllianceInvitationStateRecrutedMessage = null;
+         var ajmsg:AllianceJoinedMessage = null;
+         var joinMessage:String = null;
+         var akra:AllianceKickRequestAction = null;
+         var akrmsg:AllianceKickRequestMessage = null;
+         var aglmsg:AllianceGuildLeavingMessage = null;
+         var rpFrame:RoleplayEntitiesFrame = null;
+         var afra:AllianceFactsRequestAction = null;
+         var afrmsg:AllianceFactsRequestMessage = null;
+         var afmsg:AllianceFactsMessage = null;
+         var allianceSheet:AllianceWrapper = null;
+         var allianceGuilds:Vector.<GuildFactSheetWrapper> = null;
+         var guildSheetForA:GuildFactSheetWrapper = null;
+         var nbAllianceMembers:* = 0;
+         var afsocialFrame:SocialFrame = null;
+         var afemsg:AllianceFactsErrorMessage = null;
+         var acgra:AllianceChangeGuildRightsAction = null;
+         var acgrmsg:AllianceChangeGuildRightsMessage = null;
+         var aiira:AllianceInsiderInfoRequestAction = null;
+         var aiirmsg:AllianceInsiderInfoRequestMessage = null;
+         var aiimsg:AllianceInsiderInfoMessage = null;
+         var myAllianceGuilds:Vector.<GuildFactSheetWrapper> = null;
+         var guildSheetForMyA:GuildFactSheetWrapper = null;
+         var first:* = false;
+         var prismIdsList:Vector.<uint> = null;
+         var nbMembersInAlliance:* = 0;
+         var aisocialFrame:SocialFrame = null;
+         var prismsUpdateMsg:PrismsListUpdateMessage = null;
+         var psract:PrismSettingsRequestAction = null;
+         var psrmsg:PrismSettingsRequestMessage = null;
+         var psemsg:PrismSettingsErrorMessage = null;
+         var text:String = null;
+         var pfjlract:PrismFightJoinLeaveRequestAction = null;
+         var pfjlrmsg:PrismFightJoinLeaveRequestMessage = null;
+         var pfsract:PrismFightSwapRequestAction = null;
+         var pfsrmsg:PrismFightSwapRequestMessage = null;
+         var pijlract:PrismInfoJoinLeaveRequestAction = null;
+         var pijlrmsg:PrismInfoJoinLeaveRequestMessage = null;
+         var plract:PrismsListRegisterAction = null;
+         var plrmsg:PrismsListRegisterMessage = null;
+         var pbra:PrismAttackRequestAction = null;
+         var pbrqmsg:PrismAttackRequestMessage = null;
+         var pura:PrismUseRequestAction = null;
+         var purmsg:PrismUseRequestMessage = null;
+         var pssra:PrismSetSabotagedRequestAction = null;
+         var pssrmsg:PrismSetSabotagedRequestMessage = null;
+         var pssrdmsg:PrismSetSabotagedRefusedMessage = null;
+         var sErrorMessage:String = null;
+         var pfdamsg:PrismFightDefenderAddMessage = null;
+         var pfdlmsg:PrismFightDefenderLeaveMessage = null;
+         var pfaamsg:PrismFightAttackerAddMessage = null;
+         var pfarmsg:PrismFightAttackerRemoveMessage = null;
+         var plumsg:PrismsListUpdateMessage = null;
+         var prismModifiedIds:Array = null;
+         var prismSubWUpdated:PrismSubAreaWrapper = null;
+         var allianceWu:AllianceWrapper = null;
+         var pGeoU:PrismGeolocalizedInformation = null;
+         var aInsiderPrismU:AllianceInsiderPrismInformation = null;
+         var aPrismU:AlliancePrismInformation = null;
+         var plmsg:PrismsListMessage = null;
+         var prismList:Vector.<PrismSubAreaWrapper> = null;
+         var pfamsg:PrismFightAddedMessage = null;
+         var pfrmsg:PrismFightRemovedMessage = null;
+         var pivmsg:PrismsInfoValidMessage = null;
+         var apdqmsg:AlliancePrismDialogQuestionMessage = null;
+         var prism:PrismSubAreaWrapper = null;
+         var oldPrism:PrismSubAreaWrapper = null;
+         var i:* = 0;
+         var pid:* = 0;
+         var usasmsg:UpdateSelfAgressableStatusMessage = null;
+         var giai:GuildInAllianceInformations = null;
+         var gifsi:GuildInsiderFactSheetInformations = null;
+         var insPrism:PrismSubareaEmptyInfo = null;
+         var p:SocialEntityInFightWrapper = null;
+         var defender:Object = null;
+         var text2:String = null;
+         var prismUpdated:PrismSubareaEmptyInfo = null;
+         var worldX:* = 0;
+         var worldY:* = 0;
+         var prismN:String = null;
+         var sentenceToDispatch:String = null;
+         var nid:uint = 0;
+         var indPrism:uint = 0;
+         var pw:PrismSubAreaWrapper = null;
          switch(true)
          {
-            case param1 is CurrentMapMessage:
-               _loc2_ = param1 as CurrentMapMessage;
-               if(!PlayedCharacterManager.getInstance() || !PlayedCharacterManager.getInstance().currentMap)
+            case msg is CurrentMapMessage:
+               mcmsg = msg as CurrentMapMessage;
+               if((!PlayedCharacterManager.getInstance()) || (!PlayedCharacterManager.getInstance().currentMap))
                {
                   break;
                }
-               _loc3_ = SubArea.getSubAreaByMapId(PlayedCharacterManager.getInstance().currentMap.mapId);
-               _loc4_ = SubArea.getSubAreaByMapId(_loc2_.mapId);
-               if((PlayedCharacterManager.getInstance().currentSubArea) && !(_loc4_.id == _loc3_.id))
+               oldSubArea = SubArea.getSubAreaByMapId(PlayedCharacterManager.getInstance().currentMap.mapId);
+               newSubArea = SubArea.getSubAreaByMapId(mcmsg.mapId);
+               if((PlayedCharacterManager.getInstance().currentSubArea) && (!(newSubArea.id == oldSubArea.id)))
                {
-                  if(!PrismSubAreaWrapper.prismList[_loc3_.id] && (PrismSubAreaWrapper.prismList[_loc4_.id]))
+                  if((!PrismSubAreaWrapper.prismList[oldSubArea.id]) && (PrismSubAreaWrapper.prismList[newSubArea.id]))
                   {
-                     _loc86_ = PrismSubAreaWrapper.prismList[_loc4_.id];
-                     if(_loc86_.state == PrismStateEnum.PRISM_STATE_VULNERABLE)
+                     prism = PrismSubAreaWrapper.prismList[newSubArea.id];
+                     if(prism.state == PrismStateEnum.PRISM_STATE_VULNERABLE)
                      {
-                        KernelEventsManager.getInstance().processCallback(PrismHookList.KohState,_loc86_);
+                        KernelEventsManager.getInstance().processCallback(PrismHookList.KohState,prism);
                      }
                   }
-                  if((PrismSubAreaWrapper.prismList[_loc3_.id]) && !PrismSubAreaWrapper.prismList[_loc4_.id])
+                  if((PrismSubAreaWrapper.prismList[oldSubArea.id]) && (!PrismSubAreaWrapper.prismList[newSubArea.id]))
                   {
-                     _loc87_ = PrismSubAreaWrapper.prismList[_loc3_.id];
-                     if(_loc87_.state == PrismStateEnum.PRISM_STATE_VULNERABLE)
+                     oldPrism = PrismSubAreaWrapper.prismList[oldSubArea.id];
+                     if(oldPrism.state == PrismStateEnum.PRISM_STATE_VULNERABLE)
                      {
                         KernelEventsManager.getInstance().processCallback(PrismHookList.KohState,null);
                      }
                   }
                }
                return false;
-            case param1 is SetEnableAVARequestAction:
-               _loc5_ = param1 as SetEnableAVARequestAction;
-               _loc6_ = new SetEnableAVARequestMessage();
-               _loc6_.initSetEnableAVARequestMessage(_loc5_.enable);
-               ConnectionsHandler.getConnection().send(_loc6_);
+            case msg is SetEnableAVARequestAction:
+               searact = msg as SetEnableAVARequestAction;
+               searmsg = new SetEnableAVARequestMessage();
+               searmsg.initSetEnableAVARequestMessage(searact.enable);
+               ConnectionsHandler.getConnection().send(searmsg);
                return true;
-            case param1 is KohUpdateMessage:
-               _loc7_ = param1 as KohUpdateMessage;
+            case msg is KohUpdateMessage:
+               kumsg = msg as KohUpdateMessage;
                this._alliancesOnTheHill = new Vector.<AllianceOnTheHillWrapper>();
-               _loc8_ = _loc7_.alliances.length;
-               _loc10_ = PlayedCharacterManager.getInstance().currentSubArea.id;
-               _loc12_ = 0;
+               nbAlliances = kumsg.alliances.length;
+               prismAllianceId = PlayedCharacterManager.getInstance().currentSubArea.id;
+               myAllianceId = 0;
                if(this.alliance)
                {
-                  _loc12_ = this.alliance.allianceId;
+                  myAllianceId = this.alliance.allianceId;
                }
-               _loc88_ = 0;
-               while(_loc88_ < _loc8_)
+               i = 0;
+               while(i < nbAlliances)
                {
-                  if(_loc7_.alliances[_loc88_].allianceId == _loc12_)
+                  if(kumsg.alliances[i].allianceId == myAllianceId)
                   {
-                     _loc9_ = SIDE_MINE;
+                     side = SIDE_MINE;
                   }
                   else
                   {
-                     if(_loc7_.alliances[_loc88_].allianceId == _loc10_)
+                     if(kumsg.alliances[i].allianceId == prismAllianceId)
                      {
-                        _loc9_ = SIDE_DEFENDERS;
+                        side = SIDE_DEFENDERS;
                      }
                      else
                      {
-                        _loc9_ = SIDE_ATTACKERS;
+                        side = SIDE_ATTACKERS;
                      }
                   }
-                  _loc11_ = AllianceOnTheHillWrapper.create(_loc7_.alliances[_loc88_].allianceId,_loc7_.alliances[_loc88_].allianceTag,_loc7_.alliances[_loc88_].allianceName,_loc7_.alliances[_loc88_].allianceEmblem,_loc7_.allianceNbMembers[_loc88_],_loc7_.allianceRoundWeigth[_loc88_],_loc7_.allianceMatchScore[_loc88_],_loc9_);
-                  this._alliancesOnTheHill.push(_loc11_);
-                  _loc88_++;
+                  allianceOnTheHill = AllianceOnTheHillWrapper.create(kumsg.alliances[i].allianceId,kumsg.alliances[i].allianceTag,kumsg.alliances[i].allianceName,kumsg.alliances[i].allianceEmblem,kumsg.allianceNbMembers[i],kumsg.allianceRoundWeigth[i],kumsg.allianceMatchScore[i],side);
+                  this._alliancesOnTheHill.push(allianceOnTheHill);
+                  i++;
                }
-               KernelEventsManager.getInstance().processCallback(AlignmentHookList.KohUpdate,this._alliancesOnTheHill,_loc7_.allianceMapWinner,_loc7_.allianceMapWinnerScore,_loc7_.allianceMapMyAllianceScore);
+               KernelEventsManager.getInstance().processCallback(AlignmentHookList.KohUpdate,this._alliancesOnTheHill,kumsg.allianceMapWinner,kumsg.allianceMapWinnerScore,kumsg.allianceMapMyAllianceScore);
                return true;
-            case param1 is AllianceCreationStartedMessage:
+            case msg is AllianceCreationStartedMessage:
                Kernel.getWorker().addFrame(this._allianceDialogFrame);
                KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceCreationStarted,false,false);
                return true;
-            case param1 is AllianceModificationStartedMessage:
-               _loc13_ = param1 as AllianceModificationStartedMessage;
+            case msg is AllianceModificationStartedMessage:
+               amsmsg = msg as AllianceModificationStartedMessage;
                Kernel.getWorker().addFrame(this._allianceDialogFrame);
-               KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceCreationStarted,_loc13_.canChangeName,_loc13_.canChangeEmblem);
+               KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceCreationStarted,amsmsg.canChangeName,amsmsg.canChangeEmblem);
                return true;
-            case param1 is AllianceCreationResultMessage:
-               _loc14_ = param1 as AllianceCreationResultMessage;
-               switch(_loc14_.result)
+            case msg is AllianceCreationResultMessage:
+               acrmsg = msg as AllianceCreationResultMessage;
+               switch(acrmsg.result)
                {
                   case SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_ALREADY_IN_GROUP:
-                     _loc15_ = I18n.getUiText("ui.alliance.alreadyInAlliance");
+                     aerrorMessage = I18n.getUiText("ui.alliance.alreadyInAlliance");
                      break;
                   case SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_CANCEL:
                      break;
                   case SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_EMBLEM_ALREADY_EXISTS:
-                     _loc15_ = I18n.getUiText("ui.guild.AlreadyUseEmblem");
+                     aerrorMessage = I18n.getUiText("ui.guild.AlreadyUseEmblem");
                      break;
                   case SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_LEAVE:
                      break;
                   case SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_NAME_ALREADY_EXISTS:
-                     _loc15_ = I18n.getUiText("ui.alliance.alreadyUseName");
+                     aerrorMessage = I18n.getUiText("ui.alliance.alreadyUseName");
                      break;
                   case SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_NAME_INVALID:
-                     _loc15_ = I18n.getUiText("ui.alliance.invalidName");
+                     aerrorMessage = I18n.getUiText("ui.alliance.invalidName");
                      break;
                   case SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_TAG_ALREADY_EXISTS:
-                     _loc15_ = I18n.getUiText("ui.alliance.alreadyUseTag");
+                     aerrorMessage = I18n.getUiText("ui.alliance.alreadyUseTag");
                      break;
                   case SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_TAG_INVALID:
-                     _loc15_ = I18n.getUiText("ui.alliance.invalidTag");
+                     aerrorMessage = I18n.getUiText("ui.alliance.invalidTag");
                      break;
                   case SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_REQUIREMENT_UNMET:
-                     _loc15_ = I18n.getUiText("ui.guild.requirementUnmet");
+                     aerrorMessage = I18n.getUiText("ui.guild.requirementUnmet");
                      break;
                   case SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_OK:
                      Kernel.getWorker().removeFrame(this._allianceDialogFrame);
                      this._hasAlliance = true;
                      break;
                   case SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_UNKNOWN:
-                     _loc15_ = I18n.getUiText("ui.common.unknownFail");
+                     aerrorMessage = I18n.getUiText("ui.common.unknownFail");
                      break;
                }
-               if(_loc15_)
+               if(aerrorMessage)
                {
-                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,_loc15_,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,aerrorMessage,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                }
-               KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceCreationResult,_loc14_.result);
+               KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceCreationResult,acrmsg.result);
                return true;
-            case param1 is AllianceMembershipMessage:
-               _loc16_ = param1 as AllianceMembershipMessage;
+            case msg is AllianceMembershipMessage:
+               ammsg = msg as AllianceMembershipMessage;
                if(this._alliance != null)
                {
-                  this._alliance.update(_loc16_.allianceInfo.allianceId,_loc16_.allianceInfo.allianceTag,_loc16_.allianceInfo.allianceName,_loc16_.allianceInfo.allianceEmblem);
+                  this._alliance.update(ammsg.allianceInfo.allianceId,ammsg.allianceInfo.allianceTag,ammsg.allianceInfo.allianceName,ammsg.allianceInfo.allianceEmblem);
                }
                else
                {
-                  this._alliance = AllianceWrapper.create(_loc16_.allianceInfo.allianceId,_loc16_.allianceInfo.allianceTag,_loc16_.allianceInfo.allianceName,_loc16_.allianceInfo.allianceEmblem);
+                  this._alliance = AllianceWrapper.create(ammsg.allianceInfo.allianceId,ammsg.allianceInfo.allianceTag,ammsg.allianceInfo.allianceName,ammsg.allianceInfo.allianceEmblem);
                }
                this._hasAlliance = true;
                KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceMembershipUpdated,true);
                return true;
-            case param1 is AllianceInvitationAction:
-               _loc17_ = param1 as AllianceInvitationAction;
-               _loc18_ = new AllianceInvitationMessage();
-               _loc18_.initAllianceInvitationMessage(_loc17_.targetId);
-               ConnectionsHandler.getConnection().send(_loc18_);
+            case msg is AllianceInvitationAction:
+               aia = msg as AllianceInvitationAction;
+               aimsg = new AllianceInvitationMessage();
+               aimsg.initAllianceInvitationMessage(aia.targetId);
+               ConnectionsHandler.getConnection().send(aimsg);
                return true;
-            case param1 is AllianceInvitedMessage:
-               _loc19_ = param1 as AllianceInvitedMessage;
+            case msg is AllianceInvitedMessage:
+               aidmsg = msg as AllianceInvitedMessage;
                Kernel.getWorker().addFrame(this._allianceDialogFrame);
-               KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceInvited,_loc19_.allianceInfo.allianceName,_loc19_.recruterId,_loc19_.recruterName);
+               KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceInvited,aidmsg.allianceInfo.allianceName,aidmsg.recruterId,aidmsg.recruterName);
                return true;
-            case param1 is AllianceInvitationStateRecruterMessage:
-               _loc20_ = param1 as AllianceInvitationStateRecruterMessage;
-               KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceInvitationStateRecruter,_loc20_.invitationState,_loc20_.recrutedName);
-               if(_loc20_.invitationState == SocialGroupInvitationStateEnum.SOCIAL_GROUP_INVITATION_CANCELED || _loc20_.invitationState == SocialGroupInvitationStateEnum.SOCIAL_GROUP_INVITATION_OK)
+            case msg is AllianceInvitationStateRecruterMessage:
+               aisrermsg = msg as AllianceInvitationStateRecruterMessage;
+               KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceInvitationStateRecruter,aisrermsg.invitationState,aisrermsg.recrutedName);
+               if((aisrermsg.invitationState == SocialGroupInvitationStateEnum.SOCIAL_GROUP_INVITATION_CANCELED) || (aisrermsg.invitationState == SocialGroupInvitationStateEnum.SOCIAL_GROUP_INVITATION_OK))
                {
                   Kernel.getWorker().removeFrame(this._allianceDialogFrame);
                }
@@ -464,174 +464,174 @@ package com.ankamagames.dofus.logic.game.common.frames
                   Kernel.getWorker().addFrame(this._allianceDialogFrame);
                }
                return true;
-            case param1 is AllianceInvitationStateRecrutedMessage:
-               _loc21_ = param1 as AllianceInvitationStateRecrutedMessage;
-               KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceInvitationStateRecruted,_loc21_.invitationState);
-               if(_loc21_.invitationState == SocialGroupInvitationStateEnum.SOCIAL_GROUP_INVITATION_CANCELED || _loc21_.invitationState == SocialGroupInvitationStateEnum.SOCIAL_GROUP_INVITATION_OK)
+            case msg is AllianceInvitationStateRecrutedMessage:
+               aisredmsg = msg as AllianceInvitationStateRecrutedMessage;
+               KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceInvitationStateRecruted,aisredmsg.invitationState);
+               if((aisredmsg.invitationState == SocialGroupInvitationStateEnum.SOCIAL_GROUP_INVITATION_CANCELED) || (aisredmsg.invitationState == SocialGroupInvitationStateEnum.SOCIAL_GROUP_INVITATION_OK))
                {
                   Kernel.getWorker().removeFrame(this._allianceDialogFrame);
                }
                return true;
-            case param1 is AllianceJoinedMessage:
-               _loc22_ = param1 as AllianceJoinedMessage;
+            case msg is AllianceJoinedMessage:
+               ajmsg = msg as AllianceJoinedMessage;
                this._hasAlliance = true;
-               this._alliance = AllianceWrapper.create(_loc22_.allianceInfo.allianceId,_loc22_.allianceInfo.allianceTag,_loc22_.allianceInfo.allianceName,_loc22_.allianceInfo.allianceEmblem);
+               this._alliance = AllianceWrapper.create(ajmsg.allianceInfo.allianceId,ajmsg.allianceInfo.allianceTag,ajmsg.allianceInfo.allianceName,ajmsg.allianceInfo.allianceEmblem);
                KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceMembershipUpdated,true);
-               _loc23_ = I18n.getUiText("ui.alliance.joinAllianceMessage",[_loc22_.allianceInfo.allianceName]);
-               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,_loc23_,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               joinMessage = I18n.getUiText("ui.alliance.joinAllianceMessage",[ajmsg.allianceInfo.allianceName]);
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,joinMessage,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                return true;
-            case param1 is AllianceKickRequestAction:
-               _loc24_ = param1 as AllianceKickRequestAction;
-               _loc25_ = new AllianceKickRequestMessage();
-               _loc25_.initAllianceKickRequestMessage(_loc24_.guildId);
-               ConnectionsHandler.getConnection().send(_loc25_);
+            case msg is AllianceKickRequestAction:
+               akra = msg as AllianceKickRequestAction;
+               akrmsg = new AllianceKickRequestMessage();
+               akrmsg.initAllianceKickRequestMessage(akra.guildId);
+               ConnectionsHandler.getConnection().send(akrmsg);
                return true;
-            case param1 is AllianceGuildLeavingMessage:
-               _loc26_ = param1 as AllianceGuildLeavingMessage;
-               KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceGuildLeaving,_loc26_.kicked,_loc26_.guildId);
+            case msg is AllianceGuildLeavingMessage:
+               aglmsg = msg as AllianceGuildLeavingMessage;
+               KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceGuildLeaving,aglmsg.kicked,aglmsg.guildId);
                return true;
-            case param1 is AllianceLeftMessage:
+            case msg is AllianceLeftMessage:
                KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceLeft);
                this._hasAlliance = false;
                this._alliance = null;
-               _loc27_ = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-               if(_loc27_)
+               rpFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+               if(rpFrame)
                {
-                  for each (_loc89_ in _loc27_.playersId)
+                  for each (pid in rpFrame.playersId)
                   {
-                     _loc27_.removeIconsCategory(_loc89_,EntityIconEnum.AVA_CATEGORY);
+                     rpFrame.removeIconsCategory(pid,EntityIconEnum.AVA_CATEGORY);
                   }
-                  _loc90_ = new UpdateSelfAgressableStatusMessage();
-                  _loc90_.initUpdateSelfAgressableStatusMessage(AggressableStatusEnum.NON_AGGRESSABLE);
-                  _loc27_.process(_loc90_);
+                  usasmsg = new UpdateSelfAgressableStatusMessage();
+                  usasmsg.initUpdateSelfAgressableStatusMessage(AggressableStatusEnum.NON_AGGRESSABLE);
+                  rpFrame.process(usasmsg);
                }
                KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceMembershipUpdated,false);
                return true;
-            case param1 is AllianceFactsRequestAction:
-               _loc28_ = param1 as AllianceFactsRequestAction;
-               _loc29_ = new AllianceFactsRequestMessage();
-               _loc29_.initAllianceFactsRequestMessage(_loc28_.allianceId);
-               ConnectionsHandler.getConnection().send(_loc29_);
+            case msg is AllianceFactsRequestAction:
+               afra = msg as AllianceFactsRequestAction;
+               afrmsg = new AllianceFactsRequestMessage();
+               afrmsg.initAllianceFactsRequestMessage(afra.allianceId);
+               ConnectionsHandler.getConnection().send(afrmsg);
                return true;
-            case param1 is AllianceFactsMessage:
-               _loc30_ = param1 as AllianceFactsMessage;
-               _loc31_ = this._allAlliances[_loc30_.infos.allianceId];
-               _loc32_ = new Vector.<GuildFactSheetWrapper>();
-               _loc34_ = 0;
-               _loc35_ = SocialFrame.getInstance();
-               for each (_loc91_ in _loc30_.guilds)
+            case msg is AllianceFactsMessage:
+               afmsg = msg as AllianceFactsMessage;
+               allianceSheet = this._allAlliances[afmsg.infos.allianceId];
+               allianceGuilds = new Vector.<GuildFactSheetWrapper>();
+               nbAllianceMembers = 0;
+               afsocialFrame = SocialFrame.getInstance();
+               for each (giai in afmsg.guilds)
                {
-                  _loc33_ = _loc35_.getGuildById(_loc91_.guildId);
-                  if(_loc33_)
+                  guildSheetForA = afsocialFrame.getGuildById(giai.guildId);
+                  if(guildSheetForA)
                   {
-                     _loc33_.update(_loc91_.guildId,_loc91_.guildName,_loc91_.guildEmblem,_loc33_.leaderId,_loc33_.leaderName,_loc91_.guildLevel,_loc91_.nbMembers,_loc33_.creationDate,_loc33_.members,_loc33_.nbConnectedMembers,_loc33_.nbTaxCollectors,_loc33_.lastActivity,_loc91_.enabled,_loc30_.infos.allianceId,_loc30_.infos.allianceName,_loc44_);
+                     guildSheetForA.update(giai.guildId,giai.guildName,giai.guildEmblem,guildSheetForA.leaderId,guildSheetForA.leaderName,giai.guildLevel,giai.nbMembers,guildSheetForA.creationDate,guildSheetForA.members,guildSheetForA.nbConnectedMembers,guildSheetForA.nbTaxCollectors,guildSheetForA.lastActivity,giai.enabled,afmsg.infos.allianceId,afmsg.infos.allianceName,first);
                   }
                   else
                   {
-                     _loc33_ = GuildFactSheetWrapper.create(_loc91_.guildId,_loc91_.guildName,_loc91_.guildEmblem,0,"",_loc91_.guildLevel,_loc91_.nbMembers,0,null,0,0,0,_loc91_.enabled,_loc30_.infos.allianceId,_loc30_.infos.allianceName,_loc44_);
+                     guildSheetForA = GuildFactSheetWrapper.create(giai.guildId,giai.guildName,giai.guildEmblem,0,"",giai.guildLevel,giai.nbMembers,0,null,0,0,0,giai.enabled,afmsg.infos.allianceId,afmsg.infos.allianceName,first);
                   }
-                  _loc34_ = _loc34_ + _loc91_.nbMembers;
-                  _loc35_.updateGuildById(_loc91_.guildId,_loc33_);
-                  _loc32_.push(_loc33_);
+                  nbAllianceMembers = nbAllianceMembers + giai.nbMembers;
+                  afsocialFrame.updateGuildById(giai.guildId,guildSheetForA);
+                  allianceGuilds.push(guildSheetForA);
                }
-               if(_loc31_)
+               if(allianceSheet)
                {
-                  _loc31_.update(_loc30_.infos.allianceId,_loc30_.infos.allianceTag,_loc30_.infos.allianceName,_loc30_.infos.allianceEmblem,_loc30_.infos.creationDate,_loc32_.length,_loc34_,_loc32_,_loc30_.controlledSubareaIds);
+                  allianceSheet.update(afmsg.infos.allianceId,afmsg.infos.allianceTag,afmsg.infos.allianceName,afmsg.infos.allianceEmblem,afmsg.infos.creationDate,allianceGuilds.length,nbAllianceMembers,allianceGuilds,afmsg.controlledSubareaIds);
                }
                else
                {
-                  _loc31_ = AllianceWrapper.create(_loc30_.infos.allianceId,_loc30_.infos.allianceTag,_loc30_.infos.allianceName,_loc30_.infos.allianceEmblem,_loc30_.infos.creationDate,_loc32_.length,_loc34_,_loc32_,_loc30_.controlledSubareaIds);
-                  this._allAlliances[_loc30_.infos.allianceId] = _loc31_;
+                  allianceSheet = AllianceWrapper.create(afmsg.infos.allianceId,afmsg.infos.allianceTag,afmsg.infos.allianceName,afmsg.infos.allianceEmblem,afmsg.infos.creationDate,allianceGuilds.length,nbAllianceMembers,allianceGuilds,afmsg.controlledSubareaIds);
+                  this._allAlliances[afmsg.infos.allianceId] = allianceSheet;
                }
-               KernelEventsManager.getInstance().processCallback(SocialHookList.OpenOneAlliance,_loc31_);
+               KernelEventsManager.getInstance().processCallback(SocialHookList.OpenOneAlliance,allianceSheet);
                return true;
-            case param1 is AllianceFactsErrorMessage:
-               _loc36_ = param1 as AllianceFactsErrorMessage;
+            case msg is AllianceFactsErrorMessage:
+               afemsg = msg as AllianceFactsErrorMessage;
                KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,I18n.getUiText("ui.alliance.doesntExistAnymore"),ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                return true;
-            case param1 is AllianceChangeGuildRightsAction:
-               _loc37_ = param1 as AllianceChangeGuildRightsAction;
-               _loc38_ = new AllianceChangeGuildRightsMessage();
-               _loc38_.initAllianceChangeGuildRightsMessage(_loc37_.guildId,_loc37_.rights);
-               ConnectionsHandler.getConnection().send(_loc38_);
+            case msg is AllianceChangeGuildRightsAction:
+               acgra = msg as AllianceChangeGuildRightsAction;
+               acgrmsg = new AllianceChangeGuildRightsMessage();
+               acgrmsg.initAllianceChangeGuildRightsMessage(acgra.guildId,acgra.rights);
+               ConnectionsHandler.getConnection().send(acgrmsg);
                return true;
-            case param1 is AllianceInsiderInfoRequestAction:
-               _loc39_ = param1 as AllianceInsiderInfoRequestAction;
-               _loc40_ = new AllianceInsiderInfoRequestMessage();
-               _loc40_.initAllianceInsiderInfoRequestMessage();
-               ConnectionsHandler.getConnection().send(_loc40_);
+            case msg is AllianceInsiderInfoRequestAction:
+               aiira = msg as AllianceInsiderInfoRequestAction;
+               aiirmsg = new AllianceInsiderInfoRequestMessage();
+               aiirmsg.initAllianceInsiderInfoRequestMessage();
+               ConnectionsHandler.getConnection().send(aiirmsg);
                return true;
-            case param1 is AllianceInsiderInfoMessage:
-               _loc41_ = param1 as AllianceInsiderInfoMessage;
-               _loc42_ = new Vector.<GuildFactSheetWrapper>();
-               _loc44_ = true;
-               _loc45_ = new Vector.<uint>();
-               _loc46_ = 0;
-               _loc47_ = SocialFrame.getInstance();
-               for each (_loc92_ in _loc41_.guilds)
+            case msg is AllianceInsiderInfoMessage:
+               aiimsg = msg as AllianceInsiderInfoMessage;
+               myAllianceGuilds = new Vector.<GuildFactSheetWrapper>();
+               first = true;
+               prismIdsList = new Vector.<uint>();
+               nbMembersInAlliance = 0;
+               aisocialFrame = SocialFrame.getInstance();
+               for each (gifsi in aiimsg.guilds)
                {
-                  _loc43_ = _loc47_.getGuildById(_loc92_.guildId);
-                  if(_loc43_)
+                  guildSheetForMyA = aisocialFrame.getGuildById(gifsi.guildId);
+                  if(guildSheetForMyA)
                   {
-                     _loc43_.update(_loc92_.guildId,_loc92_.guildName,_loc92_.guildEmblem,_loc92_.leaderId,_loc92_.leaderName,_loc92_.guildLevel,_loc92_.nbMembers,_loc43_.creationDate,_loc43_.members,_loc92_.nbConnectedMembers,_loc92_.nbTaxCollectors,_loc92_.lastActivity,_loc92_.enabled,_loc41_.allianceInfos.allianceId,_loc41_.allianceInfos.allianceName,_loc44_);
+                     guildSheetForMyA.update(gifsi.guildId,gifsi.guildName,gifsi.guildEmblem,gifsi.leaderId,gifsi.leaderName,gifsi.guildLevel,gifsi.nbMembers,guildSheetForMyA.creationDate,guildSheetForMyA.members,gifsi.nbConnectedMembers,gifsi.nbTaxCollectors,gifsi.lastActivity,gifsi.enabled,aiimsg.allianceInfos.allianceId,aiimsg.allianceInfos.allianceName,first);
                   }
                   else
                   {
-                     _loc43_ = GuildFactSheetWrapper.create(_loc92_.guildId,_loc92_.guildName,_loc92_.guildEmblem,_loc92_.leaderId,_loc92_.leaderName,_loc92_.guildLevel,_loc92_.nbMembers,0,null,_loc92_.nbConnectedMembers,_loc92_.nbTaxCollectors,_loc92_.lastActivity,_loc92_.enabled,_loc41_.allianceInfos.allianceId,_loc41_.allianceInfos.allianceName,_loc44_);
+                     guildSheetForMyA = GuildFactSheetWrapper.create(gifsi.guildId,gifsi.guildName,gifsi.guildEmblem,gifsi.leaderId,gifsi.leaderName,gifsi.guildLevel,gifsi.nbMembers,0,null,gifsi.nbConnectedMembers,gifsi.nbTaxCollectors,gifsi.lastActivity,gifsi.enabled,aiimsg.allianceInfos.allianceId,aiimsg.allianceInfos.allianceName,first);
                   }
-                  _loc46_ = _loc46_ + _loc92_.nbMembers;
-                  _loc47_.updateGuildById(_loc92_.guildId,_loc43_);
-                  _loc42_.push(_loc43_);
-                  _loc44_ = false;
+                  nbMembersInAlliance = nbMembersInAlliance + gifsi.nbMembers;
+                  aisocialFrame.updateGuildById(gifsi.guildId,guildSheetForMyA);
+                  myAllianceGuilds.push(guildSheetForMyA);
+                  first = false;
                }
-               for each (_loc93_ in _loc41_.prisms)
+               for each (insPrism in aiimsg.prisms)
                {
-                  if(_loc93_ is PrismGeolocalizedInformation && (_loc93_ as PrismGeolocalizedInformation).prism is AllianceInsiderPrismInformation)
+                  if((insPrism is PrismGeolocalizedInformation) && ((insPrism as PrismGeolocalizedInformation).prism is AllianceInsiderPrismInformation))
                   {
-                     _loc45_.push(_loc93_.subAreaId);
+                     prismIdsList.push(insPrism.subAreaId);
                   }
                }
-               _loc48_ = new PrismsListUpdateMessage();
-               _loc48_.initPrismsListUpdateMessage(_loc41_.prisms);
-               this.process(_loc48_);
+               prismsUpdateMsg = new PrismsListUpdateMessage();
+               prismsUpdateMsg.initPrismsListUpdateMessage(aiimsg.prisms);
+               this.process(prismsUpdateMsg);
                if(this._alliance)
                {
-                  this._alliance.update(_loc41_.allianceInfos.allianceId,_loc41_.allianceInfos.allianceTag,_loc41_.allianceInfos.allianceName,_loc41_.allianceInfos.allianceEmblem,_loc41_.allianceInfos.creationDate,_loc41_.guilds.length,_loc46_,_loc42_,_loc45_);
+                  this._alliance.update(aiimsg.allianceInfos.allianceId,aiimsg.allianceInfos.allianceTag,aiimsg.allianceInfos.allianceName,aiimsg.allianceInfos.allianceEmblem,aiimsg.allianceInfos.creationDate,aiimsg.guilds.length,nbMembersInAlliance,myAllianceGuilds,prismIdsList);
                }
                else
                {
-                  this._alliance = AllianceWrapper.create(_loc41_.allianceInfos.allianceId,_loc41_.allianceInfos.allianceTag,_loc41_.allianceInfos.allianceName,_loc41_.allianceInfos.allianceEmblem,_loc41_.allianceInfos.creationDate,_loc41_.guilds.length,_loc46_,_loc42_,_loc45_);
+                  this._alliance = AllianceWrapper.create(aiimsg.allianceInfos.allianceId,aiimsg.allianceInfos.allianceTag,aiimsg.allianceInfos.allianceName,aiimsg.allianceInfos.allianceEmblem,aiimsg.allianceInfos.creationDate,aiimsg.guilds.length,nbMembersInAlliance,myAllianceGuilds,prismIdsList);
                }
-               this._allAlliances[_loc41_.allianceInfos.allianceId] = this._alliance;
+               this._allAlliances[aiimsg.allianceInfos.allianceId] = this._alliance;
                this._hasAlliance = true;
                KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceUpdateInformations);
                return true;
-            case param1 is PrismSettingsRequestAction:
-               _loc49_ = param1 as PrismSettingsRequestAction;
-               _loc50_ = new PrismSettingsRequestMessage();
-               _loc50_.initPrismSettingsRequestMessage(_loc49_.subAreaId,_loc49_.startDefenseTime);
-               ConnectionsHandler.getConnection().send(_loc50_);
+            case msg is PrismSettingsRequestAction:
+               psract = msg as PrismSettingsRequestAction;
+               psrmsg = new PrismSettingsRequestMessage();
+               psrmsg.initPrismSettingsRequestMessage(psract.subAreaId,psract.startDefenseTime);
+               ConnectionsHandler.getConnection().send(psrmsg);
                return true;
-            case param1 is PrismSettingsErrorMessage:
-               _loc51_ = param1 as PrismSettingsErrorMessage;
-               _loc52_ = I18n.getUiText("ui.error.cantModifiedPrismVulnerabiltyHour");
-               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,_loc52_,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+            case msg is PrismSettingsErrorMessage:
+               psemsg = msg as PrismSettingsErrorMessage;
+               text = I18n.getUiText("ui.error.cantModifiedPrismVulnerabiltyHour");
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,text,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                return true;
-            case param1 is PrismFightJoinLeaveRequestAction:
-               _loc53_ = param1 as PrismFightJoinLeaveRequestAction;
-               _loc54_ = new PrismFightJoinLeaveRequestMessage();
+            case msg is PrismFightJoinLeaveRequestAction:
+               pfjlract = msg as PrismFightJoinLeaveRequestAction;
+               pfjlrmsg = new PrismFightJoinLeaveRequestMessage();
                this._autoLeaveHelpers = false;
-               if(_loc53_.subAreaId == 0 && !_loc53_.join)
+               if((pfjlract.subAreaId == 0) && (!pfjlract.join))
                {
-                  for each (_loc94_ in TaxCollectorsManager.getInstance().prismsFighters)
+                  for each (p in TaxCollectorsManager.getInstance().prismsFighters)
                   {
-                     for each (_loc95_ in _loc94_.allyCharactersInformations)
+                     for each (defender in p.allyCharactersInformations)
                      {
-                        if(_loc95_.playerCharactersInformations.id == PlayedCharacterManager.getInstance().id)
+                        if(defender.playerCharactersInformations.id == PlayedCharacterManager.getInstance().id)
                         {
                            this._autoLeaveHelpers = true;
-                           _loc54_.initPrismFightJoinLeaveRequestMessage(_loc94_.uniqueId,_loc53_.join);
-                           ConnectionsHandler.getConnection().send(_loc54_);
+                           pfjlrmsg.initPrismFightJoinLeaveRequestMessage(p.uniqueId,pfjlract.join);
+                           ConnectionsHandler.getConnection().send(pfjlrmsg);
                            return true;
                         }
                      }
@@ -639,171 +639,171 @@ package com.ankamagames.dofus.logic.game.common.frames
                }
                else
                {
-                  _loc54_.initPrismFightJoinLeaveRequestMessage(_loc53_.subAreaId,_loc53_.join);
-                  ConnectionsHandler.getConnection().send(_loc54_);
+                  pfjlrmsg.initPrismFightJoinLeaveRequestMessage(pfjlract.subAreaId,pfjlract.join);
+                  ConnectionsHandler.getConnection().send(pfjlrmsg);
                }
                return true;
-            case param1 is PrismFightSwapRequestAction:
-               _loc55_ = param1 as PrismFightSwapRequestAction;
-               _loc56_ = new PrismFightSwapRequestMessage();
-               _loc56_.initPrismFightSwapRequestMessage(_loc55_.subAreaId,_loc55_.targetId);
-               ConnectionsHandler.getConnection().send(_loc56_);
+            case msg is PrismFightSwapRequestAction:
+               pfsract = msg as PrismFightSwapRequestAction;
+               pfsrmsg = new PrismFightSwapRequestMessage();
+               pfsrmsg.initPrismFightSwapRequestMessage(pfsract.subAreaId,pfsract.targetId);
+               ConnectionsHandler.getConnection().send(pfsrmsg);
                return true;
-            case param1 is PrismInfoJoinLeaveRequestAction:
-               _loc57_ = param1 as PrismInfoJoinLeaveRequestAction;
-               _loc58_ = new PrismInfoJoinLeaveRequestMessage();
-               _loc58_.initPrismInfoJoinLeaveRequestMessage(_loc57_.join);
-               this._infoJoinLeave = _loc57_.join;
-               ConnectionsHandler.getConnection().send(_loc58_);
+            case msg is PrismInfoJoinLeaveRequestAction:
+               pijlract = msg as PrismInfoJoinLeaveRequestAction;
+               pijlrmsg = new PrismInfoJoinLeaveRequestMessage();
+               pijlrmsg.initPrismInfoJoinLeaveRequestMessage(pijlract.join);
+               this._infoJoinLeave = pijlract.join;
+               ConnectionsHandler.getConnection().send(pijlrmsg);
                return true;
-            case param1 is PrismsListRegisterAction:
-               _loc59_ = param1 as PrismsListRegisterAction;
-               _loc60_ = new PrismsListRegisterMessage();
-               _loc60_.initPrismsListRegisterMessage(_loc59_.listen);
-               ConnectionsHandler.getConnection().send(_loc60_);
+            case msg is PrismsListRegisterAction:
+               plract = msg as PrismsListRegisterAction;
+               plrmsg = new PrismsListRegisterMessage();
+               plrmsg.initPrismsListRegisterMessage(plract.listen);
+               ConnectionsHandler.getConnection().send(plrmsg);
                return true;
-            case param1 is PrismAttackRequestAction:
-               _loc61_ = param1 as PrismAttackRequestAction;
-               _loc62_ = new PrismAttackRequestMessage();
-               _loc62_.initPrismAttackRequestMessage();
-               ConnectionsHandler.getConnection().send(_loc62_);
+            case msg is PrismAttackRequestAction:
+               pbra = msg as PrismAttackRequestAction;
+               pbrqmsg = new PrismAttackRequestMessage();
+               pbrqmsg.initPrismAttackRequestMessage();
+               ConnectionsHandler.getConnection().send(pbrqmsg);
                return true;
-            case param1 is PrismUseRequestAction:
-               _loc63_ = param1 as PrismUseRequestAction;
-               _loc64_ = new PrismUseRequestMessage();
-               _loc64_.initPrismUseRequestMessage();
-               ConnectionsHandler.getConnection().send(_loc64_);
+            case msg is PrismUseRequestAction:
+               pura = msg as PrismUseRequestAction;
+               purmsg = new PrismUseRequestMessage();
+               purmsg.initPrismUseRequestMessage();
+               ConnectionsHandler.getConnection().send(purmsg);
                return true;
-            case param1 is PrismSetSabotagedRequestAction:
-               _loc65_ = param1 as PrismSetSabotagedRequestAction;
-               _loc66_ = new PrismSetSabotagedRequestMessage();
-               _loc66_.initPrismSetSabotagedRequestMessage(_loc65_.subAreaId);
-               ConnectionsHandler.getConnection().send(_loc66_);
+            case msg is PrismSetSabotagedRequestAction:
+               pssra = msg as PrismSetSabotagedRequestAction;
+               pssrmsg = new PrismSetSabotagedRequestMessage();
+               pssrmsg.initPrismSetSabotagedRequestMessage(pssra.subAreaId);
+               ConnectionsHandler.getConnection().send(pssrmsg);
                return true;
-            case param1 is PrismSetSabotagedRefusedMessage:
-               _loc67_ = param1 as PrismSetSabotagedRefusedMessage;
-               switch(_loc67_.reason)
+            case msg is PrismSetSabotagedRefusedMessage:
+               pssrdmsg = msg as PrismSetSabotagedRefusedMessage;
+               switch(pssrdmsg.reason)
                {
                   case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_REFUSED:
-                     _loc68_ = I18n.getUiText("ui.prism.sabotageRefused");
+                     sErrorMessage = I18n.getUiText("ui.prism.sabotageRefused");
                      break;
                   case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_INSUFFICIENT_RIGHTS:
-                     _loc68_ = I18n.getUiText("ui.social.taxCollectorNoRights");
+                     sErrorMessage = I18n.getUiText("ui.social.taxCollectorNoRights");
                      break;
                   case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_MEMBER_ACCOUNT_NEEDED:
-                     _loc68_ = I18n.getUiText("ui.payzone.limit");
+                     sErrorMessage = I18n.getUiText("ui.payzone.limit");
                      break;
                   case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_RESTRICTED_ACCOUNT:
-                     _loc68_ = I18n.getUiText("ui.charSel.deletionErrorUnsecureMode");
+                     sErrorMessage = I18n.getUiText("ui.charSel.deletionErrorUnsecureMode");
                      break;
                   case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_WRONG_STATE:
-                     _loc68_ = I18n.getUiText("ui.prism.sabotageRefusedWrongState");
+                     sErrorMessage = I18n.getUiText("ui.prism.sabotageRefusedWrongState");
                      break;
                   case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_WRONG_ALLIANCE:
                   case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_NO_PRISM:
-                     _log.debug("ERROR : Prism sabotage failed for reason " + _loc67_.reason);
+                     _log.debug("ERROR : Prism sabotage failed for reason " + pssrdmsg.reason);
                      break;
                }
-               if(_loc68_)
+               if(sErrorMessage)
                {
-                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,_loc68_,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,sErrorMessage,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                }
                return true;
-            case param1 is PrismFightDefenderAddMessage:
-               _loc69_ = param1 as PrismFightDefenderAddMessage;
-               TaxCollectorsManager.getInstance().addFighter(1,_loc69_.subAreaId,_loc69_.defender,true);
+            case msg is PrismFightDefenderAddMessage:
+               pfdamsg = msg as PrismFightDefenderAddMessage;
+               TaxCollectorsManager.getInstance().addFighter(1,pfdamsg.subAreaId,pfdamsg.defender,true);
                return true;
-            case param1 is PrismFightDefenderLeaveMessage:
-               _loc70_ = param1 as PrismFightDefenderLeaveMessage;
-               if((this._autoLeaveHelpers) && _loc70_.fighterToRemoveId == PlayedCharacterManager.getInstance().id)
+            case msg is PrismFightDefenderLeaveMessage:
+               pfdlmsg = msg as PrismFightDefenderLeaveMessage;
+               if((this._autoLeaveHelpers) && (pfdlmsg.fighterToRemoveId == PlayedCharacterManager.getInstance().id))
                {
-                  _loc96_ = I18n.getUiText("ui.prism.AutoDisjoin");
-                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,_loc96_,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+                  text2 = I18n.getUiText("ui.prism.AutoDisjoin");
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,text2,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                }
-               TaxCollectorsManager.getInstance().removeFighter(1,_loc70_.subAreaId,_loc70_.fighterToRemoveId,true);
+               TaxCollectorsManager.getInstance().removeFighter(1,pfdlmsg.subAreaId,pfdlmsg.fighterToRemoveId,true);
                return true;
-            case param1 is PrismFightAttackerAddMessage:
-               _loc71_ = param1 as PrismFightAttackerAddMessage;
-               TaxCollectorsManager.getInstance().addFighter(1,_loc71_.subAreaId,_loc71_.attacker,false);
+            case msg is PrismFightAttackerAddMessage:
+               pfaamsg = msg as PrismFightAttackerAddMessage;
+               TaxCollectorsManager.getInstance().addFighter(1,pfaamsg.subAreaId,pfaamsg.attacker,false);
                return true;
-            case param1 is PrismFightAttackerRemoveMessage:
-               _loc72_ = param1 as PrismFightAttackerRemoveMessage;
-               TaxCollectorsManager.getInstance().removeFighter(1,_loc72_.subAreaId,_loc72_.fighterToRemoveId,false);
+            case msg is PrismFightAttackerRemoveMessage:
+               pfarmsg = msg as PrismFightAttackerRemoveMessage;
+               TaxCollectorsManager.getInstance().removeFighter(1,pfarmsg.subAreaId,pfarmsg.fighterToRemoveId,false);
                return true;
-            case param1 is PrismsListUpdateMessage:
-               _loc73_ = param1 as PrismsListUpdateMessage;
-               _loc74_ = new Array();
-               for each (_loc97_ in _loc73_.prisms)
+            case msg is PrismsListUpdateMessage:
+               plumsg = msg as PrismsListUpdateMessage;
+               prismModifiedIds = new Array();
+               for each (prismUpdated in plumsg.prisms)
                {
-                  if(_loc97_ is PrismGeolocalizedInformation && (_loc97_ as PrismGeolocalizedInformation).prism is AllianceInsiderPrismInformation)
+                  if((prismUpdated is PrismGeolocalizedInformation) && ((prismUpdated as PrismGeolocalizedInformation).prism is AllianceInsiderPrismInformation))
                   {
-                     _loc77_ = _loc97_ as PrismGeolocalizedInformation;
-                     _loc78_ = _loc77_.prism as AllianceInsiderPrismInformation;
-                     _loc75_ = PrismSubAreaWrapper.prismList[_loc97_.subAreaId];
-                     _loc98_ = _loc77_.worldX;
-                     _loc99_ = _loc77_.worldY;
-                     _loc100_ = SubArea.getSubAreaById(_loc77_.subAreaId).name + " (" + SubArea.getSubAreaById(_loc77_.subAreaId).area.name + ")";
-                     if((_loc78_.state == PrismStateEnum.PRISM_STATE_SABOTAGED) && (_loc75_) && !(_loc75_.state == PrismStateEnum.PRISM_STATE_SABOTAGED))
+                     pGeoU = prismUpdated as PrismGeolocalizedInformation;
+                     aInsiderPrismU = pGeoU.prism as AllianceInsiderPrismInformation;
+                     prismSubWUpdated = PrismSubAreaWrapper.prismList[prismUpdated.subAreaId];
+                     worldX = pGeoU.worldX;
+                     worldY = pGeoU.worldY;
+                     prismN = SubArea.getSubAreaById(pGeoU.subAreaId).name + " (" + SubArea.getSubAreaById(pGeoU.subAreaId).area.name + ")";
+                     if((aInsiderPrismU.state == PrismStateEnum.PRISM_STATE_SABOTAGED) && (prismSubWUpdated) && (!(prismSubWUpdated.state == PrismStateEnum.PRISM_STATE_SABOTAGED)))
                      {
-                        _loc101_ = I18n.getUiText("ui.prism.sabotaged",[_loc100_,_loc98_ + "," + _loc99_]);
-                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,_loc101_,ChatActivableChannelsEnum.CHANNEL_ALLIANCE,TimeManager.getInstance().getTimestamp());
+                        sentenceToDispatch = I18n.getUiText("ui.prism.sabotaged",[prismN,worldX + "," + worldY]);
+                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,sentenceToDispatch,ChatActivableChannelsEnum.CHANNEL_ALLIANCE,TimeManager.getInstance().getTimestamp());
                      }
                      else
                      {
-                        if((_loc78_.state == PrismStateEnum.PRISM_STATE_ATTACKED) && (_loc75_) && !(_loc75_.state == PrismStateEnum.PRISM_STATE_ATTACKED))
+                        if((aInsiderPrismU.state == PrismStateEnum.PRISM_STATE_ATTACKED) && (prismSubWUpdated) && (!(prismSubWUpdated.state == PrismStateEnum.PRISM_STATE_ATTACKED)))
                         {
-                           _loc101_ = I18n.getUiText("ui.prism.attacked",[_loc100_,_loc98_ + "," + _loc99_]);
-                           KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,"{openSocial,2,2,1," + _loc77_.subAreaId + "::" + _loc101_ + "}",ChatActivableChannelsEnum.CHANNEL_ALLIANCE,TimeManager.getInstance().getTimestamp());
+                           sentenceToDispatch = I18n.getUiText("ui.prism.attacked",[prismN,worldX + "," + worldY]);
+                           KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,"{openSocial,2,2,1," + pGeoU.subAreaId + "::" + sentenceToDispatch + "}",ChatActivableChannelsEnum.CHANNEL_ALLIANCE,TimeManager.getInstance().getTimestamp());
                            if((AirScanner.hasAir()) && (ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.PRISM_ATTACK)))
                            {
-                              KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification,ExternalNotificationTypeEnum.PRISM_ATTACK,[_loc100_,_loc77_.worldX + "," + _loc77_.worldY]);
+                              KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification,ExternalNotificationTypeEnum.PRISM_ATTACK,[prismN,pGeoU.worldX + "," + pGeoU.worldY]);
                            }
                            if(OptionManager.getOptionManager("dofus")["warnOnGuildItemAgression"])
                            {
-                              _loc102_ = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.prism.attackedNotificationTitle"),I18n.getUiText("ui.prism.attackedNotification",[SubArea.getSubAreaById(_loc77_.subAreaId).name,_loc77_.worldX + "," + _loc77_.worldY]),NotificationTypeEnum.INVITATION,"PrismAttacked");
-                              NotificationManager.getInstance().addButtonToNotification(_loc102_,I18n.getUiText("ui.common.join"),"OpenSocial",[2,2,[1,_loc77_.subAreaId]],false,200,0,"hook");
-                              NotificationManager.getInstance().sendNotification(_loc102_);
+                              nid = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.prism.attackedNotificationTitle"),I18n.getUiText("ui.prism.attackedNotification",[SubArea.getSubAreaById(pGeoU.subAreaId).name,pGeoU.worldX + "," + pGeoU.worldY]),NotificationTypeEnum.INVITATION,"PrismAttacked");
+                              NotificationManager.getInstance().addButtonToNotification(nid,I18n.getUiText("ui.common.join"),"OpenSocial",[2,2,[1,pGeoU.subAreaId]],false,200,0,"hook");
+                              NotificationManager.getInstance().sendNotification(nid);
                            }
                         }
                      }
                   }
-                  _loc74_.push(_loc97_.subAreaId);
-                  PrismSubAreaWrapper.getFromNetwork(_loc97_,this._alliance);
+                  prismModifiedIds.push(prismUpdated.subAreaId);
+                  PrismSubAreaWrapper.getFromNetwork(prismUpdated,this._alliance);
                }
-               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismsListUpdate,_loc74_);
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismsListUpdate,prismModifiedIds);
                return true;
-            case param1 is PrismsListMessage:
-               _loc80_ = param1 as PrismsListMessage;
-               _loc81_ = new Vector.<PrismSubAreaWrapper>();
-               _loc103_ = 0;
-               while(_loc103_ < _loc80_.prisms.length)
+            case msg is PrismsListMessage:
+               plmsg = msg as PrismsListMessage;
+               prismList = new Vector.<PrismSubAreaWrapper>();
+               indPrism = 0;
+               while(indPrism < plmsg.prisms.length)
                {
-                  _loc104_ = PrismSubAreaWrapper.getFromNetwork(_loc80_.prisms[_loc103_],this._alliance);
-                  if(_loc104_.alliance)
+                  pw = PrismSubAreaWrapper.getFromNetwork(plmsg.prisms[indPrism],this._alliance);
+                  if(pw.alliance)
                   {
-                     _loc81_.push(_loc104_);
+                     prismList.push(pw);
                   }
-                  _loc103_++;
+                  indPrism++;
                }
                KernelEventsManager.getInstance().processCallback(PrismHookList.PrismsList,PrismSubAreaWrapper.prismList);
                return true;
-            case param1 is PrismFightAddedMessage:
-               _loc82_ = param1 as PrismFightAddedMessage;
-               TaxCollectorsManager.getInstance().addPrism(_loc82_.fight);
-               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInFightAdded,_loc82_.fight.subAreaId);
+            case msg is PrismFightAddedMessage:
+               pfamsg = msg as PrismFightAddedMessage;
+               TaxCollectorsManager.getInstance().addPrism(pfamsg.fight);
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInFightAdded,pfamsg.fight.subAreaId);
                return true;
-            case param1 is PrismFightRemovedMessage:
-               _loc83_ = param1 as PrismFightRemovedMessage;
-               delete TaxCollectorsManager.getInstance().prismsFighters[[_loc83_.subAreaId]];
-               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInFightRemoved,_loc83_.subAreaId);
+            case msg is PrismFightRemovedMessage:
+               pfrmsg = msg as PrismFightRemovedMessage;
+               delete TaxCollectorsManager.getInstance().prismsFighters[[pfrmsg.subAreaId]];
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInFightRemoved,pfrmsg.subAreaId);
                return true;
-            case param1 is PrismsInfoValidMessage:
-               _loc84_ = param1 as PrismsInfoValidMessage;
-               TaxCollectorsManager.getInstance().setPrismsInFight(_loc84_.fights);
+            case msg is PrismsInfoValidMessage:
+               pivmsg = msg as PrismsInfoValidMessage;
+               TaxCollectorsManager.getInstance().setPrismsInFight(pivmsg.fights);
                KernelEventsManager.getInstance().processCallback(PrismHookList.PrismsInFightList);
                return true;
-            case param1 is AlliancePrismDialogQuestionMessage:
-               _loc85_ = param1 as AlliancePrismDialogQuestionMessage;
+            case msg is AlliancePrismDialogQuestionMessage:
+               apdqmsg = msg as AlliancePrismDialogQuestionMessage;
                KernelEventsManager.getInstance().processCallback(SocialHookList.AlliancePrismDialogQuestion);
                return true;
          }

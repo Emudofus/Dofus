@@ -6,8 +6,8 @@ package com.ankamagames.tubul.events
    public class PlaylistEvent extends Event
    {
       
-      public function PlaylistEvent(param1:String, param2:Boolean=false, param3:Boolean=false) {
-         super(param1,param2,param3);
+      public function PlaylistEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
       }
       
       public static const COMPLETE:String = "complete";
@@ -17,9 +17,9 @@ package com.ankamagames.tubul.events
       public var newSound:ISound;
       
       override public function clone() : Event {
-         var _loc1_:PlaylistEvent = new PlaylistEvent(type,bubbles,cancelable);
-         _loc1_.newSound = this.newSound;
-         return _loc1_;
+         var pe:PlaylistEvent = new PlaylistEvent(type,bubbles,cancelable);
+         pe.newSound = this.newSound;
+         return pe;
       }
    }
 }

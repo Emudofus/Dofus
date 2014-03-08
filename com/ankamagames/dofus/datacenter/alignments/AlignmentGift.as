@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.alignments
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlignmentGift));
       
-      public static function getAlignmentGiftById(param1:int) : AlignmentGift {
-         return GameData.getObject(MODULE,param1) as AlignmentGift;
+      public static function getAlignmentGiftById(id:int) : AlignmentGift {
+         return GameData.getObject(MODULE,id) as AlignmentGift;
       }
       
       public static function getAlignmentGifts() : Array {

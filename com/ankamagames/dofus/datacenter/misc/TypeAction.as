@@ -12,8 +12,8 @@ package com.ankamagames.dofus.datacenter.misc
       
       public static const MODULE:String = "TypeActions";
       
-      public static function getTypeActionById(param1:int) : TypeAction {
-         return GameData.getObject(MODULE,param1) as TypeAction;
+      public static function getTypeActionById(id:int) : TypeAction {
+         return GameData.getObject(MODULE,id) as TypeAction;
       }
       
       public static function getAllTypeAction() : Array {

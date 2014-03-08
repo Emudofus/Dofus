@@ -15,17 +15,17 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         var _loc4_:LuaPlayer = null;
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var luaPlayer:LuaPlayer = null;
+         switch(cmd)
          {
             case "lua":
-               if((param3) && (param3[0]))
+               if((args) && (args[0]))
                {
-                  _loc4_ = ScriptsManager.getInstance().getPlayer(ScriptsManager.LUA_PLAYER) as LuaPlayer;
-                  _loc4_.addEventListener(LuaPlayerEvent.PLAY_SUCCESS,this.onScriptSuccess);
-                  _loc4_.addEventListener(LuaPlayerEvent.PLAY_ERROR,this.onScriptError);
-                  _loc4_.playFile(param3[0]);
+                  luaPlayer = ScriptsManager.getInstance().getPlayer(ScriptsManager.LUA_PLAYER) as LuaPlayer;
+                  luaPlayer.addEventListener(LuaPlayerEvent.PLAY_SUCCESS,this.onScriptSuccess);
+                  luaPlayer.addEventListener(LuaPlayerEvent.PLAY_ERROR,this.onScriptError);
+                  luaPlayer.playFile(args[0]);
                }
                break;
             case "luarecorder":
@@ -34,30 +34,28 @@ package com.ankamagames.dofus.console.debug
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "lua":
                return "Loads and executes a lua script file.";
             case "luarecorder":
                return "Open a separate window to record in game actions and generate a LUA script file.";
-            default:
-               return "Unknown command \'" + param1 + "\'.";
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return null;
       }
       
-      private function onScriptSuccess(param1:LuaPlayerEvent) : void {
-         param1.currentTarget.removeEventListener(LuaPlayerEvent.PLAY_SUCCESS,this.onScriptSuccess);
+      private function onScriptSuccess(pEvent:LuaPlayerEvent) : void {
+         pEvent.currentTarget.removeEventListener(LuaPlayerEvent.PLAY_SUCCESS,this.onScriptSuccess);
          ConsolesManager.getConsole("debug").output("Script successfully executed.");
       }
       
-      private function onScriptError(param1:LuaPlayerEvent) : void {
-         param1.currentTarget.removeEventListener(LuaPlayerEvent.PLAY_ERROR,this.onScriptError);
-         ConsolesManager.getConsole("debug").output("Script error.\n" + param1.stackTrace);
+      private function onScriptError(pEvent:LuaPlayerEvent) : void {
+         pEvent.currentTarget.removeEventListener(LuaPlayerEvent.PLAY_ERROR,this.onScriptError);
+         ConsolesManager.getConsole("debug").output("Script error.\n" + pEvent.stackTrace);
       }
    }
 }

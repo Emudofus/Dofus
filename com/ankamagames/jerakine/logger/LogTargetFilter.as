@@ -3,10 +3,10 @@ package com.ankamagames.jerakine.logger
    public class LogTargetFilter extends Object
    {
       
-      public function LogTargetFilter(param1:String, param2:Boolean=true) {
+      public function LogTargetFilter(pTarget:String, pAllow:Boolean=true) {
          super();
-         this.target = param1;
-         this.allow = param2;
+         this.target = pTarget;
+         this.allow = pAllow;
       }
       
       public var allow:Boolean = true;

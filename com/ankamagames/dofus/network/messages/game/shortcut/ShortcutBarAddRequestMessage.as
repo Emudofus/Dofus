@@ -32,9 +32,9 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          return 6225;
       }
       
-      public function initShortcutBarAddRequestMessage(param1:uint=0, param2:Shortcut=null) : ShortcutBarAddRequestMessage {
-         this.barType = param1;
-         this.shortcut = param2;
+      public function initShortcutBarAddRequestMessage(barType:uint=0, shortcut:Shortcut=null) : ShortcutBarAddRequestMessage {
+         this.barType = barType;
+         this.shortcut = shortcut;
          this._isInitialized = true;
          return this;
       }
@@ -45,41 +45,41 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ShortcutBarAddRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ShortcutBarAddRequestMessage(output);
       }
       
-      public function serializeAs_ShortcutBarAddRequestMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.barType);
-         param1.writeShort(this.shortcut.getTypeId());
-         this.shortcut.serialize(param1);
+      public function serializeAs_ShortcutBarAddRequestMessage(output:IDataOutput) : void {
+         output.writeByte(this.barType);
+         output.writeShort(this.shortcut.getTypeId());
+         this.shortcut.serialize(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ShortcutBarAddRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ShortcutBarAddRequestMessage(input);
       }
       
-      public function deserializeAs_ShortcutBarAddRequestMessage(param1:IDataInput) : void {
-         this.barType = param1.readByte();
+      public function deserializeAs_ShortcutBarAddRequestMessage(input:IDataInput) : void {
+         this.barType = input.readByte();
          if(this.barType < 0)
          {
             throw new Error("Forbidden value (" + this.barType + ") on element of ShortcutBarAddRequestMessage.barType.");
          }
          else
          {
-            _loc2_ = param1.readUnsignedShort();
-            this.shortcut = ProtocolTypeManager.getInstance(Shortcut,_loc2_);
-            this.shortcut.deserialize(param1);
+            _id2 = input.readUnsignedShort();
+            this.shortcut = ProtocolTypeManager.getInstance(Shortcut,_id2);
+            this.shortcut.deserialize(input);
             return;
          }
       }

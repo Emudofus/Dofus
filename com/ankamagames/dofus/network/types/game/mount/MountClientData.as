@@ -1,8 +1,8 @@
 package com.ankamagames.dofus.network.types.game.mount
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffectInteger;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
    import flash.utils.IDataInput;
@@ -87,39 +87,39 @@ package com.ankamagames.dofus.network.types.game.mount
          return 178;
       }
       
-      public function initMountClientData(param1:Number=0, param2:uint=0, param3:Vector.<uint>=null, param4:Vector.<uint>=null, param5:String="", param6:Boolean=false, param7:uint=0, param8:Number=0, param9:Number=0, param10:Number=0, param11:uint=0, param12:Boolean=false, param13:uint=0, param14:Boolean=false, param15:uint=0, param16:uint=0, param17:uint=0, param18:uint=0, param19:uint=0, param20:uint=0, param21:int=0, param22:int=0, param23:uint=0, param24:uint=0, param25:uint=0, param26:int=0, param27:Boolean=false, param28:uint=0, param29:Number=0, param30:int=0, param31:uint=0, param32:Vector.<ObjectEffectInteger>=null) : MountClientData {
-         this.id = param1;
-         this.model = param2;
-         this.ancestor = param3;
-         this.behaviors = param4;
-         this.name = param5;
-         this.sex = param6;
-         this.ownerId = param7;
-         this.experience = param8;
-         this.experienceForLevel = param9;
-         this.experienceForNextLevel = param10;
-         this.level = param11;
-         this.isRideable = param12;
-         this.maxPods = param13;
-         this.isWild = param14;
-         this.stamina = param15;
-         this.staminaMax = param16;
-         this.maturity = param17;
-         this.maturityForAdult = param18;
-         this.energy = param19;
-         this.energyMax = param20;
-         this.serenity = param21;
-         this.aggressivityMax = param22;
-         this.serenityMax = param23;
-         this.love = param24;
-         this.loveMax = param25;
-         this.fecondationTime = param26;
-         this.isFecondationReady = param27;
-         this.boostLimiter = param28;
-         this.boostMax = param29;
-         this.reproductionCount = param30;
-         this.reproductionCountMax = param31;
-         this.effectList = param32;
+      public function initMountClientData(id:Number=0, model:uint=0, ancestor:Vector.<uint>=null, behaviors:Vector.<uint>=null, name:String="", sex:Boolean=false, ownerId:uint=0, experience:Number=0, experienceForLevel:Number=0, experienceForNextLevel:Number=0, level:uint=0, isRideable:Boolean=false, maxPods:uint=0, isWild:Boolean=false, stamina:uint=0, staminaMax:uint=0, maturity:uint=0, maturityForAdult:uint=0, energy:uint=0, energyMax:uint=0, serenity:int=0, aggressivityMax:int=0, serenityMax:uint=0, love:uint=0, loveMax:uint=0, fecondationTime:int=0, isFecondationReady:Boolean=false, boostLimiter:uint=0, boostMax:Number=0, reproductionCount:int=0, reproductionCountMax:uint=0, effectList:Vector.<ObjectEffectInteger>=null) : MountClientData {
+         this.id = id;
+         this.model = model;
+         this.ancestor = ancestor;
+         this.behaviors = behaviors;
+         this.name = name;
+         this.sex = sex;
+         this.ownerId = ownerId;
+         this.experience = experience;
+         this.experienceForLevel = experienceForLevel;
+         this.experienceForNextLevel = experienceForNextLevel;
+         this.level = level;
+         this.isRideable = isRideable;
+         this.maxPods = maxPods;
+         this.isWild = isWild;
+         this.stamina = stamina;
+         this.staminaMax = staminaMax;
+         this.maturity = maturity;
+         this.maturityForAdult = maturityForAdult;
+         this.energy = energy;
+         this.energyMax = energyMax;
+         this.serenity = serenity;
+         this.aggressivityMax = aggressivityMax;
+         this.serenityMax = serenityMax;
+         this.love = love;
+         this.loveMax = loveMax;
+         this.fecondationTime = fecondationTime;
+         this.isFecondationReady = isFecondationReady;
+         this.boostLimiter = boostLimiter;
+         this.boostMax = boostMax;
+         this.reproductionCount = reproductionCount;
+         this.reproductionCountMax = reproductionCountMax;
+         this.effectList = effectList;
          return this;
       }
       
@@ -158,168 +158,168 @@ package com.ankamagames.dofus.network.types.game.mount
          this.effectList = new Vector.<ObjectEffectInteger>();
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MountClientData(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MountClientData(output);
       }
       
-      public function serializeAs_MountClientData(param1:IDataOutput) : void {
-         var _loc2_:uint = 0;
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,0,this.sex);
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,1,this.isRideable);
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,2,this.isWild);
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,3,this.isFecondationReady);
-         param1.writeByte(_loc2_);
-         param1.writeDouble(this.id);
+      public function serializeAs_MountClientData(output:IDataOutput) : void {
+         var _box0:uint = 0;
+         _box0 = BooleanByteWrapper.setFlag(_box0,0,this.sex);
+         _box0 = BooleanByteWrapper.setFlag(_box0,1,this.isRideable);
+         _box0 = BooleanByteWrapper.setFlag(_box0,2,this.isWild);
+         _box0 = BooleanByteWrapper.setFlag(_box0,3,this.isFecondationReady);
+         output.writeByte(_box0);
+         output.writeDouble(this.id);
          if(this.model < 0)
          {
             throw new Error("Forbidden value (" + this.model + ") on element model.");
          }
          else
          {
-            param1.writeInt(this.model);
-            param1.writeShort(this.ancestor.length);
-            _loc3_ = 0;
-            while(_loc3_ < this.ancestor.length)
+            output.writeInt(this.model);
+            output.writeShort(this.ancestor.length);
+            _i3 = 0;
+            while(_i3 < this.ancestor.length)
             {
-               if(this.ancestor[_loc3_] < 0)
+               if(this.ancestor[_i3] < 0)
                {
-                  throw new Error("Forbidden value (" + this.ancestor[_loc3_] + ") on element 3 (starting at 1) of ancestor.");
+                  throw new Error("Forbidden value (" + this.ancestor[_i3] + ") on element 3 (starting at 1) of ancestor.");
                }
                else
                {
-                  param1.writeInt(this.ancestor[_loc3_]);
-                  _loc3_++;
+                  output.writeInt(this.ancestor[_i3]);
+                  _i3++;
                   continue;
                }
             }
-            param1.writeShort(this.behaviors.length);
-            _loc4_ = 0;
-            while(_loc4_ < this.behaviors.length)
+            output.writeShort(this.behaviors.length);
+            _i4 = 0;
+            while(_i4 < this.behaviors.length)
             {
-               if(this.behaviors[_loc4_] < 0)
+               if(this.behaviors[_i4] < 0)
                {
-                  throw new Error("Forbidden value (" + this.behaviors[_loc4_] + ") on element 4 (starting at 1) of behaviors.");
+                  throw new Error("Forbidden value (" + this.behaviors[_i4] + ") on element 4 (starting at 1) of behaviors.");
                }
                else
                {
-                  param1.writeInt(this.behaviors[_loc4_]);
-                  _loc4_++;
+                  output.writeInt(this.behaviors[_i4]);
+                  _i4++;
                   continue;
                }
             }
-            param1.writeUTF(this.name);
+            output.writeUTF(this.name);
             if(this.ownerId < 0)
             {
                throw new Error("Forbidden value (" + this.ownerId + ") on element ownerId.");
             }
             else
             {
-               param1.writeInt(this.ownerId);
-               param1.writeDouble(this.experience);
-               param1.writeDouble(this.experienceForLevel);
-               param1.writeDouble(this.experienceForNextLevel);
+               output.writeInt(this.ownerId);
+               output.writeDouble(this.experience);
+               output.writeDouble(this.experienceForLevel);
+               output.writeDouble(this.experienceForNextLevel);
                if(this.level < 0)
                {
                   throw new Error("Forbidden value (" + this.level + ") on element level.");
                }
                else
                {
-                  param1.writeByte(this.level);
+                  output.writeByte(this.level);
                   if(this.maxPods < 0)
                   {
                      throw new Error("Forbidden value (" + this.maxPods + ") on element maxPods.");
                   }
                   else
                   {
-                     param1.writeInt(this.maxPods);
+                     output.writeInt(this.maxPods);
                      if(this.stamina < 0)
                      {
                         throw new Error("Forbidden value (" + this.stamina + ") on element stamina.");
                      }
                      else
                      {
-                        param1.writeInt(this.stamina);
+                        output.writeInt(this.stamina);
                         if(this.staminaMax < 0)
                         {
                            throw new Error("Forbidden value (" + this.staminaMax + ") on element staminaMax.");
                         }
                         else
                         {
-                           param1.writeInt(this.staminaMax);
+                           output.writeInt(this.staminaMax);
                            if(this.maturity < 0)
                            {
                               throw new Error("Forbidden value (" + this.maturity + ") on element maturity.");
                            }
                            else
                            {
-                              param1.writeInt(this.maturity);
+                              output.writeInt(this.maturity);
                               if(this.maturityForAdult < 0)
                               {
                                  throw new Error("Forbidden value (" + this.maturityForAdult + ") on element maturityForAdult.");
                               }
                               else
                               {
-                                 param1.writeInt(this.maturityForAdult);
+                                 output.writeInt(this.maturityForAdult);
                                  if(this.energy < 0)
                                  {
                                     throw new Error("Forbidden value (" + this.energy + ") on element energy.");
                                  }
                                  else
                                  {
-                                    param1.writeInt(this.energy);
+                                    output.writeInt(this.energy);
                                     if(this.energyMax < 0)
                                     {
                                        throw new Error("Forbidden value (" + this.energyMax + ") on element energyMax.");
                                     }
                                     else
                                     {
-                                       param1.writeInt(this.energyMax);
-                                       param1.writeInt(this.serenity);
-                                       param1.writeInt(this.aggressivityMax);
+                                       output.writeInt(this.energyMax);
+                                       output.writeInt(this.serenity);
+                                       output.writeInt(this.aggressivityMax);
                                        if(this.serenityMax < 0)
                                        {
                                           throw new Error("Forbidden value (" + this.serenityMax + ") on element serenityMax.");
                                        }
                                        else
                                        {
-                                          param1.writeInt(this.serenityMax);
+                                          output.writeInt(this.serenityMax);
                                           if(this.love < 0)
                                           {
                                              throw new Error("Forbidden value (" + this.love + ") on element love.");
                                           }
                                           else
                                           {
-                                             param1.writeInt(this.love);
+                                             output.writeInt(this.love);
                                              if(this.loveMax < 0)
                                              {
                                                 throw new Error("Forbidden value (" + this.loveMax + ") on element loveMax.");
                                              }
                                              else
                                              {
-                                                param1.writeInt(this.loveMax);
-                                                param1.writeInt(this.fecondationTime);
+                                                output.writeInt(this.loveMax);
+                                                output.writeInt(this.fecondationTime);
                                                 if(this.boostLimiter < 0)
                                                 {
                                                    throw new Error("Forbidden value (" + this.boostLimiter + ") on element boostLimiter.");
                                                 }
                                                 else
                                                 {
-                                                   param1.writeInt(this.boostLimiter);
-                                                   param1.writeDouble(this.boostMax);
-                                                   param1.writeInt(this.reproductionCount);
+                                                   output.writeInt(this.boostLimiter);
+                                                   output.writeDouble(this.boostMax);
+                                                   output.writeInt(this.reproductionCount);
                                                    if(this.reproductionCountMax < 0)
                                                    {
                                                       throw new Error("Forbidden value (" + this.reproductionCountMax + ") on element reproductionCountMax.");
                                                    }
                                                    else
                                                    {
-                                                      param1.writeInt(this.reproductionCountMax);
-                                                      param1.writeShort(this.effectList.length);
-                                                      _loc5_ = 0;
-                                                      while(_loc5_ < this.effectList.length)
+                                                      output.writeInt(this.reproductionCountMax);
+                                                      output.writeShort(this.effectList.length);
+                                                      _i32 = 0;
+                                                      while(_i32 < this.effectList.length)
                                                       {
-                                                         (this.effectList[_loc5_] as ObjectEffectInteger).serializeAs_ObjectEffectInteger(param1);
-                                                         _loc5_++;
+                                                         (this.effectList[_i32] as ObjectEffectInteger).serializeAs_ObjectEffectInteger(output);
+                                                         _i32++;
                                                       }
                                                       return;
                                                    }
@@ -339,174 +339,174 @@ package com.ankamagames.dofus.network.types.game.mount
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MountClientData(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MountClientData(input);
       }
       
-      public function deserializeAs_MountClientData(param1:IDataInput) : void {
-         var _loc9_:uint = 0;
-         var _loc10_:uint = 0;
-         var _loc11_:ObjectEffectInteger = null;
-         var _loc2_:uint = param1.readByte();
-         this.sex = BooleanByteWrapper.getFlag(_loc2_,0);
-         this.isRideable = BooleanByteWrapper.getFlag(_loc2_,1);
-         this.isWild = BooleanByteWrapper.getFlag(_loc2_,2);
-         this.isFecondationReady = BooleanByteWrapper.getFlag(_loc2_,3);
-         this.id = param1.readDouble();
-         this.model = param1.readInt();
+      public function deserializeAs_MountClientData(input:IDataInput) : void {
+         var _val3:uint = 0;
+         var _val4:uint = 0;
+         var _item32:ObjectEffectInteger = null;
+         var _box0:uint = input.readByte();
+         this.sex = BooleanByteWrapper.getFlag(_box0,0);
+         this.isRideable = BooleanByteWrapper.getFlag(_box0,1);
+         this.isWild = BooleanByteWrapper.getFlag(_box0,2);
+         this.isFecondationReady = BooleanByteWrapper.getFlag(_box0,3);
+         this.id = input.readDouble();
+         this.model = input.readInt();
          if(this.model < 0)
          {
             throw new Error("Forbidden value (" + this.model + ") on element of MountClientData.model.");
          }
          else
          {
-            _loc3_ = param1.readUnsignedShort();
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            _ancestorLen = input.readUnsignedShort();
+            _i3 = 0;
+            while(_i3 < _ancestorLen)
             {
-               _loc9_ = param1.readInt();
-               if(_loc9_ < 0)
+               _val3 = input.readInt();
+               if(_val3 < 0)
                {
-                  throw new Error("Forbidden value (" + _loc9_ + ") on elements of ancestor.");
+                  throw new Error("Forbidden value (" + _val3 + ") on elements of ancestor.");
                }
                else
                {
-                  this.ancestor.push(_loc9_);
-                  _loc4_++;
+                  this.ancestor.push(_val3);
+                  _i3++;
                   continue;
                }
             }
-            _loc5_ = param1.readUnsignedShort();
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_)
+            _behaviorsLen = input.readUnsignedShort();
+            _i4 = 0;
+            while(_i4 < _behaviorsLen)
             {
-               _loc10_ = param1.readInt();
-               if(_loc10_ < 0)
+               _val4 = input.readInt();
+               if(_val4 < 0)
                {
-                  throw new Error("Forbidden value (" + _loc10_ + ") on elements of behaviors.");
+                  throw new Error("Forbidden value (" + _val4 + ") on elements of behaviors.");
                }
                else
                {
-                  this.behaviors.push(_loc10_);
-                  _loc6_++;
+                  this.behaviors.push(_val4);
+                  _i4++;
                   continue;
                }
             }
-            this.name = param1.readUTF();
-            this.ownerId = param1.readInt();
+            this.name = input.readUTF();
+            this.ownerId = input.readInt();
             if(this.ownerId < 0)
             {
                throw new Error("Forbidden value (" + this.ownerId + ") on element of MountClientData.ownerId.");
             }
             else
             {
-               this.experience = param1.readDouble();
-               this.experienceForLevel = param1.readDouble();
-               this.experienceForNextLevel = param1.readDouble();
-               this.level = param1.readByte();
+               this.experience = input.readDouble();
+               this.experienceForLevel = input.readDouble();
+               this.experienceForNextLevel = input.readDouble();
+               this.level = input.readByte();
                if(this.level < 0)
                {
                   throw new Error("Forbidden value (" + this.level + ") on element of MountClientData.level.");
                }
                else
                {
-                  this.maxPods = param1.readInt();
+                  this.maxPods = input.readInt();
                   if(this.maxPods < 0)
                   {
                      throw new Error("Forbidden value (" + this.maxPods + ") on element of MountClientData.maxPods.");
                   }
                   else
                   {
-                     this.stamina = param1.readInt();
+                     this.stamina = input.readInt();
                      if(this.stamina < 0)
                      {
                         throw new Error("Forbidden value (" + this.stamina + ") on element of MountClientData.stamina.");
                      }
                      else
                      {
-                        this.staminaMax = param1.readInt();
+                        this.staminaMax = input.readInt();
                         if(this.staminaMax < 0)
                         {
                            throw new Error("Forbidden value (" + this.staminaMax + ") on element of MountClientData.staminaMax.");
                         }
                         else
                         {
-                           this.maturity = param1.readInt();
+                           this.maturity = input.readInt();
                            if(this.maturity < 0)
                            {
                               throw new Error("Forbidden value (" + this.maturity + ") on element of MountClientData.maturity.");
                            }
                            else
                            {
-                              this.maturityForAdult = param1.readInt();
+                              this.maturityForAdult = input.readInt();
                               if(this.maturityForAdult < 0)
                               {
                                  throw new Error("Forbidden value (" + this.maturityForAdult + ") on element of MountClientData.maturityForAdult.");
                               }
                               else
                               {
-                                 this.energy = param1.readInt();
+                                 this.energy = input.readInt();
                                  if(this.energy < 0)
                                  {
                                     throw new Error("Forbidden value (" + this.energy + ") on element of MountClientData.energy.");
                                  }
                                  else
                                  {
-                                    this.energyMax = param1.readInt();
+                                    this.energyMax = input.readInt();
                                     if(this.energyMax < 0)
                                     {
                                        throw new Error("Forbidden value (" + this.energyMax + ") on element of MountClientData.energyMax.");
                                     }
                                     else
                                     {
-                                       this.serenity = param1.readInt();
-                                       this.aggressivityMax = param1.readInt();
-                                       this.serenityMax = param1.readInt();
+                                       this.serenity = input.readInt();
+                                       this.aggressivityMax = input.readInt();
+                                       this.serenityMax = input.readInt();
                                        if(this.serenityMax < 0)
                                        {
                                           throw new Error("Forbidden value (" + this.serenityMax + ") on element of MountClientData.serenityMax.");
                                        }
                                        else
                                        {
-                                          this.love = param1.readInt();
+                                          this.love = input.readInt();
                                           if(this.love < 0)
                                           {
                                              throw new Error("Forbidden value (" + this.love + ") on element of MountClientData.love.");
                                           }
                                           else
                                           {
-                                             this.loveMax = param1.readInt();
+                                             this.loveMax = input.readInt();
                                              if(this.loveMax < 0)
                                              {
                                                 throw new Error("Forbidden value (" + this.loveMax + ") on element of MountClientData.loveMax.");
                                              }
                                              else
                                              {
-                                                this.fecondationTime = param1.readInt();
-                                                this.boostLimiter = param1.readInt();
+                                                this.fecondationTime = input.readInt();
+                                                this.boostLimiter = input.readInt();
                                                 if(this.boostLimiter < 0)
                                                 {
                                                    throw new Error("Forbidden value (" + this.boostLimiter + ") on element of MountClientData.boostLimiter.");
                                                 }
                                                 else
                                                 {
-                                                   this.boostMax = param1.readDouble();
-                                                   this.reproductionCount = param1.readInt();
-                                                   this.reproductionCountMax = param1.readInt();
+                                                   this.boostMax = input.readDouble();
+                                                   this.reproductionCount = input.readInt();
+                                                   this.reproductionCountMax = input.readInt();
                                                    if(this.reproductionCountMax < 0)
                                                    {
                                                       throw new Error("Forbidden value (" + this.reproductionCountMax + ") on element of MountClientData.reproductionCountMax.");
                                                    }
                                                    else
                                                    {
-                                                      _loc7_ = param1.readUnsignedShort();
-                                                      _loc8_ = 0;
-                                                      while(_loc8_ < _loc7_)
+                                                      _effectListLen = input.readUnsignedShort();
+                                                      _i32 = 0;
+                                                      while(_i32 < _effectListLen)
                                                       {
-                                                         _loc11_ = new ObjectEffectInteger();
-                                                         _loc11_.deserialize(param1);
-                                                         this.effectList.push(_loc11_);
-                                                         _loc8_++;
+                                                         _item32 = new ObjectEffectInteger();
+                                                         _item32.deserialize(input);
+                                                         this.effectList.push(_item32);
+                                                         _i32++;
                                                       }
                                                       return;
                                                    }

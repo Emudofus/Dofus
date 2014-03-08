@@ -12,8 +12,8 @@ package com.ankamagames.dofus.datacenter.spells
       
       public static const MODULE:String = "SpellBombs";
       
-      public static function getSpellBombById(param1:int) : SpellBomb {
-         return GameData.getObject(MODULE,param1) as SpellBomb;
+      public static function getSpellBombById(id:int) : SpellBomb {
+         return GameData.getObject(MODULE,id) as SpellBomb;
       }
       
       public var id:int;

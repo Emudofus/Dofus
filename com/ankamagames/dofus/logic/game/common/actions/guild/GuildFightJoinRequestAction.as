@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.guild
          super();
       }
       
-      public static function create(param1:uint) : GuildFightJoinRequestAction {
-         var _loc2_:GuildFightJoinRequestAction = new GuildFightJoinRequestAction();
-         _loc2_.taxCollectorId = param1;
-         return _loc2_;
+      public static function create(pTaxCollectorId:uint) : GuildFightJoinRequestAction {
+         var action:GuildFightJoinRequestAction = new GuildFightJoinRequestAction();
+         action.taxCollectorId = pTaxCollectorId;
+         return action;
       }
       
       public var taxCollectorId:uint;

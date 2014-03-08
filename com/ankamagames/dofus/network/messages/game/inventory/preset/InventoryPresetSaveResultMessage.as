@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          return 6170;
       }
       
-      public function initInventoryPresetSaveResultMessage(param1:uint=0, param2:uint=2) : InventoryPresetSaveResultMessage {
-         this.presetId = param1;
-         this.code = param2;
+      public function initInventoryPresetSaveResultMessage(presetId:uint=0, code:uint=2) : InventoryPresetSaveResultMessage {
+         this.presetId = presetId;
+         this.code = code;
          this._isInitialized = true;
          return this;
       }
@@ -42,46 +42,46 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_InventoryPresetSaveResultMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_InventoryPresetSaveResultMessage(output);
       }
       
-      public function serializeAs_InventoryPresetSaveResultMessage(param1:IDataOutput) : void {
+      public function serializeAs_InventoryPresetSaveResultMessage(output:IDataOutput) : void {
          if(this.presetId < 0)
          {
             throw new Error("Forbidden value (" + this.presetId + ") on element presetId.");
          }
          else
          {
-            param1.writeByte(this.presetId);
-            param1.writeByte(this.code);
+            output.writeByte(this.presetId);
+            output.writeByte(this.code);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_InventoryPresetSaveResultMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_InventoryPresetSaveResultMessage(input);
       }
       
-      public function deserializeAs_InventoryPresetSaveResultMessage(param1:IDataInput) : void {
-         this.presetId = param1.readByte();
+      public function deserializeAs_InventoryPresetSaveResultMessage(input:IDataInput) : void {
+         this.presetId = input.readByte();
          if(this.presetId < 0)
          {
             throw new Error("Forbidden value (" + this.presetId + ") on element of InventoryPresetSaveResultMessage.presetId.");
          }
          else
          {
-            this.code = param1.readByte();
+            this.code = input.readByte();
             if(this.code < 0)
             {
                throw new Error("Forbidden value (" + this.code + ") on element of InventoryPresetSaveResultMessage.code.");

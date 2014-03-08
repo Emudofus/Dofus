@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5768;
       }
       
-      public function initExchangeOkMultiCraftMessage(param1:uint=0, param2:uint=0, param3:int=0) : ExchangeOkMultiCraftMessage {
-         this.initiatorId = param1;
-         this.otherId = param2;
-         this.role = param3;
+      public function initExchangeOkMultiCraftMessage(initiatorId:uint=0, otherId:uint=0, role:int=0) : ExchangeOkMultiCraftMessage {
+         this.initiatorId = initiatorId;
+         this.otherId = otherId;
+         this.role = role;
          this._isInitialized = true;
          return this;
       }
@@ -46,61 +46,61 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeOkMultiCraftMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeOkMultiCraftMessage(output);
       }
       
-      public function serializeAs_ExchangeOkMultiCraftMessage(param1:IDataOutput) : void {
+      public function serializeAs_ExchangeOkMultiCraftMessage(output:IDataOutput) : void {
          if(this.initiatorId < 0)
          {
             throw new Error("Forbidden value (" + this.initiatorId + ") on element initiatorId.");
          }
          else
          {
-            param1.writeInt(this.initiatorId);
+            output.writeInt(this.initiatorId);
             if(this.otherId < 0)
             {
                throw new Error("Forbidden value (" + this.otherId + ") on element otherId.");
             }
             else
             {
-               param1.writeInt(this.otherId);
-               param1.writeByte(this.role);
+               output.writeInt(this.otherId);
+               output.writeByte(this.role);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeOkMultiCraftMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeOkMultiCraftMessage(input);
       }
       
-      public function deserializeAs_ExchangeOkMultiCraftMessage(param1:IDataInput) : void {
-         this.initiatorId = param1.readInt();
+      public function deserializeAs_ExchangeOkMultiCraftMessage(input:IDataInput) : void {
+         this.initiatorId = input.readInt();
          if(this.initiatorId < 0)
          {
             throw new Error("Forbidden value (" + this.initiatorId + ") on element of ExchangeOkMultiCraftMessage.initiatorId.");
          }
          else
          {
-            this.otherId = param1.readInt();
+            this.otherId = input.readInt();
             if(this.otherId < 0)
             {
                throw new Error("Forbidden value (" + this.otherId + ") on element of ExchangeOkMultiCraftMessage.otherId.");
             }
             else
             {
-               this.role = param1.readByte();
+               this.role = input.readByte();
                return;
             }
          }

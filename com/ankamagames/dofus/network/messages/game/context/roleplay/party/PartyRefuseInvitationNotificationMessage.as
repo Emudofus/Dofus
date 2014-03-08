@@ -26,9 +26,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5596;
       }
       
-      public function initPartyRefuseInvitationNotificationMessage(param1:uint=0, param2:uint=0) : PartyRefuseInvitationNotificationMessage {
-         super.initAbstractPartyEventMessage(param1);
-         this.guestId = param2;
+      public function initPartyRefuseInvitationNotificationMessage(partyId:uint=0, guestId:uint=0) : PartyRefuseInvitationNotificationMessage {
+         super.initAbstractPartyEventMessage(partyId);
+         this.guestId = guestId;
          this._isInitialized = true;
          return this;
       }
@@ -39,40 +39,40 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PartyRefuseInvitationNotificationMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartyRefuseInvitationNotificationMessage(output);
       }
       
-      public function serializeAs_PartyRefuseInvitationNotificationMessage(param1:IDataOutput) : void {
-         super.serializeAs_AbstractPartyEventMessage(param1);
+      public function serializeAs_PartyRefuseInvitationNotificationMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractPartyEventMessage(output);
          if(this.guestId < 0)
          {
             throw new Error("Forbidden value (" + this.guestId + ") on element guestId.");
          }
          else
          {
-            param1.writeInt(this.guestId);
+            output.writeInt(this.guestId);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PartyRefuseInvitationNotificationMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartyRefuseInvitationNotificationMessage(input);
       }
       
-      public function deserializeAs_PartyRefuseInvitationNotificationMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.guestId = param1.readInt();
+      public function deserializeAs_PartyRefuseInvitationNotificationMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.guestId = input.readInt();
          if(this.guestId < 0)
          {
             throw new Error("Forbidden value (" + this.guestId + ") on element of PartyRefuseInvitationNotificationMessage.guestId.");

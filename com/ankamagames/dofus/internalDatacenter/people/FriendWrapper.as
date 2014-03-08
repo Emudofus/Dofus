@@ -9,36 +9,36 @@ package com.ankamagames.dofus.internalDatacenter.people
    public class FriendWrapper extends Object implements IDataCenter
    {
       
-      public function FriendWrapper(param1:FriendInformations) {
+      public function FriendWrapper(o:FriendInformations) {
          super();
-         this._item = param1;
-         this.name = param1.accountName;
-         this.accountId = param1.accountId;
-         this.state = param1.playerState;
-         this.lastConnection = param1.lastConnection;
-         this.achievementPoints = param1.achievementPoints;
-         if(param1 is FriendOnlineInformations)
+         this._item = o;
+         this.name = o.accountName;
+         this.accountId = o.accountId;
+         this.state = o.playerState;
+         this.lastConnection = o.lastConnection;
+         this.achievementPoints = o.achievementPoints;
+         if(o is FriendOnlineInformations)
          {
-            this.playerName = FriendOnlineInformations(param1).playerName;
-            this.playerId = FriendOnlineInformations(param1).playerId;
-            this.level = FriendOnlineInformations(param1).level;
-            this.alignmentSide = FriendOnlineInformations(param1).alignmentSide;
-            this.breed = FriendOnlineInformations(param1).breed;
-            this.sex = FriendOnlineInformations(param1).sex?1:0;
-            if(FriendOnlineInformations(param1).guildInfo.guildName == "#NONAME#")
+            this.playerName = FriendOnlineInformations(o).playerName;
+            this.playerId = FriendOnlineInformations(o).playerId;
+            this.level = FriendOnlineInformations(o).level;
+            this.alignmentSide = FriendOnlineInformations(o).alignmentSide;
+            this.breed = FriendOnlineInformations(o).breed;
+            this.sex = FriendOnlineInformations(o).sex?1:0;
+            if(FriendOnlineInformations(o).guildInfo.guildName == "#NONAME#")
             {
                this.guildName = I18n.getUiText("ui.guild.noName");
             }
             else
             {
-               this.guildName = FriendOnlineInformations(param1).guildInfo.guildName;
+               this.guildName = FriendOnlineInformations(o).guildInfo.guildName;
             }
-            this.realGuildName = FriendOnlineInformations(param1).guildInfo.guildName;
-            this.moodSmileyId = FriendOnlineInformations(param1).moodSmileyId;
-            this.statusId = FriendOnlineInformations(param1).status.statusId;
-            if(FriendOnlineInformations(param1).status is PlayerStatusExtended)
+            this.realGuildName = FriendOnlineInformations(o).guildInfo.guildName;
+            this.moodSmileyId = FriendOnlineInformations(o).moodSmileyId;
+            this.statusId = FriendOnlineInformations(o).status.statusId;
+            if(FriendOnlineInformations(o).status is PlayerStatusExtended)
             {
-               this.awayMessage = PlayerStatusExtended(FriendOnlineInformations(param1).status).message;
+               this.awayMessage = PlayerStatusExtended(FriendOnlineInformations(o).status).message;
             }
             this.online = true;
          }

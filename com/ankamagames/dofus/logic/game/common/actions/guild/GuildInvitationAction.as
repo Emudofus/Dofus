@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.guild
          super();
       }
       
-      public static function create(param1:uint) : GuildInvitationAction {
-         var _loc2_:GuildInvitationAction = new GuildInvitationAction();
-         _loc2_.targetId = param1;
-         return _loc2_;
+      public static function create(pTargetId:uint) : GuildInvitationAction {
+         var action:GuildInvitationAction = new GuildInvitationAction();
+         action.targetId = pTargetId;
+         return action;
       }
       
       public var targetId:uint;

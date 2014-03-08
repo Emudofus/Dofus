@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 152;
       }
       
-      public function initCharacterSelectionMessage(param1:int=0) : CharacterSelectionMessage {
-         this.id = param1;
+      public function initCharacterSelectionMessage(id:int=0) : CharacterSelectionMessage {
+         this.id = id;
          this._isInitialized = true;
          return this;
       }
@@ -38,39 +38,39 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CharacterSelectionMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterSelectionMessage(output);
       }
       
-      public function serializeAs_CharacterSelectionMessage(param1:IDataOutput) : void {
-         if(this.id < 1 || this.id > 2147483647)
+      public function serializeAs_CharacterSelectionMessage(output:IDataOutput) : void {
+         if((this.id < 1) || (this.id > 2147483647))
          {
             throw new Error("Forbidden value (" + this.id + ") on element id.");
          }
          else
          {
-            param1.writeInt(this.id);
+            output.writeInt(this.id);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CharacterSelectionMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterSelectionMessage(input);
       }
       
-      public function deserializeAs_CharacterSelectionMessage(param1:IDataInput) : void {
-         this.id = param1.readInt();
-         if(this.id < 1 || this.id > 2147483647)
+      public function deserializeAs_CharacterSelectionMessage(input:IDataInput) : void {
+         this.id = input.readInt();
+         if((this.id < 1) || (this.id > 2147483647))
          {
             throw new Error("Forbidden value (" + this.id + ") on element of CharacterSelectionMessage.id.");
          }

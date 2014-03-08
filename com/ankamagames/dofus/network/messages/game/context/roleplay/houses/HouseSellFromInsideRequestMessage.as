@@ -24,8 +24,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          return 5884;
       }
       
-      public function initHouseSellFromInsideRequestMessage(param1:uint=0) : HouseSellFromInsideRequestMessage {
-         super.initHouseSellRequestMessage(param1);
+      public function initHouseSellFromInsideRequestMessage(amount:uint=0) : HouseSellFromInsideRequestMessage {
+         super.initHouseSellRequestMessage(amount);
          this._isInitialized = true;
          return this;
       }
@@ -35,30 +35,30 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_HouseSellFromInsideRequestMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HouseSellFromInsideRequestMessage(output);
       }
       
-      public function serializeAs_HouseSellFromInsideRequestMessage(param1:IDataOutput) : void {
-         super.serializeAs_HouseSellRequestMessage(param1);
+      public function serializeAs_HouseSellFromInsideRequestMessage(output:IDataOutput) : void {
+         super.serializeAs_HouseSellRequestMessage(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_HouseSellFromInsideRequestMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HouseSellFromInsideRequestMessage(input);
       }
       
-      public function deserializeAs_HouseSellFromInsideRequestMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_HouseSellFromInsideRequestMessage(input:IDataInput) : void {
+         super.deserialize(input);
       }
    }
 }

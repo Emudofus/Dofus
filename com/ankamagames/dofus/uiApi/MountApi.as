@@ -31,12 +31,12 @@ package com.ankamagames.dofus.uiApi
          return Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
       }
       
-      public function getRiderEntityLook(param1:*) : TiphonEntityLook {
-         return EntityLookAdapter.getRiderLook(param1).clone();
+      public function getRiderEntityLook(look:*) : TiphonEntityLook {
+         return EntityLookAdapter.getRiderLook(look).clone();
       }
       
-      public function getMount(param1:uint) : Mount {
-         return Mount.getMountById(param1);
+      public function getMount(modelId:uint) : Mount {
+         return Mount.getMountById(modelId);
       }
       
       public function getStableList() : Array {
@@ -55,8 +55,8 @@ package com.ankamagames.dofus.uiApi
          return this.roleplayContextFrame.currentPaddock;
       }
       
-      public function isCertificateValid(param1:ItemWrapper) : Boolean {
-         if(param1.effects.length > 1)
+      public function isCertificateValid(certificate:ItemWrapper) : Boolean {
+         if(certificate.effects.length > 1)
          {
             return true;
          }

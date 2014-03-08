@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5978;
       }
       
-      public function initMountEmoteIconUsedOkMessage(param1:int=0, param2:uint=0) : MountEmoteIconUsedOkMessage {
-         this.mountId = param1;
-         this.reactionType = param2;
+      public function initMountEmoteIconUsedOkMessage(mountId:int=0, reactionType:uint=0) : MountEmoteIconUsedOkMessage {
+         this.mountId = mountId;
+         this.reactionType = reactionType;
          this._isInitialized = true;
          return this;
       }
@@ -42,40 +42,40 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MountEmoteIconUsedOkMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MountEmoteIconUsedOkMessage(output);
       }
       
-      public function serializeAs_MountEmoteIconUsedOkMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.mountId);
+      public function serializeAs_MountEmoteIconUsedOkMessage(output:IDataOutput) : void {
+         output.writeInt(this.mountId);
          if(this.reactionType < 0)
          {
             throw new Error("Forbidden value (" + this.reactionType + ") on element reactionType.");
          }
          else
          {
-            param1.writeByte(this.reactionType);
+            output.writeByte(this.reactionType);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MountEmoteIconUsedOkMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MountEmoteIconUsedOkMessage(input);
       }
       
-      public function deserializeAs_MountEmoteIconUsedOkMessage(param1:IDataInput) : void {
-         this.mountId = param1.readInt();
-         this.reactionType = param1.readByte();
+      public function deserializeAs_MountEmoteIconUsedOkMessage(input:IDataInput) : void {
+         this.mountId = input.readInt();
+         this.reactionType = input.readByte();
          if(this.reactionType < 0)
          {
             throw new Error("Forbidden value (" + this.reactionType + ") on element of MountEmoteIconUsedOkMessage.reactionType.");

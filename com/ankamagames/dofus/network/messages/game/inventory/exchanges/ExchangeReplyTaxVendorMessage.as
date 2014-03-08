@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5787;
       }
       
-      public function initExchangeReplyTaxVendorMessage(param1:uint=0, param2:uint=0) : ExchangeReplyTaxVendorMessage {
-         this.objectValue = param1;
-         this.totalTaxValue = param2;
+      public function initExchangeReplyTaxVendorMessage(objectValue:uint=0, totalTaxValue:uint=0) : ExchangeReplyTaxVendorMessage {
+         this.objectValue = objectValue;
+         this.totalTaxValue = totalTaxValue;
          this._isInitialized = true;
          return this;
       }
@@ -42,53 +42,53 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeReplyTaxVendorMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeReplyTaxVendorMessage(output);
       }
       
-      public function serializeAs_ExchangeReplyTaxVendorMessage(param1:IDataOutput) : void {
+      public function serializeAs_ExchangeReplyTaxVendorMessage(output:IDataOutput) : void {
          if(this.objectValue < 0)
          {
             throw new Error("Forbidden value (" + this.objectValue + ") on element objectValue.");
          }
          else
          {
-            param1.writeInt(this.objectValue);
+            output.writeInt(this.objectValue);
             if(this.totalTaxValue < 0)
             {
                throw new Error("Forbidden value (" + this.totalTaxValue + ") on element totalTaxValue.");
             }
             else
             {
-               param1.writeInt(this.totalTaxValue);
+               output.writeInt(this.totalTaxValue);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeReplyTaxVendorMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeReplyTaxVendorMessage(input);
       }
       
-      public function deserializeAs_ExchangeReplyTaxVendorMessage(param1:IDataInput) : void {
-         this.objectValue = param1.readInt();
+      public function deserializeAs_ExchangeReplyTaxVendorMessage(input:IDataInput) : void {
+         this.objectValue = input.readInt();
          if(this.objectValue < 0)
          {
             throw new Error("Forbidden value (" + this.objectValue + ") on element of ExchangeReplyTaxVendorMessage.objectValue.");
          }
          else
          {
-            this.totalTaxValue = param1.readInt();
+            this.totalTaxValue = input.readInt();
             if(this.totalTaxValue < 0)
             {
                throw new Error("Forbidden value (" + this.totalTaxValue + ") on element of ExchangeReplyTaxVendorMessage.totalTaxValue.");

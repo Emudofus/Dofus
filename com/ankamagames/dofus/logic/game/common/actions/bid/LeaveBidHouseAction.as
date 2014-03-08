@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.bid
       }
       
       public static function create() : LeaveBidHouseAction {
-         var _loc1_:LeaveBidHouseAction = new LeaveBidHouseAction();
-         return _loc1_;
+         var a:LeaveBidHouseAction = new LeaveBidHouseAction();
+         return a;
       }
    }
 }

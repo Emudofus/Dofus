@@ -12,8 +12,8 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         switch(cmd)
          {
             case "reset":
                Kernel.getWorker().process(new ResetGameAction());
@@ -21,17 +21,15 @@ package com.ankamagames.dofus.console.debug
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "reset":
                return "Resets the Kernel and restart the game.";
-            default:
-               return "Unknown command \'" + param1 + "\'.";
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return [];
       }
    }

@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.guild
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.house.HouseInformationsForGuild;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,8 +30,8 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5919;
       }
       
-      public function initGuildHousesInformationMessage(param1:Vector.<HouseInformationsForGuild>=null) : GuildHousesInformationMessage {
-         this.housesInformations = param1;
+      public function initGuildHousesInformationMessage(housesInformations:Vector.<HouseInformationsForGuild>=null) : GuildHousesInformationMessage {
+         this.housesInformations = housesInformations;
          this._isInitialized = true;
          return this;
       }
@@ -41,44 +41,44 @@ package com.ankamagames.dofus.network.messages.game.guild
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildHousesInformationMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildHousesInformationMessage(output);
       }
       
-      public function serializeAs_GuildHousesInformationMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.housesInformations.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.housesInformations.length)
+      public function serializeAs_GuildHousesInformationMessage(output:IDataOutput) : void {
+         output.writeShort(this.housesInformations.length);
+         var _i1:uint = 0;
+         while(_i1 < this.housesInformations.length)
          {
-            (this.housesInformations[_loc2_] as HouseInformationsForGuild).serializeAs_HouseInformationsForGuild(param1);
-            _loc2_++;
+            (this.housesInformations[_i1] as HouseInformationsForGuild).serializeAs_HouseInformationsForGuild(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildHousesInformationMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildHousesInformationMessage(input);
       }
       
-      public function deserializeAs_GuildHousesInformationMessage(param1:IDataInput) : void {
-         var _loc4_:HouseInformationsForGuild = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_GuildHousesInformationMessage(input:IDataInput) : void {
+         var _item1:HouseInformationsForGuild = null;
+         var _housesInformationsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _housesInformationsLen)
          {
-            _loc4_ = new HouseInformationsForGuild();
-            _loc4_.deserialize(param1);
-            this.housesInformations.push(_loc4_);
-            _loc3_++;
+            _item1 = new HouseInformationsForGuild();
+            _item1.deserialize(input);
+            this.housesInformations.push(_item1);
+            _i1++;
          }
       }
    }

@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.GameRolePlayNpcQuestFlag;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -38,11 +38,11 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 5642;
       }
       
-      public function initMapNpcsQuestStatusUpdateMessage(param1:int=0, param2:Vector.<int>=null, param3:Vector.<GameRolePlayNpcQuestFlag>=null, param4:Vector.<int>=null) : MapNpcsQuestStatusUpdateMessage {
-         this.mapId = param1;
-         this.npcsIdsWithQuest = param2;
-         this.questFlags = param3;
-         this.npcsIdsWithoutQuest = param4;
+      public function initMapNpcsQuestStatusUpdateMessage(mapId:int=0, npcsIdsWithQuest:Vector.<int>=null, questFlags:Vector.<GameRolePlayNpcQuestFlag>=null, npcsIdsWithoutQuest:Vector.<int>=null) : MapNpcsQuestStatusUpdateMessage {
+         this.mapId = mapId;
+         this.npcsIdsWithQuest = npcsIdsWithQuest;
+         this.questFlags = questFlags;
+         this.npcsIdsWithoutQuest = npcsIdsWithoutQuest;
          this._isInitialized = true;
          return this;
       }
@@ -55,78 +55,78 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MapNpcsQuestStatusUpdateMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MapNpcsQuestStatusUpdateMessage(output);
       }
       
-      public function serializeAs_MapNpcsQuestStatusUpdateMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.mapId);
-         param1.writeShort(this.npcsIdsWithQuest.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.npcsIdsWithQuest.length)
+      public function serializeAs_MapNpcsQuestStatusUpdateMessage(output:IDataOutput) : void {
+         output.writeInt(this.mapId);
+         output.writeShort(this.npcsIdsWithQuest.length);
+         var _i2:uint = 0;
+         while(_i2 < this.npcsIdsWithQuest.length)
          {
-            param1.writeInt(this.npcsIdsWithQuest[_loc2_]);
-            _loc2_++;
+            output.writeInt(this.npcsIdsWithQuest[_i2]);
+            _i2++;
          }
-         param1.writeShort(this.questFlags.length);
-         var _loc3_:uint = 0;
-         while(_loc3_ < this.questFlags.length)
+         output.writeShort(this.questFlags.length);
+         var _i3:uint = 0;
+         while(_i3 < this.questFlags.length)
          {
-            (this.questFlags[_loc3_] as GameRolePlayNpcQuestFlag).serializeAs_GameRolePlayNpcQuestFlag(param1);
-            _loc3_++;
+            (this.questFlags[_i3] as GameRolePlayNpcQuestFlag).serializeAs_GameRolePlayNpcQuestFlag(output);
+            _i3++;
          }
-         param1.writeShort(this.npcsIdsWithoutQuest.length);
-         var _loc4_:uint = 0;
-         while(_loc4_ < this.npcsIdsWithoutQuest.length)
+         output.writeShort(this.npcsIdsWithoutQuest.length);
+         var _i4:uint = 0;
+         while(_i4 < this.npcsIdsWithoutQuest.length)
          {
-            param1.writeInt(this.npcsIdsWithoutQuest[_loc4_]);
-            _loc4_++;
+            output.writeInt(this.npcsIdsWithoutQuest[_i4]);
+            _i4++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MapNpcsQuestStatusUpdateMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MapNpcsQuestStatusUpdateMessage(input);
       }
       
-      public function deserializeAs_MapNpcsQuestStatusUpdateMessage(param1:IDataInput) : void {
-         var _loc8_:* = 0;
-         var _loc9_:GameRolePlayNpcQuestFlag = null;
-         var _loc10_:* = 0;
-         this.mapId = param1.readInt();
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_MapNpcsQuestStatusUpdateMessage(input:IDataInput) : void {
+         var _val2:* = 0;
+         var _item3:GameRolePlayNpcQuestFlag = null;
+         var _val4:* = 0;
+         this.mapId = input.readInt();
+         var _npcsIdsWithQuestLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2 < _npcsIdsWithQuestLen)
          {
-            _loc8_ = param1.readInt();
-            this.npcsIdsWithQuest.push(_loc8_);
-            _loc3_++;
+            _val2 = input.readInt();
+            this.npcsIdsWithQuest.push(_val2);
+            _i2++;
          }
-         var _loc4_:uint = param1.readUnsignedShort();
-         var _loc5_:uint = 0;
-         while(_loc5_ < _loc4_)
+         var _questFlagsLen:uint = input.readUnsignedShort();
+         var _i3:uint = 0;
+         while(_i3 < _questFlagsLen)
          {
-            _loc9_ = new GameRolePlayNpcQuestFlag();
-            _loc9_.deserialize(param1);
-            this.questFlags.push(_loc9_);
-            _loc5_++;
+            _item3 = new GameRolePlayNpcQuestFlag();
+            _item3.deserialize(input);
+            this.questFlags.push(_item3);
+            _i3++;
          }
-         var _loc6_:uint = param1.readUnsignedShort();
-         var _loc7_:uint = 0;
-         while(_loc7_ < _loc6_)
+         var _npcsIdsWithoutQuestLen:uint = input.readUnsignedShort();
+         var _i4:uint = 0;
+         while(_i4 < _npcsIdsWithoutQuestLen)
          {
-            _loc10_ = param1.readInt();
-            this.npcsIdsWithoutQuest.push(_loc10_);
-            _loc7_++;
+            _val4 = input.readInt();
+            this.npcsIdsWithoutQuest.push(_val4);
+            _i4++;
          }
       }
    }

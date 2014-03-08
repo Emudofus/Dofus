@@ -27,11 +27,11 @@ package com.ankamagames.dofus.network.types.game.context
          return 148;
       }
       
-      public function initGameRolePlayTaxCollectorInformations(param1:int=0, param2:EntityLook=null, param3:EntityDispositionInformations=null, param4:TaxCollectorStaticInformations=null, param5:uint=0, param6:int=0) : GameRolePlayTaxCollectorInformations {
-         super.initGameRolePlayActorInformations(param1,param2,param3);
-         this.identification = param4;
-         this.guildLevel = param5;
-         this.taxCollectorAttack = param6;
+      public function initGameRolePlayTaxCollectorInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, identification:TaxCollectorStaticInformations=null, guildLevel:uint=0, taxCollectorAttack:int=0) : GameRolePlayTaxCollectorInformations {
+         super.initGameRolePlayActorInformations(contextualId,look,disposition);
+         this.identification = identification;
+         this.guildLevel = guildLevel;
+         this.taxCollectorAttack = taxCollectorAttack;
          return this;
       }
       
@@ -41,43 +41,43 @@ package com.ankamagames.dofus.network.types.game.context
          this.taxCollectorAttack = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameRolePlayTaxCollectorInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayTaxCollectorInformations(output);
       }
       
-      public function serializeAs_GameRolePlayTaxCollectorInformations(param1:IDataOutput) : void {
-         super.serializeAs_GameRolePlayActorInformations(param1);
-         param1.writeShort(this.identification.getTypeId());
-         this.identification.serialize(param1);
-         if(this.guildLevel < 0 || this.guildLevel > 255)
+      public function serializeAs_GameRolePlayTaxCollectorInformations(output:IDataOutput) : void {
+         super.serializeAs_GameRolePlayActorInformations(output);
+         output.writeShort(this.identification.getTypeId());
+         this.identification.serialize(output);
+         if((this.guildLevel < 0) || (this.guildLevel > 255))
          {
             throw new Error("Forbidden value (" + this.guildLevel + ") on element guildLevel.");
          }
          else
          {
-            param1.writeByte(this.guildLevel);
-            param1.writeInt(this.taxCollectorAttack);
+            output.writeByte(this.guildLevel);
+            output.writeInt(this.taxCollectorAttack);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameRolePlayTaxCollectorInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayTaxCollectorInformations(input);
       }
       
-      public function deserializeAs_GameRolePlayTaxCollectorInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         var _loc2_:uint = param1.readUnsignedShort();
-         this.identification = ProtocolTypeManager.getInstance(TaxCollectorStaticInformations,_loc2_);
-         this.identification.deserialize(param1);
-         this.guildLevel = param1.readUnsignedByte();
-         if(this.guildLevel < 0 || this.guildLevel > 255)
+      public function deserializeAs_GameRolePlayTaxCollectorInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         var _id1:uint = input.readUnsignedShort();
+         this.identification = ProtocolTypeManager.getInstance(TaxCollectorStaticInformations,_id1);
+         this.identification.deserialize(input);
+         this.guildLevel = input.readUnsignedByte();
+         if((this.guildLevel < 0) || (this.guildLevel > 255))
          {
             throw new Error("Forbidden value (" + this.guildLevel + ") on element of GameRolePlayTaxCollectorInformations.guildLevel.");
          }
          else
          {
-            this.taxCollectorAttack = param1.readInt();
+            this.taxCollectorAttack = input.readInt();
             return;
          }
       }

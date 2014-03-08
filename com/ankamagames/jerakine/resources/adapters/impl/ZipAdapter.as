@@ -14,8 +14,8 @@ package com.ankamagames.jerakine.resources.adapters.impl
          super();
       }
       
-      override protected function getResource(param1:String, param2:*) : * {
-         return new ZipFile(param2 as ByteArray);
+      override protected function getResource(dataFormat:String, data:*) : * {
+         return new ZipFile(data as ByteArray);
       }
       
       override public function getResourceType() : uint {

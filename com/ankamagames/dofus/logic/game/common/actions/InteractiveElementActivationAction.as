@@ -11,12 +11,12 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:InteractiveElement, param2:MapPoint, param3:uint) : InteractiveElementActivationAction {
-         var _loc4_:InteractiveElementActivationAction = new InteractiveElementActivationAction();
-         _loc4_.interactiveElement = param1;
-         _loc4_.position = param2;
-         _loc4_.skillInstanceId = param3;
-         return _loc4_;
+      public static function create(ie:InteractiveElement, position:MapPoint, skillInstanceId:uint) : InteractiveElementActivationAction {
+         var a:InteractiveElementActivationAction = new InteractiveElementActivationAction();
+         a.interactiveElement = ie;
+         a.position = position;
+         a.skillInstanceId = skillInstanceId;
+         return a;
       }
       
       public var interactiveElement:InteractiveElement;

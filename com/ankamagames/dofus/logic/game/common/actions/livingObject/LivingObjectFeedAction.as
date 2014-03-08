@@ -9,12 +9,12 @@ package com.ankamagames.dofus.logic.game.common.actions.livingObject
          super();
       }
       
-      public static function create(param1:uint, param2:uint, param3:uint) : LivingObjectFeedAction {
-         var _loc4_:LivingObjectFeedAction = new LivingObjectFeedAction();
-         _loc4_.objectUID = param1;
-         _loc4_.foodUID = param2;
-         _loc4_.foodQuantity = param3;
-         return _loc4_;
+      public static function create(objectUID:uint, foodUID:uint, foodQuantity:uint) : LivingObjectFeedAction {
+         var action:LivingObjectFeedAction = new LivingObjectFeedAction();
+         action.objectUID = objectUID;
+         action.foodUID = foodUID;
+         action.foodQuantity = foodQuantity;
+         return action;
       }
       
       public var objectUID:uint;

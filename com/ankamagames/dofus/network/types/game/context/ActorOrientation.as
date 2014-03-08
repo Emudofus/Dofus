@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.context
          return 353;
       }
       
-      public function initActorOrientation(param1:int=0, param2:uint=1) : ActorOrientation {
-         this.id = param1;
-         this.direction = param2;
+      public function initActorOrientation(id:int=0, direction:uint=1) : ActorOrientation {
+         this.id = id;
+         this.direction = direction;
          return this;
       }
       
@@ -32,22 +32,22 @@ package com.ankamagames.dofus.network.types.game.context
          this.direction = 1;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ActorOrientation(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ActorOrientation(output);
       }
       
-      public function serializeAs_ActorOrientation(param1:IDataOutput) : void {
-         param1.writeInt(this.id);
-         param1.writeByte(this.direction);
+      public function serializeAs_ActorOrientation(output:IDataOutput) : void {
+         output.writeInt(this.id);
+         output.writeByte(this.direction);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ActorOrientation(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ActorOrientation(input);
       }
       
-      public function deserializeAs_ActorOrientation(param1:IDataInput) : void {
-         this.id = param1.readInt();
-         this.direction = param1.readByte();
+      public function deserializeAs_ActorOrientation(input:IDataInput) : void {
+         this.id = input.readInt();
+         this.direction = input.readByte();
          if(this.direction < 0)
          {
             throw new Error("Forbidden value (" + this.direction + ") on element of ActorOrientation.direction.");

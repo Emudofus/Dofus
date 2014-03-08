@@ -19,38 +19,38 @@ package com.ankamagames.dofus.console.chat
       
       private var sysApi:SystemApi;
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         var _loc6_:EmotePlayRequestAction = null;
-         var _loc4_:uint = this.getEmoteId(param2);
-         var _loc5_:PlayedCharacterManager = PlayedCharacterManager.getInstance();
-         if(_loc4_ > 0 && _loc5_.state == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING && (_loc5_.isRidding) || (_loc5_.isPetsMounting) || _loc5_.infos.entityLook.bonesId == 1)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var epra:EmotePlayRequestAction = null;
+         var emoteId:uint = this.getEmoteId(cmd);
+         var playerManager:PlayedCharacterManager = PlayedCharacterManager.getInstance();
+         if((emoteId > 0) && (playerManager.state == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING) && (playerManager.isRidding) || (playerManager.isPetsMounting) || (playerManager.infos.entityLook.bonesId == 1))
          {
-            _loc6_ = EmotePlayRequestAction.create(_loc4_);
-            Kernel.getWorker().process(_loc6_);
+            epra = EmotePlayRequestAction.create(emoteId);
+            Kernel.getWorker().process(epra);
          }
       }
       
-      public function getHelp(param1:String) : String {
+      public function getHelp(cmd:String) : String {
          return null;
       }
       
-      private function getEmoteId(param1:String) : uint {
-         var _loc2_:Emoticon = null;
-         for each (_loc2_ in Emoticon.getEmoticons())
+      private function getEmoteId(cmd:String) : uint {
+         var emote:Emoticon = null;
+         for each (emote in Emoticon.getEmoticons())
          {
-            if(_loc2_.shortcut == param1)
+            if(emote.shortcut == cmd)
             {
-               return _loc2_.id;
+               return emote.id;
             }
-            if(_loc2_.defaultAnim == param1)
+            if(emote.defaultAnim == cmd)
             {
-               return _loc2_.id;
+               return emote.id;
             }
          }
          return 0;
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return [];
       }
    }

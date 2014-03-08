@@ -3,11 +3,11 @@ package com.ankamagames.jerakine.types
    public class Point3D extends Object
    {
       
-      public function Point3D(param1:Number, param2:Number, param3:Number) {
+      public function Point3D(_x:Number, _y:Number, _z:Number) {
          super();
-         this.x = param1;
-         this.y = param2;
-         this.z = param3;
+         this.x = _x;
+         this.y = _y;
+         this.z = _z;
       }
       
       public var x:Number = 0;

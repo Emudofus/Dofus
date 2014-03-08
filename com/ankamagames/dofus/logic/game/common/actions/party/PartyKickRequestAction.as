@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.party
          super();
       }
       
-      public static function create(param1:int, param2:uint) : PartyKickRequestAction {
-         var _loc3_:PartyKickRequestAction = new PartyKickRequestAction();
-         _loc3_.partyId = param1;
-         _loc3_.playerId = param2;
-         return _loc3_;
+      public static function create(partyId:int, playerId:uint) : PartyKickRequestAction {
+         var a:PartyKickRequestAction = new PartyKickRequestAction();
+         a.partyId = partyId;
+         a.playerId = playerId;
+         return a;
       }
       
       public var playerId:uint;

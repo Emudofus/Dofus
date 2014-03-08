@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.mount
          super();
       }
       
-      public static function create(param1:uint) : PaddockSellRequestAction {
-         var _loc2_:PaddockSellRequestAction = new PaddockSellRequestAction();
-         _loc2_.price = param1;
-         return _loc2_;
+      public static function create(price:uint) : PaddockSellRequestAction {
+         var o:PaddockSellRequestAction = new PaddockSellRequestAction();
+         o.price = price;
+         return o;
       }
       
       public var price:uint;

@@ -2,9 +2,9 @@ package com.ankamagames.dofus.network.messages.game.alliance
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.context.roleplay.AllianceInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.BasicAllianceInformations;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -49,15 +49,15 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6439;
       }
       
-      public function initKohUpdateMessage(param1:Vector.<AllianceInformations>=null, param2:Vector.<uint>=null, param3:Vector.<uint>=null, param4:Vector.<uint>=null, param5:BasicAllianceInformations=null, param6:uint=0, param7:uint=0, param8:Number=0) : KohUpdateMessage {
-         this.alliances = param1;
-         this.allianceNbMembers = param2;
-         this.allianceRoundWeigth = param3;
-         this.allianceMatchScore = param4;
-         this.allianceMapWinner = param5;
-         this.allianceMapWinnerScore = param6;
-         this.allianceMapMyAllianceScore = param7;
-         this.nextTickTime = param8;
+      public function initKohUpdateMessage(alliances:Vector.<AllianceInformations>=null, allianceNbMembers:Vector.<uint>=null, allianceRoundWeigth:Vector.<uint>=null, allianceMatchScore:Vector.<uint>=null, allianceMapWinner:BasicAllianceInformations=null, allianceMapWinnerScore:uint=0, allianceMapMyAllianceScore:uint=0, nextTickTime:Number=0) : KohUpdateMessage {
+         this.alliances = alliances;
+         this.allianceNbMembers = allianceNbMembers;
+         this.allianceRoundWeigth = allianceRoundWeigth;
+         this.allianceMatchScore = allianceMatchScore;
+         this.allianceMapWinner = allianceMapWinner;
+         this.allianceMapWinnerScore = allianceMapWinnerScore;
+         this.allianceMapMyAllianceScore = allianceMapMyAllianceScore;
+         this.nextTickTime = nextTickTime;
          this._isInitialized = true;
          return this;
       }
@@ -73,184 +73,184 @@ package com.ankamagames.dofus.network.messages.game.alliance
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_KohUpdateMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_KohUpdateMessage(output);
       }
       
-      public function serializeAs_KohUpdateMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.alliances.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.alliances.length)
+      public function serializeAs_KohUpdateMessage(output:IDataOutput) : void {
+         output.writeShort(this.alliances.length);
+         var _i1:uint = 0;
+         while(_i1 < this.alliances.length)
          {
-            (this.alliances[_loc2_] as AllianceInformations).serializeAs_AllianceInformations(param1);
-            _loc2_++;
+            (this.alliances[_i1] as AllianceInformations).serializeAs_AllianceInformations(output);
+            _i1++;
          }
-         param1.writeShort(this.allianceNbMembers.length);
-         var _loc3_:uint = 0;
-         while(_loc3_ < this.allianceNbMembers.length)
+         output.writeShort(this.allianceNbMembers.length);
+         var _i2:uint = 0;
+         while(_i2 < this.allianceNbMembers.length)
          {
-            if(this.allianceNbMembers[_loc3_] < 0)
+            if(this.allianceNbMembers[_i2] < 0)
             {
-               throw new Error("Forbidden value (" + this.allianceNbMembers[_loc3_] + ") on element 2 (starting at 1) of allianceNbMembers.");
+               throw new Error("Forbidden value (" + this.allianceNbMembers[_i2] + ") on element 2 (starting at 1) of allianceNbMembers.");
             }
             else
             {
-               param1.writeShort(this.allianceNbMembers[_loc3_]);
-               _loc3_++;
+               output.writeShort(this.allianceNbMembers[_i2]);
+               _i2++;
                continue;
             }
          }
-         param1.writeShort(this.allianceRoundWeigth.length);
-         var _loc4_:uint = 0;
-         while(_loc4_ < this.allianceRoundWeigth.length)
+         output.writeShort(this.allianceRoundWeigth.length);
+         var _i3:uint = 0;
+         while(_i3 < this.allianceRoundWeigth.length)
          {
-            if(this.allianceRoundWeigth[_loc4_] < 0)
+            if(this.allianceRoundWeigth[_i3] < 0)
             {
-               throw new Error("Forbidden value (" + this.allianceRoundWeigth[_loc4_] + ") on element 3 (starting at 1) of allianceRoundWeigth.");
+               throw new Error("Forbidden value (" + this.allianceRoundWeigth[_i3] + ") on element 3 (starting at 1) of allianceRoundWeigth.");
             }
             else
             {
-               param1.writeInt(this.allianceRoundWeigth[_loc4_]);
-               _loc4_++;
+               output.writeInt(this.allianceRoundWeigth[_i3]);
+               _i3++;
                continue;
             }
          }
-         param1.writeShort(this.allianceMatchScore.length);
-         var _loc5_:uint = 0;
-         while(_loc5_ < this.allianceMatchScore.length)
+         output.writeShort(this.allianceMatchScore.length);
+         var _i4:uint = 0;
+         while(_i4 < this.allianceMatchScore.length)
          {
-            if(this.allianceMatchScore[_loc5_] < 0)
+            if(this.allianceMatchScore[_i4] < 0)
             {
-               throw new Error("Forbidden value (" + this.allianceMatchScore[_loc5_] + ") on element 4 (starting at 1) of allianceMatchScore.");
+               throw new Error("Forbidden value (" + this.allianceMatchScore[_i4] + ") on element 4 (starting at 1) of allianceMatchScore.");
             }
             else
             {
-               param1.writeByte(this.allianceMatchScore[_loc5_]);
-               _loc5_++;
+               output.writeByte(this.allianceMatchScore[_i4]);
+               _i4++;
                continue;
             }
          }
-         this.allianceMapWinner.serializeAs_BasicAllianceInformations(param1);
+         this.allianceMapWinner.serializeAs_BasicAllianceInformations(output);
          if(this.allianceMapWinnerScore < 0)
          {
             throw new Error("Forbidden value (" + this.allianceMapWinnerScore + ") on element allianceMapWinnerScore.");
          }
          else
          {
-            param1.writeInt(this.allianceMapWinnerScore);
+            output.writeInt(this.allianceMapWinnerScore);
             if(this.allianceMapMyAllianceScore < 0)
             {
                throw new Error("Forbidden value (" + this.allianceMapMyAllianceScore + ") on element allianceMapMyAllianceScore.");
             }
             else
             {
-               param1.writeInt(this.allianceMapMyAllianceScore);
+               output.writeInt(this.allianceMapMyAllianceScore);
                if(this.nextTickTime < 0)
                {
                   throw new Error("Forbidden value (" + this.nextTickTime + ") on element nextTickTime.");
                }
                else
                {
-                  param1.writeDouble(this.nextTickTime);
+                  output.writeDouble(this.nextTickTime);
                   return;
                }
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_KohUpdateMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_KohUpdateMessage(input);
       }
       
-      public function deserializeAs_KohUpdateMessage(param1:IDataInput) : void {
-         var _loc10_:AllianceInformations = null;
-         var _loc11_:uint = 0;
-         var _loc12_:uint = 0;
-         var _loc13_:uint = 0;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_KohUpdateMessage(input:IDataInput) : void {
+         var _item1:AllianceInformations = null;
+         var _val2:uint = 0;
+         var _val3:uint = 0;
+         var _val4:uint = 0;
+         var _alliancesLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _alliancesLen)
          {
-            _loc10_ = new AllianceInformations();
-            _loc10_.deserialize(param1);
-            this.alliances.push(_loc10_);
-            _loc3_++;
+            _item1 = new AllianceInformations();
+            _item1.deserialize(input);
+            this.alliances.push(_item1);
+            _i1++;
          }
-         var _loc4_:uint = param1.readUnsignedShort();
-         var _loc5_:uint = 0;
-         while(_loc5_ < _loc4_)
+         var _allianceNbMembersLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2 < _allianceNbMembersLen)
          {
-            _loc11_ = param1.readShort();
-            if(_loc11_ < 0)
+            _val2 = input.readShort();
+            if(_val2 < 0)
             {
-               throw new Error("Forbidden value (" + _loc11_ + ") on elements of allianceNbMembers.");
+               throw new Error("Forbidden value (" + _val2 + ") on elements of allianceNbMembers.");
             }
             else
             {
-               this.allianceNbMembers.push(_loc11_);
-               _loc5_++;
+               this.allianceNbMembers.push(_val2);
+               _i2++;
                continue;
             }
          }
-         var _loc6_:uint = param1.readUnsignedShort();
-         var _loc7_:uint = 0;
-         while(_loc7_ < _loc6_)
+         var _allianceRoundWeigthLen:uint = input.readUnsignedShort();
+         var _i3:uint = 0;
+         while(_i3 < _allianceRoundWeigthLen)
          {
-            _loc12_ = param1.readInt();
-            if(_loc12_ < 0)
+            _val3 = input.readInt();
+            if(_val3 < 0)
             {
-               throw new Error("Forbidden value (" + _loc12_ + ") on elements of allianceRoundWeigth.");
+               throw new Error("Forbidden value (" + _val3 + ") on elements of allianceRoundWeigth.");
             }
             else
             {
-               this.allianceRoundWeigth.push(_loc12_);
-               _loc7_++;
+               this.allianceRoundWeigth.push(_val3);
+               _i3++;
                continue;
             }
          }
-         var _loc8_:uint = param1.readUnsignedShort();
-         var _loc9_:uint = 0;
-         while(_loc9_ < _loc8_)
+         var _allianceMatchScoreLen:uint = input.readUnsignedShort();
+         var _i4:uint = 0;
+         while(_i4 < _allianceMatchScoreLen)
          {
-            _loc13_ = param1.readByte();
-            if(_loc13_ < 0)
+            _val4 = input.readByte();
+            if(_val4 < 0)
             {
-               throw new Error("Forbidden value (" + _loc13_ + ") on elements of allianceMatchScore.");
+               throw new Error("Forbidden value (" + _val4 + ") on elements of allianceMatchScore.");
             }
             else
             {
-               this.allianceMatchScore.push(_loc13_);
-               _loc9_++;
+               this.allianceMatchScore.push(_val4);
+               _i4++;
                continue;
             }
          }
          this.allianceMapWinner = new BasicAllianceInformations();
-         this.allianceMapWinner.deserialize(param1);
-         this.allianceMapWinnerScore = param1.readInt();
+         this.allianceMapWinner.deserialize(input);
+         this.allianceMapWinnerScore = input.readInt();
          if(this.allianceMapWinnerScore < 0)
          {
             throw new Error("Forbidden value (" + this.allianceMapWinnerScore + ") on element of KohUpdateMessage.allianceMapWinnerScore.");
          }
          else
          {
-            this.allianceMapMyAllianceScore = param1.readInt();
+            this.allianceMapMyAllianceScore = input.readInt();
             if(this.allianceMapMyAllianceScore < 0)
             {
                throw new Error("Forbidden value (" + this.allianceMapMyAllianceScore + ") on element of KohUpdateMessage.allianceMapMyAllianceScore.");
             }
             else
             {
-               this.nextTickTime = param1.readDouble();
+               this.nextTickTime = input.readDouble();
                if(this.nextTickTime < 0)
                {
                   throw new Error("Forbidden value (" + this.nextTickTime + ") on element of KohUpdateMessage.nextTickTime.");

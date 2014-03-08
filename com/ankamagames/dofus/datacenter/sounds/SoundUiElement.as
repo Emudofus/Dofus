@@ -22,8 +22,8 @@ package com.ankamagames.dofus.datacenter.sounds
       public var volume:uint;
       
       public function get hook() : String {
-         var _loc1_:SoundUiHook = SoundUiHook.getSoundUiHookById(this.id);
-         return _loc1_?_loc1_.name:null;
+         var h:SoundUiHook = SoundUiHook.getSoundUiHookById(this.id);
+         return h?h.name:null;
       }
    }
 }

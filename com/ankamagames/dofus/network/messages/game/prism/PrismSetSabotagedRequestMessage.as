@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 6468;
       }
       
-      public function initPrismSetSabotagedRequestMessage(param1:uint=0) : PrismSetSabotagedRequestMessage {
-         this.subAreaId = param1;
+      public function initPrismSetSabotagedRequestMessage(subAreaId:uint=0) : PrismSetSabotagedRequestMessage {
+         this.subAreaId = subAreaId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.prism
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PrismSetSabotagedRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismSetSabotagedRequestMessage(output);
       }
       
-      public function serializeAs_PrismSetSabotagedRequestMessage(param1:IDataOutput) : void {
+      public function serializeAs_PrismSetSabotagedRequestMessage(output:IDataOutput) : void {
          if(this.subAreaId < 0)
          {
             throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
          }
          else
          {
-            param1.writeShort(this.subAreaId);
+            output.writeShort(this.subAreaId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PrismSetSabotagedRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismSetSabotagedRequestMessage(input);
       }
       
-      public function deserializeAs_PrismSetSabotagedRequestMessage(param1:IDataInput) : void {
-         this.subAreaId = param1.readShort();
+      public function deserializeAs_PrismSetSabotagedRequestMessage(input:IDataInput) : void {
+         this.subAreaId = input.readShort();
          if(this.subAreaId < 0)
          {
             throw new Error("Forbidden value (" + this.subAreaId + ") on element of PrismSetSabotagedRequestMessage.subAreaId.");

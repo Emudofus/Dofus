@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 5653;
       }
       
-      public function initJobCrafterDirectoryRemoveMessage(param1:uint=0, param2:uint=0) : JobCrafterDirectoryRemoveMessage {
-         this.jobId = param1;
-         this.playerId = param2;
+      public function initJobCrafterDirectoryRemoveMessage(jobId:uint=0, playerId:uint=0) : JobCrafterDirectoryRemoveMessage {
+         this.jobId = jobId;
+         this.playerId = playerId;
          this._isInitialized = true;
          return this;
       }
@@ -42,53 +42,53 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_JobCrafterDirectoryRemoveMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_JobCrafterDirectoryRemoveMessage(output);
       }
       
-      public function serializeAs_JobCrafterDirectoryRemoveMessage(param1:IDataOutput) : void {
+      public function serializeAs_JobCrafterDirectoryRemoveMessage(output:IDataOutput) : void {
          if(this.jobId < 0)
          {
             throw new Error("Forbidden value (" + this.jobId + ") on element jobId.");
          }
          else
          {
-            param1.writeByte(this.jobId);
+            output.writeByte(this.jobId);
             if(this.playerId < 0)
             {
                throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
             }
             else
             {
-               param1.writeInt(this.playerId);
+               output.writeInt(this.playerId);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_JobCrafterDirectoryRemoveMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_JobCrafterDirectoryRemoveMessage(input);
       }
       
-      public function deserializeAs_JobCrafterDirectoryRemoveMessage(param1:IDataInput) : void {
-         this.jobId = param1.readByte();
+      public function deserializeAs_JobCrafterDirectoryRemoveMessage(input:IDataInput) : void {
+         this.jobId = input.readByte();
          if(this.jobId < 0)
          {
             throw new Error("Forbidden value (" + this.jobId + ") on element of JobCrafterDirectoryRemoveMessage.jobId.");
          }
          else
          {
-            this.playerId = param1.readInt();
+            this.playerId = input.readInt();
             if(this.playerId < 0)
             {
                throw new Error("Forbidden value (" + this.playerId + ") on element of JobCrafterDirectoryRemoveMessage.playerId.");

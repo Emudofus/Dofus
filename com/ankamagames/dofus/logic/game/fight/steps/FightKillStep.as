@@ -7,10 +7,10 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightKillStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightKillStep(param1:int, param2:int) {
+      public function FightKillStep(fighterId:int, killerId:int) {
          super();
-         this._killerId = param2;
-         this._fighterId = param1;
+         this._killerId = killerId;
+         this._fighterId = fighterId;
       }
       
       private var _killerId:int;

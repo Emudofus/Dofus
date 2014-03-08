@@ -23,9 +23,9 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 383;
       }
       
-      public function initGameRolePlayNpcWithQuestInformations(param1:int=0, param2:EntityLook=null, param3:EntityDispositionInformations=null, param4:uint=0, param5:Boolean=false, param6:uint=0, param7:GameRolePlayNpcQuestFlag=null) : GameRolePlayNpcWithQuestInformations {
-         super.initGameRolePlayNpcInformations(param1,param2,param3,param4,param5,param6);
-         this.questFlag = param7;
+      public function initGameRolePlayNpcWithQuestInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, npcId:uint=0, sex:Boolean=false, specialArtworkId:uint=0, questFlag:GameRolePlayNpcQuestFlag=null) : GameRolePlayNpcWithQuestInformations {
+         super.initGameRolePlayNpcInformations(contextualId,look,disposition,npcId,sex,specialArtworkId);
+         this.questFlag = questFlag;
          return this;
       }
       
@@ -34,23 +34,23 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.questFlag = new GameRolePlayNpcQuestFlag();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameRolePlayNpcWithQuestInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayNpcWithQuestInformations(output);
       }
       
-      public function serializeAs_GameRolePlayNpcWithQuestInformations(param1:IDataOutput) : void {
-         super.serializeAs_GameRolePlayNpcInformations(param1);
-         this.questFlag.serializeAs_GameRolePlayNpcQuestFlag(param1);
+      public function serializeAs_GameRolePlayNpcWithQuestInformations(output:IDataOutput) : void {
+         super.serializeAs_GameRolePlayNpcInformations(output);
+         this.questFlag.serializeAs_GameRolePlayNpcQuestFlag(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameRolePlayNpcWithQuestInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayNpcWithQuestInformations(input);
       }
       
-      public function deserializeAs_GameRolePlayNpcWithQuestInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_GameRolePlayNpcWithQuestInformations(input:IDataInput) : void {
+         super.deserialize(input);
          this.questFlag = new GameRolePlayNpcQuestFlag();
-         this.questFlag.deserialize(param1);
+         this.questFlag.deserialize(input);
       }
    }
 }

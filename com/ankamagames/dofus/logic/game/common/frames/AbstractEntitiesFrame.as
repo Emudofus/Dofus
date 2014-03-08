@@ -7,7 +7,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import flash.utils.Dictionary;
    import com.ankamagames.tiphon.types.IAnimationModifier;
    import com.ankamagames.tiphon.types.ISkinModifier;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
    import com.ankamagames.dofus.internalDatacenter.world.WorldPointWrapper;
    import com.ankamagames.jerakine.types.enums.Priority;
@@ -20,6 +19,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.jerakine.utils.errors.AbstractMethodCallError;
    import com.ankamagames.atouin.Atouin;
+   import __AS3__.vec.*;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    import com.ankamagames.dofus.network.types.game.look.EntityLook;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayHumanoidInformations;
@@ -103,16 +103,16 @@ package com.ankamagames.dofus.logic.game.common.frames
          return Priority.NORMAL;
       }
       
-      public function set untargetableEntities(param1:Boolean) : void {
-         var _loc2_:GameContextActorInformations = null;
-         var _loc3_:AnimatedCharacter = null;
-         this._untargetableEntities = param1;
-         for each (_loc2_ in this._entities)
+      public function set untargetableEntities(enabled:Boolean) : void {
+         var infos:GameContextActorInformations = null;
+         var entity:AnimatedCharacter = null;
+         this._untargetableEntities = enabled;
+         for each (infos in this._entities)
          {
-            _loc3_ = DofusEntities.getEntity(_loc2_.contextualId) as AnimatedCharacter;
-            if(_loc3_)
+            entity = DofusEntities.getEntity(infos.contextualId) as AnimatedCharacter;
+            if(entity)
             {
-               _loc3_.mouseEnabled = !param1;
+               entity.mouseEnabled = !enabled;
             }
          }
       }
@@ -136,7 +136,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
+      public function process(msg:Message) : Boolean {
          throw new AbstractMethodCallError();
       }
       
@@ -147,121 +147,121 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function getEntityInfos(param1:int) : GameContextActorInformations {
+      public function getEntityInfos(entityId:int) : GameContextActorInformations {
          if(!this._entities)
          {
             return null;
          }
-         return this._entities[param1];
+         return this._entities[entityId];
       }
       
       public function getEntitiesIdsList() : Vector.<int> {
-         var _loc2_:GameContextActorInformations = null;
-         var _loc1_:Vector.<int> = new Vector.<int>(0,false);
-         for each (_loc2_ in this._entities)
+         var gcai:GameContextActorInformations = null;
+         var entitiesList:Vector.<int> = new Vector.<int>(0,false);
+         for each (gcai in this._entities)
          {
-            _loc1_.push(_loc2_.contextualId);
+            entitiesList.push(gcai.contextualId);
          }
-         return _loc1_;
+         return entitiesList;
       }
       
       public function getEntitiesDictionnary() : Dictionary {
          return this._entities;
       }
       
-      public function registerActor(param1:GameContextActorInformations) : void {
+      public function registerActor(infos:GameContextActorInformations) : void {
          if(this._entities == null)
          {
             this._entities = new Dictionary();
          }
-         this._entities[param1.contextualId] = param1;
+         this._entities[infos.contextualId] = infos;
       }
       
-      public function addOrUpdateActor(param1:GameContextActorInformations, param2:IAnimationModifier=null) : AnimatedCharacter {
-         var _loc5_:TiphonEntityLook = null;
-         var _loc6_:TiphonEntityLook = null;
-         var _loc7_:EntityLook = null;
-         var _loc8_:EntityLook = null;
-         var _loc9_:GameRolePlayHumanoidInformations = null;
-         var _loc3_:AnimatedCharacter = DofusEntities.getEntity(param1.contextualId) as AnimatedCharacter;
-         var _loc4_:* = true;
-         _loc5_ = EntitiesLooksManager.getInstance().getLookFromContextInfos(param1);
-         if(param1.contextualId == PlayedCharacterManager.getInstance().id)
+      public function addOrUpdateActor(infos:GameContextActorInformations, animationModifier:IAnimationModifier=null) : AnimatedCharacter {
+         var newLook:TiphonEntityLook = null;
+         var tel:TiphonEntityLook = null;
+         var entitylookNew:EntityLook = null;
+         var entitylook:EntityLook = null;
+         var humanoid:GameRolePlayHumanoidInformations = null;
+         var characterEntity:AnimatedCharacter = DofusEntities.getEntity(infos.contextualId) as AnimatedCharacter;
+         var justCreated:Boolean = true;
+         newLook = EntitiesLooksManager.getInstance().getLookFromContextInfos(infos);
+         if(infos.contextualId == PlayedCharacterManager.getInstance().id)
          {
             if((this._creaturesMode) || (this._creaturesFightMode))
             {
-               _loc7_ = EntityLookAdapter.toNetwork(_loc5_);
-               if(PlayedCharacterManager.getInstance().infos.entityLook.bonesId != _loc7_.bonesId)
+               entitylookNew = EntityLookAdapter.toNetwork(newLook);
+               if(PlayedCharacterManager.getInstance().infos.entityLook.bonesId != entitylookNew.bonesId)
                {
                   PlayedCharacterManager.getInstance().realEntityLook = PlayedCharacterManager.getInstance().infos.entityLook;
                }
             }
          }
-         if(_loc3_ == null)
+         if(characterEntity == null)
          {
-            _loc3_ = new AnimatedCharacter(param1.contextualId,_loc5_);
-            _loc3_.addEventListener(TiphonEvent.PLAYANIM_EVENT,this.onPlayAnim);
+            characterEntity = new AnimatedCharacter(infos.contextualId,newLook);
+            characterEntity.addEventListener(TiphonEvent.PLAYANIM_EVENT,this.onPlayAnim);
             if(OptionManager.getOptionManager("atouin").useLowDefSkin)
             {
-               _loc3_.setAlternativeSkinIndex(0,true);
+               characterEntity.setAlternativeSkinIndex(0,true);
             }
-            if(_loc5_.getBone() == 1)
+            if(newLook.getBone() == 1)
             {
-               if(param2)
+               if(animationModifier)
                {
-                  _loc3_.addAnimationModifier(param2);
+                  characterEntity.addAnimationModifier(animationModifier);
                }
                else
                {
-                  _loc3_.addAnimationModifier(this._customAnimModifier);
+                  characterEntity.addAnimationModifier(this._customAnimModifier);
                }
             }
-            _loc3_.skinModifier = this._skinModifier;
-            if(param1 is GameFightMonsterInformations)
+            characterEntity.skinModifier = this._skinModifier;
+            if(infos is GameFightMonsterInformations)
             {
-               _loc3_.speedAdjust = Monster.getMonsterById(GameFightMonsterInformations(param1).creatureGenericId).speedAdjust;
+               characterEntity.speedAdjust = Monster.getMonsterById(GameFightMonsterInformations(infos).creatureGenericId).speedAdjust;
             }
-            if(param1.contextualId == PlayedCharacterManager.getInstance().id)
+            if(infos.contextualId == PlayedCharacterManager.getInstance().id)
             {
-               _loc8_ = EntityLookAdapter.toNetwork(_loc5_);
-               if(!EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().infos.entityLook).equals(_loc5_))
+               entitylook = EntityLookAdapter.toNetwork(newLook);
+               if(!EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().infos.entityLook).equals(newLook))
                {
-                  PlayedCharacterManager.getInstance().infos.entityLook = _loc8_;
-                  KernelEventsManager.getInstance().processCallback(HookList.PlayedCharacterLookChange,_loc5_);
+                  PlayedCharacterManager.getInstance().infos.entityLook = entitylook;
+                  KernelEventsManager.getInstance().processCallback(HookList.PlayedCharacterLookChange,newLook);
                }
             }
          }
          else
          {
-            _loc4_ = false;
+            justCreated = false;
             if(this._humanNumber > 0)
             {
                this._humanNumber--;
             }
-            if((this._creaturesMode) && param1 is GameRolePlayMerchantInformations)
+            if((this._creaturesMode) && (infos is GameRolePlayMerchantInformations))
             {
-               _loc3_.look.updateFrom(_loc5_);
+               characterEntity.look.updateFrom(newLook);
             }
             else
             {
-               this.updateActorLook(param1.contextualId,param1.look,true);
+               this.updateActorLook(infos.contextualId,infos.look,true);
             }
          }
-         if(param1 is GameRolePlayHumanoidInformations)
+         if(infos is GameRolePlayHumanoidInformations)
          {
-            _loc9_ = param1 as GameRolePlayHumanoidInformations;
-            if(param1.contextualId == PlayedCharacterManager.getInstance().id)
+            humanoid = infos as GameRolePlayHumanoidInformations;
+            if(infos.contextualId == PlayedCharacterManager.getInstance().id)
             {
-               PlayedCharacterManager.getInstance().restrictions = _loc9_.humanoidInfo.restrictions;
+               PlayedCharacterManager.getInstance().restrictions = humanoid.humanoidInfo.restrictions;
             }
          }
-         if((!this._creaturesFightMode && !this._creaturesMode) && (_loc3_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER)) && (_loc3_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER).length))
+         if((!this._creaturesFightMode && !this._creaturesMode) && (characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER)) && (characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER).length))
          {
-            _loc3_.setSubEntityBehaviour(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,new RiderBehavior());
+            characterEntity.setSubEntityBehaviour(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,new RiderBehavior());
          }
-         if(_loc3_.id == PlayedCharacterManager.getInstance().id)
+         if(characterEntity.id == PlayedCharacterManager.getInstance().id)
          {
-            if((_loc3_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER)) && (_loc3_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER).length))
+            if((characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER)) && (characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER).length))
             {
                this._playerIsOnRide = true;
             }
@@ -270,186 +270,186 @@ package com.ankamagames.dofus.logic.game.common.frames
                this._playerIsOnRide = false;
             }
          }
-         if((!this._creaturesFightMode && !this._creaturesMode) && (_loc3_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET)) && (_loc3_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET).length))
+         if((!this._creaturesFightMode && !this._creaturesMode) && (characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET)) && (characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET).length))
          {
-            _loc3_.setSubEntityBehaviour(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET,new AnimStatiqueSubEntityBehavior());
+            characterEntity.setSubEntityBehaviour(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET,new AnimStatiqueSubEntityBehavior());
          }
-         if(param1.disposition.cellId != -1)
+         if(infos.disposition.cellId != -1)
          {
-            _loc3_.position = MapPoint.fromCellId(param1.disposition.cellId);
+            characterEntity.position = MapPoint.fromCellId(infos.disposition.cellId);
          }
-         if(_loc4_)
+         if(justCreated)
          {
-            _loc3_.setDirection(param1.disposition.direction);
-            _loc3_.display(PlacementStrataEnums.STRATA_PLAYER);
+            characterEntity.setDirection(infos.disposition.direction);
+            characterEntity.display(PlacementStrataEnums.STRATA_PLAYER);
          }
-         this.registerActor(param1);
-         if(PlayedCharacterManager.getInstance().id == _loc3_.id)
+         this.registerActor(infos);
+         if(PlayedCharacterManager.getInstance().id == characterEntity.id)
          {
-            SoundManager.getInstance().manager.setSoundSourcePosition(_loc3_.id,new Point(_loc3_.x,_loc3_.y));
+            SoundManager.getInstance().manager.setSoundSourcePosition(characterEntity.id,new Point(characterEntity.x,characterEntity.y));
          }
-         _loc3_.visibleAura = OptionManager.getOptionManager("tiphon").auraMode >= OptionEnum.AURA_ALWAYS;
-         _loc3_.mouseEnabled = !this.untargetableEntities;
-         return _loc3_;
+         characterEntity.visibleAura = OptionManager.getOptionManager("tiphon").auraMode >= OptionEnum.AURA_ALWAYS;
+         characterEntity.mouseEnabled = !this.untargetableEntities;
+         return characterEntity;
       }
       
-      protected function updateActorLook(param1:int, param2:EntityLook, param3:Boolean=false) : AnimatedCharacter {
-         var _loc5_:TiphonEntityLook = null;
-         var _loc6_:GameContextActorInformations = null;
-         var _loc7_:* = 0;
-         var _loc8_:SerialSequencer = null;
-         var _loc9_:AddGfxEntityStep = null;
-         if(this._entities[param1])
+      protected function updateActorLook(actorId:int, newLook:EntityLook, smoke:Boolean=false) : AnimatedCharacter {
+         var tel:TiphonEntityLook = null;
+         var entity:GameContextActorInformations = null;
+         var oldBone:* = 0;
+         var sequencer:SerialSequencer = null;
+         var addGfxStep:AddGfxEntityStep = null;
+         if(this._entities[actorId])
          {
-            _loc6_ = this._entities[param1] as GameContextActorInformations;
-            _loc7_ = _loc6_.look.bonesId;
-            _loc6_.look = param2;
-            if((param3) && !(param2.bonesId == _loc7_))
+            entity = this._entities[actorId] as GameContextActorInformations;
+            oldBone = entity.look.bonesId;
+            entity.look = newLook;
+            if((smoke) && (!(newLook.bonesId == oldBone)))
             {
-               _loc8_ = new SerialSequencer();
-               _loc9_ = new AddGfxEntityStep(1165,DofusEntities.getEntity(param1).position.cellId);
-               _loc8_.addStep(_loc9_);
-               _loc8_.start();
+               sequencer = new SerialSequencer();
+               addGfxStep = new AddGfxEntityStep(1165,DofusEntities.getEntity(actorId).position.cellId);
+               sequencer.addStep(addGfxStep);
+               sequencer.start();
             }
          }
          else
          {
-            _log.warn("Cannot update unknown actor look (" + param1 + ") in informations.");
+            _log.warn("Cannot update unknown actor look (" + actorId + ") in informations.");
          }
-         var _loc4_:AnimatedCharacter = DofusEntities.getEntity(param1) as AnimatedCharacter;
-         if(_loc4_)
+         var ac:AnimatedCharacter = DofusEntities.getEntity(actorId) as AnimatedCharacter;
+         if(ac)
          {
-            _loc4_.addEventListener(TiphonEvent.RENDER_FAILED,this.onUpdateEntityFail,false,0,false);
-            _loc4_.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onUpdateEntitySuccess,false,0,false);
-            if(param2.bonesId != 1)
+            ac.addEventListener(TiphonEvent.RENDER_FAILED,this.onUpdateEntityFail,false,0,false);
+            ac.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onUpdateEntitySuccess,false,0,false);
+            if(newLook.bonesId != 1)
             {
-               _loc4_.removeAnimationModifier(this._customAnimModifier);
+               ac.removeAnimationModifier(this._customAnimModifier);
             }
             else
             {
-               _loc4_.addAnimationModifier(this._customAnimModifier);
+               ac.addAnimationModifier(this._customAnimModifier);
             }
-            _loc5_ = EntitiesLooksManager.getInstance().getLookFromContextInfos(this._entities[param1]);
-            _loc4_.enableSubCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,!this._creaturesFightMode);
-            _loc4_.look.updateFrom(_loc5_);
+            tel = EntitiesLooksManager.getInstance().getLookFromContextInfos(this._entities[actorId]);
+            ac.enableSubCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,!this._creaturesFightMode);
+            ac.look.updateFrom(tel);
             if((this._creaturesMode) || (this._creaturesFightMode))
             {
-               _loc4_.setAnimation(AnimationEnum.ANIM_STATIQUE);
+               ac.setAnimation(AnimationEnum.ANIM_STATIQUE);
             }
             else
             {
-               _loc4_.setAnimation(_loc4_.getAnimation());
+               ac.setAnimation(ac.getAnimation());
             }
-            if((_loc4_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET)) && (_loc4_.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET).length))
+            if((ac.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET)) && (ac.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET).length))
             {
-               _loc4_.setSubEntityBehaviour(1,new AnimStatiqueSubEntityBehavior());
+               ac.setSubEntityBehaviour(1,new AnimStatiqueSubEntityBehavior());
             }
          }
          else
          {
-            _log.warn("Cannot update unknown actor look (" + param1 + ") in the game world.");
+            _log.warn("Cannot update unknown actor look (" + actorId + ") in the game world.");
          }
-         if(param1 == PlayedCharacterManager.getInstance().id && (_loc5_))
+         if((actorId == PlayedCharacterManager.getInstance().id) && (tel))
          {
             if((this._creaturesMode) || (this._creaturesFightMode))
             {
-               if(PlayedCharacterManager.getInstance().infos.entityLook.bonesId != param2.bonesId)
+               if(PlayedCharacterManager.getInstance().infos.entityLook.bonesId != newLook.bonesId)
                {
                   PlayedCharacterManager.getInstance().realEntityLook = PlayedCharacterManager.getInstance().infos.entityLook;
                }
             }
-            PlayedCharacterManager.getInstance().infos.entityLook = param2;
-            KernelEventsManager.getInstance().processCallback(HookList.PlayedCharacterLookChange,LookCleaner.clean(_loc5_));
+            PlayedCharacterManager.getInstance().infos.entityLook = newLook;
+            KernelEventsManager.getInstance().processCallback(HookList.PlayedCharacterLookChange,LookCleaner.clean(tel));
          }
-         return _loc4_;
+         return ac;
       }
       
-      protected function updateActorDisposition(param1:int, param2:EntityDispositionInformations) : void {
-         if(this._entities[param1])
+      protected function updateActorDisposition(actorId:int, newDisposition:EntityDispositionInformations) : void {
+         if(this._entities[actorId])
          {
-            (this._entities[param1] as GameContextActorInformations).disposition = param2;
+            (this._entities[actorId] as GameContextActorInformations).disposition = newDisposition;
          }
          else
          {
-            _log.warn("Cannot update unknown actor disposition (" + param1 + ") in informations.");
+            _log.warn("Cannot update unknown actor disposition (" + actorId + ") in informations.");
          }
-         var _loc3_:IEntity = DofusEntities.getEntity(param1);
-         if(_loc3_)
+         var actor:IEntity = DofusEntities.getEntity(actorId);
+         if(actor)
          {
-            if(_loc3_ is IMovable && param2.cellId >= 0)
+            if((actor is IMovable) && (newDisposition.cellId >= 0))
             {
-               if((_loc3_ is TiphonSprite) && ((_loc3_ as TiphonSprite).rootEntity) && !((_loc3_ as TiphonSprite).rootEntity == _loc3_))
+               if((actor is TiphonSprite) && ((actor as TiphonSprite).rootEntity) && (!((actor as TiphonSprite).rootEntity == actor)))
                {
-                  _log.debug("PAS DE SYNCHRO pour " + (_loc3_ as TiphonSprite).name + " car entité portée");
+                  _log.debug("PAS DE SYNCHRO pour " + (actor as TiphonSprite).name + " car entité portée");
                }
                else
                {
-                  IMovable(_loc3_).jump(MapPoint.fromCellId(param2.cellId));
+                  IMovable(actor).jump(MapPoint.fromCellId(newDisposition.cellId));
                }
             }
-            if(_loc3_ is IAnimated)
+            if(actor is IAnimated)
             {
-               IAnimated(_loc3_).setDirection(param2.direction);
+               IAnimated(actor).setDirection(newDisposition.direction);
             }
          }
          else
          {
-            _log.warn("Cannot update unknown actor disposition (" + param1 + ") in the game world.");
+            _log.warn("Cannot update unknown actor disposition (" + actorId + ") in the game world.");
          }
       }
       
-      protected function updateActorOrientation(param1:int, param2:uint) : void {
-         var _loc4_:* = false;
-         if(this._entities[param1])
+      protected function updateActorOrientation(actorId:int, newOrientation:uint) : void {
+         var displayAura:* = false;
+         if(this._entities[actorId])
          {
-            (this._entities[param1] as GameContextActorInformations).disposition.direction = param2;
+            (this._entities[actorId] as GameContextActorInformations).disposition.direction = newOrientation;
          }
          else
          {
-            _log.warn("Cannot update unknown actor orientation (" + param1 + ") in informations.");
+            _log.warn("Cannot update unknown actor orientation (" + actorId + ") in informations.");
          }
-         var _loc3_:AnimatedCharacter = DofusEntities.getEntity(param1) as AnimatedCharacter;
-         if(_loc3_)
+         var ac:AnimatedCharacter = DofusEntities.getEntity(actorId) as AnimatedCharacter;
+         if(ac)
          {
-            _loc4_ = false;
-            if((OptionManager.getOptionManager("tiphon").auraMode >= OptionEnum.AURA_ALWAYS) && (OptionManager.getOptionManager("tiphon").alwaysShowAuraOnFront) && param2 == DirectionsEnum.DOWN)
+            displayAura = false;
+            if((OptionManager.getOptionManager("tiphon").auraMode >= OptionEnum.AURA_ALWAYS) && (OptionManager.getOptionManager("tiphon").alwaysShowAuraOnFront) && (newOrientation == DirectionsEnum.DOWN))
             {
-               _loc4_ = true;
+               displayAura = true;
             }
-            _loc3_.visibleAura = _loc4_;
-            _loc3_.setDirection(param2);
+            ac.visibleAura = displayAura;
+            ac.setDirection(newOrientation);
          }
          else
          {
-            _log.warn("Cannot update unknown actor orientation (" + param1 + ") in the game world.");
+            _log.warn("Cannot update unknown actor orientation (" + actorId + ") in the game world.");
          }
       }
       
-      protected function hideActor(param1:int) : void {
-         var _loc2_:IDisplayable = DofusEntities.getEntity(param1) as IDisplayable;
-         if(_loc2_)
+      protected function hideActor(actorId:int) : void {
+         var disp:IDisplayable = DofusEntities.getEntity(actorId) as IDisplayable;
+         if(disp)
          {
-            _loc2_.remove();
+            disp.remove();
          }
          else
          {
-            _log.warn("Cannot remove an unknown actor (" + param1 + ").");
+            _log.warn("Cannot remove an unknown actor (" + actorId + ").");
          }
       }
       
-      protected function removeActor(param1:int) : void {
-         this.hideActor(param1);
-         var _loc2_:TiphonSprite = DofusEntities.getEntity(param1) as TiphonSprite;
-         if(_loc2_)
+      protected function removeActor(actorId:int) : void {
+         this.hideActor(actorId);
+         var tiphonSprite:TiphonSprite = DofusEntities.getEntity(actorId) as TiphonSprite;
+         if(tiphonSprite)
          {
-            _loc2_.destroy();
+            tiphonSprite.destroy();
          }
          this.updateCreaturesLimit();
          if(this._humanNumber > 0)
          {
             this._humanNumber--;
          }
-         delete this._entities[[param1]];
+         delete this._entities[[actorId]];
          if(this.switchPokemonMode())
          {
             _log.debug("switch pokemon/normal mode");
@@ -457,45 +457,45 @@ package com.ankamagames.dofus.logic.game.common.frames
       }
       
       protected function switchPokemonMode() : Boolean {
-         var _loc1_:SwitchCreatureModeAction = null;
-         if(this._creaturesLimit > -1 && !(this._creaturesMode == (!Kernel.getWorker().getFrame(FightEntitiesFrame) && this._creaturesLimit < 50 && this._humanNumber >= this._creaturesLimit)))
+         var action:SwitchCreatureModeAction = null;
+         if((this._creaturesLimit > -1) && (!(this._creaturesMode == (!Kernel.getWorker().getFrame(FightEntitiesFrame) && this._creaturesLimit < 50 && this._humanNumber >= this._creaturesLimit))))
          {
             _log.debug("human number: " + this._humanNumber + ", creature limit: " + this._creaturesLimit + " => " + this._creaturesMode);
-            _loc1_ = SwitchCreatureModeAction.create(!this._creaturesMode);
-            Kernel.getWorker().process(_loc1_);
+            action = SwitchCreatureModeAction.create(!this._creaturesMode);
+            Kernel.getWorker().process(action);
             return true;
          }
          return false;
       }
       
       protected function updateCreaturesLimit() : void {
-         var _loc1_:* = NaN;
+         var vingtpourcent:* = NaN;
          this._creaturesLimit = OptionManager.getOptionManager("tiphon").creaturesMode;
-         if((this._creaturesMode) && this._creaturesLimit > 0)
+         if((this._creaturesMode) && (this._creaturesLimit > 0))
          {
-            _loc1_ = this._creaturesLimit * 20 / 100;
-            this._creaturesLimit = Math.ceil(this._creaturesLimit - _loc1_);
+            vingtpourcent = this._creaturesLimit * 20 / 100;
+            this._creaturesLimit = Math.ceil(this._creaturesLimit - vingtpourcent);
          }
       }
       
-      public function onPlayAnim(param1:TiphonEvent) : void {
-         var _loc2_:Array = new Array();
-         var _loc3_:String = param1.params.substring(6,param1.params.length-1);
-         _loc2_ = _loc3_.split(",");
-         param1.sprite.setAnimation(_loc2_[int(_loc2_.length * Math.random())]);
+      public function onPlayAnim(e:TiphonEvent) : void {
+         var animsRandom:Array = new Array();
+         var tempStr:String = e.params.substring(6,e.params.length - 1);
+         animsRandom = tempStr.split(",");
+         e.sprite.setAnimation(animsRandom[int(animsRandom.length * Math.random())]);
       }
       
-      private function onAtouinOptionChange(param1:PropertyChangeEvent) : void {
-         var _loc2_:Array = null;
-         var _loc3_:* = undefined;
-         if(param1.propertyName == "useLowDefSkin")
+      private function onAtouinOptionChange(e:PropertyChangeEvent) : void {
+         var entities:Array = null;
+         var entitie:* = undefined;
+         if(e.propertyName == "useLowDefSkin")
          {
-            _loc2_ = EntitiesManager.getInstance().entities;
-            for each (_loc3_ in _loc2_)
+            entities = EntitiesManager.getInstance().entities;
+            for each (entitie in entities)
             {
-               if(_loc3_ is TiphonSprite)
+               if(entitie is TiphonSprite)
                {
-                  TiphonSprite(_loc3_).setAlternativeSkinIndex(param1.propertyValue?0:-1,true);
+                  TiphonSprite(entitie).setAlternativeSkinIndex(e.propertyValue?0:-1,true);
                }
             }
          }
@@ -505,28 +505,28 @@ package com.ankamagames.dofus.logic.game.common.frames
          return this._creaturesFightMode;
       }
       
-      private function onUpdateEntitySuccess(param1:TiphonEvent) : void {
-         param1.sprite.removeEventListener(TiphonEvent.RENDER_FAILED,this.onUpdateEntityFail);
-         param1.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onUpdateEntitySuccess);
+      private function onUpdateEntitySuccess(e:TiphonEvent) : void {
+         e.sprite.removeEventListener(TiphonEvent.RENDER_FAILED,this.onUpdateEntityFail);
+         e.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onUpdateEntitySuccess);
       }
       
-      private function onUpdateEntityFail(param1:TiphonEvent) : void {
-         param1.sprite.removeEventListener(TiphonEvent.RENDER_FAILED,this.onUpdateEntityFail);
-         param1.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onUpdateEntitySuccess);
-         TiphonSprite(param1.sprite).setAnimation("AnimStatique");
+      private function onUpdateEntityFail(e:TiphonEvent) : void {
+         e.sprite.removeEventListener(TiphonEvent.RENDER_FAILED,this.onUpdateEntityFail);
+         e.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onUpdateEntitySuccess);
+         TiphonSprite(e.sprite).setAnimation("AnimStatique");
       }
       
-      private function isIncarnation(param1:String) : Boolean {
-         var _loc3_:Incarnation = null;
-         var _loc5_:String = null;
-         var _loc6_:String = null;
-         var _loc2_:Array = Incarnation.getAllIncarnation();
-         var _loc4_:String = param1.slice(1,param1.indexOf("|"));
-         for each (_loc3_ in _loc2_)
+      private function isIncarnation(entity:String) : Boolean {
+         var incarnation:Incarnation = null;
+         var boneIdMale:String = null;
+         var boneIdFemale:String = null;
+         var incarnations:Array = Incarnation.getAllIncarnation();
+         var boneId:String = entity.slice(1,entity.indexOf("|"));
+         for each (incarnation in incarnations)
          {
-            _loc5_ = _loc3_.lookMale.slice(1,_loc3_.lookMale.indexOf("|"));
-            _loc6_ = _loc3_.lookFemale.slice(1,_loc3_.lookFemale.indexOf("|"));
-            if(_loc4_ == _loc5_ || _loc4_ == _loc6_)
+            boneIdMale = incarnation.lookMale.slice(1,incarnation.lookMale.indexOf("|"));
+            boneIdFemale = incarnation.lookFemale.slice(1,incarnation.lookFemale.indexOf("|"));
+            if((boneId == boneIdMale) || (boneId == boneIdFemale))
             {
                return true;
             }
@@ -534,10 +534,10 @@ package com.ankamagames.dofus.logic.game.common.frames
          return false;
       }
       
-      protected function onPropertyChanged(param1:PropertyChangeEvent) : void {
-         if(param1.propertyName == "mapCoordinates")
+      protected function onPropertyChanged(e:PropertyChangeEvent) : void {
+         if(e.propertyName == "mapCoordinates")
          {
-            KernelEventsManager.getInstance().processCallback(HookList.MapComplementaryInformationsData,this._worldPoint,this._currentSubAreaId,param1.propertyValue);
+            KernelEventsManager.getInstance().processCallback(HookList.MapComplementaryInformationsData,this._worldPoint,this._currentSubAreaId,e.propertyValue);
          }
       }
    }

@@ -2,7 +2,7 @@ package com.ankamagames.dofus.network.messages.connection.search
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,8 +29,8 @@ package com.ankamagames.dofus.network.messages.connection.search
          return 6142;
       }
       
-      public function initAcquaintanceServerListMessage(param1:Vector.<int>=null) : AcquaintanceServerListMessage {
-         this.servers = param1;
+      public function initAcquaintanceServerListMessage(servers:Vector.<int>=null) : AcquaintanceServerListMessage {
+         this.servers = servers;
          this._isInitialized = true;
          return this;
       }
@@ -40,43 +40,43 @@ package com.ankamagames.dofus.network.messages.connection.search
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AcquaintanceServerListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AcquaintanceServerListMessage(output);
       }
       
-      public function serializeAs_AcquaintanceServerListMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.servers.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.servers.length)
+      public function serializeAs_AcquaintanceServerListMessage(output:IDataOutput) : void {
+         output.writeShort(this.servers.length);
+         var _i1:uint = 0;
+         while(_i1 < this.servers.length)
          {
-            param1.writeShort(this.servers[_loc2_]);
-            _loc2_++;
+            output.writeShort(this.servers[_i1]);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AcquaintanceServerListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AcquaintanceServerListMessage(input);
       }
       
-      public function deserializeAs_AcquaintanceServerListMessage(param1:IDataInput) : void {
-         var _loc4_:* = 0;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_AcquaintanceServerListMessage(input:IDataInput) : void {
+         var _val1:* = 0;
+         var _serversLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _serversLen)
          {
-            _loc4_ = param1.readShort();
-            this.servers.push(_loc4_);
-            _loc3_++;
+            _val1 = input.readShort();
+            this.servers.push(_val1);
+            _i1++;
          }
       }
    }

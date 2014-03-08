@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightShieldPointsVariationStep extends AbstractStatContextualStep implements IFightStep
    {
       
-      public function FightShieldPointsVariationStep(param1:int, param2:int, param3:int) {
-         super(COLOR,param2.toString(),param1,BLOCKING);
-         this._intValue = param2;
-         this._actionId = param3;
+      public function FightShieldPointsVariationStep(entityId:int, value:int, actionId:int) {
+         super(COLOR,value.toString(),entityId,BLOCKING);
+         this._intValue = value;
+         this._actionId = actionId;
          _virtual = true;
       }
       
@@ -33,9 +33,9 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc2_:* = 0;
-         var _loc1_:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_targetId) as GameFightFighterInformations;
-         if(!_loc1_)
+         var permanentLifeLoss:* = 0;
+         var fighterInfos:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_targetId) as GameFightFighterInformations;
+         if(!fighterInfos)
          {
             super.executeCallbacks();
             return;

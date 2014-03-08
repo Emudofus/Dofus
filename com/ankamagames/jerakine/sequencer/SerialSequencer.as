@@ -12,14 +12,14 @@ package com.ankamagames.jerakine.sequencer
    public class SerialSequencer extends EventDispatcher implements ISequencer, IEventDispatcher
    {
       
-      public function SerialSequencer(param1:String="SerialSequencerDefault") {
+      public function SerialSequencer(type:String="SerialSequencerDefault") {
          this._aStep = new Array();
          super();
-         if(!SEQUENCERS[param1])
+         if(!SEQUENCERS[type])
          {
-            SEQUENCERS[param1] = new Dictionary(true);
+            SEQUENCERS[type] = new Dictionary(true);
          }
-         SEQUENCERS[param1][this] = true;
+         SEQUENCERS[type][this] = true;
       }
       
       private static const _log:Logger = Log.getLogger(getQualifiedClassName(SerialSequencer));
@@ -28,13 +28,13 @@ package com.ankamagames.jerakine.sequencer
       
       private static var SEQUENCERS:Array = [];
       
-      public static function clearByType(param1:String) : void {
-         var _loc2_:Object = null;
-         for (_loc2_ in SEQUENCERS[param1])
+      public static function clearByType(type:String) : void {
+         var seq:Object = null;
+         for (seq in SEQUENCERS[type])
          {
-            SerialSequencer(_loc2_).clear();
+            SerialSequencer(seq).clear();
          }
-         delete SEQUENCERS[[param1]];
+         delete SEQUENCERS[[type]];
       }
       
       private var _aStep:Array;
@@ -73,8 +73,8 @@ package com.ankamagames.jerakine.sequencer
          return this._aStep;
       }
       
-      public function set defaultStepTimeout(param1:int) : void {
-         this._defaultStepTimeout = param1;
+      public function set defaultStepTimeout(v:int) : void {
+         this._defaultStepTimeout = v;
       }
       
       public function get defaultStepTimeout() : int {
@@ -98,10 +98,10 @@ package com.ankamagames.jerakine.sequencer
          }
       }
       
-      public function add(param1:ISequencable) : void {
-         if(param1)
+      public function add(item:ISequencable) : void {
+         if(item)
          {
-            this.addStep(param1);
+            this.addStep(item);
          }
          else
          {
@@ -109,8 +109,8 @@ package com.ankamagames.jerakine.sequencer
          }
       }
       
-      public function addStep(param1:ISequencable) : void {
-         this._aStep.push(param1);
+      public function addStep(item:ISequencable) : void {
+         this._aStep.push(item);
       }
       
       public function start() : void {
@@ -129,32 +129,32 @@ package com.ankamagames.jerakine.sequencer
       }
       
       public function clear() : void {
-         var _loc1_:ISequencable = null;
+         var step:ISequencable = null;
          this._lastStep = null;
          if(this._currentStep)
          {
             this._currentStep.clear();
             this._currentStep = null;
          }
-         for each (_loc1_ in this._aStep)
+         for each (step in this._aStep)
          {
-            if(_loc1_)
+            if(step)
             {
-               _loc1_.clear();
+               step.clear();
             }
          }
          this._aStep = new Array();
       }
       
       override public function toString() : String {
-         var _loc1_:* = "";
-         var _loc2_:uint = 0;
-         while(_loc2_ < this._aStep.length)
+         var str:String = "";
+         var i:uint = 0;
+         while(i < this._aStep.length)
          {
-            _loc1_ = _loc1_ + (this._aStep[_loc2_].toString() + "\n");
-            _loc2_++;
+            str = str + (this._aStep[i].toString() + "\n");
+            i++;
          }
-         return _loc1_;
+         return str;
       }
       
       private function execute() : void {
@@ -173,7 +173,7 @@ package com.ankamagames.jerakine.sequencer
                this._activeSubSequenceCount++;
                ISubSequenceSequencable(this._currentStep).addEventListener(SequencerEvent.SEQUENCE_END,this.onSubSequenceEnd);
             }
-            if(!(this._defaultStepTimeout == int.MIN_VALUE) && (this._currentStep.hasDefaultTimeout))
+            if((!(this._defaultStepTimeout == int.MIN_VALUE)) && (this._currentStep.hasDefaultTimeout))
             {
                this._currentStep.timeout = this._defaultStepTimeout;
             }
@@ -195,11 +195,11 @@ package com.ankamagames.jerakine.sequencer
          }
       }
       
-      public function stepFinished(param1:ISequencable, param2:Boolean=false) : void {
-         param1.removeListener(this);
+      public function stepFinished(step:ISequencable, withTimout:Boolean=false) : void {
+         step.removeListener(this);
          if(this._running)
          {
-            if(param2)
+            if(withTimout)
             {
                dispatchEvent(new SequencerEvent(SequencerEvent.SEQUENCE_TIMEOUT,this));
             }
@@ -233,7 +233,7 @@ package com.ankamagames.jerakine.sequencer
          }
       }
       
-      private function onSubSequenceEnd(param1:SequencerEvent) : void {
+      private function onSubSequenceEnd(e:SequencerEvent) : void {
          this._activeSubSequenceCount--;
          if(!this._activeSubSequenceCount)
          {

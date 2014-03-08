@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.bid
          super();
       }
       
-      public static function create(param1:String) : BidHouseStringSearchAction {
-         var _loc2_:BidHouseStringSearchAction = new BidHouseStringSearchAction();
-         _loc2_.searchString = param1;
-         return _loc2_;
+      public static function create(pSearchString:String) : BidHouseStringSearchAction {
+         var a:BidHouseStringSearchAction = new BidHouseStringSearchAction();
+         a.searchString = pSearchString;
+         return a;
       }
       
       public var searchString:String;

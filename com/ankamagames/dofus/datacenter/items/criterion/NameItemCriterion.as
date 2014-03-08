@@ -7,53 +7,53 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class NameItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function NameItemCriterion(param1:String) {
-         super(param1);
+      public function NameItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get text() : String {
-         var _loc1_:String = I18n.getUiText("ui.common.name");
-         return _loc1_ + " " + this.getReadableOperator();
+         var readableCriterionRef:String = I18n.getUiText("ui.common.name");
+         return readableCriterionRef + " " + this.getReadableOperator();
       }
       
       override public function get isRespected() : Boolean {
-         var _loc1_:String = PlayedCharacterManager.getInstance().infos.name;
-         var _loc2_:* = false;
-         var _loc3_:String = _criterionValue.toString();
+         var name:String = PlayedCharacterManager.getInstance().infos.name;
+         var respected:Boolean = false;
+         var criterionValue:String = _criterionValue.toString();
          switch(_operator.text)
          {
             case "=":
-               _loc2_ = _loc1_ == _loc3_;
+               respected = name == criterionValue;
                break;
             case "!":
-               _loc2_ = !(_loc1_ == _loc3_);
+               respected = !(name == criterionValue);
                break;
             case "~":
-               _loc2_ = _loc1_.toLowerCase() == _loc3_.toLowerCase();
+               respected = name.toLowerCase() == criterionValue.toLowerCase();
                break;
             case "S":
-               _loc2_ = _loc1_.toLowerCase().indexOf(_loc3_.toLowerCase()) == 0;
+               respected = name.toLowerCase().indexOf(criterionValue.toLowerCase()) == 0;
                break;
             case "s":
-               _loc2_ = _loc1_.indexOf(_loc3_) == 0;
+               respected = name.indexOf(criterionValue) == 0;
                break;
             case "E":
-               _loc2_ = _loc1_.toLowerCase().indexOf(_loc3_.toLowerCase()) == _loc1_.length - _loc3_.length;
+               respected = name.toLowerCase().indexOf(criterionValue.toLowerCase()) == name.length - criterionValue.length;
                break;
             case "e":
-               _loc2_ = _loc1_.indexOf(_loc3_) == _loc1_.length - _loc3_.length;
+               respected = name.indexOf(criterionValue) == name.length - criterionValue.length;
                break;
             case "v":
                break;
             case "i":
                break;
          }
-         return _loc2_;
+         return respected;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:NameItemCriterion = new NameItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:NameItemCriterion = new NameItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {
@@ -61,33 +61,33 @@ package com.ankamagames.dofus.datacenter.items.criterion
       }
       
       private function getReadableOperator() : String {
-         var _loc1_:* = "";
+         var text:String = "";
          _log.debug("operator : " + _operator);
          switch(_operator.text)
          {
             case "!":
             case "=":
-               _loc1_ = _operator.text + " " + _criterionValueText;
+               text = _operator.text + " " + _criterionValueText;
                break;
             case "~":
-               _loc1_ = "= " + _criterionValueText;
+               text = "= " + _criterionValueText;
                break;
             case "S":
             case "s":
-               _loc1_ = I18n.getUiText("ui.criterion.startWith",[_criterionValueText]);
+               text = I18n.getUiText("ui.criterion.startWith",[_criterionValueText]);
                break;
             case "E":
             case "e":
-               _loc1_ = I18n.getUiText("ui.criterion.endWith",[_criterionValueText]);
+               text = I18n.getUiText("ui.criterion.endWith",[_criterionValueText]);
                break;
             case "v":
-               _loc1_ = I18n.getUiText("ui.criterion.valid");
+               text = I18n.getUiText("ui.criterion.valid");
                break;
             case "i":
-               _loc1_ = I18n.getUiText("ui.criterion.invalid");
+               text = I18n.getUiText("ui.criterion.invalid");
                break;
          }
-         return _loc1_;
+         return text;
       }
    }
 }

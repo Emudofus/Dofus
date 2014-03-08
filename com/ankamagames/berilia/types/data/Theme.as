@@ -3,12 +3,12 @@ package com.ankamagames.berilia.types.data
    public class Theme extends Object
    {
       
-      public function Theme(param1:String, param2:String, param3:String="", param4:String="") {
+      public function Theme(fileName:String, name:String, description:String="", previewUri:String="") {
          super();
-         this.name = param2;
-         this.description = param3;
-         this.previewUri = param4;
-         this.fileName = param1;
+         this.name = name;
+         this.description = description;
+         this.previewUri = previewUri;
+         this.fileName = fileName;
       }
       
       public var name:String;

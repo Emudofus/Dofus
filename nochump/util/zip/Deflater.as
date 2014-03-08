@@ -24,19 +24,19 @@ package nochump.util.zip
          this.totalOut = this.totalIn = 0;
       }
       
-      public function setInput(param1:ByteArray) : void {
-         this.buf.writeBytes(param1);
+      public function setInput(input:ByteArray) : void {
+         this.buf.writeBytes(input);
          this.totalIn = this.buf.length;
       }
       
-      public function deflate(param1:ByteArray) : uint {
+      public function deflate(output:ByteArray) : uint {
          if(!this.compressed)
          {
             this.buf.compress();
             this.compressed = true;
          }
-         param1.writeBytes(this.buf,2,this.buf.length - 6);
-         this.totalOut = param1.length;
+         output.writeBytes(this.buf,2,this.buf.length - 6);
+         this.totalOut = output.length;
          return 0;
       }
       

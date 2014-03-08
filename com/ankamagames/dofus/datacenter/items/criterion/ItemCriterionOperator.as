@@ -5,9 +5,9 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class ItemCriterionOperator extends Object implements IDataCenter
    {
       
-      public function ItemCriterionOperator(param1:String) {
+      public function ItemCriterionOperator(pStringOperator:String) {
          super();
-         this._operator = param1;
+         this._operator = pStringOperator;
       }
       
       public static const SUPERIOR:String = ">";
@@ -26,29 +26,29 @@ package com.ankamagames.dofus.datacenter.items.criterion
          return this._operator;
       }
       
-      public function compare(param1:int, param2:int) : Boolean {
+      public function compare(pLeftMember:int, pRightMember:int) : Boolean {
          switch(this._operator)
          {
             case SUPERIOR:
-               if(param1 > param2)
+               if(pLeftMember > pRightMember)
                {
                   return true;
                }
                break;
             case INFERIOR:
-               if(param1 < param2)
+               if(pLeftMember < pRightMember)
                {
                   return true;
                }
                break;
             case EQUAL:
-               if(param1 == param2)
+               if(pLeftMember == pRightMember)
                {
                   return true;
                }
                break;
             case DIFFERENT:
-               if(param1 != param2)
+               if(pLeftMember != pRightMember)
                {
                   return true;
                }

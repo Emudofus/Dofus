@@ -6,48 +6,48 @@ package com.somerandomdude.colortoolkit.schemes
    public class Complementary extends ColorWheelScheme implements IColorScheme
    {
       
-      public function Complementary(param1:int) {
-         super(param1);
+      public function Complementary(primaryColor:int) {
+         super(primaryColor);
       }
       
       override protected function generate() : void {
-         var _loc1_:HSB = new HSB();
-         _loc1_.color = _primaryColor;
-         var _loc2_:HSB = new HSB();
-         _loc2_.color = _primaryColor;
-         if(_loc1_.brightness > 40)
+         var _primaryHSB:HSB = new HSB();
+         _primaryHSB.color = _primaryColor;
+         var contrasting:HSB = new HSB();
+         contrasting.color = _primaryColor;
+         if(_primaryHSB.brightness > 40)
          {
-            _loc2_.brightness = 10 + _loc1_.brightness * 0.25;
+            contrasting.brightness = 10 + _primaryHSB.brightness * 0.25;
          }
          else
          {
-            _loc2_.brightness = 100 - _loc1_.brightness * 0.25;
+            contrasting.brightness = 100 - _primaryHSB.brightness * 0.25;
          }
-         _colors.push(_loc2_.color);
-         var _loc3_:HSB = new HSB();
-         _loc3_.color = _primaryColor;
-         _loc3_.brightness = 30 + _loc1_.brightness;
-         _loc3_.saturation = 10 + _loc1_.saturation * 0.3;
-         _colors.push(_loc3_.color);
-         var _loc4_:HSB = new HSB();
-         _loc4_.color = ColorUtil.rybRotate(_primaryColor,180);
-         _colors.push(_loc4_.color);
-         var _loc5_:HSB = new HSB();
-         _loc5_.color = _loc4_.color;
-         if(_loc4_.brightness > 30)
+         _colors.push(contrasting.color);
+         var supporting:HSB = new HSB();
+         supporting.color = _primaryColor;
+         supporting.brightness = 30 + _primaryHSB.brightness;
+         supporting.saturation = 10 + _primaryHSB.saturation * 0.3;
+         _colors.push(supporting.color);
+         var complement:HSB = new HSB();
+         complement.color = ColorUtil.rybRotate(_primaryColor,180);
+         _colors.push(complement.color);
+         var contrastingComplement:HSB = new HSB();
+         contrastingComplement.color = complement.color;
+         if(complement.brightness > 30)
          {
-            _loc5_.brightness = 10 + _loc4_.brightness * 0.25;
+            contrastingComplement.brightness = 10 + complement.brightness * 0.25;
          }
          else
          {
-            _loc5_.brightness = 100 - _loc4_.brightness * 0.25;
+            contrastingComplement.brightness = 100 - complement.brightness * 0.25;
          }
-         _colors.push(_loc5_.color);
-         var _loc6_:HSB = new HSB();
-         _loc6_.color = _loc4_.color;
-         _loc6_.brightness = 30 + _loc4_.brightness;
-         _loc6_.saturation = 10 + _loc4_.saturation * 0.3;
-         _colors.push(_loc6_.color);
+         _colors.push(contrastingComplement.color);
+         var supportingComplement:HSB = new HSB();
+         supportingComplement.color = complement.color;
+         supportingComplement.brightness = 30 + complement.brightness;
+         supportingComplement.saturation = 10 + complement.saturation * 0.3;
+         _colors.push(supportingComplement.color);
       }
    }
 }

@@ -24,8 +24,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6273;
       }
       
-      public function initAbstractPartyEventMessage(param1:uint=0) : AbstractPartyEventMessage {
-         super.initAbstractPartyMessage(param1);
+      public function initAbstractPartyEventMessage(partyId:uint=0) : AbstractPartyEventMessage {
+         super.initAbstractPartyMessage(partyId);
          this._isInitialized = true;
          return this;
       }
@@ -35,30 +35,30 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AbstractPartyEventMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AbstractPartyEventMessage(output);
       }
       
-      public function serializeAs_AbstractPartyEventMessage(param1:IDataOutput) : void {
-         super.serializeAs_AbstractPartyMessage(param1);
+      public function serializeAs_AbstractPartyEventMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractPartyMessage(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AbstractPartyEventMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AbstractPartyEventMessage(input);
       }
       
-      public function deserializeAs_AbstractPartyEventMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_AbstractPartyEventMessage(input:IDataInput) : void {
+         super.deserialize(input);
       }
    }
 }

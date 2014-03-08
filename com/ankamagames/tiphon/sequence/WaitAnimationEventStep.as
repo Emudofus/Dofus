@@ -6,11 +6,11 @@ package com.ankamagames.tiphon.sequence
    public class WaitAnimationEventStep extends AbstractSequencable
    {
       
-      public function WaitAnimationEventStep(param1:PlayAnimationStep, param2:String="animation_event_end") {
+      public function WaitAnimationEventStep(animStep:PlayAnimationStep, waitedEvent:String="animation_event_end") {
          super();
-         param1.target.addEventListener(TiphonEvent.ANIMATION_EVENT,this.onEvent);
-         this._waitedEvent = param2;
-         this._targetStep = param1;
+         animStep.target.addEventListener(TiphonEvent.ANIMATION_EVENT,this.onEvent);
+         this._waitedEvent = waitedEvent;
+         this._targetStep = animStep;
          this._initOk = true;
       }
       
@@ -25,12 +25,12 @@ package com.ankamagames.tiphon.sequence
       private var _waiting:Boolean;
       
       override public function start() : void {
-         if(!this._targetStep || !this._targetStep.target)
+         if((!this._targetStep) || (!this._targetStep.target))
          {
             executeCallbacks();
             return;
          }
-         if(!this._initOk || (this._released) || !(this._targetStep.animation == this._targetStep.target.getAnimation()))
+         if((!this._initOk) || (this._released) || (!(this._targetStep.animation == this._targetStep.target.getAnimation())))
          {
             this._targetStep.target.removeEventListener(TiphonEvent.ANIMATION_EVENT,this.onEvent);
             this._targetStep = null;
@@ -42,8 +42,8 @@ package com.ankamagames.tiphon.sequence
          }
       }
       
-      private function onEvent(param1:TiphonEvent) : void {
-         if((param1) && (param1.type == this._waitedEvent) || !(this._targetStep.animation == this._targetStep.target.getAnimation()))
+      private function onEvent(e:TiphonEvent) : void {
+         if((e) && (e.type == this._waitedEvent) || (!(this._targetStep.animation == this._targetStep.target.getAnimation())))
          {
             this._released = true;
             if(this._targetStep)

@@ -23,10 +23,10 @@ package com.ankamagames.dofus.network.types.game.character.choice
          return 45;
       }
       
-      public function initCharacterBaseInformations(param1:uint=0, param2:uint=0, param3:String="", param4:EntityLook=null, param5:int=0, param6:Boolean=false) : CharacterBaseInformations {
-         super.initCharacterMinimalPlusLookInformations(param1,param2,param3,param4);
-         this.breed = param5;
-         this.sex = param6;
+      public function initCharacterBaseInformations(id:uint=0, level:uint=0, name:String="", entityLook:EntityLook=null, breed:int=0, sex:Boolean=false) : CharacterBaseInformations {
+         super.initCharacterMinimalPlusLookInformations(id,level,name,entityLook);
+         this.breed = breed;
+         this.sex = sex;
          return this;
       }
       
@@ -36,24 +36,24 @@ package com.ankamagames.dofus.network.types.game.character.choice
          this.sex = false;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CharacterBaseInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterBaseInformations(output);
       }
       
-      public function serializeAs_CharacterBaseInformations(param1:IDataOutput) : void {
-         super.serializeAs_CharacterMinimalPlusLookInformations(param1);
-         param1.writeByte(this.breed);
-         param1.writeBoolean(this.sex);
+      public function serializeAs_CharacterBaseInformations(output:IDataOutput) : void {
+         super.serializeAs_CharacterMinimalPlusLookInformations(output);
+         output.writeByte(this.breed);
+         output.writeBoolean(this.sex);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CharacterBaseInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterBaseInformations(input);
       }
       
-      public function deserializeAs_CharacterBaseInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.breed = param1.readByte();
-         this.sex = param1.readBoolean();
+      public function deserializeAs_CharacterBaseInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.breed = input.readByte();
+         this.sex = input.readBoolean();
       }
    }
 }

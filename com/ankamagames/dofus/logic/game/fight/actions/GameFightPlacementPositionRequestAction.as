@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.fight.actions
          super();
       }
       
-      public static function create(param1:int) : GameFightPlacementPositionRequestAction {
-         var _loc2_:GameFightPlacementPositionRequestAction = new GameFightPlacementPositionRequestAction();
-         _loc2_.cellId = param1;
-         return _loc2_;
+      public static function create(id:int) : GameFightPlacementPositionRequestAction {
+         var a:GameFightPlacementPositionRequestAction = new GameFightPlacementPositionRequestAction();
+         a.cellId = id;
+         return a;
       }
       
       public var cellId:int;

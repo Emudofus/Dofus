@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,9 +32,9 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5928;
       }
       
-      public function initGuildFightPlayersEnemiesListMessage(param1:Number=0, param2:Vector.<CharacterMinimalPlusLookInformations>=null) : GuildFightPlayersEnemiesListMessage {
-         this.fightId = param1;
-         this.playerInfo = param2;
+      public function initGuildFightPlayersEnemiesListMessage(fightId:Number=0, playerInfo:Vector.<CharacterMinimalPlusLookInformations>=null) : GuildFightPlayersEnemiesListMessage {
+         this.fightId = fightId;
+         this.playerInfo = playerInfo;
          this._isInitialized = true;
          return this;
       }
@@ -45,60 +45,60 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildFightPlayersEnemiesListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildFightPlayersEnemiesListMessage(output);
       }
       
-      public function serializeAs_GuildFightPlayersEnemiesListMessage(param1:IDataOutput) : void {
+      public function serializeAs_GuildFightPlayersEnemiesListMessage(output:IDataOutput) : void {
          if(this.fightId < 0)
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
          }
          else
          {
-            param1.writeDouble(this.fightId);
-            param1.writeShort(this.playerInfo.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.playerInfo.length)
+            output.writeDouble(this.fightId);
+            output.writeShort(this.playerInfo.length);
+            _i2 = 0;
+            while(_i2 < this.playerInfo.length)
             {
-               (this.playerInfo[_loc2_] as CharacterMinimalPlusLookInformations).serializeAs_CharacterMinimalPlusLookInformations(param1);
-               _loc2_++;
+               (this.playerInfo[_i2] as CharacterMinimalPlusLookInformations).serializeAs_CharacterMinimalPlusLookInformations(output);
+               _i2++;
             }
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildFightPlayersEnemiesListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildFightPlayersEnemiesListMessage(input);
       }
       
-      public function deserializeAs_GuildFightPlayersEnemiesListMessage(param1:IDataInput) : void {
-         var _loc4_:CharacterMinimalPlusLookInformations = null;
-         this.fightId = param1.readDouble();
+      public function deserializeAs_GuildFightPlayersEnemiesListMessage(input:IDataInput) : void {
+         var _item2:CharacterMinimalPlusLookInformations = null;
+         this.fightId = input.readDouble();
          if(this.fightId < 0)
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element of GuildFightPlayersEnemiesListMessage.fightId.");
          }
          else
          {
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            _playerInfoLen = input.readUnsignedShort();
+            _i2 = 0;
+            while(_i2 < _playerInfoLen)
             {
-               _loc4_ = new CharacterMinimalPlusLookInformations();
-               _loc4_.deserialize(param1);
-               this.playerInfo.push(_loc4_);
-               _loc3_++;
+               _item2 = new CharacterMinimalPlusLookInformations();
+               _item2.deserialize(input);
+               this.playerInfo.push(_item2);
+               _i2++;
             }
             return;
          }

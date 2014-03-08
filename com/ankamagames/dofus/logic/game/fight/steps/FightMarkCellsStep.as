@@ -15,13 +15,13 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightMarkCellsStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightMarkCellsStep(param1:int, param2:int, param3:SpellLevel, param4:Vector.<GameActionMarkedCell>, param5:int) {
+      public function FightMarkCellsStep(markId:int, markType:int, associatedSpellRank:SpellLevel, cells:Vector.<GameActionMarkedCell>, markSpellId:int) {
          super();
-         this._markId = param1;
-         this._cells = param4;
-         this._markType = param2;
-         this._associatedSpellRank = param3;
-         this._markSpellId = param5;
+         this._markId = markId;
+         this._cells = cells;
+         this._markType = markType;
+         this._associatedSpellRank = associatedSpellRank;
+         this._markSpellId = markSpellId;
       }
       
       private var _markId:int;
@@ -39,38 +39,36 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc3_:GameActionMarkedCell = null;
-         var _loc4_:AddGlyphGfxStep = null;
-         var _loc5_:String = null;
-         var _loc1_:Spell = Spell.getSpellById(this._markSpellId);
-         MarkedCellsManager.getInstance().addMark(this._markId,this._markType,_loc1_,this._cells);
+         var cellZone:GameActionMarkedCell = null;
+         var step:AddGlyphGfxStep = null;
+         var evt:String = null;
+         var spell:Spell = Spell.getSpellById(this._markSpellId);
+         MarkedCellsManager.getInstance().addMark(this._markId,this._markType,spell,this._cells);
          if(this._markType == GameActionMarkTypeEnum.WALL)
          {
-            if(_loc1_.getParamByName("glyphGfxId"))
+            if(spell.getParamByName("glyphGfxId"))
             {
-               for each (_loc3_ in this._cells)
+               for each (cellZone in this._cells)
                {
-                  _loc4_ = new AddGlyphGfxStep(_loc1_.getParamByName("glyphGfxId"),_loc3_.cellId,this._markId,this._markType);
-                  _loc4_.start();
+                  step = new AddGlyphGfxStep(spell.getParamByName("glyphGfxId"),cellZone.cellId,this._markId,this._markType);
+                  step.start();
                }
             }
          }
-         var _loc2_:MarkInstance = MarkedCellsManager.getInstance().getMarkDatas(this._markId);
-         if(_loc2_)
+         var mi:MarkInstance = MarkedCellsManager.getInstance().getMarkDatas(this._markId);
+         if(mi)
          {
-            _loc5_ = FightEventEnum.UNKNOWN_FIGHT_EVENT;
-            switch(_loc2_.markType)
+            evt = FightEventEnum.UNKNOWN_FIGHT_EVENT;
+            switch(mi.markType)
             {
                case GameActionMarkTypeEnum.GLYPH:
-                  _loc5_ = FightEventEnum.GLYPH_APPEARED;
+                  evt = FightEventEnum.GLYPH_APPEARED;
                   break;
                case GameActionMarkTypeEnum.TRAP:
-                  _loc5_ = FightEventEnum.TRAP_APPEARED;
+                  evt = FightEventEnum.TRAP_APPEARED;
                   break;
-               default:
-                  _log.warn("Unknown mark type (" + _loc2_.markType + ").");
             }
-            FightEventsHelper.sendFightEvent(_loc5_,[_loc2_.associatedSpell.id],0,castingSpellId);
+            FightEventsHelper.sendFightEvent(evt,[mi.associatedSpell.id],0,castingSpellId);
          }
          executeCallbacks();
       }

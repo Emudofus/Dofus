@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.monsters
       
       public static const MODULE:String = "CompanionCharacteristics";
       
-      public static function getCompanionCharacteristicById(param1:uint) : CompanionCharacteristic {
-         return GameData.getObject(MODULE,param1) as CompanionCharacteristic;
+      public static function getCompanionCharacteristicById(id:uint) : CompanionCharacteristic {
+         return GameData.getObject(MODULE,id) as CompanionCharacteristic;
       }
       
       public static function getCompanionCharacteristics() : Array {

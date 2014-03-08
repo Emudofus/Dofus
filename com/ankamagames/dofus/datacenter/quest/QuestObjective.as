@@ -20,8 +20,8 @@ package com.ankamagames.dofus.datacenter.quest
       
       public static const MODULE:String = "QuestObjectives";
       
-      public static function getQuestObjectiveById(param1:int) : QuestObjective {
-         return GameData.getObject(MODULE,param1) as QuestObjective;
+      public static function getQuestObjectiveById(id:int) : QuestObjective {
+         return GameData.getObject(MODULE,id) as QuestObjective;
       }
       
       public static function getQuestObjectives() : Array {

@@ -30,9 +30,9 @@ package com.ankamagames.dofus.logic.game.common.managers
          }
          else
          {
-            _loc1_ = StoreDataManager.getInstance().getSetData(this._ds,"cacheDate",new Date(2000));
-            _loc2_ = new Date();
-            if(!(_loc1_.day == _loc2_.day) || _loc2_.time - _loc1_.time > 120000)
+            cacheDate = StoreDataManager.getInstance().getSetData(this._ds,"cacheDate",new Date(2000));
+            currentDate = new Date();
+            if((!(cacheDate.day == currentDate.day)) || (currentDate.time - cacheDate.time > 120000))
             {
                if(BuildInfos.BUILD_TYPE >= BuildTypeEnum.INTERNAL)
                {
@@ -92,39 +92,39 @@ package com.ankamagames.dofus.logic.game.common.managers
          return this._currentZodiac;
       }
       
-      private function setDefaultData(param1:Object) : void {
-         if(param1 is AlmanaxEvent)
+      private function setDefaultData(pAlmanaxElement:Object) : void {
+         if(pAlmanaxElement is AlmanaxEvent)
          {
-            if(!param1.bossText)
+            if(!pAlmanaxElement.bossText)
             {
-               param1.bossText = "ui.almanax.default.boss";
+               pAlmanaxElement.bossText = "ui.almanax.default.boss";
             }
-            if(!param1.ephemeris)
+            if(!pAlmanaxElement.ephemeris)
             {
-               param1.ephemeris = "ui.almanax.default.ephemeris";
+               pAlmanaxElement.ephemeris = "ui.almanax.default.ephemeris";
             }
-            param1.festText = "";
-            param1.name = "";
-            param1.webImageUrl = XmlConfig.getInstance().getEntry("config.gfx.path").concat("almanax/jour.jpg");
+            pAlmanaxElement.festText = "";
+            pAlmanaxElement.name = "";
+            pAlmanaxElement.webImageUrl = XmlConfig.getInstance().getEntry("config.gfx.path").concat("almanax/jour.jpg");
          }
          else
          {
-            if(param1 is AlmanaxMonth)
+            if(pAlmanaxElement is AlmanaxMonth)
             {
-               if(!param1.protectorDescription)
+               if(!pAlmanaxElement.protectorDescription)
                {
-                  param1.protectorDescription = "ui.almanax.default.protector";
+                  pAlmanaxElement.protectorDescription = "ui.almanax.default.protector";
                }
-               param1.webImageUrl = XmlConfig.getInstance().getEntry("config.gfx.path").concat("almanax/protecteur.jpg");
+               pAlmanaxElement.webImageUrl = XmlConfig.getInstance().getEntry("config.gfx.path").concat("almanax/protecteur.jpg");
             }
             else
             {
-               if(param1 is AlmanaxZodiac)
+               if(pAlmanaxElement is AlmanaxZodiac)
                {
-                  param1.webImageUrl = XmlConfig.getInstance().getEntry("config.gfx.path").concat("almanax/constellation.jpg");
-                  if(!param1.description)
+                  pAlmanaxElement.webImageUrl = XmlConfig.getInstance().getEntry("config.gfx.path").concat("almanax/constellation.jpg");
+                  if(!pAlmanaxElement.description)
                   {
-                     param1.description = "ui.almanax.default.zodiac";
+                     pAlmanaxElement.description = "ui.almanax.default.zodiac";
                   }
                }
             }
@@ -146,33 +146,33 @@ package com.ankamagames.dofus.logic.game.common.managers
          }
       }
       
-      private function isValidImageUrl(param1:String) : Boolean {
-         return (param1) && !(param1 == "false");
+      private function isValidImageUrl(pUrl:String) : Boolean {
+         return (pUrl) && (!(pUrl == "false"));
       }
       
-      private function onData(param1:Event) : void {
-         var _loc2_:Object = this._rpcService.getResultData("event");
-         var _loc3_:Object = this._rpcService.getResultData("month");
-         var _loc4_:Object = this._rpcService.getResultData("zodiac");
+      private function onData(e:Event) : void {
+         var eventRawData:Object = this._rpcService.getResultData("event");
+         var monthRawData:Object = this._rpcService.getResultData("month");
+         var zodiacRawData:Object = this._rpcService.getResultData("zodiac");
          this._currentEvent = new AlmanaxEvent();
-         this.event.bossText = _loc2_.bosstext;
-         this.event.ephemeris = _loc2_.ephemeris;
-         this.event.festText = _loc2_.festtext;
-         this.event.id = _loc2_.id;
-         this.event.name = _loc2_.name;
-         this.event.rubrikabrax = _loc2_.rubrikabrax;
-         this.event.webImageUrl = _loc2_.imageurl;
+         this.event.bossText = eventRawData.bosstext;
+         this.event.ephemeris = eventRawData.ephemeris;
+         this.event.festText = eventRawData.festtext;
+         this.event.id = eventRawData.id;
+         this.event.name = eventRawData.name;
+         this.event.rubrikabrax = eventRawData.rubrikabrax;
+         this.event.webImageUrl = eventRawData.imageurl;
          this._currentMonth = new AlmanaxMonth();
-         this.month.id = _loc3_.id;
-         this.month.monthNum = _loc3_.month;
-         this.month.protectorDescription = _loc3_.protectordesc;
-         this.month.protectorName = _loc3_.protectorname;
-         this.month.webImageUrl = _loc3_.protectorimageurl;
+         this.month.id = monthRawData.id;
+         this.month.monthNum = monthRawData.month;
+         this.month.protectorDescription = monthRawData.protectordesc;
+         this.month.protectorName = monthRawData.protectorname;
+         this.month.webImageUrl = monthRawData.protectorimageurl;
          this._currentZodiac = new AlmanaxZodiac();
-         this.zodiac.id = _loc4_.id;
-         this.zodiac.name = _loc4_.name;
-         this.zodiac.webImageUrl = _loc4_.imageurl;
-         this.zodiac.description = _loc4_.description;
+         this.zodiac.id = zodiacRawData.id;
+         this.zodiac.name = zodiacRawData.name;
+         this.zodiac.webImageUrl = zodiacRawData.imageurl;
+         this.zodiac.description = zodiacRawData.description;
          this.checkData();
          StoreDataManager.getInstance().setData(this._ds,"currentEvent",this._currentEvent);
          StoreDataManager.getInstance().setData(this._ds,"currentMonth",this._currentMonth);
@@ -180,7 +180,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          StoreDataManager.getInstance().setData(this._ds,"cacheDate",new Date());
       }
       
-      private function onError(param1:Event) : void {
+      private function onError(e:Event) : void {
          this._currentEvent = new AlmanaxEvent();
          this.setDefaultData(this._currentEvent);
          this._currentMonth = new AlmanaxMonth();

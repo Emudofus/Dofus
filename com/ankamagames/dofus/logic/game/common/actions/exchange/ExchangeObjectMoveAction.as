@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.exchange
          super();
       }
       
-      public static function create(param1:uint, param2:int) : ExchangeObjectMoveAction {
-         var _loc3_:ExchangeObjectMoveAction = new ExchangeObjectMoveAction();
-         _loc3_.objectUID = param1;
-         _loc3_.quantity = param2;
-         return _loc3_;
+      public static function create(pObjectUID:uint, pQuantity:int) : ExchangeObjectMoveAction {
+         var a:ExchangeObjectMoveAction = new ExchangeObjectMoveAction();
+         a.objectUID = pObjectUID;
+         a.quantity = pQuantity;
+         return a;
       }
       
       public var objectUID:uint;

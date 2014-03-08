@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.party
          super();
       }
       
-      public static function create(param1:int) : PartyAcceptInvitationAction {
-         var _loc2_:PartyAcceptInvitationAction = new PartyAcceptInvitationAction();
-         _loc2_.partyId = param1;
-         return _loc2_;
+      public static function create(partyId:int) : PartyAcceptInvitationAction {
+         var a:PartyAcceptInvitationAction = new PartyAcceptInvitationAction();
+         a.partyId = partyId;
+         return a;
       }
       
       public var partyId:int;

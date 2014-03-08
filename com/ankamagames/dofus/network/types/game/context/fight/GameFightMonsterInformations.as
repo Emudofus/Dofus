@@ -23,10 +23,10 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 29;
       }
       
-      public function initGameFightMonsterInformations(param1:int=0, param2:EntityLook=null, param3:EntityDispositionInformations=null, param4:uint=2, param5:Boolean=false, param6:GameFightMinimalStats=null, param7:uint=0, param8:uint=0) : GameFightMonsterInformations {
-         super.initGameFightAIInformations(param1,param2,param3,param4,param5,param6);
-         this.creatureGenericId = param7;
-         this.creatureGrade = param8;
+      public function initGameFightMonsterInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, alive:Boolean=false, stats:GameFightMinimalStats=null, creatureGenericId:uint=0, creatureGrade:uint=0) : GameFightMonsterInformations {
+         super.initGameFightAIInformations(contextualId,look,disposition,teamId,alive,stats);
+         this.creatureGenericId = creatureGenericId;
+         this.creatureGrade = creatureGrade;
          return this;
       }
       
@@ -36,45 +36,45 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.creatureGrade = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightMonsterInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightMonsterInformations(output);
       }
       
-      public function serializeAs_GameFightMonsterInformations(param1:IDataOutput) : void {
-         super.serializeAs_GameFightAIInformations(param1);
+      public function serializeAs_GameFightMonsterInformations(output:IDataOutput) : void {
+         super.serializeAs_GameFightAIInformations(output);
          if(this.creatureGenericId < 0)
          {
             throw new Error("Forbidden value (" + this.creatureGenericId + ") on element creatureGenericId.");
          }
          else
          {
-            param1.writeShort(this.creatureGenericId);
+            output.writeShort(this.creatureGenericId);
             if(this.creatureGrade < 0)
             {
                throw new Error("Forbidden value (" + this.creatureGrade + ") on element creatureGrade.");
             }
             else
             {
-               param1.writeByte(this.creatureGrade);
+               output.writeByte(this.creatureGrade);
                return;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightMonsterInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightMonsterInformations(input);
       }
       
-      public function deserializeAs_GameFightMonsterInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.creatureGenericId = param1.readShort();
+      public function deserializeAs_GameFightMonsterInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.creatureGenericId = input.readShort();
          if(this.creatureGenericId < 0)
          {
             throw new Error("Forbidden value (" + this.creatureGenericId + ") on element of GameFightMonsterInformations.creatureGenericId.");
          }
          else
          {
-            this.creatureGrade = param1.readByte();
+            this.creatureGrade = input.readByte();
             if(this.creatureGrade < 0)
             {
                throw new Error("Forbidden value (" + this.creatureGrade + ") on element of GameFightMonsterInformations.creatureGrade.");

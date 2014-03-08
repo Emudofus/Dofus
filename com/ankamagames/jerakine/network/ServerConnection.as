@@ -11,6 +11,7 @@ package com.ankamagames.jerakine.network
    import flash.utils.Timer;
    import flash.events.TimerEvent;
    import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.replay.LogFrame;
    import com.ankamagames.jerakine.replay.LogTypeEnum;
    import flash.events.ProgressEvent;
@@ -27,12 +28,12 @@ package com.ankamagames.jerakine.network
    public class ServerConnection extends Socket implements IEventDispatcher, IServerConnection
    {
       
-      public function ServerConnection(param1:String=null, param2:int=0) {
+      public function ServerConnection(host:String=null, port:int=0) {
          this._pauseBuffer = new Array();
          this._latencyBuffer = new Array();
-         super(param1,param2);
-         this._remoteSrvHost = param1;
-         this._remoteSrvPort = param2;
+         super(host,port);
+         this._remoteSrvHost = host;
+         this._remoteSrvPort = port;
       }
       
       public static var disabled:Boolean;
@@ -97,16 +98,16 @@ package com.ankamagames.jerakine.network
          return this._rawParser;
       }
       
-      public function set rawParser(param1:RawDataParser) : void {
-         this._rawParser = param1;
+      public function set rawParser(value:RawDataParser) : void {
+         this._rawParser = value;
       }
       
       public function get handler() : MessageHandler {
          return this._handler;
       }
       
-      public function set handler(param1:MessageHandler) : void {
-         this._handler = param1;
+      public function set handler(value:MessageHandler) : void {
+         this._handler = value;
       }
       
       public function get pauseBuffer() : Array {
@@ -114,17 +115,17 @@ package com.ankamagames.jerakine.network
       }
       
       public function get latencyAvg() : uint {
-         var _loc2_:uint = 0;
+         var latency:uint = 0;
          if(this._latencyBuffer.length == 0)
          {
             return 0;
          }
-         var _loc1_:uint = 0;
-         for each (_loc2_ in this._latencyBuffer)
+         var total:uint = 0;
+         for each (latency in this._latencyBuffer)
          {
-            _loc1_ = _loc1_ + _loc2_;
+            total = total + latency;
          }
-         return _loc1_ / this._latencyBuffer.length;
+         return total / this._latencyBuffer.length;
       }
       
       public function get latencySamplesCount() : uint {
@@ -143,8 +144,8 @@ package com.ankamagames.jerakine.network
          return this._lastSent;
       }
       
-      public function set lagometer(param1:ILagometer) : void {
-         this._lagometer = param1;
+      public function set lagometer(l:ILagometer) : void {
+         this._lagometer = l;
       }
       
       public function get lagometer() : ILagometer {
@@ -155,148 +156,145 @@ package com.ankamagames.jerakine.network
          return this._sendSequenceId;
       }
       
-      override public function connect(param1:String, param2:int) : void {
+      override public function connect(host:String, port:int) : void {
          if((this._connecting) || (disabled) || (disabledIn) && (disabledOut))
          {
             return;
          }
          this._connecting = true;
-         this._remoteSrvHost = param1;
-         this._remoteSrvPort = param2;
+         this._remoteSrvHost = host;
+         this._remoteSrvPort = port;
          this.addListeners();
-         _log.info("Connecting to " + param1 + ":" + param2 + "...");
-         super.connect(param1,param2);
+         _log.info("Connecting to " + host + ":" + port + "...");
+         super.connect(host,port);
          this._timeoutTimer = new Timer(10000,1);
          this._timeoutTimer.start();
          this._timeoutTimer.addEventListener(TimerEvent.TIMER_COMPLETE,this.onSocketTimeOut);
       }
       
-      private function getType(param1:*) : String {
-         var _loc2_:String = getQualifiedClassName(param1);
-         if(_loc2_.indexOf("Vector") != -1)
+      private function getType(v:*) : String {
+         var className:String = getQualifiedClassName(v);
+         if(className.indexOf("Vector") != -1)
          {
-            _loc2_ = _loc2_.split("__AS3__.vec::Vector.<").join("list{");
-            _loc2_ = _loc2_.split(">").join("}");
+            className = className.split("__AS3__.vec::Vector.<").join("list{");
+            className = className.split(">").join("}");
          }
          else
          {
-            _loc2_ = _loc2_.split("::").pop();
+            className = className.split("::").pop();
          }
-         if(param1 is INetworkMessage)
+         if(v is INetworkMessage)
          {
-            _loc2_ = _loc2_ + (", id: " + INetworkMessage(param1).getMessageId());
+            className = className + (", id: " + INetworkMessage(v).getMessageId());
          }
-         return _loc2_;
+         return className;
       }
       
-      private function inspect(param1:*, param2:String="", param3:Boolean=false) : String {
-         var _loc6_:* = undefined;
-         var _loc7_:* = undefined;
-         var _loc4_:* = "";
-         var _loc5_:Array = DescribeTypeCache.getVariables(param1,true,false);
-         if(!param3)
+      private function inspect(target:*, indent:String="", isArray:Boolean=false) : String {
+         var property:* = undefined;
+         var v:* = undefined;
+         var str:String = "";
+         var content:Array = DescribeTypeCache.getVariables(target,true,false);
+         if(!isArray)
          {
-            _loc4_ = _loc4_ + this.getType(param1);
+            str = str + this.getType(target);
          }
-         for each (_loc6_ in _loc5_)
+         for each (property in content)
          {
-            _loc7_ = param1[_loc6_];
-            _loc4_ = _loc4_ + ("\n" + param2);
-            if(param3)
+            v = target[property];
+            str = str + ("\n" + indent);
+            if(isArray)
             {
-               _loc4_ = _loc4_ + ("[" + _loc6_ + "]");
+               str = str + ("[" + property + "]");
             }
             else
             {
-               _loc4_ = _loc4_ + _loc6_;
+               str = str + property;
             }
             switch(true)
             {
-               case _loc7_ is Vector.<int>:
-               case _loc7_ is Vector.<uint>:
-               case _loc7_ is Vector.<Boolean>:
-               case _loc7_ is Vector.<String>:
-               case _loc7_ is Vector.<Number>:
-                  _loc4_ = _loc4_ + (" (" + this.getType(_loc7_) + ", len:" + _loc7_.length + ") = " + _loc7_);
+               case v is Vector.<int>:
+               case v is Vector.<uint>:
+               case v is Vector.<Boolean>:
+               case v is Vector.<String>:
+               case v is Vector.<Number>:
+                  str = str + (" (" + this.getType(v) + ", len:" + v.length + ") = " + v);
                   continue;
-               case !(getQualifiedClassName(_loc7_).indexOf("Vector") == -1):
-               case _loc7_ is Array:
-                  _loc4_ = _loc4_ + (" (" + this.getType(_loc7_) + ", len:" + _loc7_.length + ") = " + this.inspect(_loc7_,param2 + "\t",true));
+               case !(getQualifiedClassName(v).indexOf("Vector") == -1):
+               case v is Array:
+                  str = str + (" (" + this.getType(v) + ", len:" + v.length + ") = " + this.inspect(v,indent + "\t",true));
                   continue;
-               case _loc7_ is String:
-                  _loc4_ = _loc4_ + (" = \"" + _loc7_ + "\"");
+               case v is String:
+                  str = str + (" = \"" + v + "\"");
                   continue;
-               case _loc7_ is uint:
-               case _loc7_ is int:
-               case _loc7_ is Boolean:
-               case _loc7_ is Number:
-                  _loc4_ = _loc4_ + (" = " + _loc7_);
-                  continue;
-               default:
-                  _loc4_ = _loc4_ + (" " + this.inspect(_loc7_,param2 + "\t"));
+               case v is uint:
+               case v is int:
+               case v is Boolean:
+               case v is Number:
+                  str = str + (" = " + v);
                   continue;
             }
          }
-         return _loc4_;
+         return str;
       }
       
-      public function send(param1:INetworkMessage) : void {
+      public function send(msg:INetworkMessage) : void {
          if(DEBUG_DATA)
          {
-            _log.trace("[SND] > " + (DEBUG_VERBOSE?this.inspect(param1):param1));
+            _log.trace("[SND] > " + (DEBUG_VERBOSE?this.inspect(msg):msg));
          }
-         LogFrame.log(LogTypeEnum.NETWORK_OUT,param1);
+         LogFrame.log(LogTypeEnum.NETWORK_OUT,msg);
          if((disabled) || (disabledOut))
          {
             return;
          }
-         if(!param1.isInitialized)
+         if(!msg.isInitialized)
          {
-            _log.warn("Sending non-initialized packet " + param1 + " !");
+            _log.warn("Sending non-initialized packet " + msg + " !");
          }
          if(!connected)
          {
             if(this._connecting)
             {
-               this._outputBuffer.push(param1);
+               this._outputBuffer.push(msg);
             }
             return;
          }
-         this.lowSend(param1);
+         this.lowSend(msg);
       }
       
       override public function toString() : String {
-         var _loc1_:* = "Server connection status:\n";
-         _loc1_ = _loc1_ + ("  Connected:       " + (connected?"Yes":"No") + "\n");
+         var status:String = "Server connection status:\n";
+         status = status + ("  Connected:       " + (connected?"Yes":"No") + "\n");
          if(connected)
          {
-            _loc1_ = _loc1_ + ("  Connected to:    " + this._remoteSrvHost + ":" + this._remoteSrvPort + "\n");
+            status = status + ("  Connected to:    " + this._remoteSrvHost + ":" + this._remoteSrvPort + "\n");
          }
          else
          {
-            _loc1_ = _loc1_ + ("  Connecting:      " + (this._connecting?"Yes":"No") + "\n");
+            status = status + ("  Connecting:      " + (this._connecting?"Yes":"No") + "\n");
          }
          if(this._connecting)
          {
-            _loc1_ = _loc1_ + ("  Connecting to:   " + this._remoteSrvHost + ":" + this._remoteSrvPort + "\n");
+            status = status + ("  Connecting to:   " + this._remoteSrvHost + ":" + this._remoteSrvPort + "\n");
          }
-         _loc1_ = _loc1_ + ("  Raw parser:      " + this.rawParser + "\n");
-         _loc1_ = _loc1_ + ("  Message handler: " + this.handler + "\n");
+         status = status + ("  Raw parser:      " + this.rawParser + "\n");
+         status = status + ("  Message handler: " + this.handler + "\n");
          if(this._outputBuffer)
          {
-            _loc1_ = _loc1_ + ("  Output buffer:   " + this._outputBuffer.length + " message(s)\n");
+            status = status + ("  Output buffer:   " + this._outputBuffer.length + " message(s)\n");
          }
          if(this._inputBuffer)
          {
-            _loc1_ = _loc1_ + ("  Input buffer:    " + this._inputBuffer.length + " byte(s)\n");
+            status = status + ("  Input buffer:    " + this._inputBuffer.length + " byte(s)\n");
          }
          if(this._splittedPacket)
          {
-            _loc1_ = _loc1_ + "  Splitted message in the input buffer:\n";
-            _loc1_ = _loc1_ + ("    Message ID:      " + this._splittedPacketId + "\n");
-            _loc1_ = _loc1_ + ("    Awaited length:  " + this._splittedPacketLength + "\n");
+            status = status + "  Splitted message in the input buffer:\n";
+            status = status + ("    Message ID:      " + this._splittedPacketId + "\n");
+            status = status + ("    Awaited length:  " + this._splittedPacketLength + "\n");
          }
-         return _loc1_;
+         return status;
       }
       
       public function pause() : void {
@@ -304,17 +302,17 @@ package com.ankamagames.jerakine.network
       }
       
       public function resume() : void {
-         var _loc1_:INetworkMessage = null;
+         var msg:INetworkMessage = null;
          this._pause = false;
-         while((this._pauseBuffer.length) && !this._pause)
+         while((this._pauseBuffer.length) && (!this._pause))
          {
-            _loc1_ = this._pauseBuffer.shift();
+            msg = this._pauseBuffer.shift();
             if(DEBUG_DATA)
             {
-               _log.trace("[RCV] (after Resume) " + (DEBUG_VERBOSE?this.inspect(_loc1_):_loc1_));
+               _log.trace("[RCV] (after Resume) " + (DEBUG_VERBOSE?this.inspect(msg):msg));
             }
-            _log.logDirectly(new NetworkLogEvent(_loc1_,true));
-            this._handler.process(_loc1_);
+            _log.logDirectly(new NetworkLogEvent(msg,true));
+            this._handler.process(msg);
          }
          this._pauseBuffer = [];
       }
@@ -344,9 +342,8 @@ package com.ankamagames.jerakine.network
          removeEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onSecurityError);
       }
       
-      private function receive(param1:IDataInput) : void {
+      private function receive(src:IDataInput) : void {
          var msg:INetworkMessage = null;
-         var src:IDataInput = param1;
          var count:uint = 0;
          try
          {
@@ -360,7 +357,7 @@ package com.ankamagames.jerakine.network
                      this.receive(INetworkDataContainerMessage(msg).content);
                   }
                }
-               if(!(msg == null) && !(msg is INetworkDataContainerMessage))
+               if((!(msg == null)) && (!(msg is INetworkDataContainerMessage)))
                {
                   if(this._lagometer)
                   {
@@ -368,7 +365,7 @@ package com.ankamagames.jerakine.network
                   }
                   if(!this._pause)
                   {
-                     if((DEBUG_DATA) && !(msg.getMessageId() == 176) && !(msg.getMessageId() == 6362))
+                     if((DEBUG_DATA) && (!(msg.getMessageId() == 176)) && (!(msg.getMessageId() == 6362)))
                      {
                         _log.trace("[RCV] " + (DEBUG_VERBOSE?this.inspect(msg):msg));
                      }
@@ -402,118 +399,118 @@ package com.ankamagames.jerakine.network
          }
       }
       
-      private function getMessageId(param1:uint) : uint {
-         return param1 >> NetworkMessage.BIT_RIGHT_SHIFT_LEN_PACKET_ID;
+      private function getMessageId(firstOctet:uint) : uint {
+         return firstOctet >> NetworkMessage.BIT_RIGHT_SHIFT_LEN_PACKET_ID;
       }
       
-      private function readMessageLength(param1:uint, param2:IDataInput) : uint {
-         var _loc3_:uint = param1 & NetworkMessage.BIT_MASK;
-         var _loc4_:uint = 0;
-         switch(_loc3_)
+      private function readMessageLength(staticHeader:uint, src:IDataInput) : uint {
+         var byteLenDynamicHeader:uint = staticHeader & NetworkMessage.BIT_MASK;
+         var messageLength:uint = 0;
+         switch(byteLenDynamicHeader)
          {
             case 0:
                break;
             case 1:
-               _loc4_ = param2.readUnsignedByte();
+               messageLength = src.readUnsignedByte();
                break;
             case 2:
-               _loc4_ = param2.readUnsignedShort();
+               messageLength = src.readUnsignedShort();
                break;
             case 3:
-               _loc4_ = ((param2.readByte() & 255) << 16) + ((param2.readByte() & 255) << 8) + (param2.readByte() & 255);
+               messageLength = ((src.readByte() & 255) << 16) + ((src.readByte() & 255) << 8) + (src.readByte() & 255);
                break;
          }
-         return _loc4_;
+         return messageLength;
       }
       
-      protected function lowSend(param1:INetworkMessage, param2:Boolean=true) : void {
-         param1.pack(this);
+      protected function lowSend(msg:INetworkMessage, autoFlush:Boolean=true) : void {
+         msg.pack(this);
          this._latestSent = getTimer();
          this._lastSent = getTimer();
          this._sendSequenceId++;
          if(this._lagometer)
          {
-            this._lagometer.ping(param1);
+            this._lagometer.ping(msg);
          }
-         if(param2)
+         if(autoFlush)
          {
             flush();
          }
       }
       
-      protected function lowReceive(param1:IDataInput) : INetworkMessage {
-         var _loc2_:INetworkMessage = null;
-         var _loc3_:uint = 0;
-         var _loc4_:uint = 0;
-         var _loc5_:uint = 0;
+      protected function lowReceive(src:IDataInput) : INetworkMessage {
+         var msg:INetworkMessage = null;
+         var staticHeader:uint = 0;
+         var messageId:uint = 0;
+         var messageLength:uint = 0;
          if(!this._splittedPacket)
          {
-            if(param1.bytesAvailable < 2)
+            if(src.bytesAvailable < 2)
             {
                return null;
             }
-            _loc3_ = param1.readUnsignedShort();
-            _loc4_ = this.getMessageId(_loc3_);
-            if(param1.bytesAvailable >= (_loc3_ & NetworkMessage.BIT_MASK))
+            staticHeader = src.readUnsignedShort();
+            messageId = this.getMessageId(staticHeader);
+            if(src.bytesAvailable >= (staticHeader & NetworkMessage.BIT_MASK))
             {
-               _loc5_ = this.readMessageLength(_loc3_,param1);
-               if(param1.bytesAvailable >= _loc5_)
+               messageLength = this.readMessageLength(staticHeader,src);
+               if(src.bytesAvailable >= messageLength)
                {
                   this.updateLatency();
-                  _loc2_ = this._rawParser.parse(param1,_loc4_,_loc5_);
-                  MEMORY_LOG[_loc2_] = 1;
-                  return _loc2_;
+                  msg = this._rawParser.parse(src,messageId,messageLength);
+                  MEMORY_LOG[msg] = 1;
+                  return msg;
                }
                this._staticHeader = -1;
-               this._splittedPacketLength = _loc5_;
-               this._splittedPacketId = _loc4_;
+               this._splittedPacketLength = messageLength;
+               this._splittedPacketId = messageId;
                this._splittedPacket = true;
-               readBytes(this._inputBuffer,0,param1.bytesAvailable);
+               readBytes(this._inputBuffer,0,src.bytesAvailable);
                return null;
             }
-            this._staticHeader = _loc3_;
-            this._splittedPacketLength = _loc5_;
-            this._splittedPacketId = _loc4_;
+            this._staticHeader = staticHeader;
+            this._splittedPacketLength = messageLength;
+            this._splittedPacketId = messageId;
             this._splittedPacket = true;
             return null;
          }
          if(this._staticHeader != -1)
          {
-            this._splittedPacketLength = this.readMessageLength(this._staticHeader,param1);
+            this._splittedPacketLength = this.readMessageLength(this._staticHeader,src);
             this._staticHeader = -1;
          }
-         if(param1.bytesAvailable + this._inputBuffer.length >= this._splittedPacketLength)
+         if(src.bytesAvailable + this._inputBuffer.length >= this._splittedPacketLength)
          {
-            param1.readBytes(this._inputBuffer,this._inputBuffer.length,this._splittedPacketLength - this._inputBuffer.length);
+            src.readBytes(this._inputBuffer,this._inputBuffer.length,this._splittedPacketLength - this._inputBuffer.length);
             this._inputBuffer.position = 0;
             this.updateLatency();
-            _loc2_ = this._rawParser.parse(this._inputBuffer,this._splittedPacketId,this._splittedPacketLength);
-            MEMORY_LOG[_loc2_] = 1;
+            msg = this._rawParser.parse(this._inputBuffer,this._splittedPacketId,this._splittedPacketLength);
+            MEMORY_LOG[msg] = 1;
             this._splittedPacket = false;
             this._inputBuffer = new ByteArray();
-            return _loc2_;
+            return msg;
          }
-         param1.readBytes(this._inputBuffer,this._inputBuffer.length,param1.bytesAvailable);
+         src.readBytes(this._inputBuffer,this._inputBuffer.length,src.bytesAvailable);
          return null;
       }
       
       private function updateLatency() : void {
-         if((this._pause) || this._pauseBuffer.length > 0 || this._latestSent == 0)
+         if((this._pause) || (this._pauseBuffer.length > 0) || (this._latestSent == 0))
          {
             return;
          }
-         var _loc1_:uint = getTimer();
-         var _loc2_:uint = _loc1_ - this._latestSent;
+         var packetReceived:uint = getTimer();
+         var latency:uint = packetReceived - this._latestSent;
          this._latestSent = 0;
-         this._latencyBuffer.push(_loc2_);
+         this._latencyBuffer.push(latency);
          if(this._latencyBuffer.length > LATENCY_AVG_BUFFER_SIZE)
          {
             this._latencyBuffer.shift();
          }
       }
       
-      protected function onConnect(param1:Event) : void {
-         var _loc2_:INetworkMessage = null;
+      protected function onConnect(e:Event) : void {
+         var msg:INetworkMessage = null;
          this._connecting = false;
          if(this._timeoutTimer)
          {
@@ -525,9 +522,9 @@ package com.ankamagames.jerakine.network
          {
             _log.trace("Connection opened.");
          }
-         for each (_loc2_ in this._outputBuffer)
+         for each (msg in this._outputBuffer)
          {
-            this.lowSend(_loc2_,false);
+            this.lowSend(msg,false);
          }
          flush();
          this._inputBuffer = new ByteArray();
@@ -538,7 +535,7 @@ package com.ankamagames.jerakine.network
          }
       }
       
-      protected function onClose(param1:Event) : void {
+      protected function onClose(e:Event) : void {
          if(DEBUG_DATA)
          {
             _log.trace("Connection closed.");
@@ -553,21 +550,21 @@ package com.ankamagames.jerakine.network
          this._outputBuffer = new Array();
       }
       
-      protected function onSocketData(param1:ProgressEvent) : void {
+      protected function onSocketData(pe:ProgressEvent) : void {
          this.receive(this);
       }
       
-      protected function onSocketError(param1:IOErrorEvent) : void {
+      protected function onSocketError(e:IOErrorEvent) : void {
          if(this._lagometer)
          {
             this._lagometer.stop();
          }
          _log.error("Failure while opening socket.");
          this._connecting = false;
-         this._handler.process(new ServerConnectionFailedMessage(this,param1.text));
+         this._handler.process(new ServerConnectionFailedMessage(this,e.text));
       }
       
-      protected function onSocketTimeOut(param1:Event) : void {
+      protected function onSocketTimeOut(e:Event) : void {
          if(this._lagometer)
          {
             this._lagometer.stop();
@@ -577,19 +574,19 @@ package com.ankamagames.jerakine.network
          this._handler.process(new ServerConnectionFailedMessage(this,"timeout§§§"));
       }
       
-      protected function onSecurityError(param1:SecurityErrorEvent) : void {
+      protected function onSecurityError(see:SecurityErrorEvent) : void {
          if(this._lagometer)
          {
             this._lagometer.stop();
          }
          if(this.connected)
          {
-            _log.error("Security error while connected : " + param1.text);
-            this._handler.process(new ServerConnectionFailedMessage(this,param1.text));
+            _log.error("Security error while connected : " + see.text);
+            this._handler.process(new ServerConnectionFailedMessage(this,see.text));
          }
          else
          {
-            _log.error("Security error while disconnected : " + param1.text);
+            _log.error("Security error while disconnected : " + see.text);
          }
       }
    }

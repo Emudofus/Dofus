@@ -165,22 +165,22 @@ package com.ankamagames.dofus.network
       
       private static const _typesTypes:Dictionary = new Dictionary();
       
-      public static function getInstance(param1:Class, param2:uint) : * {
-         var _loc3_:Class = _typesTypes[param2];
-         if(!_loc3_)
+      public static function getInstance(base:Class, typeId:uint) : * {
+         var objType:Class = _typesTypes[typeId];
+         if(!objType)
          {
-            throw new Error("Type with id " + param2 + " is unknown.");
+            throw new Error("Type with id " + typeId + " is unknown.");
          }
          else
          {
-            _loc4_ = new _loc3_();
-            if(!(_loc4_ is param1))
+            obj = new objType();
+            if(!(obj is base))
             {
-               throw new Error("Type " + param2 + " is not a " + param1 + ".");
+               throw new Error("Type " + typeId + " is not a " + base + ".");
             }
             else
             {
-               return _loc4_;
+               return obj;
             }
          }
       }

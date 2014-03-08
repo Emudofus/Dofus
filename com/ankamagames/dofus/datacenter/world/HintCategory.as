@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.world
       
       public static const MODULE:String = "HintCategory";
       
-      public static function getHintCategoryById(param1:int) : HintCategory {
-         return GameData.getObject(MODULE,param1) as HintCategory;
+      public static function getHintCategoryById(id:int) : HintCategory {
+         return GameData.getObject(MODULE,id) as HintCategory;
       }
       
       public static function getHintCategories() : Array {

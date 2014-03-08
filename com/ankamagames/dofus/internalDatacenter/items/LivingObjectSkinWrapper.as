@@ -19,14 +19,14 @@ package com.ankamagames.dofus.internalDatacenter.items
       
       private static const _log:Logger = Log.getLogger(getQualifiedClassName(LivingObjectSkinWrapper));
       
-      public static function create(param1:int, param2:int, param3:int) : LivingObjectSkinWrapper {
-         var _loc4_:LivingObjectSkinWrapper = new LivingObjectSkinWrapper();
-         var _loc5_:Item = Item.getItemById(param1);
-         _loc4_._id = param1;
-         _loc4_._category = _loc5_.category;
-         _loc4_._mood = param2;
-         _loc4_._skin = param3;
-         return _loc4_;
+      public static function create(objectId:int, mood:int, skin:int) : LivingObjectSkinWrapper {
+         var skinWrapper:LivingObjectSkinWrapper = new LivingObjectSkinWrapper();
+         var item:Item = Item.getItemById(objectId);
+         skinWrapper._id = objectId;
+         skinWrapper._category = item.category;
+         skinWrapper._mood = mood;
+         skinWrapper._skin = skin;
+         return skinWrapper;
       }
       
       private var _id:int;
@@ -83,36 +83,36 @@ package com.ankamagames.dofus.internalDatacenter.items
          return this._backGroundIconUri;
       }
       
-      public function set backGroundIconUri(param1:Uri) : void {
-         this._backGroundIconUri = param1;
+      public function set backGroundIconUri(bgUri:Uri) : void {
+         this._backGroundIconUri = bgUri;
       }
       
-      public function getIconUri(param1:Boolean=true) : Uri {
-         var _loc3_:* = 0;
-         var _loc2_:* = false;
+      public function getIconUri(pngMode:Boolean=true) : Uri {
+         var iconId:* = 0;
+         var update:Boolean = false;
          if(this._uri)
          {
-            if(param1 != this._pngMode)
+            if(pngMode != this._pngMode)
             {
-               _loc2_ = true;
+               update = true;
             }
          }
          else
          {
-            _loc2_ = true;
+            update = true;
          }
-         if(_loc2_)
+         if(update)
          {
-            _loc3_ = LivingObjectSkinJntMood.getLivingObjectSkin(this._id,this._mood,this._skin);
-            if(param1)
+            iconId = LivingObjectSkinJntMood.getLivingObjectSkin(this._id,this._mood,this._skin);
+            if(pngMode)
             {
                this._pngMode = true;
-               this._uri = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.bitmap").concat(_loc3_).concat(".png"));
+               this._uri = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.bitmap").concat(iconId).concat(".png"));
             }
             else
             {
                this._pngMode = false;
-               this._uri = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.vector").concat(_loc3_).concat(".swf"));
+               this._uri = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.vector").concat(iconId).concat(".swf"));
             }
          }
          return this._uri;
@@ -130,7 +130,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          return 0;
       }
       
-      public function set endTime(param1:int) : void {
+      public function set endTime(t:int) : void {
       }
       
       public function get timer() : int {
@@ -141,10 +141,10 @@ package com.ankamagames.dofus.internalDatacenter.items
          return true;
       }
       
-      public function addHolder(param1:ISlotDataHolder) : void {
+      public function addHolder(h:ISlotDataHolder) : void {
       }
       
-      public function removeHolder(param1:ISlotDataHolder) : void {
+      public function removeHolder(h:ISlotDataHolder) : void {
       }
    }
 }

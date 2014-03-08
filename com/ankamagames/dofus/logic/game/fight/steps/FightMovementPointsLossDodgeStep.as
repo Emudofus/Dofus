@@ -7,8 +7,8 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightMovementPointsLossDodgeStep extends AbstractDodgePointLossStep implements IFightStep
    {
       
-      public function FightMovementPointsLossDodgeStep(param1:int, param2:int) {
-         super(param1,param2);
+      public function FightMovementPointsLossDodgeStep(fighterId:int, amount:int) {
+         super(fighterId,amount);
       }
       
       public function get stepType() : String {

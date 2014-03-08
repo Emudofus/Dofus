@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions
       }
       
       public static function create() : NotificationResetAction {
-         var _loc1_:NotificationResetAction = new NotificationResetAction();
-         return _loc1_;
+         var action:NotificationResetAction = new NotificationResetAction();
+         return action;
       }
    }
 }

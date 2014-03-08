@@ -7,8 +7,8 @@ package com.ankamagames.berilia.components
          super();
       }
       
-      public static function access(param1:*, param2:String) : * {
-         return param1[param2];
+      public static function access(target:*, to:String) : * {
+         return target[to];
       }
    }
 }

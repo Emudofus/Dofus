@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.alliance
          super();
       }
       
-      public static function create(param1:uint, param2:uint) : AllianceChangeGuildRightsAction {
-         var _loc3_:AllianceChangeGuildRightsAction = new AllianceChangeGuildRightsAction();
-         _loc3_.guildId = param1;
-         _loc3_.rights = param2;
-         return _loc3_;
+      public static function create(guildId:uint, rights:uint) : AllianceChangeGuildRightsAction {
+         var action:AllianceChangeGuildRightsAction = new AllianceChangeGuildRightsAction();
+         action.guildId = guildId;
+         action.rights = rights;
+         return action;
       }
       
       public var guildId:uint;

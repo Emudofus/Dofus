@@ -4,8 +4,8 @@ package com.ankamagames.dofus.logic.game.common.managers
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.dofus.logic.game.common.misc.Inventory;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.logic.game.common.misc.inventoryView.BankView;
    import com.ankamagames.dofus.logic.game.common.misc.inventoryView.BankEquipementView;
    import com.ankamagames.dofus.logic.game.common.misc.inventoryView.BankConsumablesView;
@@ -86,8 +86,8 @@ package com.ankamagames.dofus.logic.game.common.managers
          return this._presets;
       }
       
-      public function set presets(param1:Array) : void {
-         this._presets = param1;
+      public function set presets(aPresets:Array) : void {
+         this._presets = aPresets;
       }
       
       public function get bankInventory() : Inventory {
@@ -108,16 +108,16 @@ package com.ankamagames.dofus.logic.game.common.managers
          return this._shortcutBarItems;
       }
       
-      public function set shortcutBarItems(param1:Array) : void {
-         this._shortcutBarItems = param1;
+      public function set shortcutBarItems(aItems:Array) : void {
+         this._shortcutBarItems = aItems;
       }
       
       public function get shortcutBarSpells() : Array {
          return this._shortcutBarSpells;
       }
       
-      public function set shortcutBarSpells(param1:Array) : void {
-         this._shortcutBarSpells = param1;
+      public function set shortcutBarSpells(aSpells:Array) : void {
+         this._shortcutBarSpells = aSpells;
       }
    }
 }

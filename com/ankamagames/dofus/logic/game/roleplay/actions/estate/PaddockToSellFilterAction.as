@@ -9,13 +9,13 @@ package com.ankamagames.dofus.logic.game.roleplay.actions.estate
          super();
       }
       
-      public static function create(param1:int, param2:uint, param3:uint, param4:uint) : PaddockToSellFilterAction {
-         var _loc5_:PaddockToSellFilterAction = new PaddockToSellFilterAction();
-         _loc5_.areaId = param1;
-         _loc5_.atLeastNbMount = param2;
-         _loc5_.atLeastNbMachine = param3;
-         _loc5_.maxPrice = param4;
-         return _loc5_;
+      public static function create(areaId:int, atLeastNbMount:uint, atLeastNbMachine:uint, maxPrice:uint) : PaddockToSellFilterAction {
+         var a:PaddockToSellFilterAction = new PaddockToSellFilterAction();
+         a.areaId = areaId;
+         a.atLeastNbMount = atLeastNbMount;
+         a.atLeastNbMachine = atLeastNbMachine;
+         a.maxPrice = maxPrice;
+         return a;
       }
       
       public var areaId:int;

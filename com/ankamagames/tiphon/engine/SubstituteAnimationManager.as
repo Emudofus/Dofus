@@ -1,6 +1,6 @@
 package com.ankamagames.tiphon.engine
 {
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    
    public final class SubstituteAnimationManager extends Object
    {
@@ -13,26 +13,26 @@ package com.ankamagames.tiphon.engine
       
       private static var _defaultAnimations:Vector.<String> = new Vector.<String>();
       
-      public static function setDefaultAnimation(param1:String, param2:String) : void {
-         var _loc3_:int = _like.indexOf(param1);
-         if(_loc3_ == -1)
+      public static function setDefaultAnimation(like:String, defaultAnim:String) : void {
+         var indexLike:int = _like.indexOf(like);
+         if(indexLike == -1)
          {
-            _like.push(param1);
-            _defaultAnimations.push(param2);
+            _like.push(like);
+            _defaultAnimations.push(defaultAnim);
          }
          else
          {
-            _defaultAnimations[_loc3_] = param2;
+            _defaultAnimations[indexLike] = defaultAnim;
          }
       }
       
-      public static function getDefaultAnimation(param1:String) : String {
-         var _loc2_:String = null;
-         for each (_loc2_ in _like)
+      public static function getDefaultAnimation(currentAnimation:String) : String {
+         var like:String = null;
+         for each (like in _like)
          {
-            if(param1.indexOf(_loc2_) == 0)
+            if(currentAnimation.indexOf(like) == 0)
             {
-               return _defaultAnimations[_like.indexOf(_loc2_)];
+               return _defaultAnimations[_like.indexOf(like)];
             }
          }
          return null;

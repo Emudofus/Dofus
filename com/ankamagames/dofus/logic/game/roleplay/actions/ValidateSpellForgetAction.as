@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(param1:uint) : ValidateSpellForgetAction {
-         var _loc2_:ValidateSpellForgetAction = new ValidateSpellForgetAction();
-         _loc2_.spellId = param1;
-         return _loc2_;
+      public static function create(spellId:uint) : ValidateSpellForgetAction {
+         var a:ValidateSpellForgetAction = new ValidateSpellForgetAction();
+         a.spellId = spellId;
+         return a;
       }
       
       public var spellId:uint;

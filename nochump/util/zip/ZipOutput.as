@@ -40,92 +40,90 @@ package nochump.util.zip
          return this._buf;
       }
       
-      public function set comment(param1:String) : void {
-         this._comment = param1;
+      public function set comment(value:String) : void {
+         this._comment = value;
       }
       
-      public function putNextEntry(param1:ZipEntry) : void {
+      public function putNextEntry(e:ZipEntry) : void {
          if(this._entry != null)
          {
             this.closeEntry();
          }
-         if(param1.dostime == 0)
+         if(e.dostime == 0)
          {
-            param1.time = new Date().time;
+            e.time = new Date().time;
          }
-         if(param1.method == -1)
+         if(e.method == -1)
          {
-            param1.method = ZipConstants.DEFLATED;
+            e.method = ZipConstants.DEFLATED;
          }
-         switch(param1.method)
+         switch(e.method)
          {
             case ZipConstants.DEFLATED:
-               if(param1.size == -1 || param1.compressedSize == -1 || param1.crc == 0)
+               if((e.size == -1) || (e.compressedSize == -1) || (e.crc == 0))
                {
-                  param1.flag = 8;
+                  e.flag = 8;
                }
                else
                {
-                  if(!(param1.size == -1) && !(param1.compressedSize == -1) && !(param1.crc == 0))
+                  if((!(e.size == -1)) && (!(e.compressedSize == -1)) && (!(e.crc == 0)))
                   {
-                     param1.flag = 0;
+                     e.flag = 0;
                   }
                   else
                   {
                      throw new ZipError("DEFLATED entry missing size, compressed size, or crc-32");
                   }
                }
-               param1.version = 20;
+               e.version = 20;
                break;
             case ZipConstants.STORED:
-               if(param1.size == -1)
+               if(e.size == -1)
                {
-                  param1.size = param1.compressedSize;
+                  e.size = e.compressedSize;
                }
                else
                {
-                  if(param1.compressedSize == -1)
+                  if(e.compressedSize == -1)
                   {
-                     param1.compressedSize = param1.size;
+                     e.compressedSize = e.size;
                   }
                   else
                   {
-                     if(param1.size != param1.compressedSize)
+                     if(e.size != e.compressedSize)
                      {
                         throw new ZipError("STORED entry where compressed != uncompressed size");
                      }
                   }
                }
-               if(param1.size == -1 || param1.crc == 0)
+               if((e.size == -1) || (e.crc == 0))
                {
                   throw new ZipError("STORED entry missing size, compressed size, or crc-32");
                }
                else
                {
-                  param1.version = 10;
-                  param1.flag = 0;
+                  e.version = 10;
+                  e.flag = 0;
                   break;
                }
-            default:
-               throw new ZipError("unsupported compression method");
          }
-         param1.offset = this._buf.position;
-         if(this._names[param1.name] != null)
+         e.offset = this._buf.position;
+         if(this._names[e.name] != null)
          {
-            throw new ZipError("duplicate entry: " + param1.name);
+            throw new ZipError("duplicate entry: " + e.name);
          }
          else
          {
-            this._names[param1.name] = param1;
-            this.writeLOC(param1);
-            this._entries.push(param1);
-            this._entry = param1;
+            this._names[e.name] = e;
+            this.writeLOC(e);
+            this._entries.push(e);
+            this._entry = e;
             return;
          }
       }
       
-      public function write(param1:ByteArray) : void {
-         var _loc2_:ByteArray = null;
+      public function write(b:ByteArray) : void {
+         var cb:ByteArray = null;
          if(this._entry == null)
          {
             throw new ZipError("no current ZIP entry");
@@ -135,63 +133,59 @@ package nochump.util.zip
             switch(this._entry.method)
             {
                case ZipConstants.DEFLATED:
-                  _loc2_ = new ByteArray();
-                  this._def.setInput(param1);
-                  this._def.deflate(_loc2_);
-                  this._buf.writeBytes(_loc2_);
+                  cb = new ByteArray();
+                  this._def.setInput(b);
+                  this._def.deflate(cb);
+                  this._buf.writeBytes(cb);
                   break;
                case ZipConstants.STORED:
-                  this._buf.writeBytes(param1);
+                  this._buf.writeBytes(b);
                   break;
-               default:
-                  throw new Error("invalid compression method");
             }
-            this._crc.update(param1);
+            this._crc.update(b);
             return;
          }
       }
       
       public function closeEntry() : void {
-         var _loc1_:ZipEntry = this._entry;
-         if(_loc1_ != null)
+         var e:ZipEntry = this._entry;
+         if(e != null)
          {
-            switch(_loc1_.method)
+            switch(e.method)
             {
                case ZipConstants.DEFLATED:
-                  if((_loc1_.flag & 8) == 0)
+                  if((e.flag & 8) == 0)
                   {
-                     if(_loc1_.size != this._def.getBytesRead())
+                     if(e.size != this._def.getBytesRead())
                      {
-                        throw new ZipError("invalid entry size (expected " + _loc1_.size + " but got " + this._def.getBytesRead() + " bytes)");
+                        throw new ZipError("invalid entry size (expected " + e.size + " but got " + this._def.getBytesRead() + " bytes)");
                      }
                      else
                      {
-                        if(_loc1_.compressedSize != this._def.getBytesWritten())
+                        if(e.compressedSize != this._def.getBytesWritten())
                         {
-                           throw new ZipError("invalid entry compressed size (expected " + _loc1_.compressedSize + " but got " + this._def.getBytesWritten() + " bytes)");
+                           throw new ZipError("invalid entry compressed size (expected " + e.compressedSize + " but got " + this._def.getBytesWritten() + " bytes)");
                         }
                         else
                         {
-                           if(_loc1_.crc != this._crc.getValue())
+                           if(e.crc != this._crc.getValue())
                            {
-                              throw new ZipError("invalid entry CRC-32 (expected 0x" + _loc1_.crc + " but got 0x" + this._crc.getValue() + ")");
+                              throw new ZipError("invalid entry CRC-32 (expected 0x" + e.crc + " but got 0x" + this._crc.getValue() + ")");
                            }
                         }
                      }
                   }
                   else
                   {
-                     _loc1_.size = this._def.getBytesRead();
-                     _loc1_.compressedSize = this._def.getBytesWritten();
-                     _loc1_.crc = this._crc.getValue();
-                     this.writeEXT(_loc1_);
+                     e.size = this._def.getBytesRead();
+                     e.compressedSize = this._def.getBytesWritten();
+                     e.crc = this._crc.getValue();
+                     this.writeEXT(e);
                   }
                   this._def.reset();
                   break;
                case ZipConstants.STORED:
                   break;
-               default:
-                  throw new Error("invalid compression method");
             }
             this._crc.reset();
             this._entry = null;
@@ -209,25 +203,25 @@ package nochump.util.zip
          }
          else
          {
-            _loc1_ = this._buf.position;
-            _loc2_ = 0;
-            while(_loc2_ < this._entries.length)
+            off = this._buf.position;
+            i = 0;
+            while(i < this._entries.length)
             {
-               this.writeCEN(this._entries[_loc2_]);
-               _loc2_++;
+               this.writeCEN(this._entries[i]);
+               i++;
             }
-            this.writeEND(_loc1_,this._buf.position - _loc1_);
+            this.writeEND(off,this._buf.position - off);
             return;
          }
       }
       
-      private function writeLOC(param1:ZipEntry) : void {
+      private function writeLOC(e:ZipEntry) : void {
          this._buf.writeUnsignedInt(ZipConstants.LOCSIG);
-         this._buf.writeShort(param1.version);
-         this._buf.writeShort(param1.flag);
-         this._buf.writeShort(param1.method);
-         this._buf.writeUnsignedInt(param1.dostime);
-         if((param1.flag & 8) == 8)
+         this._buf.writeShort(e.version);
+         this._buf.writeShort(e.flag);
+         this._buf.writeShort(e.method);
+         this._buf.writeUnsignedInt(e.dostime);
+         if((e.flag & 8) == 8)
          {
             this._buf.writeUnsignedInt(0);
             this._buf.writeUnsignedInt(0);
@@ -235,62 +229,62 @@ package nochump.util.zip
          }
          else
          {
-            this._buf.writeUnsignedInt(param1.crc);
-            this._buf.writeUnsignedInt(param1.compressedSize);
-            this._buf.writeUnsignedInt(param1.size);
+            this._buf.writeUnsignedInt(e.crc);
+            this._buf.writeUnsignedInt(e.compressedSize);
+            this._buf.writeUnsignedInt(e.size);
          }
-         this._buf.writeShort(param1.name.length);
-         this._buf.writeShort(param1.extra != null?param1.extra.length:0);
-         this._buf.writeUTFBytes(param1.name);
-         if(param1.extra != null)
+         this._buf.writeShort(e.name.length);
+         this._buf.writeShort(!(e.extra == null)?e.extra.length:0);
+         this._buf.writeUTFBytes(e.name);
+         if(e.extra != null)
          {
-            this._buf.writeBytes(param1.extra);
+            this._buf.writeBytes(e.extra);
          }
       }
       
-      private function writeEXT(param1:ZipEntry) : void {
+      private function writeEXT(e:ZipEntry) : void {
          this._buf.writeUnsignedInt(ZipConstants.EXTSIG);
-         this._buf.writeUnsignedInt(param1.crc);
-         this._buf.writeUnsignedInt(param1.compressedSize);
-         this._buf.writeUnsignedInt(param1.size);
+         this._buf.writeUnsignedInt(e.crc);
+         this._buf.writeUnsignedInt(e.compressedSize);
+         this._buf.writeUnsignedInt(e.size);
       }
       
-      private function writeCEN(param1:ZipEntry) : void {
+      private function writeCEN(e:ZipEntry) : void {
          this._buf.writeUnsignedInt(ZipConstants.CENSIG);
-         this._buf.writeShort(param1.version);
-         this._buf.writeShort(param1.version);
-         this._buf.writeShort(param1.flag);
-         this._buf.writeShort(param1.method);
-         this._buf.writeUnsignedInt(param1.dostime);
-         this._buf.writeUnsignedInt(param1.crc);
-         this._buf.writeUnsignedInt(param1.compressedSize);
-         this._buf.writeUnsignedInt(param1.size);
-         this._buf.writeShort(param1.name.length);
-         this._buf.writeShort(param1.extra != null?param1.extra.length:0);
-         this._buf.writeShort(param1.comment != null?param1.comment.length:0);
+         this._buf.writeShort(e.version);
+         this._buf.writeShort(e.version);
+         this._buf.writeShort(e.flag);
+         this._buf.writeShort(e.method);
+         this._buf.writeUnsignedInt(e.dostime);
+         this._buf.writeUnsignedInt(e.crc);
+         this._buf.writeUnsignedInt(e.compressedSize);
+         this._buf.writeUnsignedInt(e.size);
+         this._buf.writeShort(e.name.length);
+         this._buf.writeShort(!(e.extra == null)?e.extra.length:0);
+         this._buf.writeShort(!(e.comment == null)?e.comment.length:0);
          this._buf.writeShort(0);
          this._buf.writeShort(0);
          this._buf.writeUnsignedInt(0);
-         this._buf.writeUnsignedInt(param1.offset);
-         this._buf.writeUTFBytes(param1.name);
-         if(param1.extra != null)
+         this._buf.writeUnsignedInt(e.offset);
+         this._buf.writeUTFBytes(e.name);
+         if(e.extra != null)
          {
-            this._buf.writeBytes(param1.extra);
+            this._buf.writeBytes(e.extra);
          }
-         if(param1.comment != null)
+         if(e.comment != null)
          {
-            this._buf.writeUTFBytes(param1.comment);
+            this._buf.writeUTFBytes(e.comment);
          }
       }
       
-      private function writeEND(param1:uint, param2:uint) : void {
+      private function writeEND(off:uint, len:uint) : void {
          this._buf.writeUnsignedInt(ZipConstants.ENDSIG);
          this._buf.writeShort(0);
          this._buf.writeShort(0);
          this._buf.writeShort(this._entries.length);
          this._buf.writeShort(this._entries.length);
-         this._buf.writeUnsignedInt(param2);
-         this._buf.writeUnsignedInt(param1);
+         this._buf.writeUnsignedInt(len);
+         this._buf.writeUnsignedInt(off);
          this._buf.writeUTF(this._comment);
       }
    }

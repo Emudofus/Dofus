@@ -30,25 +30,25 @@ package com.ankamagames.dofus.types.entities
       
       private var _direction:int;
       
-      public function updateFromParentEntity(param1:TiphonSprite, param2:BehaviorData) : void {
-         var _loc3_:IAnimationModifier = null;
-         var _loc4_:* = false;
-         var _loc5_:CastingSpell = null;
-         var _loc6_:Vector.<EffectInstanceDice> = null;
-         var _loc7_:EffectInstanceDice = null;
-         this._subentity = param1;
-         this._parentData = param2;
+      public function updateFromParentEntity(target:TiphonSprite, parentData:BehaviorData) : void {
+         var modifier:IAnimationModifier = null;
+         var isAttack:* = false;
+         var cs:CastingSpell = null;
+         var effects:Vector.<EffectInstanceDice> = null;
+         var effect:EffectInstanceDice = null;
+         this._subentity = target;
+         this._parentData = parentData;
          this._direction = this._parentData.direction;
-         if((param1.animationModifiers) && (param1.animationModifiers.length))
+         if((target.animationModifiers) && (target.animationModifiers.length))
          {
-            for each (_loc3_ in param1.animationModifiers)
+            for each (modifier in target.animationModifiers)
             {
-               this._animation = _loc3_.getModifiedAnimation(param2.animation,param1.look);
+               this._animation = modifier.getModifiedAnimation(parentData.animation,target.look);
             }
          }
          else
          {
-            this._animation = param2.animation;
+            this._animation = parentData.animation;
          }
          switch(true)
          {
@@ -75,23 +75,23 @@ package com.ankamagames.dofus.types.entities
                break;
             case !(this._parentData.animation.indexOf("AnimAttaque") == -1):
                this._parentData.animation = AnimationEnum.ANIM_STATIQUE;
-               _loc5_ = FightSequenceFrame.lastCastingSpell;
-               if(_loc5_)
+               cs = FightSequenceFrame.lastCastingSpell;
+               if(cs)
                {
-                  _loc6_ = _loc5_.spellRank.effects;
-                  if(_loc6_)
+                  effects = cs.spellRank.effects;
+                  if(effects)
                   {
-                     for each (_loc7_ in _loc6_)
+                     for each (effect in effects)
                      {
-                        if(_loc7_.category == 2)
+                        if(effect.category == 2)
                         {
-                           _loc4_ = true;
+                           isAttack = true;
                            break;
                         }
                      }
                   }
                }
-               this._animation = "AnimAttaque" + (_loc4_?1:0);
+               this._animation = "AnimAttaque" + (isAttack?1:0);
                break;
             case !(this._parentData.animation.indexOf("AnimCueillir") == -1):
             case !(this._parentData.animation.indexOf("AnimFaucher") == -1):
@@ -102,11 +102,11 @@ package com.ankamagames.dofus.types.entities
                this._parentData.animation = AnimationEnum.ANIM_STATIQUE;
                break;
          }
-         if(!(this._parentData.animation.indexOf("AnimEmote") == -1) && !Tiphon.skullLibrary.hasAnim(this._parentData.parent.look.getBone(),this._parentData.animation))
+         if((!(this._parentData.animation.indexOf("AnimEmote") == -1)) && (!Tiphon.skullLibrary.hasAnim(this._parentData.parent.look.getBone(),this._parentData.animation)))
          {
             this._parentData.animation = AnimationEnum.ANIM_STATIQUE;
          }
-         param2.parent.addEventListener(TiphonEvent.RENDER_FATHER_SUCCEED,this.onFatherRendered);
+         parentData.parent.addEventListener(TiphonEvent.RENDER_FATHER_SUCCEED,this.onFatherRendered);
       }
       
       public function remove() : void {
@@ -118,15 +118,15 @@ package com.ankamagames.dofus.types.entities
          this._subentity = null;
       }
       
-      private function onFatherRendered(param1:TiphonEvent) : void {
-         var _loc4_:String = null;
+      private function onFatherRendered(e:TiphonEvent) : void {
+         var emoticonAnim:String = null;
          this._parentData.parent.removeEventListener(TiphonEvent.RENDER_FATHER_SUCCEED,this.onFatherRendered);
-         var _loc2_:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-         var _loc3_:Emoticon = _loc2_?Emoticon.getEmoticonById(_loc2_.currentEmoticon):null;
-         if((_loc3_) && (_loc3_.persistancy) && this._parentData.animation == AnimationEnum.ANIM_STATIQUE)
+         var rpEntitiesFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+         var currentEmoticon:Emoticon = rpEntitiesFrame?Emoticon.getEmoticonById(rpEntitiesFrame.currentEmoticon):null;
+         if((currentEmoticon) && (currentEmoticon.persistancy) && (this._parentData.animation == AnimationEnum.ANIM_STATIQUE))
          {
-            _loc4_ = _loc3_.getAnimName(this._subentity.look);
-            if(this._subentity.getAnimation() == _loc4_.replace("_","_Statique_"))
+            emoticonAnim = currentEmoticon.getAnimName(this._subentity.look);
+            if(this._subentity.getAnimation() == emoticonAnim.replace("_","_Statique_"))
             {
                this._animation = this._subentity.getAnimation();
             }

@@ -59,76 +59,76 @@ package com.ankamagames.dofus.types.characteristicContextual
       
       private var _type:uint = 1;
       
-      public function addStatContextual(param1:String, param2:IEntity, param3:TextFormat, param4:uint, param5:Number=1, param6:uint=2500) : CharacteristicContextual {
-         var _loc9_:TextContextual = null;
-         var _loc10_:StyledTextContextual = null;
-         var _loc11_:TweenData = null;
-         if(!param2 || param2.position.cellId == -1)
+      public function addStatContextual(sText:String, oEntity:IEntity, format:TextFormat, type:uint, pScrollSpeed:Number=1, pScrollDuration:uint=2500) : CharacteristicContextual {
+         var txtCxt:TextContextual = null;
+         var txtSCxt:StyledTextContextual = null;
+         var data:TweenData = null;
+         if((!oEntity) || (oEntity.position.cellId == -1))
          {
             return null;
          }
-         this._type = param4;
-         var _loc7_:Array = [Math.abs(16711680 - (param3.color as uint)),Math.abs(255 - (param3.color as uint)),Math.abs(26112 - (param3.color as uint)),Math.abs(10053324 - (param3.color as uint))];
-         var _loc8_:uint = _loc7_.indexOf(Math.min(_loc7_[0],_loc7_[1],_loc7_[2],_loc7_[3]));
+         this._type = type;
+         var dist:Array = [Math.abs(16711680 - (format.color as uint)),Math.abs(255 - (format.color as uint)),Math.abs(26112 - (format.color as uint)),Math.abs(10053324 - (format.color as uint))];
+         var style:uint = dist.indexOf(Math.min(dist[0],dist[1],dist[2],dist[3]));
          switch(this._type)
          {
             case 1:
-               _loc9_ = new TextContextual();
-               _loc9_.referedEntity = param2;
-               _loc9_.text = param1;
-               _loc9_.textFormat = param3;
-               _loc9_.finalize();
-               if(!this._tweenByEntities[param2])
+               txtCxt = new TextContextual();
+               txtCxt.referedEntity = oEntity;
+               txtCxt.text = sText;
+               txtCxt.textFormat = format;
+               txtCxt.finalize();
+               if(!this._tweenByEntities[oEntity])
                {
-                  this._tweenByEntities[param2] = new Array();
+                  this._tweenByEntities[oEntity] = new Array();
                }
-               _loc11_ = new TweenData(_loc9_,param2,param5,param6);
-               (this._tweenByEntities[param2] as Array).unshift(_loc11_);
-               if((this._tweenByEntities[param2] as Array).length == 1)
+               data = new TweenData(txtCxt,oEntity,pScrollSpeed,pScrollDuration);
+               (this._tweenByEntities[oEntity] as Array).unshift(data);
+               if((this._tweenByEntities[oEntity] as Array).length == 1)
                {
-                  _aEntitiesTweening.push(_loc11_);
+                  _aEntitiesTweening.push(data);
                }
                this._tweeningCount++;
-               this.beginTween(_loc9_);
+               this.beginTween(txtCxt);
                break;
             case 2:
-               _loc10_ = new StyledTextContextual(param1,_loc8_);
-               _loc10_.referedEntity = param2;
-               if(!this._tweenByEntities[param2])
+               txtSCxt = new StyledTextContextual(sText,style);
+               txtSCxt.referedEntity = oEntity;
+               if(!this._tweenByEntities[oEntity])
                {
-                  this._tweenByEntities[param2] = new Array();
+                  this._tweenByEntities[oEntity] = new Array();
                }
-               _loc11_ = new TweenData(_loc10_,param2,param5,param6);
-               (this._tweenByEntities[param2] as Array).unshift(_loc11_);
-               if((this._tweenByEntities[param2] as Array).length == 1)
+               data = new TweenData(txtSCxt,oEntity,pScrollSpeed,pScrollDuration);
+               (this._tweenByEntities[oEntity] as Array).unshift(data);
+               if((this._tweenByEntities[oEntity] as Array).length == 1)
                {
-                  _aEntitiesTweening.push(_loc11_);
+                  _aEntitiesTweening.push(data);
                }
                this._tweeningCount++;
-               this.beginTween(_loc10_);
+               this.beginTween(txtSCxt);
                break;
          }
-         return _loc9_?_loc9_:_loc10_;
+         return txtCxt?txtCxt:txtSCxt;
       }
       
-      private function removeStatContextual(param1:Number) : void {
-         var _loc2_:CharacteristicContextual = null;
-         if(_aEntitiesTweening[param1] != null)
+      private function removeStatContextual(nIndex:Number) : void {
+         var entity:CharacteristicContextual = null;
+         if(_aEntitiesTweening[nIndex] != null)
          {
-            _loc2_ = _aEntitiesTweening[param1].context;
-            _loc2_.remove();
-            Berilia.getInstance().strataLow.removeChild(_loc2_);
-            _aEntitiesTweening[param1] = null;
-            delete _aEntitiesTweening[[param1]];
+            entity = _aEntitiesTweening[nIndex].context;
+            entity.remove();
+            Berilia.getInstance().strataLow.removeChild(entity);
+            _aEntitiesTweening[nIndex] = null;
+            delete _aEntitiesTweening[[nIndex]];
          }
       }
       
-      private function beginTween(param1:CharacteristicContextual) : void {
-         Berilia.getInstance().strataLow.addChild(param1);
-         var _loc2_:IRectangle = IDisplayable(param1.referedEntity).absoluteBounds;
-         param1.x = (_loc2_.x + _loc2_.width / 2 - param1.width / 2 - StageShareManager.stageOffsetX) / StageShareManager.stageScaleX;
-         param1.y = (_loc2_.y - param1.height - StageShareManager.stageOffsetY) / StageShareManager.stageScaleY;
-         param1.alpha = 0;
+      private function beginTween(oEntity:CharacteristicContextual) : void {
+         Berilia.getInstance().strataLow.addChild(oEntity);
+         var display:IRectangle = IDisplayable(oEntity.referedEntity).absoluteBounds;
+         oEntity.x = (display.x + display.width / 2 - oEntity.width / 2 - StageShareManager.stageOffsetX) / StageShareManager.stageScaleX;
+         oEntity.y = (display.y - oEntity.height - StageShareManager.stageOffsetY) / StageShareManager.stageScaleY;
+         oEntity.alpha = 0;
          if(this._bEnterFrameNeeded)
          {
             EnterFrameDispatcher.addEventListener(this.onScroll,"CharacteristicContextManager");
@@ -136,76 +136,76 @@ package com.ankamagames.dofus.types.characteristicContextual
          }
       }
       
-      private function onScroll(param1:Event) : void {
-         var _loc3_:String = null;
-         var _loc4_:TweenData = null;
-         var _loc5_:CharacteristicContextual = null;
-         var _loc6_:Array = null;
-         var _loc7_:IRectangle = null;
-         var _loc2_:Array = [];
-         for (_loc3_ in _aEntitiesTweening)
+      private function onScroll(e:Event) : void {
+         var index:String = null;
+         var tweenData:TweenData = null;
+         var entity:CharacteristicContextual = null;
+         var entityTweenList:Array = null;
+         var display:IRectangle = null;
+         var addToNextTween:Array = [];
+         for (index in _aEntitiesTweening)
          {
-            _loc4_ = _aEntitiesTweening[_loc3_];
-            if(_loc4_)
+            tweenData = _aEntitiesTweening[index];
+            if(tweenData)
             {
-               _loc5_ = _loc4_.context;
-               _loc5_.y = _loc5_.y - _loc4_.scrollSpeed;
-               _loc4_._tweeningCurrentDistance = (getTimer() - _loc4_.startTime) / _loc4_.scrollDuration;
-               _loc6_ = this._tweenByEntities[_loc4_.entity];
-               if((_loc6_) && (_loc6_[_loc6_.length-1] == _loc4_) && _loc4_._tweeningCurrentDistance > 0.5)
+               entity = tweenData.context;
+               entity.y = entity.y - tweenData.scrollSpeed;
+               tweenData._tweeningCurrentDistance = (getTimer() - tweenData.startTime) / tweenData.scrollDuration;
+               entityTweenList = this._tweenByEntities[tweenData.entity];
+               if((entityTweenList) && (entityTweenList[entityTweenList.length - 1] == tweenData) && (tweenData._tweeningCurrentDistance > 0.5))
                {
-                  _loc6_.pop();
-                  if(_loc6_.length)
+                  entityTweenList.pop();
+                  if(entityTweenList.length)
                   {
-                     _loc6_[_loc6_.length-1].startTime = getTimer();
-                     _loc2_.push(_loc6_[_loc6_.length-1]);
+                     entityTweenList[entityTweenList.length - 1].startTime = getTimer();
+                     addToNextTween.push(entityTweenList[entityTweenList.length - 1]);
                   }
                   else
                   {
-                     delete this._tweenByEntities[[_loc4_.entity]];
+                     delete this._tweenByEntities[[tweenData.entity]];
                   }
                }
-               if(_loc4_._tweeningCurrentDistance < 1 / 8)
+               if(tweenData._tweeningCurrentDistance < 1 / 8)
                {
-                  _loc5_.alpha = _loc4_._tweeningCurrentDistance * 4;
+                  entity.alpha = tweenData._tweeningCurrentDistance * 4;
                   if(this._type == 2)
                   {
-                     _loc5_.scaleX = _loc4_._tweeningCurrentDistance * 24;
-                     _loc5_.scaleY = _loc4_._tweeningCurrentDistance * 24;
-                     _loc7_ = IDisplayable(_loc5_.referedEntity).absoluteBounds;
-                     if(!(_loc5_.referedEntity is DisplayObject) || (DisplayObject(_loc5_.referedEntity).parent))
+                     entity.scaleX = tweenData._tweeningCurrentDistance * 24;
+                     entity.scaleY = tweenData._tweeningCurrentDistance * 24;
+                     display = IDisplayable(entity.referedEntity).absoluteBounds;
+                     if((!(entity.referedEntity is DisplayObject)) || (DisplayObject(entity.referedEntity).parent))
                      {
-                        _loc5_.x = (_loc7_.x + _loc7_.width / 2 - _loc5_.width / 2 - StageShareManager.stageOffsetX) / StageShareManager.stageScaleX;
+                        entity.x = (display.x + display.width / 2 - entity.width / 2 - StageShareManager.stageOffsetX) / StageShareManager.stageScaleX;
                      }
                   }
                }
                else
                {
-                  if(_loc4_._tweeningCurrentDistance < 1 / 4)
+                  if(tweenData._tweeningCurrentDistance < 1 / 4)
                   {
-                     _loc5_.alpha = _loc4_._tweeningCurrentDistance * 4;
+                     entity.alpha = tweenData._tweeningCurrentDistance * 4;
                      if(this._type == 2)
                      {
-                        _loc5_.scaleX = 3 - _loc4_._tweeningCurrentDistance * 8;
-                        _loc5_.scaleY = 3 - _loc4_._tweeningCurrentDistance * 8;
-                        _loc7_ = IDisplayable(_loc5_.referedEntity).absoluteBounds;
-                        if(!(_loc5_.referedEntity is DisplayObject) || (DisplayObject(_loc5_.referedEntity).parent))
+                        entity.scaleX = 3 - tweenData._tweeningCurrentDistance * 8;
+                        entity.scaleY = 3 - tweenData._tweeningCurrentDistance * 8;
+                        display = IDisplayable(entity.referedEntity).absoluteBounds;
+                        if((!(entity.referedEntity is DisplayObject)) || (DisplayObject(entity.referedEntity).parent))
                         {
-                           _loc5_.x = (_loc7_.x + _loc7_.width / 2 - _loc5_.width / 2 - StageShareManager.stageOffsetX) / StageShareManager.stageScaleX;
+                           entity.x = (display.x + display.width / 2 - entity.width / 2 - StageShareManager.stageOffsetX) / StageShareManager.stageScaleX;
                         }
                      }
                   }
                   else
                   {
-                     if(_loc4_._tweeningCurrentDistance >= 3 / 4 && _loc4_._tweeningCurrentDistance < 1)
+                     if((tweenData._tweeningCurrentDistance >= 3 / 4) && (tweenData._tweeningCurrentDistance < 1))
                      {
-                        _loc5_.alpha = 1 - _loc4_._tweeningCurrentDistance;
+                        entity.alpha = 1 - tweenData._tweeningCurrentDistance;
                      }
                      else
                      {
-                        if(_loc4_._tweeningCurrentDistance >= 1)
+                        if(tweenData._tweeningCurrentDistance >= 1)
                         {
-                           this.removeStatContextual(int(_loc3_));
+                           this.removeStatContextual(int(index));
                            this._tweeningCount--;
                            if(this._tweeningCount == 0)
                            {
@@ -215,14 +215,14 @@ package com.ankamagames.dofus.types.characteristicContextual
                         }
                         else
                         {
-                           _loc5_.alpha = 1;
+                           entity.alpha = 1;
                         }
                      }
                   }
                }
             }
          }
-         _aEntitiesTweening = _aEntitiesTweening.concat(_loc2_);
+         _aEntitiesTweening = _aEntitiesTweening.concat(addToNextTween);
       }
    }
 }
@@ -233,13 +233,13 @@ import flash.utils.getTimer;
 class TweenData extends Object
 {
    
-   function TweenData(param1:CharacteristicContextual, param2:IEntity, param3:Number, param4:uint) {
+   function TweenData(oEntity:CharacteristicContextual, entity:IEntity, pScrollSpeed:Number, pScrollDuration:uint) {
       this.startTime = getTimer();
       super();
-      this.context = param1;
-      this.entity = param2;
-      this.scrollSpeed = param3;
-      this.scrollDuration = param4;
+      this.context = oEntity;
+      this.entity = entity;
+      this.scrollSpeed = pScrollSpeed;
+      this.scrollDuration = pScrollDuration;
    }
    
    public var entity:IEntity;

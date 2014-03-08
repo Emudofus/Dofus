@@ -11,25 +11,25 @@ package com.ankamagames.berilia.types.shortcut
    public class Shortcut extends Object implements IDataCenter
    {
       
-      public function Shortcut(param1:String, param2:Boolean=false, param3:String=null, param4:ShortcutCategory=null, param5:Boolean=true, param6:Boolean=true, param7:Boolean=false, param8:Boolean=false, param9:String=null) {
+      public function Shortcut(name:String, textfieldEnabled:Boolean=false, description:String=null, category:ShortcutCategory=null, bindable:Boolean=true, pVisible:Boolean=true, pRequired:Boolean=false, pHoldKeys:Boolean=false, tooltipContent:String=null) {
          super();
-         if(_shortcuts[param1])
+         if(_shortcuts[name])
          {
-            throw new BeriliaError("Shortcut name [" + param1 + "] is already use");
+            throw new BeriliaError("Shortcut name [" + name + "] is already use");
          }
          else
          {
-            _shortcuts[param1] = this;
-            this._name = param1;
-            this._description = param3;
-            this._textfieldEnabled = param2;
-            this._category = param4;
+            _shortcuts[name] = this;
+            this._name = name;
+            this._description = description;
+            this._textfieldEnabled = textfieldEnabled;
+            this._category = category;
             this._unicID = _idCount++;
-            this._bindable = param5;
-            this._visible = param6;
-            this._required = param7;
-            this._holdKeys = param8;
-            this._tooltipContent = param9;
+            this._bindable = bindable;
+            this._visible = pVisible;
+            this._required = pRequired;
+            this._holdKeys = pHoldKeys;
+            this._tooltipContent = tooltipContent;
             this._disable = false;
             BindsManager.getInstance().newShortcut(this);
             return;
@@ -49,117 +49,117 @@ package com.ankamagames.berilia.types.shortcut
       }
       
       public static function loadSavedData() : void {
-         var _loc2_:Shortcut = null;
-         var _loc3_:Dictionary = null;
-         var _loc4_:Shortcut = null;
-         var _loc5_:Array = null;
-         var _loc6_:String = null;
-         var _loc7_:uint = 0;
-         var _loc8_:* = 0;
-         var _loc9_:Array = null;
-         var _loc10_:Array = null;
-         var _loc11_:* = 0;
-         var _loc12_:* = 0;
-         var _loc13_:* = 0;
-         var _loc14_:* = 0;
-         var _loc15_:* = 0;
-         var _loc16_:* = false;
-         var _loc1_:Object = StoreDataManager.getInstance().getData(_datastoreType,"openShortcutsCategory");
-         if(_loc1_)
+         var sc:Shortcut = null;
+         var newData:Dictionary = null;
+         var s:Shortcut = null;
+         var copy:Array = null;
+         var lastCat:String = null;
+         var i:uint = 0;
+         var len:* = 0;
+         var a:Array = null;
+         var copy2:Array = null;
+         var len3:* = 0;
+         var catIndex:* = 0;
+         var nbCategoryShortcuts:* = 0;
+         var j:* = 0;
+         var len2:* = 0;
+         var disabled:* = false;
+         var savedData:Object = StoreDataManager.getInstance().getData(_datastoreType,"openShortcutsCategory");
+         if(savedData)
          {
-            if(_loc1_ is Array)
+            if(savedData is Array)
             {
-               _loc3_ = new Dictionary();
-               _loc5_ = new Array();
-               for each (_loc4_ in _shortcuts)
+               newData = new Dictionary();
+               copy = new Array();
+               for each (s in _shortcuts)
                {
-                  if(_loc4_.visible)
+                  if(s.visible)
                   {
-                     _loc5_.push(_loc4_);
+                     copy.push(s);
                   }
                }
-               _loc5_.sortOn("unicID",Array.NUMERIC);
-               _loc7_ = 0;
-               _loc8_ = _loc5_.length;
-               _loc9_ = _loc1_ as Array;
-               _loc10_ = new Array();
-               _loc7_ = 0;
-               while(_loc7_ < _loc8_)
+               copy.sortOn("unicID",Array.NUMERIC);
+               i = 0;
+               len = copy.length;
+               a = savedData as Array;
+               copy2 = new Array();
+               i = 0;
+               while(i < len)
                {
-                  _loc4_ = _loc5_[_loc7_];
-                  if(_loc4_.category.name != _loc6_)
+                  s = copy[i];
+                  if(s.category.name != lastCat)
                   {
-                     _loc12_ = _loc10_.indexOf(_loc4_.category.name);
-                     if(_loc12_ == -1)
+                     catIndex = copy2.indexOf(s.category.name);
+                     if(catIndex == -1)
                      {
-                        _loc10_.push(_loc4_.category.name);
-                        _loc10_.push(_loc4_);
-                        _loc6_ = _loc4_.category.name;
+                        copy2.push(s.category.name);
+                        copy2.push(s);
+                        lastCat = s.category.name;
                      }
                      else
                      {
-                        _loc13_ = 0;
-                        _loc14_ = _loc12_;
-                        _loc15_ = _loc10_.length;
-                        while(++_loc14_ < _loc15_)
+                        nbCategoryShortcuts = 0;
+                        j = catIndex;
+                        len2 = copy2.length;
+                        while(++j < len2)
                         {
-                           if(!(_loc10_[_loc14_] is String))
+                           if(!(copy2[j] is String))
                            {
-                              _loc13_++;
+                              nbCategoryShortcuts++;
                               continue;
                            }
                            break;
                         }
-                        _loc10_.splice(_loc12_ + _loc13_ + 1,0,_loc4_);
+                        copy2.splice(catIndex + nbCategoryShortcuts + 1,0,s);
                      }
                   }
                   else
                   {
-                     _loc10_.push(_loc4_);
+                     copy2.push(s);
                   }
-                  _loc7_++;
+                  i++;
                }
-               _loc11_ = _loc10_.length;
-               _loc7_ = 0;
-               while(_loc7_ < _loc11_)
+               len3 = copy2.length;
+               i = 0;
+               while(i < len3)
                {
-                  if(_loc10_[_loc7_] is String)
+                  if(copy2[i] is String)
                   {
-                     if(_loc9_[_loc7_] != undefined)
+                     if(a[i] != undefined)
                      {
-                        _loc3_[_loc10_[_loc7_]] = _loc9_[_loc7_];
+                        newData[copy2[i]] = a[i];
                      }
                      else
                      {
-                        _loc3_[_loc10_[_loc7_]] = true;
+                        newData[copy2[i]] = true;
                      }
                   }
-                  _loc7_++;
+                  i++;
                }
-               _loc1_ = _loc3_;
-               StoreDataManager.getInstance().setData(_datastoreType,"openShortcutsCategory",_loc1_);
+               savedData = newData;
+               StoreDataManager.getInstance().setData(_datastoreType,"openShortcutsCategory",savedData);
             }
-            for each (_loc2_ in _shortcuts)
+            for each (sc in _shortcuts)
             {
-               if(_loc2_.visible)
+               if(sc.visible)
                {
-                  if(_loc1_[_loc2_.category.name] != undefined)
+                  if(savedData[sc.category.name] != undefined)
                   {
-                     _loc16_ = !_loc1_[_loc2_.category.name];
+                     disabled = !savedData[sc.category.name];
                   }
                   else
                   {
-                     _loc1_[_loc2_.category.name] = true;
-                     _loc16_ = false;
+                     savedData[sc.category.name] = true;
+                     disabled = false;
                   }
-                  _loc2_.disable = _loc16_;
+                  sc.disable = disabled;
                }
             }
          }
       }
       
-      public static function getShortcutByName(param1:String) : Shortcut {
-         return _shortcuts[param1];
+      public static function getShortcutByName(name:String) : Shortcut {
+         return _shortcuts[name];
       }
       
       public static function getShortcuts() : Array {
@@ -222,8 +222,8 @@ package com.ankamagames.berilia.types.shortcut
          return this._visible;
       }
       
-      public function set visible(param1:Boolean) : void {
-         this._visible = param1;
+      public function set visible(value:Boolean) : void {
+         this._visible = value;
       }
       
       public function get required() : Boolean {
@@ -238,8 +238,8 @@ package com.ankamagames.berilia.types.shortcut
          return this._disable;
       }
       
-      public function set disable(param1:Boolean) : void {
-         this._disable = param1;
+      public function set disable(value:Boolean) : void {
+         this._disable = value;
       }
    }
 }

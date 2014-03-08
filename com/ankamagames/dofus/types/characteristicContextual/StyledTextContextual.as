@@ -6,9 +6,9 @@ package com.ankamagames.dofus.types.characteristicContextual
    public class StyledTextContextual extends CharacteristicContextual
    {
       
-      public function StyledTextContextual(param1:String, param2:uint) {
+      public function StyledTextContextual(value:String, style:uint) {
          super();
-         this.init(param1,param2);
+         this.init(value,style);
       }
       
       private static const STYLE_0_NUMBER_0:Class = StyledTextContextual_STYLE_0_NUMBER_0;
@@ -107,33 +107,33 @@ package com.ankamagames.dofus.types.characteristicContextual
       
       private static const STYLE_3_NUMBER_PLUS:Class = StyledTextContextual_STYLE_3_NUMBER_PLUS;
       
-      private function init(param1:String, param2:uint) : void {
-         var _loc3_:DisplayObject = null;
-         var _loc5_:String = null;
-         var _loc6_:Sprite = null;
-         var _loc4_:uint = 0;
-         while(_loc4_ < param1.length)
+      private function init(value:String, style:uint) : void {
+         var last:DisplayObject = null;
+         var char:String = null;
+         var n:Sprite = null;
+         var i:uint = 0;
+         while(i < value.length)
          {
-            _loc5_ = param1.charAt(_loc4_);
-            switch(_loc5_)
+            char = value.charAt(i);
+            switch(char)
             {
                case "-":
-                  _loc5_ = "MOINS";
+                  char = "MOINS";
                   break;
                case "+":
-                  _loc5_ = "PLUS";
+                  char = "PLUS";
                   break;
             }
-            _loc6_ = new StyledTextContextual["STYLE_" + param2 + "_NUMBER_" + _loc5_]() as Sprite;
-            _loc6_.scaleX = 0.7;
-            _loc6_.scaleY = 0.7;
-            if(_loc3_)
+            n = new StyledTextContextual["STYLE_" + style + "_NUMBER_" + char]() as Sprite;
+            n.scaleX = 0.7;
+            n.scaleY = 0.7;
+            if(last)
             {
-               _loc6_.x = _loc3_.x + _loc3_.width + 5;
+               n.x = last.x + last.width + 5;
             }
-            addChild(_loc6_);
-            _loc3_ = _loc6_;
-            _loc4_++;
+            addChild(n);
+            last = n;
+            i++;
          }
          mouseEnabled = false;
          mouseChildren = false;

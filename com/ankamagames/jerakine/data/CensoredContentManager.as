@@ -34,23 +34,23 @@ package com.ankamagames.jerakine.data
       
       private var _emtptyData:Dictionary;
       
-      public function init(param1:Array, param2:String) : void {
-         var _loc3_:ICensoredDataItem = null;
-         for each (_loc3_ in param1)
+      public function init(content:Array, lang:String) : void {
+         var censoredData:ICensoredDataItem = null;
+         for each (censoredData in content)
          {
-            if(_loc3_.lang == param2)
+            if(censoredData.lang == lang)
             {
-               if(!this._data[_loc3_.type])
+               if(!this._data[censoredData.type])
                {
-                  this._data[_loc3_.type] = new Dictionary();
+                  this._data[censoredData.type] = new Dictionary();
                }
-               this._data[_loc3_.type][_loc3_.oldValue] = _loc3_.newValue;
+               this._data[censoredData.type][censoredData.oldValue] = censoredData.newValue;
             }
          }
       }
       
-      public function getCensoredIndex(param1:int) : Dictionary {
-         return this._data[param1]?this._data[param1]:this._emtptyData;
+      public function getCensoredIndex(type:int) : Dictionary {
+         return this._data[type]?this._data[type]:this._emtptyData;
       }
    }
 }

@@ -15,8 +15,8 @@ package com.ankamagames.dofus.datacenter.items
       
       public static const MODULE:String = "ItemSets";
       
-      public static function getItemSetById(param1:uint) : ItemSet {
-         return GameData.getObject(MODULE,param1) as ItemSet;
+      public static function getItemSetById(id:uint) : ItemSet {
+         return GameData.getObject(MODULE,id) as ItemSet;
       }
       
       public static function getItemSets() : Array {

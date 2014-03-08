@@ -25,11 +25,11 @@ package com.ankamagames.dofus.network.types.game.social
          return 424;
       }
       
-      public function initGuildFactSheetInformations(param1:uint=0, param2:String="", param3:GuildEmblem=null, param4:uint=0, param5:uint=0, param6:uint=0) : GuildFactSheetInformations {
-         super.initGuildInformations(param1,param2,param3);
-         this.leaderId = param4;
-         this.guildLevel = param5;
-         this.nbMembers = param6;
+      public function initGuildFactSheetInformations(guildId:uint=0, guildName:String="", guildEmblem:GuildEmblem=null, leaderId:uint=0, guildLevel:uint=0, nbMembers:uint=0) : GuildFactSheetInformations {
+         super.initGuildInformations(guildId,guildName,guildEmblem);
+         this.leaderId = leaderId;
+         this.guildLevel = guildLevel;
+         this.nbMembers = nbMembers;
          return this;
       }
       
@@ -40,60 +40,60 @@ package com.ankamagames.dofus.network.types.game.social
          this.nbMembers = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildFactSheetInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildFactSheetInformations(output);
       }
       
-      public function serializeAs_GuildFactSheetInformations(param1:IDataOutput) : void {
-         super.serializeAs_GuildInformations(param1);
+      public function serializeAs_GuildFactSheetInformations(output:IDataOutput) : void {
+         super.serializeAs_GuildInformations(output);
          if(this.leaderId < 0)
          {
             throw new Error("Forbidden value (" + this.leaderId + ") on element leaderId.");
          }
          else
          {
-            param1.writeInt(this.leaderId);
-            if(this.guildLevel < 0 || this.guildLevel > 255)
+            output.writeInt(this.leaderId);
+            if((this.guildLevel < 0) || (this.guildLevel > 255))
             {
                throw new Error("Forbidden value (" + this.guildLevel + ") on element guildLevel.");
             }
             else
             {
-               param1.writeByte(this.guildLevel);
+               output.writeByte(this.guildLevel);
                if(this.nbMembers < 0)
                {
                   throw new Error("Forbidden value (" + this.nbMembers + ") on element nbMembers.");
                }
                else
                {
-                  param1.writeShort(this.nbMembers);
+                  output.writeShort(this.nbMembers);
                   return;
                }
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildFactSheetInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildFactSheetInformations(input);
       }
       
-      public function deserializeAs_GuildFactSheetInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.leaderId = param1.readInt();
+      public function deserializeAs_GuildFactSheetInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.leaderId = input.readInt();
          if(this.leaderId < 0)
          {
             throw new Error("Forbidden value (" + this.leaderId + ") on element of GuildFactSheetInformations.leaderId.");
          }
          else
          {
-            this.guildLevel = param1.readUnsignedByte();
-            if(this.guildLevel < 0 || this.guildLevel > 255)
+            this.guildLevel = input.readUnsignedByte();
+            if((this.guildLevel < 0) || (this.guildLevel > 255))
             {
                throw new Error("Forbidden value (" + this.guildLevel + ") on element of GuildFactSheetInformations.guildLevel.");
             }
             else
             {
-               this.nbMembers = param1.readShort();
+               this.nbMembers = input.readShort();
                if(this.nbMembers < 0)
                {
                   throw new Error("Forbidden value (" + this.nbMembers + ") on element of GuildFactSheetInformations.nbMembers.");

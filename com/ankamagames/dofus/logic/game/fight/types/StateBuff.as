@@ -14,12 +14,12 @@ package com.ankamagames.dofus.logic.game.fight.types
    public class StateBuff extends BasicBuff
    {
       
-      public function StateBuff(param1:FightTemporaryBoostStateEffect=null, param2:CastingSpell=null, param3:uint=0) {
-         if(param1)
+      public function StateBuff(effect:FightTemporaryBoostStateEffect=null, castingSpell:CastingSpell=null, actionId:uint=0) {
+         if(effect)
          {
-            super(param1,param2,param3,param1.stateId,null,null);
-            this._statName = ActionIdConverter.getActionStatName(param3);
-            this.stateId = param1.stateId;
+            super(effect,castingSpell,actionId,effect.stateId,null,null);
+            this._statName = ActionIdConverter.getActionStatName(actionId);
+            this.stateId = effect.stateId;
          }
       }
       
@@ -44,13 +44,13 @@ package com.ankamagames.dofus.logic.game.fight.types
       }
       
       override public function onRemoved() : void {
-         var _loc1_:FightBattleFrame = null;
+         var fbf:FightBattleFrame = null;
          if(!_removed)
          {
             FightersStateManager.getInstance().removeStateOnTarget(this.stateId,targetId);
             SpellWrapper.refreshAllPlayerSpellHolder(targetId);
-            _loc1_ = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
-            if((_loc1_) && (!_loc1_.executingSequence) && _loc1_.deadFightersList.indexOf(targetId) == -1)
+            fbf = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
+            if((fbf) && (!fbf.executingSequence) && (fbf.deadFightersList.indexOf(targetId) == -1))
             {
                if(actionId == 952)
                {
@@ -65,22 +65,22 @@ package com.ankamagames.dofus.logic.game.fight.types
          super.onRemoved();
       }
       
-      override public function clone(param1:int=0) : BasicBuff {
-         var _loc2_:StateBuff = new StateBuff();
-         _loc2_._statName = this._statName;
-         _loc2_.stateId = this.stateId;
-         _loc2_.id = uid;
-         _loc2_.uid = uid;
-         _loc2_.actionId = actionId;
-         _loc2_.targetId = targetId;
-         _loc2_.castingSpell = castingSpell;
-         _loc2_.duration = duration;
-         _loc2_.dispelable = dispelable;
-         _loc2_.source = source;
-         _loc2_.aliveSource = aliveSource;
-         _loc2_.parentBoostUid = parentBoostUid;
-         _loc2_.initParam(param1,param2,param3);
-         return _loc2_;
+      override public function clone(id:int=0) : BasicBuff {
+         var sb:StateBuff = new StateBuff();
+         sb._statName = this._statName;
+         sb.stateId = this.stateId;
+         sb.id = uid;
+         sb.uid = uid;
+         sb.actionId = actionId;
+         sb.targetId = targetId;
+         sb.castingSpell = castingSpell;
+         sb.duration = duration;
+         sb.dispelable = dispelable;
+         sb.source = source;
+         sb.aliveSource = aliveSource;
+         sb.parentBoostUid = parentBoostUid;
+         sb.initParam(param1,param2,param3);
+         return sb;
       }
    }
 }

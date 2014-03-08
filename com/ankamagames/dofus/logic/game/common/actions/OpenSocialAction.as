@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:String=null) : OpenSocialAction {
-         var _loc2_:OpenSocialAction = new OpenSocialAction();
-         _loc2_.name = param1;
-         return _loc2_;
+      public static function create(name:String=null) : OpenSocialAction {
+         var a:OpenSocialAction = new OpenSocialAction();
+         a.name = name;
+         return a;
       }
       
       public var name:String;

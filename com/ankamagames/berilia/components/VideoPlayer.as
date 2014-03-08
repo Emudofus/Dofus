@@ -85,7 +85,7 @@ package com.ankamagames.berilia.components
       }
       
       public function play() : void {
-         var _loc1_:SoundTransform = null;
+         var soundTrans:SoundTransform = null;
          if(this._flv)
          {
             this._netStream = new NetStream(this._netConnection);
@@ -96,9 +96,9 @@ package com.ankamagames.berilia.components
             this._netStream.soundTransform = this._soundTransform;
             if(this.mute)
             {
-               _loc1_ = new SoundTransform();
-               _loc1_.volume = 0;
-               this._netStream.soundTransform = _loc1_;
+               soundTrans = new SoundTransform();
+               soundTrans.volume = 0;
+               this._netStream.soundTransform = soundTrans;
             }
             this._netStream.play(this._flv);
          }
@@ -117,8 +117,8 @@ package com.ankamagames.berilia.components
          this._video.clear();
       }
       
-      private function onNetStatus(param1:NetStatusEvent) : void {
-         switch(param1.info.code)
+      private function onNetStatus(event:NetStatusEvent) : void {
+         switch(event.info.code)
          {
             case "NetConnection.Connect.Failed":
                Berilia.getInstance().handler.process(new VideoConnectFailedMessage(this));
@@ -157,22 +157,22 @@ package com.ankamagames.berilia.components
          }
       }
       
-      private function onSecurityError(param1:SecurityErrorEvent) : void {
+      private function onSecurityError(event:SecurityErrorEvent) : void {
          Berilia.getInstance().handler.process(new VideoConnectFailedMessage(this));
-         _log.error("Security Error: " + param1);
+         _log.error("Security Error: " + event);
       }
       
-      private function onASyncError(param1:AsyncErrorEvent) : void {
-         _log.warn("ASyncError: " + param1);
+      private function onASyncError(event:AsyncErrorEvent) : void {
+         _log.warn("ASyncError: " + event);
       }
       
       private function onBWDone() : void {
       }
       
-      private function onMetaData(param1:Object) : void {
+      private function onMetaData(info:Object) : void {
       }
       
-      private function onPropertyChange(param1:PropertyChangeEvent) : void {
+      private function onPropertyChange(event:PropertyChangeEvent) : void {
          if((this._optionManager["muteAmbientSound"]) || (this._optionManager["tubulIsDesactivated"]))
          {
             this._soundTransform = new SoundTransform(0);
@@ -187,21 +187,21 @@ package com.ankamagames.berilia.components
          }
       }
       
-      public function set flv(param1:String) : void {
+      public function set flv(value:String) : void {
          if(!getUi().uiModule.trusted)
          {
             throw new SecurityError();
          }
          else
          {
-            _loc2_ = param1.split("file://");
-            if(_loc2_.length > 1)
+            split = value.split("file://");
+            if(split.length > 1)
             {
-               this._flv = _loc2_[_loc2_.length-1];
+               this._flv = split[split.length - 1];
             }
             else
             {
-               this._flv = param1;
+               this._flv = value;
             }
             return;
          }
@@ -211,14 +211,14 @@ package com.ankamagames.berilia.components
          return this._flv;
       }
       
-      public function set fms(param1:String) : void {
+      public function set fms(value:String) : void {
          if(!getUi().uiModule.trusted)
          {
             throw new SecurityError();
          }
          else
          {
-            this._fms = param1;
+            this._fms = value;
             return;
          }
       }
@@ -231,33 +231,33 @@ package com.ankamagames.berilia.components
          return this._autoPlay;
       }
       
-      public function set autoPlay(param1:Boolean) : void {
-         this._autoPlay = param1;
+      public function set autoPlay(value:Boolean) : void {
+         this._autoPlay = value;
       }
       
-      public function set finalized(param1:Boolean) : void {
-         this._finalized = param1;
+      public function set finalized(value:Boolean) : void {
+         this._finalized = value;
       }
       
       public function get finalized() : Boolean {
          return this._finalized;
       }
       
-      public function set mute(param1:Boolean) : void {
-         var _loc2_:SoundTransform = null;
-         this._mute = param1;
+      public function set mute(mute:Boolean) : void {
+         var soundTrans:SoundTransform = null;
+         this._mute = mute;
          if(this._netStream)
          {
-            _loc2_ = new SoundTransform();
-            if(param1)
+            soundTrans = new SoundTransform();
+            if(mute)
             {
-               _loc2_.volume = 0;
+               soundTrans.volume = 0;
             }
             else
             {
-               _loc2_.volume = 1;
+               soundTrans.volume = 1;
             }
-            this._netStream.soundTransform = _loc2_;
+            this._netStream.soundTransform = soundTrans;
          }
       }
       
@@ -266,20 +266,20 @@ package com.ankamagames.berilia.components
       }
       
       private function resizeVideo() : void {
-         var _loc1_:* = NaN;
-         var _loc2_:* = NaN;
-         if(!(this._video.videoWidth == 0) && !(this._video.videoHeight == 0) && !(height == 0))
+         var videoRatio:* = NaN;
+         var playerRatio:* = NaN;
+         if((!(this._video.videoWidth == 0)) && (!(this._video.videoHeight == 0)) && (!(height == 0)))
          {
-            _loc1_ = this._video.videoWidth / this._video.videoHeight;
-            _loc2_ = width / height;
-            if(_loc1_ > _loc2_)
+            videoRatio = this._video.videoWidth / this._video.videoHeight;
+            playerRatio = width / height;
+            if(videoRatio > playerRatio)
             {
                this.stop();
                if(this._video.parent)
                {
                   removeChild(this._video);
                }
-               height = width * 1 / _loc1_;
+               height = width * 1 / videoRatio;
                y = (1024 - height) / 2;
                this.finalize();
                this.connect();
@@ -287,14 +287,14 @@ package com.ankamagames.berilia.components
             }
             else
             {
-               if(_loc1_ < _loc2_)
+               if(videoRatio < playerRatio)
                {
                   this.stop();
                   if(this._video.parent)
                   {
                      removeChild(this._video);
                   }
-                  width = height * _loc1_;
+                  width = height * videoRatio;
                   x = (1280 - width) / 2;
                   this.finalize();
                   this.connect();

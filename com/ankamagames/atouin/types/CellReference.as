@@ -13,9 +13,9 @@ package com.ankamagames.atouin.types
    public class CellReference extends Object
    {
       
-      public function CellReference(param1:uint) {
+      public function CellReference(nId:uint) {
          super();
-         this.id = param1;
+         this.id = nId;
          this.listSprites = new Array();
          this.gfxId = new Array();
       }
@@ -50,12 +50,12 @@ package com.ankamagames.atouin.types
       
       public var gfxId:Array;
       
-      public function addSprite(param1:DisplayObject) : void {
-         this.listSprites.push(param1);
+      public function addSprite(d:DisplayObject) : void {
+         this.listSprites.push(d);
       }
       
-      public function addGfx(param1:int) : void {
-         this.gfxId.push(param1);
+      public function addGfx(nGfxId:int) : void {
+         this.gfxId.push(nGfxId);
       }
       
       public function lock() : void {
@@ -70,56 +70,56 @@ package com.ankamagames.atouin.types
          return this._visible;
       }
       
-      public function set visible(param1:Boolean) : void {
-         var _loc2_:uint = 0;
-         if(this._visible != param1)
+      public function set visible(bValue:Boolean) : void {
+         var i:uint = 0;
+         if(this._visible != bValue)
          {
-            this._visible = param1;
-            _loc2_ = 0;
-            while(_loc2_ < this.listSprites.length)
+            this._visible = bValue;
+            i = 0;
+            while(i < this.listSprites.length)
             {
-               if(this.listSprites[_loc2_] != null)
+               if(this.listSprites[i] != null)
                {
-                  this.listSprites[_loc2_].visible = param1;
+                  this.listSprites[i].visible = bValue;
                }
-               _loc2_++;
+               i++;
             }
          }
       }
       
       public function get bounds() : Rectangle {
-         var _loc3_:DisplayObject = null;
-         var _loc1_:PoolableRectangle = (PoolsManager.getInstance().getRectanglePool().checkOut() as PoolableRectangle).renew();
-         var _loc2_:PoolableRectangle = PoolsManager.getInstance().getRectanglePool().checkOut() as PoolableRectangle;
-         for each (_loc3_ in this.listSprites)
+         var sprite:DisplayObject = null;
+         var rectangle:PoolableRectangle = (PoolsManager.getInstance().getRectanglePool().checkOut() as PoolableRectangle).renew();
+         var boundRect:PoolableRectangle = PoolsManager.getInstance().getRectanglePool().checkOut() as PoolableRectangle;
+         for each (sprite in this.listSprites)
          {
-            _loc1_.extend(_loc2_.renew(_loc3_.x,_loc3_.y,_loc3_.width,_loc3_.height));
+            rectangle.extend(boundRect.renew(sprite.x,sprite.y,sprite.width,sprite.height));
          }
-         PoolsManager.getInstance().getRectanglePool().checkIn(_loc2_);
-         PoolsManager.getInstance().getRectanglePool().checkIn(_loc1_);
-         return _loc1_ as Rectangle;
+         PoolsManager.getInstance().getRectanglePool().checkIn(boundRect);
+         PoolsManager.getInstance().getRectanglePool().checkIn(rectangle);
+         return rectangle as Rectangle;
       }
       
       public function getAvgColor() : uint {
-         var _loc4_:ColorTransform = null;
-         var _loc5_:* = 0;
-         var _loc1_:Number = 0;
-         var _loc2_:Number = 0;
-         var _loc3_:Number = 0;
-         var _loc6_:int = this.listSprites.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc6_)
+         var t:ColorTransform = null;
+         var i:* = 0;
+         var red:Number = 0;
+         var green:Number = 0;
+         var blue:Number = 0;
+         var len:int = this.listSprites.length;
+         i = 0;
+         while(i < len)
          {
-            _loc4_ = (this.listSprites[_loc5_] as DisplayObject).transform.colorTransform;
-            _loc1_ = _loc1_ + _loc4_.redOffset * _loc4_.redMultiplier;
-            _loc2_ = _loc2_ + _loc4_.greenOffset * _loc4_.greenMultiplier;
-            _loc3_ = _loc3_ + _loc4_.blueOffset * _loc4_.blueMultiplier;
-            _loc5_ = _loc5_ + 1;
+            t = (this.listSprites[i] as DisplayObject).transform.colorTransform;
+            red = red + t.redOffset * t.redMultiplier;
+            green = green + t.greenOffset * t.greenMultiplier;
+            blue = blue + t.blueOffset * t.blueMultiplier;
+            i = i + 1;
          }
-         _loc1_ = _loc1_ / _loc6_;
-         _loc2_ = _loc2_ / _loc6_;
-         _loc3_ = _loc3_ / _loc6_;
-         return _loc1_ << 16 | _loc2_ << 8 | _loc3_;
+         red = red / len;
+         green = green / len;
+         blue = blue / len;
+         return red << 16 | green << 8 | blue;
       }
    }
 }

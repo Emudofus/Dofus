@@ -10,12 +10,12 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightSpellCooldownVariationStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightSpellCooldownVariationStep(param1:int, param2:int, param3:int, param4:int) {
+      public function FightSpellCooldownVariationStep(fighterId:int, actionId:int, spellId:int, value:int) {
          super();
-         this._fighterId = param1;
-         this._spellId = param3;
-         this._actionId = param2;
-         this._value = param4;
+         this._fighterId = fighterId;
+         this._spellId = spellId;
+         this._actionId = actionId;
+         this._value = value;
       }
       
       private var _fighterId:int;
@@ -31,30 +31,30 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc1_:SpellCastInFightManager = null;
-         var _loc2_:PlayedCharacterManager = null;
-         var _loc3_:uint = 0;
-         var _loc4_:SpellWrapper = null;
-         var _loc5_:SpellManager = null;
+         var spellCastManager:SpellCastInFightManager = null;
+         var playerManager:PlayedCharacterManager = null;
+         var spellLvl:uint = 0;
+         var spellKnown:SpellWrapper = null;
+         var spellManager:SpellManager = null;
          if(this._fighterId == CurrentPlayedFighterManager.getInstance().currentFighterId)
          {
-            _loc1_ = CurrentPlayedFighterManager.getInstance().getSpellCastManagerById(this._fighterId);
-            _loc2_ = PlayedCharacterManager.getInstance();
-            for each (_loc4_ in _loc2_.spellsInventory)
+            spellCastManager = CurrentPlayedFighterManager.getInstance().getSpellCastManagerById(this._fighterId);
+            playerManager = PlayedCharacterManager.getInstance();
+            for each (spellKnown in playerManager.spellsInventory)
             {
-               if(_loc4_.id == this._spellId)
+               if(spellKnown.id == this._spellId)
                {
-                  _loc3_ = _loc4_.spellLevel;
+                  spellLvl = spellKnown.spellLevel;
                }
             }
-            if((_loc1_) && _loc3_ > 0)
+            if((spellCastManager) && (spellLvl > 0))
             {
-               if(!_loc1_.getSpellManagerBySpellId(this._spellId))
+               if(!spellCastManager.getSpellManagerBySpellId(this._spellId))
                {
-                  _loc1_.castSpell(this._spellId,_loc3_,[],false);
+                  spellCastManager.castSpell(this._spellId,spellLvl,[],false);
                }
-               _loc5_ = _loc1_.getSpellManagerBySpellId(this._spellId);
-               _loc5_.forceCooldown(this._value);
+               spellManager = spellCastManager.getSpellManagerBySpellId(this._spellId);
+               spellManager.forceCooldown(this._value);
             }
          }
          executeCallbacks();

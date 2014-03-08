@@ -13,7 +13,7 @@ package com.ankamagames.tiphon.types
    {
       
       public function ScriptedAnimation() {
-         var _loc1_:String = null;
+         var animationName:String = null;
          this.events = [];
          this.anims = [];
          super();
@@ -25,16 +25,14 @@ package com.ankamagames.tiphon.types
             {
                case 1:
                case 3:
-                  _loc1_ = spriteHandler.getAnimation() + "_1";
+                  animationName = spriteHandler.getAnimation() + "_1";
                   break;
                case 5:
                case 7:
-                  _loc1_ = spriteHandler.getAnimation() + "_5";
+                  animationName = spriteHandler.getAnimation() + "_5";
                   break;
-               default:
-                  _loc1_ = spriteHandler.getAnimation() + "_" + spriteHandler.getDirection();
             }
-            spriteHandler.tiphonEventManager.parseLabels(currentScene,_loc1_);
+            spriteHandler.tiphonEventManager.parseLabels(currentScene,animationName);
          }
          TiphonFpsManager.addOldScriptedAnimation(this);
       }
@@ -78,8 +76,8 @@ package com.ankamagames.tiphon.types
       
       public var inCache:Boolean = false;
       
-      public function playEventAtFrame(param1:int) : void {
-         if(!this.destroyed && !(param1 == this._lastFrame))
+      public function playEventAtFrame(frame:int) : void {
+         if((!this.destroyed) && (!(frame == this._lastFrame)))
          {
             if(currentLabel == PLAYER_STOP)
             {
@@ -88,13 +86,13 @@ package com.ankamagames.tiphon.types
             }
             if(!this.destroyed)
             {
-               spriteHandler.tiphonEventManager.dispatchEvents(param1);
+               spriteHandler.tiphonEventManager.dispatchEvents(frame);
             }
-            if(!this.destroyed && totalFrames > 1 && param1 == totalFrames)
+            if((!this.destroyed) && (totalFrames > 1) && (frame == totalFrames))
             {
                spriteHandler.onAnimationEvent(TiphonEvent.ANIMATION_END);
             }
-            this._lastFrame = param1;
+            this._lastFrame = frame;
          }
       }
       
@@ -112,12 +110,12 @@ package com.ankamagames.tiphon.types
          }
       }
       
-      public function setAnimation(... rest) : void {
-         trace("setAnimation",rest);
+      public function setAnimation(... args) : void {
+         trace("setAnimation",args);
       }
       
-      public function event(... rest) : void {
-         trace("event",rest);
+      public function event(... args) : void {
+         trace("event",args);
       }
       
       public function help() : void {

@@ -14,17 +14,17 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightExchangePositionsStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightExchangePositionsStep(param1:int, param2:int, param3:int, param4:int) {
+      public function FightExchangePositionsStep(fighterOne:int, fighterOneNewCell:int, fighterTwo:int, fighterTwoNewCell:int) {
          super();
-         this._fighterOne = param1;
-         this._fighterOneNewCell = param2;
-         this._fighterTwo = param3;
-         this._fighterTwoNewCell = param4;
-         var _loc5_:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterOne) as GameFightFighterInformations;
-         this._fighterOneVisibility = _loc5_.stats.invisibilityState;
-         _loc5_.disposition.cellId = this._fighterOneNewCell;
-         _loc5_ = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterTwo) as GameFightFighterInformations;
-         _loc5_.disposition.cellId = this._fighterTwoNewCell;
+         this._fighterOne = fighterOne;
+         this._fighterOneNewCell = fighterOneNewCell;
+         this._fighterTwo = fighterTwo;
+         this._fighterTwoNewCell = fighterTwoNewCell;
+         var infos:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterOne) as GameFightFighterInformations;
+         this._fighterOneVisibility = infos.stats.invisibilityState;
+         infos.disposition.cellId = this._fighterOneNewCell;
+         infos = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterTwo) as GameFightFighterInformations;
+         infos.disposition.cellId = this._fighterTwoNewCell;
       }
       
       private var _fighterOne:int;
@@ -53,23 +53,23 @@ package com.ankamagames.dofus.logic.game.fight.steps
          {
             _log.warn("Unable to move unexisting fighter " + this._fighterTwo + " (2) to " + this._fighterTwoNewCell + " during a positions exchange.");
          }
-         var _loc1_:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterOne) as GameFightFighterInformations;
-         var _loc2_:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterTwo) as GameFightFighterInformations;
-         _loc1_.disposition.cellId = this._fighterOneNewCell;
-         _loc2_.disposition.cellId = this._fighterTwoNewCell;
+         var fighterInfosOne:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterOne) as GameFightFighterInformations;
+         var fighterInfosTwo:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterTwo) as GameFightFighterInformations;
+         fighterInfosOne.disposition.cellId = this._fighterOneNewCell;
+         fighterInfosTwo.disposition.cellId = this._fighterTwoNewCell;
          FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTERS_POSITION_EXCHANGE,[this._fighterOne,this._fighterTwo],0,castingSpellId);
          FightSpellCastFrame.updateRangeAndTarget();
          executeCallbacks();
       }
       
-      private function doJump(param1:int, param2:int) : Boolean {
-         var _loc3_:IMovable = null;
-         if(param2 > -1)
+      private function doJump(fighterId:int, newCell:int) : Boolean {
+         var fighterEntity:IMovable = null;
+         if(newCell > -1)
          {
-            _loc3_ = DofusEntities.getEntity(param1) as IMovable;
-            if(_loc3_)
+            fighterEntity = DofusEntities.getEntity(fighterId) as IMovable;
+            if(fighterEntity)
             {
-               _loc3_.jump(MapPoint.fromCellId(param2));
+               fighterEntity.jump(MapPoint.fromCellId(newCell));
             }
             else
             {

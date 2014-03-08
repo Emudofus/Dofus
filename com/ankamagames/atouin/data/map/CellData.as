@@ -9,10 +9,10 @@ package com.ankamagames.atouin.data.map
    public class CellData extends Object
    {
       
-      public function CellData(param1:Map, param2:uint) {
+      public function CellData(map:Map, cellId:uint) {
          super();
-         this.id = param2;
-         this._map = param1;
+         this.id = cellId;
+         this._map = map;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CellData));
@@ -105,9 +105,8 @@ package com.ankamagames.atouin.data.map
          return !((this._arrow & 8) == 0);
       }
       
-      public function fromRaw(param1:IDataInput) : void {
+      public function fromRaw(raw:IDataInput) : void {
          var tmpBits:int = 0;
-         var raw:IDataInput = param1;
          try
          {
             this._floor = raw.readByte() * 10;

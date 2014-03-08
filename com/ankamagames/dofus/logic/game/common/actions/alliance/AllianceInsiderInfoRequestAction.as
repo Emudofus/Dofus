@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.alliance
       }
       
       public static function create() : AllianceInsiderInfoRequestAction {
-         var _loc1_:AllianceInsiderInfoRequestAction = new AllianceInsiderInfoRequestAction();
-         return _loc1_;
+         var action:AllianceInsiderInfoRequestAction = new AllianceInsiderInfoRequestAction();
+         return action;
       }
    }
 }

@@ -64,47 +64,47 @@ package com.ankamagames.dofus.uiApi
       }
       
       public static function getPlayedCharacterInfo() : Object {
-         var _loc1_:CharacterBaseInformations = PlayedCharacterManager.getInstance().infos;
-         if(!_loc1_)
+         var i:CharacterBaseInformations = PlayedCharacterManager.getInstance().infos;
+         if(!i)
          {
             return null;
          }
-         var _loc2_:Object = new Object();
-         _loc2_.id = _loc1_.id;
-         _loc2_.breed = _loc1_.breed;
-         _loc2_.level = _loc1_.level;
-         _loc2_.sex = _loc1_.sex;
-         _loc2_.name = _loc1_.name;
-         _loc2_.entityLook = EntityLookAdapter.fromNetwork(_loc1_.entityLook);
-         _loc2_.realEntityLook = _loc2_.entityLook;
+         var o:Object = new Object();
+         o.id = i.id;
+         o.breed = i.breed;
+         o.level = i.level;
+         o.sex = i.sex;
+         o.name = i.name;
+         o.entityLook = EntityLookAdapter.fromNetwork(i.entityLook);
+         o.realEntityLook = o.entityLook;
          if((isCreature()) && (PlayedCharacterManager.getInstance().realEntityLook))
          {
-            _loc2_.entityLook = EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().realEntityLook);
+            o.entityLook = EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().realEntityLook);
          }
-         var _loc3_:TiphonEntityLook = TiphonEntityLook(_loc2_.entityLook).getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0);
-         if(_loc3_)
+         var ridderLook:TiphonEntityLook = TiphonEntityLook(o.entityLook).getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0);
+         if(ridderLook)
          {
-            if(_loc3_.getBone() == 2)
+            if(ridderLook.getBone() == 2)
             {
-               _loc3_.setBone(1);
+               ridderLook.setBone(1);
             }
-            _loc2_.entityLook = _loc3_;
+            o.entityLook = ridderLook;
          }
-         return _loc2_;
+         return o;
       }
       
       public static function getCurrentEntityLook() : Object {
-         var _loc1_:TiphonEntityLook = null;
-         var _loc2_:AnimatedCharacter = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id) as AnimatedCharacter;
-         if(_loc2_)
+         var look:TiphonEntityLook = null;
+         var entity:AnimatedCharacter = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id) as AnimatedCharacter;
+         if(entity)
          {
-            _loc1_ = _loc2_.look.clone();
+            look = entity.look.clone();
          }
          else
          {
-            _loc1_ = EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().infos.entityLook);
+            look = EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().infos.entityLook);
          }
-         return _loc1_;
+         return look;
       }
       
       public static function getInventory() : Vector.<ItemWrapper> {
@@ -112,16 +112,16 @@ package com.ankamagames.dofus.uiApi
       }
       
       public static function getEquipment() : Array {
-         var _loc2_:* = undefined;
-         var _loc1_:Array = new Array();
-         for each (_loc2_ in PlayedCharacterManager.getInstance().inventory)
+         var item:* = undefined;
+         var equipment:Array = new Array();
+         for each (item in PlayedCharacterManager.getInstance().inventory)
          {
-            if(_loc2_.position <= 15)
+            if(item.position <= 15)
             {
-               _loc1_.push(_loc2_);
+               equipment.push(item);
             }
          }
-         return _loc1_;
+         return equipment;
       }
       
       public static function getSpellInventory() : Array {
@@ -137,39 +137,39 @@ package com.ankamagames.dofus.uiApi
       }
       
       public static function getTitle() : Title {
-         var _loc2_:Title = null;
-         var _loc3_:GameRolePlayCharacterInformations = null;
-         var _loc4_:* = undefined;
-         var _loc5_:Title = null;
-         var _loc1_:int = (Kernel.getWorker().getFrame(TinselFrame) as TinselFrame).currentTitle;
-         if(_loc1_)
+         var title:Title = null;
+         var playerInfo:GameRolePlayCharacterInformations = null;
+         var option:* = undefined;
+         var title2:Title = null;
+         var titleId:int = (Kernel.getWorker().getFrame(TinselFrame) as TinselFrame).currentTitle;
+         if(titleId)
          {
-            _loc2_ = Title.getTitleById(_loc1_);
-            return _loc2_;
+            title = Title.getTitleById(titleId);
+            return title;
          }
-         _loc3_ = getEntityInfos();
-         if((_loc3_) && (_loc3_.humanoidInfo))
+         playerInfo = getEntityInfos();
+         if((playerInfo) && (playerInfo.humanoidInfo))
          {
-            for each (_loc4_ in _loc3_.humanoidInfo.options)
+            for each (option in playerInfo.humanoidInfo.options)
             {
-               if(_loc4_ is HumanOptionTitle)
+               if(option is HumanOptionTitle)
                {
-                  _loc1_ = _loc4_.titleId;
+                  titleId = option.titleId;
                }
             }
-            _loc5_ = Title.getTitleById(_loc1_);
-            return _loc5_;
+            title2 = Title.getTitleById(titleId);
+            return title2;
          }
          return null;
       }
       
       public static function getOrnament() : Ornament {
-         var _loc2_:Ornament = null;
-         var _loc1_:int = (Kernel.getWorker().getFrame(TinselFrame) as TinselFrame).currentOrnament;
-         if(_loc1_)
+         var ornament:Ornament = null;
+         var ornamentId:int = (Kernel.getWorker().getFrame(TinselFrame) as TinselFrame).currentOrnament;
+         if(ornamentId)
          {
-            _loc2_ = Ornament.getOrnamentById(_loc1_);
-            return _loc2_;
+            ornament = Ornament.getOrnamentById(ornamentId);
+            return ornament;
          }
          return null;
       }
@@ -187,31 +187,31 @@ package com.ankamagames.dofus.uiApi
       }
       
       public static function getEntityInfos() : GameRolePlayCharacterInformations {
-         var _loc1_:AbstractEntitiesFrame = null;
+         var entitiesFrame:AbstractEntitiesFrame = null;
          if(isInFight())
          {
-            _loc1_ = Kernel.getWorker().getFrame(FightEntitiesFrame) as AbstractEntitiesFrame;
+            entitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as AbstractEntitiesFrame;
          }
          else
          {
-            _loc1_ = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as AbstractEntitiesFrame;
+            entitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as AbstractEntitiesFrame;
          }
-         if(!_loc1_)
+         if(!entitiesFrame)
          {
             return null;
          }
-         var _loc2_:GameRolePlayCharacterInformations = _loc1_.getEntityInfos(PlayedCharacterManager.getInstance().id) as GameRolePlayCharacterInformations;
-         return _loc2_;
+         var playerInfo:GameRolePlayCharacterInformations = entitiesFrame.getEntityInfos(PlayedCharacterManager.getInstance().id) as GameRolePlayCharacterInformations;
+         return playerInfo;
       }
       
       public static function getEntityTooltipInfos() : CharacterTooltipInformation {
-         var _loc1_:GameRolePlayCharacterInformations = getEntityInfos();
-         if(!_loc1_)
+         var playerInfo:GameRolePlayCharacterInformations = getEntityInfos();
+         if(!playerInfo)
          {
             return null;
          }
-         var _loc2_:CharacterTooltipInformation = new CharacterTooltipInformation(_loc1_,0);
-         return _loc2_;
+         var tooltipInfos:CharacterTooltipInformation = new CharacterTooltipInformation(playerInfo,0);
+         return tooltipInfos;
       }
       
       public static function inventoryWeight() : uint {
@@ -271,9 +271,9 @@ package com.ankamagames.dofus.uiApi
       }
       
       public static function isMutant() : Boolean {
-         var _loc1_:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-         var _loc2_:GameRolePlayActorInformations = _loc1_.entitiesFrame.getEntityInfos(PlayedCharacterManager.getInstance().id) as GameRolePlayActorInformations;
-         return _loc2_ is GameRolePlayMutantInformations;
+         var rcf:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+         var infos:GameRolePlayActorInformations = rcf.entitiesFrame.getEntityInfos(PlayedCharacterManager.getInstance().id) as GameRolePlayActorInformations;
+         return infos is GameRolePlayMutantInformations;
       }
       
       public static function publicMode() : Boolean {
@@ -289,32 +289,32 @@ package com.ankamagames.dofus.uiApi
       }
       
       public static function getBone() : uint {
-         var _loc1_:CharacterBaseInformations = PlayedCharacterManager.getInstance().infos;
-         return EntityLookAdapter.fromNetwork(_loc1_.entityLook).getBone();
+         var i:CharacterBaseInformations = PlayedCharacterManager.getInstance().infos;
+         return EntityLookAdapter.fromNetwork(i.entityLook).getBone();
       }
       
       public static function getSkin() : uint {
-         var _loc1_:CharacterBaseInformations = PlayedCharacterManager.getInstance().infos;
-         if((EntityLookAdapter.fromNetwork(_loc1_.entityLook)) && (EntityLookAdapter.fromNetwork(_loc1_.entityLook).getSkins()) && EntityLookAdapter.fromNetwork(_loc1_.entityLook).getSkins().length > 0)
+         var i:CharacterBaseInformations = PlayedCharacterManager.getInstance().infos;
+         if((EntityLookAdapter.fromNetwork(i.entityLook)) && (EntityLookAdapter.fromNetwork(i.entityLook).getSkins()) && (EntityLookAdapter.fromNetwork(i.entityLook).getSkins().length > 0))
          {
-            return EntityLookAdapter.fromNetwork(_loc1_.entityLook).getSkins()[0];
+            return EntityLookAdapter.fromNetwork(i.entityLook).getSkins()[0];
          }
          return 0;
       }
       
       public static function getColors() : Object {
-         var _loc1_:CharacterBaseInformations = PlayedCharacterManager.getInstance().infos;
-         return EntityLookAdapter.fromNetwork(_loc1_.entityLook).getColors();
+         var i:CharacterBaseInformations = PlayedCharacterManager.getInstance().infos;
+         return EntityLookAdapter.fromNetwork(i.entityLook).getColors();
       }
       
       public static function getSubentityColors() : Object {
-         var _loc1_:CharacterBaseInformations = PlayedCharacterManager.getInstance().infos;
-         var _loc2_:TiphonEntityLook = EntityLookAdapter.fromNetwork(_loc1_.entityLook).getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0);
-         if(!_loc2_ && (PlayedCharacterManager.getInstance().realEntityLook))
+         var i:CharacterBaseInformations = PlayedCharacterManager.getInstance().infos;
+         var subTel:TiphonEntityLook = EntityLookAdapter.fromNetwork(i.entityLook).getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0);
+         if((!subTel) && (PlayedCharacterManager.getInstance().realEntityLook))
          {
-            _loc2_ = EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().realEntityLook).getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0);
+            subTel = EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().realEntityLook).getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0);
          }
-         return _loc2_?_loc2_.getColors():null;
+         return subTel?subTel.getColors():null;
       }
       
       public static function getAlignmentSide() : int {
@@ -345,23 +345,23 @@ package com.ankamagames.dofus.uiApi
          return getMaxSummonedCreature() >= getCurrentSummonedCreature() + 1;
       }
       
-      public static function getSpell(param1:uint) : SpellWrapper {
-         return CurrentPlayedFighterManager.getInstance().getSpellById(param1);
+      public static function getSpell(spellId:uint) : SpellWrapper {
+         return CurrentPlayedFighterManager.getInstance().getSpellById(spellId);
       }
       
-      public static function canCastThisSpell(param1:uint, param2:uint) : Boolean {
-         return CurrentPlayedFighterManager.getInstance().canCastThisSpell(param1,param2);
+      public static function canCastThisSpell(spellId:uint, lvl:uint) : Boolean {
+         return CurrentPlayedFighterManager.getInstance().canCastThisSpell(spellId,lvl);
       }
       
-      public static function canCastThisSpellOnTarget(param1:uint, param2:uint, param3:int) : Boolean {
-         return CurrentPlayedFighterManager.getInstance().canCastThisSpell(param1,param2,param3);
+      public static function canCastThisSpellOnTarget(spellId:uint, lvl:uint, pTargetId:int) : Boolean {
+         return CurrentPlayedFighterManager.getInstance().canCastThisSpell(spellId,lvl,pTargetId);
       }
       
-      public static function getSpellModification(param1:uint, param2:int) : int {
-         var _loc3_:CharacterSpellModification = CurrentPlayedFighterManager.getInstance().getSpellModifications(param1,param2);
-         if((_loc3_) && (_loc3_.value))
+      public static function getSpellModification(spellId:uint, carac:int) : int {
+         var modif:CharacterSpellModification = CurrentPlayedFighterManager.getInstance().getSpellModifications(spellId,carac);
+         if((modif) && (modif.value))
          {
-            return _loc3_.value.alignGiftBonus + _loc3_.value.base + _loc3_.value.contextModif + _loc3_.value.objectsAndMountBonus;
+            return modif.value.alignGiftBonus + modif.value.base + modif.value.contextModif + modif.value.objectsAndMountBonus;
          }
          return 0;
       }
@@ -394,8 +394,8 @@ package com.ankamagames.dofus.uiApi
          return PlayedCharacterManager.getInstance().followingPlayerId;
       }
       
-      public static function getPlayerSet(param1:uint) : PlayerSetInfo {
-         return PlayedCharacterUpdatesFrame(Kernel.getWorker().getFrame(PlayedCharacterUpdatesFrame)).getPlayerSet(param1);
+      public static function getPlayerSet(objectGID:uint) : PlayerSetInfo {
+         return PlayedCharacterUpdatesFrame(Kernel.getWorker().getFrame(PlayedCharacterUpdatesFrame)).getPlayerSet(objectGID);
       }
       
       public static function getWeapon() : WeaponWrapper {
@@ -406,45 +406,45 @@ package com.ankamagames.dofus.uiApi
          return PlayedCharacterManager.getInstance().experiencePercent;
       }
       
-      public static function knowSpell(param1:uint) : int {
-         var _loc4_:uint = 0;
-         var _loc6_:uint = 0;
-         var _loc7_:SpellWrapper = null;
-         var _loc8_:* = false;
-         var _loc9_:SpellWrapper = null;
-         var _loc10_:SpellLevel = null;
-         var _loc2_:Spell = Spell.getSpellById(param1);
-         var _loc3_:SpellLevel = SpellLevel.getLevelById(param1);
-         if(param1 == 0)
+      public static function knowSpell(pSpellId:uint) : int {
+         var obtentionSpellLevel:uint = 0;
+         var playerSpellLevel:uint = 0;
+         var sp:SpellWrapper = null;
+         var disable:* = false;
+         var spellWrapper:SpellWrapper = null;
+         var spellLevelZero:SpellLevel = null;
+         var spell:Spell = Spell.getSpellById(pSpellId);
+         var spellLevel:SpellLevel = SpellLevel.getLevelById(pSpellId);
+         if(pSpellId == 0)
          {
-            _loc4_ = 0;
+            obtentionSpellLevel = 0;
          }
          else
          {
-            _loc10_ = _loc2_.getSpellLevel(1);
-            _loc4_ = _loc10_.minPlayerLevel;
+            spellLevelZero = spell.getSpellLevel(1);
+            obtentionSpellLevel = spellLevelZero.minPlayerLevel;
          }
-         var _loc5_:Array = getSpellInventory();
-         for each (_loc7_ in _loc5_)
+         var spellInv:Array = getSpellInventory();
+         for each (sp in spellInv)
          {
-            if(_loc7_.spellId == param1)
+            if(sp.spellId == pSpellId)
             {
-               _loc6_ = _loc7_.spellLevel;
+               playerSpellLevel = sp.spellLevel;
             }
          }
-         _loc8_ = true;
-         for each (_loc9_ in _loc5_)
+         disable = true;
+         for each (spellWrapper in spellInv)
          {
-            if(_loc9_.spellId == param1)
+            if(spellWrapper.spellId == pSpellId)
             {
-               _loc8_ = false;
+               disable = false;
             }
          }
-         if(_loc8_)
+         if(disable)
          {
             return -1;
          }
-         return _loc6_;
+         return playerSpellLevel;
       }
    }
 }

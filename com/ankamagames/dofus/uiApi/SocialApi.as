@@ -40,8 +40,8 @@ package com.ankamagames.dofus.uiApi
       
       private var _module:UiModule;
       
-      public function set module(param1:UiModule) : void {
-         this._module = param1;
+      public function set module(value:UiModule) : void {
+         this._module = value;
       }
       
       public function get socialFrame() : SocialFrame {
@@ -57,23 +57,23 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function getFriendsList() : Array {
-         var _loc3_:FriendWrapper = null;
-         var _loc1_:Array = new Array();
-         var _loc2_:Array = this.socialFrame.friendsList;
-         for each (_loc3_ in _loc2_)
+         var friend:FriendWrapper = null;
+         var fl:Array = new Array();
+         var friendsList:Array = this.socialFrame.friendsList;
+         for each (friend in friendsList)
          {
-            _loc1_.push(_loc3_);
+            fl.push(friend);
          }
-         _loc1_.sortOn("name",Array.CASEINSENSITIVE);
-         return _loc1_;
+         fl.sortOn("name",Array.CASEINSENSITIVE);
+         return fl;
       }
       
-      public function isFriend(param1:String) : Boolean {
-         var _loc3_:* = undefined;
-         var _loc2_:Array = this.socialFrame.friendsList;
-         for each (_loc3_ in _loc2_)
+      public function isFriend(playerName:String) : Boolean {
+         var friend:* = undefined;
+         var friendsList:Array = this.socialFrame.friendsList;
+         for each (friend in friendsList)
          {
-            if(_loc3_.playerName == param1)
+            if(friend.playerName == playerName)
             {
                return true;
             }
@@ -82,21 +82,21 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function getEnemiesList() : Array {
-         var _loc2_:EnemyWrapper = null;
-         var _loc1_:Array = new Array();
-         for each (_loc2_ in this.socialFrame.enemiesList)
+         var enemy:EnemyWrapper = null;
+         var el:Array = new Array();
+         for each (enemy in this.socialFrame.enemiesList)
          {
-            _loc1_.push(_loc2_);
+            el.push(enemy);
          }
-         _loc1_.sortOn("name",Array.CASEINSENSITIVE);
-         return _loc1_;
+         el.sortOn("name",Array.CASEINSENSITIVE);
+         return el;
       }
       
-      public function isEnemy(param1:String) : Boolean {
-         var _loc2_:* = undefined;
-         for each (_loc2_ in this.socialFrame.enemiesList)
+      public function isEnemy(playerName:String) : Boolean {
+         var enemy:* = undefined;
+         for each (enemy in this.socialFrame.enemiesList)
          {
-            if(_loc2_.playerName == param1)
+            if(enemy.playerName == playerName)
             {
                return true;
             }
@@ -105,22 +105,22 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function getIgnoredList() : Array {
-         var _loc2_:IgnoredWrapper = null;
-         var _loc1_:Array = new Array();
-         for each (_loc2_ in this.socialFrame.ignoredList)
+         var ignored:IgnoredWrapper = null;
+         var il:Array = new Array();
+         for each (ignored in this.socialFrame.ignoredList)
          {
-            _loc1_.push(_loc2_);
+            il.push(ignored);
          }
-         _loc1_.sortOn("name",Array.CASEINSENSITIVE);
-         return _loc1_;
+         il.sortOn("name",Array.CASEINSENSITIVE);
+         return il;
       }
       
-      public function isIgnored(param1:String, param2:int=0) : Boolean {
-         return this.socialFrame.isIgnored(param1,param2);
+      public function isIgnored(name:String, accountId:int=0) : Boolean {
+         return this.socialFrame.isIgnored(name,accountId);
       }
       
-      public function getAccountName(param1:String) : String {
-         return param1;
+      public function getAccountName(name:String) : String {
+         return name;
       }
       
       public function getWarnOnFriendConnec() : Boolean {
@@ -148,8 +148,8 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function getAllowedGuildEmblemSymbolCategories() : int {
-         var _loc1_:PlayedCharacterUpdatesFrame = Kernel.getWorker().getFrame(PlayedCharacterUpdatesFrame) as PlayedCharacterUpdatesFrame;
-         return _loc1_.guildEmblemSymbolCategories;
+         var playerFrame:PlayedCharacterUpdatesFrame = Kernel.getWorker().getFrame(PlayedCharacterUpdatesFrame) as PlayedCharacterUpdatesFrame;
+         return playerFrame.guildEmblemSymbolCategories;
       }
       
       public function hasGuild() : Boolean {
@@ -168,27 +168,27 @@ package com.ankamagames.dofus.uiApi
          return GuildWrapper.guildRights;
       }
       
-      public function getGuildByid(param1:int) : GuildFactSheetWrapper {
-         return this.socialFrame.getGuildById(param1);
+      public function getGuildByid(id:int) : GuildFactSheetWrapper {
+         return this.socialFrame.getGuildById(id);
       }
       
-      public function hasGuildRight(param1:uint, param2:String) : Boolean {
-         var _loc3_:GuildMember = null;
-         var _loc4_:GuildWrapper = null;
+      public function hasGuildRight(pPlayerId:uint, pRightId:String) : Boolean {
+         var member:GuildMember = null;
+         var temporaryWrapper:GuildWrapper = null;
          if(!this.socialFrame.hasGuild)
          {
             return false;
          }
-         if(param1 == PlayedCharacterManager.getInstance().id)
+         if(pPlayerId == PlayedCharacterManager.getInstance().id)
          {
-            return this.socialFrame.guild.hasRight(param2);
+            return this.socialFrame.guild.hasRight(pRightId);
          }
-         for each (_loc3_ in this.socialFrame.guildmembers)
+         for each (member in this.socialFrame.guildmembers)
          {
-            if(_loc3_.id == param1)
+            if(member.id == pPlayerId)
             {
-               _loc4_ = GuildWrapper.create(0,"",null,_loc3_.rights,true);
-               return _loc4_.hasRight(param2);
+               temporaryWrapper = GuildWrapper.create(0,"",null,member.rights,true);
+               return temporaryWrapper.hasRight(pRightId);
             }
          }
          return false;
@@ -226,49 +226,49 @@ package com.ankamagames.dofus.uiApi
          return TaxCollectorsManager.getInstance().taxCollectors;
       }
       
-      public function getTaxCollector(param1:int) : TaxCollectorWrapper {
-         return TaxCollectorsManager.getInstance().taxCollectors[param1];
+      public function getTaxCollector(id:int) : TaxCollectorWrapper {
+         return TaxCollectorsManager.getInstance().taxCollectors[id];
       }
       
       public function getGuildFightingTaxCollectors() : Dictionary {
          return TaxCollectorsManager.getInstance().guildTaxCollectorsFighters;
       }
       
-      public function getGuildFightingTaxCollector(param1:uint) : SocialEntityInFightWrapper {
-         return TaxCollectorsManager.getInstance().guildTaxCollectorsFighters[param1];
+      public function getGuildFightingTaxCollector(pFightId:uint) : SocialEntityInFightWrapper {
+         return TaxCollectorsManager.getInstance().guildTaxCollectorsFighters[pFightId];
       }
       
       public function getAllFightingTaxCollectors() : Dictionary {
          return TaxCollectorsManager.getInstance().allTaxCollectorsInPreFight;
       }
       
-      public function getAllFightingTaxCollector(param1:uint) : SocialEntityInFightWrapper {
-         return TaxCollectorsManager.getInstance().allTaxCollectorsInPreFight[param1];
+      public function getAllFightingTaxCollector(pFightId:uint) : SocialEntityInFightWrapper {
+         return TaxCollectorsManager.getInstance().allTaxCollectorsInPreFight[pFightId];
       }
       
-      public function isPlayerDefender(param1:int, param2:uint, param3:int) : Boolean {
-         var _loc4_:SocialEntityInFightWrapper = null;
-         var _loc5_:SocialFightersWrapper = null;
-         if(param1 == 0)
+      public function isPlayerDefender(pType:int, pPlayerId:uint, pSocialFightId:int) : Boolean {
+         var seifw:SocialEntityInFightWrapper = null;
+         var defender:SocialFightersWrapper = null;
+         if(pType == 0)
          {
-            _loc4_ = TaxCollectorsManager.getInstance().guildTaxCollectorsFighters[param3];
-            if(!_loc4_)
+            seifw = TaxCollectorsManager.getInstance().guildTaxCollectorsFighters[pSocialFightId];
+            if(!seifw)
             {
-               _loc4_ = TaxCollectorsManager.getInstance().allTaxCollectorsInPreFight[param3];
+               seifw = TaxCollectorsManager.getInstance().allTaxCollectorsInPreFight[pSocialFightId];
             }
          }
          else
          {
-            if(param1 == 1)
+            if(pType == 1)
             {
-               _loc4_ = TaxCollectorsManager.getInstance().prismsFighters[param3];
+               seifw = TaxCollectorsManager.getInstance().prismsFighters[pSocialFightId];
             }
          }
-         if(_loc4_)
+         if(seifw)
          {
-            for each (_loc5_ in _loc4_.allyCharactersInformations)
+            for each (defender in seifw.allyCharactersInformations)
             {
-               if(_loc5_.playerCharactersInformations.id == param2)
+               if(defender.playerCharactersInformations.id == pPlayerId)
                {
                   return true;
                }
@@ -285,8 +285,8 @@ package com.ankamagames.dofus.uiApi
          return this.allianceFrame.alliance;
       }
       
-      public function getAllianceById(param1:int) : AllianceWrapper {
-         return this.allianceFrame.getAllianceById(param1);
+      public function getAllianceById(id:int) : AllianceWrapper {
+         return this.allianceFrame.getAllianceById(id);
       }
       
       public function getAllianceGuilds() : Vector.<GuildFactSheetWrapper> {
@@ -309,26 +309,26 @@ package com.ankamagames.dofus.uiApi
          return false;
       }
       
-      public function getPrismSubAreaById(param1:int) : PrismSubAreaWrapper {
-         return this.allianceFrame.getPrismSubAreaById(param1);
+      public function getPrismSubAreaById(id:int) : PrismSubAreaWrapper {
+         return this.allianceFrame.getPrismSubAreaById(id);
       }
       
       public function getFightingPrisms() : Dictionary {
          return TaxCollectorsManager.getInstance().prismsFighters;
       }
       
-      public function getFightingPrism(param1:uint) : SocialEntityInFightWrapper {
-         return TaxCollectorsManager.getInstance().prismsFighters[param1];
+      public function getFightingPrism(pFightId:uint) : SocialEntityInFightWrapper {
+         return TaxCollectorsManager.getInstance().prismsFighters[pFightId];
       }
       
-      public function isPlayerPrismDefender(param1:uint, param2:int) : Boolean {
-         var _loc4_:SocialFightersWrapper = null;
-         var _loc3_:SocialEntityInFightWrapper = TaxCollectorsManager.getInstance().prismsFighters[param2];
-         if(_loc3_)
+      public function isPlayerPrismDefender(pPlayerId:uint, pSubAreaId:int) : Boolean {
+         var defender:SocialFightersWrapper = null;
+         var p:SocialEntityInFightWrapper = TaxCollectorsManager.getInstance().prismsFighters[pSubAreaId];
+         if(p)
          {
-            for each (_loc4_ in _loc3_.allyCharactersInformations)
+            for each (defender in p.allyCharactersInformations)
             {
-               if(_loc4_.playerCharactersInformations.id == param1)
+               if(defender.playerCharactersInformations.id == pPlayerId)
                {
                   return true;
                }
@@ -337,29 +337,29 @@ package com.ankamagames.dofus.uiApi
          return false;
       }
       
-      public function getChatSentence(param1:Number, param2:String) : BasicChatSentence {
-         var _loc6_:Array = null;
-         var _loc7_:BasicChatSentence = null;
-         var _loc3_:* = false;
-         var _loc4_:BasicChatSentence = null;
-         var _loc5_:ChatFrame = Kernel.getWorker().getFrame(ChatFrame) as ChatFrame;
-         for each (_loc6_ in _loc5_.getMessages())
+      public function getChatSentence(timestamp:Number, fingerprint:String) : BasicChatSentence {
+         var channel:Array = null;
+         var sentence:BasicChatSentence = null;
+         var found:Boolean = false;
+         var se:BasicChatSentence = null;
+         var chatFrame:ChatFrame = Kernel.getWorker().getFrame(ChatFrame) as ChatFrame;
+         for each (channel in chatFrame.getMessages())
          {
-            for each (_loc7_ in _loc6_)
+            for each (sentence in channel)
             {
-               if(_loc7_.fingerprint == param2 && _loc7_.timestamp == param1)
+               if((sentence.fingerprint == fingerprint) && (sentence.timestamp == timestamp))
                {
-                  _loc4_ = _loc7_;
-                  _loc3_ = true;
+                  se = sentence;
+                  found = true;
                   break;
                }
             }
-            if(_loc3_)
+            if(found)
             {
                break;
             }
          }
-         return _loc4_;
+         return se;
       }
    }
 }

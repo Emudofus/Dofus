@@ -15,8 +15,8 @@ package com.ankamagames.dofus.datacenter.documents
       
       private static const PAGEFEED:String = "<pagefeed/>";
       
-      public static function getDocumentById(param1:int) : Document {
-         return GameData.getObject(MODULE,param1) as Document;
+      public static function getDocumentById(id:int) : Document {
+         return GameData.getObject(MODULE,id) as Document;
       }
       
       public static function getDocuments() : Array {

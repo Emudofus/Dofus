@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5551;
       }
       
-      public function initGuildInvitationMessage(param1:uint=0) : GuildInvitationMessage {
-         this.targetId = param1;
+      public function initGuildInvitationMessage(targetId:uint=0) : GuildInvitationMessage {
+         this.targetId = targetId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.guild
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildInvitationMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildInvitationMessage(output);
       }
       
-      public function serializeAs_GuildInvitationMessage(param1:IDataOutput) : void {
+      public function serializeAs_GuildInvitationMessage(output:IDataOutput) : void {
          if(this.targetId < 0)
          {
             throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
          }
          else
          {
-            param1.writeInt(this.targetId);
+            output.writeInt(this.targetId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildInvitationMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildInvitationMessage(input);
       }
       
-      public function deserializeAs_GuildInvitationMessage(param1:IDataInput) : void {
-         this.targetId = param1.readInt();
+      public function deserializeAs_GuildInvitationMessage(input:IDataInput) : void {
+         this.targetId = input.readInt();
          if(this.targetId < 0)
          {
             throw new Error("Forbidden value (" + this.targetId + ") on element of GuildInvitationMessage.targetId.");

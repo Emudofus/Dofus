@@ -19,33 +19,33 @@ package com.ankamagames.dofus.logic.common.managers
          super();
       }
       
-      public static function showMonster(param1:int, param2:int=0) : Sprite {
-         var _loc4_:DisplayObject = null;
-         var _loc5_:Rectangle = null;
-         var _loc6_:Dictionary = null;
-         var _loc7_:Object = null;
-         var _loc3_:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-         if(_loc3_)
+      public static function showMonster(monsterId:int, loop:int=0) : Sprite {
+         var monsterClip:DisplayObject = null;
+         var rect:Rectangle = null;
+         var list:Dictionary = null;
+         var monster:Object = null;
+         var roleplayEntitiesFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+         if(roleplayEntitiesFrame)
          {
-            _loc6_ = _loc3_.getEntitiesDictionnary();
-            for each (_loc7_ in _loc6_)
+            list = roleplayEntitiesFrame.getEntitiesDictionnary();
+            for each (monster in list)
             {
-               if(_loc7_ is GameRolePlayGroupMonsterInformations && (_loc7_.staticInfos.mainCreatureLightInfos.creatureGenericId == param1 || param1 == -1))
+               if((monster is GameRolePlayGroupMonsterInformations) && ((monster.staticInfos.mainCreatureLightInfos.creatureGenericId == monsterId) || (monsterId == -1)))
                {
-                  _loc4_ = DofusEntities.getEntity(GameRolePlayGroupMonsterInformations(_loc7_).contextualId) as DisplayObject;
-                  if((_loc4_) && (_loc4_.stage))
+                  monsterClip = DofusEntities.getEntity(GameRolePlayGroupMonsterInformations(monster).contextualId) as DisplayObject;
+                  if((monsterClip) && (monsterClip.stage))
                   {
-                     return HyperlinkDisplayArrowManager.showAbsoluteArrow(new Rectangle(_loc4_.x,_loc4_.y - 80,0,0),0,0,1,param2);
+                     return HyperlinkDisplayArrowManager.showAbsoluteArrow(new Rectangle(monsterClip.x,monsterClip.y - 80,0,0),0,0,1,loop);
                   }
                   return null;
                }
-               if(_loc7_ is GameFightMonsterInformations && (_loc7_.creatureGenericId == param1 || param1 == -1))
+               if((monster is GameFightMonsterInformations) && ((monster.creatureGenericId == monsterId) || (monsterId == -1)))
                {
-                  _loc4_ = DofusEntities.getEntity(GameFightMonsterInformations(_loc7_).contextualId) as DisplayObject;
-                  if((_loc4_) && (_loc4_.stage))
+                  monsterClip = DofusEntities.getEntity(GameFightMonsterInformations(monster).contextualId) as DisplayObject;
+                  if((monsterClip) && (monsterClip.stage))
                   {
-                     _loc5_ = _loc4_.getRect(Berilia.getInstance().docMain);
-                     return HyperlinkDisplayArrowManager.showAbsoluteArrow(_loc5_,0,0,1,param2);
+                     rect = monsterClip.getRect(Berilia.getInstance().docMain);
+                     return HyperlinkDisplayArrowManager.showAbsoluteArrow(rect,0,0,1,loop);
                   }
                   return null;
                }
@@ -54,11 +54,11 @@ package com.ankamagames.dofus.logic.common.managers
          return null;
       }
       
-      public static function getMonsterName(param1:uint) : String {
-         var _loc2_:Monster = Monster.getMonsterById(param1);
-         if(_loc2_)
+      public static function getMonsterName(monsterId:uint) : String {
+         var m:Monster = Monster.getMonsterById(monsterId);
+         if(m)
          {
-            return _loc2_.name;
+            return m.name;
          }
          return "[null]";
       }

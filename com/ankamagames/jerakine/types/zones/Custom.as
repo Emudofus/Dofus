@@ -8,9 +8,9 @@ package com.ankamagames.jerakine.types.zones
    public class Custom extends Object implements IZone
    {
       
-      public function Custom(param1:Vector.<uint>) {
+      public function Custom(cells:Vector.<uint>) {
          super();
-         this._aCells = param1;
+         this._aCells = cells;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Custom));
@@ -21,28 +21,28 @@ package com.ankamagames.jerakine.types.zones
          return null;
       }
       
-      public function set radius(param1:uint) : void {
+      public function set radius(n:uint) : void {
       }
       
       public function get surface() : uint {
          return this._aCells.length;
       }
       
-      public function set minRadius(param1:uint) : void {
+      public function set minRadius(r:uint) : void {
       }
       
       public function get minRadius() : uint {
          return null;
       }
       
-      public function set direction(param1:uint) : void {
+      public function set direction(d:uint) : void {
       }
       
       public function get direction() : uint {
          return null;
       }
       
-      public function getCells(param1:uint=0) : Vector.<uint> {
+      public function getCells(cellId:uint=0) : Vector.<uint> {
          return this._aCells;
       }
    }

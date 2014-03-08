@@ -15,10 +15,10 @@ package com.ankamagames.jerakine.lua
    public class LuaPlayer extends EventDispatcher implements IScriptsPlayer
    {
       
-      public function LuaPlayer(param1:Boolean=true) {
+      public function LuaPlayer(pDispatchMessages:Boolean=true) {
          super();
          this._luaAlchemy = new LuaAlchemy();
-         this._dispatchMessages = param1;
+         this._dispatchMessages = pDispatchMessages;
          this._resetOnComplete = false;
       }
       
@@ -40,40 +40,40 @@ package com.ankamagames.jerakine.lua
          return this._resetOnComplete;
       }
       
-      public function set resetOnComplete(param1:Boolean) : void {
-         this._resetOnComplete = param1;
+      public function set resetOnComplete(pValue:Boolean) : void {
+         this._resetOnComplete = pValue;
       }
       
-      public function addApi(param1:String, param2:*) : void {
-         this._luaAlchemy.setGlobal(param1,param2);
-         switch(param1)
+      public function addApi(pApiId:String, pApi:*) : void {
+         this._luaAlchemy.setGlobal(pApiId,pApi);
+         switch(pApiId)
          {
             case "EntityApi":
-               this._entityApi = param2;
+               this._entityApi = pApi;
                break;
             case "SeqApi":
-               this._seqApi = param2;
+               this._seqApi = pApi;
                break;
             case "CameraApi":
-               this._cameraApi = param2;
+               this._cameraApi = pApi;
                break;
          }
       }
       
-      public function playScript(param1:String) : void {
+      public function playScript(pLuaScript:String) : void {
          this.init();
-         this._luaAlchemy.doStringAsync(param1,this.resultCallback);
+         this._luaAlchemy.doStringAsync(pLuaScript,this.resultCallback);
       }
       
-      public function setGlobal(param1:String, param2:*) : void {
-         this._luaAlchemy.setGlobal(param1,param2);
+      public function setGlobal(pKey:String, pValue:*) : void {
+         this._luaAlchemy.setGlobal(pKey,pValue);
       }
       
-      public function playFile(param1:String) : void {
-         var _loc2_:IResourceLoader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SINGLE_LOADER);
-         _loc2_.addEventListener(ResourceLoadedEvent.LOADED,this.onFileLoaded);
-         _loc2_.addEventListener(ResourceErrorEvent.ERROR,this.onFileLoadError);
-         _loc2_.load(new Uri(param1));
+      public function playFile(pUri:String) : void {
+         var loader:IResourceLoader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SINGLE_LOADER);
+         loader.addEventListener(ResourceLoadedEvent.LOADED,this.onFileLoaded);
+         loader.addEventListener(ResourceErrorEvent.ERROR,this.onFileLoadError);
+         loader.load(new Uri(pUri));
       }
       
       public function reset() : void {
@@ -104,28 +104,28 @@ package com.ankamagames.jerakine.lua
          OptionManager.getOptionManager("tiphon").alwaysShowAuraOnFront = false;
       }
       
-      private function onFileLoaded(param1:ResourceLoadedEvent) : void {
-         param1.currentTarget.removeEventListener(ResourceLoadedEvent.LOADED,this.onFileLoaded);
+      private function onFileLoaded(pEvent:ResourceLoadedEvent) : void {
+         pEvent.currentTarget.removeEventListener(ResourceLoadedEvent.LOADED,this.onFileLoaded);
          this.init();
-         var _loc2_:ByteArray = param1.resource as ByteArray;
-         this._luaAlchemy.doStringAsync(_loc2_.readUTFBytes(_loc2_.bytesAvailable),this.resultCallback);
+         var ba:ByteArray = pEvent.resource as ByteArray;
+         this._luaAlchemy.doStringAsync(ba.readUTFBytes(ba.bytesAvailable),this.resultCallback);
       }
       
-      private function onFileLoadError(param1:ResourceErrorEvent) : void {
-         var _loc2_:LuaPlayerEvent = new LuaPlayerEvent(LuaPlayerEvent.PLAY_ERROR);
-         _loc2_.stackTrace = param1.errorMsg;
-         dispatchEvent(_loc2_);
+      private function onFileLoadError(pEvent:ResourceErrorEvent) : void {
+         var e:LuaPlayerEvent = new LuaPlayerEvent(LuaPlayerEvent.PLAY_ERROR);
+         e.stackTrace = pEvent.errorMsg;
+         dispatchEvent(e);
       }
       
-      private function resultCallback(param1:Array) : void {
-         var _loc3_:LuaPlayerEvent = null;
-         var _loc2_:Boolean = param1.shift();
+      private function resultCallback(pStack:Array) : void {
+         var lpe:LuaPlayerEvent = null;
+         var result:Boolean = pStack.shift();
          if(this._dispatchMessages)
          {
-            if(_loc2_)
+            if(result)
             {
                dispatchEvent(new LuaPlayerEvent(LuaPlayerEvent.PLAY_SUCCESS));
-               if(!this._seqApi || !this._seqApi.hasSequences())
+               if((!this._seqApi) || (!this._seqApi.hasSequences()))
                {
                   this.onScriptComplete();
                }
@@ -140,9 +140,9 @@ package com.ankamagames.jerakine.lua
             else
             {
                this.reset();
-               _loc3_ = new LuaPlayerEvent(LuaPlayerEvent.PLAY_ERROR);
-               _loc3_.stackTrace = param1[0];
-               dispatchEvent(_loc3_);
+               lpe = new LuaPlayerEvent(LuaPlayerEvent.PLAY_ERROR);
+               lpe.stackTrace = pStack[0];
+               dispatchEvent(lpe);
             }
          }
       }

@@ -12,11 +12,11 @@ package com.ankamagames.dofus.console.moduleLogger
    public final class FilterUI extends Sprite
    {
       
-      public function FilterUI(param1:uint) {
+      public function FilterUI(backgroundColor:uint) {
          this._excludeList = new Array();
          this._includeList = new Array();
          super();
-         this._backgroundColor = param1;
+         this._backgroundColor = backgroundColor;
          this.createUI();
          this._filterList.text = "";
          addEventListener(MouseEvent.MOUSE_DOWN,this.onMouseDown);
@@ -42,21 +42,21 @@ package com.ankamagames.dofus.console.moduleLogger
       
       private var _filterList:TextField;
       
-      public function isFiltered(param1:String) : Boolean {
-         var _loc2_:* = 0;
-         var _loc3_:* = 0;
-         var param1:String = param1.toLocaleLowerCase();
+      public function isFiltered(text:String) : Boolean {
+         var num:* = 0;
+         var i:* = 0;
+         var text:String = text.toLocaleLowerCase();
          if(this.excludeMode)
          {
-            return !(this._excludeList.indexOf(param1) == -1);
+            return !(this._excludeList.indexOf(text) == -1);
          }
          if(this._includeList.length)
          {
-            _loc2_ = this._includeList.length;
-            _loc3_ = -1;
-            while(++_loc3_ < _loc2_)
+            num = this._includeList.length;
+            i = -1;
+            while(++i < num)
             {
-               if(param1.indexOf(this._includeList[_loc3_]) != -1)
+               if(text.indexOf(this._includeList[i]) != -1)
                {
                   return false;
                }
@@ -66,43 +66,43 @@ package com.ankamagames.dofus.console.moduleLogger
          return false;
       }
       
-      public function addToFilter(param1:String) : void {
-         if(this._filterList.text.toLocaleLowerCase().indexOf(param1.toLocaleLowerCase()) != -1)
+      public function addToFilter(text:String) : void {
+         if(this._filterList.text.toLocaleLowerCase().indexOf(text.toLocaleLowerCase()) != -1)
          {
             return;
          }
          if(this._filterList.text)
          {
-            this._filterList.appendText("\n" + param1);
+            this._filterList.appendText("\n" + text);
          }
          else
          {
-            this._filterList.appendText(param1);
+            this._filterList.appendText(text);
          }
          this.onTextChange();
       }
       
       public function getCurrentOptions() : Object {
-         var _loc1_:Object = new Object();
-         _loc1_.excludeMode = this.excludeMode;
-         _loc1_.excludeText = this._excludeText;
-         _loc1_.includeText = this._includeText;
-         _loc1_.isOn = this.isOn;
-         return _loc1_;
+         var data:Object = new Object();
+         data.excludeMode = this.excludeMode;
+         data.excludeText = this._excludeText;
+         data.includeText = this._includeText;
+         data.isOn = this.isOn;
+         return data;
       }
       
-      public function setOptions(param1:Object) : void {
-         this.excludeMode = param1.excludeMode;
-         this._excludeText = param1.excludeText;
-         this._includeText = param1.includeText;
-         this.isOn = param1.isOn;
+      public function setOptions(data:Object) : void {
+         this.excludeMode = data.excludeMode;
+         this._excludeText = data.excludeText;
+         this._includeText = data.includeText;
+         this.isOn = data.isOn;
          this.updateTitleText();
          this.onTextChange();
       }
       
       public function resize() : void {
-         var _loc1_:* = 0;
-         var _loc2_:* = 0;
+         var w:* = 0;
+         var h:* = 0;
          if((this._filterList) && (this._title))
          {
             this._filterList.width = this._filterList.textWidth + 10;
@@ -113,17 +113,17 @@ package com.ankamagames.dofus.console.moduleLogger
             this._filterList.height = this._filterList.textHeight + 10;
             if(this._title.width > this._filterList.width)
             {
-               _loc1_ = this._title.width;
+               w = this._title.width;
             }
             else
             {
-               _loc1_ = this._filterList.width;
+               w = this._filterList.width;
             }
-            _loc1_ = _loc1_ + 10;
-            _loc2_ = this._filterList.y + this._filterList.height;
+            w = w + 10;
+            h = this._filterList.y + this._filterList.height;
             graphics.clear();
             graphics.beginFill(this._backgroundColor);
-            graphics.drawRoundRect(0,0,_loc1_,_loc2_,10);
+            graphics.drawRoundRect(0,0,w,h,10);
             graphics.endFill();
             this._filterList.x = 5;
             this._filterList.y = 5 + TITLE_HEIGHT;
@@ -146,12 +146,12 @@ package com.ankamagames.dofus.console.moduleLogger
          this._filterList.mouseWheelEnabled = false;
          this._filterList.type = TextFieldType.INPUT;
          this._filterList.addEventListener(Event.CHANGE,this.onTextChange);
-         var _loc1_:TextFormat = new TextFormat();
-         _loc1_.font = "Courier New";
-         _loc1_.size = 14;
-         _loc1_.color = 9937645;
-         this._filterList.defaultTextFormat = _loc1_;
-         this._title.defaultTextFormat = _loc1_;
+         var textFormat:TextFormat = new TextFormat();
+         textFormat.font = "Courier New";
+         textFormat.size = 14;
+         textFormat.color = 9937645;
+         this._filterList.defaultTextFormat = textFormat;
+         this._title.defaultTextFormat = textFormat;
          this._title.styleSheet = Console.CONSOLE_STYLE;
          addChild(this._title);
          addChild(this._filterList);
@@ -172,15 +172,15 @@ package com.ankamagames.dofus.console.moduleLogger
          }
       }
       
-      private function onTitleClick(param1:TextEvent) : void {
-         if(param1.text == "change")
+      private function onTitleClick(event:TextEvent) : void {
+         if(event.text == "change")
          {
             this.excludeMode = !this.excludeMode;
             this.updateTitleText();
          }
          else
          {
-            if(param1.text == "active")
+            if(event.text == "active")
             {
                this.isOn = !this.isOn;
                this.updateTitleText();
@@ -190,10 +190,10 @@ package com.ankamagames.dofus.console.moduleLogger
          dispatchEvent(new Event(Event.CHANGE));
       }
       
-      private function onTextClick(param1:TextEvent) : void {
+      private function onTextClick(event:TextEvent) : void {
       }
       
-      private function onTextChange(param1:Event=null) : void {
+      private function onTextChange(event:Event=null) : void {
          if(this.excludeMode)
          {
             this._excludeText = this._filterList.text;
@@ -219,18 +219,18 @@ package com.ankamagames.dofus.console.moduleLogger
       
       private var offsetY:int;
       
-      private function onMouseDown(param1:Event) : void {
+      private function onMouseDown(e:Event) : void {
       }
       
-      private function onMouseUp(param1:Event) : void {
+      private function onMouseUp(e:Event) : void {
          stage.removeEventListener(MouseEvent.MOUSE_UP,this.onMouseUp);
          stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
       }
       
-      private function onMouseMove(param1:MouseEvent) : void {
+      private function onMouseMove(e:MouseEvent) : void {
          x = stage.mouseX - this.offsetX;
          y = stage.mouseY - this.offsetY;
-         param1.updateAfterEvent();
+         e.updateAfterEvent();
       }
    }
 }

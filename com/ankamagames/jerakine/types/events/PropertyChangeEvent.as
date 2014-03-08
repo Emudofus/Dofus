@@ -5,12 +5,12 @@ package com.ankamagames.jerakine.types.events
    public class PropertyChangeEvent extends Event
    {
       
-      public function PropertyChangeEvent(param1:*, param2:String, param3:*, param4:*) {
+      public function PropertyChangeEvent(watchedClassInstance:*, propertyName:String, propertyValue:*, propertyOldValue:*) {
          super(PROPERTY_CHANGED,false,false);
-         this._watchedClassInstance = param1;
-         this._propertyName = param2;
-         this._propertyValue = param3;
-         this._propertyOldValue = param4;
+         this._watchedClassInstance = watchedClassInstance;
+         this._propertyName = propertyName;
+         this._propertyValue = propertyValue;
+         this._propertyOldValue = propertyOldValue;
       }
       
       public static var PROPERTY_CHANGED:String = "watchPropertyChanged";

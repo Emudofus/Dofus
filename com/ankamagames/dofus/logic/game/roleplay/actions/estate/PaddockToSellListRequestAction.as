@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.roleplay.actions.estate
          super();
       }
       
-      public static function create(param1:uint) : PaddockToSellListRequestAction {
-         var _loc2_:PaddockToSellListRequestAction = new PaddockToSellListRequestAction();
-         _loc2_.pageIndex = param1;
-         return _loc2_;
+      public static function create(pageIndex:uint) : PaddockToSellListRequestAction {
+         var a:PaddockToSellListRequestAction = new PaddockToSellListRequestAction();
+         a.pageIndex = pageIndex;
+         return a;
       }
       
       public var pageIndex:uint;

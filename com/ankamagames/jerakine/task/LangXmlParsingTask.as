@@ -14,12 +14,12 @@ package com.ankamagames.jerakine.task
    public class LangXmlParsingTask extends SplittedTask
    {
       
-      public function LangXmlParsingTask(param1:Array, param2:String, param3:Boolean=true) {
+      public function LangXmlParsingTask(aFiles:Array, sUrlProvider:String, parseReference:Boolean=true) {
          super();
          this._nCurrentIndex = 0;
-         this._aFiles = param1;
-         this._sUrlProvider = param2;
-         this._parseReference = param3;
+         this._aFiles = aFiles;
+         this._sUrlProvider = sUrlProvider;
+         this._parseReference = parseReference;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LangXmlParsingTask));
@@ -33,16 +33,16 @@ package com.ankamagames.jerakine.task
       private var _parseReference:Boolean;
       
       override public function step() : Boolean {
-         var _loc1_:LangFile = null;
+         var file:LangFile = null;
          if(this._aFiles.length)
          {
-            _loc1_ = LangFile(this._aFiles.shift());
-            this.parseXml(_loc1_.content,_loc1_.category);
-            if((_loc1_.metaData) && (_loc1_.metaData.clearFile[_loc1_.url]))
+            file = LangFile(this._aFiles.shift());
+            this.parseXml(file.content,file.category);
+            if((file.metaData) && (file.metaData.clearFile[file.url]))
             {
-               LangManager.getInstance().setFileVersion(FileUtils.getFileStartName(this._sUrlProvider) + "." + _loc1_.url,_loc1_.metaData.clearFile[_loc1_.url]);
+               LangManager.getInstance().setFileVersion(FileUtils.getFileStartName(this._sUrlProvider) + "." + file.url,file.metaData.clearFile[file.url]);
             }
-            dispatchEvent(new LangFileEvent(LangFileEvent.COMPLETE,false,false,_loc1_.url,this._sUrlProvider));
+            dispatchEvent(new LangFileEvent(LangFileEvent.COMPLETE,false,false,file.url,this._sUrlProvider));
          }
          if(!this._aFiles.length)
          {
@@ -52,16 +52,16 @@ package com.ankamagames.jerakine.task
       }
       
       public function parseForReg() : Boolean {
-         var _loc1_:LangFile = null;
+         var file:LangFile = null;
          if(this._aFiles.length)
          {
-            _loc1_ = LangFile(this._aFiles.shift());
-            this.parseXml(_loc1_.content,_loc1_.category);
-            if((_loc1_.metaData) && (_loc1_.metaData.clearFile[_loc1_.url]))
+            file = LangFile(this._aFiles.shift());
+            this.parseXml(file.content,file.category);
+            if((file.metaData) && (file.metaData.clearFile[file.url]))
             {
-               LangManager.getInstance().setFileVersion(FileUtils.getFileStartName(this._sUrlProvider) + "." + _loc1_.url,_loc1_.metaData.clearFile[_loc1_.url]);
+               LangManager.getInstance().setFileVersion(FileUtils.getFileStartName(this._sUrlProvider) + "." + file.url,file.metaData.clearFile[file.url]);
             }
-            dispatchEvent(new LangFileEvent(LangFileEvent.COMPLETE,false,false,_loc1_.url,this._sUrlProvider));
+            dispatchEvent(new LangFileEvent(LangFileEvent.COMPLETE,false,false,file.url,this._sUrlProvider));
          }
          return !this._aFiles.length;
       }
@@ -70,12 +70,10 @@ package com.ankamagames.jerakine.task
          return 1;
       }
       
-      private function parseXml(param1:String, param2:String) : void {
+      private function parseXml(sXml:String, sCategory:String) : void {
          var xml:XML = null;
          var sEntry:String = null;
          var entry:XML = null;
-         var sXml:String = param1;
-         var sCategory:String = param2;
          try
          {
             xml = new XML(sXml);

@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.taxCollector
          super();
       }
       
-      public static function create(param1:uint) : GameRolePlayTaxCollectorFightRequestAction {
-         var _loc2_:GameRolePlayTaxCollectorFightRequestAction = new GameRolePlayTaxCollectorFightRequestAction();
-         _loc2_.taxCollectorId = param1;
-         return _loc2_;
+      public static function create(pTaxCollectorId:uint) : GameRolePlayTaxCollectorFightRequestAction {
+         var action:GameRolePlayTaxCollectorFightRequestAction = new GameRolePlayTaxCollectorFightRequestAction();
+         action.taxCollectorId = pTaxCollectorId;
+         return action;
       }
       
       public var taxCollectorId:uint;

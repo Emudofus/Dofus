@@ -19,10 +19,10 @@ package com.ankamagames.dofus.types.entities
    public class ParticuleEmitterEntity extends Sprite implements IDisplayable, IEntity
    {
       
-      public function ParticuleEmitterEntity(param1:int, param2:uint) {
+      public function ParticuleEmitterEntity(nId:int, renderedType:uint) {
          super();
-         this.id = param1;
-         switch(param2)
+         this.id = nId;
+         switch(renderedType)
          {
             case NORMAL_RENDERER_TYPE:
                this._renderer = new DisplayObjectRenderer();
@@ -60,24 +60,24 @@ package com.ankamagames.dofus.types.entities
          return this._displayBehavior;
       }
       
-      public function set displayBehaviors(param1:IDisplayBehavior) : void {
-         this._displayBehavior = param1;
+      public function set displayBehaviors(oValue:IDisplayBehavior) : void {
+         this._displayBehavior = oValue;
       }
       
       public function get id() : int {
          return this._id;
       }
       
-      public function set id(param1:int) : void {
-         this._id = param1;
+      public function set id(nValue:int) : void {
+         this._id = nValue;
       }
       
       public function get position() : MapPoint {
          return this._position;
       }
       
-      public function set position(param1:MapPoint) : void {
-         this._position = param1;
+      public function set position(oValue:MapPoint) : void {
+         this._position = oValue;
       }
       
       public function get absoluteBounds() : IRectangle {
@@ -88,8 +88,8 @@ package com.ankamagames.dofus.types.entities
          return this._displayed;
       }
       
-      public function display(param1:uint=0) : void {
-         this._displayBehavior.display(this,param1);
+      public function display(strata:uint=0) : void {
+         this._displayBehavior.display(this,strata);
          this._displayed = true;
       }
       

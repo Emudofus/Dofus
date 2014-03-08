@@ -17,23 +17,23 @@ package com.ankamagames.dofus.logic.common.managers
          super();
       }
       
-      public static function showNpc(param1:int, param2:int=0) : MovieClip {
-         var _loc4_:Dictionary = null;
-         var _loc5_:Object = null;
-         var _loc6_:GraphicCell = null;
-         var _loc7_:Rectangle = null;
-         var _loc3_:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-         if(_loc3_)
+      public static function showNpc(npcId:int, loop:int=0) : MovieClip {
+         var list:Dictionary = null;
+         var npc:Object = null;
+         var graphicCell:GraphicCell = null;
+         var rect:Rectangle = null;
+         var abstractEntitiesFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+         if(abstractEntitiesFrame)
          {
-            _loc4_ = _loc3_.getEntitiesDictionnary();
-            for each (_loc5_ in _loc4_)
+            list = abstractEntitiesFrame.getEntitiesDictionnary();
+            for each (npc in list)
             {
-               if(_loc5_ is GameRolePlayNpcInformations && (_loc5_.npcId == param1 || param1 == -1))
+               if((npc is GameRolePlayNpcInformations) && ((npc.npcId == npcId) || (npcId == -1)))
                {
-                  _loc6_ = InteractiveCellManager.getInstance().getCell(_loc5_.disposition.cellId);
-                  _loc7_ = _loc6_.getRect(Berilia.getInstance().docMain);
-                  _loc7_.y = _loc7_.y - 80;
-                  return HyperlinkDisplayArrowManager.showAbsoluteArrow(_loc7_,0,0,1,param2);
+                  graphicCell = InteractiveCellManager.getInstance().getCell(npc.disposition.cellId);
+                  rect = graphicCell.getRect(Berilia.getInstance().docMain);
+                  rect.y = rect.y - 80;
+                  return HyperlinkDisplayArrowManager.showAbsoluteArrow(rect,0,0,1,loop);
                }
             }
          }

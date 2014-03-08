@@ -1,46 +1,46 @@
 package com.ankamagames.berilia.types.data
 {
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    
    public class TreeData extends Object
    {
       
-      public function TreeData(param1:*, param2:String, param3:Boolean=false, param4:Vector.<TreeData>=null, param5:TreeData=null) {
+      public function TreeData(value:*, label:String, expend:Boolean=false, childs:Vector.<TreeData>=null, parent:TreeData=null) {
          super();
-         this.value = param1;
-         this.label = param2;
-         this.expend = param3;
-         this.children = param4;
-         this.parent = param5;
+         this.value = value;
+         this.label = label;
+         this.expend = expend;
+         this.children = childs;
+         this.parent = parent;
       }
       
-      public static function fromArray(param1:Object) : Vector.<TreeData> {
-         var _loc2_:TreeData = new TreeData(null,null,true);
-         _loc2_.children = _fromArray(param1,_loc2_);
-         return _loc2_.children;
+      public static function fromArray(a:Object) : Vector.<TreeData> {
+         var root:TreeData = new TreeData(null,null,true);
+         root.children = _fromArray(a,root);
+         return root.children;
       }
       
-      private static function _fromArray(param1:Object, param2:TreeData) : Vector.<TreeData> {
-         var _loc4_:TreeData = null;
-         var _loc5_:* = undefined;
-         var _loc6_:* = undefined;
-         var _loc3_:Vector.<TreeData> = new Vector.<TreeData>();
-         for each (_loc6_ in param1)
+      private static function _fromArray(a:Object, parent:TreeData) : Vector.<TreeData> {
+         var td:TreeData = null;
+         var children:* = undefined;
+         var data:* = undefined;
+         var res:Vector.<TreeData> = new Vector.<TreeData>();
+         for each (data in a)
          {
-            if(Object(_loc6_).hasOwnProperty("children"))
+            if(Object(data).hasOwnProperty("children"))
             {
-               _loc5_ = _loc6_.children;
+               children = data.children;
             }
             else
             {
-               _loc5_ = null;
+               children = null;
             }
-            _loc4_ = new TreeData(_loc6_,_loc6_.label,Object(_loc6_).hasOwnProperty("expend")?Object(_loc6_).expend:false);
-            _loc4_.parent = param2;
-            _loc4_.children = _fromArray(_loc5_,_loc4_);
-            _loc3_.push(_loc4_);
+            td = new TreeData(data,data.label,Object(data).hasOwnProperty("expend")?Object(data).expend:false);
+            td.parent = parent;
+            td.children = _fromArray(children,td);
+            res.push(td);
          }
-         return _loc3_;
+         return res;
       }
       
       public var value;

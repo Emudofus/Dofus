@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:uint) : HouseSellFromInsideAction {
-         var _loc2_:HouseSellFromInsideAction = new HouseSellFromInsideAction();
-         _loc2_.amount = param1;
-         return _loc2_;
+      public static function create(amount:uint) : HouseSellFromInsideAction {
+         var action:HouseSellFromInsideAction = new HouseSellFromInsideAction();
+         action.amount = amount;
+         return action;
       }
       
       public var amount:uint;

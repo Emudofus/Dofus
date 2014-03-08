@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:uint) : HouseKickIndoorMerchantAction {
-         var _loc2_:HouseKickIndoorMerchantAction = new HouseKickIndoorMerchantAction();
-         _loc2_.cellId = param1;
-         return _loc2_;
+      public static function create(cellId:uint) : HouseKickIndoorMerchantAction {
+         var action:HouseKickIndoorMerchantAction = new HouseKickIndoorMerchantAction();
+         action.cellId = cellId;
+         return action;
       }
       
       public var cellId:uint;

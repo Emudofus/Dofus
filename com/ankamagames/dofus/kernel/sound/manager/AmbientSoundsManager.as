@@ -66,100 +66,100 @@ package com.ankamagames.dofus.kernel.sound.manager
          return this._criterionID;
       }
       
-      public function set criterionID(param1:uint) : void {
-         this._criterionID = param1;
+      public function set criterionID(pCriterionID:uint) : void {
+         this._criterionID = pCriterionID;
       }
       
       public function get ambientSounds() : Vector.<AmbientSound> {
          return this._ambientSounds;
       }
       
-      public function setAmbientSounds(param1:Vector.<AmbientSound>, param2:Vector.<AmbientSound>) : void {
-         var _loc4_:AmbientSound = null;
-         this._ambientSounds = param1;
-         this._roleplayMusics = param2;
-         var _loc3_:* = "";
-         if(this._ambientSounds.length == 0 && this._roleplayMusics.length == 0)
+      public function setAmbientSounds(pAmbiant:Vector.<AmbientSound>, pMusic:Vector.<AmbientSound>) : void {
+         var asound:AmbientSound = null;
+         this._ambientSounds = pAmbiant;
+         this._roleplayMusics = pMusic;
+         var logText:String = "";
+         if((this._ambientSounds.length == 0) && (this._roleplayMusics.length == 0))
          {
-            _loc3_ = "Ni musique ni ambiance pour cette map ??!!";
+            logText = "Ni musique ni ambiance pour cette map ??!!";
          }
          else
          {
-            _loc3_ = "Cette map contient les ambiances d\'id : ";
-            for each (_loc4_ in this._ambientSounds)
+            logText = "Cette map contient les ambiances d\'id : ";
+            for each (asound in this._ambientSounds)
             {
-               _loc3_ = _loc3_ + (_loc4_.id + ", ");
+               logText = logText + (asound.id + ", ");
             }
-            _loc3_ = _loc3_ + " et les musiques d\'id : ";
-            for each (_loc4_ in this._roleplayMusics)
+            logText = logText + " et les musiques d\'id : ";
+            for each (asound in this._roleplayMusics)
             {
-               _loc3_ = _loc3_ + (_loc4_.id + ", ");
+               logText = logText + (asound.id + ", ");
             }
          }
-         _log.info(_loc3_);
+         _log.info(logText);
       }
       
       public function selectValidSounds() : void {
-         var _loc2_:AmbientSound = null;
-         var _loc3_:* = 0;
-         var _loc1_:* = 0;
-         for each (_loc2_ in this._ambientSounds)
+         var ambientSound:AmbientSound = null;
+         var rnd:* = 0;
+         var count:int = 0;
+         for each (ambientSound in this._ambientSounds)
          {
-            if(!this._useCriterion || _loc2_.criterionId == this._criterionID)
+            if((!this._useCriterion) || (ambientSound.criterionId == this._criterionID))
             {
-               _loc1_++;
+               count++;
             }
          }
-         _loc3_ = int(Math.random() * _loc1_);
-         for each (_loc2_ in this._ambientSounds)
+         rnd = int(Math.random() * count);
+         for each (ambientSound in this._ambientSounds)
          {
-            if(!this._useCriterion || _loc2_.criterionId == this._criterionID)
+            if((!this._useCriterion) || (ambientSound.criterionId == this._criterionID))
             {
-               if(_loc3_ == 0)
+               if(rnd == 0)
                {
-                  this._ambienceA = _loc2_;
+                  this._ambienceA = ambientSound;
                   break;
                }
-               _loc3_--;
+               rnd--;
             }
          }
-         _loc1_ = 0;
-         for each (_loc2_ in this._roleplayMusics)
+         count = 0;
+         for each (ambientSound in this._roleplayMusics)
          {
-            if(!this._useCriterion || _loc2_.criterionId == this._criterionID)
+            if((!this._useCriterion) || (ambientSound.criterionId == this._criterionID))
             {
-               _loc1_++;
+               count++;
             }
          }
-         _loc3_ = int(Math.random() * _loc1_);
-         for each (_loc2_ in this._roleplayMusics)
+         rnd = int(Math.random() * count);
+         for each (ambientSound in this._roleplayMusics)
          {
-            if(!this._useCriterion || _loc2_.criterionId == this._criterionID)
+            if((!this._useCriterion) || (ambientSound.criterionId == this._criterionID))
             {
-               if(_loc3_ == 0)
+               if(rnd == 0)
                {
-                  this._musicA = _loc2_;
+                  this._musicA = ambientSound;
                   break;
                }
-               _loc3_--;
+               rnd--;
             }
          }
       }
       
       public function playMusicAndAmbient() : void {
-         var _loc1_:String = null;
-         var _loc2_:Uri = null;
-         var _loc3_:VolumeFadeEffect = null;
-         var _loc4_:VolumeFadeEffect = null;
-         var _loc5_:String = null;
-         var _loc6_:Uri = null;
-         var _loc7_:VolumeFadeEffect = null;
-         var _loc8_:VolumeFadeEffect = null;
+         var soundPathA:String = null;
+         var soundUriA:Uri = null;
+         var fade:VolumeFadeEffect = null;
+         var fadeOut:VolumeFadeEffect = null;
+         var soundPathM:String = null;
+         var soundUriM:Uri = null;
+         var fadeMusic:VolumeFadeEffect = null;
+         var fadeOutMusic:VolumeFadeEffect = null;
          if(!SoundManager.getInstance().manager.soundIsActivate)
          {
             return;
          }
-         if(SoundManager.getInstance().manager is RegSoundManager && !RegConnectionManager.getInstance().isMain)
+         if((SoundManager.getInstance().manager is RegSoundManager) && (!RegConnectionManager.getInstance().isMain))
          {
             return;
          }
@@ -178,14 +178,14 @@ package com.ankamagames.dofus.kernel.sound.manager
             {
                if(this._previousAmbience != null)
                {
-                  _loc4_ = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_OUT_AMBIANCE);
-                  this._previousAmbience.stop(_loc4_);
+                  fadeOut = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_OUT_AMBIANCE);
+                  this._previousAmbience.stop(fadeOut);
                }
-               _loc1_ = SoundUtil.getConfigEntryByBusId(this._ambienceA.channel);
-               _loc2_ = new Uri(_loc1_ + this._ambienceA.id + ".mp3");
+               soundPathA = SoundUtil.getConfigEntryByBusId(this._ambienceA.channel);
+               soundUriA = new Uri(soundPathA + this._ambienceA.id + ".mp3");
                if(SoundManager.getInstance().manager is ClassicSoundManager)
                {
-                  this._ambience = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,_loc2_);
+                  this._ambience = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,soundUriA);
                   this._ambience.busId = this._ambienceA.channel;
                }
                if(SoundManager.getInstance().manager is RegSoundManager)
@@ -194,8 +194,8 @@ package com.ankamagames.dofus.kernel.sound.manager
                }
                this._ambience.volume = this._ambienceA.volume / 100;
                this._ambience.currentFadeVolume = 0;
-               _loc3_ = new VolumeFadeEffect(-1,1,TubulSoundConfiguration.TIME_FADE_IN_AMBIANCE);
-               this._ambience.play(true,0,_loc3_);
+               fade = new VolumeFadeEffect(-1,1,TubulSoundConfiguration.TIME_FADE_IN_AMBIANCE);
+               this._ambience.play(true,0,fade);
             }
             this._previousAmbienceId = this._ambienceA.id;
          }
@@ -214,14 +214,14 @@ package com.ankamagames.dofus.kernel.sound.manager
             {
                if(this._previousMusic != null)
                {
-                  _loc8_ = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_OUT_MUSIC);
-                  this._previousMusic.stop(_loc8_);
+                  fadeOutMusic = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_OUT_MUSIC);
+                  this._previousMusic.stop(fadeOutMusic);
                }
-               _loc5_ = SoundUtil.getConfigEntryByBusId(this._musicA.channel);
-               _loc6_ = new Uri(_loc5_ + this._musicA.id + ".mp3");
+               soundPathM = SoundUtil.getConfigEntryByBusId(this._musicA.channel);
+               soundUriM = new Uri(soundPathM + this._musicA.id + ".mp3");
                if(SoundManager.getInstance().manager is ClassicSoundManager)
                {
-                  this._music = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,_loc6_);
+                  this._music = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,soundUriM);
                   this._music.busId = this._musicA.channel;
                }
                if(SoundManager.getInstance().manager is RegSoundManager)
@@ -241,9 +241,9 @@ package com.ankamagames.dofus.kernel.sound.manager
                   this._music.play(true,TubulSoundConfiguration.MUSIC_LOOPS);
                }
                this.tubulOption.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
-               _loc7_ = new VolumeFadeEffect(-1,1,TubulSoundConfiguration.TIME_FADE_IN_MUSIC);
-               _loc7_.attachToSoundSource(this._music);
-               _loc7_.start();
+               fadeMusic = new VolumeFadeEffect(-1,1,TubulSoundConfiguration.TIME_FADE_IN_MUSIC);
+               fadeMusic.attachToSoundSource(this._music);
+               fadeMusic.start();
             }
             this._previousMusicId = this._musicA.id;
          }
@@ -267,22 +267,23 @@ package com.ankamagames.dofus.kernel.sound.manager
          }
       }
       
-      public function mergeSoundsArea(param1:Vector.<AmbientSound>) : void {
+      public function mergeSoundsArea(pAmbientSounds:Vector.<AmbientSound>) : void {
       }
       
-      public function clear(param1:Number=0, param2:Number=0) : void {
+      public function clear(pFade:Number=0, pFadeTime:Number=0) : void {
          this.stopMusicAndAmbient();
       }
       
       private function init() : void {
       }
       
-      private function onPropertyChanged(param1:PropertyChangeEvent) : void {
-         if(param1.propertyName != "infiniteLoopMusics")
+      private function onPropertyChanged(pEvent:PropertyChangeEvent) : void {
+         if(pEvent.propertyName != "infiniteLoopMusics")
          {
             return;
          }
-         RegConnectionManager.getInstance().send(ProtocolEnum.OPTION_MUSIC_LOOP_VALUE_CHANGED,param1.propertyValue);
+         trace("On a changé l\'option d\'écoute en boucle des musiques : " + pEvent.propertyValue);
+         RegConnectionManager.getInstance().send(ProtocolEnum.OPTION_MUSIC_LOOP_VALUE_CHANGED,pEvent.propertyValue);
       }
    }
 }

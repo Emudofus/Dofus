@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.npcs
       
       public static const MODULE:String = "NpcMessages";
       
-      public static function getNpcMessageById(param1:int) : NpcMessage {
-         return GameData.getObject(MODULE,param1) as NpcMessage;
+      public static function getNpcMessageById(id:int) : NpcMessage {
+         return GameData.getObject(MODULE,id) as NpcMessage;
       }
       
       public var id:int;

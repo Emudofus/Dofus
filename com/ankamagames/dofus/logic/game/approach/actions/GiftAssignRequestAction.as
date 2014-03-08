@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.approach.actions
          super();
       }
       
-      public static function create(param1:uint, param2:uint) : GiftAssignRequestAction {
-         var _loc3_:GiftAssignRequestAction = new GiftAssignRequestAction();
-         _loc3_.giftId = param1;
-         _loc3_.characterId = param2;
-         return _loc3_;
+      public static function create(giftId:uint, characterId:uint) : GiftAssignRequestAction {
+         var action:GiftAssignRequestAction = new GiftAssignRequestAction();
+         action.giftId = giftId;
+         action.characterId = characterId;
+         return action;
       }
       
       public var giftId:uint;

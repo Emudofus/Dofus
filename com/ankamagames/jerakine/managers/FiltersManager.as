@@ -7,7 +7,7 @@ package com.ankamagames.jerakine.managers
    public class FiltersManager extends Object
    {
       
-      public function FiltersManager(param1:PrivateClass) {
+      public function FiltersManager(pvt:PrivateClass) {
          super();
          this.dFilters = new Dictionary(true);
       }
@@ -24,39 +24,39 @@ package com.ankamagames.jerakine.managers
       
       private var dFilters:Dictionary;
       
-      public function addEffect(param1:DisplayObject, param2:BitmapFilter) : void {
-         var _loc3_:Array = this.dFilters[param1] as Array;
-         if(_loc3_ == null)
+      public function addEffect(pTarget:DisplayObject, pFilter:BitmapFilter) : void {
+         var filters:Array = this.dFilters[pTarget] as Array;
+         if(filters == null)
          {
-            _loc3_ = this.dFilters[param1] = param1.filters;
+            filters = this.dFilters[pTarget] = pTarget.filters;
          }
-         _loc3_.push(param2);
-         param1.filters = _loc3_;
+         filters.push(pFilter);
+         pTarget.filters = filters;
       }
       
-      public function removeEffect(param1:DisplayObject, param2:BitmapFilter) : void {
-         var _loc3_:Array = this.dFilters[param1] as Array;
-         if(_loc3_ == null)
+      public function removeEffect(pTarget:DisplayObject, pFilter:BitmapFilter) : void {
+         var filters:Array = this.dFilters[pTarget] as Array;
+         if(filters == null)
          {
-            _loc3_ = this.dFilters[param1] = param1.filters;
+            filters = this.dFilters[pTarget] = pTarget.filters;
          }
-         var _loc4_:int = this.indexOf(_loc3_,param2);
-         if(_loc4_ != -1)
+         var index:int = this.indexOf(filters,pFilter);
+         if(index != -1)
          {
-            _loc3_.splice(_loc4_,1);
-            param1.filters = _loc3_;
+            filters.splice(index,1);
+            pTarget.filters = filters;
          }
       }
       
-      public function indexOf(param1:Array, param2:BitmapFilter) : int {
-         var _loc4_:BitmapFilter = null;
-         var _loc3_:int = param1.length;
-         while(_loc3_--)
+      public function indexOf(pFilters:Array, pFilter:BitmapFilter) : int {
+         var f:BitmapFilter = null;
+         var index:int = pFilters.length;
+         while(index--)
          {
-            _loc4_ = param1[_loc3_];
-            if(_loc4_ == param2)
+            f = pFilters[index];
+            if(f == pFilter)
             {
-               return _loc3_;
+               return index;
             }
          }
          return -1;

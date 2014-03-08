@@ -2,7 +2,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.zaap
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -40,12 +40,12 @@ package com.ankamagames.dofus.network.messages.game.interactive.zaap
          return 5960;
       }
       
-      public function initTeleportDestinationsListMessage(param1:uint=0, param2:Vector.<uint>=null, param3:Vector.<uint>=null, param4:Vector.<uint>=null, param5:Vector.<uint>=null) : TeleportDestinationsListMessage {
-         this.teleporterType = param1;
-         this.mapIds = param2;
-         this.subAreaIds = param3;
-         this.costs = param4;
-         this.destTeleporterType = param5;
+      public function initTeleportDestinationsListMessage(teleporterType:uint=0, mapIds:Vector.<uint>=null, subAreaIds:Vector.<uint>=null, costs:Vector.<uint>=null, destTeleporterType:Vector.<uint>=null) : TeleportDestinationsListMessage {
+         this.teleporterType = teleporterType;
+         this.mapIds = mapIds;
+         this.subAreaIds = subAreaIds;
+         this.costs = costs;
+         this.destTeleporterType = destTeleporterType;
          this._isInitialized = true;
          return this;
       }
@@ -59,153 +59,153 @@ package com.ankamagames.dofus.network.messages.game.interactive.zaap
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_TeleportDestinationsListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TeleportDestinationsListMessage(output);
       }
       
-      public function serializeAs_TeleportDestinationsListMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.teleporterType);
-         param1.writeShort(this.mapIds.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.mapIds.length)
+      public function serializeAs_TeleportDestinationsListMessage(output:IDataOutput) : void {
+         output.writeByte(this.teleporterType);
+         output.writeShort(this.mapIds.length);
+         var _i2:uint = 0;
+         while(_i2 < this.mapIds.length)
          {
-            if(this.mapIds[_loc2_] < 0)
+            if(this.mapIds[_i2] < 0)
             {
-               throw new Error("Forbidden value (" + this.mapIds[_loc2_] + ") on element 2 (starting at 1) of mapIds.");
+               throw new Error("Forbidden value (" + this.mapIds[_i2] + ") on element 2 (starting at 1) of mapIds.");
             }
             else
             {
-               param1.writeInt(this.mapIds[_loc2_]);
-               _loc2_++;
+               output.writeInt(this.mapIds[_i2]);
+               _i2++;
                continue;
             }
          }
-         param1.writeShort(this.subAreaIds.length);
-         var _loc3_:uint = 0;
-         while(_loc3_ < this.subAreaIds.length)
+         output.writeShort(this.subAreaIds.length);
+         var _i3:uint = 0;
+         while(_i3 < this.subAreaIds.length)
          {
-            if(this.subAreaIds[_loc3_] < 0)
+            if(this.subAreaIds[_i3] < 0)
             {
-               throw new Error("Forbidden value (" + this.subAreaIds[_loc3_] + ") on element 3 (starting at 1) of subAreaIds.");
+               throw new Error("Forbidden value (" + this.subAreaIds[_i3] + ") on element 3 (starting at 1) of subAreaIds.");
             }
             else
             {
-               param1.writeShort(this.subAreaIds[_loc3_]);
-               _loc3_++;
+               output.writeShort(this.subAreaIds[_i3]);
+               _i3++;
                continue;
             }
          }
-         param1.writeShort(this.costs.length);
-         var _loc4_:uint = 0;
-         while(_loc4_ < this.costs.length)
+         output.writeShort(this.costs.length);
+         var _i4:uint = 0;
+         while(_i4 < this.costs.length)
          {
-            if(this.costs[_loc4_] < 0)
+            if(this.costs[_i4] < 0)
             {
-               throw new Error("Forbidden value (" + this.costs[_loc4_] + ") on element 4 (starting at 1) of costs.");
+               throw new Error("Forbidden value (" + this.costs[_i4] + ") on element 4 (starting at 1) of costs.");
             }
             else
             {
-               param1.writeShort(this.costs[_loc4_]);
-               _loc4_++;
+               output.writeShort(this.costs[_i4]);
+               _i4++;
                continue;
             }
          }
-         param1.writeShort(this.destTeleporterType.length);
-         var _loc5_:uint = 0;
-         while(_loc5_ < this.destTeleporterType.length)
+         output.writeShort(this.destTeleporterType.length);
+         var _i5:uint = 0;
+         while(_i5 < this.destTeleporterType.length)
          {
-            param1.writeByte(this.destTeleporterType[_loc5_]);
-            _loc5_++;
+            output.writeByte(this.destTeleporterType[_i5]);
+            _i5++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_TeleportDestinationsListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TeleportDestinationsListMessage(input);
       }
       
-      public function deserializeAs_TeleportDestinationsListMessage(param1:IDataInput) : void {
-         var _loc10_:uint = 0;
-         var _loc11_:uint = 0;
-         var _loc12_:uint = 0;
-         var _loc13_:uint = 0;
-         this.teleporterType = param1.readByte();
+      public function deserializeAs_TeleportDestinationsListMessage(input:IDataInput) : void {
+         var _val2:uint = 0;
+         var _val3:uint = 0;
+         var _val4:uint = 0;
+         var _val5:uint = 0;
+         this.teleporterType = input.readByte();
          if(this.teleporterType < 0)
          {
             throw new Error("Forbidden value (" + this.teleporterType + ") on element of TeleportDestinationsListMessage.teleporterType.");
          }
          else
          {
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            _mapIdsLen = input.readUnsignedShort();
+            _i2 = 0;
+            while(_i2 < _mapIdsLen)
             {
-               _loc10_ = param1.readInt();
-               if(_loc10_ < 0)
+               _val2 = input.readInt();
+               if(_val2 < 0)
                {
-                  throw new Error("Forbidden value (" + _loc10_ + ") on elements of mapIds.");
+                  throw new Error("Forbidden value (" + _val2 + ") on elements of mapIds.");
                }
                else
                {
-                  this.mapIds.push(_loc10_);
-                  _loc3_++;
+                  this.mapIds.push(_val2);
+                  _i2++;
                   continue;
                }
             }
-            _loc4_ = param1.readUnsignedShort();
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            _subAreaIdsLen = input.readUnsignedShort();
+            _i3 = 0;
+            while(_i3 < _subAreaIdsLen)
             {
-               _loc11_ = param1.readShort();
-               if(_loc11_ < 0)
+               _val3 = input.readShort();
+               if(_val3 < 0)
                {
-                  throw new Error("Forbidden value (" + _loc11_ + ") on elements of subAreaIds.");
+                  throw new Error("Forbidden value (" + _val3 + ") on elements of subAreaIds.");
                }
                else
                {
-                  this.subAreaIds.push(_loc11_);
-                  _loc5_++;
+                  this.subAreaIds.push(_val3);
+                  _i3++;
                   continue;
                }
             }
-            _loc6_ = param1.readUnsignedShort();
-            _loc7_ = 0;
-            while(_loc7_ < _loc6_)
+            _costsLen = input.readUnsignedShort();
+            _i4 = 0;
+            while(_i4 < _costsLen)
             {
-               _loc12_ = param1.readShort();
-               if(_loc12_ < 0)
+               _val4 = input.readShort();
+               if(_val4 < 0)
                {
-                  throw new Error("Forbidden value (" + _loc12_ + ") on elements of costs.");
+                  throw new Error("Forbidden value (" + _val4 + ") on elements of costs.");
                }
                else
                {
-                  this.costs.push(_loc12_);
-                  _loc7_++;
+                  this.costs.push(_val4);
+                  _i4++;
                   continue;
                }
             }
-            _loc8_ = param1.readUnsignedShort();
-            _loc9_ = 0;
-            while(_loc9_ < _loc8_)
+            _destTeleporterTypeLen = input.readUnsignedShort();
+            _i5 = 0;
+            while(_i5 < _destTeleporterTypeLen)
             {
-               _loc13_ = param1.readByte();
-               if(_loc13_ < 0)
+               _val5 = input.readByte();
+               if(_val5 < 0)
                {
-                  throw new Error("Forbidden value (" + _loc13_ + ") on elements of destTeleporterType.");
+                  throw new Error("Forbidden value (" + _val5 + ") on elements of destTeleporterType.");
                }
                else
                {
-                  this.destTeleporterType.push(_loc13_);
-                  _loc9_++;
+                  this.destTeleporterType.push(_val5);
+                  _i5++;
                   continue;
                }
             }

@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.chat
       }
       
       public static function create() : ChatRefreshChannelAction {
-         var _loc1_:ChatRefreshChannelAction = new ChatRefreshChannelAction();
-         return _loc1_;
+         var a:ChatRefreshChannelAction = new ChatRefreshChannelAction();
+         return a;
       }
    }
 }

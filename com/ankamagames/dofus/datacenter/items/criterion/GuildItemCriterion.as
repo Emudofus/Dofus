@@ -9,8 +9,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class GuildItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function GuildItemCriterion(param1:String) {
-         super(param1);
+      public function GuildItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get text() : String {
@@ -26,15 +26,15 @@ package com.ankamagames.dofus.datacenter.items.criterion
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:GuildItemCriterion = new GuildItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:GuildItemCriterion = new GuildItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {
-         var _loc1_:GuildWrapper = (Kernel.getWorker().getFrame(SocialFrame) as SocialFrame).guild;
-         if(_loc1_)
+         var guild:GuildWrapper = (Kernel.getWorker().getFrame(SocialFrame) as SocialFrame).guild;
+         if(guild)
          {
-            if(_loc1_.enabled)
+            if(guild.enabled)
             {
                return 2;
             }

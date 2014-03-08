@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.connection
          return 40;
       }
       
-      public function initServerSelectionMessage(param1:int=0) : ServerSelectionMessage {
-         this.serverId = param1;
+      public function initServerSelectionMessage(serverId:int=0) : ServerSelectionMessage {
+         this.serverId = serverId;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.connection
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ServerSelectionMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ServerSelectionMessage(output);
       }
       
-      public function serializeAs_ServerSelectionMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.serverId);
+      public function serializeAs_ServerSelectionMessage(output:IDataOutput) : void {
+         output.writeShort(this.serverId);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ServerSelectionMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ServerSelectionMessage(input);
       }
       
-      public function deserializeAs_ServerSelectionMessage(param1:IDataInput) : void {
-         this.serverId = param1.readShort();
+      public function deserializeAs_ServerSelectionMessage(input:IDataInput) : void {
+         this.serverId = input.readShort();
       }
    }
 }

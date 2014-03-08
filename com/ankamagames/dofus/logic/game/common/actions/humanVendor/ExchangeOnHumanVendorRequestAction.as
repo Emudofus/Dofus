@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.humanVendor
          super();
       }
       
-      public static function create(param1:uint, param2:uint) : ExchangeOnHumanVendorRequestAction {
-         var _loc3_:ExchangeOnHumanVendorRequestAction = new ExchangeOnHumanVendorRequestAction();
-         _loc3_.humanVendorId = param1;
-         _loc3_.humanVendorCell = param2;
-         return _loc3_;
+      public static function create(pHumanVendorId:uint, pHumanVendorCell:uint) : ExchangeOnHumanVendorRequestAction {
+         var a:ExchangeOnHumanVendorRequestAction = new ExchangeOnHumanVendorRequestAction();
+         a.humanVendorId = pHumanVendorId;
+         a.humanVendorCell = pHumanVendorCell;
+         return a;
       }
       
       public var humanVendorId:int;

@@ -35,52 +35,50 @@ package com.ankamagames.dofus.logic.game.common.frames
          return 0;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:DebugHighlightCellsMessage = null;
-         var _loc3_:DebugClearHighlightCellsMessage = null;
-         var _loc4_:DebugInClientMessage = null;
-         var _loc5_:String = null;
+      public function process(msg:Message) : Boolean {
+         var dhcmsg:DebugHighlightCellsMessage = null;
+         var dchcmsg:DebugClearHighlightCellsMessage = null;
+         var dicmsg:DebugInClientMessage = null;
+         var s:String = null;
          switch(true)
          {
-            case param1 is DebugHighlightCellsMessage:
-               _loc2_ = param1 as DebugHighlightCellsMessage;
-               this._sName = "debug_zone" + _loc2_.color + "_" + Math.round(Math.random() * 10000);
-               this.displayZone(this._sName,_loc2_.cells,_loc2_.color);
+            case msg is DebugHighlightCellsMessage:
+               dhcmsg = msg as DebugHighlightCellsMessage;
+               this._sName = "debug_zone" + dhcmsg.color + "_" + Math.round(Math.random() * 10000);
+               this.displayZone(this._sName,dhcmsg.cells,dhcmsg.color);
                this._aZones.push(this._sName);
                return true;
-            case param1 is DebugClearHighlightCellsMessage:
-               _loc3_ = param1 as DebugClearHighlightCellsMessage;
-               for each (_loc5_ in this._aZones)
+            case msg is DebugClearHighlightCellsMessage:
+               dchcmsg = msg as DebugClearHighlightCellsMessage;
+               for each (s in this._aZones)
                {
-                  SelectionManager.getInstance().getSelection(_loc5_).remove();
+                  SelectionManager.getInstance().getSelection(s).remove();
                }
                return true;
-            case param1 is DebugInClientMessage:
-               _loc4_ = param1 as DebugInClientMessage;
-               switch(_loc4_.level)
+            case msg is DebugInClientMessage:
+               dicmsg = msg as DebugInClientMessage;
+               switch(dicmsg.level)
                {
                   case DebugLevelEnum.LEVEL_DEBUG:
-                     _log.debug(_loc4_.message);
+                     _log.debug(dicmsg.message);
                      break;
                   case DebugLevelEnum.LEVEL_ERROR:
-                     _log.error(_loc4_.message);
+                     _log.error(dicmsg.message);
                      break;
                   case DebugLevelEnum.LEVEL_FATAL:
-                     _log.fatal(_loc4_.message);
+                     _log.fatal(dicmsg.message);
                      break;
                   case DebugLevelEnum.LEVEL_INFO:
-                     _log.info(_loc4_.message);
+                     _log.info(dicmsg.message);
                      break;
                   case DebugLevelEnum.LEVEL_TRACE:
-                     _log.trace(_loc4_.message);
+                     _log.trace(dicmsg.message);
                      break;
                   case DebugLevelEnum.LEVEL_WARN:
-                     _log.warn(_loc4_.message);
+                     _log.warn(dicmsg.message);
                      break;
                }
                return true;
-            default:
-               return false;
          }
       }
       
@@ -92,13 +90,13 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      private function displayZone(param1:String, param2:Vector.<uint>, param3:uint) : void {
-         var _loc4_:Selection = new Selection();
-         _loc4_.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_MOVEMENT);
-         _loc4_.color = new Color(param3);
-         _loc4_.zone = new Custom(param2);
-         SelectionManager.getInstance().addSelection(_loc4_,param1);
-         SelectionManager.getInstance().update(param1);
+      private function displayZone(name:String, cells:Vector.<uint>, color:uint) : void {
+         var s:Selection = new Selection();
+         s.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_MOVEMENT);
+         s.color = new Color(color);
+         s.zone = new Custom(cells);
+         SelectionManager.getInstance().addSelection(s,name);
+         SelectionManager.getInstance().update(name);
       }
    }
 }

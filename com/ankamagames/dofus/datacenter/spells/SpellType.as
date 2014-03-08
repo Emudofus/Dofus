@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.spells
       
       public static const MODULE:String = "SpellTypes";
       
-      public static function getSpellTypeById(param1:int) : SpellType {
-         return GameData.getObject(MODULE,param1) as SpellType;
+      public static function getSpellTypeById(id:int) : SpellType {
+         return GameData.getObject(MODULE,id) as SpellType;
       }
       
       public var id:int;

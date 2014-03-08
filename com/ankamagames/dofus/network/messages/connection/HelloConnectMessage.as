@@ -2,7 +2,7 @@ package com.ankamagames.dofus.network.messages.connection
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,9 +31,9 @@ package com.ankamagames.dofus.network.messages.connection
          return 3;
       }
       
-      public function initHelloConnectMessage(param1:String="", param2:Vector.<int>=null) : HelloConnectMessage {
-         this.salt = param1;
-         this.key = param2;
+      public function initHelloConnectMessage(salt:String="", key:Vector.<int>=null) : HelloConnectMessage {
+         this.salt = salt;
+         this.key = key;
          this._isInitialized = true;
          return this;
       }
@@ -44,45 +44,45 @@ package com.ankamagames.dofus.network.messages.connection
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_HelloConnectMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HelloConnectMessage(output);
       }
       
-      public function serializeAs_HelloConnectMessage(param1:IDataOutput) : void {
-         param1.writeUTF(this.salt);
-         param1.writeShort(this.key.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.key.length)
+      public function serializeAs_HelloConnectMessage(output:IDataOutput) : void {
+         output.writeUTF(this.salt);
+         output.writeShort(this.key.length);
+         var _i2:uint = 0;
+         while(_i2 < this.key.length)
          {
-            param1.writeByte(this.key[_loc2_]);
-            _loc2_++;
+            output.writeByte(this.key[_i2]);
+            _i2++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_HelloConnectMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HelloConnectMessage(input);
       }
       
-      public function deserializeAs_HelloConnectMessage(param1:IDataInput) : void {
-         var _loc4_:* = 0;
-         this.salt = param1.readUTF();
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_HelloConnectMessage(input:IDataInput) : void {
+         var _val2:* = 0;
+         this.salt = input.readUTF();
+         var _keyLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2 < _keyLen)
          {
-            _loc4_ = param1.readByte();
-            this.key.push(_loc4_);
-            _loc3_++;
+            _val2 = input.readByte();
+            this.key.push(_val2);
+            _i2++;
          }
       }
    }

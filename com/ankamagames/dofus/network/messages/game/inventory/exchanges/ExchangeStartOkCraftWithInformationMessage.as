@@ -28,9 +28,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5941;
       }
       
-      public function initExchangeStartOkCraftWithInformationMessage(param1:uint=0, param2:uint=0) : ExchangeStartOkCraftWithInformationMessage {
-         this.nbCase = param1;
-         this.skillId = param2;
+      public function initExchangeStartOkCraftWithInformationMessage(nbCase:uint=0, skillId:uint=0) : ExchangeStartOkCraftWithInformationMessage {
+         this.nbCase = nbCase;
+         this.skillId = skillId;
          this._isInitialized = true;
          return this;
       }
@@ -41,55 +41,55 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeStartOkCraftWithInformationMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeStartOkCraftWithInformationMessage(output);
       }
       
-      public function serializeAs_ExchangeStartOkCraftWithInformationMessage(param1:IDataOutput) : void {
-         super.serializeAs_ExchangeStartOkCraftMessage(param1);
+      public function serializeAs_ExchangeStartOkCraftWithInformationMessage(output:IDataOutput) : void {
+         super.serializeAs_ExchangeStartOkCraftMessage(output);
          if(this.nbCase < 0)
          {
             throw new Error("Forbidden value (" + this.nbCase + ") on element nbCase.");
          }
          else
          {
-            param1.writeByte(this.nbCase);
+            output.writeByte(this.nbCase);
             if(this.skillId < 0)
             {
                throw new Error("Forbidden value (" + this.skillId + ") on element skillId.");
             }
             else
             {
-               param1.writeInt(this.skillId);
+               output.writeInt(this.skillId);
                return;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeStartOkCraftWithInformationMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeStartOkCraftWithInformationMessage(input);
       }
       
-      public function deserializeAs_ExchangeStartOkCraftWithInformationMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.nbCase = param1.readByte();
+      public function deserializeAs_ExchangeStartOkCraftWithInformationMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.nbCase = input.readByte();
          if(this.nbCase < 0)
          {
             throw new Error("Forbidden value (" + this.nbCase + ") on element of ExchangeStartOkCraftWithInformationMessage.nbCase.");
          }
          else
          {
-            this.skillId = param1.readInt();
+            this.skillId = input.readInt();
             if(this.skillId < 0)
             {
                throw new Error("Forbidden value (" + this.skillId + ") on element of ExchangeStartOkCraftWithInformationMessage.skillId.");

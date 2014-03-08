@@ -64,10 +64,10 @@ package com.ankamagames.berilia.frames
          return Priority.NORMAL;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:KeyboardKeyDownMessage = null;
-         var _loc3_:Shortcut = null;
-         var _loc4_:KeyboardKeyUpMessage = null;
+      public function process(msg:Message) : Boolean {
+         var kdmsg:KeyboardKeyDownMessage = null;
+         var s:Shortcut = null;
+         var kumsg:KeyboardKeyUpMessage = null;
          this._isProcessingDirectInteraction = false;
          if(!shortcutsEnabled)
          {
@@ -75,39 +75,36 @@ package com.ankamagames.berilia.frames
          }
          switch(true)
          {
-            case param1 is KeyboardKeyDownMessage:
-               _loc2_ = KeyboardKeyDownMessage(param1);
-               shiftKey = _loc2_.keyboardEvent.shiftKey;
-               ctrlKey = _loc2_.keyboardEvent.ctrlKey;
-               altKey = _loc2_.keyboardEvent.altKey;
+            case msg is KeyboardKeyDownMessage:
+               kdmsg = KeyboardKeyDownMessage(msg);
+               shiftKey = kdmsg.keyboardEvent.shiftKey;
+               ctrlKey = kdmsg.keyboardEvent.ctrlKey;
+               altKey = kdmsg.keyboardEvent.altKey;
                this._lastCtrlKey = false;
-               _loc3_ = this.getShortcut(_loc2_);
-               if((_loc3_) && (_loc3_.holdKeys) && this._heldShortcuts.indexOf(_loc3_.defaultBind.targetedShortcut) == -1)
+               s = this.getShortcut(kdmsg);
+               if((s) && (s.holdKeys) && (this._heldShortcuts.indexOf(s.defaultBind.targetedShortcut) == -1))
                {
-                  this.handleMessage(_loc2_);
-                  this._heldShortcuts.push(_loc3_.defaultBind.targetedShortcut);
+                  this.handleMessage(kdmsg);
+                  this._heldShortcuts.push(s.defaultBind.targetedShortcut);
                }
                return false;
-            case param1 is KeyboardKeyUpMessage:
-               _loc4_ = KeyboardKeyUpMessage(param1);
-               shiftKey = _loc4_.keyboardEvent.shiftKey;
-               ctrlKey = _loc4_.keyboardEvent.ctrlKey;
-               altKey = _loc4_.keyboardEvent.altKey;
-               return this.handleMessage(_loc4_);
-            default:
-               this._isProcessingDirectInteraction = false;
-               return false;
+            case msg is KeyboardKeyUpMessage:
+               kumsg = KeyboardKeyUpMessage(msg);
+               shiftKey = kumsg.keyboardEvent.shiftKey;
+               ctrlKey = kumsg.keyboardEvent.ctrlKey;
+               altKey = kumsg.keyboardEvent.altKey;
+               return this.handleMessage(kumsg);
          }
       }
       
-      private function handleMessage(param1:KeyboardMessage) : Boolean {
-         var _loc4_:* = false;
-         var _loc7_:Shortcut = null;
-         var _loc8_:TextField = null;
-         var _loc9_:TextField = null;
-         var _loc10_:* = 0;
-         var _loc2_:int = param1.keyboardEvent.keyCode;
-         if(_loc2_ == Keyboard.CONTROL)
+      private function handleMessage(pKeyboardMessage:KeyboardMessage) : Boolean {
+         var imeActive:* = false;
+         var sh:Shortcut = null;
+         var tf:TextField = null;
+         var focusAsTextField:TextField = null;
+         var heldShortcutIndex:* = 0;
+         var keyCode:int = pKeyboardMessage.keyboardEvent.keyCode;
+         if(keyCode == Keyboard.CONTROL)
          {
             this._lastCtrlKey = true;
          }
@@ -120,21 +117,21 @@ package com.ankamagames.berilia.frames
             }
          }
          this._isProcessingDirectInteraction = true;
-         var _loc3_:String = BindsManager.getInstance().getShortcutString(param1.keyboardEvent.keyCode,this.getCharCode(param1));
-         if(FocusHandler.getInstance().getFocus() is TextField && (Berilia.getInstance().useIME) && (IME.enabled))
+         var sShortcut:String = BindsManager.getInstance().getShortcutString(pKeyboardMessage.keyboardEvent.keyCode,this.getCharCode(pKeyboardMessage));
+         if((FocusHandler.getInstance().getFocus() is TextField) && (Berilia.getInstance().useIME) && (IME.enabled))
          {
-            _loc8_ = FocusHandler.getInstance().getFocus() as TextField;
-            if(_loc8_.parent is Input)
+            tf = FocusHandler.getInstance().getFocus() as TextField;
+            if(tf.parent is Input)
             {
-               _loc4_ = !(_loc8_.text == Input(_loc8_.parent).lastTextOnInput);
-               if(!_loc4_ && (Input(_loc8_.parent).imeActive))
+               imeActive = !(tf.text == Input(tf.parent).lastTextOnInput);
+               if((!imeActive) && (Input(tf.parent).imeActive))
                {
-                  Input(_loc8_.parent).imeActive = false;
-                  _loc4_ = true;
+                  Input(tf.parent).imeActive = false;
+                  imeActive = true;
                }
                else
                {
-                  Input(_loc8_.parent).imeActive = _loc4_;
+                  Input(tf.parent).imeActive = imeActive;
                }
             }
          }
@@ -142,77 +139,77 @@ package com.ankamagames.berilia.frames
          {
             IME.enabled = false;
          }
-         if(_loc3_ == null || (_loc4_))
+         if((sShortcut == null) || (imeActive))
          {
             this._isProcessingDirectInteraction = false;
             return true;
          }
-         var _loc5_:Bind = new Bind(_loc3_,"",param1.keyboardEvent.altKey,param1.keyboardEvent.ctrlKey,param1.keyboardEvent.shiftKey);
-         var _loc6_:Bind = BindsManager.getInstance().getBind(_loc5_);
-         if(_loc6_ != null)
+         var bind:Bind = new Bind(sShortcut,"",pKeyboardMessage.keyboardEvent.altKey,pKeyboardMessage.keyboardEvent.ctrlKey,pKeyboardMessage.keyboardEvent.shiftKey);
+         var shortcut:Bind = BindsManager.getInstance().getBind(bind);
+         if(shortcut != null)
          {
-            _loc7_ = Shortcut.getShortcutByName(_loc6_.targetedShortcut);
+            sh = Shortcut.getShortcutByName(shortcut.targetedShortcut);
          }
-         if((BindsManager.getInstance().canBind(_loc5_)) && (!(_loc7_ == null) && !_loc7_.disable || _loc7_ == null))
+         if((BindsManager.getInstance().canBind(bind)) && ((!(sh == null)) && (!sh.disable) || (sh == null)))
          {
-            KernelEventsManager.getInstance().processCallback(BeriliaHookList.KeyboardShortcut,_loc5_,param1.keyboardEvent.keyCode);
+            KernelEventsManager.getInstance().processCallback(BeriliaHookList.KeyboardShortcut,bind,pKeyboardMessage.keyboardEvent.keyCode);
          }
-         if((!(_loc6_ == null)) && (_loc7_) && !_loc7_.disable)
+         if((!(shortcut == null)) && (sh) && (!sh.disable))
          {
-            if(!Shortcut.getShortcutByName(_loc6_.targetedShortcut))
+            if(!Shortcut.getShortcutByName(shortcut.targetedShortcut))
             {
                return false;
             }
-            if(_loc7_.holdKeys)
+            if(sh.holdKeys)
             {
-               _loc10_ = this._heldShortcuts.indexOf(_loc7_.defaultBind.targetedShortcut);
-               if(_loc10_ != -1)
+               heldShortcutIndex = this._heldShortcuts.indexOf(sh.defaultBind.targetedShortcut);
+               if(heldShortcutIndex != -1)
                {
-                  this._heldShortcuts.splice(_loc10_,1);
+                  this._heldShortcuts.splice(heldShortcutIndex,1);
                }
             }
-            _loc9_ = StageShareManager.stage.focus as TextField;
-            if((_loc9_) && _loc9_.type == TextFieldType.INPUT)
+            focusAsTextField = StageShareManager.stage.focus as TextField;
+            if((focusAsTextField) && (focusAsTextField.type == TextFieldType.INPUT))
             {
-               if(!Shortcut.getShortcutByName(_loc6_.targetedShortcut).textfieldEnabled)
+               if(!Shortcut.getShortcutByName(shortcut.targetedShortcut).textfieldEnabled)
                {
                   return false;
                }
             }
-            LogFrame.log(LogTypeEnum.SHORTCUT,new com.ankamagames.jerakine.replay.KeyboardShortcut(_loc6_.targetedShortcut));
-            BindsManager.getInstance().processCallback(_loc6_,_loc6_.targetedShortcut);
+            LogFrame.log(LogTypeEnum.SHORTCUT,new com.ankamagames.jerakine.replay.KeyboardShortcut(shortcut.targetedShortcut));
+            BindsManager.getInstance().processCallback(shortcut,shortcut.targetedShortcut);
          }
          this._isProcessingDirectInteraction = false;
          return false;
       }
       
-      private function getShortcut(param1:KeyboardMessage) : Shortcut {
-         var _loc2_:String = BindsManager.getInstance().getShortcutString(param1.keyboardEvent.keyCode,this.getCharCode(param1));
-         var _loc3_:Bind = BindsManager.getInstance().getBind(new Bind(_loc2_,"",param1.keyboardEvent.altKey,param1.keyboardEvent.ctrlKey,param1.keyboardEvent.shiftKey));
-         return _loc3_?Shortcut.getShortcutByName(_loc3_.targetedShortcut):null;
+      private function getShortcut(pKeyboardMessage:KeyboardMessage) : Shortcut {
+         var sShortcut:String = BindsManager.getInstance().getShortcutString(pKeyboardMessage.keyboardEvent.keyCode,this.getCharCode(pKeyboardMessage));
+         var bind:Bind = BindsManager.getInstance().getBind(new Bind(sShortcut,"",pKeyboardMessage.keyboardEvent.altKey,pKeyboardMessage.keyboardEvent.ctrlKey,pKeyboardMessage.keyboardEvent.shiftKey));
+         return bind?Shortcut.getShortcutByName(bind.targetedShortcut):null;
       }
       
-      private function getCharCode(param1:KeyboardMessage) : int {
-         var _loc2_:* = 0;
-         if((param1.keyboardEvent.shiftKey) && param1.keyboardEvent.keyCode == 52)
+      private function getCharCode(pKeyboardMessage:KeyboardMessage) : int {
+         var charCode:* = 0;
+         if((pKeyboardMessage.keyboardEvent.shiftKey) && (pKeyboardMessage.keyboardEvent.keyCode == 52))
          {
-            _loc2_ = 39;
+            charCode = 39;
          }
          else
          {
-            if((param1.keyboardEvent.shiftKey) && param1.keyboardEvent.keyCode == 54)
+            if((pKeyboardMessage.keyboardEvent.shiftKey) && (pKeyboardMessage.keyboardEvent.keyCode == 54))
             {
-               _loc2_ = 45;
+               charCode = 45;
             }
             else
             {
-               _loc2_ = param1.keyboardEvent.charCode;
+               charCode = pKeyboardMessage.keyboardEvent.charCode;
             }
          }
-         return _loc2_;
+         return charCode;
       }
       
-      private function onWindowDeactivate(param1:Event) : void {
+      private function onWindowDeactivate(pEvent:Event) : void {
          this._heldShortcuts.length = 0;
       }
       

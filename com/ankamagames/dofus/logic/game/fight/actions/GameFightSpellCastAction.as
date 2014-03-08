@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.fight.actions
          super();
       }
       
-      public static function create(param1:uint) : GameFightSpellCastAction {
-         var _loc2_:GameFightSpellCastAction = new GameFightSpellCastAction();
-         _loc2_.spellId = param1;
-         return _loc2_;
+      public static function create(spellId:uint) : GameFightSpellCastAction {
+         var a:GameFightSpellCastAction = new GameFightSpellCastAction();
+         a.spellId = spellId;
+         return a;
       }
       
       public var spellId:uint;

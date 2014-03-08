@@ -34,79 +34,79 @@ package com.ankamagames.dofus.internalDatacenter.conquest
          return _ref;
       }
       
-      public static function getFromNetwork(param1:PrismSubareaEmptyInfo, param2:AllianceWrapper=null) : PrismSubAreaWrapper {
-         var _loc4_:* = 0;
-         var _loc5_:PrismGeolocalizedInformation = null;
-         var _loc6_:Date = null;
-         var _loc7_:AllianceInsiderPrismInformation = null;
-         if(!_ref[param1.subAreaId] || Object(param1).constructor == PrismSubareaEmptyInfo)
+      public static function getFromNetwork(msg:PrismSubareaEmptyInfo, currentPlayerAlliance:AllianceWrapper=null) : PrismSubAreaWrapper {
+         var ind:* = 0;
+         var pgi:PrismGeolocalizedInformation = null;
+         var date:Date = null;
+         var aipi:AllianceInsiderPrismInformation = null;
+         if((!_ref[msg.subAreaId]) || (Object(msg).constructor == PrismSubareaEmptyInfo))
          {
-            _ref[param1.subAreaId] = new PrismSubAreaWrapper();
+            _ref[msg.subAreaId] = new PrismSubAreaWrapper();
          }
-         var _loc3_:PrismSubAreaWrapper = _ref[param1.subAreaId];
-         _loc3_._subAreaId = param1.subAreaId;
-         if(_loc3_._alliance)
+         var prism:PrismSubAreaWrapper = _ref[msg.subAreaId];
+         prism._subAreaId = msg.subAreaId;
+         if(prism._alliance)
          {
-            _loc4_ = _loc3_._alliance.prismIds.indexOf(param1.subAreaId);
-            if(_loc4_ != -1)
+            ind = prism._alliance.prismIds.indexOf(msg.subAreaId);
+            if(ind != -1)
             {
-               _loc3_._alliance.prismIds.splice(_loc4_,1);
+               prism._alliance.prismIds.splice(ind,1);
             }
          }
-         if(param1 is PrismGeolocalizedInformation)
+         if(msg is PrismGeolocalizedInformation)
          {
-            _loc5_ = param1 as PrismGeolocalizedInformation;
-            _loc3_._mapId = _loc5_.mapId;
-            _loc3_._worldX = _loc5_.worldX;
-            _loc3_._worldY = _loc5_.worldY;
-            _loc3_._state = _loc5_.prism.state;
-            _loc3_._prismType = _loc5_.prism.typeId;
-            _loc3_._placementDate = _loc5_.prism.placementDate;
-            _loc3_._nextVulnerabilityDate = _loc5_.prism.nextVulnerabilityDate;
-            _loc3_._rewardTokenCount = _loc5_.prism.rewardTokenCount;
-            _loc6_ = new Date();
-            _loc6_.time = _loc3_.nextVulnerabilityDate * 1000 + TimeManager.getInstance().timezoneOffset;
-            _loc3_._timeSlotHour = _loc6_.hoursUTC;
-            _loc3_._timeSlotQuarter = Math.round(_loc6_.minutesUTC / 15);
-            if(_loc5_.prism is AllianceInsiderPrismInformation)
+            pgi = msg as PrismGeolocalizedInformation;
+            prism._mapId = pgi.mapId;
+            prism._worldX = pgi.worldX;
+            prism._worldY = pgi.worldY;
+            prism._state = pgi.prism.state;
+            prism._prismType = pgi.prism.typeId;
+            prism._placementDate = pgi.prism.placementDate;
+            prism._nextVulnerabilityDate = pgi.prism.nextVulnerabilityDate;
+            prism._rewardTokenCount = pgi.prism.rewardTokenCount;
+            date = new Date();
+            date.time = prism.nextVulnerabilityDate * 1000 + TimeManager.getInstance().timezoneOffset;
+            prism._timeSlotHour = date.hoursUTC;
+            prism._timeSlotQuarter = Math.round(date.minutesUTC / 15);
+            if(pgi.prism is AllianceInsiderPrismInformation)
             {
-               _loc7_ = _loc5_.prism as AllianceInsiderPrismInformation;
-               param2.prismIds.push(param1.subAreaId);
-               _loc3_._alliance = param2;
-               _loc3_._lastTimeSlotModificationDate = _loc7_.lastTimeSlotModificationDate;
-               _loc3_._lastTimeSlotModificationAuthorId = _loc7_.lastTimeSlotModificationAuthorId;
-               _loc3_._lastTimeSlotModificationAuthorName = _loc7_.lastTimeSlotModificationAuthorName;
-               _loc3_._lastTimeSlotModificationAuthorGuildId = _loc7_.lastTimeSlotModificationAuthorGuildId;
+               aipi = pgi.prism as AllianceInsiderPrismInformation;
+               currentPlayerAlliance.prismIds.push(msg.subAreaId);
+               prism._alliance = currentPlayerAlliance;
+               prism._lastTimeSlotModificationDate = aipi.lastTimeSlotModificationDate;
+               prism._lastTimeSlotModificationAuthorId = aipi.lastTimeSlotModificationAuthorId;
+               prism._lastTimeSlotModificationAuthorName = aipi.lastTimeSlotModificationAuthorName;
+               prism._lastTimeSlotModificationAuthorGuildId = aipi.lastTimeSlotModificationAuthorGuildId;
             }
             else
             {
-               _loc3_._lastTimeSlotModificationDate = 0;
-               _loc3_._lastTimeSlotModificationAuthorId = 0;
-               _loc3_._lastTimeSlotModificationAuthorName = null;
-               _loc3_._lastTimeSlotModificationAuthorGuildId = 0;
-               if(_loc5_.prism is AlliancePrismInformation)
+               prism._lastTimeSlotModificationDate = 0;
+               prism._lastTimeSlotModificationAuthorId = 0;
+               prism._lastTimeSlotModificationAuthorName = null;
+               prism._lastTimeSlotModificationAuthorGuildId = 0;
+               if(pgi.prism is AlliancePrismInformation)
                {
-                  _loc3_._alliance = AllianceWrapper.getFromNetwork(AlliancePrismInformation(_loc5_.prism).alliance);
-                  _loc3_._alliance.prismIds.push(param1.subAreaId);
+                  prism._alliance = AllianceWrapper.getFromNetwork(AlliancePrismInformation(pgi.prism).alliance);
+                  prism._alliance.prismIds.push(msg.subAreaId);
                }
                else
                {
-                  _loc3_._alliance = null;
+                  prism._alliance = null;
                }
             }
          }
          else
          {
-            if(param1.allianceId != 0)
+            if(msg.allianceId != 0)
             {
-               _loc3_._alliance = (Kernel.getWorker().getFrame(AllianceFrame) as AllianceFrame).getAllianceById(param1.allianceId);
+               prism._alliance = (Kernel.getWorker().getFrame(AllianceFrame) as AllianceFrame).getAllianceById(msg.allianceId);
             }
          }
-         if((PlayedCharacterManager.getInstance().currentSubArea) && _loc3_.subAreaId == PlayedCharacterManager.getInstance().currentSubArea.id)
+         if((PlayedCharacterManager.getInstance().currentSubArea) && (prism.subAreaId == PlayedCharacterManager.getInstance().currentSubArea.id))
          {
-            KernelEventsManager.getInstance().processCallback(PrismHookList.KohState,_loc3_);
+            KernelEventsManager.getInstance().processCallback(PrismHookList.KohState,prism);
          }
-         return _loc3_;
+         return prism;
       }
       
       private var _subAreaId:uint;
@@ -230,24 +230,24 @@ package com.ankamagames.dofus.internalDatacenter.conquest
       }
       
       public function get vulnerabilityHourString() : String {
-         var _loc2_:String = null;
-         var _loc3_:String = null;
-         var _loc1_:* = "";
+         var sHours:String = null;
+         var sMinutes:String = null;
+         var hour:String = "";
          if(this._nextVulnerabilityDate != 0)
          {
-            _loc2_ = this._timeSlotHour.toString();
-            if(_loc2_.length == 1)
+            sHours = this._timeSlotHour.toString();
+            if(sHours.length == 1)
             {
-               _loc2_ = "0" + _loc2_;
+               sHours = "0" + sHours;
             }
-            _loc3_ = (this._timeSlotQuarter * 15).toString();
-            if(_loc3_.length == 1)
+            sMinutes = (this._timeSlotQuarter * 15).toString();
+            if(sMinutes.length == 1)
             {
-               _loc3_ = "0" + _loc3_;
+               sMinutes = "0" + sMinutes;
             }
-            _loc1_ = _loc2_ + ":" + _loc3_;
+            hour = sHours + ":" + sMinutes;
          }
-         return _loc1_;
+         return hour;
       }
    }
 }

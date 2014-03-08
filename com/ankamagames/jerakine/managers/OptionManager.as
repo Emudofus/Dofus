@@ -17,14 +17,14 @@ package com.ankamagames.jerakine.managers
    public dynamic class OptionManager extends Proxy implements IEventDispatcher
    {
       
-      public function OptionManager(param1:String=null) {
+      public function OptionManager(customName:String=null) {
          this._defaultValue = new Dictionary();
          this._properties = new Dictionary();
          this._useCache = new Dictionary();
          super();
-         if(param1)
+         if(customName)
          {
-            this._customName = param1;
+            this._customName = customName;
          }
          else
          {
@@ -32,7 +32,7 @@ package com.ankamagames.jerakine.managers
          }
          if(_optionsManager[this._customName])
          {
-            throw new Error(param1 + " is already used by an other option manager.");
+            throw new Error(customName + " is already used by an other option manager.");
          }
          else
          {
@@ -45,19 +45,19 @@ package com.ankamagames.jerakine.managers
       
       private static var _optionsManager:Array = new Array();
       
-      public static function getOptionManager(param1:String) : OptionManager {
-         var _loc2_:* = _optionsManager;
-         return _optionsManager[param1];
+      public static function getOptionManager(name:String) : OptionManager {
+         var o:* = _optionsManager;
+         return _optionsManager[name];
       }
       
       public static function getOptionManagers() : Array {
-         var _loc2_:String = null;
-         var _loc1_:Array = [];
-         for (_loc2_ in _optionsManager)
+         var s:String = null;
+         var managers:Array = [];
+         for (s in _optionsManager)
          {
-            _loc1_.push(_loc2_);
+            managers.push(s);
          }
-         return _loc1_;
+         return managers;
       }
       
       public static function reset() : void {
@@ -76,89 +76,89 @@ package com.ankamagames.jerakine.managers
       
       private var _dataStore:DataStoreType;
       
-      public function add(param1:String, param2:*=null, param3:Boolean=true) : void {
-         this._useCache[param1] = param3;
-         this._defaultValue[param1] = param2;
-         if((param3) && !(StoreDataManager.getInstance().getData(this._dataStore,param1) == null))
+      public function add(name:String, value:*=null, useCache:Boolean=true) : void {
+         this._useCache[name] = useCache;
+         this._defaultValue[name] = value;
+         if((useCache) && (!(StoreDataManager.getInstance().getData(this._dataStore,name) == null)))
          {
-            this._properties[param1] = StoreDataManager.getInstance().getData(this._dataStore,param1);
+            this._properties[name] = StoreDataManager.getInstance().getData(this._dataStore,name);
          }
          else
          {
-            this._properties[param1] = param2;
+            this._properties[name] = value;
          }
       }
       
-      public function getDefaultValue(param1:String) : * {
-         return this._defaultValue[param1];
+      public function getDefaultValue(name:String) : * {
+         return this._defaultValue[name];
       }
       
-      public function addEventListener(param1:String, param2:Function, param3:Boolean=false, param4:int=0, param5:Boolean=false) : void {
-         this._eventDispatcher.addEventListener(param1,param2,param3,param4,param5);
+      public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false) : void {
+         this._eventDispatcher.addEventListener(type,listener,useCapture,priority,useWeakReference);
       }
       
-      public function dispatchEvent(param1:Event) : Boolean {
-         return this._eventDispatcher.dispatchEvent(param1);
+      public function dispatchEvent(event:Event) : Boolean {
+         return this._eventDispatcher.dispatchEvent(event);
       }
       
-      public function hasEventListener(param1:String) : Boolean {
-         return this._eventDispatcher.hasEventListener(param1);
+      public function hasEventListener(type:String) : Boolean {
+         return this._eventDispatcher.hasEventListener(type);
       }
       
-      public function removeEventListener(param1:String, param2:Function, param3:Boolean=false) : void {
-         this._eventDispatcher.removeEventListener(param1,param2,param3);
+      public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false) : void {
+         this._eventDispatcher.removeEventListener(type,listener,useCapture);
       }
       
-      public function willTrigger(param1:String) : Boolean {
-         return this._eventDispatcher.willTrigger(param1);
+      public function willTrigger(type:String) : Boolean {
+         return this._eventDispatcher.willTrigger(type);
       }
       
-      public function restaureDefaultValue(param1:String) : void {
-         if(this._useCache[param1] != null)
+      public function restaureDefaultValue(name:String) : void {
+         if(this._useCache[name] != null)
          {
-            this.setProperty(param1,this._defaultValue[param1]);
+            this.setProperty(name,this._defaultValue[name]);
          }
       }
       
-      override flash_proxy function getProperty(param1:*) : * {
-         return this._properties[param1];
+      override flash_proxy function getProperty(name:*) : * {
+         return this._properties[name];
       }
       
-      override flash_proxy function setProperty(param1:*, param2:*) : void {
-         var _loc3_:* = undefined;
-         if(this._useCache[param1] != null)
+      override flash_proxy function setProperty(name:*, value:*) : void {
+         var oldValue:* = undefined;
+         if(this._useCache[name] != null)
          {
-            _loc3_ = this._properties[param1];
-            this._properties[param1] = param2;
-            if((this._useCache[param1]) && !(this._properties[param1] is DisplayObject))
+            oldValue = this._properties[name];
+            this._properties[name] = value;
+            if((this._useCache[name]) && (!(this._properties[name] is DisplayObject)))
             {
-               StoreDataManager.getInstance().setData(this._dataStore,param1,param2);
+               StoreDataManager.getInstance().setData(this._dataStore,name,value);
             }
-            this._eventDispatcher.dispatchEvent(new PropertyChangeEvent(this,param1,this._properties[param1],_loc3_));
+            this._eventDispatcher.dispatchEvent(new PropertyChangeEvent(this,name,this._properties[name],oldValue));
          }
       }
       
       protected var _item:Array;
       
-      override flash_proxy function nextNameIndex(param1:int) : int {
-         var _loc2_:* = undefined;
-         if(param1 == 0)
+      override flash_proxy function nextNameIndex(index:int) : int {
+         var x:* = undefined;
+         if(index == 0)
          {
             this._item = new Array();
-            for (_loc2_ in this._properties)
+            for (x in this._properties)
             {
-               this._item.push(_loc2_);
+               this._item.push(x);
             }
          }
-         if(param1 < this._item.length)
+         if(index < this._item.length)
          {
-            return param1 + 1;
+            return index + 1;
          }
          return 0;
       }
       
-      override flash_proxy function nextName(param1:int) : String {
-         return this._item[param1-1];
+      override flash_proxy function nextName(index:int) : String {
+         return this._item[index - 1];
       }
    }
 }

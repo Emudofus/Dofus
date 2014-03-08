@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5520;
       }
       
-      public function initExchangeObjectMoveKamaMessage(param1:int=0) : ExchangeObjectMoveKamaMessage {
-         this.quantity = param1;
+      public function initExchangeObjectMoveKamaMessage(quantity:int=0) : ExchangeObjectMoveKamaMessage {
+         this.quantity = quantity;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeObjectMoveKamaMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeObjectMoveKamaMessage(output);
       }
       
-      public function serializeAs_ExchangeObjectMoveKamaMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.quantity);
+      public function serializeAs_ExchangeObjectMoveKamaMessage(output:IDataOutput) : void {
+         output.writeInt(this.quantity);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeObjectMoveKamaMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeObjectMoveKamaMessage(input);
       }
       
-      public function deserializeAs_ExchangeObjectMoveKamaMessage(param1:IDataInput) : void {
-         this.quantity = param1.readInt();
+      public function deserializeAs_ExchangeObjectMoveKamaMessage(input:IDataInput) : void {
+         this.quantity = input.readInt();
       }
    }
 }

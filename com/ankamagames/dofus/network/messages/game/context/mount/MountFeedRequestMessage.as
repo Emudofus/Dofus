@@ -33,11 +33,11 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 6189;
       }
       
-      public function initMountFeedRequestMessage(param1:Number=0, param2:int=0, param3:uint=0, param4:uint=0) : MountFeedRequestMessage {
-         this.mountUid = param1;
-         this.mountLocation = param2;
-         this.mountFoodUid = param3;
-         this.quantity = param4;
+      public function initMountFeedRequestMessage(mountUid:Number=0, mountLocation:int=0, mountFoodUid:uint=0, quantity:uint=0) : MountFeedRequestMessage {
+         this.mountUid = mountUid;
+         this.mountLocation = mountLocation;
+         this.mountFoodUid = mountFoodUid;
+         this.quantity = quantity;
          this._isInitialized = true;
          return this;
       }
@@ -50,70 +50,70 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MountFeedRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MountFeedRequestMessage(output);
       }
       
-      public function serializeAs_MountFeedRequestMessage(param1:IDataOutput) : void {
+      public function serializeAs_MountFeedRequestMessage(output:IDataOutput) : void {
          if(this.mountUid < 0)
          {
             throw new Error("Forbidden value (" + this.mountUid + ") on element mountUid.");
          }
          else
          {
-            param1.writeDouble(this.mountUid);
-            param1.writeByte(this.mountLocation);
+            output.writeDouble(this.mountUid);
+            output.writeByte(this.mountLocation);
             if(this.mountFoodUid < 0)
             {
                throw new Error("Forbidden value (" + this.mountFoodUid + ") on element mountFoodUid.");
             }
             else
             {
-               param1.writeInt(this.mountFoodUid);
+               output.writeInt(this.mountFoodUid);
                if(this.quantity < 0)
                {
                   throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
                }
                else
                {
-                  param1.writeInt(this.quantity);
+                  output.writeInt(this.quantity);
                   return;
                }
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MountFeedRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MountFeedRequestMessage(input);
       }
       
-      public function deserializeAs_MountFeedRequestMessage(param1:IDataInput) : void {
-         this.mountUid = param1.readDouble();
+      public function deserializeAs_MountFeedRequestMessage(input:IDataInput) : void {
+         this.mountUid = input.readDouble();
          if(this.mountUid < 0)
          {
             throw new Error("Forbidden value (" + this.mountUid + ") on element of MountFeedRequestMessage.mountUid.");
          }
          else
          {
-            this.mountLocation = param1.readByte();
-            this.mountFoodUid = param1.readInt();
+            this.mountLocation = input.readByte();
+            this.mountFoodUid = input.readInt();
             if(this.mountFoodUid < 0)
             {
                throw new Error("Forbidden value (" + this.mountFoodUid + ") on element of MountFeedRequestMessage.mountFoodUid.");
             }
             else
             {
-               this.quantity = param1.readInt();
+               this.quantity = input.readInt();
                if(this.quantity < 0)
                {
                   throw new Error("Forbidden value (" + this.quantity + ") on element of MountFeedRequestMessage.quantity.");

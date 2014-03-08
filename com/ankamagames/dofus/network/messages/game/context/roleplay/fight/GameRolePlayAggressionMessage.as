@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
          return 6073;
       }
       
-      public function initGameRolePlayAggressionMessage(param1:uint=0, param2:uint=0) : GameRolePlayAggressionMessage {
-         this.attackerId = param1;
-         this.defenderId = param2;
+      public function initGameRolePlayAggressionMessage(attackerId:uint=0, defenderId:uint=0) : GameRolePlayAggressionMessage {
+         this.attackerId = attackerId;
+         this.defenderId = defenderId;
          this._isInitialized = true;
          return this;
       }
@@ -42,53 +42,53 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameRolePlayAggressionMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayAggressionMessage(output);
       }
       
-      public function serializeAs_GameRolePlayAggressionMessage(param1:IDataOutput) : void {
+      public function serializeAs_GameRolePlayAggressionMessage(output:IDataOutput) : void {
          if(this.attackerId < 0)
          {
             throw new Error("Forbidden value (" + this.attackerId + ") on element attackerId.");
          }
          else
          {
-            param1.writeInt(this.attackerId);
+            output.writeInt(this.attackerId);
             if(this.defenderId < 0)
             {
                throw new Error("Forbidden value (" + this.defenderId + ") on element defenderId.");
             }
             else
             {
-               param1.writeInt(this.defenderId);
+               output.writeInt(this.defenderId);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameRolePlayAggressionMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayAggressionMessage(input);
       }
       
-      public function deserializeAs_GameRolePlayAggressionMessage(param1:IDataInput) : void {
-         this.attackerId = param1.readInt();
+      public function deserializeAs_GameRolePlayAggressionMessage(input:IDataInput) : void {
+         this.attackerId = input.readInt();
          if(this.attackerId < 0)
          {
             throw new Error("Forbidden value (" + this.attackerId + ") on element of GameRolePlayAggressionMessage.attackerId.");
          }
          else
          {
-            this.defenderId = param1.readInt();
+            this.defenderId = input.readInt();
             if(this.defenderId < 0)
             {
                throw new Error("Forbidden value (" + this.defenderId + ") on element of GameRolePlayAggressionMessage.defenderId.");

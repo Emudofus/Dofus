@@ -90,28 +90,28 @@ package com.ankamagames.jerakine.handlers
          return this._debugOver;
       }
       
-      public function set debugOver(param1:Boolean) : void {
-         var _loc2_:* = undefined;
-         if((this._debugOver) && !param1)
+      public function set debugOver(value:Boolean) : void {
+         var sprite:* = undefined;
+         if((this._debugOver) && (!value))
          {
-            for (_loc2_ in this._debugOverSprite)
+            for (sprite in this._debugOverSprite)
             {
-               if(_loc2_.parent)
+               if(sprite.parent)
                {
-                  _loc2_.parent.removeChild(_loc2_);
+                  sprite.parent.removeChild(sprite);
                }
             }
             this._debugOverSprite = new Dictionary();
          }
-         this._debugOver = param1;
+         this._debugOver = value;
       }
       
       public function get handler() : MessageHandler {
          return this._handler;
       }
       
-      public function set handler(param1:MessageHandler) : void {
-         this._handler = param1;
+      public function set handler(value:MessageHandler) : void {
+         this._handler = value;
       }
       
       public function getKeyboardPoll() : KeyPoll {
@@ -127,8 +127,7 @@ package com.ankamagames.jerakine.handlers
          this.registerListeners();
       }
       
-      public function unregisterListeners(param1:Stage=null) : void {
-         var target:Stage = param1;
+      public function unregisterListeners(target:Stage=null) : void {
          if(target == null)
          {
             target = StageShareManager.stage;
@@ -153,8 +152,7 @@ package com.ankamagames.jerakine.handlers
          target.removeEventListener(KeyboardEvent.KEY_UP,this.onKeyUp,false);
       }
       
-      public function registerListeners(param1:Stage=null) : void {
-         var target:Stage = param1;
+      public function registerListeners(target:Stage=null) : void {
          if(target == null)
          {
             target = StageShareManager.stage;
@@ -179,138 +177,138 @@ package com.ankamagames.jerakine.handlers
          target.addEventListener(KeyboardEvent.KEY_UP,this.onKeyUp,false,1,true);
       }
       
-      private function onDoubleClick(param1:MouseEvent) : void {
-         this._handler.process(GenericPool.get(MouseDoubleClickMessage,param1.target,param1));
+      private function onDoubleClick(me:MouseEvent) : void {
+         this._handler.process(GenericPool.get(MouseDoubleClickMessage,me.target,me));
          this._lastDoucleClick = getTimer();
       }
       
-      private function onClick(param1:MouseEvent) : void {
-         var _loc2_:int = getTimer();
-         if(_loc2_ - this._lastDoucleClick < DOUBLE_CLICK_DELAY)
+      private function onClick(me:MouseEvent) : void {
+         var time:int = getTimer();
+         if(time - this._lastDoucleClick < DOUBLE_CLICK_DELAY)
          {
-            this._lastSingleClick = _loc2_;
+            this._lastSingleClick = time;
             this._lastDoucleClick = 0;
          }
          else
          {
-            if(_loc2_ - this._lastSingleClick < DOUBLE_CLICK_DELAY)
+            if(time - this._lastSingleClick < DOUBLE_CLICK_DELAY)
             {
-               this._handler.process(GenericPool.get(MouseDoubleClickMessage,param1.target,param1));
-               this._lastDoucleClick = _loc2_;
+               this._handler.process(GenericPool.get(MouseDoubleClickMessage,me.target,me));
+               this._lastDoucleClick = time;
             }
             else
             {
-               this._handler.process(GenericPool.get(MouseClickMessage,param1.target,param1));
+               this._handler.process(GenericPool.get(MouseClickMessage,me.target,me));
             }
          }
       }
       
-      private function onMouseWheel(param1:MouseEvent) : void {
-         this._handler.process(GenericPool.get(MouseWheelMessage,param1.target,param1));
+      private function onMouseWheel(me:MouseEvent) : void {
+         this._handler.process(GenericPool.get(MouseWheelMessage,me.target,me));
       }
       
-      private function onMouseOver(param1:MouseEvent) : void {
-         var _loc2_:DisplayObject = null;
-         var _loc3_:String = null;
-         var _loc4_:Sprite = null;
-         var _loc5_:* = false;
-         var _loc6_:uint = 0;
-         var _loc7_:uint = 0;
-         var _loc8_:uint = 0;
-         var _loc9_:Rectangle = null;
-         if((this.debugOver) && (param1.target.parent))
+      private function onMouseOver(me:MouseEvent) : void {
+         var dObj:DisplayObject = null;
+         var shapeName:String = null;
+         var s:Sprite = null;
+         var present:* = false;
+         var i:uint = 0;
+         var seed:uint = 0;
+         var j:uint = 0;
+         var b:Rectangle = null;
+         if((this.debugOver) && (me.target.parent))
          {
-            _loc2_ = param1.target as DisplayObject;
-            _loc3_ = "#{{{debug_shape_" + _loc2_.name + "}}}#";
-            _loc5_ = false;
-            _loc6_ = 0;
-            while(_loc6_ < _loc2_.parent.numChildren && !_loc5_)
+            dObj = me.target as DisplayObject;
+            shapeName = "#{{{debug_shape_" + dObj.name + "}}}#";
+            present = false;
+            i = 0;
+            while((i < dObj.parent.numChildren) && (!present))
             {
-               if(_loc2_.parent.getChildAt(_loc6_).name == _loc3_)
+               if(dObj.parent.getChildAt(i).name == shapeName)
                {
-                  _loc4_ = _loc2_.parent.getChildAt(_loc6_) as Sprite;
+                  s = dObj.parent.getChildAt(i) as Sprite;
                   break;
                }
-               _loc6_++;
+               i++;
             }
-            _loc7_ = 1;
-            _loc8_ = 0;
-            while(_loc8_ < _loc3_.length)
+            seed = 1;
+            j = 0;
+            while(j < shapeName.length)
             {
-               _loc7_ = _loc7_ + _loc3_.charCodeAt(_loc8_) * 100 * _loc8_;
-               _loc8_++;
+               seed = seed + shapeName.charCodeAt(j) * 100 * j;
+               j++;
             }
-            this.random.seed(_loc7_);
-            if(!_loc4_)
+            this.random.seed(seed);
+            if(!s)
             {
-               _loc4_ = new Sprite();
-               _loc4_.mouseEnabled = false;
-               _loc4_.mouseChildren = false;
+               s = new Sprite();
+               s.mouseEnabled = false;
+               s.mouseChildren = false;
             }
-            this._debugOverSprite[_loc4_] = true;
-            _loc4_.name = _loc3_;
-            _loc4_.graphics.clear();
-            _loc9_ = _loc2_.getBounds(_loc2_.parent);
-            _loc4_.graphics.beginFill(this.random.nextInt(),0.4);
-            _loc4_.graphics.lineStyle(1,0,0.5);
-            _loc4_.graphics.drawRect(_loc9_.left,_loc9_.top,_loc9_.width,_loc9_.height);
-            _loc4_.graphics.endFill();
-            _loc2_.parent.addChildAt(_loc4_,_loc2_.parent.getChildIndex(_loc2_) + 1);
+            this._debugOverSprite[s] = true;
+            s.name = shapeName;
+            s.graphics.clear();
+            b = dObj.getBounds(dObj.parent);
+            s.graphics.beginFill(this.random.nextInt(),0.4);
+            s.graphics.lineStyle(1,0,0.5);
+            s.graphics.drawRect(b.left,b.top,b.width,b.height);
+            s.graphics.endFill();
+            dObj.parent.addChildAt(s,dObj.parent.getChildIndex(dObj) + 1);
          }
-         this._handler.process(GenericPool.get(MouseOverMessage,param1.target,param1));
+         this._handler.process(GenericPool.get(MouseOverMessage,me.target,me));
       }
       
-      private function onMouseOut(param1:MouseEvent) : void {
-         this._handler.process(GenericPool.get(MouseOutMessage,param1.target,param1));
+      private function onMouseOut(me:MouseEvent) : void {
+         this._handler.process(GenericPool.get(MouseOutMessage,me.target,me));
       }
       
-      private function onMiddleClick(param1:MouseEvent) : void {
-         this._handler.process(GenericPool.get(MouseMiddleClickMessage,param1.target,param1));
+      private function onMiddleClick(me:MouseEvent) : void {
+         this._handler.process(GenericPool.get(MouseMiddleClickMessage,me.target,me));
       }
       
-      private function onRightClick(param1:MouseEvent) : void {
-         if(!(this._lastTarget == null) && !(this._lastTarget.object == param1.target))
+      private function onRightClick(me:MouseEvent) : void {
+         if((!(this._lastTarget == null)) && (!(this._lastTarget.object == me.target)))
          {
-            this._handler.process(GenericPool.get(MouseRightClickOutsideMessage,this._lastTarget.object,param1));
+            this._handler.process(GenericPool.get(MouseRightClickOutsideMessage,this._lastTarget.object,me));
          }
-         this._lastTarget = new WeakReference(param1.target);
-         this._handler.process(GenericPool.get(MouseRightClickMessage,param1.target,param1));
+         this._lastTarget = new WeakReference(me.target);
+         this._handler.process(GenericPool.get(MouseRightClickMessage,me.target,me));
       }
       
-      private function onMouseDown(param1:MouseEvent) : void {
-         this._lastTarget = new WeakReference(param1.target);
-         this._handler.process(GenericPool.get(MouseDownMessage,param1.target,param1));
+      private function onMouseDown(me:MouseEvent) : void {
+         this._lastTarget = new WeakReference(me.target);
+         this._handler.process(GenericPool.get(MouseDownMessage,me.target,me));
       }
       
-      private function onMouseUp(param1:MouseEvent) : void {
-         if(!(this._lastTarget == null) && !(this._lastTarget.object == param1.target))
+      private function onMouseUp(me:MouseEvent) : void {
+         if((!(this._lastTarget == null)) && (!(this._lastTarget.object == me.target)))
          {
-            this._handler.process(GenericPool.get(MouseReleaseOutsideMessage,this._lastTarget.object,param1));
+            this._handler.process(GenericPool.get(MouseReleaseOutsideMessage,this._lastTarget.object,me));
          }
-         FocusHandler.getInstance().setFocus(InteractiveObject(param1.target));
-         this._handler.process(GenericPool.get(MouseUpMessage,param1.target,param1));
+         FocusHandler.getInstance().setFocus(InteractiveObject(me.target));
+         this._handler.process(GenericPool.get(MouseUpMessage,me.target,me));
       }
       
-      private function onKeyDown(param1:KeyboardEvent) : void {
-         if(param1.keyCode == Keyboard.ESCAPE)
+      private function onKeyDown(ke:KeyboardEvent) : void {
+         if(ke.keyCode == Keyboard.ESCAPE)
          {
-            param1.preventDefault();
+            ke.preventDefault();
          }
-         if(param1.keyCode == 15)
+         if(ke.keyCode == 15)
          {
             this._appleDown = true;
          }
-         if(param1.keyCode == Keyboard.S && (param1.ctrlKey))
+         if((ke.keyCode == Keyboard.S) && (ke.ctrlKey))
          {
-            param1.preventDefault();
+            ke.preventDefault();
          }
-         this._handler.process(GenericPool.get(KeyboardKeyDownMessage,FocusHandler.getInstance().getFocus(),param1));
+         this._handler.process(GenericPool.get(KeyboardKeyDownMessage,FocusHandler.getInstance().getFocus(),ke));
       }
       
-      private function onKeyUp(param1:KeyboardEvent) : void {
+      private function onKeyUp(ke:KeyboardEvent) : void {
          if(!this._appleDown)
          {
-            this._handler.process(GenericPool.get(KeyboardKeyUpMessage,FocusHandler.getInstance().getFocus(),param1));
+            this._handler.process(GenericPool.get(KeyboardKeyUpMessage,FocusHandler.getInstance().getFocus(),ke));
          }
          else
          {

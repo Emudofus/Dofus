@@ -24,16 +24,16 @@ package com.ankamagames.dofus.network.types.game.data.items
       public function reset() : void {
       }
       
-      public function serialize(param1:IDataOutput) : void {
+      public function serialize(output:IDataOutput) : void {
       }
       
-      public function serializeAs_Item(param1:IDataOutput) : void {
+      public function serializeAs_Item(output:IDataOutput) : void {
       }
       
-      public function deserialize(param1:IDataInput) : void {
+      public function deserialize(input:IDataInput) : void {
       }
       
-      public function deserializeAs_Item(param1:IDataInput) : void {
+      public function deserializeAs_Item(input:IDataInput) : void {
       }
    }
 }

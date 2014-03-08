@@ -67,12 +67,11 @@ package com.ankamagames.dofus.misc.interClient
          _receiving_lc.close();
       }
       
-      public function clientGainFocus(param1:String) : void {
+      public function clientGainFocus(baseInfo:String) : void {
          var clientListInfo:Array = null;
          var num:int = 0;
          var i:int = 0;
          var id:String = null;
-         var baseInfo:String = param1;
          var info:Array = baseInfo.split(",");
          var connId:String = info[0];
          var time:Number = info[1];
@@ -107,50 +106,50 @@ package com.ankamagames.dofus.misc.interClient
          }
       }
       
-      private function onError(param1:AsyncErrorEvent) : void {
-         _log.debug(param1.error.getStackTrace());
+      private function onError(e:AsyncErrorEvent) : void {
+         _log.debug(e.error.getStackTrace());
       }
       
-      private function onStatusEvent(param1:StatusEvent) : void {
+      private function onStatusEvent(e:StatusEvent) : void {
       }
       
-      public function updateFocusMessage(param1:String) : void {
-         InterClientManager.getInstance().clientListInfo = param1.split(",");
+      public function updateFocusMessage(focusList:String) : void {
+         InterClientManager.getInstance().clientListInfo = focusList.split(",");
          InterClientManager.getInstance().updateFocusList();
       }
       
-      private function getUid(param1:String) : void {
-         this._sending_lc.send(param1,"setUId",InterClientManager.getInstance().flashKey);
+      private function getUid(connId:String) : void {
+         this._sending_lc.send(connId,"setUId",InterClientManager.getInstance().flashKey);
       }
       
-      private function ping(param1:String) : void {
-         var _loc5_:String = null;
+      private function ping(connId:String) : void {
+         var clientId:String = null;
          this._lastPingTs = getTimer();
-         this._sending_lc.send(param1,"pong");
-         this._lastClientPing[param1] = this._lastPingTs;
-         var _loc2_:Array = InterClientManager.getInstance().clientListInfo;
-         var _loc3_:int = _loc2_.length;
-         var _loc4_:* = 0;
-         while(_loc4_ < _loc3_)
+         this._sending_lc.send(connId,"pong");
+         this._lastClientPing[connId] = this._lastPingTs;
+         var clientList:Array = InterClientManager.getInstance().clientListInfo;
+         var num:int = clientList.length;
+         var i:int = 0;
+         while(i < num)
          {
-            _loc5_ = _loc2_[_loc4_];
-            if(_loc5_ != "_dofus")
+            clientId = clientList[i];
+            if(clientId != "_dofus")
             {
-               if(this._lastClientPing[_loc5_])
+               if(this._lastClientPing[clientId])
                {
-                  if(this._lastPingTs - this._lastClientPing[_loc5_] > 20000)
+                  if(this._lastPingTs - this._lastClientPing[clientId] > 20000)
                   {
-                     _loc2_.splice(_loc4_,2);
-                     _loc4_ = _loc4_ - 2;
-                     _loc3_ = _loc3_ - 2;
+                     clientList.splice(i,2);
+                     i = i - 2;
+                     num = num - 2;
                   }
                }
                else
                {
-                  this._lastClientPing[_loc5_] = this._lastPingTs;
+                  this._lastClientPing[clientId] = this._lastPingTs;
                }
             }
-            _loc4_ = _loc4_ + 2;
+            i = i + 2;
          }
       }
    }

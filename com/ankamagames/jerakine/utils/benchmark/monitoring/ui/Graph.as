@@ -1,22 +1,22 @@
 package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 {
    import flash.display.Sprite;
-   import __AS3__.vec.Vector;
    import flash.events.MouseEvent;
    import flash.events.Event;
    import com.ankamagames.jerakine.utils.benchmark.monitoring.FpsManagerUtils;
    import flash.text.TextFormat;
    import flash.text.TextField;
+   import __AS3__.vec.*;
    
    public class Graph extends Sprite
    {
       
-      public function Graph(param1:String, param2:uint=16777215) {
-         var _loc3_:TextFormat = null;
-         var _loc4_:TextField = null;
+      public function Graph(pName:String, pColor:uint=16777215) {
+         var tf:TextFormat = null;
+         var _infoTf:TextField = null;
          super();
-         this.indice = param1;
-         this.color = param2;
+         this.indice = pName;
+         this.color = pColor;
          this.points = new Vector.<int>();
          this._isNewFrame = true;
          if(!FpsManagerUtils.isSpecialGraph(this.indice))
@@ -33,19 +33,19 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
             this._menu.addEventListener(MouseEvent.ROLL_OVER,this.mouseOverHandler);
             this._menu.addEventListener(MouseEvent.ROLL_OUT,this.mouseOutHandler);
             addChild(this._menu);
-            _loc3_ = new TextFormat("Verdana",13);
-            _loc3_.color = this.color;
-            _loc4_ = new TextField();
-            _loc4_.mouseEnabled = false;
-            _loc4_.selectable = false;
-            _loc4_.defaultTextFormat = _loc3_;
-            _loc4_.text = this.indice;
-            _loc4_.x = (_loc4_.width - _loc4_.textWidth) / 2;
+            tf = new TextFormat("Verdana",13);
+            tf.color = this.color;
+            _infoTf = new TextField();
+            _infoTf.mouseEnabled = false;
+            _infoTf.selectable = false;
+            _infoTf.defaultTextFormat = tf;
+            _infoTf.text = this.indice;
+            _infoTf.x = (_infoTf.width - _infoTf.textWidth) / 2;
             this._sprTooltip = new Sprite();
             this._sprTooltip.graphics.beginFill(16777215);
             this._sprTooltip.graphics.lineStyle(1,0);
-            this._sprTooltip.graphics.drawRoundRect(0,0,_loc4_.width,20,4,4);
-            this._sprTooltip.addChild(_loc4_);
+            this._sprTooltip.graphics.drawRoundRect(0,0,_infoTf.width,20,4,4);
+            this._sprTooltip.addChild(_infoTf);
             this._sprTooltip.y = -30;
             this._sprTooltip.x = -10;
          }
@@ -69,7 +69,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
       
       private var grapheIsVisible:Boolean = true;
       
-      private function clickHandler(param1:MouseEvent) : void {
+      private function clickHandler(pEvt:MouseEvent) : void {
          this.grapheIsVisible = !this.grapheIsVisible;
          this._menu.alpha = this.grapheIsVisible?1:MENU_OUT_ALPHA;
          if(this.grapheIsVisible)
@@ -82,7 +82,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          }
       }
       
-      private function mouseOverHandler(param1:MouseEvent) : void {
+      private function mouseOverHandler(pEvt:MouseEvent) : void {
          if(!this.grapheIsVisible)
          {
             this._menu.alpha = 1;
@@ -90,7 +90,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          this._menu.addChild(this._sprTooltip);
       }
       
-      private function mouseOutHandler(param1:MouseEvent) : void {
+      private function mouseOutHandler(pEvt:MouseEvent) : void {
          if(!this.grapheIsVisible)
          {
             this._menu.alpha = MENU_OUT_ALPHA;
@@ -98,24 +98,24 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          this._menu.removeChild(this._sprTooltip);
       }
       
-      public function insertNewValue(param1:int) : void {
+      public function insertNewValue(val:int) : void {
          if(this._isNewFrame)
          {
-            this.addValue(param1);
+            this.addValue(val);
          }
          else
          {
-            this.updateLastValue(param1);
+            this.updateLastValue(val);
          }
       }
       
-      private function addValue(param1:int) : void {
+      private function addValue(val:int) : void {
          this._isNewFrame = false;
-         this.points.push(param1);
+         this.points.push(val);
       }
       
-      private function updateLastValue(param1:int) : void {
-         this.points[this.points.length-1] = this.points[this.points.length-1] + param1;
+      private function updateLastValue(val:int) : void {
+         this.points[this.points.length - 1] = this.points[this.points.length - 1] + val;
       }
       
       public function setNewFrame() : void {
@@ -130,9 +130,9 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          return this.points.length;
       }
       
-      public function setMenuPosition(param1:Number, param2:Number) : void {
-         this._menu.x = param1;
-         this._menu.y = param2;
+      public function setMenuPosition(pX:Number, pY:Number) : void {
+         this._menu.x = pX;
+         this._menu.y = pY;
       }
       
       public function get graphVisible() : Boolean {

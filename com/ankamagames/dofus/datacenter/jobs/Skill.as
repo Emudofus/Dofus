@@ -15,8 +15,8 @@ package com.ankamagames.dofus.datacenter.jobs
       
       public static const MODULE:String = "Skills";
       
-      public static function getSkillById(param1:int) : Skill {
-         return GameData.getObject(MODULE,param1) as Skill;
+      public static function getSkillById(id:int) : Skill {
+         return GameData.getObject(MODULE,id) as Skill;
       }
       
       public static function getSkills() : Array {

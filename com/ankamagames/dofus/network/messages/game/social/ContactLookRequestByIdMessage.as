@@ -26,9 +26,9 @@ package com.ankamagames.dofus.network.messages.game.social
          return 5935;
       }
       
-      public function initContactLookRequestByIdMessage(param1:uint=0, param2:uint=0, param3:uint=0) : ContactLookRequestByIdMessage {
-         super.initContactLookRequestMessage(param1,param2);
-         this.playerId = param3;
+      public function initContactLookRequestByIdMessage(requestId:uint=0, contactType:uint=0, playerId:uint=0) : ContactLookRequestByIdMessage {
+         super.initContactLookRequestMessage(requestId,contactType);
+         this.playerId = playerId;
          this._isInitialized = true;
          return this;
       }
@@ -39,40 +39,40 @@ package com.ankamagames.dofus.network.messages.game.social
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ContactLookRequestByIdMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ContactLookRequestByIdMessage(output);
       }
       
-      public function serializeAs_ContactLookRequestByIdMessage(param1:IDataOutput) : void {
-         super.serializeAs_ContactLookRequestMessage(param1);
+      public function serializeAs_ContactLookRequestByIdMessage(output:IDataOutput) : void {
+         super.serializeAs_ContactLookRequestMessage(output);
          if(this.playerId < 0)
          {
             throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
          }
          else
          {
-            param1.writeInt(this.playerId);
+            output.writeInt(this.playerId);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ContactLookRequestByIdMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ContactLookRequestByIdMessage(input);
       }
       
-      public function deserializeAs_ContactLookRequestByIdMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.playerId = param1.readInt();
+      public function deserializeAs_ContactLookRequestByIdMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.playerId = input.readInt();
          if(this.playerId < 0)
          {
             throw new Error("Forbidden value (" + this.playerId + ") on element of ContactLookRequestByIdMessage.playerId.");

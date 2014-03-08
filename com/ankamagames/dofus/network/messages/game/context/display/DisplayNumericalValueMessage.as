@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.context.display
          return 5808;
       }
       
-      public function initDisplayNumericalValueMessage(param1:int=0, param2:int=0, param3:uint=0) : DisplayNumericalValueMessage {
-         this.entityId = param1;
-         this.value = param2;
-         this.type = param3;
+      public function initDisplayNumericalValueMessage(entityId:int=0, value:int=0, type:uint=0) : DisplayNumericalValueMessage {
+         this.entityId = entityId;
+         this.value = value;
+         this.type = type;
          this._isInitialized = true;
          return this;
       }
@@ -46,34 +46,34 @@ package com.ankamagames.dofus.network.messages.game.context.display
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_DisplayNumericalValueMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_DisplayNumericalValueMessage(output);
       }
       
-      public function serializeAs_DisplayNumericalValueMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.entityId);
-         param1.writeInt(this.value);
-         param1.writeByte(this.type);
+      public function serializeAs_DisplayNumericalValueMessage(output:IDataOutput) : void {
+         output.writeInt(this.entityId);
+         output.writeInt(this.value);
+         output.writeByte(this.type);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_DisplayNumericalValueMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_DisplayNumericalValueMessage(input);
       }
       
-      public function deserializeAs_DisplayNumericalValueMessage(param1:IDataInput) : void {
-         this.entityId = param1.readInt();
-         this.value = param1.readInt();
-         this.type = param1.readByte();
+      public function deserializeAs_DisplayNumericalValueMessage(input:IDataInput) : void {
+         this.entityId = input.readInt();
+         this.value = input.readInt();
+         this.type = input.readByte();
          if(this.type < 0)
          {
             throw new Error("Forbidden value (" + this.type + ") on element of DisplayNumericalValueMessage.type.");

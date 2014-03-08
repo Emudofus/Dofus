@@ -50,87 +50,85 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          return this._priority;
       }
       
-      public function set priority(param1:int) : void {
-         this._priority = param1;
+      public function set priority(p:int) : void {
+         this._priority = p;
       }
       
       public function pushed() : Boolean {
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:ZaapListMessage = null;
-         var _loc3_:Array = null;
-         var _loc4_:TeleportDestinationsListMessage = null;
-         var _loc5_:Array = null;
-         var _loc6_:Vector.<Hint> = null;
-         var _loc7_:Hint = null;
-         var _loc8_:TeleportRequestAction = null;
-         var _loc9_:LeaveDialogMessage = null;
-         var _loc10_:* = 0;
-         var _loc11_:TeleportRequestMessage = null;
+      public function process(msg:Message) : Boolean {
+         var zlmsg:ZaapListMessage = null;
+         var destinationz:Array = null;
+         var tdlmsg:TeleportDestinationsListMessage = null;
+         var destinations:Array = null;
+         var hints:Vector.<Hint> = null;
+         var hint:Hint = null;
+         var tra:TeleportRequestAction = null;
+         var ldm:LeaveDialogMessage = null;
+         var i:* = 0;
+         var trmsg:TeleportRequestMessage = null;
          switch(true)
          {
-            case param1 is ZaapListMessage:
-               _loc2_ = param1 as ZaapListMessage;
-               _loc3_ = new Array();
-               _loc10_ = 0;
-               while(_loc10_ < _loc2_.mapIds.length)
+            case msg is ZaapListMessage:
+               zlmsg = msg as ZaapListMessage;
+               destinationz = new Array();
+               i = 0;
+               while(i < zlmsg.mapIds.length)
                {
-                  _loc3_.push(new TeleportDestinationWrapper(_loc2_.teleporterType,_loc2_.mapIds[_loc10_],_loc2_.subAreaIds[_loc10_],_loc2_.destTeleporterType[_loc10_],_loc2_.costs[_loc10_],_loc2_.spawnMapId == _loc2_.mapIds[_loc10_]));
-                  _loc10_++;
+                  destinationz.push(new TeleportDestinationWrapper(zlmsg.teleporterType,zlmsg.mapIds[i],zlmsg.subAreaIds[i],zlmsg.destTeleporterType[i],zlmsg.costs[i],zlmsg.spawnMapId == zlmsg.mapIds[i]));
+                  i++;
                }
-               this._spawnMapId = _loc2_.spawnMapId;
-               KernelEventsManager.getInstance().processCallback(RoleplayHookList.TeleportDestinationList,_loc3_,TeleporterTypeEnum.TELEPORTER_ZAAP);
+               this._spawnMapId = zlmsg.spawnMapId;
+               KernelEventsManager.getInstance().processCallback(RoleplayHookList.TeleportDestinationList,destinationz,TeleporterTypeEnum.TELEPORTER_ZAAP);
                return true;
-            case param1 is TeleportDestinationsListMessage:
-               _loc4_ = param1 as TeleportDestinationsListMessage;
-               _loc5_ = new Array();
-               _loc10_ = 0;
-               while(_loc10_ < _loc4_.mapIds.length)
+            case msg is TeleportDestinationsListMessage:
+               tdlmsg = msg as TeleportDestinationsListMessage;
+               destinations = new Array();
+               i = 0;
+               while(i < tdlmsg.mapIds.length)
                {
-                  if(_loc4_.teleporterType == TeleporterTypeEnum.TELEPORTER_SUBWAY)
+                  if(tdlmsg.teleporterType == TeleporterTypeEnum.TELEPORTER_SUBWAY)
                   {
-                     _loc6_ = TeleportDestinationWrapper.getHintsFromMapId(_loc4_.mapIds[_loc10_]);
-                     for each (_loc7_ in _loc6_)
+                     hints = TeleportDestinationWrapper.getHintsFromMapId(tdlmsg.mapIds[i]);
+                     for each (hint in hints)
                      {
-                        _loc5_.push(new TeleportDestinationWrapper(_loc4_.teleporterType,_loc4_.mapIds[_loc10_],_loc4_.subAreaIds[_loc10_],TeleporterTypeEnum.TELEPORTER_SUBWAY,_loc4_.costs[_loc10_],false,_loc7_));
+                        destinations.push(new TeleportDestinationWrapper(tdlmsg.teleporterType,tdlmsg.mapIds[i],tdlmsg.subAreaIds[i],TeleporterTypeEnum.TELEPORTER_SUBWAY,tdlmsg.costs[i],false,hint));
                      }
                   }
                   else
                   {
-                     _loc5_.push(new TeleportDestinationWrapper(_loc4_.teleporterType,_loc4_.mapIds[_loc10_],_loc4_.subAreaIds[_loc10_],_loc4_.destTeleporterType[_loc10_],_loc4_.costs[_loc10_]));
+                     destinations.push(new TeleportDestinationWrapper(tdlmsg.teleporterType,tdlmsg.mapIds[i],tdlmsg.subAreaIds[i],tdlmsg.destTeleporterType[i],tdlmsg.costs[i]));
                   }
-                  _loc10_++;
+                  i++;
                }
-               KernelEventsManager.getInstance().processCallback(RoleplayHookList.TeleportDestinationList,_loc5_,_loc4_.teleporterType);
+               KernelEventsManager.getInstance().processCallback(RoleplayHookList.TeleportDestinationList,destinations,tdlmsg.teleporterType);
                return true;
-            case param1 is TeleportRequestAction:
-               _loc8_ = param1 as TeleportRequestAction;
-               if(_loc8_.cost <= PlayedCharacterManager.getInstance().characteristics.kamas)
+            case msg is TeleportRequestAction:
+               tra = msg as TeleportRequestAction;
+               if(tra.cost <= PlayedCharacterManager.getInstance().characteristics.kamas)
                {
-                  _loc11_ = new TeleportRequestMessage();
-                  _loc11_.initTeleportRequestMessage(_loc8_.teleportType,_loc8_.mapId);
-                  ConnectionsHandler.getConnection().send(_loc11_);
+                  trmsg = new TeleportRequestMessage();
+                  trmsg.initTeleportRequestMessage(tra.teleportType,tra.mapId);
+                  ConnectionsHandler.getConnection().send(trmsg);
                }
                else
                {
                   KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,I18n.getUiText("ui.popup.not_enough_rich"),ChatFrame.RED_CHANNEL_ID,TimeManager.getInstance().getTimestamp());
                }
                return true;
-            case param1 is LeaveDialogRequestAction:
+            case msg is LeaveDialogRequestAction:
                ConnectionsHandler.getConnection().send(new LeaveDialogRequestMessage());
                return true;
-            case param1 is LeaveDialogMessage:
-               _loc9_ = param1 as LeaveDialogMessage;
-               if(_loc9_.dialogType == DialogTypeEnum.DIALOG_TELEPORTER)
+            case msg is LeaveDialogMessage:
+               ldm = msg as LeaveDialogMessage;
+               if(ldm.dialogType == DialogTypeEnum.DIALOG_TELEPORTER)
                {
                   Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
                   Kernel.getWorker().removeFrame(this);
                }
                return true;
-            default:
-               return false;
          }
       }
       

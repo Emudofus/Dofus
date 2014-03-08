@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.party
          super();
       }
       
-      public static function create(param1:uint) : ArenaRegisterAction {
-         var _loc2_:ArenaRegisterAction = new ArenaRegisterAction();
-         _loc2_.fightTypeId = param1;
-         return _loc2_;
+      public static function create(fightTypeId:uint) : ArenaRegisterAction {
+         var a:ArenaRegisterAction = new ArenaRegisterAction();
+         a.fightTypeId = fightTypeId;
+         return a;
       }
       
       public var fightTypeId:uint;

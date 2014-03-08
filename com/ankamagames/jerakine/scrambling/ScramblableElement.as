@@ -9,10 +9,10 @@ package com.ankamagames.jerakine.scrambling
          super();
       }
       
-      public function scramble(param1:ByteArray) : void {
+      public function scramble(data:ByteArray) : void {
       }
       
-      public function unscramble(param1:ByteArray) : void {
+      public function unscramble(data:ByteArray) : void {
       }
    }
 }

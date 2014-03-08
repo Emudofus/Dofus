@@ -5,10 +5,10 @@ package com.ankamagames.jerakine.types.events
    public class FileEvent extends Event
    {
       
-      public function FileEvent(param1:String, param2:String, param3:Boolean) {
-         super(param1,bubbles,cancelable);
-         this._sFile = param2;
-         this._bSuccess = param3;
+      public function FileEvent(type:String, sFile:String, bSuccess:Boolean) {
+         super(type,bubbles,cancelable);
+         this._sFile = sFile;
+         this._bSuccess = bSuccess;
       }
       
       public static const ERROR:String = "FILE_ERROR_EVENT";

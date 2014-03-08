@@ -50,16 +50,16 @@ package com.ankamagames.atouin.types
          return this._displayBehavior;
       }
       
-      public function set displayBehaviors(param1:IDisplayBehavior) : void {
-         this._displayBehavior = param1;
+      public function set displayBehaviors(oValue:IDisplayBehavior) : void {
+         this._displayBehavior = oValue;
       }
       
       public function get currentCellPosition() : Point {
          return this._currentCell;
       }
       
-      public function set currentCellPosition(param1:Point) : void {
-         this._currentCell = param1;
+      public function set currentCellPosition(pValue:Point) : void {
+         this._currentCell = pValue;
       }
       
       public function get displayed() : Boolean {
@@ -70,8 +70,8 @@ package com.ankamagames.atouin.types
          return this._displayBehavior.getAbsoluteBounds(this);
       }
       
-      public function set color(param1:uint) : void {
-         this._color = param1;
+      public function set color(c:uint) : void {
+         this._color = c;
       }
       
       public function get color() : uint {
@@ -82,11 +82,11 @@ package com.ankamagames.atouin.types
          return this._cellId;
       }
       
-      public function set cellId(param1:uint) : void {
-         this._cellId = param1;
+      public function set cellId(nValue:uint) : void {
+         this._cellId = nValue;
       }
       
-      public function display(param1:uint=0) : void {
+      public function display(wishedStrata:uint=0) : void {
          if(this.text)
          {
             if(!this.format)
@@ -111,9 +111,9 @@ package com.ankamagames.atouin.types
             this._tf = null;
          }
          this._cellInstance = new _cell();
-         var _loc2_:ColorTransform = new ColorTransform();
-         _loc2_.color = this._color;
-         this._cellInstance.transform.colorTransform = _loc2_;
+         var ct:ColorTransform = new ColorTransform();
+         ct.color = this._color;
+         this._cellInstance.transform.colorTransform = ct;
          addChild(this._cellInstance);
          if(this._tf)
          {

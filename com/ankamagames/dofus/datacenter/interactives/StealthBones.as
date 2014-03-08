@@ -12,8 +12,8 @@ package com.ankamagames.dofus.datacenter.interactives
       
       public static const MODULE:String = "StealthBones";
       
-      public static function getStealthBonesById(param1:int) : StealthBones {
-         return GameData.getObject(MODULE,param1) as StealthBones;
+      public static function getStealthBonesById(id:int) : StealthBones {
+         return GameData.getObject(MODULE,id) as StealthBones;
       }
       
       public var id:uint;

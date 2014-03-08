@@ -3,16 +3,16 @@ package com.ankamagames.jerakine.types
    public class Callback extends Object
    {
       
-      public function Callback(param1:Function, ... rest) {
+      public function Callback(fMethod:Function, ... aArgs) {
          super();
-         this.method = param1;
-         this.args = rest;
+         this.method = fMethod;
+         this.args = aArgs;
       }
       
-      public static function argFromArray(param1:Function, param2:Array) : Callback {
-         var _loc3_:Callback = new Callback(param1);
-         _loc3_.args = param2;
-         return _loc3_;
+      public static function argFromArray(fMethod:Function, args:Array) : Callback {
+         var cb:Callback = new Callback(fMethod);
+         cb.args = args;
+         return cb;
       }
       
       public var method:Function;

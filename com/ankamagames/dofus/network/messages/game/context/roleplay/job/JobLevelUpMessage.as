@@ -31,9 +31,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 5656;
       }
       
-      public function initJobLevelUpMessage(param1:uint=0, param2:JobDescription=null) : JobLevelUpMessage {
-         this.newLevel = param1;
-         this.jobsDescription = param2;
+      public function initJobLevelUpMessage(newLevel:uint=0, jobsDescription:JobDescription=null) : JobLevelUpMessage {
+         this.newLevel = newLevel;
+         this.jobsDescription = jobsDescription;
          this._isInitialized = true;
          return this;
       }
@@ -44,39 +44,39 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_JobLevelUpMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_JobLevelUpMessage(output);
       }
       
-      public function serializeAs_JobLevelUpMessage(param1:IDataOutput) : void {
+      public function serializeAs_JobLevelUpMessage(output:IDataOutput) : void {
          if(this.newLevel < 0)
          {
             throw new Error("Forbidden value (" + this.newLevel + ") on element newLevel.");
          }
          else
          {
-            param1.writeByte(this.newLevel);
-            this.jobsDescription.serializeAs_JobDescription(param1);
+            output.writeByte(this.newLevel);
+            this.jobsDescription.serializeAs_JobDescription(output);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_JobLevelUpMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_JobLevelUpMessage(input);
       }
       
-      public function deserializeAs_JobLevelUpMessage(param1:IDataInput) : void {
-         this.newLevel = param1.readByte();
+      public function deserializeAs_JobLevelUpMessage(input:IDataInput) : void {
+         this.newLevel = input.readByte();
          if(this.newLevel < 0)
          {
             throw new Error("Forbidden value (" + this.newLevel + ") on element of JobLevelUpMessage.newLevel.");
@@ -84,7 +84,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          else
          {
             this.jobsDescription = new JobDescription();
-            this.jobsDescription.deserialize(param1);
+            this.jobsDescription.deserialize(input);
             return;
          }
       }

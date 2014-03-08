@@ -13,24 +13,24 @@ package com.ankamagames.dofus.uiApi
       
       private var _module:UiModule;
       
-      public function set module(param1:UiModule) : void {
-         this._module = param1;
+      public function set module(value:UiModule) : void {
+         this._module = value;
       }
       
       public function destroy() : void {
          this._module = null;
       }
       
-      public function changeLightness(param1:uint, param2:Number) : uint {
-         return Color.setHSLlightness(param1,param2);
+      public function changeLightness(c:uint, value:Number) : uint {
+         return Color.setHSLlightness(c,value);
       }
       
-      public function changeSaturation(param1:uint, param2:Number) : uint {
-         return Color.setHSVSaturation(param1,param2);
+      public function changeSaturation(c:uint, saturation:Number) : uint {
+         return Color.setHSVSaturation(c,saturation);
       }
       
-      public function generateColorList(param1:int) : Array {
-         return Color.generateColorList(param1);
+      public function generateColorList(methode:int) : Array {
+         return Color.generateColorList(methode);
       }
    }
 }

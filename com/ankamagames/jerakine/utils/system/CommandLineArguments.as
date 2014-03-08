@@ -22,37 +22,37 @@ package com.ankamagames.jerakine.utils.system
       
       private var _arguments:Dictionary;
       
-      public function setArguments(param1:Array) : void {
-         var _loc2_:String = null;
-         var _loc3_:Array = null;
-         var _loc4_:String = null;
-         if(param1)
+      public function setArguments(args:Array) : void {
+         var arg:String = null;
+         var couple:Array = null;
+         var key:String = null;
+         if(args)
          {
-            for each (_loc2_ in param1)
+            for each (arg in args)
             {
-               _loc3_ = _loc2_.split("=");
-               _loc4_ = _loc3_[0].replace(new RegExp("^--?"),"");
-               this._arguments[_loc4_] = _loc3_[1];
+               couple = arg.split("=");
+               key = couple[0].replace(new RegExp("^--?"),"");
+               this._arguments[key] = couple[1];
             }
          }
       }
       
-      public function hasArgument(param1:String) : Boolean {
-         return this._arguments.hasOwnProperty(param1);
+      public function hasArgument(argument:String) : Boolean {
+         return this._arguments.hasOwnProperty(argument);
       }
       
-      public function getArgument(param1:String) : String {
-         return this._arguments[param1];
+      public function getArgument(argument:String) : String {
+         return this._arguments[argument];
       }
       
       public function toString() : String {
-         var _loc2_:String = null;
-         var _loc1_:Array = [];
-         for (_loc2_ in this._arguments)
+         var arg:String = null;
+         var res:Array = [];
+         for (arg in this._arguments)
          {
-            _loc1_.push(_loc2_ + "=" + this._arguments[_loc2_]);
+            res.push(arg + "=" + this._arguments[arg]);
          }
-         return _loc1_.join("||");
+         return res.join("||");
       }
    }
 }

@@ -57,80 +57,80 @@ package com.ankamagames.dofus.logic.game.fight.miscs
       
       public static const HEALING_EFFECTS_IDS:Array = [81,108,1109];
       
-      public static function isDamagedOrHealedBySpell(param1:int, param2:int, param3:Object) : Boolean {
-         var _loc8_:* = false;
-         var _loc9_:EffectInstance = null;
-         var _loc4_:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-         if(!param3 || !_loc4_)
+      public static function isDamagedOrHealedBySpell(pCasterId:int, pTargetId:int, pSpell:Object) : Boolean {
+         var affected:* = false;
+         var effi:EffectInstance = null;
+         var fef:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         if((!pSpell) || (!fef))
          {
             return false;
          }
-         var _loc5_:TiphonSprite = DofusEntities.getEntity(param2) as AnimatedCharacter;
-         var _loc6_:* = param2 == param1;
-         var _loc7_:Boolean = (_loc5_) && (_loc5_.parentSprite) && _loc5_.parentSprite.carriedEntity == _loc5_;
-         if(!(param3 is SpellWrapper))
+         var target:TiphonSprite = DofusEntities.getEntity(pTargetId) as AnimatedCharacter;
+         var targetIsCaster:Boolean = pTargetId == pCasterId;
+         var targetIsCarried:Boolean = (target) && (target.parentSprite) && (target.parentSprite.carriedEntity == target);
+         if(!(pSpell is SpellWrapper))
          {
-            if(!_loc6_ && !_loc7_)
+            if((!targetIsCaster) && (!targetIsCarried))
             {
                return true;
             }
             return false;
          }
-         for each (_loc9_ in param3.effects)
+         for each (effi in pSpell.effects)
          {
-            if((_loc9_.category == 2 || !(HEALING_EFFECTS_IDS.indexOf(_loc9_.effectId) == -1)) && (verifySpellEffectMask(param1,param2,_loc9_)))
+            if(((effi.category == 2) || (!(HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1))) && (verifySpellEffectMask(pCasterId,pTargetId,effi)))
             {
-               _loc8_ = true;
+               affected = true;
                break;
             }
          }
-         return _loc8_;
+         return affected;
       }
       
-      public static function getBuffEffectElement(param1:BasicBuff) : int {
-         var _loc2_:* = 0;
-         var _loc4_:EffectInstance = null;
-         var _loc5_:SpellLevel = null;
-         var _loc3_:Effect = Effect.getEffectById(param1.effects.effectId);
-         _loc2_ = _loc3_.elementId;
-         if(_loc2_ == -1)
+      public static function getBuffEffectElement(pBuff:BasicBuff) : int {
+         var element:* = 0;
+         var effi:EffectInstance = null;
+         var spellLevel:SpellLevel = null;
+         var effect:Effect = Effect.getEffectById(pBuff.effects.effectId);
+         element = effect.elementId;
+         if(element == -1)
          {
-            _loc5_ = param1.castingSpell.spellRank;
-            if(!_loc5_)
+            spellLevel = pBuff.castingSpell.spellRank;
+            if(!spellLevel)
             {
-               _loc5_ = SpellLevel.getLevelById(param1.castingSpell.spell.spellLevels[0]);
+               spellLevel = SpellLevel.getLevelById(pBuff.castingSpell.spell.spellLevels[0]);
             }
-            for each (_loc4_ in _loc5_.effects)
+            for each (effi in spellLevel.effects)
             {
-               if(_loc4_.effectId == param1.effects.effectId)
+               if(effi.effectId == pBuff.effects.effectId)
                {
-                  if(_loc4_.triggers.indexOf("DA") != -1)
+                  if(effi.triggers.indexOf("DA") != -1)
                   {
-                     _loc2_ = 4;
+                     element = 4;
                   }
                   else
                   {
-                     if(_loc4_.triggers.indexOf("DE") != -1)
+                     if(effi.triggers.indexOf("DE") != -1)
                      {
-                        _loc2_ = 1;
+                        element = 1;
                      }
                      else
                      {
-                        if(_loc4_.triggers.indexOf("DF") != -1)
+                        if(effi.triggers.indexOf("DF") != -1)
                         {
-                           _loc2_ = 2;
+                           element = 2;
                         }
                         else
                         {
-                           if(_loc4_.triggers.indexOf("DN") != -1)
+                           if(effi.triggers.indexOf("DN") != -1)
                            {
-                              _loc2_ = 0;
+                              element = 0;
                            }
                            else
                            {
-                              if(_loc4_.triggers.indexOf("DW") != -1)
+                              if(effi.triggers.indexOf("DW") != -1)
                               {
-                                 _loc2_ = 3;
+                                 element = 3;
                               }
                            }
                         }
@@ -140,63 +140,63 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                }
             }
          }
-         return _loc2_;
+         return element;
       }
       
-      public static function verifyBuffEffectTrigger(param1:SpellDamageInfo, param2:BasicBuff) : Boolean {
-         var _loc4_:* = false;
-         var _loc5_:Array = null;
-         var _loc6_:String = null;
-         var _loc7_:EffectInstance = null;
-         var _loc9_:GameFightFighterInformations = null;
-         var _loc10_:* = false;
-         var _loc3_:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-         if(!_loc3_)
+      public static function verifyBuffEffectTrigger(pSpellInfo:SpellDamageInfo, pBuff:BasicBuff) : Boolean {
+         var verify:* = false;
+         var triggers:Array = null;
+         var trigger:String = null;
+         var effi:EffectInstance = null;
+         var targetInfos:GameFightFighterInformations = null;
+         var isTargetAlly:* = false;
+         var fightEntitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         if(!fightEntitiesFrame)
          {
             return false;
          }
-         var _loc8_:SpellLevel = param2.castingSpell.spellRank;
-         if(!_loc8_)
+         var buffSpellLevel:SpellLevel = pBuff.castingSpell.spellRank;
+         if(!buffSpellLevel)
          {
-            _loc8_ = SpellLevel.getLevelById(param2.castingSpell.spell.spellLevels[0]);
+            buffSpellLevel = SpellLevel.getLevelById(pBuff.castingSpell.spell.spellLevels[0]);
          }
-         for each (_loc7_ in _loc8_.effects)
+         for each (effi in buffSpellLevel.effects)
          {
-            if(_loc7_.effectId == param2.effects.effectId)
+            if(effi.effectId == pBuff.effects.effectId)
             {
-               _loc5_ = _loc7_.triggers.split(",");
+               triggers = effi.triggers.split(",");
                break;
             }
          }
-         _loc9_ = _loc3_.getEntityInfos(param1.targetId) as GameFightFighterInformations;
-         _loc10_ = _loc9_.teamId == (_loc3_.getEntityInfos(param1.casterId) as GameFightFighterInformations).teamId;
-         for each (_loc13_ in _loc5_)
+         targetInfos = fightEntitiesFrame.getEntityInfos(pSpellInfo.targetId) as GameFightFighterInformations;
+         isTargetAlly = targetInfos.teamId == (fightEntitiesFrame.getEntityInfos(pSpellInfo.casterId) as GameFightFighterInformations).teamId;
+         for each (_loc13_ in triggers)
          {
-            switch(_loc6_)
+            switch(trigger)
             {
                case "I":
-                  _loc4_ = true;
+                  verify = true;
                   break;
                case "D":
-                  _loc4_ = param1.airDamage.minDamage > 0 || param1.earthDamage.minDamage > 0 || param1.fireDamage.minDamage > 0 || param1.neutralDamage.minDamage > 0 || param1.waterDamage.minDamage > 0;
+                  verify = (pSpellInfo.airDamage.minDamage > 0) || (pSpellInfo.earthDamage.minDamage > 0) || (pSpellInfo.fireDamage.minDamage > 0) || (pSpellInfo.neutralDamage.minDamage > 0) || (pSpellInfo.waterDamage.minDamage > 0);
                   break;
                case "DA":
-                  _loc4_ = param1.airDamage.minDamage > 0;
+                  verify = pSpellInfo.airDamage.minDamage > 0;
                   break;
                case "DBA":
-                  _loc4_ = _loc10_;
+                  verify = isTargetAlly;
                   break;
                case "DBE":
-                  _loc4_ = !_loc10_;
+                  verify = !isTargetAlly;
                   break;
                case "DC":
-                  _loc4_ = param1.isWeapon;
+                  verify = pSpellInfo.isWeapon;
                   break;
                case "DE":
-                  _loc4_ = param1.earthDamage.minDamage > 0;
+                  verify = pSpellInfo.earthDamage.minDamage > 0;
                   break;
                case "DF":
-                  _loc4_ = param1.fireDamage.minDamage > 0;
+                  verify = pSpellInfo.fireDamage.minDamage > 0;
                   break;
                case "DG":
                   break;
@@ -205,7 +205,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                case "DM":
                   break;
                case "DN":
-                  _loc4_ = param1.neutralDamage.minDamage > 0;
+                  verify = pSpellInfo.neutralDamage.minDamage > 0;
                   break;
                case "DP":
                   break;
@@ -214,14 +214,14 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                case "Dr":
                   break;
                case "DS":
-                  _loc4_ = !param1.isWeapon;
+                  verify = !pSpellInfo.isWeapon;
                   break;
                case "DTB":
                   break;
                case "DTE":
                   break;
                case "DW":
-                  _loc4_ = param1.waterDamage.minDamage > 0;
+                  verify = pSpellInfo.waterDamage.minDamage > 0;
                   break;
                case "MD":
                   break;
@@ -230,7 +230,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                case "MDP":
                   break;
             }
-            if(_loc4_)
+            if(verify)
             {
                return true;
             }
@@ -238,103 +238,103 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          return false;
       }
       
-      public static function verifySpellEffectMask(param1:int, param2:int, param3:EffectInstance) : Boolean {
-         var _loc12_:RegExp = null;
-         var _loc13_:String = null;
-         var _loc14_:Array = null;
-         var _loc15_:String = null;
-         var _loc16_:String = null;
-         var _loc17_:* = false;
-         var _loc18_:* = false;
-         var _loc19_:* = 0;
-         var _loc4_:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-         if(!param3 || !_loc4_ || param3.delay > 0)
+      public static function verifySpellEffectMask(pCasterId:int, pTargetId:int, pEffect:EffectInstance) : Boolean {
+         var r:RegExp = null;
+         var targetMaskPattern:String = null;
+         var exclusiveMasks:Array = null;
+         var exclusiveMask:String = null;
+         var exclusiveMaskParam:String = null;
+         var exclusiveMaskCasterOnly:* = false;
+         var verify:* = false;
+         var maskState:* = 0;
+         var fef:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         if((!pEffect) || (!fef) || (pEffect.delay > 0))
          {
             return false;
          }
-         var _loc5_:TiphonSprite = DofusEntities.getEntity(param2) as AnimatedCharacter;
-         var _loc6_:* = param2 == param1;
-         var _loc7_:Boolean = (_loc5_) && (_loc5_.parentSprite) && _loc5_.parentSprite.carriedEntity == _loc5_;
-         var _loc8_:GameFightFighterInformations = _loc4_.getEntityInfos(param2) as GameFightFighterInformations;
-         var _loc9_:Array = FightersStateManager.getInstance().getStates(param1);
-         var _loc10_:Array = FightersStateManager.getInstance().getStates(param2);
-         var _loc11_:* = _loc8_.teamId == (_loc4_.getEntityInfos(param1) as GameFightFighterInformations).teamId;
-         if(_loc6_)
+         var target:TiphonSprite = DofusEntities.getEntity(pTargetId) as AnimatedCharacter;
+         var targetIsCaster:Boolean = pTargetId == pCasterId;
+         var targetIsCarried:Boolean = (target) && (target.parentSprite) && (target.parentSprite.carriedEntity == target);
+         var targetInfos:GameFightFighterInformations = fef.getEntityInfos(pTargetId) as GameFightFighterInformations;
+         var casterStates:Array = FightersStateManager.getInstance().getStates(pCasterId);
+         var targetStates:Array = FightersStateManager.getInstance().getStates(pTargetId);
+         var isTargetAlly:Boolean = targetInfos.teamId == (fef.getEntityInfos(pCasterId) as GameFightFighterInformations).teamId;
+         if(targetIsCaster)
          {
-            _loc13_ = "caC";
+            targetMaskPattern = "caC";
          }
          else
          {
-            if((_loc8_.stats.summoned) && _loc8_.stats.maxMovementPoints == 0)
+            if((targetInfos.stats.summoned) && (targetInfos.stats.maxMovementPoints == 0))
             {
-               _loc13_ = _loc11_?"agsj":"ASJ";
+               targetMaskPattern = isTargetAlly?"agsj":"ASJ";
             }
             else
             {
-               if(_loc8_.stats.summoned)
+               if(targetInfos.stats.summoned)
                {
-                  _loc13_ = _loc11_?"agij":"AIJ";
+                  targetMaskPattern = isTargetAlly?"agij":"AIJ";
                }
                else
                {
-                  if(_loc8_ is GameFightCompanionInformations)
+                  if(targetInfos is GameFightCompanionInformations)
                   {
-                     _loc13_ = _loc11_?"agdl":"ADL";
+                     targetMaskPattern = isTargetAlly?"agdl":"ADL";
                   }
                   else
                   {
-                     if(_loc8_ is GameFightMonsterInformations)
+                     if(targetInfos is GameFightMonsterInformations)
                      {
-                        _loc13_ = _loc11_?"agm":"AM";
+                        targetMaskPattern = isTargetAlly?"agm":"AM";
                      }
                      else
                      {
-                        _loc13_ = _loc11_?"gahl":"AHL";
+                        targetMaskPattern = isTargetAlly?"gahl":"AHL";
                      }
                   }
                }
             }
          }
-         _loc12_ = new RegExp("[" + _loc13_ + "]","g");
-         _loc18_ = param3.targetMask.match(_loc12_).length > 0;
-         if(_loc18_)
+         r = new RegExp("[" + targetMaskPattern + "]","g");
+         verify = pEffect.targetMask.match(r).length > 0;
+         if(verify)
          {
-            _loc14_ = param3.targetMask.match(exclusiveTargetMasks);
-            if(_loc14_.length > 0)
+            exclusiveMasks = pEffect.targetMask.match(exclusiveTargetMasks);
+            if(exclusiveMasks.length > 0)
             {
-               _loc18_ = false;
-               for each (_loc15_ in _loc14_)
+               verify = false;
+               for each (exclusiveMask in exclusiveMasks)
                {
-                  _loc17_ = _loc15_.charAt(0) == "*";
-                  _loc15_ = _loc17_?_loc15_.substr(1,_loc15_.length-1):_loc15_;
-                  _loc16_ = _loc15_.length > 1?_loc15_.substr(1,_loc15_.length-1):null;
-                  _loc15_ = _loc15_.charAt(0);
-                  switch(_loc15_)
+                  exclusiveMaskCasterOnly = exclusiveMask.charAt(0) == "*";
+                  exclusiveMask = exclusiveMaskCasterOnly?exclusiveMask.substr(1,exclusiveMask.length - 1):exclusiveMask;
+                  exclusiveMaskParam = exclusiveMask.length > 1?exclusiveMask.substr(1,exclusiveMask.length - 1):null;
+                  exclusiveMask = exclusiveMask.charAt(0);
+                  switch(exclusiveMask)
                   {
                      case "b":
                         continue;
                      case "B":
                         continue;
                      case "e":
-                        _loc19_ = parseInt(_loc16_);
-                        if(_loc17_)
+                        maskState = parseInt(exclusiveMaskParam);
+                        if(exclusiveMaskCasterOnly)
                         {
-                           _loc18_ = !_loc9_ || _loc9_.indexOf(_loc19_) == -1;
+                           verify = (!casterStates) || (casterStates.indexOf(maskState) == -1);
                         }
                         else
                         {
-                           _loc18_ = !_loc10_ || _loc10_.indexOf(_loc19_) == -1;
+                           verify = (!targetStates) || (targetStates.indexOf(maskState) == -1);
                         }
                         continue;
                      case "E":
-                        _loc19_ = parseInt(_loc16_);
-                        if(_loc17_)
+                        maskState = parseInt(exclusiveMaskParam);
+                        if(exclusiveMaskCasterOnly)
                         {
-                           _loc18_ = (_loc9_) && !(_loc9_.indexOf(_loc19_) == -1);
+                           verify = (casterStates) && (!(casterStates.indexOf(maskState) == -1));
                         }
                         else
                         {
-                           _loc18_ = (_loc10_) && !(_loc10_.indexOf(_loc19_) == -1);
+                           verify = (targetStates) && (!(targetStates.indexOf(maskState) == -1));
                         }
                         continue;
                      case "f":
@@ -365,262 +365,258 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                         continue;
                      case "V":
                         continue;
-                     default:
-                        continue;
                   }
                }
             }
          }
-         return _loc18_;
+         return verify;
       }
       
-      public static function getSpellElementDamage(param1:Object, param2:int, param3:int=0, param4:int=0) : SpellDamage {
-         var _loc7_:GameFightFighterInformations = null;
-         var _loc9_:EffectDamage = null;
-         var _loc10_:EffectInstance = null;
-         var _loc11_:EffectInstanceDice = null;
-         var _loc12_:SpellWrapper = null;
-         var _loc5_:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-         if(!_loc5_)
+      public static function getSpellElementDamage(pSpell:Object, pElementType:int, pCasterId:int=0, pTargetId:int=0) : SpellDamage {
+         var targetInfos:GameFightFighterInformations = null;
+         var ed:EffectDamage = null;
+         var effi:EffectInstance = null;
+         var effid:EffectInstanceDice = null;
+         var sw:SpellWrapper = null;
+         var fightEntitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         if(!fightEntitiesFrame)
          {
             return null;
          }
-         var _loc6_:int = _loc7_?_loc7_.stats.baseMaxLifePoints - _loc7_.stats.maxLifePoints:0;
-         _loc7_ = _loc5_.getEntityInfos(param4) as GameFightFighterInformations;
-         var _loc8_:SpellDamage = new SpellDamage();
-         for each (_loc10_ in param1.effects)
+         var targetErosionLifePoints:int = targetInfos?targetInfos.stats.baseMaxLifePoints - targetInfos.stats.maxLifePoints:0;
+         targetInfos = fightEntitiesFrame.getEntityInfos(pTargetId) as GameFightFighterInformations;
+         var sd:SpellDamage = new SpellDamage();
+         for each (effi in pSpell.effects)
          {
-            if(_loc10_.category == DAMAGE_EFFECT_CATEGORY && HEALING_EFFECTS_IDS.indexOf(_loc10_.effectId) == -1 && Effect.getEffectById(_loc10_.effectId).elementId == param2 && ((!_loc10_.targetMask) || ((_loc10_.targetMask) && (DamageUtil.verifySpellEffectMask(param3,param4,_loc10_)))))
+            if((effi.category == DAMAGE_EFFECT_CATEGORY) && (HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1) && (Effect.getEffectById(effi.effectId).elementId == pElementType) && ((!effi.targetMask) || ((effi.targetMask) && (DamageUtil.verifySpellEffectMask(pCasterId,pTargetId,effi)))))
             {
-               _loc9_ = getEffectDamageByEffectId(_loc8_,_loc10_.effectId);
-               if(!_loc9_)
+               ed = getEffectDamageByEffectId(sd,effi.effectId);
+               if(!ed)
                {
-                  _loc9_ = new EffectDamage(_loc10_.effectId,param2,_loc10_.random);
-                  _loc8_.addEffectDamage(_loc9_);
+                  ed = new EffectDamage(effi.effectId,pElementType,effi.random);
+                  sd.addEffectDamage(ed);
                }
-               if(EROSION_DAMAGE_EFFECTS_IDS.indexOf(_loc10_.effectId) != -1)
+               if(EROSION_DAMAGE_EFFECTS_IDS.indexOf(effi.effectId) != -1)
                {
-                  _loc11_ = _loc10_ as EffectInstanceDice;
-                  _loc9_.minErosionDamage = _loc9_.minErosionDamage + _loc6_ * _loc11_.diceNum / 100;
-                  _loc9_.maxErosionDamage = _loc9_.maxErosionDamage + _loc6_ * _loc11_.diceNum / 100;
+                  effid = effi as EffectInstanceDice;
+                  ed.minErosionDamage = ed.minErosionDamage + targetErosionLifePoints * effid.diceNum / 100;
+                  ed.maxErosionDamage = ed.maxErosionDamage + targetErosionLifePoints * effid.diceNum / 100;
                }
                else
                {
-                  if(!(_loc10_ is EffectInstanceDice))
+                  if(!(effi is EffectInstanceDice))
                   {
-                     if(_loc10_ is EffectInstanceInteger)
+                     if(effi is EffectInstanceInteger)
                      {
-                        _loc9_.minDamage = _loc9_.minDamage + (_loc10_ as EffectInstanceInteger).value;
-                        _loc9_.maxDamage = _loc9_.maxDamage + (_loc10_ as EffectInstanceInteger).value;
+                        ed.minDamage = ed.minDamage + (effi as EffectInstanceInteger).value;
+                        ed.maxDamage = ed.maxDamage + (effi as EffectInstanceInteger).value;
                      }
                      else
                      {
-                        if(_loc10_ is EffectInstanceMinMax)
+                        if(effi is EffectInstanceMinMax)
                         {
-                           _loc9_.minDamage = _loc9_.minDamage + (_loc10_ as EffectInstanceMinMax).min;
-                           _loc9_.maxDamage = _loc9_.maxDamage + (_loc10_ as EffectInstanceMinMax).max;
+                           ed.minDamage = ed.minDamage + (effi as EffectInstanceMinMax).min;
+                           ed.maxDamage = ed.maxDamage + (effi as EffectInstanceMinMax).max;
                         }
                      }
                   }
                   else
                   {
-                     _loc11_ = _loc10_ as EffectInstanceDice;
-                     _loc9_.minDamage = _loc9_.minDamage + _loc11_.diceNum;
-                     _loc9_.maxDamage = _loc9_.maxDamage + (_loc11_.diceSide == 0?_loc11_.diceNum:_loc11_.diceSide);
+                     effid = effi as EffectInstanceDice;
+                     ed.minDamage = ed.minDamage + effid.diceNum;
+                     ed.maxDamage = ed.maxDamage + (effid.diceSide == 0?effid.diceNum:effid.diceSide);
                   }
                }
             }
          }
-         for each (_loc10_ in param1.criticalEffect)
+         for each (effi in pSpell.criticalEffect)
          {
-            if(_loc10_.category == DAMAGE_EFFECT_CATEGORY && HEALING_EFFECTS_IDS.indexOf(_loc10_.effectId) == -1 && Effect.getEffectById(_loc10_.effectId).elementId == param2 && ((!_loc10_.targetMask) || ((_loc10_.targetMask) && (DamageUtil.verifySpellEffectMask(param3,param4,_loc10_)))))
+            if((effi.category == DAMAGE_EFFECT_CATEGORY) && (HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1) && (Effect.getEffectById(effi.effectId).elementId == pElementType) && ((!effi.targetMask) || ((effi.targetMask) && (DamageUtil.verifySpellEffectMask(pCasterId,pTargetId,effi)))))
             {
-               _loc9_ = getEffectDamageByEffectId(_loc8_,_loc10_.effectId);
-               if(!_loc9_)
+               ed = getEffectDamageByEffectId(sd,effi.effectId);
+               if(!ed)
                {
-                  _loc9_ = new EffectDamage(_loc10_.effectId,param2,_loc10_.random);
-                  _loc8_.addEffectDamage(_loc9_);
+                  ed = new EffectDamage(effi.effectId,pElementType,effi.random);
+                  sd.addEffectDamage(ed);
                }
-               if(EROSION_DAMAGE_EFFECTS_IDS.indexOf(_loc10_.effectId) != -1)
+               if(EROSION_DAMAGE_EFFECTS_IDS.indexOf(effi.effectId) != -1)
                {
-                  _loc11_ = _loc10_ as EffectInstanceDice;
-                  _loc9_.minCriticalErosionDamage = _loc9_.minCriticalErosionDamage + _loc6_ * _loc11_.diceNum / 100;
-                  _loc9_.maxCriticalErosionDamage = _loc9_.maxCriticalErosionDamage + _loc6_ * _loc11_.diceNum / 100;
+                  effid = effi as EffectInstanceDice;
+                  ed.minCriticalErosionDamage = ed.minCriticalErosionDamage + targetErosionLifePoints * effid.diceNum / 100;
+                  ed.maxCriticalErosionDamage = ed.maxCriticalErosionDamage + targetErosionLifePoints * effid.diceNum / 100;
                }
                else
                {
-                  if(!(_loc10_ is EffectInstanceDice))
+                  if(!(effi is EffectInstanceDice))
                   {
-                     if(_loc10_ is EffectInstanceInteger)
+                     if(effi is EffectInstanceInteger)
                      {
-                        _loc9_.minCriticalDamage = _loc9_.minCriticalDamage + (_loc10_ as EffectInstanceInteger).value;
-                        _loc9_.maxCriticalDamage = _loc9_.maxCriticalDamage + (_loc10_ as EffectInstanceInteger).value;
+                        ed.minCriticalDamage = ed.minCriticalDamage + (effi as EffectInstanceInteger).value;
+                        ed.maxCriticalDamage = ed.maxCriticalDamage + (effi as EffectInstanceInteger).value;
                      }
                      else
                      {
-                        if(_loc10_ is EffectInstanceMinMax)
+                        if(effi is EffectInstanceMinMax)
                         {
-                           _loc9_.minCriticalDamage = _loc9_.minCriticalDamage + (_loc10_ as EffectInstanceMinMax).min;
-                           _loc9_.maxCriticalDamage = _loc9_.maxCriticalDamage + (_loc10_ as EffectInstanceMinMax).max;
+                           ed.minCriticalDamage = ed.minCriticalDamage + (effi as EffectInstanceMinMax).min;
+                           ed.maxCriticalDamage = ed.maxCriticalDamage + (effi as EffectInstanceMinMax).max;
                         }
                      }
                   }
                   else
                   {
-                     _loc11_ = _loc10_ as EffectInstanceDice;
-                     _loc9_.minCriticalDamage = _loc9_.minCriticalDamage + _loc11_.diceNum;
-                     _loc9_.maxCriticalDamage = _loc9_.maxCriticalDamage + (_loc11_.diceSide == 0?_loc11_.diceNum:_loc11_.diceSide);
+                     effid = effi as EffectInstanceDice;
+                     ed.minCriticalDamage = ed.minCriticalDamage + effid.diceNum;
+                     ed.maxCriticalDamage = ed.maxCriticalDamage + (effid.diceSide == 0?effid.diceNum:effid.diceSide);
                   }
                }
-               _loc8_.hasCriticalDamage = _loc9_.hasCritical = true;
+               sd.hasCriticalDamage = ed.hasCritical = true;
             }
          }
-         if(param3 == CurrentPlayedFighterManager.getInstance().currentFighterId)
+         if(pCasterId == CurrentPlayedFighterManager.getInstance().currentFighterId)
          {
-            _loc12_ = param1 as SpellWrapper;
-            for each (_loc9_ in _loc8_.effectDamages)
+            sw = pSpell as SpellWrapper;
+            for each (ed in sd.effectDamages)
             {
-               applySpellModificationsOnEffect(_loc9_,_loc12_);
+               applySpellModificationsOnEffect(ed,sw);
             }
          }
-         return _loc8_;
+         return sd;
       }
       
-      public static function applySpellModificationsOnEffect(param1:EffectDamage, param2:SpellWrapper) : void {
-         if(!param2)
+      public static function applySpellModificationsOnEffect(pEffectDamage:EffectDamage, pSpellW:SpellWrapper) : void {
+         if(!pSpellW)
          {
             return;
          }
-         var _loc3_:CharacterSpellModification = CurrentPlayedFighterManager.getInstance().getSpellModifications(param2.id,CharacterSpellModificationTypeEnum.BASE_DAMAGE);
-         if(_loc3_)
+         var baseDamageModif:CharacterSpellModification = CurrentPlayedFighterManager.getInstance().getSpellModifications(pSpellW.id,CharacterSpellModificationTypeEnum.BASE_DAMAGE);
+         if(baseDamageModif)
          {
-            param1.minDamage = param1.minDamage + _loc3_.value.contextModif;
-            param1.maxDamage = param1.maxDamage + _loc3_.value.contextModif;
-            if(param1.hasCritical)
+            pEffectDamage.minDamage = pEffectDamage.minDamage + baseDamageModif.value.contextModif;
+            pEffectDamage.maxDamage = pEffectDamage.maxDamage + baseDamageModif.value.contextModif;
+            if(pEffectDamage.hasCritical)
             {
-               param1.minCriticalDamage = param1.minCriticalDamage + _loc3_.value.contextModif;
-               param1.maxCriticalDamage = param1.maxCriticalDamage + _loc3_.value.contextModif;
+               pEffectDamage.minCriticalDamage = pEffectDamage.minCriticalDamage + baseDamageModif.value.contextModif;
+               pEffectDamage.maxCriticalDamage = pEffectDamage.maxCriticalDamage + baseDamageModif.value.contextModif;
             }
          }
       }
       
-      public static function getEffectDamageByEffectId(param1:SpellDamage, param2:int) : EffectDamage {
-         var _loc3_:EffectDamage = null;
-         var _loc4_:EffectDamage = null;
-         for each (_loc4_ in param1.effectDamages)
+      public static function getEffectDamageByEffectId(pSpellDamage:SpellDamage, pEffectId:int) : EffectDamage {
+         var foundEffect:EffectDamage = null;
+         var ed:EffectDamage = null;
+         for each (ed in pSpellDamage.effectDamages)
          {
-            if(_loc4_.effectId == param2)
+            if(ed.effectId == pEffectId)
             {
-               _loc3_ = _loc4_;
+               foundEffect = ed;
                break;
             }
          }
-         return _loc3_;
+         return foundEffect;
       }
       
-      public static function getSpellDamage(param1:SpellDamageInfo) : SpellDamage {
-         var _loc3_:* = 0;
-         var _loc25_:BasicBuff = null;
-         var _loc26_:* = NaN;
-         var _loc27_:* = 0;
-         var _loc28_:* = 0;
-         var _loc29_:* = 0;
-         var _loc30_:* = 0;
-         var _loc31_:* = 0;
-         var _loc32_:* = 0;
-         var _loc2_:SpellDamage = new SpellDamage();
-         param1.casterStrength = param1.casterStrength + param1.casterDamagesBonus;
-         param1.casterChance = param1.casterChance + param1.casterDamagesBonus;
-         param1.casterAgility = param1.casterAgility + param1.casterDamagesBonus;
-         param1.casterIntelligence = param1.casterIntelligence + param1.casterDamagesBonus;
-         var _loc4_:uint = MapPoint.fromCellId(param1.targetCell).distanceToCell(MapPoint.fromCellId(param1.spellCenterCell));
-         var _loc5_:int = param1.spellShapeSize != 0?param1.spellShapeSize:EFFECTSHAPE_DEFAULT_AREA_SIZE;
-         var _loc6_:int = param1.spellShapeMinSize != 0?param1.spellShapeMinSize:EFFECTSHAPE_DEFAULT_MIN_AREA_SIZE;
-         var _loc7_:int = param1.spellShapeEfficiencyPercent != 0?param1.spellShapeEfficiencyPercent:EFFECTSHAPE_DEFAULT_EFFICIENCY;
-         var _loc8_:int = param1.spellShapeMaxEfficiency != 0?param1.spellShapeMaxEfficiency:EFFECTSHAPE_DEFAULT_MAX_EFFICIENCY_APPLY;
-         var _loc9_:Number = getSimpleEfficiency(_loc4_,_loc5_,_loc6_,_loc7_,_loc8_);
-         var _loc10_:EffectDamage = computeDamage(param1.neutralDamage,param1,_loc9_);
-         var _loc11_:EffectDamage = computeDamage(param1.earthDamage,param1,_loc9_);
-         var _loc12_:EffectDamage = computeDamage(param1.waterDamage,param1,_loc9_);
-         var _loc13_:EffectDamage = computeDamage(param1.airDamage,param1,_loc9_);
-         var _loc14_:EffectDamage = computeDamage(param1.fireDamage,param1,_loc9_);
-         var _loc15_:int = _loc10_.minErosionDamage + _loc11_.minErosionDamage + _loc12_.minErosionDamage + _loc13_.minErosionDamage + _loc14_.minErosionDamage;
-         var _loc16_:int = _loc10_.maxErosionDamage + _loc11_.maxErosionDamage + _loc12_.maxErosionDamage + _loc13_.maxErosionDamage + _loc14_.maxErosionDamage;
-         var _loc17_:int = _loc10_.minCriticalErosionDamage + _loc11_.minCriticalErosionDamage + _loc12_.minCriticalErosionDamage + _loc13_.minCriticalErosionDamage + _loc14_.minCriticalErosionDamage;
-         var _loc18_:int = _loc10_.maxCriticalErosionDamage + _loc11_.maxCriticalErosionDamage + _loc12_.maxCriticalErosionDamage + _loc13_.maxCriticalErosionDamage + _loc14_.maxCriticalErosionDamage;
-         var _loc19_:int = (Math.floor(param1.healDamage.minLifePointsAdded * (100 + param1.casterIntelligence) / 100) + (param1.healDamage.minLifePointsAdded > 0?param1.casterHealBonus:0)) * _loc9_;
-         var _loc20_:int = (Math.floor(param1.healDamage.maxLifePointsAdded * (100 + param1.casterIntelligence) / 100) + (param1.healDamage.maxLifePointsAdded > 0?param1.casterHealBonus:0)) * _loc9_;
-         var _loc21_:int = (Math.floor(param1.healDamage.minCriticalLifePointsAdded * (100 + param1.casterIntelligence) / 100) + (param1.healDamage.minCriticalLifePointsAdded > 0?param1.casterHealBonus:0)) * _loc9_;
-         var _loc22_:int = (Math.floor(param1.healDamage.maxCriticalLifePointsAdded * (100 + param1.casterIntelligence) / 100) + (param1.healDamage.maxCriticalLifePointsAdded > 0?param1.casterHealBonus:0)) * _loc9_;
-         _loc19_ = _loc19_ + param1.healDamage.lifePointsAddedBasedOnLifePercent;
-         _loc20_ = _loc20_ + param1.healDamage.lifePointsAddedBasedOnLifePercent;
-         _loc21_ = _loc21_ + param1.healDamage.criticalLifePointsAddedBasedOnLifePercent;
-         _loc22_ = _loc22_ + param1.healDamage.criticalLifePointsAddedBasedOnLifePercent;
-         var _loc23_:EffectDamage = new EffectDamage(-1,-1,-1);
-         _loc23_.minLifePointsAdded = _loc19_;
-         _loc23_.maxLifePointsAdded = _loc20_;
-         _loc23_.minCriticalLifePointsAdded = _loc21_;
-         _loc23_.maxCriticalLifePointsAdded = _loc22_;
-         _loc2_.addEffectDamage(_loc23_);
-         var _loc24_:EffectDamage = new EffectDamage(-1,-1,-1);
-         _loc24_.minDamage = _loc15_;
-         _loc24_.maxDamage = _loc16_;
-         _loc24_.minCriticalDamage = _loc17_;
-         _loc24_.maxCriticalDamage = _loc18_;
-         for each (_loc25_ in param1.targetBuffs)
+      public static function getSpellDamage(pSpellDamageInfo:SpellDamageInfo) : SpellDamage {
+         var minDmg:* = 0;
+         var buff:BasicBuff = null;
+         var dmgMultiplier:* = NaN;
+         var element:* = 0;
+         var dmgReduction:* = 0;
+         var minShieldDiff:* = 0;
+         var maxShieldDiff:* = 0;
+         var minCriticalShieldDiff:* = 0;
+         var maxCriticalShieldDiff:* = 0;
+         var finalDamage:SpellDamage = new SpellDamage();
+         pSpellDamageInfo.casterStrength = pSpellDamageInfo.casterStrength + pSpellDamageInfo.casterDamagesBonus;
+         pSpellDamageInfo.casterChance = pSpellDamageInfo.casterChance + pSpellDamageInfo.casterDamagesBonus;
+         pSpellDamageInfo.casterAgility = pSpellDamageInfo.casterAgility + pSpellDamageInfo.casterDamagesBonus;
+         pSpellDamageInfo.casterIntelligence = pSpellDamageInfo.casterIntelligence + pSpellDamageInfo.casterDamagesBonus;
+         var distance:uint = MapPoint.fromCellId(pSpellDamageInfo.targetCell).distanceToCell(MapPoint.fromCellId(pSpellDamageInfo.spellCenterCell));
+         var shapeSize:int = !(pSpellDamageInfo.spellShapeSize == 0)?pSpellDamageInfo.spellShapeSize:EFFECTSHAPE_DEFAULT_AREA_SIZE;
+         var shapeMinSize:int = !(pSpellDamageInfo.spellShapeMinSize == 0)?pSpellDamageInfo.spellShapeMinSize:EFFECTSHAPE_DEFAULT_MIN_AREA_SIZE;
+         var shapeEfficiencyPercent:int = !(pSpellDamageInfo.spellShapeEfficiencyPercent == 0)?pSpellDamageInfo.spellShapeEfficiencyPercent:EFFECTSHAPE_DEFAULT_EFFICIENCY;
+         var shapeMaxEfficiency:int = !(pSpellDamageInfo.spellShapeMaxEfficiency == 0)?pSpellDamageInfo.spellShapeMaxEfficiency:EFFECTSHAPE_DEFAULT_MAX_EFFICIENCY_APPLY;
+         var efficiencyMultiplier:Number = getSimpleEfficiency(distance,shapeSize,shapeMinSize,shapeEfficiencyPercent,shapeMaxEfficiency);
+         var finalNeutralDmg:EffectDamage = computeDamage(pSpellDamageInfo.neutralDamage,pSpellDamageInfo,efficiencyMultiplier);
+         var finalEarthDmg:EffectDamage = computeDamage(pSpellDamageInfo.earthDamage,pSpellDamageInfo,efficiencyMultiplier);
+         var finalWaterDmg:EffectDamage = computeDamage(pSpellDamageInfo.waterDamage,pSpellDamageInfo,efficiencyMultiplier);
+         var finalAirDmg:EffectDamage = computeDamage(pSpellDamageInfo.airDamage,pSpellDamageInfo,efficiencyMultiplier);
+         var finalFireDmg:EffectDamage = computeDamage(pSpellDamageInfo.fireDamage,pSpellDamageInfo,efficiencyMultiplier);
+         var totalMinErosionDamage:int = finalNeutralDmg.minErosionDamage + finalEarthDmg.minErosionDamage + finalWaterDmg.minErosionDamage + finalAirDmg.minErosionDamage + finalFireDmg.minErosionDamage;
+         var totalMaxErosionDamage:int = finalNeutralDmg.maxErosionDamage + finalEarthDmg.maxErosionDamage + finalWaterDmg.maxErosionDamage + finalAirDmg.maxErosionDamage + finalFireDmg.maxErosionDamage;
+         var totalMinCriticaErosionDamage:int = finalNeutralDmg.minCriticalErosionDamage + finalEarthDmg.minCriticalErosionDamage + finalWaterDmg.minCriticalErosionDamage + finalAirDmg.minCriticalErosionDamage + finalFireDmg.minCriticalErosionDamage;
+         var totalMaxCriticaErosionlDamage:int = finalNeutralDmg.maxCriticalErosionDamage + finalEarthDmg.maxCriticalErosionDamage + finalWaterDmg.maxCriticalErosionDamage + finalAirDmg.maxCriticalErosionDamage + finalFireDmg.maxCriticalErosionDamage;
+         var totalMinLifePointsAdded:int = (Math.floor(pSpellDamageInfo.healDamage.minLifePointsAdded * (100 + pSpellDamageInfo.casterIntelligence) / 100) + (pSpellDamageInfo.healDamage.minLifePointsAdded > 0?pSpellDamageInfo.casterHealBonus:0)) * efficiencyMultiplier;
+         var totalMaxLifePointsAdded:int = (Math.floor(pSpellDamageInfo.healDamage.maxLifePointsAdded * (100 + pSpellDamageInfo.casterIntelligence) / 100) + (pSpellDamageInfo.healDamage.maxLifePointsAdded > 0?pSpellDamageInfo.casterHealBonus:0)) * efficiencyMultiplier;
+         var totalMinCriticalLifePointsAdded:int = (Math.floor(pSpellDamageInfo.healDamage.minCriticalLifePointsAdded * (100 + pSpellDamageInfo.casterIntelligence) / 100) + (pSpellDamageInfo.healDamage.minCriticalLifePointsAdded > 0?pSpellDamageInfo.casterHealBonus:0)) * efficiencyMultiplier;
+         var totalMaxCriticalLifePointsAdded:int = (Math.floor(pSpellDamageInfo.healDamage.maxCriticalLifePointsAdded * (100 + pSpellDamageInfo.casterIntelligence) / 100) + (pSpellDamageInfo.healDamage.maxCriticalLifePointsAdded > 0?pSpellDamageInfo.casterHealBonus:0)) * efficiencyMultiplier;
+         totalMinLifePointsAdded = totalMinLifePointsAdded + pSpellDamageInfo.healDamage.lifePointsAddedBasedOnLifePercent;
+         totalMaxLifePointsAdded = totalMaxLifePointsAdded + pSpellDamageInfo.healDamage.lifePointsAddedBasedOnLifePercent;
+         totalMinCriticalLifePointsAdded = totalMinCriticalLifePointsAdded + pSpellDamageInfo.healDamage.criticalLifePointsAddedBasedOnLifePercent;
+         totalMaxCriticalLifePointsAdded = totalMaxCriticalLifePointsAdded + pSpellDamageInfo.healDamage.criticalLifePointsAddedBasedOnLifePercent;
+         var heal:EffectDamage = new EffectDamage(-1,-1,-1);
+         heal.minLifePointsAdded = totalMinLifePointsAdded;
+         heal.maxLifePointsAdded = totalMaxLifePointsAdded;
+         heal.minCriticalLifePointsAdded = totalMinCriticalLifePointsAdded;
+         heal.maxCriticalLifePointsAdded = totalMaxCriticalLifePointsAdded;
+         finalDamage.addEffectDamage(heal);
+         var erosion:EffectDamage = new EffectDamage(-1,-1,-1);
+         erosion.minDamage = totalMinErosionDamage;
+         erosion.maxDamage = totalMaxErosionDamage;
+         erosion.minCriticalDamage = totalMinCriticaErosionDamage;
+         erosion.maxCriticalDamage = totalMaxCriticaErosionlDamage;
+         for each (buff in pSpellDamageInfo.targetBuffs)
          {
-            if((!_loc25_.hasOwnProperty("delay") || _loc25_["delay"] == 0) && (verifyBuffEffectTrigger(param1,_loc25_)))
+            if(((!buff.hasOwnProperty("delay")) || (buff["delay"] == 0)) && (verifyBuffEffectTrigger(pSpellDamageInfo,buff)))
             {
-               switch(_loc25_.actionId)
+               switch(buff.actionId)
                {
                   case 1163:
-                     _loc26_ = _loc25_.param1 / 100;
-                     _loc24_.applyDamageMultiplier(_loc26_);
-                     _loc10_.applyDamageMultiplier(_loc26_);
-                     _loc11_.applyDamageMultiplier(_loc26_);
-                     _loc12_.applyDamageMultiplier(_loc26_);
-                     _loc13_.applyDamageMultiplier(_loc26_);
-                     _loc14_.applyDamageMultiplier(_loc26_);
+                     dmgMultiplier = buff.param1 / 100;
+                     erosion.applyDamageMultiplier(dmgMultiplier);
+                     finalNeutralDmg.applyDamageMultiplier(dmgMultiplier);
+                     finalEarthDmg.applyDamageMultiplier(dmgMultiplier);
+                     finalWaterDmg.applyDamageMultiplier(dmgMultiplier);
+                     finalAirDmg.applyDamageMultiplier(dmgMultiplier);
+                     finalFireDmg.applyDamageMultiplier(dmgMultiplier);
                      continue;
                   case 1164:
-                     _loc24_.convertDamageToHeal();
-                     _loc10_.convertDamageToHeal();
-                     _loc11_.convertDamageToHeal();
-                     _loc12_.convertDamageToHeal();
-                     _loc13_.convertDamageToHeal();
-                     _loc14_.convertDamageToHeal();
-                     param1.spellHasCriticalHeal = param1.spellHasCriticalDamage;
+                     erosion.convertDamageToHeal();
+                     finalNeutralDmg.convertDamageToHeal();
+                     finalEarthDmg.convertDamageToHeal();
+                     finalWaterDmg.convertDamageToHeal();
+                     finalAirDmg.convertDamageToHeal();
+                     finalFireDmg.convertDamageToHeal();
+                     pSpellDamageInfo.spellHasCriticalHeal = pSpellDamageInfo.spellHasCriticalDamage;
                      continue;
                   case 265:
-                     _loc27_ = getBuffEffectElement(_loc25_);
-                     _loc28_ = -(param1.targetLevel / 20 + 1) * (_loc25_.effects as EffectInstanceInteger).value;
-                     switch(_loc27_)
+                     element = getBuffEffectElement(buff);
+                     dmgReduction = -(pSpellDamageInfo.targetLevel / 20 + 1) * (buff.effects as EffectInstanceInteger).value;
+                     switch(element)
                      {
                         case 0:
-                           _loc10_.applyDamageModification(_loc28_);
+                           finalNeutralDmg.applyDamageModification(dmgReduction);
                            break;
                         case 1:
-                           _loc11_.applyDamageModification(_loc28_);
+                           finalEarthDmg.applyDamageModification(dmgReduction);
                            break;
                         case 2:
-                           _loc14_.applyDamageModification(_loc28_);
+                           finalFireDmg.applyDamageModification(dmgReduction);
                            break;
                         case 3:
-                           _loc12_.applyDamageModification(_loc28_);
+                           finalWaterDmg.applyDamageModification(dmgReduction);
                            break;
                         case 4:
-                           _loc13_.applyDamageModification(_loc28_);
+                           finalAirDmg.applyDamageModification(dmgReduction);
                            break;
                         case -1:
-                           _loc10_.applyDamageModification(_loc28_);
-                           _loc11_.applyDamageModification(_loc28_);
-                           _loc14_.applyDamageModification(_loc28_);
-                           _loc12_.applyDamageModification(_loc28_);
-                           _loc13_.applyDamageModification(_loc28_);
+                           finalNeutralDmg.applyDamageModification(dmgReduction);
+                           finalEarthDmg.applyDamageModification(dmgReduction);
+                           finalFireDmg.applyDamageModification(dmgReduction);
+                           finalWaterDmg.applyDamageModification(dmgReduction);
+                           finalAirDmg.applyDamageModification(dmgReduction);
                            break;
                      }
-                     continue;
-                  default:
                      continue;
                }
             }
@@ -629,188 +625,188 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                continue;
             }
          }
-         _loc2_.addEffectDamage(_loc24_);
-         _loc2_.addEffectDamage(_loc10_);
-         _loc2_.addEffectDamage(_loc11_);
-         _loc2_.addEffectDamage(_loc12_);
-         _loc2_.addEffectDamage(_loc13_);
-         _loc2_.addEffectDamage(_loc14_);
-         _loc2_.hasCriticalDamage = param1.spellHasCriticalDamage;
-         _loc2_.updateDamage();
-         if(param1.targetShieldsPoints > 0)
+         finalDamage.addEffectDamage(erosion);
+         finalDamage.addEffectDamage(finalNeutralDmg);
+         finalDamage.addEffectDamage(finalEarthDmg);
+         finalDamage.addEffectDamage(finalWaterDmg);
+         finalDamage.addEffectDamage(finalAirDmg);
+         finalDamage.addEffectDamage(finalFireDmg);
+         finalDamage.hasCriticalDamage = pSpellDamageInfo.spellHasCriticalDamage;
+         finalDamage.updateDamage();
+         if(pSpellDamageInfo.targetShieldsPoints > 0)
          {
-            _loc29_ = _loc2_.minDamage - param1.targetShieldsPoints;
-            if(_loc29_ < 0)
+            minShieldDiff = finalDamage.minDamage - pSpellDamageInfo.targetShieldsPoints;
+            if(minShieldDiff < 0)
             {
-               _loc2_.minShieldPointsRemoved = _loc2_.minDamage;
-               _loc2_.minDamage = 0;
+               finalDamage.minShieldPointsRemoved = finalDamage.minDamage;
+               finalDamage.minDamage = 0;
             }
             else
             {
-               _loc2_.minDamage = _loc2_.minDamage - param1.targetShieldsPoints;
-               _loc2_.minShieldPointsRemoved = param1.targetShieldsPoints;
+               finalDamage.minDamage = finalDamage.minDamage - pSpellDamageInfo.targetShieldsPoints;
+               finalDamage.minShieldPointsRemoved = pSpellDamageInfo.targetShieldsPoints;
             }
-            _loc30_ = _loc2_.maxDamage - param1.targetShieldsPoints;
-            if(_loc30_ < 0)
+            maxShieldDiff = finalDamage.maxDamage - pSpellDamageInfo.targetShieldsPoints;
+            if(maxShieldDiff < 0)
             {
-               _loc2_.maxShieldPointsRemoved = _loc2_.maxDamage;
-               _loc2_.maxDamage = 0;
-            }
-            else
-            {
-               _loc2_.maxDamage = _loc2_.maxDamage - param1.targetShieldsPoints;
-               _loc2_.maxShieldPointsRemoved = param1.targetShieldsPoints;
-            }
-            _loc31_ = _loc2_.minCriticalDamage - param1.targetShieldsPoints;
-            if(_loc31_ < 0)
-            {
-               _loc2_.minCriticalShieldPointsRemoved = _loc2_.minCriticalDamage;
-               _loc2_.minCriticalDamage = 0;
+               finalDamage.maxShieldPointsRemoved = finalDamage.maxDamage;
+               finalDamage.maxDamage = 0;
             }
             else
             {
-               _loc2_.minCriticalDamage = _loc2_.minCriticalDamage - param1.targetShieldsPoints;
-               _loc2_.minCriticalShieldPointsRemoved = param1.targetShieldsPoints;
+               finalDamage.maxDamage = finalDamage.maxDamage - pSpellDamageInfo.targetShieldsPoints;
+               finalDamage.maxShieldPointsRemoved = pSpellDamageInfo.targetShieldsPoints;
             }
-            _loc32_ = _loc2_.maxCriticalDamage - param1.targetShieldsPoints;
-            if(_loc32_ < 0)
+            minCriticalShieldDiff = finalDamage.minCriticalDamage - pSpellDamageInfo.targetShieldsPoints;
+            if(minCriticalShieldDiff < 0)
             {
-               _loc2_.maxCriticalShieldPointsRemoved = _loc2_.maxCriticalDamage;
-               _loc2_.maxCriticalDamage = 0;
+               finalDamage.minCriticalShieldPointsRemoved = finalDamage.minCriticalDamage;
+               finalDamage.minCriticalDamage = 0;
             }
             else
             {
-               _loc2_.maxCriticalDamage = _loc2_.maxCriticalDamage - param1.targetShieldsPoints;
-               _loc2_.maxCriticalShieldPointsRemoved = param1.targetShieldsPoints;
+               finalDamage.minCriticalDamage = finalDamage.minCriticalDamage - pSpellDamageInfo.targetShieldsPoints;
+               finalDamage.minCriticalShieldPointsRemoved = pSpellDamageInfo.targetShieldsPoints;
             }
-            if(param1.spellHasCriticalDamage)
+            maxCriticalShieldDiff = finalDamage.maxCriticalDamage - pSpellDamageInfo.targetShieldsPoints;
+            if(maxCriticalShieldDiff < 0)
             {
-               _loc2_.hasCriticalShieldPointsRemoved = true;
+               finalDamage.maxCriticalShieldPointsRemoved = finalDamage.maxCriticalDamage;
+               finalDamage.maxCriticalDamage = 0;
+            }
+            else
+            {
+               finalDamage.maxCriticalDamage = finalDamage.maxCriticalDamage - pSpellDamageInfo.targetShieldsPoints;
+               finalDamage.maxCriticalShieldPointsRemoved = pSpellDamageInfo.targetShieldsPoints;
+            }
+            if(pSpellDamageInfo.spellHasCriticalDamage)
+            {
+               finalDamage.hasCriticalShieldPointsRemoved = true;
             }
          }
-         _loc2_.hasCriticalLifePointsAdded = param1.spellHasCriticalHeal;
-         _loc2_.invulnerableState = param1.targetIsInvulnerable;
-         return _loc2_;
+         finalDamage.hasCriticalLifePointsAdded = pSpellDamageInfo.spellHasCriticalHeal;
+         finalDamage.invulnerableState = pSpellDamageInfo.targetIsInvulnerable;
+         return finalDamage;
       }
       
-      private static function computeDamage(param1:SpellDamage, param2:SpellDamageInfo, param3:Number) : EffectDamage {
-         var _loc4_:* = 0;
-         var _loc5_:* = 0;
-         var _loc6_:* = 0;
-         var _loc7_:* = 0;
-         var _loc9_:* = NaN;
-         var _loc11_:* = NaN;
-         switch(param1.element)
+      private static function computeDamage(pRawDamage:SpellDamage, pSpellDamageInfo:SpellDamageInfo, pEfficiencyMultiplier:Number) : EffectDamage {
+         var stat:* = 0;
+         var resistPercent:* = 0;
+         var elementReduction:* = 0;
+         var elementBonus:* = 0;
+         var minCriticalBaseDmg:* = NaN;
+         var maxCriticalBaseDmg:* = NaN;
+         switch(pRawDamage.element)
          {
             case 0:
-               _loc4_ = param2.casterStrength;
-               _loc5_ = param2.targetNeutralElementResistPercent;
-               _loc6_ = param2.targetNeutralElementReduction;
-               _loc7_ = param2.casterNeutralDamageBonus;
+               stat = pSpellDamageInfo.casterStrength;
+               resistPercent = pSpellDamageInfo.targetNeutralElementResistPercent;
+               elementReduction = pSpellDamageInfo.targetNeutralElementReduction;
+               elementBonus = pSpellDamageInfo.casterNeutralDamageBonus;
                break;
             case 1:
-               _loc4_ = param2.casterStrength;
-               _loc5_ = param2.targetEarthElementResistPercent;
-               _loc6_ = param2.targetEarthElementReduction;
-               _loc7_ = param2.casterEarthDamageBonus;
+               stat = pSpellDamageInfo.casterStrength;
+               resistPercent = pSpellDamageInfo.targetEarthElementResistPercent;
+               elementReduction = pSpellDamageInfo.targetEarthElementReduction;
+               elementBonus = pSpellDamageInfo.casterEarthDamageBonus;
                break;
             case 2:
-               _loc4_ = param2.casterIntelligence;
-               _loc5_ = param2.targetFireElementResistPercent;
-               _loc6_ = param2.targetFireElementReduction;
-               _loc7_ = param2.casterFireDamageBonus;
+               stat = pSpellDamageInfo.casterIntelligence;
+               resistPercent = pSpellDamageInfo.targetFireElementResistPercent;
+               elementReduction = pSpellDamageInfo.targetFireElementReduction;
+               elementBonus = pSpellDamageInfo.casterFireDamageBonus;
                break;
             case 3:
-               _loc4_ = param2.casterChance;
-               _loc5_ = param2.targetWaterElementResistPercent;
-               _loc6_ = param2.targetWaterElementReduction;
-               _loc7_ = param2.casterWaterDamageBonus;
+               stat = pSpellDamageInfo.casterChance;
+               resistPercent = pSpellDamageInfo.targetWaterElementResistPercent;
+               elementReduction = pSpellDamageInfo.targetWaterElementReduction;
+               elementBonus = pSpellDamageInfo.casterWaterDamageBonus;
                break;
             case 4:
-               _loc4_ = param2.casterAgility;
-               _loc5_ = param2.targetAirElementResistPercent;
-               _loc6_ = param2.targetAirElementReduction;
-               _loc7_ = param2.casterAirDamageBonus;
+               stat = pSpellDamageInfo.casterAgility;
+               resistPercent = pSpellDamageInfo.targetAirElementResistPercent;
+               elementReduction = pSpellDamageInfo.targetAirElementReduction;
+               elementBonus = pSpellDamageInfo.casterAirDamageBonus;
                break;
          }
-         var _loc8_:Number = Math.floor(param1.minDamage * (100 + _loc4_) / 100);
-         if(param2.spellWeaponCriticalBonus != 0)
+         var minBaseDmg:Number = Math.floor(pRawDamage.minDamage * (100 + stat) / 100);
+         if(pSpellDamageInfo.spellWeaponCriticalBonus != 0)
          {
-            _loc9_ = param1.minDamage > 0?Math.floor((param1.minDamage + param2.spellWeaponCriticalBonus) * (100 + _loc4_) / 100):0;
+            minCriticalBaseDmg = pRawDamage.minDamage > 0?Math.floor((pRawDamage.minDamage + pSpellDamageInfo.spellWeaponCriticalBonus) * (100 + stat) / 100):0;
          }
          else
          {
-            _loc9_ = Math.floor(param1.minCriticalDamage * (100 + _loc4_) / 100);
+            minCriticalBaseDmg = Math.floor(pRawDamage.minCriticalDamage * (100 + stat) / 100);
          }
-         var _loc10_:Number = Math.floor(param1.maxDamage * (100 + _loc4_) / 100);
-         if(param2.spellWeaponCriticalBonus != 0)
+         var maxBaseDmg:Number = Math.floor(pRawDamage.maxDamage * (100 + stat) / 100);
+         if(pSpellDamageInfo.spellWeaponCriticalBonus != 0)
          {
-            _loc11_ = param1.maxDamage > 0?Math.floor((param1.maxDamage + param2.spellWeaponCriticalBonus) * (100 + _loc4_) / 100):0;
+            maxCriticalBaseDmg = pRawDamage.maxDamage > 0?Math.floor((pRawDamage.maxDamage + pSpellDamageInfo.spellWeaponCriticalBonus) * (100 + stat) / 100):0;
          }
          else
          {
-            _loc11_ = Math.floor(param1.maxCriticalDamage * (100 + _loc4_) / 100);
+            maxCriticalBaseDmg = Math.floor(pRawDamage.maxCriticalDamage * (100 + stat) / 100);
          }
-         if(_loc8_ > 0)
+         if(minBaseDmg > 0)
          {
-            _loc8_ = _loc8_ + (_loc7_ + param2.casterAllDamagesBonus);
+            minBaseDmg = minBaseDmg + (elementBonus + pSpellDamageInfo.casterAllDamagesBonus);
          }
-         if(_loc10_ > 0)
+         if(maxBaseDmg > 0)
          {
-            _loc10_ = _loc10_ + (_loc7_ + param2.casterAllDamagesBonus);
+            maxBaseDmg = maxBaseDmg + (elementBonus + pSpellDamageInfo.casterAllDamagesBonus);
          }
-         if(_loc9_ > 0)
+         if(minCriticalBaseDmg > 0)
          {
-            _loc9_ = _loc9_ + (_loc7_ + param2.casterAllDamagesBonus);
+            minCriticalBaseDmg = minCriticalBaseDmg + (elementBonus + pSpellDamageInfo.casterAllDamagesBonus);
          }
-         if(_loc11_ > 0)
+         if(maxCriticalBaseDmg > 0)
          {
-            _loc11_ = _loc11_ + (_loc7_ + param2.casterAllDamagesBonus);
+            maxCriticalBaseDmg = maxCriticalBaseDmg + (elementBonus + pSpellDamageInfo.casterAllDamagesBonus);
          }
-         var _loc12_:Number = (100 - _loc5_) / 100;
-         _loc8_ = _loc8_ * _loc12_ - _loc6_;
-         _loc10_ = _loc10_ * _loc12_ - _loc6_;
-         _loc9_ = _loc9_ * _loc12_ - _loc6_;
-         _loc11_ = _loc11_ * _loc12_ - _loc6_;
-         var _loc13_:EffectDamage = new EffectDamage(-1,param1.element,param1.random);
-         _loc13_.minDamage = param2.isWeapon?Math.floor(_loc8_ * param3):_loc8_ * param3;
-         _loc13_.maxDamage = param2.isWeapon?Math.floor(_loc10_ * param3):_loc10_ * param3;
-         _loc13_.minCriticalDamage = param2.isWeapon?Math.floor(_loc9_ * param3):_loc9_ * param3;
-         _loc13_.maxCriticalDamage = param2.isWeapon?Math.floor(_loc11_ * param3):_loc11_ * param3;
-         _loc13_.minErosionDamage = param1.minErosionDamage * _loc12_ * param3;
-         _loc13_.maxErosionDamage = param1.maxErosionDamage * _loc12_ * param3;
-         _loc13_.minCriticalErosionDamage = param1.minCriticalErosionDamage * _loc12_ * param3;
-         _loc13_.maxCriticalErosionDamage = param1.maxCriticalErosionDamage * _loc12_ * param3;
-         _loc13_.hasCritical = param1.hasCriticalDamage;
-         return _loc13_;
+         var targetResistMultiplier:Number = (100 - resistPercent) / 100;
+         minBaseDmg = minBaseDmg * targetResistMultiplier - elementReduction;
+         maxBaseDmg = maxBaseDmg * targetResistMultiplier - elementReduction;
+         minCriticalBaseDmg = minCriticalBaseDmg * targetResistMultiplier - elementReduction;
+         maxCriticalBaseDmg = maxCriticalBaseDmg * targetResistMultiplier - elementReduction;
+         var finalDamage:EffectDamage = new EffectDamage(-1,pRawDamage.element,pRawDamage.random);
+         finalDamage.minDamage = pSpellDamageInfo.isWeapon?Math.floor(minBaseDmg * pEfficiencyMultiplier):minBaseDmg * pEfficiencyMultiplier;
+         finalDamage.maxDamage = pSpellDamageInfo.isWeapon?Math.floor(maxBaseDmg * pEfficiencyMultiplier):maxBaseDmg * pEfficiencyMultiplier;
+         finalDamage.minCriticalDamage = pSpellDamageInfo.isWeapon?Math.floor(minCriticalBaseDmg * pEfficiencyMultiplier):minCriticalBaseDmg * pEfficiencyMultiplier;
+         finalDamage.maxCriticalDamage = pSpellDamageInfo.isWeapon?Math.floor(maxCriticalBaseDmg * pEfficiencyMultiplier):maxCriticalBaseDmg * pEfficiencyMultiplier;
+         finalDamage.minErosionDamage = pRawDamage.minErosionDamage * targetResistMultiplier * pEfficiencyMultiplier;
+         finalDamage.maxErosionDamage = pRawDamage.maxErosionDamage * targetResistMultiplier * pEfficiencyMultiplier;
+         finalDamage.minCriticalErosionDamage = pRawDamage.minCriticalErosionDamage * targetResistMultiplier * pEfficiencyMultiplier;
+         finalDamage.maxCriticalErosionDamage = pRawDamage.maxCriticalErosionDamage * targetResistMultiplier * pEfficiencyMultiplier;
+         finalDamage.hasCritical = pRawDamage.hasCriticalDamage;
+         return finalDamage;
       }
       
-      public static function getSimpleEfficiency(param1:int, param2:int, param3:int, param4:int, param5:int) : Number {
-         if(param4 == 0)
+      public static function getSimpleEfficiency(pDistance:int, pShapeSize:int, pShapeMinSize:int, pShapeEfficiencyPercent:int, pShapeMaxEfficiency:int) : Number {
+         if(pShapeEfficiencyPercent == 0)
          {
             return DAMAGE_NOT_BOOSTED;
          }
-         if(param2 <= 0 || param2 >= UNLIMITED_ZONE_SIZE)
+         if((pShapeSize <= 0) || (pShapeSize >= UNLIMITED_ZONE_SIZE))
          {
             return DAMAGE_NOT_BOOSTED;
          }
-         if(param1 > param2)
+         if(pDistance > pShapeSize)
          {
             return DAMAGE_NOT_BOOSTED;
          }
-         if(param4 <= 0)
+         if(pShapeEfficiencyPercent <= 0)
          {
             return DAMAGE_NOT_BOOSTED;
          }
-         if(param3 != 0)
+         if(pShapeMinSize != 0)
          {
-            if(param1 <= param3)
+            if(pDistance <= pShapeMinSize)
             {
                return DAMAGE_NOT_BOOSTED;
             }
-            return Math.max(0,DAMAGE_NOT_BOOSTED - 0.01 * Math.min(param1 - param3,param5) * param4);
+            return Math.max(0,DAMAGE_NOT_BOOSTED - 0.01 * Math.min(pDistance - pShapeMinSize,pShapeMaxEfficiency) * pShapeEfficiencyPercent);
          }
-         return Math.max(0,DAMAGE_NOT_BOOSTED - 0.01 * Math.min(param1,param5) * param4);
+         return Math.max(0,DAMAGE_NOT_BOOSTED - 0.01 * Math.min(pDistance,pShapeMaxEfficiency) * pShapeEfficiencyPercent);
       }
    }
 }

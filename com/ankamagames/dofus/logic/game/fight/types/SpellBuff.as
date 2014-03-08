@@ -15,12 +15,12 @@ package com.ankamagames.dofus.logic.game.fight.types
    public class SpellBuff extends BasicBuff
    {
       
-      public function SpellBuff(param1:FightTemporarySpellBoostEffect=null, param2:CastingSpell=null, param3:int=0) {
-         if(param1)
+      public function SpellBuff(effect:FightTemporarySpellBoostEffect=null, castingSpell:CastingSpell=null, actionId:int=0) {
+         if(effect)
          {
-            super(param1,param2,param3,param1.boostedSpellId,null,param1.delta);
-            this.spellId = param1.boostedSpellId;
-            this.delta = param1.delta;
+            super(effect,castingSpell,actionId,effect.boostedSpellId,null,effect.delta);
+            this.spellId = effect.boostedSpellId;
+            this.delta = effect.delta;
          }
       }
       
@@ -37,12 +37,12 @@ package com.ankamagames.dofus.logic.game.fight.types
       }
       
       override public function onApplyed() : void {
-         var _loc1_:* = false;
-         var _loc2_:CharacterSpellModification = null;
-         var _loc3_:Array = null;
-         var _loc4_:SpellWrapper = null;
-         var _loc5_:CharacterBaseCharacteristic = null;
-         var _loc6_:CharacterSpellModification = null;
+         var spellModifExists:* = false;
+         var spellModif:CharacterSpellModification = null;
+         var swsToUpdate:Array = null;
+         var swToUpdate:SpellWrapper = null;
+         var carac:CharacterBaseCharacteristic = null;
+         var modif:CharacterSpellModification = null;
          if(targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
          {
             if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_RANGEABLE)
@@ -141,86 +141,86 @@ package com.ankamagames.dofus.logic.game.fight.types
                   }
                }
             }
-            _loc1_ = false;
-            for each (_loc2_ in PlayedCharacterManager.getInstance().characteristics.spellModifications)
+            spellModifExists = false;
+            for each (spellModif in PlayedCharacterManager.getInstance().characteristics.spellModifications)
             {
-               if(this.spellId == _loc2_.spellId)
+               if(this.spellId == spellModif.spellId)
                {
-                  if(_loc2_.modificationType == this.modifType)
+                  if(spellModif.modificationType == this.modifType)
                   {
-                     _loc1_ = true;
-                     _loc2_.value.contextModif = _loc2_.value.contextModif + this.delta;
+                     spellModifExists = true;
+                     spellModif.value.contextModif = spellModif.value.contextModif + this.delta;
                   }
                }
             }
-            if(!_loc1_)
+            if(!spellModifExists)
             {
-               _loc5_ = new CharacterBaseCharacteristic();
-               _loc5_.base = 0;
-               _loc5_.alignGiftBonus = 0;
-               _loc5_.contextModif = this.delta;
-               _loc5_.objectsAndMountBonus = 0;
-               _loc6_ = new CharacterSpellModification();
-               _loc6_.modificationType = this.modifType;
-               _loc6_.spellId = this.spellId;
-               _loc6_.value = _loc5_;
-               PlayedCharacterManager.getInstance().characteristics.spellModifications.push(_loc6_);
+               carac = new CharacterBaseCharacteristic();
+               carac.base = 0;
+               carac.alignGiftBonus = 0;
+               carac.contextModif = this.delta;
+               carac.objectsAndMountBonus = 0;
+               modif = new CharacterSpellModification();
+               modif.modificationType = this.modifType;
+               modif.spellId = this.spellId;
+               modif.value = carac;
+               PlayedCharacterManager.getInstance().characteristics.spellModifications.push(modif);
             }
-            _loc3_ = SpellWrapper.getSpellWrappersById(this.spellId,targetId);
-            for each (_loc4_ in _loc3_)
+            swsToUpdate = SpellWrapper.getSpellWrappersById(this.spellId,targetId);
+            for each (swToUpdate in swsToUpdate)
             {
-               _loc4_ = SpellWrapper.create(_loc4_.position,_loc4_.spellId,_loc4_.spellLevel,true,targetId);
-               _loc4_.versionNum++;
+               swToUpdate = SpellWrapper.create(swToUpdate.position,swToUpdate.spellId,swToUpdate.spellLevel,true,targetId);
+               swToUpdate.versionNum++;
             }
          }
          super.onApplyed();
       }
       
       override public function onRemoved() : void {
-         var _loc1_:CharacterSpellModification = null;
-         var _loc2_:Array = null;
-         var _loc3_:SpellWrapper = null;
+         var spellModif:CharacterSpellModification = null;
+         var swsToUpdate:Array = null;
+         var swToUpdate:SpellWrapper = null;
          if(!_removed)
          {
             if(targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
             {
-               for each (_loc1_ in PlayedCharacterManager.getInstance().characteristics.spellModifications)
+               for each (spellModif in PlayedCharacterManager.getInstance().characteristics.spellModifications)
                {
-                  if(this.spellId == _loc1_.spellId)
+                  if(this.spellId == spellModif.spellId)
                   {
-                     if(_loc1_.modificationType == this.modifType)
+                     if(spellModif.modificationType == this.modifType)
                      {
-                        _loc1_.value.contextModif = _loc1_.value.contextModif - this.delta;
+                        spellModif.value.contextModif = spellModif.value.contextModif - this.delta;
                      }
                   }
                }
-               _loc2_ = SpellWrapper.getSpellWrappersById(this.spellId,targetId);
-               for each (_loc3_ in _loc2_)
+               swsToUpdate = SpellWrapper.getSpellWrappersById(this.spellId,targetId);
+               for each (swToUpdate in swsToUpdate)
                {
-                  _loc3_ = SpellWrapper.create(_loc3_.position,_loc3_.spellId,_loc3_.spellLevel,true,targetId);
-                  _loc3_.versionNum++;
+                  swToUpdate = SpellWrapper.create(swToUpdate.position,swToUpdate.spellId,swToUpdate.spellLevel,true,targetId);
+                  swToUpdate.versionNum++;
                }
             }
          }
          super.onRemoved();
       }
       
-      override public function clone(param1:int=0) : BasicBuff {
-         var _loc2_:SpellBuff = new SpellBuff();
-         _loc2_.spellId = this.spellId;
-         _loc2_.delta = this.delta;
-         _loc2_.id = uid;
-         _loc2_.uid = uid;
-         _loc2_.actionId = actionId;
-         _loc2_.targetId = targetId;
-         _loc2_.castingSpell = castingSpell;
-         _loc2_.duration = duration;
-         _loc2_.dispelable = dispelable;
-         _loc2_.source = source;
-         _loc2_.aliveSource = aliveSource;
-         _loc2_.parentBoostUid = parentBoostUid;
-         _loc2_.initParam(param1,param2,param3);
-         return _loc2_;
+      override public function clone(id:int=0) : BasicBuff {
+         var sb:SpellBuff = new SpellBuff();
+         sb.spellId = this.spellId;
+         sb.delta = this.delta;
+         sb.id = uid;
+         sb.uid = uid;
+         sb.actionId = actionId;
+         sb.targetId = targetId;
+         sb.castingSpell = castingSpell;
+         sb.duration = duration;
+         sb.dispelable = dispelable;
+         sb.source = source;
+         sb.aliveSource = aliveSource;
+         sb.parentBoostUid = parentBoostUid;
+         sb.initParam(param1,param2,param3);
+         return sb;
       }
    }
 }

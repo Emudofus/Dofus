@@ -26,16 +26,16 @@ package com.ankamagames.dofus.types.characteristicContextual
          return this._tText;
       }
       
-      public function set text(param1:String) : void {
-         this._tText = param1;
+      public function set text(sValue:String) : void {
+         this._tText = sValue;
       }
       
       public function get textFormat() : TextFormat {
          return this._textFormat;
       }
       
-      public function set textFormat(param1:TextFormat) : void {
-         this._textFormat = param1;
+      public function set textFormat(tfFormat:TextFormat) : void {
+         this._textFormat = tfFormat;
       }
       
       public function finalize() : void {

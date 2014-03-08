@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.startup
          return 1303;
       }
       
-      public function initStartupActionsObjetAttributionMessage(param1:uint=0, param2:uint=0) : StartupActionsObjetAttributionMessage {
-         this.actionId = param1;
-         this.characterId = param2;
+      public function initStartupActionsObjetAttributionMessage(actionId:uint=0, characterId:uint=0) : StartupActionsObjetAttributionMessage {
+         this.actionId = actionId;
+         this.characterId = characterId;
          this._isInitialized = true;
          return this;
       }
@@ -42,53 +42,53 @@ package com.ankamagames.dofus.network.messages.game.startup
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_StartupActionsObjetAttributionMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_StartupActionsObjetAttributionMessage(output);
       }
       
-      public function serializeAs_StartupActionsObjetAttributionMessage(param1:IDataOutput) : void {
+      public function serializeAs_StartupActionsObjetAttributionMessage(output:IDataOutput) : void {
          if(this.actionId < 0)
          {
             throw new Error("Forbidden value (" + this.actionId + ") on element actionId.");
          }
          else
          {
-            param1.writeInt(this.actionId);
+            output.writeInt(this.actionId);
             if(this.characterId < 0)
             {
                throw new Error("Forbidden value (" + this.characterId + ") on element characterId.");
             }
             else
             {
-               param1.writeInt(this.characterId);
+               output.writeInt(this.characterId);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_StartupActionsObjetAttributionMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_StartupActionsObjetAttributionMessage(input);
       }
       
-      public function deserializeAs_StartupActionsObjetAttributionMessage(param1:IDataInput) : void {
-         this.actionId = param1.readInt();
+      public function deserializeAs_StartupActionsObjetAttributionMessage(input:IDataInput) : void {
+         this.actionId = input.readInt();
          if(this.actionId < 0)
          {
             throw new Error("Forbidden value (" + this.actionId + ") on element of StartupActionsObjetAttributionMessage.actionId.");
          }
          else
          {
-            this.characterId = param1.readInt();
+            this.characterId = input.readInt();
             if(this.characterId < 0)
             {
                throw new Error("Forbidden value (" + this.characterId + ") on element of StartupActionsObjetAttributionMessage.characterId.");

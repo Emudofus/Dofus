@@ -39,20 +39,20 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    public class RoleplayPointCellFrame extends Object implements Frame
    {
       
-      public function RoleplayPointCellFrame(param1:Function=null, param2:Sprite=null, param3:Boolean=false, param4:Function=null, param5:Boolean=false) {
-         var _loc6_:LinkedCursorData = null;
+      public function RoleplayPointCellFrame(callBack:Function=null, cursorIcon:Sprite=null, freeCellOnly:Boolean=false, customCellValidatorFct:Function=null, untargetableEntities:Boolean=false) {
+         var lkd:LinkedCursorData = null;
          super();
          this._entitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-         this._callBack = param1;
-         this._freeCellOnly = param3;
-         this._customCellValidatorFct = param4;
-         this._untargetableEntities = param5;
-         if(param2)
+         this._callBack = callBack;
+         this._freeCellOnly = freeCellOnly;
+         this._customCellValidatorFct = customCellValidatorFct;
+         this._untargetableEntities = untargetableEntities;
+         if(cursorIcon)
          {
-            _loc6_ = new LinkedCursorData();
-            _loc6_.sprite = param2;
-            _loc6_.offset = new Point(-20,-20);
-            LinkedCursorSpriteManager.getInstance().addItem(LINKED_CURSOR_NAME,_loc6_);
+            lkd = new LinkedCursorData();
+            lkd.sprite = cursorIcon;
+            lkd.offset = new Point(-20,-20);
+            LinkedCursorSpriteManager.getInstance().addItem(LINKED_CURSOR_NAME,lkd);
          }
       }
       
@@ -98,43 +98,43 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:CellOverMessage = null;
-         var _loc3_:CellOutMessage = null;
-         var _loc4_:EntityMouseOverMessage = null;
-         var _loc5_:CellClickMessage = null;
-         var _loc6_:EntityClickMessage = null;
+      public function process(msg:Message) : Boolean {
+         var conmsg:CellOverMessage = null;
+         var coutmsg:CellOutMessage = null;
+         var emomsg:EntityMouseOverMessage = null;
+         var ccmsg:CellClickMessage = null;
+         var ecmsg:EntityClickMessage = null;
          switch(true)
          {
-            case param1 is CellOverMessage:
-               _loc2_ = param1 as CellOverMessage;
-               this.refreshTarget(_loc2_.cellId);
+            case msg is CellOverMessage:
+               conmsg = msg as CellOverMessage;
+               this.refreshTarget(conmsg.cellId);
                return true;
-            case param1 is CellOutMessage:
-               _loc3_ = param1 as CellOutMessage;
+            case msg is CellOutMessage:
+               coutmsg = msg as CellOutMessage;
                this.refreshTarget(-1);
                return true;
-            case param1 is EntityMouseOverMessage:
-               _loc4_ = param1 as EntityMouseOverMessage;
-               this.refreshTarget(_loc4_.entity.position.cellId);
+            case msg is EntityMouseOverMessage:
+               emomsg = msg as EntityMouseOverMessage;
+               this.refreshTarget(emomsg.entity.position.cellId);
                return false;
-            case param1 is CellClickMessage:
-               _loc5_ = param1 as CellClickMessage;
-               this.showCell(_loc5_.cellId);
+            case msg is CellClickMessage:
+               ccmsg = msg as CellClickMessage;
+               this.showCell(ccmsg.cellId);
                return true;
-            case param1 is EntityClickMessage:
-               _loc6_ = param1 as EntityClickMessage;
-               this.showCell(_loc6_.entity.position.cellId,_loc6_.entity.id);
+            case msg is EntityClickMessage:
+               ecmsg = msg as EntityClickMessage;
+               this.showCell(ecmsg.entity.position.cellId,ecmsg.entity.id);
                return true;
-            case param1 is AdjacentMapClickMessage:
+            case msg is AdjacentMapClickMessage:
                this.cancelShow();
                if(this._callBack != null)
                {
                   this._callBack(false,0,-1);
                }
                return true;
-            case param1 is MouseClickMessage:
-               if(MouseClickMessage(param1).target is GraphicCell || MouseClickMessage(param1).target is IEntity)
+            case msg is MouseClickMessage:
+               if((MouseClickMessage(msg).target is GraphicCell) || (MouseClickMessage(msg).target is IEntity))
                {
                   return false;
                }
@@ -143,8 +143,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                {
                   this._callBack(false,0,-1);
                }
-               return false;
-            default:
                return false;
          }
       }
@@ -157,9 +155,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          return true;
       }
       
-      private function refreshTarget(param1:int) : void {
-         var _loc2_:IEntity = null;
-         if(!(param1 == -1) && (this.isValidCell(param1)))
+      private function refreshTarget(target:int) : void {
+         var entity:IEntity = null;
+         if((!(target == -1)) && (this.isValidCell(target)))
          {
             if(!this._targetSelection)
             {
@@ -169,13 +167,13 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                this._targetSelection.zone = new Cross(0,0,DataMapProvider.getInstance());
                SelectionManager.getInstance().addSelection(this._targetSelection,SELECTION_TARGET);
             }
-            _loc2_ = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
-            if(!_loc2_)
+            entity = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
+            if(!entity)
             {
                return;
             }
-            this._targetSelection.zone.direction = MapPoint(_loc2_.position).advancedOrientationTo(MapPoint.fromCellId(param1));
-            SelectionManager.getInstance().update(SELECTION_TARGET,param1);
+            this._targetSelection.zone.direction = MapPoint(entity.position).advancedOrientationTo(MapPoint.fromCellId(target));
+            SelectionManager.getInstance().update(SELECTION_TARGET,target);
          }
          else
          {
@@ -184,20 +182,20 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       }
       
       private function removeTarget() : void {
-         var _loc1_:Selection = SelectionManager.getInstance().getSelection(SELECTION_TARGET);
-         if(_loc1_)
+         var s:Selection = SelectionManager.getInstance().getSelection(SELECTION_TARGET);
+         if(s)
          {
-            _loc1_.remove();
+            s.remove();
             this._targetSelection = null;
          }
       }
       
-      private function showCell(param1:uint, param2:int=-1) : void {
-         if(this.isValidCell(param1))
+      private function showCell(cell:uint, entityId:int=-1) : void {
+         if(this.isValidCell(cell))
          {
             if(this._callBack != null)
             {
-               this._callBack(true,param1,param2);
+               this._callBack(true,cell,entityId);
             }
          }
          this.cancelShow();
@@ -205,17 +203,17 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       
       public function cancelShow() : void {
          KernelEventsManager.getInstance().processCallback(HookList.ShowCell);
-         var _loc1_:InventoryManagementFrame = Kernel.getWorker().getFrame(InventoryManagementFrame) as InventoryManagementFrame;
-         _loc1_.roleplayPointCellFrame = null;
+         var frm:InventoryManagementFrame = Kernel.getWorker().getFrame(InventoryManagementFrame) as InventoryManagementFrame;
+         frm.roleplayPointCellFrame = null;
          Kernel.getWorker().removeFrame(this);
       }
       
-      private function isValidCell(param1:uint) : Boolean {
+      private function isValidCell(cell:uint) : Boolean {
          if(this._customCellValidatorFct != null)
          {
-            return this._customCellValidatorFct(param1);
+            return this._customCellValidatorFct(cell);
          }
-         return (DataMapProvider.getInstance().pointMov(MapPoint.fromCellId(param1).x,MapPoint.fromCellId(param1).y,true)) && (!this._freeCellOnly || EntitiesManager.getInstance().getEntityOnCell(param1) == null);
+         return (DataMapProvider.getInstance().pointMov(MapPoint.fromCellId(cell).x,MapPoint.fromCellId(cell).y,true)) && ((!this._freeCellOnly) || (EntitiesManager.getInstance().getEntityOnCell(cell) == null));
       }
    }
 }

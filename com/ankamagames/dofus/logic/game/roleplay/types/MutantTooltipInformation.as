@@ -11,10 +11,10 @@ package com.ankamagames.dofus.logic.game.roleplay.types
    public class MutantTooltipInformation extends Object
    {
       
-      public function MutantTooltipInformation(param1:GameRolePlayMutantInformations) {
+      public function MutantTooltipInformation(pInfos:GameRolePlayMutantInformations) {
          this._cssUri = XmlConfig.getInstance().getEntry("config.ui.skin") + "css/tooltip_title.css";
          super();
-         this.infos = param1;
+         this.infos = pInfos;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MutantTooltipInformation));
@@ -30,10 +30,10 @@ package com.ankamagames.dofus.logic.game.roleplay.types
       public var titleColor:String;
       
       private function onCssLoaded() : void {
-         var _loc2_:Object = null;
-         var _loc1_:ExtendedStyleSheet = CssManager.getInstance().getCss(this._cssUri);
-         _loc2_ = _loc1_.getStyle("itemset");
-         this.titleColor = _loc2_["color"];
+         var styleObj:Object = null;
+         var _ssSheet:ExtendedStyleSheet = CssManager.getInstance().getCss(this._cssUri);
+         styleObj = _ssSheet.getStyle("itemset");
+         this.titleColor = styleObj["color"];
       }
    }
 }

@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.interactives
       
       public static const MODULE:String = "Interactives";
       
-      public static function getInteractiveById(param1:int) : Interactive {
-         return GameData.getObject(MODULE,param1) as Interactive;
+      public static function getInteractiveById(id:int) : Interactive {
+         return GameData.getObject(MODULE,id) as Interactive;
       }
       
       public static function getInteractives() : Array {

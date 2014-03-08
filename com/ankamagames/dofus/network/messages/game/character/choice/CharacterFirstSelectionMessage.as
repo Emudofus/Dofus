@@ -26,9 +26,9 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 6084;
       }
       
-      public function initCharacterFirstSelectionMessage(param1:int=0, param2:Boolean=false) : CharacterFirstSelectionMessage {
-         super.initCharacterSelectionMessage(param1);
-         this.doTutorial = param2;
+      public function initCharacterFirstSelectionMessage(id:int=0, doTutorial:Boolean=false) : CharacterFirstSelectionMessage {
+         super.initCharacterSelectionMessage(id);
+         this.doTutorial = doTutorial;
          this._isInitialized = true;
          return this;
       }
@@ -39,32 +39,32 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CharacterFirstSelectionMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterFirstSelectionMessage(output);
       }
       
-      public function serializeAs_CharacterFirstSelectionMessage(param1:IDataOutput) : void {
-         super.serializeAs_CharacterSelectionMessage(param1);
-         param1.writeBoolean(this.doTutorial);
+      public function serializeAs_CharacterFirstSelectionMessage(output:IDataOutput) : void {
+         super.serializeAs_CharacterSelectionMessage(output);
+         output.writeBoolean(this.doTutorial);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CharacterFirstSelectionMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterFirstSelectionMessage(input);
       }
       
-      public function deserializeAs_CharacterFirstSelectionMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.doTutorial = param1.readBoolean();
+      public function deserializeAs_CharacterFirstSelectionMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.doTutorial = input.readBoolean();
       }
    }
 }

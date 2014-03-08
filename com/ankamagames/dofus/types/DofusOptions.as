@@ -58,6 +58,7 @@ package com.ankamagames.dofus.types
          add("creaturesFightMode",false);
          add("warnOnGuildItemAgression",true);
          add("zoomOnMouseWheel",true);
+         add("endTurnWhenNothingToDo",true);
          add("showPermanentTargetsTooltips",false);
       }
    }

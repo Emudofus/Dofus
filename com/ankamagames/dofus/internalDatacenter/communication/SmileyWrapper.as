@@ -24,28 +24,28 @@ package com.ankamagames.dofus.internalDatacenter.communication
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SmileyWrapper));
       
-      public static function create(param1:uint, param2:String, param3:int, param4:Boolean=true) : SmileyWrapper {
-         var _loc5_:SmileyWrapper = null;
-         if(!_cache[param1] || !param4)
+      public static function create(smileyId:uint, iconId:String, order:int, useCache:Boolean=true) : SmileyWrapper {
+         var smiley:SmileyWrapper = null;
+         if((!_cache[smileyId]) || (!useCache))
          {
-            _loc5_ = new SmileyWrapper();
-            _loc5_.id = param1;
-            if(param4)
+            smiley = new SmileyWrapper();
+            smiley.id = smileyId;
+            if(useCache)
             {
-               _cache[param1] = _loc5_;
+               _cache[smileyId] = smiley;
             }
          }
          else
          {
-            _loc5_ = _cache[param1];
+            smiley = _cache[smileyId];
          }
-         _loc5_.iconId = param2;
-         _loc5_.order = param3;
-         return _loc5_;
+         smiley.iconId = iconId;
+         smiley.order = order;
+         return smiley;
       }
       
-      public static function getSmileyWrapperById(param1:uint) : SmileyWrapper {
-         return _cache[param1];
+      public static function getSmileyWrapperById(id:uint) : SmileyWrapper {
+         return _cache[id];
       }
       
       private var _uri:Uri;
@@ -96,7 +96,7 @@ package com.ankamagames.dofus.internalDatacenter.communication
          return 0;
       }
       
-      public function set endTime(param1:int) : void {
+      public function set endTime(t:int) : void {
       }
       
       public function get timer() : int {
@@ -115,29 +115,29 @@ package com.ankamagames.dofus.internalDatacenter.communication
          return true;
       }
       
-      override flash_proxy function getProperty(param1:*) : * {
-         if(isAttribute(param1))
+      override flash_proxy function getProperty(name:*) : * {
+         if(isAttribute(name))
          {
-            return this[param1];
+            return this[name];
          }
-         return "Error on smiley " + param1;
+         return "Error on smiley " + name;
       }
       
-      override flash_proxy function hasProperty(param1:*) : Boolean {
-         return isAttribute(param1);
+      override flash_proxy function hasProperty(name:*) : Boolean {
+         return isAttribute(name);
       }
       
       public function toString() : String {
          return "[SmileyWrapper#" + this.id + "]";
       }
       
-      public function addHolder(param1:ISlotDataHolder) : void {
+      public function addHolder(h:ISlotDataHolder) : void {
       }
       
-      public function removeHolder(param1:ISlotDataHolder) : void {
+      public function removeHolder(h:ISlotDataHolder) : void {
       }
       
-      public function getIconUri(param1:Boolean=true) : Uri {
+      public function getIconUri(pngMode:Boolean=true) : Uri {
          if(!this._uri)
          {
             this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path") + "gfx/smilies/assets.swf|" + this.iconId);

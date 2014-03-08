@@ -5,15 +5,15 @@ package com.ankamagames.dofus.kernel.sound.type
    public class LocalizedMapSound extends Object
    {
       
-      public function LocalizedMapSound(param1:String, param2:Point, param3:int, param4:int, param5:int, param6:int, param7:Number) {
+      public function LocalizedMapSound(pSoundId:String, pPosition:Point, pRange:int, pSaturationRange:int, pSilenceMin:int, pSilenceMax:int, pVolumeMax:Number) {
          super();
-         this.soundId = param1;
-         this.position = param2;
-         this.range = param3;
-         this.saturationRange = param4;
-         this.silenceMin = param5;
-         this.silenceMax = param6;
-         this.volumeMax = param7;
+         this.soundId = pSoundId;
+         this.position = pPosition;
+         this.range = pRange;
+         this.saturationRange = pSaturationRange;
+         this.silenceMin = pSilenceMin;
+         this.silenceMax = pSilenceMax;
+         this.volumeMax = pVolumeMax;
       }
       
       public var soundId:String;

@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.fight.actions
          super();
       }
       
-      public static function create(param1:int) : TimelineEntityClickAction {
-         var _loc2_:TimelineEntityClickAction = new TimelineEntityClickAction();
-         _loc2_.fighterId = param1;
-         return _loc2_;
+      public static function create(id:int) : TimelineEntityClickAction {
+         var a:TimelineEntityClickAction = new TimelineEntityClickAction();
+         a.fighterId = id;
+         return a;
       }
       
       public var fighterId:int;

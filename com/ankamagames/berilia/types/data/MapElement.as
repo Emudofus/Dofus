@@ -9,59 +9,59 @@ package com.ankamagames.berilia.types.data
    public class MapElement extends Object implements Secure
    {
       
-      public function MapElement(param1:String, param2:int, param3:int, param4:String, param5:*) {
+      public function MapElement(id:String, x:int, y:int, layer:String, owner:*) {
          super();
-         this.x = param2;
-         this.y = param3;
-         this.layer = param4;
-         if(!_elementRef[param5])
+         this.x = x;
+         this.y = y;
+         this.layer = layer;
+         if(!_elementRef[owner])
          {
-            _elementRef[param5] = new Dictionary();
+            _elementRef[owner] = new Dictionary();
          }
-         this._owner = new WeakReference(param5);
-         _elementRef[param5][param1] = this;
-         this._id = param1;
+         this._owner = new WeakReference(owner);
+         _elementRef[owner][id] = this;
+         this._id = id;
       }
       
       public static var _elementRef:Dictionary = new Dictionary(true);
       
-      public static function getElementById(param1:String, param2:*) : MapElement {
-         return _elementRef[param2]?_elementRef[param2][param1]:null;
+      public static function getElementById(id:String, owner:*) : MapElement {
+         return _elementRef[owner]?_elementRef[owner][id]:null;
       }
       
-      public static function removeElementById(param1:String, param2:*) : void {
-         if(_elementRef[param2][param1])
+      public static function removeElementById(id:String, owner:*) : void {
+         if(_elementRef[owner][id])
          {
-            _elementRef[param2][param1].remove();
+            _elementRef[owner][id].remove();
          }
-         delete _elementRef[param2][[param1]];
+         delete _elementRef[owner][[id]];
       }
       
-      public static function removeAllElements(param1:*) : void {
-         var _loc2_:* = undefined;
-         var _loc3_:MapElement = null;
-         for (_loc2_ in _elementRef)
+      public static function removeAllElements(owner:*) : void {
+         var currentOwner:* = undefined;
+         var me:MapElement = null;
+         for (currentOwner in _elementRef)
          {
-            if(!param1 || _loc2_ == param1)
+            if((!owner) || (currentOwner == owner))
             {
-               for each (_loc3_ in _elementRef[_loc2_])
+               for each (me in _elementRef[currentOwner])
                {
-                  _loc3_.remove();
+                  me.remove();
                }
             }
          }
-         if(!param1)
+         if(!owner)
          {
             _elementRef = new Dictionary(true);
          }
          else
          {
-            _elementRef[param1] = new Dictionary(true);
+            _elementRef[owner] = new Dictionary(true);
          }
       }
       
-      public static function getOwnerElements(param1:*) : Dictionary {
-         return _elementRef[param1];
+      public static function getOwnerElements(owner:*) : Dictionary {
+         return _elementRef[owner];
       }
       
       private var _id:String;
@@ -74,8 +74,8 @@ package com.ankamagames.berilia.types.data
       
       public var layer:String;
       
-      public function getObject(param1:Object) : * {
-         if(param1 != SecureCenter.ACCESS_KEY)
+      public function getObject(accessKey:Object) : * {
+         if(accessKey != SecureCenter.ACCESS_KEY)
          {
             throw new IllegalOperationError();
          }

@@ -16,9 +16,9 @@ package com.ankamagames.dofus.datacenter.world
       
       private static var _allDungeons:Array;
       
-      public static function getDungeonById(param1:int) : Dungeon {
-         var _loc2_:Dungeon = GameData.getObject(MODULE,param1) as Dungeon;
-         return _loc2_;
+      public static function getDungeonById(id:int) : Dungeon {
+         var dungeon:Dungeon = GameData.getObject(MODULE,id) as Dungeon;
+         return dungeon;
       }
       
       public static function getAllDungeons() : Array {

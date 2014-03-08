@@ -60,35 +60,35 @@ package com.ankamagames.dofus.logic.game.fight.managers
          return _self;
       }
       
-      public static function makeBuffFromEffect(param1:AbstractFightDispellableEffect, param2:CastingSpell, param3:uint) : BasicBuff {
-         var _loc4_:BasicBuff = null;
-         var _loc5_:FightTemporaryBoostWeaponDamagesEffect = null;
-         var _loc6_:FightTemporarySpellImmunityEffect = null;
+      public static function makeBuffFromEffect(effect:AbstractFightDispellableEffect, castingSpell:CastingSpell, actionId:uint) : BasicBuff {
+         var buff:BasicBuff = null;
+         var ftbwde:FightTemporaryBoostWeaponDamagesEffect = null;
+         var ftsie:FightTemporarySpellImmunityEffect = null;
          switch(true)
          {
-            case param1 is FightTemporarySpellBoostEffect:
-               _loc4_ = new SpellBuff(param1 as FightTemporarySpellBoostEffect,param2,param3);
+            case effect is FightTemporarySpellBoostEffect:
+               buff = new SpellBuff(effect as FightTemporarySpellBoostEffect,castingSpell,actionId);
                break;
-            case param1 is FightTriggeredEffect:
-               _loc4_ = new TriggeredBuff(param1 as FightTriggeredEffect,param2,param3);
+            case effect is FightTriggeredEffect:
+               buff = new TriggeredBuff(effect as FightTriggeredEffect,castingSpell,actionId);
                break;
-            case param1 is FightTemporaryBoostWeaponDamagesEffect:
-               _loc5_ = param1 as FightTemporaryBoostWeaponDamagesEffect;
-               _loc4_ = new BasicBuff(param1,param2,param3,_loc5_.weaponTypeId,_loc5_.delta,_loc5_.weaponTypeId);
+            case effect is FightTemporaryBoostWeaponDamagesEffect:
+               ftbwde = effect as FightTemporaryBoostWeaponDamagesEffect;
+               buff = new BasicBuff(effect,castingSpell,actionId,ftbwde.weaponTypeId,ftbwde.delta,ftbwde.weaponTypeId);
                break;
-            case param1 is FightTemporaryBoostStateEffect:
-               _loc4_ = new StateBuff(param1 as FightTemporaryBoostStateEffect,param2,param3);
+            case effect is FightTemporaryBoostStateEffect:
+               buff = new StateBuff(effect as FightTemporaryBoostStateEffect,castingSpell,actionId);
                break;
-            case param1 is FightTemporarySpellImmunityEffect:
-               _loc6_ = param1 as FightTemporarySpellImmunityEffect;
-               _loc4_ = new BasicBuff(param1,param2,param3,_loc6_.immuneSpellId,null,null);
+            case effect is FightTemporarySpellImmunityEffect:
+               ftsie = effect as FightTemporarySpellImmunityEffect;
+               buff = new BasicBuff(effect,castingSpell,actionId,ftsie.immuneSpellId,null,null);
                break;
-            case param1 is FightTemporaryBoostEffect:
-               _loc4_ = new StatBuff(param1 as FightTemporaryBoostEffect,param2,param3);
+            case effect is FightTemporaryBoostEffect:
+               buff = new StatBuff(effect as FightTemporaryBoostEffect,castingSpell,actionId);
                break;
          }
-         _loc4_.id = param1.uid;
-         return _loc4_;
+         buff.id = effect.uid;
+         return buff;
       }
       
       private var _buffs:Array;
@@ -99,318 +99,314 @@ package com.ankamagames.dofus.logic.game.fight.managers
          _self = null;
       }
       
-      public function decrementDuration(param1:int) : void {
-         this.incrementDuration(param1,-1);
+      public function decrementDuration(targetId:int) : void {
+         this.incrementDuration(targetId,-1);
       }
       
       public function synchronize() : void {
-         var _loc1_:Array = null;
-         var _loc2_:BasicBuff = null;
-         for each (_loc1_ in this._buffs)
+         var buffTarget:Array = null;
+         var buffItem:BasicBuff = null;
+         for each (buffTarget in this._buffs)
          {
-            for each (_loc2_ in _loc1_)
+            for each (buffItem in buffTarget)
             {
-               _loc2_.undisable();
+               buffItem.undisable();
             }
          }
       }
       
-      public function incrementDuration(param1:int, param2:int, param3:Boolean=false, param4:int=1) : void {
-         var _loc7_:Array = null;
-         var _loc8_:BasicBuff = null;
-         var _loc9_:* = false;
-         var _loc5_:Array = new Array();
-         var _loc6_:* = false;
-         for each (_loc7_ in this._buffs)
+      public function incrementDuration(targetId:int, delta:int, dispellEffect:Boolean=false, incrementMode:int=1) : void {
+         var buffTarget:Array = null;
+         var buffItem:BasicBuff = null;
+         var modified:* = false;
+         var newBuffs:Array = new Array();
+         var updateStatList:Boolean = false;
+         for each (buffTarget in this._buffs)
          {
-            for each (_loc8_ in _loc7_)
+            for each (buffItem in buffTarget)
             {
-               if(param4 == INCREMENT_MODE_SOURCE && _loc8_.aliveSource == param1 || param4 == INCREMENT_MODE_TARGET && _loc8_.targetId == param1)
+               if((incrementMode == INCREMENT_MODE_SOURCE) && (buffItem.aliveSource == targetId) || (incrementMode == INCREMENT_MODE_TARGET) && (buffItem.targetId == targetId))
                {
-                  _loc9_ = _loc8_.incrementDuration(param2,param3);
-                  if(_loc8_.active)
+                  modified = buffItem.incrementDuration(delta,dispellEffect);
+                  if(buffItem.active)
                   {
-                     if(!_loc5_.hasOwnProperty(String(_loc8_.targetId)))
+                     if(!newBuffs.hasOwnProperty(String(buffItem.targetId)))
                      {
-                        _loc5_[_loc8_.targetId] = new Array();
+                        newBuffs[buffItem.targetId] = new Array();
                      }
-                     _loc5_[_loc8_.targetId].push(_loc8_);
-                     if(_loc9_)
+                     newBuffs[buffItem.targetId].push(buffItem);
+                     if(modified)
                      {
-                        KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate,_loc8_.id,_loc8_.targetId);
+                        KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate,buffItem.id,buffItem.targetId);
                      }
                   }
                   else
                   {
-                     BasicBuff(_loc8_).onRemoved();
-                     KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,_loc8_,_loc8_.targetId,"CoolDown");
-                     if(param1 == CurrentPlayedFighterManager.getInstance().currentFighterId)
+                     BasicBuff(buffItem).onRemoved();
+                     KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,buffItem,buffItem.targetId,"CoolDown");
+                     if(targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
                      {
-                        _loc6_ = true;
+                        updateStatList = true;
                      }
                   }
                }
                else
                {
-                  if(!_loc5_.hasOwnProperty(String(_loc8_.targetId)))
+                  if(!newBuffs.hasOwnProperty(String(buffItem.targetId)))
                   {
-                     _loc5_[_loc8_.targetId] = new Array();
+                     newBuffs[buffItem.targetId] = new Array();
                   }
-                  _loc5_[_loc8_.targetId].push(_loc8_);
+                  newBuffs[buffItem.targetId].push(buffItem);
                }
             }
          }
-         if(_loc6_)
+         if(updateStatList)
          {
             KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
          }
-         this._buffs = _loc5_;
+         this._buffs = newBuffs;
       }
       
-      public function markFinishingBuffs(param1:int, param2:Boolean=false) : void {
-         var _loc3_:* = false;
-         var _loc4_:BasicBuff = null;
-         var _loc5_:* = false;
-         var _loc6_:FightBattleFrame = null;
-         var _loc7_:* = 0;
-         var _loc8_:* = false;
-         var _loc9_:* = 0;
-         var _loc10_:StatBuff = null;
-         if(this._buffs.hasOwnProperty(String(param1)))
+      public function markFinishingBuffs(targetId:int, ignoreCurrent:Boolean=false) : void {
+         var updateStatList:* = false;
+         var buffItem:BasicBuff = null;
+         var mark:* = false;
+         var fightBattleFrame:FightBattleFrame = null;
+         var state:* = 0;
+         var casterFound:* = false;
+         var fighter:* = 0;
+         var statBuffItem:StatBuff = null;
+         if(this._buffs.hasOwnProperty(String(targetId)))
          {
-            _loc3_ = false;
-            for each (_loc4_ in this._buffs[param1])
+            updateStatList = false;
+            for each (buffItem in this._buffs[targetId])
             {
-               _loc5_ = false;
-               if(_loc4_.duration == 1)
+               mark = false;
+               if(buffItem.duration == 1)
                {
-                  _loc6_ = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
-                  if(_loc6_ == null)
+                  fightBattleFrame = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
+                  if(fightBattleFrame == null)
                   {
                      return;
                   }
-                  _loc7_ = 0;
-                  _loc8_ = false;
-                  for each (_loc9_ in _loc6_.fightersList)
+                  state = 0;
+                  casterFound = false;
+                  for each (fighter in fightBattleFrame.fightersList)
                   {
-                     if(_loc9_ == _loc4_.aliveSource)
+                     if(fighter == buffItem.aliveSource)
                      {
-                        _loc8_ = true;
+                        casterFound = true;
                      }
-                     if(_loc9_ == _loc6_.currentPlayerId)
+                     if(fighter == fightBattleFrame.currentPlayerId)
                      {
-                        _loc7_ = 1;
+                        state = 1;
                      }
-                     if(_loc7_ == 1)
+                     if(state == 1)
                      {
-                        if((_loc8_) && (!(_loc9_ == _loc6_.currentPlayerId) || !param2))
+                        if((casterFound) && ((!(fighter == fightBattleFrame.currentPlayerId)) || (!ignoreCurrent)))
                         {
-                           _loc7_ = 2;
-                           _loc5_ = true;
+                           state = 2;
+                           mark = true;
                         }
                         else
                         {
-                           if(_loc9_ == param1 && !(_loc9_ == _loc6_.currentPlayerId))
+                           if((fighter == targetId) && (!(fighter == fightBattleFrame.currentPlayerId)))
                            {
-                              _loc7_ = 2;
-                              _loc5_ = false;
+                              state = 2;
+                              mark = false;
                            }
                         }
                      }
                   }
-                  if((_loc5_) && !param2)
+                  if((mark) && (!ignoreCurrent))
                   {
-                     _loc4_.finishing = true;
-                     if(_loc4_ is StatBuff && !(param1 == PlayedCharacterManager.getInstance().id))
+                     buffItem.finishing = true;
+                     if((buffItem is StatBuff) && (!(targetId == PlayedCharacterManager.getInstance().id)))
                      {
-                        _loc10_ = _loc4_ as StatBuff;
-                        if(_loc10_.statName)
+                        statBuffItem = buffItem as StatBuff;
+                        if(statBuffItem.statName)
                         {
-                           param1 = _loc10_.targetId;
-                           if(!this._finishingBuffs[param1])
+                           targetId = statBuffItem.targetId;
+                           if(!this._finishingBuffs[targetId])
                            {
-                              this._finishingBuffs[param1] = new Array();
+                              this._finishingBuffs[targetId] = new Array();
                            }
-                           this._finishingBuffs[param1].push(_loc4_);
+                           this._finishingBuffs[targetId].push(buffItem);
                         }
                      }
-                     BasicBuff(_loc4_).onDisabled();
-                     if(param1 == CurrentPlayedFighterManager.getInstance().currentFighterId)
+                     BasicBuff(buffItem).onDisabled();
+                     if(targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
                      {
-                        _loc3_ = true;
+                        updateStatList = true;
                      }
                   }
                }
             }
-            if(_loc3_)
+            if(updateStatList)
             {
                KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
             }
          }
       }
       
-      public function addBuff(param1:BasicBuff, param2:Boolean=true) : void {
-         var _loc3_:BasicBuff = null;
-         var _loc4_:BasicBuff = null;
-         if(!this._buffs[param1.targetId])
+      public function addBuff(buff:BasicBuff, applyBuff:Boolean=true) : void {
+         var sameBuff:BasicBuff = null;
+         var actualBuff:BasicBuff = null;
+         if(!this._buffs[buff.targetId])
          {
-            this._buffs[param1.targetId] = new Array();
+            this._buffs[buff.targetId] = new Array();
          }
-         for each (_loc4_ in this._buffs[param1.targetId])
+         for each (actualBuff in this._buffs[buff.targetId])
          {
-            if(param1.equals(_loc4_))
+            if(buff.equals(actualBuff))
             {
-               _loc3_ = _loc4_;
+               sameBuff = actualBuff;
                break;
             }
          }
-         if(!_loc3_)
+         if(!sameBuff)
          {
-            this._buffs[param1.targetId].push(param1);
+            this._buffs[buff.targetId].push(buff);
          }
          else
          {
-            if(((_loc3_.castingSpell.spellRank) && (_loc3_.castingSpell.spellRank.maxStack > 0)) && (_loc3_.stack) && _loc3_.stack.length == _loc3_.castingSpell.spellRank.maxStack)
+            if(((sameBuff.castingSpell.spellRank) && (sameBuff.castingSpell.spellRank.maxStack > 0)) && (sameBuff.stack) && (sameBuff.stack.length == sameBuff.castingSpell.spellRank.maxStack))
             {
                return;
             }
-            _loc3_.add(param1);
+            sameBuff.add(buff);
          }
-         if(param2)
+         if(applyBuff)
          {
-            param1.onApplyed();
+            buff.onApplyed();
          }
-         if(!_loc3_)
+         if(!sameBuff)
          {
-            KernelEventsManager.getInstance().processCallback(FightHookList.BuffAdd,param1.id,param1.targetId);
+            KernelEventsManager.getInstance().processCallback(FightHookList.BuffAdd,buff.id,buff.targetId);
          }
          else
          {
-            KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate,_loc3_.id,_loc3_.targetId);
+            KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate,sameBuff.id,sameBuff.targetId);
          }
       }
       
-      public function updateBuff(param1:BasicBuff) : Boolean {
-         var _loc3_:BasicBuff = null;
-         var _loc2_:int = param1.targetId;
-         if(!this._buffs[_loc2_])
+      public function updateBuff(buff:BasicBuff) : Boolean {
+         var oldBuff:BasicBuff = null;
+         var targetId:int = buff.targetId;
+         if(!this._buffs[targetId])
          {
             return false;
          }
-         var _loc4_:int = this.getBuffIndex(_loc2_,param1.id);
-         if(_loc4_ == -1)
+         var i:int = this.getBuffIndex(targetId,buff.id);
+         if(i == -1)
          {
             return false;
          }
-         (this._buffs[_loc2_][_loc4_] as BasicBuff).onRemoved();
-         (this._buffs[_loc2_][_loc4_] as BasicBuff).updateParam(param1.param1,param1.param2,param1.param3,param1.id);
-         _loc3_ = this._buffs[_loc2_][_loc4_];
-         if(!_loc3_)
+         (this._buffs[targetId][i] as BasicBuff).onRemoved();
+         (this._buffs[targetId][i] as BasicBuff).updateParam(buff.param1,buff.param2,buff.param3,buff.id);
+         oldBuff = this._buffs[targetId][i];
+         if(!oldBuff)
          {
             return false;
          }
-         _loc3_.onApplyed();
-         KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate,_loc3_.id,_loc2_);
+         oldBuff.onApplyed();
+         KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate,oldBuff.id,targetId);
          return true;
       }
       
-      public function dispell(param1:int, param2:Boolean=false, param3:Boolean=false, param4:Boolean=false) : void {
-         var _loc7_:BasicBuff = null;
-         var _loc5_:Array = new Array();
-         var _loc6_:Array = new Array();
-         for each (_loc7_ in this._buffs[param1])
+      public function dispell(targetId:int, forceUndispellable:Boolean=false, critical:Boolean=false, dying:Boolean=false) : void {
+         var buff:BasicBuff = null;
+         var deletedBuffs:Array = new Array();
+         var newBuffs:Array = new Array();
+         for each (buff in this._buffs[targetId])
          {
-            if(_loc7_.canBeDispell(param2,int.MIN_VALUE,param4))
+            if(buff.canBeDispell(forceUndispellable,int.MIN_VALUE,dying))
             {
-               KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,_loc7_,param1,"Dispell");
-               _loc7_.onRemoved();
-               _loc5_.push(_loc7_);
+               KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,buff,targetId,"Dispell");
+               buff.onRemoved();
+               deletedBuffs.push(buff);
             }
             else
             {
-               _loc6_.push(_loc7_);
+               newBuffs.push(buff);
             }
          }
-         this._buffs[param1] = _loc6_;
+         this._buffs[targetId] = newBuffs;
       }
       
-      public function dispellSpell(param1:int, param2:uint, param3:Boolean=false, param4:Boolean=false, param5:Boolean=false) : void {
-         var _loc8_:BasicBuff = null;
-         var _loc9_:BasicBuff = null;
-         var _loc6_:Array = new Array();
-         var _loc7_:Array = new Array();
-         for each (_loc8_ in this._buffs[param1])
+      public function dispellSpell(targetId:int, spellId:uint, forceUndispellable:Boolean=false, critical:Boolean=false, dying:Boolean=false) : void {
+         var buff:BasicBuff = null;
+         var deletedBuff:BasicBuff = null;
+         var deletedBuffs:Array = new Array();
+         var newBuffs:Array = new Array();
+         for each (buff in this._buffs[targetId])
          {
-            if(param2 == _loc8_.castingSpell.spell.id && (_loc8_.canBeDispell(param3,int.MIN_VALUE,param5)))
+            if((spellId == buff.castingSpell.spell.id) && (buff.canBeDispell(forceUndispellable,int.MIN_VALUE,dying)))
             {
-               _loc8_.onRemoved();
-               _loc6_.push(_loc8_);
+               buff.onRemoved();
+               deletedBuffs.push(buff);
             }
             else
             {
-               _loc7_.push(_loc8_);
+               newBuffs.push(buff);
             }
          }
-         this._buffs[param1] = _loc7_;
-         for each (_loc9_ in _loc6_)
+         this._buffs[targetId] = newBuffs;
+         for each (deletedBuff in deletedBuffs)
          {
-            if(_loc9_.stack)
+            if(deletedBuff.stack)
             {
-               while(_loc9_.stack.length)
+               while(deletedBuff.stack.length)
                {
-                  _loc9_.stack.shift().onRemoved();
+                  deletedBuff.stack.shift().onRemoved();
                }
             }
-            KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,_loc9_,param1,"Dispell");
+            KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,deletedBuff,targetId,"Dispell");
          }
       }
       
-      public function dispellUniqueBuff(param1:int, param2:int, param3:Boolean=false, param4:Boolean=false, param5:Boolean=true) : void {
-         var _loc6_:int = this.getBuffIndex(param1,param2);
-         if(_loc6_ == -1)
+      public function dispellUniqueBuff(targetId:int, boostUID:int, forceUndispellable:Boolean=false, dying:Boolean=false, ultimateDebuff:Boolean=true) : void {
+         var i:int = this.getBuffIndex(targetId,boostUID);
+         if(i == -1)
          {
             return;
          }
-         var _loc7_:BasicBuff = this._buffs[param1][_loc6_];
-         if(_loc7_.canBeDispell(param3,param5?param2:int.MIN_VALUE,param4))
+         var buff:BasicBuff = this._buffs[targetId][i];
+         if(buff.canBeDispell(forceUndispellable,ultimateDebuff?boostUID:int.MIN_VALUE,dying))
          {
-            if((_loc7_.stack) && (_loc7_.stack.length > 1) && !param4)
+            if((buff.stack) && (buff.stack.length > 1) && (!dying))
             {
-               _loc7_.onRemoved();
-               switch(_loc7_.actionId)
+               buff.onRemoved();
+               switch(buff.actionId)
                {
                   case 293:
-                     _loc7_.param1 = _loc7_.stack[0].param1;
-                     _loc7_.param2 = _loc7_.param2 - _loc7_.stack[0].param2;
-                     _loc7_.param3 = _loc7_.param3 - _loc7_.stack[0].param3;
-                     if((_loc7_.castingSpell.spellRank) && (_loc7_.castingSpell.spellRank.maxStack > 0) && _loc7_.stack.length == _loc7_.castingSpell.spellRank.maxStack)
+                     buff.param1 = buff.stack[0].param1;
+                     buff.param2 = buff.param2 - buff.stack[0].param2;
+                     buff.param3 = buff.param3 - buff.stack[0].param3;
+                     if((buff.castingSpell.spellRank) && (buff.castingSpell.spellRank.maxStack > 0) && (buff.stack.length == buff.castingSpell.spellRank.maxStack))
                      {
                         return;
                      }
                      break;
                   case 788:
-                     _loc7_.param1 = _loc7_.param1 - _loc7_.stack[0].param2;
+                     buff.param1 = buff.param1 - buff.stack[0].param2;
                      break;
                   case 950:
                   case 951:
                      break;
-                  default:
-                     _loc7_.param1 = _loc7_.param1 - _loc7_.stack[0].param1;
-                     _loc7_.param2 = _loc7_.param2 - _loc7_.stack[0].param2;
-                     _loc7_.param3 = _loc7_.param3 - _loc7_.stack[0].param3;
                }
-               _loc7_.stack.shift();
-               _loc7_.refreshDescription();
-               _loc7_.onApplyed();
-               KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate,_loc7_.id,_loc7_.targetId);
+               buff.stack.shift();
+               buff.refreshDescription();
+               buff.onApplyed();
+               KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate,buff.id,buff.targetId);
             }
             else
             {
-               this._buffs[param1].splice(this._buffs[param1].indexOf(_loc7_),1);
-               _loc7_.onRemoved();
-               KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,_loc7_,param1,"Dispell");
-               KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,_loc7_,param1,"");
-               if(param1 == CurrentPlayedFighterManager.getInstance().currentFighterId)
+               this._buffs[targetId].splice(this._buffs[targetId].indexOf(buff),1);
+               buff.onRemoved();
+               KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,buff,targetId,"Dispell");
+               KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,buff,targetId,"");
+               if(targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
                {
                   KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
                }
@@ -418,134 +414,134 @@ package com.ankamagames.dofus.logic.game.fight.managers
          }
       }
       
-      public function removeLinkedBuff(param1:int, param2:Boolean=false, param3:Boolean=false) : Array {
-         var _loc7_:Array = null;
-         var _loc8_:Array = null;
-         var _loc9_:BasicBuff = null;
-         var _loc4_:Array = [];
-         var _loc5_:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-         var _loc6_:GameFightFighterInformations = _loc5_.getEntityInfos(param1) as GameFightFighterInformations;
-         for each (_loc7_ in this._buffs)
+      public function removeLinkedBuff(sourceId:int, forceUndispellable:Boolean=false, dying:Boolean=false) : Array {
+         var buffList:Array = null;
+         var buffListCopy:Array = null;
+         var buff:BasicBuff = null;
+         var impactedTarget:Array = [];
+         var entitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         var infos:GameFightFighterInformations = entitiesFrame.getEntityInfos(sourceId) as GameFightFighterInformations;
+         for each (buffList in this._buffs)
          {
-            _loc8_ = new Array();
-            for each (_loc9_ in _loc7_)
+            buffListCopy = new Array();
+            for each (buff in buffList)
             {
-               _loc8_.push(_loc9_);
+               buffListCopy.push(buff);
             }
-            for each (_loc9_ in _loc8_)
+            for each (buff in buffListCopy)
             {
-               if(_loc9_.source == param1)
+               if(buff.source == sourceId)
                {
-                  this.dispellUniqueBuff(_loc9_.targetId,_loc9_.id,param2,param3,false);
-                  if(_loc4_.indexOf(_loc9_.targetId) == -1)
+                  this.dispellUniqueBuff(buff.targetId,buff.id,forceUndispellable,dying,false);
+                  if(impactedTarget.indexOf(buff.targetId) == -1)
                   {
-                     _loc4_.push(_loc9_.targetId);
+                     impactedTarget.push(buff.targetId);
                   }
-                  if((param3) && (_loc6_.stats.summoned))
+                  if((dying) && (infos.stats.summoned))
                   {
-                     _loc9_.aliveSource = _loc6_.stats.summoner;
+                     buff.aliveSource = infos.stats.summoner;
                   }
                }
             }
          }
-         return _loc4_;
+         return impactedTarget;
       }
       
-      public function reaffectBuffs(param1:int) : void {
-         var _loc3_:* = 0;
-         var _loc4_:Array = null;
-         var _loc5_:BasicBuff = null;
-         var _loc2_:GameFightFighterInformations = this.fightEntitiesFrame.getEntityInfos(param1) as GameFightFighterInformations;
-         if(_loc2_.stats.summoned)
+      public function reaffectBuffs(sourceId:int) : void {
+         var next:* = 0;
+         var buffList:Array = null;
+         var buff:BasicBuff = null;
+         var entity:GameFightFighterInformations = this.fightEntitiesFrame.getEntityInfos(sourceId) as GameFightFighterInformations;
+         if(entity.stats.summoned)
          {
-            _loc3_ = this.getNextFighter(param1);
-            if(_loc3_ == -1)
+            next = this.getNextFighter(sourceId);
+            if(next == -1)
             {
                return;
             }
-            for each (_loc4_ in this._buffs)
+            for each (buffList in this._buffs)
             {
-               for each (_loc5_ in _loc4_)
+               for each (buff in buffList)
                {
-                  if(_loc5_.aliveSource == param1)
+                  if(buff.aliveSource == sourceId)
                   {
-                     _loc5_.aliveSource = _loc3_;
+                     buff.aliveSource = next;
                   }
                }
             }
          }
       }
       
-      private function getNextFighter(param1:int) : int {
-         var _loc4_:* = 0;
-         var _loc2_:FightBattleFrame = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
-         if(_loc2_ == null)
+      private function getNextFighter(sourceId:int) : int {
+         var fighter:* = 0;
+         var frame:FightBattleFrame = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
+         if(frame == null)
          {
             return -1;
          }
-         var _loc3_:* = false;
-         for each (_loc4_ in _loc2_.fightersList)
+         var found:Boolean = false;
+         for each (fighter in frame.fightersList)
          {
-            if(_loc3_)
+            if(found)
             {
-               return _loc4_;
+               return fighter;
             }
-            if(_loc4_ == param1)
+            if(fighter == sourceId)
             {
-               _loc3_ = true;
+               found = true;
             }
          }
-         if(_loc3_)
+         if(found)
          {
-            return _loc2_.fightersList[0];
+            return frame.fightersList[0];
          }
          return -1;
       }
       
-      public function getFighterInfo(param1:int) : GameFightFighterInformations {
-         return this.fightEntitiesFrame.getEntityInfos(param1) as GameFightFighterInformations;
+      public function getFighterInfo(targetId:int) : GameFightFighterInformations {
+         return this.fightEntitiesFrame.getEntityInfos(targetId) as GameFightFighterInformations;
       }
       
-      public function getAllBuff(param1:int) : Array {
-         return this._buffs[param1];
+      public function getAllBuff(targetId:int) : Array {
+         return this._buffs[targetId];
       }
       
-      public function getBuff(param1:uint, param2:int) : BasicBuff {
-         var _loc3_:BasicBuff = null;
-         for each (_loc3_ in this._buffs[param2])
+      public function getBuff(buffId:uint, playerId:int) : BasicBuff {
+         var buff:BasicBuff = null;
+         for each (buff in this._buffs[playerId])
          {
-            if(param1 == _loc3_.id)
+            if(buffId == buff.id)
             {
-               return _loc3_;
+               return buff;
             }
          }
          return null;
       }
       
-      public function getFinishingBuffs(param1:int) : Array {
-         var _loc2_:Array = this._finishingBuffs[param1];
-         delete this._finishingBuffs[[param1]];
-         return _loc2_;
+      public function getFinishingBuffs(fighterid:int) : Array {
+         var buffArray:Array = this._finishingBuffs[fighterid];
+         delete this._finishingBuffs[[fighterid]];
+         return buffArray;
       }
       
       private function get fightEntitiesFrame() : FightEntitiesFrame {
          return Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
       }
       
-      private function getBuffIndex(param1:int, param2:int) : int {
-         var _loc3_:Object = null;
-         var _loc4_:BasicBuff = null;
-         for (_loc3_ in this._buffs[param1])
+      private function getBuffIndex(targetId:int, buffId:int) : int {
+         var i:Object = null;
+         var subBuff:BasicBuff = null;
+         for (i in this._buffs[targetId])
          {
-            if(param2 == this._buffs[param1][_loc3_].id)
+            if(buffId == this._buffs[targetId][i].id)
             {
-               return int(_loc3_);
+               return int(i);
             }
-            for each (_loc4_ in (this._buffs[param1][_loc3_] as BasicBuff).stack)
+            for each (subBuff in (this._buffs[targetId][i] as BasicBuff).stack)
             {
-               if(param2 == _loc4_.id)
+               if(buffId == subBuff.id)
                {
-                  return int(_loc3_);
+                  return int(i);
                }
             }
          }

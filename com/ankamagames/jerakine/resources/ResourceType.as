@@ -31,8 +31,8 @@ package com.ankamagames.jerakine.resources
       
       public static const RESOURCE_NONE:uint = 255;
       
-      public static function getName(param1:uint) : String {
-         switch(param1)
+      public static function getName(type:uint) : String {
+         switch(type)
          {
             case RESOURCE_BINARY:
                return "binary";
@@ -52,8 +52,6 @@ package com.ankamagames.jerakine.resources
                return "signedFile";
             case RESOURCE_NONE:
                return "none";
-            default:
-               return "unknown";
          }
       }
    }

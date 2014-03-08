@@ -11,10 +11,10 @@ package com.ankamagames.dofus.scripts
    public class FxRunner extends Object implements IRunner
    {
       
-      public function FxRunner(param1:IEntity, param2:MapPoint) {
+      public function FxRunner(fxCaster:IEntity, fxTarget:MapPoint) {
          super();
-         this._fxCaster = param1;
-         this._fxTarget = param2;
+         this._fxCaster = fxCaster;
+         this._fxTarget = fxTarget;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FxRunner));
@@ -31,8 +31,7 @@ package com.ankamagames.dofus.scripts
          return this._fxTarget;
       }
       
-      public function run(param1:Class) : uint {
-         var script:Class = param1;
+      public function run(script:Class) : uint {
          var scriptInstance:* = new script();
          try
          {

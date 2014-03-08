@@ -3,10 +3,10 @@ package com.ankamagames.jerakine.messages
    public class LangAllFilesLoadedMessage extends Object implements Message
    {
       
-      public function LangAllFilesLoadedMessage(param1:String, param2:Boolean) {
+      public function LangAllFilesLoadedMessage(sFile:String, bSucces:Boolean) {
          super();
-         this._sFile = param1;
-         this._bSuccess = param2;
+         this._sFile = sFile;
+         this._bSuccess = bSucces;
       }
       
       private var _sFile:String;

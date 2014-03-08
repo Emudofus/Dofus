@@ -12,18 +12,18 @@ package com.ankamagames.dofus.datacenter.misc
       
       public static const MODULE:String = "Pack";
       
-      public static function getPackById(param1:int) : Pack {
-         return GameData.getObject(MODULE,param1) as Pack;
+      public static function getPackById(id:int) : Pack {
+         return GameData.getObject(MODULE,id) as Pack;
       }
       
-      public static function getPackByName(param1:String) : Pack {
-         var _loc3_:Pack = null;
-         var _loc2_:Array = getAllPacks();
-         for each (_loc3_ in _loc2_)
+      public static function getPackByName(name:String) : Pack {
+         var pack:Pack = null;
+         var packs:Array = getAllPacks();
+         for each (pack in packs)
          {
-            if(param1 == _loc3_.name)
+            if(name == pack.name)
             {
-               return _loc3_;
+               return pack;
             }
          }
          return null;

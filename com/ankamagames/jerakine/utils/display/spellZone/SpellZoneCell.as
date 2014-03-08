@@ -8,11 +8,11 @@ package com.ankamagames.jerakine.utils.display.spellZone
    public class SpellZoneCell extends Sprite
    {
       
-      public function SpellZoneCell(param1:uint, param2:uint, param3:uint) {
+      public function SpellZoneCell(pWidth:uint, pHeight:uint, pId:uint) {
          super();
-         this._cellWidth = param1;
-         this._cellHeight = param2;
-         this._cellId = param3;
+         this._cellWidth = pWidth;
+         this._cellHeight = pHeight;
+         this._cellId = pId;
          width = this._cellWidth;
          height = this._cellHeight;
       }
@@ -35,8 +35,8 @@ package com.ankamagames.jerakine.utils.display.spellZone
       
       public var isRangedCell:Boolean = false;
       
-      public function set defaultColor(param1:uint) : void {
-         this._defaultColor = param1;
+      public function set defaultColor(pColor:uint) : void {
+         this._defaultColor = pColor;
       }
       
       private function addListeners() : void {
@@ -62,28 +62,28 @@ package com.ankamagames.jerakine.utils.display.spellZone
          return this._cellId;
       }
       
-      private function onRollOver(param1:MouseEvent) : void {
-         var _loc2_:SpellZoneEvent = new SpellZoneEvent(SpellZoneEvent.CELL_ROLLOVER);
-         _loc2_.cell = this;
-         dispatchEvent(_loc2_);
+      private function onRollOver(e:MouseEvent) : void {
+         var event:SpellZoneEvent = new SpellZoneEvent(SpellZoneEvent.CELL_ROLLOVER);
+         event.cell = this;
+         dispatchEvent(event);
       }
       
-      private function onRollOut(param1:MouseEvent) : void {
+      private function onRollOut(e:MouseEvent) : void {
          this.colorCell(this._defaultColor);
-         var _loc2_:SpellZoneEvent = new SpellZoneEvent(SpellZoneEvent.CELL_ROLLOUT);
-         _loc2_.cell = this;
-         dispatchEvent(_loc2_);
+         var event:SpellZoneEvent = new SpellZoneEvent(SpellZoneEvent.CELL_ROLLOUT);
+         event.cell = this;
+         dispatchEvent(event);
       }
       
-      private function onClick(param1:MouseEvent) : void {
+      private function onClick(e:MouseEvent) : void {
       }
       
-      public function colorCell(param1:uint, param2:Boolean=false) : void {
-         var _loc3_:Color = new Color(param1);
-         this.filters = [new ColorMatrixFilter([_loc3_.red / 255,0,0,0,0,0,_loc3_.green / 255,0,0,0,0,0,_loc3_.blue / 255,0,0,0,0,0,this._alpha,0])];
-         if(param2)
+      public function colorCell(color:uint, setDefault:Boolean=false) : void {
+         var oColor:Color = new Color(color);
+         this.filters = [new ColorMatrixFilter([oColor.red / 255,0,0,0,0,0,oColor.green / 255,0,0,0,0,0,oColor.blue / 255,0,0,0,0,0,this._alpha,0])];
+         if(setDefault)
          {
-            this._defaultColor = param1;
+            this._defaultColor = color;
          }
       }
       

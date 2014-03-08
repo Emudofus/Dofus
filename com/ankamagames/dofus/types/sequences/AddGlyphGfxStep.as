@@ -11,12 +11,12 @@ package com.ankamagames.dofus.types.sequences
    public class AddGlyphGfxStep extends AbstractSequencable
    {
       
-      public function AddGlyphGfxStep(param1:uint, param2:uint, param3:int, param4:uint) {
+      public function AddGlyphGfxStep(gfxId:uint, cellId:uint, markId:int, makType:uint) {
          super();
-         this._gfxId = param1;
-         this._cellId = param2;
-         this._markId = param3;
-         this._markType = param4;
+         this._gfxId = gfxId;
+         this._cellId = cellId;
+         this._markId = markId;
+         this._markType = makType;
       }
       
       private var _gfxId:uint;
@@ -30,8 +30,8 @@ package com.ankamagames.dofus.types.sequences
       private var _markType:uint;
       
       override public function start() : void {
-         var _loc1_:int = EntitiesManager.getInstance().getFreeEntityId();
-         this._entity = new Glyph(_loc1_,TiphonEntityLook.fromString("{" + this._gfxId + "}"),true,true,this._markType);
+         var id:int = EntitiesManager.getInstance().getFreeEntityId();
+         this._entity = new Glyph(id,TiphonEntityLook.fromString("{" + this._gfxId + "}"),true,true,this._markType);
          this._entity.init();
          this._entity.position = MapPoint.fromCellId(this._cellId);
          this._entity.display(PlacementStrataEnums.STRATA_AREA);

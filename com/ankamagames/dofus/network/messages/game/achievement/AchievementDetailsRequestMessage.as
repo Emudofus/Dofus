@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6380;
       }
       
-      public function initAchievementDetailsRequestMessage(param1:uint=0) : AchievementDetailsRequestMessage {
-         this.achievementId = param1;
+      public function initAchievementDetailsRequestMessage(achievementId:uint=0) : AchievementDetailsRequestMessage {
+         this.achievementId = achievementId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.achievement
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AchievementDetailsRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AchievementDetailsRequestMessage(output);
       }
       
-      public function serializeAs_AchievementDetailsRequestMessage(param1:IDataOutput) : void {
+      public function serializeAs_AchievementDetailsRequestMessage(output:IDataOutput) : void {
          if(this.achievementId < 0)
          {
             throw new Error("Forbidden value (" + this.achievementId + ") on element achievementId.");
          }
          else
          {
-            param1.writeShort(this.achievementId);
+            output.writeShort(this.achievementId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AchievementDetailsRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AchievementDetailsRequestMessage(input);
       }
       
-      public function deserializeAs_AchievementDetailsRequestMessage(param1:IDataInput) : void {
-         this.achievementId = param1.readShort();
+      public function deserializeAs_AchievementDetailsRequestMessage(input:IDataInput) : void {
+         this.achievementId = input.readShort();
          if(this.achievementId < 0)
          {
             throw new Error("Forbidden value (" + this.achievementId + ") on element of AchievementDetailsRequestMessage.achievementId.");

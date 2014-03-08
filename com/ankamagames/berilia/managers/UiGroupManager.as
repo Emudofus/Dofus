@@ -42,16 +42,16 @@ package com.ankamagames.berilia.managers
       
       private var _uis:Array;
       
-      public function registerGroup(param1:UiGroup) : void {
-         this._registeredGroup[param1.name] = param1;
+      public function registerGroup(g:UiGroup) : void {
+         this._registeredGroup[g.name] = g;
       }
       
-      public function removeGroup(param1:String) : void {
-         delete this._registeredGroup[[param1]];
+      public function removeGroup(name:String) : void {
+         delete this._registeredGroup[[name]];
       }
       
-      public function getGroup(param1:String) : UiGroup {
-         return this._registeredGroup[param1];
+      public function getGroup(name:String) : UiGroup {
+         return this._registeredGroup[name];
       }
       
       public function destroy() : void {
@@ -59,52 +59,52 @@ package com.ankamagames.berilia.managers
          _self = null;
       }
       
-      private function onUiRenderAsk(param1:UiRenderAskEvent) : void {
-         var _loc3_:UiGroup = null;
-         var _loc4_:Array = null;
-         var _loc5_:String = null;
-         var _loc6_:* = false;
-         var _loc7_:String = null;
-         if(!param1.uiData.uiGroupName || !this._registeredGroup[param1.uiData.uiGroupName])
+      private function onUiRenderAsk(e:UiRenderAskEvent) : void {
+         var group:UiGroup = null;
+         var actualGroupUis:Array = null;
+         var uiName:String = null;
+         var close:* = false;
+         var uiName2:String = null;
+         if((!e.uiData.uiGroupName) || (!this._registeredGroup[e.uiData.uiGroupName]))
          {
             return;
          }
-         if(!this._uis[param1.uiData.uiGroupName])
+         if(!this._uis[e.uiData.uiGroupName])
          {
-            this._uis[param1.uiData.uiGroupName] = new Array();
+            this._uis[e.uiData.uiGroupName] = new Array();
          }
-         var _loc2_:UiGroup = this.getGroup(param1.uiData.uiGroupName);
-         if(!_loc2_)
+         var currentGroup:UiGroup = this.getGroup(e.uiData.uiGroupName);
+         if(!currentGroup)
          {
             return;
          }
-         for each (_loc3_ in this._registeredGroup)
+         for each (group in this._registeredGroup)
          {
-            if((_loc2_.exclusive) && !_loc3_.permanent && !(_loc3_.name == _loc2_.name))
+            if((currentGroup.exclusive) && (!group.permanent) && (!(group.name == currentGroup.name)))
             {
-               if(this._uis[_loc3_.name] != null)
+               if(this._uis[group.name] != null)
                {
-                  _loc4_ = this._registeredGroup[_loc3_.name].uis;
-                  for each (_loc5_ in _loc4_)
+                  actualGroupUis = this._registeredGroup[group.name].uis;
+                  for each (uiName in actualGroupUis)
                   {
-                     _loc6_ = true;
-                     for each (_loc7_ in _loc2_.uis)
+                     close = true;
+                     for each (uiName2 in currentGroup.uis)
                      {
-                        if(_loc5_ == _loc7_)
+                        if(uiName == uiName2)
                         {
-                           _loc6_ = false;
+                           close = false;
                         }
                      }
-                     if((_loc6_) && !(_loc7_ == null))
+                     if((close) && (!(uiName2 == null)))
                      {
-                        Berilia.getInstance().unloadUi(_loc5_);
+                        Berilia.getInstance().unloadUi(uiName);
                      }
-                     delete this._uis[_loc3_.name][[_loc5_]];
+                     delete this._uis[group.name][[uiName]];
                   }
                }
             }
          }
-         this._uis[param1.uiData.uiGroupName][param1.name] = param1.uiData;
+         this._uis[e.uiData.uiGroupName][e.name] = e.uiData;
       }
    }
 }

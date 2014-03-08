@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.quest
       
       public static const MODULE:String = "QuestObjectiveTypes";
       
-      public static function getQuestObjectiveTypeById(param1:int) : QuestObjectiveType {
-         return GameData.getObject(MODULE,param1) as QuestObjectiveType;
+      public static function getQuestObjectiveTypeById(id:int) : QuestObjectiveType {
+         return GameData.getObject(MODULE,id) as QuestObjectiveType;
       }
       
       public static function getQuestObjectiveTypes() : Array {

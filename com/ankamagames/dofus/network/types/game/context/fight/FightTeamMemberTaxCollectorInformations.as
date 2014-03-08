@@ -27,13 +27,13 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 177;
       }
       
-      public function initFightTeamMemberTaxCollectorInformations(param1:int=0, param2:uint=0, param3:uint=0, param4:uint=0, param5:uint=0, param6:uint=0) : FightTeamMemberTaxCollectorInformations {
-         super.initFightTeamMemberInformations(param1);
-         this.firstNameId = param2;
-         this.lastNameId = param3;
-         this.level = param4;
-         this.guildId = param5;
-         this.uid = param6;
+      public function initFightTeamMemberTaxCollectorInformations(id:int=0, firstNameId:uint=0, lastNameId:uint=0, level:uint=0, guildId:uint=0, uid:uint=0) : FightTeamMemberTaxCollectorInformations {
+         super.initFightTeamMemberInformations(id);
+         this.firstNameId = firstNameId;
+         this.lastNameId = lastNameId;
+         this.level = level;
+         this.guildId = guildId;
+         this.uid = uid;
          return this;
       }
       
@@ -46,47 +46,47 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.uid = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FightTeamMemberTaxCollectorInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FightTeamMemberTaxCollectorInformations(output);
       }
       
-      public function serializeAs_FightTeamMemberTaxCollectorInformations(param1:IDataOutput) : void {
-         super.serializeAs_FightTeamMemberInformations(param1);
+      public function serializeAs_FightTeamMemberTaxCollectorInformations(output:IDataOutput) : void {
+         super.serializeAs_FightTeamMemberInformations(output);
          if(this.firstNameId < 0)
          {
             throw new Error("Forbidden value (" + this.firstNameId + ") on element firstNameId.");
          }
          else
          {
-            param1.writeShort(this.firstNameId);
+            output.writeShort(this.firstNameId);
             if(this.lastNameId < 0)
             {
                throw new Error("Forbidden value (" + this.lastNameId + ") on element lastNameId.");
             }
             else
             {
-               param1.writeShort(this.lastNameId);
-               if(this.level < 1 || this.level > 200)
+               output.writeShort(this.lastNameId);
+               if((this.level < 1) || (this.level > 200))
                {
                   throw new Error("Forbidden value (" + this.level + ") on element level.");
                }
                else
                {
-                  param1.writeByte(this.level);
+                  output.writeByte(this.level);
                   if(this.guildId < 0)
                   {
                      throw new Error("Forbidden value (" + this.guildId + ") on element guildId.");
                   }
                   else
                   {
-                     param1.writeInt(this.guildId);
+                     output.writeInt(this.guildId);
                      if(this.uid < 0)
                      {
                         throw new Error("Forbidden value (" + this.uid + ") on element uid.");
                      }
                      else
                      {
-                        param1.writeInt(this.uid);
+                        output.writeInt(this.uid);
                         return;
                      }
                   }
@@ -95,41 +95,41 @@ package com.ankamagames.dofus.network.types.game.context.fight
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FightTeamMemberTaxCollectorInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FightTeamMemberTaxCollectorInformations(input);
       }
       
-      public function deserializeAs_FightTeamMemberTaxCollectorInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.firstNameId = param1.readShort();
+      public function deserializeAs_FightTeamMemberTaxCollectorInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.firstNameId = input.readShort();
          if(this.firstNameId < 0)
          {
             throw new Error("Forbidden value (" + this.firstNameId + ") on element of FightTeamMemberTaxCollectorInformations.firstNameId.");
          }
          else
          {
-            this.lastNameId = param1.readShort();
+            this.lastNameId = input.readShort();
             if(this.lastNameId < 0)
             {
                throw new Error("Forbidden value (" + this.lastNameId + ") on element of FightTeamMemberTaxCollectorInformations.lastNameId.");
             }
             else
             {
-               this.level = param1.readUnsignedByte();
-               if(this.level < 1 || this.level > 200)
+               this.level = input.readUnsignedByte();
+               if((this.level < 1) || (this.level > 200))
                {
                   throw new Error("Forbidden value (" + this.level + ") on element of FightTeamMemberTaxCollectorInformations.level.");
                }
                else
                {
-                  this.guildId = param1.readInt();
+                  this.guildId = input.readInt();
                   if(this.guildId < 0)
                   {
                      throw new Error("Forbidden value (" + this.guildId + ") on element of FightTeamMemberTaxCollectorInformations.guildId.");
                   }
                   else
                   {
-                     this.uid = param1.readInt();
+                     this.uid = input.readInt();
                      if(this.uid < 0)
                      {
                         throw new Error("Forbidden value (" + this.uid + ") on element of FightTeamMemberTaxCollectorInformations.uid.");

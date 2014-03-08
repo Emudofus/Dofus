@@ -9,15 +9,15 @@ package com.ankamagames.dofus.logic.game.common.actions.alliance
          super();
       }
       
-      public static function create(param1:String, param2:String, param3:uint, param4:uint, param5:uint, param6:uint) : AllianceModificationValidAction {
-         var _loc7_:AllianceModificationValidAction = new AllianceModificationValidAction();
-         _loc7_.name = param1;
-         _loc7_.tag = param2;
-         _loc7_.upEmblemId = param3;
-         _loc7_.upColorEmblem = param4;
-         _loc7_.backEmblemId = param5;
-         _loc7_.backColorEmblem = param6;
-         return _loc7_;
+      public static function create(pName:String, pTag:String, pUpEmblemId:uint, pUpColorEmblem:uint, pBackEmblemId:uint, pBackColorEmblem:uint) : AllianceModificationValidAction {
+         var action:AllianceModificationValidAction = new AllianceModificationValidAction();
+         action.name = pName;
+         action.tag = pTag;
+         action.upEmblemId = pUpEmblemId;
+         action.upColorEmblem = pUpColorEmblem;
+         action.backEmblemId = pBackEmblemId;
+         action.backColorEmblem = pBackColorEmblem;
+         return action;
       }
       
       public var name:String;

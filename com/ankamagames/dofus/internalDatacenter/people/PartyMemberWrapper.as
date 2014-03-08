@@ -6,35 +6,35 @@ package com.ankamagames.dofus.internalDatacenter.people
    public class PartyMemberWrapper extends Object implements IDataCenter
    {
       
-      public function PartyMemberWrapper(param1:int, param2:String, param3:uint, param4:Boolean, param5:Boolean=false, param6:int=0, param7:EntityLook=null, param8:int=0, param9:int=0, param10:int=0, param11:int=0, param12:int=0, param13:int=0, param14:int=0, param15:int=0, param16:int=0, param17:int=0, param18:int=0, param19:int=0, param20:Array=null) {
+      public function PartyMemberWrapper(id:int, name:String, status:uint, isMember:Boolean, isLeader:Boolean=false, level:int=0, entityLook:EntityLook=null, lifePoints:int=0, maxLifePoints:int=0, maxInitiative:int=0, prospecting:int=0, alignmentSide:int=0, regenRate:int=0, rank:int=0, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:int=0, breedId:int=0, companions:Array=null) {
          this.companions = new Array();
          super();
-         this.id = param1;
-         this.name = param2;
-         this.isMember = param4;
-         this.isLeader = param5;
-         this.level = param6;
-         this.entityLook = param7;
-         this.breedId = param19;
-         this.lifePoints = param8;
-         this.maxLifePoints = param9;
-         this.maxInitiative = param10;
-         this.prospecting = param11;
-         this.alignmentSide = param12;
-         this.regenRate = param13;
-         this.rank = param14;
-         this.worldX = param15;
-         this.worldY = param16;
-         this.mapId = param17;
-         this.subAreaId = param18;
-         this.status = param3;
-         if(!param20)
+         this.id = id;
+         this.name = name;
+         this.isMember = isMember;
+         this.isLeader = isLeader;
+         this.level = level;
+         this.entityLook = entityLook;
+         this.breedId = breedId;
+         this.lifePoints = lifePoints;
+         this.maxLifePoints = maxLifePoints;
+         this.maxInitiative = maxInitiative;
+         this.prospecting = prospecting;
+         this.alignmentSide = alignmentSide;
+         this.regenRate = regenRate;
+         this.rank = rank;
+         this.worldX = worldX;
+         this.worldY = worldY;
+         this.mapId = mapId;
+         this.subAreaId = subAreaId;
+         this.status = status;
+         if(!companions)
          {
             this.companions = new Array();
          }
          else
          {
-            this.companions = param20;
+            this.companions = companions;
          }
       }
       

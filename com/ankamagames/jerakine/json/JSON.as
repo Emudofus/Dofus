@@ -7,12 +7,12 @@ package com.ankamagames.jerakine.json
          super();
       }
       
-      public static function encode(param1:Object, param2:uint=0, param3:Boolean=false) : String {
-         return new JSONEncoder(param1,param2,param3).getString();
+      public static function encode(o:Object, pMaxDepth:uint=0, pShowObjectType:Boolean=false) : String {
+         return new JSONEncoder(o,pMaxDepth,pShowObjectType).getString();
       }
       
-      public static function decode(param1:String, param2:Boolean=true) : * {
-         return new JSONDecoder(param1,param2).getValue();
+      public static function decode(s:String, strict:Boolean=true) : * {
+         return new JSONDecoder(s,strict).getValue();
       }
    }
 }

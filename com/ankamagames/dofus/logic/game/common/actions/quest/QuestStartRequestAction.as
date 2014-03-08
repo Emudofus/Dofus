@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.quest
          super();
       }
       
-      public static function create(param1:int) : QuestStartRequestAction {
-         var _loc2_:QuestStartRequestAction = new QuestStartRequestAction();
-         _loc2_.questId = param1;
-         return _loc2_;
+      public static function create(questId:int) : QuestStartRequestAction {
+         var a:QuestStartRequestAction = new QuestStartRequestAction();
+         a.questId = questId;
+         return a;
       }
       
       public var questId:int;

@@ -25,38 +25,67 @@ package com.ankamagames.dofus.uiApi
          return Kernel.getWorker().getFrame(PartyManagementFrame) as PartyManagementFrame;
       }
       
-      public function set module(param1:UiModule) : void {
-         this._module = param1;
+      public function set module(value:UiModule) : void {
+         this._module = value;
       }
       
       public function destroy() : void {
          this._module = null;
       }
       
-      public function getPartyMembers(param1:int=0) : Object {
-         if(param1 == 1)
+      public function getPartyMembers(typeId:int=0) : Object {
+         if(typeId == 1)
          {
             return this.partyManagementFrame.arenaPartyMembers;
          }
          return this.partyManagementFrame.partyMembers;
       }
       
-      public function getPartyLeaderId(param1:int) : int {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      public function getPartyLeaderId(partyId:int) : int {
+         var pMember:Object = null;
+         if(partyId == this.partyManagementFrame.arenaPartyId)
+         {
+            for each (pMember in this.partyManagementFrame.arenaPartyMembers)
+            {
+               if(pMember.isLeader)
+               {
+                  return pMember.id;
+               }
+            }
+         }
+         else
+         {
+            if(partyId == this.partyManagementFrame.partyId)
+            {
+               for each (pMember in this.partyManagementFrame.partyMembers)
+               {
+                  if(pMember.isLeader)
+                  {
+                     return pMember.id;
+                  }
+               }
+            }
+         }
+         return -1;
       }
       
-      public function isInParty(param1:uint) : Boolean {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      public function isInParty(pPlayerId:uint) : Boolean {
+         var pMember:Object = null;
+         for each (pMember in this.partyManagementFrame.partyMembers)
+         {
+            if(pPlayerId == pMember.id)
+            {
+               return true;
+            }
+         }
+         for each (pMember in this.partyManagementFrame.arenaPartyMembers)
+         {
+            if(pPlayerId == pMember.id)
+            {
+               return true;
+            }
+         }
+         return false;
       }
       
       public function getPartyId() : int {
@@ -99,11 +128,11 @@ package com.ankamagames.dofus.uiApi
          return this.partyManagementFrame.todaysWonArenaFights;
       }
       
-      public function getAllMemberFollowPlayerId(param1:int) : uint {
+      public function getAllMemberFollowPlayerId(partyId:int) : uint {
          return this.partyManagementFrame.allMemberFollowPlayerId;
       }
       
-      public function getPartyLoyalty(param1:int) : Boolean {
+      public function getPartyLoyalty(partyId:int) : Boolean {
          return this.partyManagementFrame.partyLoyalty;
       }
       

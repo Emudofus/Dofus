@@ -135,6 +135,7 @@ package com.ankamagames.dofus.logic.connection.frames
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightTaxCollectorInformations;
    import com.ankamagames.dofus.internalDatacenter.spells.EffectsWrapper;
    import com.ankamagames.dofus.internalDatacenter.spells.EffectsListWrapper;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.internalDatacenter.communication.CraftSmileyItem;
    import com.ankamagames.dofus.internalDatacenter.communication.DelayedActionItem;
    import com.ankamagames.dofus.logic.game.roleplay.types.PrismTooltipInformation;
@@ -221,7 +222,7 @@ package com.ankamagames.dofus.logic.connection.frames
       }
       
       public function pushed() : Boolean {
-         var _loc1_:* = false;
+         var foo:* = false;
          if(BuildInfos.BUILD_TYPE == BuildTypeEnum.DEBUG)
          {
             KernelEventsManager.getInstance().disableAsyncError();
@@ -239,7 +240,7 @@ package com.ankamagames.dofus.logic.connection.frames
          this._aModuleInit["gameData"] = false;
          this._aModuleInit["modules"] = false;
          this._aModuleInit["uiXmlParsing"] = false;
-         for each (_loc1_ in this._aModuleInit)
+         for each (foo in this._aModuleInit)
          {
             this._percentPerModule++;
          }
@@ -253,7 +254,7 @@ package com.ankamagames.dofus.logic.connection.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
+      public function process(msg:Message) : Boolean {
          var langMsg:LangFileLoadedMessage = null;
          var langAllMsg:LangAllFilesLoadedMessage = null;
          var ankamaModule:Boolean = false;
@@ -272,7 +273,6 @@ package com.ankamagames.dofus.logic.connection.frames
          var resetLang:Boolean = false;
          var overrideFile:Uri = null;
          var currentCommunity:String = null;
-         var msg:Message = param1;
          switch(true)
          {
             case msg is LangFileLoadedMessage:
@@ -361,85 +361,6 @@ package com.ankamagames.dofus.logic.connection.frames
                         }
                         break;
                      }
-                  default:
-                     if(langAllMsg.file.indexOf("colors.xml") != -1)
-                     {
-                        if(!langAllMsg.success)
-                        {
-                           throw new BeriliaError("Impossible de charger " + langAllMsg.file);
-                        }
-                        else
-                        {
-                           XmlConfig.getInstance().addCategory(LangManager.getInstance().getCategory("colors"));
-                           this._aModuleInit["colors"] = true;
-                           this.setModulePercent("colors",100);
-                           this._loadingScreen.value = this._loadingScreen.value + this._percentPerModule;
-                           break;
-                        }
-                     }
-                     else
-                     {
-                        if(langAllMsg.file.indexOf("config-") != -1)
-                        {
-                           try
-                           {
-                              xmlPos = langAllMsg.file.lastIndexOf(".xml");
-                              fileNamePos = langAllMsg.file.lastIndexOf("config-");
-                              catName = langAllMsg.file.substring(fileNamePos,xmlPos);
-                              newValues = LangManager.getInstance().getCategory(catName);
-                              for (key in newValues)
-                              {
-                                 keyInfo = key.split(".");
-                                 keyInfo[0] = "config";
-                                 oldKey = keyInfo.join(".");
-                                 XmlConfig.getInstance().setEntry(oldKey,newValues[key]);
-                                 LangManager.getInstance().setEntry(oldKey,newValues[key]);
-                              }
-                           }
-                           catch(e:Error)
-                           {
-                              throw e;
-                           }
-                           if(!--this._subConfigCount)
-                           {
-                              this.setModulePercent("config",100);
-                              this._aModuleInit["config"] = true;
-                              this.initAfterLoadConfig();
-                              this.checkInit();
-                           }
-                        }
-                        else
-                        {
-                           this._aLoadedFiles.push(langAllMsg.file);
-                        }
-                        this._aModuleInit["langFiles"] = this._aLoadedFiles.length == this._aFiles.length;
-                        if(this._aModuleInit["langFiles"])
-                        {
-                           this.setModulePercent("langFiles",100);
-                           this.initFonts();
-                           I18nUpdater.getInstance().addEventListener(Event.COMPLETE,this.onI18nReady);
-                           I18nUpdater.getInstance().addEventListener(FileEvent.ERROR,this.onDataFileError);
-                           I18nUpdater.getInstance().addEventListener(LangFileEvent.COMPLETE,this.onI18nPartialDataReady);
-                           GameDataUpdater.getInstance().addEventListener(Event.COMPLETE,this.onGameDataReady);
-                           GameDataUpdater.getInstance().addEventListener(FileEvent.ERROR,this.onDataFileError);
-                           GameDataUpdater.getInstance().addEventListener(LangFileEvent.COMPLETE,this.onGameDataPartialDataReady);
-                           lastLang = StoreDataManager.getInstance().getData(Constants.DATASTORE_LANG_VERSION,"lastLang");
-                           resetLang = !(lastLang == XmlConfig.getInstance().getEntry("config.lang.current"));
-                           if(resetLang)
-                           {
-                              UiRenderManager.getInstance().clearCache();
-                           }
-                           currentCommunity = XmlConfig.getInstance().getEntry("config.community.current");
-                           if((currentCommunity) && !(currentCommunity.charAt(0) == "!"))
-                           {
-                              overrideFile = new Uri(XmlConfig.getInstance().getEntry("config.data.path.root") + "com/" + currentCommunity + ".xml");
-                           }
-                           I18nUpdater.getInstance().initI18n(XmlConfig.getInstance().getEntry("config.lang.current"),new Uri(XmlConfig.getInstance().getEntry("config.data.path.i18n.list")),resetLang,overrideFile);
-                           GameDataUpdater.getInstance().init(new Uri(XmlConfig.getInstance().getEntry("config.data.path.common.list")));
-                        }
-                        this.checkInit();
-                        break;
-                     }
                }
                return true;
             case msg is AllModulesLoadedMessage:
@@ -482,8 +403,6 @@ package com.ankamagames.dofus.logic.connection.frames
             case msg is NoThemeErrorMessage:
                this._loadingScreen.log(I18n.getUiText("ui.popup.noTheme"),LoadingScreen.ERROR);
                return true;
-            default:
-               return false;
          }
       }
       
@@ -502,11 +421,11 @@ package com.ankamagames.dofus.logic.connection.frames
       private function initAfterLoadConfig() : void {
          Kernel.getInstance().postInit();
          this._aFiles.push(LangManager.getInstance().getEntry("config.ui.asset.fontsList"));
-         var _loc1_:uint = 0;
-         while(_loc1_ < this._aFiles.length)
+         var i:uint = 0;
+         while(i < this._aFiles.length)
          {
-            FontManager.getInstance().loadFile(this._aFiles[_loc1_]);
-            _loc1_++;
+            FontManager.getInstance().loadFile(this._aFiles[i]);
+            i++;
          }
          this._loadingScreen.value = this._loadingScreen.value + this._percentPerModule;
          KernelEventsManager.getInstance().processCallback(HookList.ConfigStart);
@@ -658,44 +577,44 @@ package com.ankamagames.dofus.logic.connection.frames
       }
       
       private function checkInit() : void {
-         var _loc2_:uint = 0;
-         var _loc3_:String = null;
-         var _loc4_:XML = null;
-         var _loc5_:Array = null;
-         var _loc6_:XML = null;
-         var _loc7_:uint = 0;
-         var _loc8_:Array = null;
-         var _loc9_:SkinMapping = null;
-         var _loc10_:XML = null;
-         var _loc11_:XML = null;
-         var _loc1_:* = true;
-         for (_loc3_ in this._aModuleInit)
+         var reste:uint = 0;
+         var key:String = null;
+         var d:XML = null;
+         var testSequence:Array = null;
+         var type:XML = null;
+         var i:uint = 0;
+         var lowdefMappings:Array = null;
+         var skin:SkinMapping = null;
+         var dataClassDesc:XML = null;
+         var fct:XML = null;
+         var start:Boolean = true;
+         for (key in this._aModuleInit)
          {
-            _loc1_ = (_loc1_) && (this._aModuleInit[_loc3_]);
-            if(!this._aModuleInit[_loc3_])
+            start = (start) && (this._aModuleInit[key]);
+            if(!this._aModuleInit[key])
             {
-               _loc2_++;
+               reste++;
             }
          }
-         if(_loc2_ == 2)
+         if(reste == 2)
          {
             UiModuleManager.getInstance().init(Constants.COMMON_GAME_MODULE.concat(Constants.PRE_GAME_MODULE),true);
          }
-         if(_loc1_)
+         if(start)
          {
-            _loc4_ = describeType(GameDataList);
-            _loc5_ = [];
-            for each (_loc6_ in _loc4_..constant)
+            d = describeType(GameDataList);
+            testSequence = [];
+            for each (type in d..constant)
             {
-               _loc10_ = describeType(getDefinitionByName(_loc6_.@type));
-               for each (_loc11_ in _loc10_..method)
+               dataClassDesc = describeType(getDefinitionByName(type.@type));
+               for each (fct in dataClassDesc..method)
                {
-                  if(_loc11_.@returnType.toString() == _loc6_.@type.toString() && _loc11_.@name.toString().indexOf("get") == 0 && !(_loc11_.@name.toString().indexOf("ById") == -1))
+                  if((fct.@returnType.toString() == type.@type.toString()) && (fct.@name.toString().indexOf("get") == 0) && (!(fct.@name.toString().indexOf("ById") == -1)))
                   {
-                     _loc5_.push(
+                     testSequence.push(
                         {
-                           "fct":getDefinitionByName(_loc6_.@type)[_loc11_.@name.toString()],
-                           "returnClass":getDefinitionByName(_loc6_.@type),
+                           "fct":getDefinitionByName(type.@type)[fct.@name.toString()],
+                           "returnClass":getDefinitionByName(type.@type),
                            "testIndex":[0,1,2,3,4,100,1000,2000,10000,100000]
                         });
                   }
@@ -703,10 +622,10 @@ package com.ankamagames.dofus.logic.connection.frames
             }
             DofusApiAction.updateInfo();
             CensoredContentManager.getInstance().init(CensoredContent.getCensoredContents(),XmlConfig.getInstance().getEntry("config.lang.current"));
-            _loc8_ = SkinMapping.getSkinMappings();
-            for each (_loc9_ in _loc8_)
+            lowdefMappings = SkinMapping.getSkinMappings();
+            for each (skin in lowdefMappings)
             {
-               Skin.addAlternativeSkin(_loc9_.id,_loc9_.lowDefId);
+               Skin.addAlternativeSkin(skin.id,skin.lowDefId);
             }
             _log.info("Initialization frame end");
             Constants.EVENT_MODE = LangManager.getInstance().getEntry("config.eventMode") == "true";
@@ -726,45 +645,45 @@ package com.ankamagames.dofus.logic.connection.frames
       
       private function initFonts() : void {
          EmbedFontManager.getInstance().addEventListener(Event.COMPLETE,this.onFontsManagerInit);
-         var _loc1_:Array = FontManager.getInstance().getFontsList();
-         EmbedFontManager.getInstance().initialize(_loc1_);
+         var fontList:Array = FontManager.getInstance().getFontsList();
+         EmbedFontManager.getInstance().initialize(fontList);
       }
       
-      private function setModulePercent(param1:String, param2:Number, param3:Boolean=false) : void {
-         var _loc5_:* = NaN;
-         var _loc6_:uint = 0;
-         if(!this._modPercents[param1])
+      private function setModulePercent(moduleName:String, prc:Number, add:Boolean=false) : void {
+         var p:* = NaN;
+         var id:uint = 0;
+         if(!this._modPercents[moduleName])
          {
-            this._modPercents[param1] = 0;
+            this._modPercents[moduleName] = 0;
          }
-         if(param3)
+         if(add)
          {
-            this._modPercents[param1] = this._modPercents[param1] + param2;
+            this._modPercents[moduleName] = this._modPercents[moduleName] + prc;
          }
          else
          {
-            this._modPercents[param1] = param2;
+            this._modPercents[moduleName] = prc;
          }
-         var _loc4_:Number = 0;
-         for each (_loc5_ in this._modPercents)
+         var totalPrc:Number = 0;
+         for each (p in this._modPercents)
          {
-            _loc4_ = _loc4_ + _loc5_ / 100 * this._percentPerModule;
+            totalPrc = totalPrc + p / 100 * this._percentPerModule;
          }
-         _loc6_ = Dofus.getInstance().instanceId;
-         if(this._modPercents[param1] == 100)
+         id = Dofus.getInstance().instanceId;
+         if(this._modPercents[moduleName] == 100)
          {
-            this._loadingScreen.log(param1 + " initialized",LoadingScreen.IMPORTANT);
+            this._loadingScreen.log(moduleName + " initialized",LoadingScreen.IMPORTANT);
          }
-         this._loadingScreen.value = _loc4_;
+         this._loadingScreen.value = totalPrc;
       }
       
-      private function onFontsManagerInit(param1:Event) : void {
+      private function onFontsManagerInit(e:Event) : void {
          this._aModuleInit["font"] = true;
          this.setModulePercent("font",100);
          this.checkInit();
       }
       
-      private function onI18nReady(param1:Event) : void {
+      private function onI18nReady(e:Event) : void {
          this._aModuleInit["i18n"] = true;
          this.setModulePercent("i18n",100);
          StoreDataManager.getInstance().setData(Constants.DATASTORE_LANG_VERSION,"lastLang",LangManager.getInstance().getEntry("config.lang.current"));
@@ -772,31 +691,31 @@ package com.ankamagames.dofus.logic.connection.frames
          Input.numberStrSeparator = I18n.getUiText("ui.common.numberSeparator");
       }
       
-      private function onGameDataReady(param1:Event) : void {
+      private function onGameDataReady(e:Event) : void {
          this._aModuleInit["gameData"] = true;
          this.setModulePercent("gameData",100);
          this.checkInit();
       }
       
-      private function onGameDataPartialDataReady(param1:LangFileEvent) : void {
+      private function onGameDataPartialDataReady(e:LangFileEvent) : void {
          if(!this._loadingScreen)
          {
             this._loadingScreen = new LoadingScreen();
             Dofus.getInstance().addChild(this._loadingScreen);
          }
-         this._loadingScreen.log("[GameData] " + FileUtils.getFileName(param1.url) + " parsed",LoadingScreen.INFO);
+         this._loadingScreen.log("[GameData] " + FileUtils.getFileName(e.url) + " parsed",LoadingScreen.INFO);
          this.setModulePercent("gameData",this._percentPerModule * 1 / GameDataUpdater.getInstance().files.length,true);
-         KernelEventsManager.getInstance().processCallback(HookList.LangFileLoaded,param1.url,true);
+         KernelEventsManager.getInstance().processCallback(HookList.LangFileLoaded,e.url,true);
       }
       
-      private function onI18nPartialDataReady(param1:LangFileEvent) : void {
-         this._loadingScreen.log("[i18n] " + FileUtils.getFileName(param1.url) + " parsed",LoadingScreen.INFO);
+      private function onI18nPartialDataReady(e:LangFileEvent) : void {
+         this._loadingScreen.log("[i18n] " + FileUtils.getFileName(e.url) + " parsed",LoadingScreen.INFO);
          this.setModulePercent("i18n",this._percentPerModule * 1 / I18nUpdater.getInstance().files.length,true);
-         KernelEventsManager.getInstance().processCallback(HookList.LangFileLoaded,param1.url,true);
+         KernelEventsManager.getInstance().processCallback(HookList.LangFileLoaded,e.url,true);
       }
       
-      private function onDataFileError(param1:FileEvent) : void {
-         this._loadingScreen.log("Unabled to load  " + param1.file,LoadingScreen.ERROR);
+      private function onDataFileError(e:FileEvent) : void {
+         this._loadingScreen.log("Unabled to load  " + e.file,LoadingScreen.ERROR);
       }
    }
 }

@@ -23,14 +23,14 @@ package com.ankamagames.dofus.kernel.updaterv2.messages.impl
       
       private var _totalSize:Number;
       
-      public function deserialize(param1:Object) : void {
-         this._step = param1["step"];
-         this._progress = param1["progress"];
-         this._smooth = param1["smooth"];
-         this._eta = param1["eta"];
-         this._speed = param1["speed"];
-         this._currentSize = param1["currentSize"];
-         this._totalSize = param1["totalSize"];
+      public function deserialize(data:Object) : void {
+         this._step = data["step"];
+         this._progress = data["progress"];
+         this._smooth = data["smooth"];
+         this._eta = data["eta"];
+         this._speed = data["speed"];
+         this._currentSize = data["currentSize"];
+         this._totalSize = data["totalSize"];
       }
       
       public function get progress() : Number {

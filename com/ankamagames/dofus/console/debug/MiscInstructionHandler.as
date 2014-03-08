@@ -46,7 +46,7 @@ package com.ankamagames.dofus.console.debug
       
       private var _synchronisationFrameInstance:SynchronisationFrame;
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
          var log:Logger = null;
          var size:uint = 0;
          var emptySince:uint = 0;
@@ -71,14 +71,11 @@ package com.ankamagames.dofus.console.debug
          var monsterLook:TiphonEntityLook = null;
          var changeCount:uint = 0;
          var sceneEntity:IEntity = null;
-         var console:ConsoleHandler = param1;
-         var cmd:String = param2;
-         var args:Array = param3;
          switch(cmd)
          {
             case "log":
                log = Log.getLogger(getQualifiedClassName(MiscInstructionHandler));
-               LogLogger.activeLog(args[0] == "true" || args[0] == "on");
+               LogLogger.activeLog((args[0] == "true") || (args[0] == "on"));
                console.output("Log set to " + LogLogger.logIsActive());
                break;
             case "newdofus":
@@ -103,7 +100,7 @@ package com.ankamagames.dofus.console.debug
                      }
                   }while(emptySince < 20);
                   
-                  console.output(size + " characters in " + (i-1) + " entries.");
+                  console.output(size + " characters in " + (i - 1) + " entries.");
                   break;
                case "clear":
                   KernelEventsManager.getInstance().processCallback(HookList.ConsoleClear);
@@ -302,7 +299,7 @@ package com.ankamagames.dofus.console.debug
                         changeCount = 0;
                         for each (sceneEntity in EntitiesManager.getInstance().entities)
                         {
-                           if(sceneEntity is AnimatedCharacter && AnimatedCharacter(sceneEntity).look.getBone() == monsterLook.getBone())
+                           if((sceneEntity is AnimatedCharacter) && (AnimatedCharacter(sceneEntity).look.getBone() == monsterLook.getBone()))
                            {
                               changeCount++;
                               AnimatedCharacter(sceneEntity).speedAdjust = monster.speedAdjust;
@@ -319,8 +316,8 @@ package com.ankamagames.dofus.console.debug
             }
          }
          
-         public function getHelp(param1:String) : String {
-            switch(param1)
+         public function getHelp(cmd:String) : String {
+            switch(cmd)
             {
                case "log":
                   return "Switch on/off client log process.";
@@ -354,42 +351,40 @@ package com.ankamagames.dofus.console.debug
                   return "Set inactivity time limit (in seconds)";
                case "setmonsterspeed":
                   return "Ajuste la vitesse de déplacement d\'un monstre";
-               default:
-                  return "No help for command \'" + param1 + "\'";
             }
          }
          
-         public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
-            var _loc5_:String = null;
-            var _loc6_:String = null;
-            var _loc4_:Array = [];
-            switch(param1)
+         public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+            var managerName:String = null;
+            var name:String = null;
+            var possibilities:Array = [];
+            switch(cmd)
             {
                case "throw":
-                  _loc4_ = ["async","sync"];
+                  possibilities = ["async","sync"];
                   break;
                case "setquality":
-                  _loc4_ = [StageQuality.LOW,StageQuality.MEDIUM,StageQuality.HIGH,StageQuality.BEST];
+                  possibilities = [StageQuality.LOW,StageQuality.MEDIUM,StageQuality.HIGH,StageQuality.BEST];
                   break;
                case "config":
-                  if(param2 == 0)
+                  if(paramIndex == 0)
                   {
-                     _loc4_ = OptionManager.getOptionManagers();
+                     possibilities = OptionManager.getOptionManagers();
                   }
                   else
                   {
-                     if(param2 == 1)
+                     if(paramIndex == 1)
                      {
-                        _loc5_ = param3[0];
-                        for (_loc6_ in OptionManager.getOptionManager(_loc5_))
+                        managerName = currentParams[0];
+                        for (name in OptionManager.getOptionManager(managerName))
                         {
-                           _loc4_.push(_loc6_);
+                           possibilities.push(name);
                         }
                      }
                   }
                   break;
             }
-            return _loc4_;
+            return possibilities;
          }
       }
    }

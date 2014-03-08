@@ -9,23 +9,23 @@ package com.hurlant.math
          super();
       }
       
-      public function revert(param1:BigInteger) : BigInteger {
-         return param1;
+      public function revert(x:BigInteger) : BigInteger {
+         return x;
       }
       
-      public function mulTo(param1:BigInteger, param2:BigInteger, param3:BigInteger) : void {
-         param1.multiplyTo(param2,param3);
+      public function mulTo(x:BigInteger, y:BigInteger, r:BigInteger) : void {
+         x.multiplyTo(y,r);
       }
       
-      public function sqrTo(param1:BigInteger, param2:BigInteger) : void {
-         param1.squareTo(param2);
+      public function sqrTo(x:BigInteger, r:BigInteger) : void {
+         x.squareTo(r);
       }
       
-      public function convert(param1:BigInteger) : BigInteger {
-         return param1;
+      public function convert(x:BigInteger) : BigInteger {
+         return x;
       }
       
-      public function reduce(param1:BigInteger) : void {
+      public function reduce(x:BigInteger) : void {
       }
    }
 }

@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.alliance
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.social.AllianceFactSheetInformations;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,8 +30,8 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6408;
       }
       
-      public function initAllianceListMessage(param1:Vector.<AllianceFactSheetInformations>=null) : AllianceListMessage {
-         this.alliances = param1;
+      public function initAllianceListMessage(alliances:Vector.<AllianceFactSheetInformations>=null) : AllianceListMessage {
+         this.alliances = alliances;
          this._isInitialized = true;
          return this;
       }
@@ -41,44 +41,44 @@ package com.ankamagames.dofus.network.messages.game.alliance
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AllianceListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AllianceListMessage(output);
       }
       
-      public function serializeAs_AllianceListMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.alliances.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.alliances.length)
+      public function serializeAs_AllianceListMessage(output:IDataOutput) : void {
+         output.writeShort(this.alliances.length);
+         var _i1:uint = 0;
+         while(_i1 < this.alliances.length)
          {
-            (this.alliances[_loc2_] as AllianceFactSheetInformations).serializeAs_AllianceFactSheetInformations(param1);
-            _loc2_++;
+            (this.alliances[_i1] as AllianceFactSheetInformations).serializeAs_AllianceFactSheetInformations(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AllianceListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AllianceListMessage(input);
       }
       
-      public function deserializeAs_AllianceListMessage(param1:IDataInput) : void {
-         var _loc4_:AllianceFactSheetInformations = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_AllianceListMessage(input:IDataInput) : void {
+         var _item1:AllianceFactSheetInformations = null;
+         var _alliancesLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _alliancesLen)
          {
-            _loc4_ = new AllianceFactSheetInformations();
-            _loc4_.deserialize(param1);
-            this.alliances.push(_loc4_);
-            _loc3_++;
+            _item1 = new AllianceFactSheetInformations();
+            _item1.deserialize(input);
+            this.alliances.push(_item1);
+            _i1++;
          }
       }
    }

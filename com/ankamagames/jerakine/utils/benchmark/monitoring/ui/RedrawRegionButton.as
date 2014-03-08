@@ -6,11 +6,11 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
    public class RedrawRegionButton extends Sprite
    {
       
-      public function RedrawRegionButton(param1:int, param2:int) {
+      public function RedrawRegionButton(pX:int, pY:int) {
          super();
          cacheAsBitmap = true;
-         x = param1;
-         y = param2;
+         x = pX;
+         y = pY;
          buttonMode = true;
          graphics.clear();
          graphics.beginFill(16777215,1);

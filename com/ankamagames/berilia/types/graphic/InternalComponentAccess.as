@@ -9,12 +9,12 @@ package com.ankamagames.berilia.types.graphic
          super();
       }
       
-      public static function getProperty(param1:UIComponent, param2:String) : * {
-         return param1[param2];
+      public static function getProperty(target:UIComponent, property:String) : * {
+         return target[property];
       }
       
-      public static function setProperty(param1:UIComponent, param2:String, param3:*) : void {
-         param1[param2] = param3;
+      public static function setProperty(target:UIComponent, property:String, value:*) : void {
+         target[property] = value;
       }
    }
 }

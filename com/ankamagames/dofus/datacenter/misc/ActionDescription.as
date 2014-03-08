@@ -15,18 +15,18 @@ package com.ankamagames.dofus.datacenter.misc
       
       private static var _actionByName:Array;
       
-      public static function getActionDescriptionByName(param1:String) : ActionDescription {
-         var _loc2_:Array = null;
-         var _loc3_:ActionDescription = null;
+      public static function getActionDescriptionByName(name:String) : ActionDescription {
+         var actions:Array = null;
+         var action:ActionDescription = null;
          if(!_actionByName)
          {
             _actionByName = new Array();
-            _loc2_ = GameData.getObjects(MODULE);
-            for each (_actionByName[_loc3_.name] in _loc2_)
+            actions = GameData.getObjects(MODULE);
+            for each (_actionByName[action.name] in actions)
             {
             }
          }
-         return _actionByName[param1];
+         return _actionByName[name];
       }
       
       public var id:uint;

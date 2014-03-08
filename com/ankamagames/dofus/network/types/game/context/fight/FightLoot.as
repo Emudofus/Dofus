@@ -1,7 +1,7 @@
 package com.ankamagames.dofus.network.types.game.context.fight
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -23,9 +23,9 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 41;
       }
       
-      public function initFightLoot(param1:Vector.<uint>=null, param2:uint=0) : FightLoot {
-         this.objects = param1;
-         this.kamas = param2;
+      public function initFightLoot(objects:Vector.<uint>=null, kamas:uint=0) : FightLoot {
+         this.objects = objects;
+         this.kamas = kamas;
          return this;
       }
       
@@ -34,23 +34,23 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.kamas = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FightLoot(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FightLoot(output);
       }
       
-      public function serializeAs_FightLoot(param1:IDataOutput) : void {
-         param1.writeShort(this.objects.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.objects.length)
+      public function serializeAs_FightLoot(output:IDataOutput) : void {
+         output.writeShort(this.objects.length);
+         var _i1:uint = 0;
+         while(_i1 < this.objects.length)
          {
-            if(this.objects[_loc2_] < 0)
+            if(this.objects[_i1] < 0)
             {
-               throw new Error("Forbidden value (" + this.objects[_loc2_] + ") on element 1 (starting at 1) of objects.");
+               throw new Error("Forbidden value (" + this.objects[_i1] + ") on element 1 (starting at 1) of objects.");
             }
             else
             {
-               param1.writeShort(this.objects[_loc2_]);
-               _loc2_++;
+               output.writeShort(this.objects[_i1]);
+               _i1++;
                continue;
             }
          }
@@ -60,34 +60,34 @@ package com.ankamagames.dofus.network.types.game.context.fight
          }
          else
          {
-            param1.writeInt(this.kamas);
+            output.writeInt(this.kamas);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FightLoot(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FightLoot(input);
       }
       
-      public function deserializeAs_FightLoot(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_FightLoot(input:IDataInput) : void {
+         var _val1:uint = 0;
+         var _objectsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _objectsLen)
          {
-            _loc4_ = param1.readShort();
-            if(_loc4_ < 0)
+            _val1 = input.readShort();
+            if(_val1 < 0)
             {
-               throw new Error("Forbidden value (" + _loc4_ + ") on elements of objects.");
+               throw new Error("Forbidden value (" + _val1 + ") on elements of objects.");
             }
             else
             {
-               this.objects.push(_loc4_);
-               _loc3_++;
+               this.objects.push(_val1);
+               _i1++;
                continue;
             }
          }
-         this.kamas = param1.readInt();
+         this.kamas = input.readInt();
          if(this.kamas < 0)
          {
             throw new Error("Forbidden value (" + this.kamas + ") on element of FightLoot.kamas.");

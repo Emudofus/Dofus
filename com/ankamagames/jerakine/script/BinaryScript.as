@@ -5,10 +5,10 @@ package com.ankamagames.jerakine.script
    public class BinaryScript extends Object
    {
       
-      public function BinaryScript(param1:ByteArray, param2:String) {
+      public function BinaryScript(data:ByteArray, path:String) {
          super();
-         this._data = param1;
-         this.path = param2;
+         this._data = data;
+         this.path = path;
       }
       
       private var _data:ByteArray;

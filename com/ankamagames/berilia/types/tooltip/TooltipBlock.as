@@ -55,43 +55,43 @@ package com.ankamagames.berilia.types.tooltip
          return this._totalChunk;
       }
       
-      public function initChunk(param1:Array) : void {
-         var _loc2_:ChunkData = null;
-         var _loc4_:String = null;
-         this._chunksUri = param1;
-         this._totalChunk = param1.length;
+      public function initChunk(chunksList:Array) : void {
+         var chunk:ChunkData = null;
+         var chunkCache:String = null;
+         this._chunksUri = chunksList;
+         this._totalChunk = chunksList.length;
          this._loadedChunk = 0;
-         var _loc3_:uint = 0;
-         while(_loc3_ < this._totalChunk)
+         var i:uint = 0;
+         while(i < this._totalChunk)
          {
-            _loc2_ = param1[_loc3_];
-            _loc4_ = _chunckCache[_loc2_.uri.path];
-            if(_loc4_)
+            chunk = chunksList[i];
+            chunkCache = _chunckCache[chunk.uri.path];
+            if(chunkCache)
             {
-               this.chunks[_loc2_.name] = _loc4_;
-               this._chunksUri.splice(_loc3_,1);
-               _loc3_--;
+               this.chunks[chunk.name] = chunkCache;
+               this._chunksUri.splice(i,1);
+               i--;
                this._totalChunk--;
             }
             else
             {
-               _loc2_.uri.tag = _loc2_.name;
+               chunk.uri.tag = chunk.name;
             }
-            _loc3_++;
+            i++;
          }
       }
       
       public function init() : void {
-         var _loc1_:uint = 0;
+         var i:uint = 0;
          this._totalChunk = this._chunksUri.length;
          if(this._totalChunk)
          {
             this._loadedChunk = 0;
-            _loc1_ = 0;
-            while(_loc1_ < this._totalChunk)
+            i = 0;
+            while(i < this._totalChunk)
             {
-               this._loader.load(ChunkData(this._chunksUri[_loc1_]).uri);
-               _loc1_++;
+               this._loader.load(ChunkData(this._chunksUri[i]).uri);
+               i++;
             }
          }
          else
@@ -100,9 +100,9 @@ package com.ankamagames.berilia.types.tooltip
          }
       }
       
-      public function getChunk(param1:String) : TooltipChunk {
-         var _loc2_:String = this.chunks[param1];
-         return new TooltipChunk(_loc2_);
+      public function getChunk(name:String) : TooltipChunk {
+         var data:String = this.chunks[name];
+         return new TooltipChunk(data);
       }
       
       public function get content() : String {
@@ -121,23 +121,23 @@ package com.ankamagames.berilia.types.tooltip
          dispatchEvent(new Event(Event.COMPLETE));
       }
       
-      private function onLoaded(param1:ResourceLoadedEvent) : void {
+      private function onLoaded(e:ResourceLoadedEvent) : void {
          this._loadedChunk++;
-         _chunckCache[param1.uri.path] = param1.resource;
-         this.chunks[param1.uri.tag] = param1.resource;
+         _chunckCache[e.uri.path] = e.resource;
+         this.chunks[e.uri.tag] = e.resource;
          if(this._loadedChunk == this._totalChunk)
          {
             this.onAllChunkLoaded();
          }
       }
       
-      private function onLoadError(param1:ResourceErrorEvent) : void {
+      private function onLoadError(e:ResourceErrorEvent) : void {
          this._loadedChunk++;
          if(this._loadedChunk == this._totalChunk)
          {
             this.onAllChunkLoaded();
          }
-         this.chunks[param1.uri.tag] = new TooltipChunk("[loading error on " + param1.uri.tag + "]");
+         this.chunks[e.uri.tag] = new TooltipChunk("[loading error on " + e.uri.tag + "]");
       }
    }
 }

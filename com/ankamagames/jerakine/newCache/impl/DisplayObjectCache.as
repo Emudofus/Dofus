@@ -11,11 +11,11 @@ package com.ankamagames.jerakine.newCache.impl
    public class DisplayObjectCache extends Object implements ICache
    {
       
-      public function DisplayObjectCache(param1:uint) {
+      public function DisplayObjectCache(bound:uint) {
          this._cache = new Dictionary(true);
          this._useCount = new Dictionary(true);
          super();
-         this._bounds = param1;
+         this._bounds = bound;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DisplayObjectCache));
@@ -32,12 +32,12 @@ package com.ankamagames.jerakine.newCache.impl
          return this._size;
       }
       
-      public function contains(param1:*) : Boolean {
-         var _loc3_:CacheableResource = null;
-         var _loc2_:Array = this._cache[param1];
-         for each (_loc3_ in _loc2_)
+      public function contains(ref:*) : Boolean {
+         var d:CacheableResource = null;
+         var a:Array = this._cache[ref];
+         for each (d in a)
          {
-            if((_loc3_.resource) && ((_loc3_.resource is ASwf) || ((_loc3_.resource.hasOwnProperty("parent")) && (!_loc3_.resource.parent))))
+            if((d.resource) && ((d.resource is ASwf) || ((d.resource.hasOwnProperty("parent")) && (!d.resource.parent))))
             {
                return true;
             }
@@ -45,50 +45,50 @@ package com.ankamagames.jerakine.newCache.impl
          return false;
       }
       
-      public function extract(param1:*) : * {
-         var _loc2_:* = this.peek(param1);
-         if(_loc2_)
+      public function extract(ref:*) : * {
+         var foundRes:* = this.peek(ref);
+         if(foundRes)
          {
-            delete this._cache[[param1]];
-            delete this._useCount[[param1]];
+            delete this._cache[[ref]];
+            delete this._useCount[[ref]];
             this._size--;
          }
-         return _loc2_;
+         return foundRes;
       }
       
-      public function peek(param1:*) : * {
-         var _loc3_:CacheableResource = null;
-         var _loc2_:Array = this._cache[param1];
-         for each (_loc3_ in _loc2_)
+      public function peek(ref:*) : * {
+         var d:CacheableResource = null;
+         var a:Array = this._cache[ref];
+         for each (d in a)
          {
-            if((_loc3_.resource) && ((_loc3_.resource is ASwf) || ((_loc3_.resource.hasOwnProperty("parent")) && (!_loc3_.resource.parent))))
+            if((d.resource) && ((d.resource is ASwf) || ((d.resource.hasOwnProperty("parent")) && (!d.resource.parent))))
             {
-               this._useCount[param1]++;
-               return _loc3_;
+               this._useCount[ref]++;
+               return d;
             }
          }
          return null;
       }
       
-      public function store(param1:*, param2:*) : Boolean {
-         if(!(param2 is CacheableResource))
+      public function store(ref:*, obj:*) : Boolean {
+         if(!(obj is CacheableResource))
          {
-            _log.error("Tried to store something which is not a CacheableResource... Caching file " + param1 + " failed.");
+            _log.error("Tried to store something which is not a CacheableResource... Caching file " + ref + " failed.");
             return false;
          }
-         var _loc3_:* = param2.resource is ASwf;
-         if(!this._cache[param1])
+         var bb:Boolean = obj.resource is ASwf;
+         if(!this._cache[ref])
          {
-            this._cache[param1] = new Array();
-            this._useCount[param1] = 0;
+            this._cache[ref] = new Array();
+            this._useCount[ref] = 0;
             this._size++;
             if(this._size > this._bounds)
             {
                this.garbage();
             }
          }
-         this._useCount[param1]++;
-         this._cache[param1].push(param2);
+         this._useCount[ref]++;
+         this._cache[ref].push(obj);
          return true;
       }
       
@@ -100,48 +100,48 @@ package com.ankamagames.jerakine.newCache.impl
       }
       
       private function garbage() : void {
-         var _loc2_:String = null;
-         var _loc3_:uint = 0;
-         var _loc4_:uint = 0;
-         var _loc5_:Array = null;
-         var _loc6_:* = false;
-         var _loc7_:uint = 0;
-         var _loc8_:CacheableResource = null;
-         var _loc1_:Array = new Array();
-         for (_loc2_ in this._cache)
+         var resName:String = null;
+         var bound:uint = 0;
+         var l:uint = 0;
+         var a:Array = null;
+         var dontCollect:* = false;
+         var i:uint = 0;
+         var ref:CacheableResource = null;
+         var orderedUse:Array = new Array();
+         for (resName in this._cache)
          {
-            if(!(this._cache[_loc2_] == null) && (this._useCount[_loc2_]))
+            if((!(this._cache[resName] == null)) && (this._useCount[resName]))
             {
-               _loc1_.push(
+               orderedUse.push(
                   {
-                     "ref":_loc2_,
-                     "useCount":this._useCount[_loc2_]
+                     "ref":resName,
+                     "useCount":this._useCount[resName]
                   });
             }
          }
-         _loc1_.sortOn("useCount",Array.NUMERIC);
-         _loc3_ = this._bounds * 0.1;
-         _loc4_ = _loc1_.length;
-         _loc7_ = 0;
-         while(_loc7_ < _loc4_ && this._size > _loc3_)
+         orderedUse.sortOn("useCount",Array.NUMERIC);
+         bound = this._bounds * 0.1;
+         l = orderedUse.length;
+         i = 0;
+         while((i < l) && (this._size > bound))
          {
-            _loc6_ = false;
-            _loc5_ = this._cache[_loc1_[_loc7_].ref];
-            for each (_loc8_ in _loc5_)
+            dontCollect = false;
+            a = this._cache[orderedUse[i].ref];
+            for each (ref in a)
             {
-               if((_loc8_) && (_loc8_.resource) && ((_loc8_.resource is ASwf) || (_loc8_.resource.hasOwnProperty("parent") && _loc8_.resource.parent)))
+               if((ref) && (ref.resource) && ((ref.resource is ASwf) || (ref.resource.hasOwnProperty("parent") && ref.resource.parent)))
                {
-                  _loc6_ = true;
+                  dontCollect = true;
                   break;
                }
             }
-            if(!_loc6_)
+            if(!dontCollect)
             {
-               delete this._cache[[_loc1_[_loc7_].ref]];
-               delete this._useCount[[_loc1_[_loc7_].ref]];
+               delete this._cache[[orderedUse[i].ref]];
+               delete this._useCount[[orderedUse[i].ref]];
                this._size--;
             }
-            _loc7_++;
+            i++;
          }
       }
    }

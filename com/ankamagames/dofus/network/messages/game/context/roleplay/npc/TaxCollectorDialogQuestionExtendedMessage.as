@@ -43,17 +43,17 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 5615;
       }
       
-      public function initTaxCollectorDialogQuestionExtendedMessage(param1:BasicGuildInformations=null, param2:uint=0, param3:uint=0, param4:uint=0, param5:uint=0, param6:int=0, param7:uint=0, param8:Number=0, param9:uint=0, param10:uint=0) : TaxCollectorDialogQuestionExtendedMessage {
-         super.initTaxCollectorDialogQuestionBasicMessage(param1);
-         this.maxPods = param2;
-         this.prospecting = param3;
-         this.wisdom = param4;
-         this.taxCollectorsCount = param5;
-         this.taxCollectorAttack = param6;
-         this.kamas = param7;
-         this.experience = param8;
-         this.pods = param9;
-         this.itemsValue = param10;
+      public function initTaxCollectorDialogQuestionExtendedMessage(guildInfo:BasicGuildInformations=null, maxPods:uint=0, prospecting:uint=0, wisdom:uint=0, taxCollectorsCount:uint=0, taxCollectorAttack:int=0, kamas:uint=0, experience:Number=0, pods:uint=0, itemsValue:uint=0) : TaxCollectorDialogQuestionExtendedMessage {
+         super.initTaxCollectorDialogQuestionBasicMessage(guildInfo);
+         this.maxPods = maxPods;
+         this.prospecting = prospecting;
+         this.wisdom = wisdom;
+         this.taxCollectorsCount = taxCollectorsCount;
+         this.taxCollectorAttack = taxCollectorAttack;
+         this.kamas = kamas;
+         this.experience = experience;
+         this.pods = pods;
+         this.itemsValue = itemsValue;
          this._isInitialized = true;
          return this;
       }
@@ -72,79 +72,79 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_TaxCollectorDialogQuestionExtendedMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TaxCollectorDialogQuestionExtendedMessage(output);
       }
       
-      public function serializeAs_TaxCollectorDialogQuestionExtendedMessage(param1:IDataOutput) : void {
-         super.serializeAs_TaxCollectorDialogQuestionBasicMessage(param1);
+      public function serializeAs_TaxCollectorDialogQuestionExtendedMessage(output:IDataOutput) : void {
+         super.serializeAs_TaxCollectorDialogQuestionBasicMessage(output);
          if(this.maxPods < 0)
          {
             throw new Error("Forbidden value (" + this.maxPods + ") on element maxPods.");
          }
          else
          {
-            param1.writeShort(this.maxPods);
+            output.writeShort(this.maxPods);
             if(this.prospecting < 0)
             {
                throw new Error("Forbidden value (" + this.prospecting + ") on element prospecting.");
             }
             else
             {
-               param1.writeShort(this.prospecting);
+               output.writeShort(this.prospecting);
                if(this.wisdom < 0)
                {
                   throw new Error("Forbidden value (" + this.wisdom + ") on element wisdom.");
                }
                else
                {
-                  param1.writeShort(this.wisdom);
+                  output.writeShort(this.wisdom);
                   if(this.taxCollectorsCount < 0)
                   {
                      throw new Error("Forbidden value (" + this.taxCollectorsCount + ") on element taxCollectorsCount.");
                   }
                   else
                   {
-                     param1.writeByte(this.taxCollectorsCount);
-                     param1.writeInt(this.taxCollectorAttack);
+                     output.writeByte(this.taxCollectorsCount);
+                     output.writeInt(this.taxCollectorAttack);
                      if(this.kamas < 0)
                      {
                         throw new Error("Forbidden value (" + this.kamas + ") on element kamas.");
                      }
                      else
                      {
-                        param1.writeInt(this.kamas);
+                        output.writeInt(this.kamas);
                         if(this.experience < 0)
                         {
                            throw new Error("Forbidden value (" + this.experience + ") on element experience.");
                         }
                         else
                         {
-                           param1.writeDouble(this.experience);
+                           output.writeDouble(this.experience);
                            if(this.pods < 0)
                            {
                               throw new Error("Forbidden value (" + this.pods + ") on element pods.");
                            }
                            else
                            {
-                              param1.writeInt(this.pods);
+                              output.writeInt(this.pods);
                               if(this.itemsValue < 0)
                               {
                                  throw new Error("Forbidden value (" + this.itemsValue + ") on element itemsValue.");
                               }
                               else
                               {
-                                 param1.writeInt(this.itemsValue);
+                                 output.writeInt(this.itemsValue);
                                  return;
                               }
                            }
@@ -156,63 +156,63 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_TaxCollectorDialogQuestionExtendedMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TaxCollectorDialogQuestionExtendedMessage(input);
       }
       
-      public function deserializeAs_TaxCollectorDialogQuestionExtendedMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.maxPods = param1.readShort();
+      public function deserializeAs_TaxCollectorDialogQuestionExtendedMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.maxPods = input.readShort();
          if(this.maxPods < 0)
          {
             throw new Error("Forbidden value (" + this.maxPods + ") on element of TaxCollectorDialogQuestionExtendedMessage.maxPods.");
          }
          else
          {
-            this.prospecting = param1.readShort();
+            this.prospecting = input.readShort();
             if(this.prospecting < 0)
             {
                throw new Error("Forbidden value (" + this.prospecting + ") on element of TaxCollectorDialogQuestionExtendedMessage.prospecting.");
             }
             else
             {
-               this.wisdom = param1.readShort();
+               this.wisdom = input.readShort();
                if(this.wisdom < 0)
                {
                   throw new Error("Forbidden value (" + this.wisdom + ") on element of TaxCollectorDialogQuestionExtendedMessage.wisdom.");
                }
                else
                {
-                  this.taxCollectorsCount = param1.readByte();
+                  this.taxCollectorsCount = input.readByte();
                   if(this.taxCollectorsCount < 0)
                   {
                      throw new Error("Forbidden value (" + this.taxCollectorsCount + ") on element of TaxCollectorDialogQuestionExtendedMessage.taxCollectorsCount.");
                   }
                   else
                   {
-                     this.taxCollectorAttack = param1.readInt();
-                     this.kamas = param1.readInt();
+                     this.taxCollectorAttack = input.readInt();
+                     this.kamas = input.readInt();
                      if(this.kamas < 0)
                      {
                         throw new Error("Forbidden value (" + this.kamas + ") on element of TaxCollectorDialogQuestionExtendedMessage.kamas.");
                      }
                      else
                      {
-                        this.experience = param1.readDouble();
+                        this.experience = input.readDouble();
                         if(this.experience < 0)
                         {
                            throw new Error("Forbidden value (" + this.experience + ") on element of TaxCollectorDialogQuestionExtendedMessage.experience.");
                         }
                         else
                         {
-                           this.pods = param1.readInt();
+                           this.pods = input.readInt();
                            if(this.pods < 0)
                            {
                               throw new Error("Forbidden value (" + this.pods + ") on element of TaxCollectorDialogQuestionExtendedMessage.pods.");
                            }
                            else
                            {
-                              this.itemsValue = param1.readInt();
+                              this.itemsValue = input.readInt();
                               if(this.itemsValue < 0)
                               {
                                  throw new Error("Forbidden value (" + this.itemsValue + ") on element of TaxCollectorDialogQuestionExtendedMessage.itemsValue.");

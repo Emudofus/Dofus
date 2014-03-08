@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.guild
          super();
       }
       
-      public static function create(param1:uint) : GuildFarmTeleportRequestAction {
-         var _loc2_:GuildFarmTeleportRequestAction = new GuildFarmTeleportRequestAction();
-         _loc2_.farmId = param1;
-         return _loc2_;
+      public static function create(pFarmId:uint) : GuildFarmTeleportRequestAction {
+         var action:GuildFarmTeleportRequestAction = new GuildFarmTeleportRequestAction();
+         action.farmId = pFarmId;
+         return action;
       }
       
       public var farmId:uint;

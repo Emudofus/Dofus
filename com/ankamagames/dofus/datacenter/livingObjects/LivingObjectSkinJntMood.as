@@ -3,7 +3,7 @@ package com.ankamagames.dofus.datacenter.livingObjects
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.data.GameData;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    
@@ -18,14 +18,14 @@ package com.ankamagames.dofus.datacenter.livingObjects
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpeakingItemText));
       
-      public static function getLivingObjectSkin(param1:int, param2:int, param3:int) : int {
-         var _loc4_:LivingObjectSkinJntMood = GameData.getObject(MODULE,param1) as LivingObjectSkinJntMood;
-         if(!_loc4_ || !_loc4_.moods[param2])
+      public static function getLivingObjectSkin(objectId:int, moodId:int, skinId:int) : int {
+         var losjm:LivingObjectSkinJntMood = GameData.getObject(MODULE,objectId) as LivingObjectSkinJntMood;
+         if((!losjm) || (!losjm.moods[moodId]))
          {
             return 0;
          }
-         var _loc5_:Vector.<int> = _loc4_.moods[param2] as Vector.<int>;
-         return _loc5_[Math.max(0,param3-1)];
+         var ve:Vector.<int> = losjm.moods[moodId] as Vector.<int>;
+         return ve[Math.max(0,skinId - 1)];
       }
       
       public static function getLivingObjectSkins() : Array {

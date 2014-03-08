@@ -19,27 +19,27 @@ package com.ankamagames.dofus.logic.common.managers
          super();
       }
       
-      public static function showRecipe(param1:uint) : void {
-         var _loc2_:ItemWrapper = ItemWrapper.create(0,0,param1,1,null,false);
-         if(_loc2_)
+      public static function showRecipe(recipeId:uint) : void {
+         var item:ItemWrapper = ItemWrapper.create(0,0,recipeId,1,null,false);
+         if(item)
          {
-            KernelEventsManager.getInstance().processCallback(HookList.OpenRecipe,_loc2_);
+            KernelEventsManager.getInstance().processCallback(HookList.OpenRecipe,item);
          }
       }
       
-      public static function getRecipeName(param1:int) : String {
-         var _loc2_:Item = Item.getItemById(param1);
-         if(_loc2_)
+      public static function getRecipeName(recipeId:int) : String {
+         var item:Item = Item.getItemById(recipeId);
+         if(item)
          {
-            return "[" + PatternDecoder.combine(I18n.getUiText("ui.common.recipes"),"n",true) + I18n.getUiText("ui.common.colon") + _loc2_.name + "]";
+            return "[" + PatternDecoder.combine(I18n.getUiText("ui.common.recipes"),"n",true) + I18n.getUiText("ui.common.colon") + item.name + "]";
          }
          return "[null]";
       }
       
-      public static function rollOver(param1:int, param2:int, param3:uint) : void {
-         var _loc4_:Rectangle = new Rectangle(param1,param2,10,10);
-         var _loc5_:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.recipe"));
-         TooltipManager.show(_loc5_,_loc4_,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
+      public static function rollOver(pX:int, pY:int, recipeId:uint) : void {
+         var target:Rectangle = new Rectangle(pX,pY,10,10);
+         var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.recipe"));
+         TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
       }
    }
 }

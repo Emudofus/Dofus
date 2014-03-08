@@ -5,8 +5,8 @@ package nochump.util.zip
    public class ZipError extends IOError
    {
       
-      public function ZipError(param1:String="", param2:int=0) {
-         super(param1,param2);
+      public function ZipError(message:String="", id:int=0) {
+         super(message,id);
       }
    }
 }

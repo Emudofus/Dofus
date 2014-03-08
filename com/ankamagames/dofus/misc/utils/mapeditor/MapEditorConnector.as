@@ -94,7 +94,7 @@ package com.ankamagames.dofus.misc.utils.mapeditor
          {
             return;
          }
-         while((this._socket.bytesAvailable) && !this._socktetInit)
+         while((this._socket.bytesAvailable) && (!this._socktetInit))
          {
             this._socktetInit = this._socket.readByte() == 0;
          }
@@ -113,35 +113,36 @@ package com.ankamagames.dofus.misc.utils.mapeditor
          this._waitingForLength = this.HEAD_LENGTH;
          this._parsingState = this.STEP_HEAD;
          dispatchEvent(new MapEditorDataEvent(MapEditorDataEvent.NEW_DATA,this._currentData));
+         trace("Info " + this._currentData.type + " ok");
          this.checkData();
       }
       
-      private function onSecurityError(param1:Event) : void {
+      private function onSecurityError(e:Event) : void {
       }
       
       private function sayHello() : void {
-         var _loc1_:MapEditorMessage = new MapEditorMessage(MapEditorMessage.MESSAGE_TYPE_HELLO);
-         _loc1_.serialize(this._socket);
+         var helloMsg:MapEditorMessage = new MapEditorMessage(MapEditorMessage.MESSAGE_TYPE_HELLO);
+         helloMsg.serialize(this._socket);
          this._socket.flush();
       }
       
-      private function onConnect(param1:Event) : void {
+      private function onConnect(e:Event) : void {
          this._socktetInit = false;
          dispatchEvent(new Event(Event.CONNECT));
          this.sayHello();
       }
       
-      private function onClose(param1:Event) : void {
+      private function onClose(e:Event) : void {
          dispatchEvent(new Event(Event.CLOSE));
          setTimeout(this.tryConnect,this.RETRY_INTERVAL);
       }
       
-      private function onData(param1:ProgressEvent) : void {
+      private function onData(e:ProgressEvent) : void {
          dispatchEvent(new ProgressEvent(ProgressEvent.SOCKET_DATA));
          this.checkData();
       }
       
-      private function onError(param1:IOErrorEvent) : void {
+      private function onError(e:IOErrorEvent) : void {
          setTimeout(this.tryConnect,this.RETRY_INTERVAL);
       }
    }

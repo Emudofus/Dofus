@@ -11,10 +11,10 @@ package com.ankamagames.sweevo.runners
    public class EmitterRunner extends Object implements IRunner
    {
       
-      public function EmitterRunner(param1:Renderer, param2:Callback=null) {
+      public function EmitterRunner(renderer:Renderer, onRun:Callback=null) {
          super();
-         this._renderer = param1;
-         this._onRun = param2;
+         this._renderer = renderer;
+         this._onRun = onRun;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EmitterRunner));
@@ -29,8 +29,7 @@ package com.ankamagames.sweevo.runners
          return this._renderer;
       }
       
-      public function run(param1:Class) : uint {
-         var script:Class = param1;
+      public function run(script:Class) : uint {
          this._scriptInstance = new script();
          this._scriptInstance["__setRunner__"](this);
          try

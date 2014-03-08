@@ -35,36 +35,36 @@ package com.ankamagames.jerakine.resources.loaders
       
       protected var _filesTotal:uint = 0;
       
-      protected function checkCache(param1:Uri) : Boolean {
-         var _loc2_:CacheableResource = this.getCachedValue(param1);
-         if(_loc2_ != null)
+      protected function checkCache(uri:Uri) : Boolean {
+         var cr:CacheableResource = this.getCachedValue(uri);
+         if(cr != null)
          {
-            this.dispatchSuccess(param1,_loc2_.resourceType,_loc2_.resource);
+            this.dispatchSuccess(uri,cr.resourceType,cr.resource);
             return true;
          }
          return false;
       }
       
-      private function getCachedValue(param1:Uri) : CacheableResource {
-         var _loc2_:CacheableResource = null;
-         var _loc3_:String = null;
-         if(param1.protocol == "pak" || !(param1.fileType == "swf") || !param1.subPath || param1.subPath.length == 0)
+      private function getCachedValue(uri:Uri) : CacheableResource {
+         var cr:CacheableResource = null;
+         var resourceUrl:String = null;
+         if((uri.protocol == "pak") || (!(uri.fileType == "swf")) || (!uri.subPath) || (uri.subPath.length == 0))
          {
-            _loc3_ = RES_CACHE_PREFIX + param1.toSum();
+            resourceUrl = RES_CACHE_PREFIX + uri.toSum();
          }
          else
          {
-            _loc3_ = RES_CACHE_PREFIX + new Uri(param1.path).toSum();
+            resourceUrl = RES_CACHE_PREFIX + new Uri(uri.path).toSum();
          }
-         if((this._cache) && (this._cache.contains(_loc3_)))
+         if((this._cache) && (this._cache.contains(resourceUrl)))
          {
-            _loc2_ = this._cache.peek(_loc3_);
+            cr = this._cache.peek(resourceUrl);
          }
-         return _loc2_;
+         return cr;
       }
       
-      public function isInCache(param1:Uri) : Boolean {
-         return !(this.getCachedValue(param1) == null);
+      public function isInCache(uri:Uri) : Boolean {
+         return !(this.getCachedValue(uri) == null);
       }
       
       public function cancel() : void {
@@ -74,40 +74,40 @@ package com.ankamagames.jerakine.resources.loaders
          this._cache = null;
       }
       
-      protected function dispatchSuccess(param1:Uri, param2:uint, param3:*) : void {
-         var _loc4_:String = null;
-         var _loc5_:CacheableResource = null;
-         var _loc6_:ResourceLoadedEvent = null;
-         var _loc7_:ResourceLoaderProgressEvent = null;
-         if(!(param1.fileType == "swf") || !param1.subPath || param1.subPath.length == 0)
+      protected function dispatchSuccess(uri:Uri, resourceType:uint, resource:*) : void {
+         var resourceUrl:String = null;
+         var cr:CacheableResource = null;
+         var rle:ResourceLoadedEvent = null;
+         var rlpe:ResourceLoaderProgressEvent = null;
+         if((!(uri.fileType == "swf")) || (!uri.subPath) || (uri.subPath.length == 0))
          {
-            _loc4_ = RES_CACHE_PREFIX + param1.toSum();
+            resourceUrl = RES_CACHE_PREFIX + uri.toSum();
          }
          else
          {
-            _loc4_ = RES_CACHE_PREFIX + new Uri(param1.path).toSum();
+            resourceUrl = RES_CACHE_PREFIX + new Uri(uri.path).toSum();
          }
-         if((this._cache) && !this._cache.contains(_loc4_))
+         if((this._cache) && (!this._cache.contains(resourceUrl)))
          {
-            _loc5_ = new CacheableResource(param2,param3);
-            this._cache.store(_loc4_,_loc5_);
+            cr = new CacheableResource(resourceType,resource);
+            this._cache.store(resourceUrl,cr);
          }
          this._filesLoaded++;
          if(hasEventListener(ResourceLoadedEvent.LOADED))
          {
-            _loc6_ = new ResourceLoadedEvent(ResourceLoadedEvent.LOADED);
-            _loc6_.uri = param1;
-            _loc6_.resourceType = param2;
-            _loc6_.resource = param3;
-            dispatchEvent(_loc6_);
+            rle = new ResourceLoadedEvent(ResourceLoadedEvent.LOADED);
+            rle.uri = uri;
+            rle.resourceType = resourceType;
+            rle.resource = resource;
+            dispatchEvent(rle);
          }
          if(hasEventListener(ResourceLoaderProgressEvent.LOADER_PROGRESS))
          {
-            _loc7_ = new ResourceLoaderProgressEvent(ResourceLoaderProgressEvent.LOADER_PROGRESS);
-            _loc7_.uri = param1;
-            _loc7_.filesTotal = this._filesTotal;
-            _loc7_.filesLoaded = this._filesLoaded;
-            dispatchEvent(_loc7_);
+            rlpe = new ResourceLoaderProgressEvent(ResourceLoaderProgressEvent.LOADER_PROGRESS);
+            rlpe.uri = uri;
+            rlpe.filesTotal = this._filesTotal;
+            rlpe.filesLoaded = this._filesLoaded;
+            dispatchEvent(rlpe);
          }
          if(this._filesLoaded == this._filesTotal)
          {
@@ -115,20 +115,20 @@ package com.ankamagames.jerakine.resources.loaders
          }
       }
       
-      protected function dispatchFailure(param1:Uri, param2:String, param3:uint) : void {
-         var _loc4_:ResourceErrorEvent = null;
+      protected function dispatchFailure(uri:Uri, errorMsg:String, errorCode:uint) : void {
+         var ree:ResourceErrorEvent = null;
          this._filesLoaded++;
          if(hasEventListener(ResourceErrorEvent.ERROR))
          {
-            _loc4_ = new ResourceErrorEvent(ResourceErrorEvent.ERROR);
-            _loc4_.uri = param1;
-            _loc4_.errorMsg = param2;
-            _loc4_.errorCode = param3;
-            dispatchEvent(_loc4_);
+            ree = new ResourceErrorEvent(ResourceErrorEvent.ERROR);
+            ree.uri = uri;
+            ree.errorMsg = errorMsg;
+            ree.errorCode = errorCode;
+            dispatchEvent(ree);
          }
          else
          {
-            _log.error("[Error code " + param3.toString(16) + "] Unable to load resource " + param1 + ": " + param2);
+            _log.error("[Error code " + errorCode.toString(16) + "] Unable to load resource " + uri + ": " + errorMsg);
          }
          if(this._filesLoaded == this._filesTotal)
          {
@@ -137,32 +137,32 @@ package com.ankamagames.jerakine.resources.loaders
       }
       
       private function dispatchComplete() : void {
-         var _loc1_:ResourceLoaderProgressEvent = null;
+         var rlpe:ResourceLoaderProgressEvent = null;
          if(!this._completed)
          {
             this._completed = true;
-            _loc1_ = new ResourceLoaderProgressEvent(ResourceLoaderProgressEvent.LOADER_COMPLETE);
-            _loc1_.filesTotal = this._filesTotal;
-            _loc1_.filesLoaded = this._filesLoaded;
-            dispatchEvent(_loc1_);
+            rlpe = new ResourceLoaderProgressEvent(ResourceLoaderProgressEvent.LOADER_COMPLETE);
+            rlpe.filesTotal = this._filesTotal;
+            rlpe.filesLoaded = this._filesLoaded;
+            dispatchEvent(rlpe);
          }
       }
       
-      public function onLoaded(param1:Uri, param2:uint, param3:*) : void {
-         MEMORY_TEST[param3] = 1;
-         this.dispatchSuccess(param1,param2,param3);
+      public function onLoaded(uri:Uri, resourceType:uint, resource:*) : void {
+         MEMORY_TEST[resource] = 1;
+         this.dispatchSuccess(uri,resourceType,resource);
       }
       
-      public function onFailed(param1:Uri, param2:String, param3:uint) : void {
-         this.dispatchFailure(param1,param2,param3);
+      public function onFailed(uri:Uri, errorMsg:String, errorCode:uint) : void {
+         this.dispatchFailure(uri,errorMsg,errorCode);
       }
       
-      public function onProgress(param1:Uri, param2:uint, param3:uint) : void {
-         var _loc4_:ResourceProgressEvent = new ResourceProgressEvent(ResourceProgressEvent.PROGRESS);
-         _loc4_.uri = param1;
-         _loc4_.bytesLoaded = param2;
-         _loc4_.bytesTotal = param3;
-         dispatchEvent(_loc4_);
+      public function onProgress(uri:Uri, bytesLoaded:uint, bytesTotal:uint) : void {
+         var rpe:ResourceProgressEvent = new ResourceProgressEvent(ResourceProgressEvent.PROGRESS);
+         rpe.uri = uri;
+         rpe.bytesLoaded = bytesLoaded;
+         rpe.bytesTotal = bytesTotal;
+         dispatchEvent(rpe);
       }
    }
 }

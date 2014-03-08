@@ -100,7 +100,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
+      public function process(msg:Message) : Boolean {
          var name:String = null;
          var scrmsg:SetCharacterRestrictionsMessage = null;
          var rpEntitiesFrame:RoleplayEntitiesFrame = null;
@@ -168,7 +168,6 @@ package com.ankamagames.dofus.logic.game.common.frames
          var pmFrame:PartyManagementFrame = null;
          var socialFrame2:SocialFrame = null;
          var memberInfo:PartyMemberWrapper = null;
-         var msg:Message = param1;
          switch(true)
          {
             case msg is SetCharacterRestrictionsMessage:
@@ -191,7 +190,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is CharacterStatsListMessage:
                cslmsg = msg as CharacterStatsListMessage;
                fightBattleFrame = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
-               if(!(fightBattleFrame == null) && (fightBattleFrame.executingSequence))
+               if((!(fightBattleFrame == null)) && (fightBattleFrame.executingSequence))
                {
                   fightBattleFrame.delayCharacterStatsList(cslmsg);
                }
@@ -205,11 +204,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                for each (grai in mcidmsg.actors)
                {
                   grpci = grai as GameRolePlayCharacterInformations;
-                  if((grpci) && grpci.contextualId == PlayedCharacterManager.getInstance().id)
+                  if((grpci) && (grpci.contextualId == PlayedCharacterManager.getInstance().id))
                   {
                      currentLook = EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().infos.entityLook);
                      newLook = EntityLookAdapter.fromNetwork(grpci.look);
-                     if(!currentLook.equals(newLook) && (this.roleplayContextFrame.entitiesFrame))
+                     if((!currentLook.equals(newLook)) && (this.roleplayContextFrame.entitiesFrame))
                      {
                         this.roleplayContextFrame.entitiesFrame.dispatchPlayerNewLook = true;
                      }
@@ -308,7 +307,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                      for each (swBreed in playerBreed.breedSpells)
                      {
                         obtentionLevel = swBreed.getSpellLevel(1).minPlayerLevel;
-                        if(obtentionLevel <= clumsg.newLevel && obtentionLevel > PlayedCharacterManager.getInstance().infos.level)
+                        if((obtentionLevel <= clumsg.newLevel) && (obtentionLevel > PlayedCharacterManager.getInstance().infos.level))
                         {
                            swrapper = SpellWrapper.create(63,swBreed.id,1,false);
                            newSpell.push(swrapper);
@@ -484,87 +483,85 @@ package com.ankamagames.dofus.logic.game.common.frames
                }
                KernelEventsManager.getInstance().processCallback(HookList.AddMapFlag,name,legend,PlayedCharacterManager.getInstance().currentWorldMap.id,cumsg.coords.worldX,cumsg.coords.worldY,color,false);
                return true;
-            default:
-               return false;
          }
       }
       
-      public function updateCharacterStatsList(param1:CharacterStatsListMessage) : void {
-         var _loc7_:* = 0;
-         var _loc8_:* = 0;
-         var _loc9_:Array = null;
-         var _loc10_:SpellWrapper = null;
-         var _loc2_:CharacterCharacteristicsInformations = PlayedCharacterManager.getInstance().characteristics;
-         if((_loc2_) && _loc2_.energyPoints > param1.stats.energyPoints)
+      public function updateCharacterStatsList(cslmsg:CharacterStatsListMessage) : void {
+         var iSM:* = 0;
+         var spellIdToRefresh:* = 0;
+         var swsToUpdate:Array = null;
+         var swToUpdate:SpellWrapper = null;
+         var lastCharacteristics:CharacterCharacteristicsInformations = PlayedCharacterManager.getInstance().characteristics;
+         if((lastCharacteristics) && (lastCharacteristics.energyPoints > cslmsg.stats.energyPoints))
          {
             KernelEventsManager.getInstance().processCallback(TriggerHookList.PlayerIsDead);
          }
-         if(param1.stats.kamas != InventoryManager.getInstance().inventory.kamas)
+         if(cslmsg.stats.kamas != InventoryManager.getInstance().inventory.kamas)
          {
-            InventoryManager.getInstance().inventory.kamas = param1.stats.kamas;
+            InventoryManager.getInstance().inventory.kamas = cslmsg.stats.kamas;
          }
-         var _loc3_:Vector.<CharacterSpellModification> = _loc2_?PlayedCharacterManager.getInstance().characteristics.spellModifications:null;
-         var _loc4_:Vector.<CharacterSpellModification> = param1.stats.spellModifications;
-         var _loc5_:int = _loc3_?Math.max(_loc3_.length,_loc4_.length):_loc4_.length;
-         var _loc6_:Array = new Array();
-         if(_loc3_)
+         var oldSM:Vector.<CharacterSpellModification> = lastCharacteristics?PlayedCharacterManager.getInstance().characteristics.spellModifications:null;
+         var newSM:Vector.<CharacterSpellModification> = cslmsg.stats.spellModifications;
+         var lengthSM:int = oldSM?Math.max(oldSM.length,newSM.length):newSM.length;
+         var idSpellsToRefresh:Array = new Array();
+         if(oldSM)
          {
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_)
+            iSM = 0;
+            while(iSM < lengthSM)
             {
-               if(_loc3_.length <= _loc7_)
+               if(oldSM.length <= iSM)
                {
-                  if(_loc6_.indexOf(_loc4_[_loc7_].spellId) == -1)
+                  if(idSpellsToRefresh.indexOf(newSM[iSM].spellId) == -1)
                   {
-                     _loc6_.push(_loc4_[_loc7_].spellId);
+                     idSpellsToRefresh.push(newSM[iSM].spellId);
                   }
                }
                else
                {
-                  if(_loc4_.length <= _loc7_)
+                  if(newSM.length <= iSM)
                   {
-                     if(_loc6_.indexOf(_loc3_[_loc7_].spellId) == -1)
+                     if(idSpellsToRefresh.indexOf(oldSM[iSM].spellId) == -1)
                      {
-                        _loc6_.push(_loc3_[_loc7_].spellId);
+                        idSpellsToRefresh.push(oldSM[iSM].spellId);
                      }
                   }
                   else
                   {
-                     if(_loc3_[_loc7_] != _loc4_[_loc7_])
+                     if(oldSM[iSM] != newSM[iSM])
                      {
-                        if(_loc6_.indexOf(_loc4_[_loc7_].spellId) == -1)
+                        if(idSpellsToRefresh.indexOf(newSM[iSM].spellId) == -1)
                         {
-                           _loc6_.push(_loc4_[_loc7_].spellId);
+                           idSpellsToRefresh.push(newSM[iSM].spellId);
                         }
-                        if(_loc6_.indexOf(_loc3_[_loc7_].spellId) == -1)
+                        if(idSpellsToRefresh.indexOf(oldSM[iSM].spellId) == -1)
                         {
-                           _loc6_.push(_loc3_[_loc7_].spellId);
+                           idSpellsToRefresh.push(oldSM[iSM].spellId);
                         }
                      }
                   }
                }
-               _loc7_++;
+               iSM++;
             }
          }
          else
          {
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_)
+            iSM = 0;
+            while(iSM < lengthSM)
             {
-               _loc6_.push(_loc4_[_loc7_].spellId);
-               _loc7_++;
+               idSpellsToRefresh.push(newSM[iSM].spellId);
+               iSM++;
             }
          }
-         PlayedCharacterManager.getInstance().characteristics = param1.stats;
-         for each (_loc8_ in _loc6_)
+         PlayedCharacterManager.getInstance().characteristics = cslmsg.stats;
+         for each (spellIdToRefresh in idSpellsToRefresh)
          {
-            _loc9_ = SpellWrapper.getSpellWrappersById(_loc8_,PlayedCharacterManager.getInstance().id);
-            for each (_loc10_ in _loc9_)
+            swsToUpdate = SpellWrapper.getSpellWrappersById(spellIdToRefresh,PlayedCharacterManager.getInstance().id);
+            for each (swToUpdate in swsToUpdate)
             {
-               if(_loc10_)
+               if(swToUpdate)
                {
-                  _loc10_ = SpellWrapper.create(_loc10_.position,_loc10_.spellId,_loc10_.spellLevel,true,PlayedCharacterManager.getInstance().id);
-                  _loc10_.versionNum++;
+                  swToUpdate = SpellWrapper.create(swToUpdate.position,swToUpdate.spellId,swToUpdate.spellLevel,true,PlayedCharacterManager.getInstance().id);
+                  swToUpdate.versionNum++;
                }
             }
          }
@@ -586,31 +583,31 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function getPlayerSet(param1:uint) : PlayerSetInfo {
-         var _loc4_:PlayerSetInfo = null;
-         var _loc5_:Vector.<uint> = null;
-         var _loc6_:* = 0;
-         var _loc7_:* = 0;
-         var _loc2_:int = this.setList.length;
-         var _loc3_:* = 0;
-         while(_loc3_ < _loc2_)
+      public function getPlayerSet(objectGID:uint) : PlayerSetInfo {
+         var playerSetInfo:PlayerSetInfo = null;
+         var itemList:Vector.<uint> = null;
+         var nbItem:* = 0;
+         var k:* = 0;
+         var nbSet:int = this.setList.length;
+         var i:int = 0;
+         while(i < nbSet)
          {
-            _loc4_ = this.setList[_loc3_];
-            if(_loc4_)
+            playerSetInfo = this.setList[i];
+            if(playerSetInfo)
             {
-               _loc5_ = _loc4_.setObjects;
-               _loc6_ = _loc5_.length;
-               _loc7_ = 0;
-               while(_loc7_ < _loc6_)
+               itemList = playerSetInfo.setObjects;
+               nbItem = itemList.length;
+               k = 0;
+               while(k < nbItem)
                {
-                  if(_loc5_[_loc7_] == param1)
+                  if(itemList[k] == objectGID)
                   {
-                     return _loc4_;
+                     return playerSetInfo;
                   }
-                  _loc7_++;
+                  k++;
                }
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }

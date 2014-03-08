@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.common.actions
          super();
       }
       
-      public static function create(param1:String="") : OpenPopupAction {
-         var _loc2_:OpenPopupAction = new OpenPopupAction();
-         _loc2_.messageToShow = param1;
-         return _loc2_;
+      public static function create(pMsg:String="") : OpenPopupAction {
+         var s:OpenPopupAction = new OpenPopupAction();
+         s.messageToShow = pMsg;
+         return s;
       }
       
       public var messageToShow:String;

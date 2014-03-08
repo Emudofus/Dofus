@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.externalGame
          super();
       }
       
-      public static function create(param1:String) : KrosmasterTransferRequestAction {
-         var _loc2_:KrosmasterTransferRequestAction = new KrosmasterTransferRequestAction();
-         _loc2_.figureId = param1;
-         return _loc2_;
+      public static function create(figureId:String) : KrosmasterTransferRequestAction {
+         var action:KrosmasterTransferRequestAction = new KrosmasterTransferRequestAction();
+         action.figureId = figureId;
+         return action;
       }
       
       public var figureId:String;

@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 5725;
       }
       
-      public function initLivingObjectChangeSkinRequestMessage(param1:uint=0, param2:uint=0, param3:uint=0) : LivingObjectChangeSkinRequestMessage {
-         this.livingUID = param1;
-         this.livingPosition = param2;
-         this.skinId = param3;
+      public function initLivingObjectChangeSkinRequestMessage(livingUID:uint=0, livingPosition:uint=0, skinId:uint=0) : LivingObjectChangeSkinRequestMessage {
+         this.livingUID = livingUID;
+         this.livingPosition = livingPosition;
+         this.skinId = skinId;
          this._isInitialized = true;
          return this;
       }
@@ -46,68 +46,68 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_LivingObjectChangeSkinRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_LivingObjectChangeSkinRequestMessage(output);
       }
       
-      public function serializeAs_LivingObjectChangeSkinRequestMessage(param1:IDataOutput) : void {
+      public function serializeAs_LivingObjectChangeSkinRequestMessage(output:IDataOutput) : void {
          if(this.livingUID < 0)
          {
             throw new Error("Forbidden value (" + this.livingUID + ") on element livingUID.");
          }
          else
          {
-            param1.writeInt(this.livingUID);
-            if(this.livingPosition < 0 || this.livingPosition > 255)
+            output.writeInt(this.livingUID);
+            if((this.livingPosition < 0) || (this.livingPosition > 255))
             {
                throw new Error("Forbidden value (" + this.livingPosition + ") on element livingPosition.");
             }
             else
             {
-               param1.writeByte(this.livingPosition);
+               output.writeByte(this.livingPosition);
                if(this.skinId < 0)
                {
                   throw new Error("Forbidden value (" + this.skinId + ") on element skinId.");
                }
                else
                {
-                  param1.writeInt(this.skinId);
+                  output.writeInt(this.skinId);
                   return;
                }
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_LivingObjectChangeSkinRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_LivingObjectChangeSkinRequestMessage(input);
       }
       
-      public function deserializeAs_LivingObjectChangeSkinRequestMessage(param1:IDataInput) : void {
-         this.livingUID = param1.readInt();
+      public function deserializeAs_LivingObjectChangeSkinRequestMessage(input:IDataInput) : void {
+         this.livingUID = input.readInt();
          if(this.livingUID < 0)
          {
             throw new Error("Forbidden value (" + this.livingUID + ") on element of LivingObjectChangeSkinRequestMessage.livingUID.");
          }
          else
          {
-            this.livingPosition = param1.readUnsignedByte();
-            if(this.livingPosition < 0 || this.livingPosition > 255)
+            this.livingPosition = input.readUnsignedByte();
+            if((this.livingPosition < 0) || (this.livingPosition > 255))
             {
                throw new Error("Forbidden value (" + this.livingPosition + ") on element of LivingObjectChangeSkinRequestMessage.livingPosition.");
             }
             else
             {
-               this.skinId = param1.readInt();
+               this.skinId = input.readInt();
                if(this.skinId < 0)
                {
                   throw new Error("Forbidden value (" + this.skinId + ") on element of LivingObjectChangeSkinRequestMessage.skinId.");

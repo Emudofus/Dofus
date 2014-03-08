@@ -22,45 +22,45 @@ package com.ankamagames.dofus.uiApi
       
       private var _module:UiModule;
       
-      public function set module(param1:UiModule) : void {
-         this._module = param1;
+      public function set module(value:UiModule) : void {
+         this._module = value;
       }
       
       public function destroy() : void {
          this._module = null;
       }
       
-      public function getItemAveragePrice(param1:uint) : int {
-         var _loc2_:* = 0;
-         var _loc3_:AveragePricesFrame = null;
+      public function getItemAveragePrice(pItemId:uint) : int {
+         var avgPrice:* = 0;
+         var avgPricesFrame:AveragePricesFrame = null;
          if(this.dataAvailable())
          {
-            _loc3_ = Kernel.getWorker().getFrame(AveragePricesFrame) as AveragePricesFrame;
-            _loc2_ = _loc3_.pricesData.items["item" + param1];
+            avgPricesFrame = Kernel.getWorker().getFrame(AveragePricesFrame) as AveragePricesFrame;
+            avgPrice = avgPricesFrame.pricesData.items["item" + pItemId];
          }
-         return _loc2_;
+         return avgPrice;
       }
       
-      public function getItemAveragePriceString(param1:*, param2:Boolean=false) : String {
-         var _loc4_:* = 0;
-         var _loc5_:* = false;
-         var _loc3_:* = "";
-         if(param1.exchangeable)
+      public function getItemAveragePriceString(pItem:*, pAddLineBreakBefore:Boolean=false) : String {
+         var averagePrice:* = 0;
+         var priceAvailable:* = false;
+         var str:String = "";
+         if(pItem.exchangeable)
          {
-            _loc4_ = this.getItemAveragePrice(param1.objectGID);
-            _loc5_ = _loc4_ > 0;
-            _loc3_ = _loc3_ + ((param2?"\n":"") + I18n.getUiText("ui.item.averageprice") + I18n.getUiText("ui.common.colon") + (_loc5_?StringUtils.kamasToString(_loc4_):I18n.getUiText("ui.item.averageprice.unavailable")));
-            if((_loc5_) && param1.quantity > 1)
+            averagePrice = this.getItemAveragePrice(pItem.objectGID);
+            priceAvailable = averagePrice > 0;
+            str = str + ((pAddLineBreakBefore?"\n":"") + I18n.getUiText("ui.item.averageprice") + I18n.getUiText("ui.common.colon") + (priceAvailable?StringUtils.kamasToString(averagePrice):I18n.getUiText("ui.item.averageprice.unavailable")));
+            if((priceAvailable) && (pItem.quantity > 1))
             {
-               _loc3_ = _loc3_ + ("\n" + I18n.getUiText("ui.item.averageprice.stack") + I18n.getUiText("ui.common.colon") + StringUtils.kamasToString(_loc4_ * param1.quantity));
+               str = str + ("\n" + I18n.getUiText("ui.item.averageprice.stack") + I18n.getUiText("ui.common.colon") + StringUtils.kamasToString(averagePrice * pItem.quantity));
             }
          }
-         return _loc3_;
+         return str;
       }
       
       public function dataAvailable() : Boolean {
-         var _loc1_:AveragePricesFrame = Kernel.getWorker().getFrame(AveragePricesFrame) as AveragePricesFrame;
-         return _loc1_.dataAvailable;
+         var avgPricesFrame:AveragePricesFrame = Kernel.getWorker().getFrame(AveragePricesFrame) as AveragePricesFrame;
+         return avgPricesFrame.dataAvailable;
       }
    }
 }

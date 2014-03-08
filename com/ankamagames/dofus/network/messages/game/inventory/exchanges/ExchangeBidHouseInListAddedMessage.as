@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -38,11 +38,11 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5949;
       }
       
-      public function initExchangeBidHouseInListAddedMessage(param1:int=0, param2:int=0, param3:Vector.<ObjectEffect>=null, param4:Vector.<uint>=null) : ExchangeBidHouseInListAddedMessage {
-         this.itemUID = param1;
-         this.objGenericId = param2;
-         this.effects = param3;
-         this.prices = param4;
+      public function initExchangeBidHouseInListAddedMessage(itemUID:int=0, objGenericId:int=0, effects:Vector.<ObjectEffect>=null, prices:Vector.<uint>=null) : ExchangeBidHouseInListAddedMessage {
+         this.itemUID = itemUID;
+         this.objGenericId = objGenericId;
+         this.effects = effects;
+         this.prices = prices;
          this._isInitialized = true;
          return this;
       }
@@ -55,81 +55,81 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeBidHouseInListAddedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeBidHouseInListAddedMessage(output);
       }
       
-      public function serializeAs_ExchangeBidHouseInListAddedMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.itemUID);
-         param1.writeInt(this.objGenericId);
-         param1.writeShort(this.effects.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.effects.length)
+      public function serializeAs_ExchangeBidHouseInListAddedMessage(output:IDataOutput) : void {
+         output.writeInt(this.itemUID);
+         output.writeInt(this.objGenericId);
+         output.writeShort(this.effects.length);
+         var _i3:uint = 0;
+         while(_i3 < this.effects.length)
          {
-            param1.writeShort((this.effects[_loc2_] as ObjectEffect).getTypeId());
-            (this.effects[_loc2_] as ObjectEffect).serialize(param1);
-            _loc2_++;
+            output.writeShort((this.effects[_i3] as ObjectEffect).getTypeId());
+            (this.effects[_i3] as ObjectEffect).serialize(output);
+            _i3++;
          }
-         param1.writeShort(this.prices.length);
-         var _loc3_:uint = 0;
-         while(_loc3_ < this.prices.length)
+         output.writeShort(this.prices.length);
+         var _i4:uint = 0;
+         while(_i4 < this.prices.length)
          {
-            if(this.prices[_loc3_] < 0)
+            if(this.prices[_i4] < 0)
             {
-               throw new Error("Forbidden value (" + this.prices[_loc3_] + ") on element 4 (starting at 1) of prices.");
+               throw new Error("Forbidden value (" + this.prices[_i4] + ") on element 4 (starting at 1) of prices.");
             }
             else
             {
-               param1.writeInt(this.prices[_loc3_]);
-               _loc3_++;
+               output.writeInt(this.prices[_i4]);
+               _i4++;
                continue;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeBidHouseInListAddedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeBidHouseInListAddedMessage(input);
       }
       
-      public function deserializeAs_ExchangeBidHouseInListAddedMessage(param1:IDataInput) : void {
-         var _loc6_:uint = 0;
-         var _loc7_:ObjectEffect = null;
-         var _loc8_:uint = 0;
-         this.itemUID = param1.readInt();
-         this.objGenericId = param1.readInt();
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_ExchangeBidHouseInListAddedMessage(input:IDataInput) : void {
+         var _id3:uint = 0;
+         var _item3:ObjectEffect = null;
+         var _val4:uint = 0;
+         this.itemUID = input.readInt();
+         this.objGenericId = input.readInt();
+         var _effectsLen:uint = input.readUnsignedShort();
+         var _i3:uint = 0;
+         while(_i3 < _effectsLen)
          {
-            _loc6_ = param1.readUnsignedShort();
-            _loc7_ = ProtocolTypeManager.getInstance(ObjectEffect,_loc6_);
-            _loc7_.deserialize(param1);
-            this.effects.push(_loc7_);
-            _loc3_++;
+            _id3 = input.readUnsignedShort();
+            _item3 = ProtocolTypeManager.getInstance(ObjectEffect,_id3);
+            _item3.deserialize(input);
+            this.effects.push(_item3);
+            _i3++;
          }
-         var _loc4_:uint = param1.readUnsignedShort();
-         var _loc5_:uint = 0;
-         while(_loc5_ < _loc4_)
+         var _pricesLen:uint = input.readUnsignedShort();
+         var _i4:uint = 0;
+         while(_i4 < _pricesLen)
          {
-            _loc8_ = param1.readInt();
-            if(_loc8_ < 0)
+            _val4 = input.readInt();
+            if(_val4 < 0)
             {
-               throw new Error("Forbidden value (" + _loc8_ + ") on elements of prices.");
+               throw new Error("Forbidden value (" + _val4 + ") on elements of prices.");
             }
             else
             {
-               this.prices.push(_loc8_);
-               _loc5_++;
+               this.prices.push(_val4);
+               _i4++;
                continue;
             }
          }

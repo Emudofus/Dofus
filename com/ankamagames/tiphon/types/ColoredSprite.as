@@ -16,21 +16,21 @@ package com.ankamagames.tiphon.types
       
       private static const NEUTRAL_COLOR_TRANSFORM:ColorTransform = new ColorTransform();
       
-      override public function init(param1:IAnimationSpriteHandler) : void {
-         var _loc3_:ColorTransform = null;
-         var _loc2_:uint = parseInt(getQualifiedClassName(this).split("_")[1]);
-         _loc3_ = param1.getColorTransform(_loc2_);
-         if(_loc3_)
+      override public function init(handler:IAnimationSpriteHandler) : void {
+         var colorT:ColorTransform = null;
+         var nColorIndex:uint = parseInt(getQualifiedClassName(this).split("_")[1]);
+         colorT = handler.getColorTransform(nColorIndex);
+         if(colorT)
          {
-            this.colorize(_loc3_);
+            this.colorize(colorT);
          }
-         param1.registerColoredSprite(this,_loc2_);
+         handler.registerColoredSprite(this,nColorIndex);
       }
       
-      public function colorize(param1:ColorTransform) : void {
-         if(param1)
+      public function colorize(colorT:ColorTransform) : void {
+         if(colorT)
          {
-            transform.colorTransform = param1;
+            transform.colorTransform = colorT;
          }
          else
          {

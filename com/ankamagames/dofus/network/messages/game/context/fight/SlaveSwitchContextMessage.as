@@ -2,10 +2,10 @@ package com.ankamagames.dofus.network.messages.game.context.fight
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.SpellItem;
    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
    import com.ankamagames.dofus.network.types.game.shortcut.Shortcut;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -43,12 +43,12 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 6214;
       }
       
-      public function initSlaveSwitchContextMessage(param1:int=0, param2:int=0, param3:Vector.<SpellItem>=null, param4:CharacterCharacteristicsInformations=null, param5:Vector.<Shortcut>=null) : SlaveSwitchContextMessage {
-         this.masterId = param1;
-         this.slaveId = param2;
-         this.slaveSpells = param3;
-         this.slaveStats = param4;
-         this.shortcuts = param5;
+      public function initSlaveSwitchContextMessage(masterId:int=0, slaveId:int=0, slaveSpells:Vector.<SpellItem>=null, slaveStats:CharacterCharacteristicsInformations=null, shortcuts:Vector.<Shortcut>=null) : SlaveSwitchContextMessage {
+         this.masterId = masterId;
+         this.slaveId = slaveId;
+         this.slaveSpells = slaveSpells;
+         this.slaveStats = slaveStats;
+         this.shortcuts = shortcuts;
          this._isInitialized = true;
          return this;
       }
@@ -61,71 +61,71 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_SlaveSwitchContextMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SlaveSwitchContextMessage(output);
       }
       
-      public function serializeAs_SlaveSwitchContextMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.masterId);
-         param1.writeInt(this.slaveId);
-         param1.writeShort(this.slaveSpells.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.slaveSpells.length)
+      public function serializeAs_SlaveSwitchContextMessage(output:IDataOutput) : void {
+         output.writeInt(this.masterId);
+         output.writeInt(this.slaveId);
+         output.writeShort(this.slaveSpells.length);
+         var _i3:uint = 0;
+         while(_i3 < this.slaveSpells.length)
          {
-            (this.slaveSpells[_loc2_] as SpellItem).serializeAs_SpellItem(param1);
-            _loc2_++;
+            (this.slaveSpells[_i3] as SpellItem).serializeAs_SpellItem(output);
+            _i3++;
          }
-         this.slaveStats.serializeAs_CharacterCharacteristicsInformations(param1);
-         param1.writeShort(this.shortcuts.length);
-         var _loc3_:uint = 0;
-         while(_loc3_ < this.shortcuts.length)
+         this.slaveStats.serializeAs_CharacterCharacteristicsInformations(output);
+         output.writeShort(this.shortcuts.length);
+         var _i5:uint = 0;
+         while(_i5 < this.shortcuts.length)
          {
-            param1.writeShort((this.shortcuts[_loc3_] as Shortcut).getTypeId());
-            (this.shortcuts[_loc3_] as Shortcut).serialize(param1);
-            _loc3_++;
+            output.writeShort((this.shortcuts[_i5] as Shortcut).getTypeId());
+            (this.shortcuts[_i5] as Shortcut).serialize(output);
+            _i5++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_SlaveSwitchContextMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SlaveSwitchContextMessage(input);
       }
       
-      public function deserializeAs_SlaveSwitchContextMessage(param1:IDataInput) : void {
-         var _loc6_:SpellItem = null;
-         var _loc7_:uint = 0;
-         var _loc8_:Shortcut = null;
-         this.masterId = param1.readInt();
-         this.slaveId = param1.readInt();
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_SlaveSwitchContextMessage(input:IDataInput) : void {
+         var _item3:SpellItem = null;
+         var _id5:uint = 0;
+         var _item5:Shortcut = null;
+         this.masterId = input.readInt();
+         this.slaveId = input.readInt();
+         var _slaveSpellsLen:uint = input.readUnsignedShort();
+         var _i3:uint = 0;
+         while(_i3 < _slaveSpellsLen)
          {
-            _loc6_ = new SpellItem();
-            _loc6_.deserialize(param1);
-            this.slaveSpells.push(_loc6_);
-            _loc3_++;
+            _item3 = new SpellItem();
+            _item3.deserialize(input);
+            this.slaveSpells.push(_item3);
+            _i3++;
          }
          this.slaveStats = new CharacterCharacteristicsInformations();
-         this.slaveStats.deserialize(param1);
-         var _loc4_:uint = param1.readUnsignedShort();
-         var _loc5_:uint = 0;
-         while(_loc5_ < _loc4_)
+         this.slaveStats.deserialize(input);
+         var _shortcutsLen:uint = input.readUnsignedShort();
+         var _i5:uint = 0;
+         while(_i5 < _shortcutsLen)
          {
-            _loc7_ = param1.readUnsignedShort();
-            _loc8_ = ProtocolTypeManager.getInstance(Shortcut,_loc7_);
-            _loc8_.deserialize(param1);
-            this.shortcuts.push(_loc8_);
-            _loc5_++;
+            _id5 = input.readUnsignedShort();
+            _item5 = ProtocolTypeManager.getInstance(Shortcut,_id5);
+            _item5.deserialize(input);
+            this.shortcuts.push(_item5);
+            _i5++;
          }
       }
    }

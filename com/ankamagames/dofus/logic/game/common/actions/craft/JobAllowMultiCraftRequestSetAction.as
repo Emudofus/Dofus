@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.craft
          super();
       }
       
-      public static function create(param1:Boolean) : JobAllowMultiCraftRequestSetAction {
-         var _loc2_:JobAllowMultiCraftRequestSetAction = new JobAllowMultiCraftRequestSetAction();
-         _loc2_.isPublic = param1;
-         return _loc2_;
+      public static function create(pIsPublic:Boolean) : JobAllowMultiCraftRequestSetAction {
+         var action:JobAllowMultiCraftRequestSetAction = new JobAllowMultiCraftRequestSetAction();
+         action.isPublic = pIsPublic;
+         return action;
       }
       
       public var isPublic:Boolean;

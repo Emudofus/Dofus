@@ -36,12 +36,12 @@ package com.ankamagames.dofus.scripts
       
       private static const _cache:Dictionary = new Dictionary();
       
-      public static function getScript(param1:uint) : BinaryScript {
-         if(!_cache[param1])
+      public static function getScript(id:uint) : BinaryScript {
+         if(!_cache[id])
          {
-            _cache[param1] = new BinaryScript(new DofusEmbedScript["SCRIPT_" + param1 + "_DATA"](),DofusEmbedScript["SCRIPT_" + param1 + "_URI"]);
+            _cache[id] = new BinaryScript(new DofusEmbedScript["SCRIPT_" + id + "_DATA"](),DofusEmbedScript["SCRIPT_" + id + "_URI"]);
          }
-         return _cache[param1];
+         return _cache[id];
       }
    }
 }

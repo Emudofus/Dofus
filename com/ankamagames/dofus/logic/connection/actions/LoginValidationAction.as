@@ -10,13 +10,13 @@ package com.ankamagames.dofus.logic.connection.actions
          super();
       }
       
-      public static function create(param1:String, param2:String, param3:Boolean, param4:uint=0) : LoginValidationAction {
-         var _loc5_:LoginValidationAction = new LoginValidationAction();
-         _loc5_.password = param2;
-         _loc5_.username = param1;
-         _loc5_.autoSelectServer = param3;
-         _loc5_.serverId = param4;
-         return _loc5_;
+      public static function create(username:String, password:String, autoSelectServer:Boolean, serverId:uint=0) : LoginValidationAction {
+         var a:LoginValidationAction = new LoginValidationAction();
+         a.password = password;
+         a.username = username;
+         a.autoSelectServer = autoSelectServer;
+         a.serverId = serverId;
+         return a;
       }
       
       public var username:String;

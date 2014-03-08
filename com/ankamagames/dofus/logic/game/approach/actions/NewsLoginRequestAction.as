@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.approach.actions
       }
       
       public static function create() : NewsLoginRequestAction {
-         var _loc1_:NewsLoginRequestAction = new NewsLoginRequestAction();
-         return _loc1_;
+         var action:NewsLoginRequestAction = new NewsLoginRequestAction();
+         return action;
       }
    }
 }

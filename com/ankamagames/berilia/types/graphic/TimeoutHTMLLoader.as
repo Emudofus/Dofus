@@ -18,23 +18,23 @@ package com.ankamagames.berilia.types.graphic
       
       public static const TIMEOUT:String = "TimeoutHTMLLoader_timeout";
       
-      public static function getLoader(param1:String=null) : TimeoutHTMLLoader {
-         var _loc2_:TimeoutHTMLLoader = null;
-         if(!(param1 == null) && (INSTANCE_CACHE[param1]))
+      public static function getLoader(uid:String=null) : TimeoutHTMLLoader {
+         var instance:TimeoutHTMLLoader = null;
+         if((!(uid == null)) && (INSTANCE_CACHE[uid]))
          {
-            _loc2_ = INSTANCE_CACHE[param1];
-            _loc2_._fromCache = true;
-            _loc2_._timer.reset();
-            _loc2_._timer.start();
-            return _loc2_;
+            instance = INSTANCE_CACHE[uid];
+            instance._fromCache = true;
+            instance._timer.reset();
+            instance._timer.start();
+            return instance;
          }
-         _loc2_ = new TimeoutHTMLLoader();
-         _loc2_._uid = param1;
-         if(param1)
+         instance = new TimeoutHTMLLoader();
+         instance._uid = uid;
+         if(uid)
          {
-            INSTANCE_CACHE[param1] = _loc2_;
+            INSTANCE_CACHE[uid] = instance;
          }
-         return _loc2_;
+         return instance;
       }
       
       public static function resetCache() : void {
@@ -47,8 +47,8 @@ package com.ankamagames.berilia.types.graphic
       
       private var _uid:String;
       
-      public function set life(param1:Number) : void {
-         this._timer = new Timer(param1 * 60 * 1000);
+      public function set life(value:Number) : void {
+         this._timer = new Timer(value * 60 * 1000);
          this._timer.addEventListener(TimerEvent.TIMER,this.onTimeOut);
       }
       
@@ -56,7 +56,7 @@ package com.ankamagames.berilia.types.graphic
          return this._fromCache;
       }
       
-      private function onLocationChange(param1:Event) : void {
+      private function onLocationChange(e:Event) : void {
          if(this._timer)
          {
             this._timer.reset();
@@ -64,10 +64,10 @@ package com.ankamagames.berilia.types.graphic
          }
       }
       
-      private function onTimeOut(param1:Event) : void {
+      private function onTimeOut(e:Event) : void {
          this._timer.stop();
          dispatchEvent(new Event(TIMEOUT));
-         if(!this._timer.running && (this._uid))
+         if((!this._timer.running) && (this._uid))
          {
             delete INSTANCE_CACHE[[this._uid]];
             this._timer.removeEventListener(TimerEvent.TIMER,this.onTimeOut);

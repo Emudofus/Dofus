@@ -19,16 +19,16 @@ package com.ankamagames.dofus.uiApi
       
       private var _module:UiModule;
       
-      public function set module(param1:UiModule) : void {
-         this._module = param1;
+      public function set module(value:UiModule) : void {
+         this._module = value;
       }
       
       public function destroy() : void {
          this._module = null;
       }
       
-      public function getExchangeError(param1:int) : String {
-         switch(param1)
+      public function getExchangeError(typeError:int) : String {
+         switch(typeError)
          {
             case ExchangeErrorEnum.BID_SEARCH_ERROR:
                return "Erreur lors d\'une recherche dans l\'hotel de vente";
@@ -50,8 +50,6 @@ package com.ankamagames.dofus.uiApi
                return "Erreur lors d\'une transaction avec une ferme";
             case ExchangeErrorEnum.SELL_ERROR:
                return "Erreur lors d\'une vente";
-            default:
-               return "Erreur d\'échange de type inconnue";
          }
       }
    }

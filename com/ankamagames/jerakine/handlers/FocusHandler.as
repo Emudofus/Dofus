@@ -33,18 +33,18 @@ package com.ankamagames.jerakine.handlers
          return _self;
       }
       
-      public function setFocus(param1:InteractiveObject) : void {
-         _currentFocus = new WeakReference(param1);
+      public function setFocus(target:InteractiveObject) : void {
+         _currentFocus = new WeakReference(target);
       }
       
       public function getFocus() : InteractiveObject {
          return _currentFocus?_currentFocus.object as InteractiveObject:null;
       }
       
-      public function hasFocus(param1:InteractiveObject) : Boolean {
+      public function hasFocus(io:InteractiveObject) : Boolean {
          if(_currentFocus)
          {
-            return _currentFocus.object == param1;
+            return _currentFocus.object == io;
          }
          return false;
       }

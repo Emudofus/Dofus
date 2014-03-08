@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.spells
       
       public static const MODULE:String = "SpellStates";
       
-      public static function getSpellStateById(param1:int) : SpellState {
-         return GameData.getObject(MODULE,param1) as SpellState;
+      public static function getSpellStateById(id:int) : SpellState {
+         return GameData.getObject(MODULE,id) as SpellState;
       }
       
       public static function getSpellStates() : Array {

@@ -9,7 +9,7 @@ package com.ankamagames.berilia.types.data
          super();
       }
       
-      public function getObject(param1:Object) : * {
+      public function getObject(accessKey:Object) : * {
          return this;
       }
    }

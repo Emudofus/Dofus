@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.humanVendor
       }
       
       public static function create() : LeaveShopStockAction {
-         var _loc1_:LeaveShopStockAction = new LeaveShopStockAction();
-         return _loc1_;
+         var a:LeaveShopStockAction = new LeaveShopStockAction();
+         return a;
       }
    }
 }

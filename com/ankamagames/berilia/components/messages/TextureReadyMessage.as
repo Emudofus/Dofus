@@ -5,9 +5,9 @@ package com.ankamagames.berilia.components.messages
    public class TextureReadyMessage extends ComponentMessage
    {
       
-      public function TextureReadyMessage(param1:Texture) {
-         super(param1);
-         this._texture = param1;
+      public function TextureReadyMessage(texture:Texture) {
+         super(texture);
+         this._texture = texture;
       }
       
       private var _texture:Texture;

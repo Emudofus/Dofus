@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 127;
       }
       
-      public function initGuildInformations(param1:uint=0, param2:String="", param3:GuildEmblem=null) : GuildInformations {
-         super.initBasicGuildInformations(param1,param2);
-         this.guildEmblem = param3;
+      public function initGuildInformations(guildId:uint=0, guildName:String="", guildEmblem:GuildEmblem=null) : GuildInformations {
+         super.initBasicGuildInformations(guildId,guildName);
+         this.guildEmblem = guildEmblem;
          return this;
       }
       
@@ -32,23 +32,23 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.guildEmblem = new GuildEmblem();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildInformations(output);
       }
       
-      public function serializeAs_GuildInformations(param1:IDataOutput) : void {
-         super.serializeAs_BasicGuildInformations(param1);
-         this.guildEmblem.serializeAs_GuildEmblem(param1);
+      public function serializeAs_GuildInformations(output:IDataOutput) : void {
+         super.serializeAs_BasicGuildInformations(output);
+         this.guildEmblem.serializeAs_GuildEmblem(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildInformations(input);
       }
       
-      public function deserializeAs_GuildInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_GuildInformations(input:IDataInput) : void {
+         super.deserialize(input);
          this.guildEmblem = new GuildEmblem();
-         this.guildEmblem.deserialize(param1);
+         this.guildEmblem.deserialize(input);
       }
    }
 }

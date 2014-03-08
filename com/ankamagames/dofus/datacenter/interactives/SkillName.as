@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.interactives
       
       public static const MODULE:String = "SkillNames";
       
-      public static function getSkillNameById(param1:int) : SkillName {
-         return GameData.getObject(MODULE,param1) as SkillName;
+      public static function getSkillNameById(id:int) : SkillName {
+         return GameData.getObject(MODULE,id) as SkillName;
       }
       
       public var id:int;

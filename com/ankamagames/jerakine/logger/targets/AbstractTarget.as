@@ -20,14 +20,14 @@ package com.ankamagames.jerakine.logger.targets
       
       private var _filters:Array;
       
-      public function set filters(param1:Array) : void {
-         if(!this.checkIsFiltersValid(param1))
+      public function set filters(value:Array) : void {
+         if(!this.checkIsFiltersValid(value))
          {
             throw new InvalidFilterError("These characters are invalid on a filter : " + FILTERS_FORBIDDEN_CHARS);
          }
          else
          {
-            this._filters = param1;
+            this._filters = value;
             return;
          }
       }
@@ -36,26 +36,26 @@ package com.ankamagames.jerakine.logger.targets
          return this._filters;
       }
       
-      public function logEvent(param1:LogEvent) : void {
+      public function logEvent(event:LogEvent) : void {
       }
       
-      public function addLogger(param1:Logger) : void {
-         this._loggers.push(param1);
+      public function addLogger(logger:Logger) : void {
+         this._loggers.push(logger);
       }
       
-      public function removeLogger(param1:Logger) : void {
-         var _loc2_:int = this._loggers.indexOf(param1);
-         if(_loc2_ > -1)
+      public function removeLogger(logger:Logger) : void {
+         var index:int = this._loggers.indexOf(logger);
+         if(index > -1)
          {
-            this._loggers.splice(_loc2_,1);
+            this._loggers.splice(index,1);
          }
       }
       
-      private function checkIsFiltersValid(param1:Array) : Boolean {
-         var _loc2_:LogTargetFilter = null;
-         for each (_loc2_ in param1)
+      private function checkIsFiltersValid(filters:Array) : Boolean {
+         var filter:LogTargetFilter = null;
+         for each (filter in filters)
          {
-            if(!this.checkIsFilterValid(_loc2_.target))
+            if(!this.checkIsFilterValid(filter.target))
             {
                return false;
             }
@@ -63,48 +63,48 @@ package com.ankamagames.jerakine.logger.targets
          return true;
       }
       
-      private function checkIsFilterValid(param1:String) : Boolean {
-         var _loc2_:* = 0;
-         while(_loc2_ < FILTERS_FORBIDDEN_CHARS.length)
+      private function checkIsFilterValid(filter:String) : Boolean {
+         var i:int = 0;
+         while(i < FILTERS_FORBIDDEN_CHARS.length)
          {
-            if(param1.indexOf(FILTERS_FORBIDDEN_CHARS.charAt(_loc2_)) > -1)
+            if(filter.indexOf(FILTERS_FORBIDDEN_CHARS.charAt(i)) > -1)
             {
                return false;
             }
-            _loc2_++;
+            i++;
          }
          return true;
       }
       
-      public function onLog(param1:LogEvent) : void {
-         var _loc3_:LogTargetFilter = null;
-         var _loc4_:RegExp = null;
-         var _loc5_:* = false;
-         var _loc2_:* = false;
+      public function onLog(e:LogEvent) : void {
+         var filter:LogTargetFilter = null;
+         var reg:RegExp = null;
+         var testResult:* = false;
+         var passing:Boolean = false;
          if(this._filters.length > 0)
          {
-            for each (_loc3_ in this._filters)
+            for each (filter in this._filters)
             {
-               _loc4_ = new RegExp(_loc3_.target.replace("*",".*"),"i");
-               _loc5_ = _loc4_.test(param1.category);
-               if(param1.category == _loc3_.target && !_loc3_.allow)
+               reg = new RegExp(filter.target.replace("*",".*"),"i");
+               testResult = reg.test(e.category);
+               if((e.category == filter.target) && (!filter.allow))
                {
-                  _loc2_ = false;
+                  passing = false;
                   break;
                }
-               if((_loc5_) && (_loc3_.allow))
+               if((testResult) && (filter.allow))
                {
-                  _loc2_ = true;
+                  passing = true;
                }
             }
          }
          else
          {
-            _loc2_ = true;
+            passing = true;
          }
-         if(_loc2_)
+         if(passing)
          {
-            this.logEvent(param1);
+            this.logEvent(e);
          }
       }
    }

@@ -12,12 +12,12 @@ package com.ankamagames.jerakine.resources.adapters.impl
          super();
       }
       
-      override protected function getResource(param1:String, param2:*) : * {
-         if(param1 == ResourceType.getName(ResourceType.RESOURCE_BINARY) && param2 is IDataInput)
+      override protected function getResource(dataFormat:String, data:*) : * {
+         if((dataFormat == ResourceType.getName(ResourceType.RESOURCE_BINARY)) && (data is IDataInput))
          {
-            return IDataInput(param2).readUTFBytes(IDataInput(param2).bytesAvailable);
+            return IDataInput(data).readUTFBytes(IDataInput(data).bytesAvailable);
          }
-         return param2 as String;
+         return data as String;
       }
       
       override public function getResourceType() : uint {

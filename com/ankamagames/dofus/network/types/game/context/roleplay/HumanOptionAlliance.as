@@ -22,9 +22,9 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 425;
       }
       
-      public function initHumanOptionAlliance(param1:AllianceInformations=null, param2:uint=0) : HumanOptionAlliance {
-         this.allianceInformations = param1;
-         this.aggressable = param2;
+      public function initHumanOptionAlliance(allianceInformations:AllianceInformations=null, aggressable:uint=0) : HumanOptionAlliance {
+         this.allianceInformations = allianceInformations;
+         this.aggressable = aggressable;
          return this;
       }
       
@@ -32,25 +32,25 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.allianceInformations = new AllianceInformations();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_HumanOptionAlliance(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HumanOptionAlliance(output);
       }
       
-      public function serializeAs_HumanOptionAlliance(param1:IDataOutput) : void {
-         super.serializeAs_HumanOption(param1);
-         this.allianceInformations.serializeAs_AllianceInformations(param1);
-         param1.writeByte(this.aggressable);
+      public function serializeAs_HumanOptionAlliance(output:IDataOutput) : void {
+         super.serializeAs_HumanOption(output);
+         this.allianceInformations.serializeAs_AllianceInformations(output);
+         output.writeByte(this.aggressable);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_HumanOptionAlliance(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HumanOptionAlliance(input);
       }
       
-      public function deserializeAs_HumanOptionAlliance(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_HumanOptionAlliance(input:IDataInput) : void {
+         super.deserialize(input);
          this.allianceInformations = new AllianceInformations();
-         this.allianceInformations.deserialize(param1);
-         this.aggressable = param1.readByte();
+         this.allianceInformations.deserialize(input);
+         this.aggressable = input.readByte();
          if(this.aggressable < 0)
          {
             throw new Error("Forbidden value (" + this.aggressable + ") on element of HumanOptionAlliance.aggressable.");

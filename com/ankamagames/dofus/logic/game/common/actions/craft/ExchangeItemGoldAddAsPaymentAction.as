@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.craft
          super();
       }
       
-      public static function create(param1:Boolean, param2:uint) : ExchangeItemGoldAddAsPaymentAction {
-         var _loc3_:ExchangeItemGoldAddAsPaymentAction = new ExchangeItemGoldAddAsPaymentAction();
-         _loc3_.onlySuccess = param1;
-         _loc3_.kamas = param2;
-         return _loc3_;
+      public static function create(pOnlySuccess:Boolean, pKamas:uint) : ExchangeItemGoldAddAsPaymentAction {
+         var action:ExchangeItemGoldAddAsPaymentAction = new ExchangeItemGoldAddAsPaymentAction();
+         action.onlySuccess = pOnlySuccess;
+         action.kamas = pKamas;
+         return action;
       }
       
       public var onlySuccess:Boolean;

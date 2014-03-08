@@ -13,32 +13,32 @@ package com.ankamagames.jerakine.script.api
          super();
       }
       
-      public static function Timeout(param1:uint, param2:Function, ... rest) : uint {
-         if(!rest)
+      public static function Timeout(delay:uint, fct:Function, ... parameters) : uint {
+         if(!parameters)
          {
-            rest = new Array();
+            parameters = new Array();
          }
-         rest.unshift(param1);
-         rest.unshift(param2);
-         return CallWithParameters.callR(setTimeout,rest);
+         parameters.unshift(delay);
+         parameters.unshift(fct);
+         return CallWithParameters.callR(setTimeout,parameters);
       }
       
-      public static function CancelTimeout(param1:uint) : void {
-         clearTimeout(param1);
+      public static function CancelTimeout(timeoutID:uint) : void {
+         clearTimeout(timeoutID);
       }
       
-      public static function Repeat(param1:uint, param2:Function, ... rest) : uint {
-         if(!rest)
+      public static function Repeat(delay:uint, fct:Function, ... parameters) : uint {
+         if(!parameters)
          {
-            rest = new Array();
+            parameters = new Array();
          }
-         rest.unshift(param1);
-         rest.unshift(param2);
-         return CallWithParameters.callR(setInterval,rest);
+         parameters.unshift(delay);
+         parameters.unshift(fct);
+         return CallWithParameters.callR(setInterval,parameters);
       }
       
-      public static function CancelRepeat(param1:uint) : void {
-         clearInterval(param1);
+      public static function CancelRepeat(intervalID:uint) : void {
+         clearInterval(intervalID);
       }
    }
 }

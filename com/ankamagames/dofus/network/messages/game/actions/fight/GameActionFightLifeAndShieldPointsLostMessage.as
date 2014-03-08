@@ -26,9 +26,9 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6310;
       }
       
-      public function initGameActionFightLifeAndShieldPointsLostMessage(param1:uint=0, param2:int=0, param3:int=0, param4:uint=0, param5:uint=0, param6:uint=0) : GameActionFightLifeAndShieldPointsLostMessage {
-         super.initGameActionFightLifePointsLostMessage(param1,param2,param3,param4,param5);
-         this.shieldLoss = param6;
+      public function initGameActionFightLifeAndShieldPointsLostMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, loss:uint=0, permanentDamages:uint=0, shieldLoss:uint=0) : GameActionFightLifeAndShieldPointsLostMessage {
+         super.initGameActionFightLifePointsLostMessage(actionId,sourceId,targetId,loss,permanentDamages);
+         this.shieldLoss = shieldLoss;
          this._isInitialized = true;
          return this;
       }
@@ -39,40 +39,40 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameActionFightLifeAndShieldPointsLostMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameActionFightLifeAndShieldPointsLostMessage(output);
       }
       
-      public function serializeAs_GameActionFightLifeAndShieldPointsLostMessage(param1:IDataOutput) : void {
-         super.serializeAs_GameActionFightLifePointsLostMessage(param1);
+      public function serializeAs_GameActionFightLifeAndShieldPointsLostMessage(output:IDataOutput) : void {
+         super.serializeAs_GameActionFightLifePointsLostMessage(output);
          if(this.shieldLoss < 0)
          {
             throw new Error("Forbidden value (" + this.shieldLoss + ") on element shieldLoss.");
          }
          else
          {
-            param1.writeShort(this.shieldLoss);
+            output.writeShort(this.shieldLoss);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameActionFightLifeAndShieldPointsLostMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameActionFightLifeAndShieldPointsLostMessage(input);
       }
       
-      public function deserializeAs_GameActionFightLifeAndShieldPointsLostMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.shieldLoss = param1.readShort();
+      public function deserializeAs_GameActionFightLifeAndShieldPointsLostMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.shieldLoss = input.readShort();
          if(this.shieldLoss < 0)
          {
             throw new Error("Forbidden value (" + this.shieldLoss + ") on element of GameActionFightLifeAndShieldPointsLostMessage.shieldLoss.");

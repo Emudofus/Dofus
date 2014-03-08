@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.emote
          return 5690;
       }
       
-      public function initEmotePlayAbstractMessage(param1:uint=0, param2:Number=0) : EmotePlayAbstractMessage {
-         this.emoteId = param1;
-         this.emoteStartTime = param2;
+      public function initEmotePlayAbstractMessage(emoteId:uint=0, emoteStartTime:Number=0) : EmotePlayAbstractMessage {
+         this.emoteId = emoteId;
+         this.emoteStartTime = emoteStartTime;
          this._isInitialized = true;
          return this;
       }
@@ -42,46 +42,46 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.emote
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_EmotePlayAbstractMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_EmotePlayAbstractMessage(output);
       }
       
-      public function serializeAs_EmotePlayAbstractMessage(param1:IDataOutput) : void {
-         if(this.emoteId < 0 || this.emoteId > 255)
+      public function serializeAs_EmotePlayAbstractMessage(output:IDataOutput) : void {
+         if((this.emoteId < 0) || (this.emoteId > 255))
          {
             throw new Error("Forbidden value (" + this.emoteId + ") on element emoteId.");
          }
          else
          {
-            param1.writeByte(this.emoteId);
-            param1.writeDouble(this.emoteStartTime);
+            output.writeByte(this.emoteId);
+            output.writeDouble(this.emoteStartTime);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_EmotePlayAbstractMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_EmotePlayAbstractMessage(input);
       }
       
-      public function deserializeAs_EmotePlayAbstractMessage(param1:IDataInput) : void {
-         this.emoteId = param1.readUnsignedByte();
-         if(this.emoteId < 0 || this.emoteId > 255)
+      public function deserializeAs_EmotePlayAbstractMessage(input:IDataInput) : void {
+         this.emoteId = input.readUnsignedByte();
+         if((this.emoteId < 0) || (this.emoteId > 255))
          {
             throw new Error("Forbidden value (" + this.emoteId + ") on element of EmotePlayAbstractMessage.emoteId.");
          }
          else
          {
-            this.emoteStartTime = param1.readDouble();
+            this.emoteStartTime = input.readDouble();
             return;
          }
       }

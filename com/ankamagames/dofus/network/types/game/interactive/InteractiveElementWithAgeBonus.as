@@ -20,9 +20,9 @@ package com.ankamagames.dofus.network.types.game.interactive
          return 398;
       }
       
-      public function initInteractiveElementWithAgeBonus(param1:uint=0, param2:int=0, param3:Vector.<InteractiveElementSkill>=null, param4:Vector.<InteractiveElementSkill>=null, param5:int=0) : InteractiveElementWithAgeBonus {
-         super.initInteractiveElement(param1,param2,param3,param4);
-         this.ageBonus = param5;
+      public function initInteractiveElementWithAgeBonus(elementId:uint=0, elementTypeId:int=0, enabledSkills:Vector.<InteractiveElementSkill>=null, disabledSkills:Vector.<InteractiveElementSkill>=null, ageBonus:int=0) : InteractiveElementWithAgeBonus {
+         super.initInteractiveElement(elementId,elementTypeId,enabledSkills,disabledSkills);
+         this.ageBonus = ageBonus;
          return this;
       }
       
@@ -31,31 +31,31 @@ package com.ankamagames.dofus.network.types.game.interactive
          this.ageBonus = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_InteractiveElementWithAgeBonus(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_InteractiveElementWithAgeBonus(output);
       }
       
-      public function serializeAs_InteractiveElementWithAgeBonus(param1:IDataOutput) : void {
-         super.serializeAs_InteractiveElement(param1);
-         if(this.ageBonus < -1 || this.ageBonus > 1000)
+      public function serializeAs_InteractiveElementWithAgeBonus(output:IDataOutput) : void {
+         super.serializeAs_InteractiveElement(output);
+         if((this.ageBonus < -1) || (this.ageBonus > 1000))
          {
             throw new Error("Forbidden value (" + this.ageBonus + ") on element ageBonus.");
          }
          else
          {
-            param1.writeShort(this.ageBonus);
+            output.writeShort(this.ageBonus);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_InteractiveElementWithAgeBonus(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_InteractiveElementWithAgeBonus(input);
       }
       
-      public function deserializeAs_InteractiveElementWithAgeBonus(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.ageBonus = param1.readShort();
-         if(this.ageBonus < -1 || this.ageBonus > 1000)
+      public function deserializeAs_InteractiveElementWithAgeBonus(input:IDataInput) : void {
+         super.deserialize(input);
+         this.ageBonus = input.readShort();
+         if((this.ageBonus < -1) || (this.ageBonus > 1000))
          {
             throw new Error("Forbidden value (" + this.ageBonus + ") on element of InteractiveElementWithAgeBonus.ageBonus.");
          }

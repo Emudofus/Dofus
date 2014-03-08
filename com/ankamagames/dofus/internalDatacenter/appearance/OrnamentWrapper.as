@@ -25,30 +25,30 @@ package com.ankamagames.dofus.internalDatacenter.appearance
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(OrnamentWrapper));
       
-      public static function create(param1:uint, param2:int=-1, param3:Boolean=true) : OrnamentWrapper {
-         var _loc4_:OrnamentWrapper = new OrnamentWrapper();
-         if(!_cache[param1] || !param3)
+      public static function create(ornId:uint, position:int=-1, useCache:Boolean=true) : OrnamentWrapper {
+         var ow:OrnamentWrapper = new OrnamentWrapper();
+         if((!_cache[ornId]) || (!useCache))
          {
-            _loc4_ = new OrnamentWrapper();
-            _loc4_.id = param1;
-            if(param3)
+            ow = new OrnamentWrapper();
+            ow.id = ornId;
+            if(useCache)
             {
-               _cache[param1] = _loc4_;
+               _cache[ornId] = ow;
             }
          }
          else
          {
-            _loc4_ = _cache[param1];
+            ow = _cache[ornId];
          }
-         var _loc5_:Ornament = Ornament.getOrnamentById(param1);
-         _loc4_.id = param1;
-         _loc4_.name = _loc5_.name;
-         _loc4_.iconId = _loc5_.iconId;
-         return _loc4_;
+         var ornament:Ornament = Ornament.getOrnamentById(ornId);
+         ow.id = ornId;
+         ow.name = ornament.name;
+         ow.iconId = ornament.iconId;
+         return ow;
       }
       
-      public static function getOrnamentWrapperById(param1:uint) : OrnamentWrapper {
-         return _cache[param1];
+      public static function getOrnamentWrapperById(id:uint) : OrnamentWrapper {
+         return _cache[id];
       }
       
       private var _uri:Uri;
@@ -99,14 +99,14 @@ package com.ankamagames.dofus.internalDatacenter.appearance
          return 0;
       }
       
-      public function set endTime(param1:int) : void {
+      public function set endTime(t:int) : void {
       }
       
       public function get timer() : int {
          return 0;
       }
       
-      public function set timerToStart(param1:int) : void {
+      public function set timerToStart(t:int) : void {
       }
       
       public function get active() : Boolean {
@@ -125,10 +125,9 @@ package com.ankamagames.dofus.internalDatacenter.appearance
          return false;
       }
       
-      override flash_proxy function getProperty(param1:*) : * {
+      override flash_proxy function getProperty(name:*) : * {
          var t:* = undefined;
          var r:* = undefined;
-         var name:* = param1;
          if(isAttribute(name))
          {
             return this[name];
@@ -148,21 +147,21 @@ package com.ankamagames.dofus.internalDatacenter.appearance
          }
       }
       
-      override flash_proxy function hasProperty(param1:*) : Boolean {
-         return isAttribute(param1);
+      override flash_proxy function hasProperty(name:*) : Boolean {
+         return isAttribute(name);
       }
       
       public function toString() : String {
          return "[OrnamentWrapper#" + this.id + "]";
       }
       
-      public function addHolder(param1:ISlotDataHolder) : void {
+      public function addHolder(h:ISlotDataHolder) : void {
       }
       
-      public function removeHolder(param1:ISlotDataHolder) : void {
+      public function removeHolder(h:ISlotDataHolder) : void {
       }
       
-      public function getIconUri(param1:Boolean=true) : Uri {
+      public function getIconUri(pngMode:Boolean=true) : Uri {
          if(!this._uri)
          {
             this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/ornaments/").concat(this.iconId).concat(".png"));
