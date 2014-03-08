@@ -38,8 +38,9 @@ package com.ankamagames.dofus.misc.interClient
          fs.close();
          var startIdTagPos:int = content.indexOf("<" + APP_ID_TAG + ">");
          var endIdTagPos:int = content.indexOf("</" + APP_ID_TAG + ">");
-         if(startIdTagPos == -1 || endIdTagPos == -1)
+         if((startIdTagPos == -1) || (endIdTagPos == -1))
          {
+            trace("Pas cool, j\'arrive pas à choper mon appId");
             return;
          }
          startIdTagPos = startIdTagPos + 2 + APP_ID_TAG.length;
@@ -137,28 +138,27 @@ package com.ankamagames.dofus.misc.interClient
       private var _currentAppId:uint;
       
       public function invalideCache() : void {
-         var _loc4_:uint = 0;
-         var _loc1_:FileStream = new FileStream();
-         var _loc2_:File = new File(COMMON_FOLDER + APP_INFO);
-         var _loc3_:* = "";
-         if(_loc2_.exists)
+         var pathLen:uint = 0;
+         var fs:FileStream = new FileStream();
+         var appInfoFile:File = new File(COMMON_FOLDER + APP_INFO);
+         var lastPath:String = "";
+         if(appInfoFile.exists)
          {
-            _loc1_.open(_loc2_,FileMode.READ);
-            _loc4_ = _loc1_.readInt();
-            _loc3_ = _loc1_.readUTFBytes(_loc4_);
-            _loc1_.close();
+            fs.open(appInfoFile,FileMode.READ);
+            pathLen = fs.readInt();
+            lastPath = fs.readUTFBytes(pathLen);
+            fs.close();
          }
-         _loc1_.open(_loc2_,FileMode.WRITE);
-         _loc1_.writeInt(_loc3_.length);
-         _loc1_.writeUTFBytes(_loc3_);
-         _loc1_.writeBoolean(false);
-         _loc1_.close();
+         fs.open(appInfoFile,FileMode.WRITE);
+         fs.writeInt(lastPath.length);
+         fs.writeUTFBytes(lastPath);
+         fs.writeBoolean(false);
+         fs.close();
       }
       
-      private function log(param1:String) : void {
+      private function log(txt:String) : void {
          var applicationConfig:File = null;
          var fs:FileStream = null;
-         var txt:String = param1;
          try
          {
             applicationConfig = new File(File.applicationDirectory.nativePath + File.separator + "logAppId.txt");
@@ -173,11 +173,10 @@ package com.ankamagames.dofus.misc.interClient
          }
       }
       
-      private function updateTs(param1:*=null) : void {
+      private function updateTs(e:*=null) : void {
          var currentTimestamp:Number = NaN;
          var idFile:File = null;
          var idFileStream:FileStream = null;
-         var e:* = param1;
          try
          {
             currentTimestamp = new Date().time;

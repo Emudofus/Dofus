@@ -5,9 +5,9 @@ package com.ankamagames.berilia.components.messages
    public class VideoBufferChangeMessage extends ComponentMessage
    {
       
-      public function VideoBufferChangeMessage(param1:InteractiveObject, param2:uint) {
-         super(param1);
-         this._state = param2;
+      public function VideoBufferChangeMessage(target:InteractiveObject, state:uint) {
+         super(target);
+         this._state = state;
       }
       
       private var _state:uint;

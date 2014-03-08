@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 70;
       }
       
-      public function initObjectEffectInteger(param1:uint=0, param2:uint=0) : ObjectEffectInteger {
-         super.initObjectEffect(param1);
-         this.value = param2;
+      public function initObjectEffectInteger(actionId:uint=0, value:uint=0) : ObjectEffectInteger {
+         super.initObjectEffect(actionId);
+         this.value = value;
          return this;
       }
       
@@ -30,30 +30,30 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          this.value = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ObjectEffectInteger(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectEffectInteger(output);
       }
       
-      public function serializeAs_ObjectEffectInteger(param1:IDataOutput) : void {
-         super.serializeAs_ObjectEffect(param1);
+      public function serializeAs_ObjectEffectInteger(output:IDataOutput) : void {
+         super.serializeAs_ObjectEffect(output);
          if(this.value < 0)
          {
             throw new Error("Forbidden value (" + this.value + ") on element value.");
          }
          else
          {
-            param1.writeShort(this.value);
+            output.writeShort(this.value);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ObjectEffectInteger(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectEffectInteger(input);
       }
       
-      public function deserializeAs_ObjectEffectInteger(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.value = param1.readShort();
+      public function deserializeAs_ObjectEffectInteger(input:IDataInput) : void {
+         super.deserialize(input);
+         this.value = input.readShort();
          if(this.value < 0)
          {
             throw new Error("Forbidden value (" + this.value + ") on element of ObjectEffectInteger.value.");

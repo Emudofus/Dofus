@@ -12,28 +12,28 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class AllianceAvAItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function AllianceAvAItemCriterion(param1:String) {
-         super(param1);
+      public function AllianceAvAItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get isRespected() : Boolean {
-         var _loc1_:* = 0;
-         var _loc2_:SubArea = null;
-         var _loc3_:PrismSubAreaWrapper = null;
+         var aggressable:* = 0;
+         var subArea:SubArea = null;
+         var currentPrism:PrismSubAreaWrapper = null;
          if(_operator.text == ItemCriterionOperator.EQUAL)
          {
-            _loc1_ = PlayedCharacterManager.getInstance().characteristics.alignmentInfos.aggressable;
-            if(!(_loc1_ == AggressableStatusEnum.AvA_ENABLED_AGGRESSABLE) && !(_loc1_ == AggressableStatusEnum.AvA_PREQUALIFIED_AGGRESSABLE))
+            aggressable = PlayedCharacterManager.getInstance().characteristics.alignmentInfos.aggressable;
+            if((!(aggressable == AggressableStatusEnum.AvA_ENABLED_AGGRESSABLE)) && (!(aggressable == AggressableStatusEnum.AvA_PREQUALIFIED_AGGRESSABLE)))
             {
                return false;
             }
-            _loc2_ = PlayedCharacterManager.getInstance().currentSubArea;
-            _loc3_ = AllianceFrame.getInstance().getPrismSubAreaById(_loc2_.id);
-            if(!_loc3_ || _loc3_.mapId == -1)
+            subArea = PlayedCharacterManager.getInstance().currentSubArea;
+            currentPrism = AllianceFrame.getInstance().getPrismSubAreaById(subArea.id);
+            if((!currentPrism) || (currentPrism.mapId == -1))
             {
                return false;
             }
-            if(_loc3_.state != PrismStateEnum.PRISM_STATE_VULNERABLE)
+            if(currentPrism.state != PrismStateEnum.PRISM_STATE_VULNERABLE)
             {
                return false;
             }
@@ -43,17 +43,17 @@ package com.ankamagames.dofus.datacenter.items.criterion
       }
       
       override public function get text() : String {
-         var _loc1_:String = null;
+         var readableCriterion:String = null;
          if(_operator.text == ItemCriterionOperator.EQUAL)
          {
-            _loc1_ = I18n.getUiText("ui.criterion.allianceAvA");
+            readableCriterion = I18n.getUiText("ui.criterion.allianceAvA");
          }
-         return _loc1_;
+         return readableCriterion;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:AllianceAvAItemCriterion = new AllianceAvAItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:AllianceAvAItemCriterion = new AllianceAvAItemCriterion(this.basicText);
+         return clonedCriterion;
       }
    }
 }

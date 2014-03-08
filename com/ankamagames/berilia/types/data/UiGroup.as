@@ -5,14 +5,14 @@ package com.ankamagames.berilia.types.data
    public class UiGroup extends Object implements IModuleUtil
    {
       
-      public function UiGroup(param1:String, param2:Boolean, param3:Boolean, param4:Array=null) {
+      public function UiGroup(name:String, exclusive:Boolean, permanent:Boolean, uisName:Array=null) {
          super();
-         this._name = param1;
-         this._permanent = param3;
-         this._exclusive = param2;
-         if(param4 != null)
+         this._name = name;
+         this._permanent = permanent;
+         this._exclusive = exclusive;
+         if(uisName != null)
          {
-            this._uisName = param4;
+            this._uisName = uisName;
          }
          else
          {

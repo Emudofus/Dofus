@@ -5,9 +5,9 @@ package com.ankamagames.dofus.internalDatacenter.communication
    public class ThinkBubble extends Object implements IDataCenter
    {
       
-      public function ThinkBubble(param1:String) {
+      public function ThinkBubble(text:String) {
          super();
-         this._text = param1;
+         this._text = text;
       }
       
       private var _text:String;

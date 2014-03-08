@@ -2,9 +2,9 @@ package com.ankamagames.dofus.datacenter.jobs
 {
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.data.GameData;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.items.Item;
    import com.ankamagames.jerakine.data.I18n;
+   import __AS3__.vec.*;
    
    public class Job extends Object implements IDataCenter
    {
@@ -15,8 +15,8 @@ package com.ankamagames.dofus.datacenter.jobs
       
       public static const MODULE:String = "Jobs";
       
-      public static function getJobById(param1:int) : Job {
-         return GameData.getObject(MODULE,param1) as Job;
+      public static function getJobById(id:int) : Job {
+         return GameData.getObject(MODULE,id) as Job;
       }
       
       public static function getJobs() : Array {
@@ -59,17 +59,17 @@ package com.ankamagames.dofus.datacenter.jobs
       }
       
       public function get tools() : Vector.<Item> {
-         var _loc1_:uint = 0;
-         var _loc2_:uint = 0;
+         var toolsCount:uint = 0;
+         var i:uint = 0;
          if(!this._tools)
          {
-            _loc1_ = this.toolIds.length;
-            this._tools = new Vector.<Item>(_loc1_,true);
-            _loc2_ = 0;
-            while(_loc2_ < _loc1_)
+            toolsCount = this.toolIds.length;
+            this._tools = new Vector.<Item>(toolsCount,true);
+            i = 0;
+            while(i < toolsCount)
             {
-               this._tools[_loc2_] = Item.getItemById(this.toolIds[_loc2_]);
-               _loc2_++;
+               this._tools[i] = Item.getItemById(this.toolIds[i]);
+               i++;
             }
          }
          return this._tools;

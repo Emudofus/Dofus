@@ -28,46 +28,46 @@ package com.ankamagames.dofus.internalDatacenter.guild
       
       public static const BACK:uint = 2;
       
-      public static function fromNetwork(param1:GuildEmblem, param2:Boolean) : EmblemWrapper {
-         var _loc3_:EmblemWrapper = new EmblemWrapper();
-         if(param2)
+      public static function fromNetwork(msg:GuildEmblem, background:Boolean) : EmblemWrapper {
+         var o:EmblemWrapper = new EmblemWrapper();
+         if(background)
          {
-            _loc3_.idEmblem = param1.backgroundShape;
-            _loc3_._color = param1.backgroundColor;
-            _loc3_._type = BACK;
+            o.idEmblem = msg.backgroundShape;
+            o._color = msg.backgroundColor;
+            o._type = BACK;
          }
          else
          {
-            _loc3_.idEmblem = param1.symbolShape;
-            _loc3_._color = param1.symbolColor;
-            _loc3_._type = UP;
+            o.idEmblem = msg.symbolShape;
+            o._color = msg.symbolColor;
+            o._type = UP;
          }
-         return _loc3_;
+         return o;
       }
       
-      public static function create(param1:uint, param2:uint, param3:uint=0, param4:Boolean=false) : EmblemWrapper {
-         var _loc5_:EmblemWrapper = null;
-         if(!_cache[param1] || !param4)
+      public static function create(pIdEmblem:uint, pType:uint, pColor:uint=0, useCache:Boolean=false) : EmblemWrapper {
+         var emblem:EmblemWrapper = null;
+         if((!_cache[pIdEmblem]) || (!useCache))
          {
-            _loc5_ = new EmblemWrapper();
-            _loc5_.idEmblem = param1;
-            if(param4)
+            emblem = new EmblemWrapper();
+            emblem.idEmblem = pIdEmblem;
+            if(useCache)
             {
-               _cache[param1] = _loc5_;
+               _cache[pIdEmblem] = emblem;
             }
          }
          else
          {
-            _loc5_ = _cache[param1];
+            emblem = _cache[pIdEmblem];
          }
-         _loc5_._type = param2;
-         _loc5_._color = param3;
-         _loc5_._isInit = false;
-         return _loc5_;
+         emblem._type = pType;
+         emblem._color = pColor;
+         emblem._isInit = false;
+         return emblem;
       }
       
-      public static function getEmblemFromId(param1:uint) : EmblemWrapper {
-         return _cache[param1];
+      public static function getEmblemFromId(emblemId:uint) : EmblemWrapper {
+         return _cache[emblemId];
       }
       
       private var _uri:Uri;
@@ -110,7 +110,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          return new Uri(XmlConfig.getInstance().getEntry("config.ui.skin").concat("bitmap/emptySlot.png"));
       }
       
-      public function set backGroundIconUri(param1:Uri) : void {
+      public function set backGroundIconUri(bgUri:Uri) : void {
       }
       
       public function get info1() : String {
@@ -125,7 +125,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          return 0;
       }
       
-      public function set endTime(param1:int) : void {
+      public function set endTime(t:int) : void {
       }
       
       public function get timer() : int {
@@ -148,25 +148,25 @@ package com.ankamagames.dofus.internalDatacenter.guild
          return null;
       }
       
-      public function update(param1:uint, param2:uint, param3:uint=0) : void {
-         this.idEmblem = param1;
-         this._type = param2;
-         this._color = param3;
+      public function update(pIdEmblem:uint, pType:uint, pColor:uint=0) : void {
+         this.idEmblem = pIdEmblem;
+         this._type = pType;
+         this._color = pColor;
          this._isInit = false;
       }
       
-      public function addHolder(param1:ISlotDataHolder) : void {
+      public function addHolder(h:ISlotDataHolder) : void {
       }
       
-      public function removeHolder(param1:ISlotDataHolder) : void {
+      public function removeHolder(h:ISlotDataHolder) : void {
       }
       
       private function init() : void {
-         var _loc1_:String = null;
-         var _loc2_:String = null;
-         var _loc3_:* = 0;
-         var _loc4_:EmblemSymbol = null;
-         var _loc5_:EmblemBackground = null;
+         var path:String = null;
+         var pathFullSize:String = null;
+         var iconId:* = 0;
+         var symbol:EmblemSymbol = null;
+         var back:EmblemBackground = null;
          if(this._isInit)
          {
             return;
@@ -174,23 +174,23 @@ package com.ankamagames.dofus.internalDatacenter.guild
          switch(this._type)
          {
             case UP:
-               _loc4_ = EmblemSymbol.getEmblemSymbolById(this.idEmblem);
-               _loc3_ = _loc4_.iconId;
-               this._order = _loc4_.order;
-               this._category = _loc4_.categoryId;
-               _loc1_ = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.small") + "up/";
-               _loc2_ = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.large") + "up/";
+               symbol = EmblemSymbol.getEmblemSymbolById(this.idEmblem);
+               iconId = symbol.iconId;
+               this._order = symbol.order;
+               this._category = symbol.categoryId;
+               path = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.small") + "up/";
+               pathFullSize = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.large") + "up/";
                break;
             case BACK:
-               _loc5_ = EmblemBackground.getEmblemBackgroundById(this.idEmblem);
-               this._order = _loc5_.order;
-               _loc3_ = this.idEmblem;
-               _loc1_ = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.small") + "back/";
-               _loc2_ = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.large") + "back/";
+               back = EmblemBackground.getEmblemBackgroundById(this.idEmblem);
+               this._order = back.order;
+               iconId = this.idEmblem;
+               path = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.small") + "back/";
+               pathFullSize = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.large") + "back/";
                break;
          }
-         this._uri = new Uri(_loc1_ + _loc3_ + ".png");
-         this._fullSizeUri = new Uri(_loc2_ + _loc3_ + ".swf");
+         this._uri = new Uri(path + iconId + ".png");
+         this._fullSizeUri = new Uri(pathFullSize + iconId + ".swf");
          this._isInit = true;
       }
    }

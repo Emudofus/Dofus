@@ -7,14 +7,14 @@ package com.ankamagames.berilia.types.event
    public class InstanceEvent extends Object
    {
       
-      public function InstanceEvent(param1:DisplayObject, param2:Object) {
+      public function InstanceEvent(doInstance:DisplayObject, oCallback:Object) {
          super();
-         this._doInstance = param1;
+         this._doInstance = doInstance;
          this._aEvent = new Array();
-         this._oCallback = param2;
-         if(param1 is InteractiveObject)
+         this._oCallback = oCallback;
+         if(doInstance is InteractiveObject)
          {
-            InteractiveObject(param1).mouseEnabled = true;
+            InteractiveObject(doInstance).mouseEnabled = true;
          }
          MEMORY_LOG[this] = 1;
       }
@@ -39,16 +39,16 @@ package com.ankamagames.berilia.types.event
          return this._oCallback;
       }
       
-      public function set callbackObject(param1:Object) : void {
-         this._oCallback = param1;
+      public function set callbackObject(o:Object) : void {
+         this._oCallback = o;
       }
       
       public function get haveEvent() : Boolean {
          return !(this._aEvent.length == 0);
       }
       
-      public function push(param1:String) : void {
-         this._aEvent[param1] = true;
+      public function push(sEventName:String) : void {
+         this._aEvent[sEventName] = true;
       }
    }
 }

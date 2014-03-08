@@ -40,41 +40,39 @@ package com.ankamagames.dofus.console.debug.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:PartsListMessage = null;
-         var _loc3_:PartInfoMessage = null;
-         var _loc4_:DownloadCurrentSpeedMessage = null;
-         var _loc5_:ContentPart = null;
+      public function process(msg:Message) : Boolean {
+         var plmsg:PartsListMessage = null;
+         var pimsg:PartInfoMessage = null;
+         var dcsmsg:DownloadCurrentSpeedMessage = null;
+         var cp:ContentPart = null;
          switch(true)
          {
-            case param1 is PartsListMessage:
-               _loc2_ = param1 as PartsListMessage;
+            case msg is PartsListMessage:
+               plmsg = msg as PartsListMessage;
                if(this._partInfoCallback != null)
                {
-                  for each (_loc5_ in _loc2_.parts)
+                  for each (cp in plmsg.parts)
                   {
-                     this._partInfoCallback(_loc5_);
+                     this._partInfoCallback(cp);
                   }
                   this._partInfoCallback = null;
                }
                return false;
-            case param1 is PartInfoMessage:
-               _loc3_ = param1 as PartInfoMessage;
+            case msg is PartInfoMessage:
+               pimsg = msg as PartInfoMessage;
                if(this._partInfoCallback != null)
                {
-                  this._partInfoCallback(_loc3_.part);
+                  this._partInfoCallback(pimsg.part);
                   this._partInfoCallback = null;
                }
                return false;
-            case param1 is DownloadCurrentSpeedMessage:
-               _loc4_ = param1 as DownloadCurrentSpeedMessage;
+            case msg is DownloadCurrentSpeedMessage:
+               dcsmsg = msg as DownloadCurrentSpeedMessage;
                if(this._updaterSpeedCallback != null)
                {
-                  this._updaterSpeedCallback(_loc4_.downloadSpeed);
+                  this._updaterSpeedCallback(dcsmsg.downloadSpeed);
                   this._updaterSpeedCallback = null;
                }
-               return false;
-            default:
                return false;
          }
       }
@@ -83,44 +81,44 @@ package com.ankamagames.dofus.console.debug.frames
          return true;
       }
       
-      public function partListRequest(param1:Function) : void {
+      public function partListRequest(partInfoCallback:Function) : void {
          _log.info("Send part list request");
-         this._partInfoCallback = param1;
-         var _loc2_:GetPartsListMessage = new GetPartsListMessage();
-         _loc2_.initGetPartsListMessage();
-         UpdaterConnexionHandler.getConnection().send(_loc2_);
+         this._partInfoCallback = partInfoCallback;
+         var gplmsg:GetPartsListMessage = new GetPartsListMessage();
+         gplmsg.initGetPartsListMessage();
+         UpdaterConnexionHandler.getConnection().send(gplmsg);
       }
       
-      public function partInfoRequest(param1:String, param2:Function) : void {
+      public function partInfoRequest(id:String, partInfoCallback:Function) : void {
          _log.info("Send part info request");
-         this._partInfoCallback = param2;
-         var _loc3_:GetPartInfoMessage = new GetPartInfoMessage();
-         _loc3_.initGetPartInfoMessage(param1);
-         UpdaterConnexionHandler.getConnection().send(_loc3_);
+         this._partInfoCallback = partInfoCallback;
+         var gpimsg:GetPartInfoMessage = new GetPartInfoMessage();
+         gpimsg.initGetPartInfoMessage(id);
+         UpdaterConnexionHandler.getConnection().send(gpimsg);
       }
       
-      public function setUpdaterSpeedRequest(param1:int, param2:Function) : void {
+      public function setUpdaterSpeedRequest(speed:int, updaterSpeedCallback:Function) : void {
          _log.info("Send updater speed request");
-         this._updaterSpeedCallback = param2;
-         var _loc3_:DownloadSetSpeedRequestMessage = new DownloadSetSpeedRequestMessage();
-         _loc3_.initDownloadSetSpeedRequestMessage(param1);
-         UpdaterConnexionHandler.getConnection().send(_loc3_);
+         this._updaterSpeedCallback = updaterSpeedCallback;
+         var dssrmsg:DownloadSetSpeedRequestMessage = new DownloadSetSpeedRequestMessage();
+         dssrmsg.initDownloadSetSpeedRequestMessage(speed);
+         UpdaterConnexionHandler.getConnection().send(dssrmsg);
       }
       
-      public function getUpdaterSpeedRequest(param1:Function) : void {
+      public function getUpdaterSpeedRequest(updaterSpeedCallback:Function) : void {
          _log.info("Send updater speed request");
-         this._updaterSpeedCallback = param1;
-         var _loc2_:DownloadGetCurrentSpeedRequestMessage = new DownloadGetCurrentSpeedRequestMessage();
-         _loc2_.initDownloadGetCurrentSpeedRequestMessage();
-         UpdaterConnexionHandler.getConnection().send(_loc2_);
+         this._updaterSpeedCallback = updaterSpeedCallback;
+         var dgcsrmsg:DownloadGetCurrentSpeedRequestMessage = new DownloadGetCurrentSpeedRequestMessage();
+         dgcsrmsg.initDownloadGetCurrentSpeedRequestMessage();
+         UpdaterConnexionHandler.getConnection().send(dgcsrmsg);
       }
       
-      public function downloadPartRequest(param1:String, param2:Function) : void {
+      public function downloadPartRequest(id:String, partInfoCallback:Function) : void {
          _log.info("Send download part request");
-         this._partInfoCallback = param2;
-         var _loc3_:DownloadPartMessage = new DownloadPartMessage();
-         _loc3_.initDownloadPartMessage(param1);
-         UpdaterConnexionHandler.getConnection().send(_loc3_);
+         this._partInfoCallback = partInfoCallback;
+         var dpmsg:DownloadPartMessage = new DownloadPartMessage();
+         dpmsg.initDownloadPartMessage(id);
+         UpdaterConnexionHandler.getConnection().send(dpmsg);
       }
    }
 }

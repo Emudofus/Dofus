@@ -10,14 +10,14 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class GuildRightsItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function GuildRightsItemCriterion(param1:String) {
-         super(param1);
+      public function GuildRightsItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get isRespected() : Boolean {
-         var _loc3_:* = false;
-         var _loc1_:SocialFrame = Kernel.getWorker().getFrame(SocialFrame) as SocialFrame;
-         if(!_loc1_.hasGuild)
+         var hasThisRight:* = false;
+         var socialFrame:SocialFrame = Kernel.getWorker().getFrame(SocialFrame) as SocialFrame;
+         if(!socialFrame.hasGuild)
          {
             if(_operator.text == ItemCriterionOperator.DIFFERENT)
             {
@@ -25,144 +25,142 @@ package com.ankamagames.dofus.datacenter.items.criterion
             }
             return false;
          }
-         var _loc2_:GuildWrapper = _loc1_.guild;
+         var guild:GuildWrapper = socialFrame.guild;
          switch(criterionValue)
          {
             case GuildRightsBitEnum.GUILD_RIGHT_BOSS:
-               _loc3_ = _loc2_.isBoss;
+               hasThisRight = guild.isBoss;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS:
-               _loc3_ = _loc2_.banMembers;
+               hasThisRight = guild.banMembers;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_COLLECT:
-               _loc3_ = _loc2_.collect;
+               hasThisRight = guild.collect;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_COLLECT_MY_TAX_COLLECTOR:
-               _loc3_ = _loc2_.collectMyTaxCollectors;
+               hasThisRight = guild.collectMyTaxCollectors;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_DEFENSE_PRIORITY:
-               _loc3_ = _loc2_.prioritizeMeInDefense;
+               hasThisRight = guild.prioritizeMeInDefense;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_HIRE_TAX_COLLECTOR:
-               _loc3_ = _loc2_.hireTaxCollector;
+               hasThisRight = guild.hireTaxCollector;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_INVITE_NEW_MEMBERS:
-               _loc3_ = _loc2_.inviteNewMembers;
+               hasThisRight = guild.inviteNewMembers;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_MANAGE_GUILD_BOOSTS:
-               _loc3_ = _loc2_.manageGuildBoosts;
+               hasThisRight = guild.manageGuildBoosts;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION:
-               _loc3_ = _loc2_.manageMyXpContribution;
+               hasThisRight = guild.manageMyXpContribution;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS:
-               _loc3_ = _loc2_.manageRanks;
+               hasThisRight = guild.manageRanks;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS:
-               _loc3_ = _loc2_.manageRights;
+               hasThisRight = guild.manageRights;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION:
-               _loc3_ = _loc2_.manageXPContribution;
+               hasThisRight = guild.manageXPContribution;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_ORGANIZE_PADDOCKS:
-               _loc3_ = _loc2_.organizeFarms;
+               hasThisRight = guild.organizeFarms;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_SET_ALLIANCE_PRISM:
-               _loc3_ = _loc2_.setAlliancePrism;
+               hasThisRight = guild.setAlliancePrism;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_TALK_IN_ALLIANCE_CHAN:
-               _loc3_ = _loc2_.talkInAllianceChannel;
+               hasThisRight = guild.talkInAllianceChannel;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_TAKE_OTHERS_MOUNTS_IN_PADDOCKS:
-               _loc3_ = _loc2_.takeOthersRidesInFarm;
+               hasThisRight = guild.takeOthersRidesInFarm;
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_USE_PADDOCKS:
-               _loc3_ = _loc2_.useFarms;
+               hasThisRight = guild.useFarms;
                break;
          }
          switch(_operator.text)
          {
             case ItemCriterionOperator.EQUAL:
-               return _loc3_;
+               return hasThisRight;
             case ItemCriterionOperator.DIFFERENT:
-               return !_loc3_;
-            default:
-               return false;
+               return !hasThisRight;
          }
       }
       
       override public function get text() : String {
-         var _loc1_:String = null;
-         var _loc2_:String = null;
+         var readableCriterion:String = null;
+         var readableCriterionValue:String = null;
          switch(criterionValue)
          {
             case GuildRightsBitEnum.GUILD_RIGHT_BOSS:
-               _loc2_ = I18n.getUiText("ui.guild.right.leader");
+               readableCriterionValue = I18n.getUiText("ui.guild.right.leader");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsBann");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsBann");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_COLLECT:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsCollect");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsCollect");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_COLLECT_MY_TAX_COLLECTOR:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsCollectMy");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsCollectMy");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_DEFENSE_PRIORITY:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsPrioritizeMe");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsPrioritizeMe");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_HIRE_TAX_COLLECTOR:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsHiretax");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsHiretax");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_INVITE_NEW_MEMBERS:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsInvit");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsInvit");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_MANAGE_GUILD_BOOSTS:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsBoost");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsBoost");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION:
-               _loc2_ = I18n.getUiText("ui.social.guildRightManageOwnXP");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightManageOwnXP");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsRank");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsRank");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS:
-               _loc2_ = I18n.getUiText("ui.social.guildManageRights");
+               readableCriterionValue = I18n.getUiText("ui.social.guildManageRights");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsPercentXp");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsPercentXp");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_ORGANIZE_PADDOCKS:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsMountParkArrange");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsMountParkArrange");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_SET_ALLIANCE_PRISM:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsSetAlliancePrism");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsSetAlliancePrism");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_TALK_IN_ALLIANCE_CHAN:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsTalkInAllianceChannel");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsTalkInAllianceChannel");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_TAKE_OTHERS_MOUNTS_IN_PADDOCKS:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsManageOtherMount");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsManageOtherMount");
                break;
             case GuildRightsBitEnum.GUILD_RIGHT_USE_PADDOCKS:
-               _loc2_ = I18n.getUiText("ui.social.guildRightsMountParkUse");
+               readableCriterionValue = I18n.getUiText("ui.social.guildRightsMountParkUse");
                break;
          }
          switch(_operator.text)
          {
             case ItemCriterionOperator.EQUAL:
-               _loc1_ = I18n.getUiText("ui.criterion.guildRights",[_loc2_]);
+               readableCriterion = I18n.getUiText("ui.criterion.guildRights",[readableCriterionValue]);
                break;
             case ItemCriterionOperator.DIFFERENT:
-               _loc1_ = I18n.getUiText("ui.criterion.notGuildRights",[_loc2_]);
+               readableCriterion = I18n.getUiText("ui.criterion.notGuildRights",[readableCriterionValue]);
                break;
          }
-         return _loc1_;
+         return readableCriterion;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:GuildRightsItemCriterion = new GuildRightsItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:GuildRightsItemCriterion = new GuildRightsItemCriterion(this.basicText);
+         return clonedCriterion;
       }
    }
 }

@@ -10,33 +10,33 @@ package com.ankamagames.dofus.logic.connection.managers
    public class SpecialBetaAuthentification extends EventDispatcher
    {
       
-      public function SpecialBetaAuthentification(param1:String, param2:String) {
+      public function SpecialBetaAuthentification(login:String, type:String) {
          super();
-         var _loc3_:String = BASE_URL;
-         if(BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE || BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA || BuildInfos.BUILD_TYPE == BuildTypeEnum.ALPHA)
+         var url:String = BASE_URL;
+         if((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE) || (BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA) || (BuildInfos.BUILD_TYPE == BuildTypeEnum.ALPHA))
          {
-            _loc3_ = _loc3_ + "com";
+            url = url + "com";
          }
          else
          {
-            _loc3_ = _loc3_ + "lan";
+            url = url + "lan";
          }
-         var _loc4_:Array = [];
-         switch(param2)
+         var forumId:Array = [];
+         switch(type)
          {
             case STREAMING:
-               _loc4_.push(1210,1080,1008,1127);
+               forumId.push(1210,1080,1008,1127);
                break;
             case MODULES:
-               _loc4_.push(1127);
+               forumId.push(1127);
                break;
          }
          this._haveAccess = false;
-         if(_loc4_.length)
+         if(forumId.length)
          {
-            this._rpc = new RpcServiceManager(_loc3_ + "/forum/forum.json","json");
+            this._rpc = new RpcServiceManager(url + "/forum/forum.json","json");
             this._rpc.addEventListener(Event.COMPLETE,this.onDataReceived);
-            this._rpc.callMethod("IsAuthorized",["dofus","fr",param1,_loc4_]);
+            this._rpc.callMethod("IsAuthorized",["dofus","fr",login,forumId]);
          }
          else
          {
@@ -58,18 +58,13 @@ package com.ankamagames.dofus.logic.connection.managers
          return this._haveAccess;
       }
       
-      private function onDataReceived(param1:Event) : void {
-         var _loc2_:* = true;
-         var _loc3_:* = false;
-         if(_loc2_)
-         {
-            this._haveAccess = this._rpc.getAllResultData();
-            if(_loc3_)
-            {
-            }
-            return;
-         }
-         dispatchEvent(new Event(Event.INIT));
+      private function onDataReceived(e:Event) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
    }
 }

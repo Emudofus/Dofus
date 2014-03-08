@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.items
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ItemType));
       
-      public static function getItemTypeById(param1:uint) : ItemType {
-         return GameData.getObject(MODULE,param1) as ItemType;
+      public static function getItemTypeById(id:uint) : ItemType {
+         return GameData.getObject(MODULE,id) as ItemType;
       }
       
       public static function getItemTypes() : Array {
@@ -81,22 +81,22 @@ package com.ankamagames.dofus.datacenter.items
       }
       
       private function parseZone() : void {
-         var _loc1_:Array = null;
+         var params:Array = null;
          if((this.rawZone) && (this.rawZone.length))
          {
             this._zoneShape = this.rawZone.charCodeAt(0);
-            _loc1_ = this.rawZone.substr(1).split(",");
-            if(_loc1_.length > 0)
+            params = this.rawZone.substr(1).split(",");
+            if(params.length > 0)
             {
-               this._zoneSize = parseInt(_loc1_[0]);
+               this._zoneSize = parseInt(params[0]);
             }
             else
             {
                this._zoneSize = 0;
             }
-            if(_loc1_.length > 1)
+            if(params.length > 1)
             {
-               this._zoneMinSize = parseInt(_loc1_[1]);
+               this._zoneMinSize = parseInt(params[1]);
             }
             else
             {

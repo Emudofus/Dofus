@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:uint) : HouseBuyAction {
-         var _loc2_:HouseBuyAction = new HouseBuyAction();
-         _loc2_.proposedPrice = param1;
-         return _loc2_;
+      public static function create(proposedPrice:uint) : HouseBuyAction {
+         var action:HouseBuyAction = new HouseBuyAction();
+         action.proposedPrice = proposedPrice;
+         return action;
       }
       
       public var proposedPrice:uint;

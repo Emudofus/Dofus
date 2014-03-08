@@ -22,9 +22,9 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 16;
       }
       
-      public function initFightResultListEntry(param1:uint=0, param2:FightLoot=null) : FightResultListEntry {
-         this.outcome = param1;
-         this.rewards = param2;
+      public function initFightResultListEntry(outcome:uint=0, rewards:FightLoot=null) : FightResultListEntry {
+         this.outcome = outcome;
+         this.rewards = rewards;
          return this;
       }
       
@@ -33,21 +33,21 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.rewards = new FightLoot();
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FightResultListEntry(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FightResultListEntry(output);
       }
       
-      public function serializeAs_FightResultListEntry(param1:IDataOutput) : void {
-         param1.writeShort(this.outcome);
-         this.rewards.serializeAs_FightLoot(param1);
+      public function serializeAs_FightResultListEntry(output:IDataOutput) : void {
+         output.writeShort(this.outcome);
+         this.rewards.serializeAs_FightLoot(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FightResultListEntry(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FightResultListEntry(input);
       }
       
-      public function deserializeAs_FightResultListEntry(param1:IDataInput) : void {
-         this.outcome = param1.readShort();
+      public function deserializeAs_FightResultListEntry(input:IDataInput) : void {
+         this.outcome = input.readShort();
          if(this.outcome < 0)
          {
             throw new Error("Forbidden value (" + this.outcome + ") on element of FightResultListEntry.outcome.");
@@ -55,7 +55,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          else
          {
             this.rewards = new FightLoot();
-            this.rewards.deserialize(param1);
+            this.rewards.deserialize(input);
             return;
          }
       }

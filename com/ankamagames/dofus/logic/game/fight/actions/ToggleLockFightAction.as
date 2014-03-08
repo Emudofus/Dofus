@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.fight.actions
       }
       
       public static function create() : ToggleLockFightAction {
-         var _loc1_:ToggleLockFightAction = new ToggleLockFightAction();
-         return _loc1_;
+         var a:ToggleLockFightAction = new ToggleLockFightAction();
+         return a;
       }
    }
 }

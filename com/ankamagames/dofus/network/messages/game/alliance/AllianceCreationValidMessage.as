@@ -33,10 +33,10 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6393;
       }
       
-      public function initAllianceCreationValidMessage(param1:String="", param2:String="", param3:GuildEmblem=null) : AllianceCreationValidMessage {
-         this.allianceName = param1;
-         this.allianceTag = param2;
-         this.allianceEmblem = param3;
+      public function initAllianceCreationValidMessage(allianceName:String="", allianceTag:String="", allianceEmblem:GuildEmblem=null) : AllianceCreationValidMessage {
+         this.allianceName = allianceName;
+         this.allianceTag = allianceTag;
+         this.allianceEmblem = allianceEmblem;
          this._isInitialized = true;
          return this;
       }
@@ -48,35 +48,35 @@ package com.ankamagames.dofus.network.messages.game.alliance
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AllianceCreationValidMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AllianceCreationValidMessage(output);
       }
       
-      public function serializeAs_AllianceCreationValidMessage(param1:IDataOutput) : void {
-         param1.writeUTF(this.allianceName);
-         param1.writeUTF(this.allianceTag);
-         this.allianceEmblem.serializeAs_GuildEmblem(param1);
+      public function serializeAs_AllianceCreationValidMessage(output:IDataOutput) : void {
+         output.writeUTF(this.allianceName);
+         output.writeUTF(this.allianceTag);
+         this.allianceEmblem.serializeAs_GuildEmblem(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AllianceCreationValidMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AllianceCreationValidMessage(input);
       }
       
-      public function deserializeAs_AllianceCreationValidMessage(param1:IDataInput) : void {
-         this.allianceName = param1.readUTF();
-         this.allianceTag = param1.readUTF();
+      public function deserializeAs_AllianceCreationValidMessage(input:IDataInput) : void {
+         this.allianceName = input.readUTF();
+         this.allianceTag = input.readUTF();
          this.allianceEmblem = new GuildEmblem();
-         this.allianceEmblem.deserialize(param1);
+         this.allianceEmblem.deserialize(input);
       }
    }
 }

@@ -7,11 +7,11 @@ package com.ankamagames.atouin.types
    public class WorldEntitySprite extends TiphonSprite implements ICustomUnicNameGetter
    {
       
-      public function WorldEntitySprite(param1:TiphonEntityLook, param2:int, param3:int) {
-         super(param1);
-         this._name = "mapGfx::" + param3;
-         this._cellId = param2;
-         this._identifier = param3;
+      public function WorldEntitySprite(look:TiphonEntityLook, cellId:int, identifier:int) {
+         super(look);
+         this._name = "mapGfx::" + identifier;
+         this._cellId = cellId;
+         this._identifier = identifier;
       }
       
       private var _cellId:int;

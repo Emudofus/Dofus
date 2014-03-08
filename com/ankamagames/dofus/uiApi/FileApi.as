@@ -32,20 +32,20 @@ package com.ankamagames.dofus.uiApi
       
       private var _openedFiles:Dictionary;
       
-      public function set module(param1:UiModule) : void {
-         this._module = param1;
+      public function set module(value:UiModule) : void {
+         this._module = value;
       }
       
       public function destroy() : void {
-         var _loc1_:* = undefined;
+         var mfs:* = undefined;
          this._module = null;
-         for (_loc1_ in this._openedFiles)
+         for (mfs in this._openedFiles)
          {
-            if(_loc1_)
+            if(mfs)
             {
                try
                {
-                  _loc1_.close();
+                  mfs.close();
                }
                catch(e:Error)
                {
@@ -56,130 +56,130 @@ package com.ankamagames.dofus.uiApi
          this._openedFiles = null;
       }
       
-      public function loadXmlFile(param1:String, param2:Function, param3:Function=null) : void {
-         if(FileUtils.getExtension(param1).toUpperCase() != "XML")
+      public function loadXmlFile(url:String, loadSuccessCallBack:Function, loadErrorCallBack:Function=null) : void {
+         if(FileUtils.getExtension(url).toUpperCase() != "XML")
          {
             throw new ApiError("loadXmlFile can only load file with XML extension");
          }
          else
          {
-            if(!param1)
+            if(!url)
             {
                throw new ApiError("loadXmlFile need a non-null url");
             }
             else
             {
-               if(param2 == null)
+               if(loadSuccessCallBack == null)
                {
                   throw new ApiError("loadXmlFile need a non-null success callback function");
                }
                else
                {
-                  param1 = this._module.rootPath + param1.replace("..","");
-                  _loc4_ = new Uri(param1);
-                  _loc4_.tag = 
+                  url = this._module.rootPath + url.replace("..","");
+                  uri = new Uri(url);
+                  uri.tag = 
                      {
-                        "loadSuccessCallBack":param2,
-                        "loadErrorCallBack":param3
+                        "loadSuccessCallBack":loadSuccessCallBack,
+                        "loadErrorCallBack":loadErrorCallBack
                      };
-                  this._loader.load(_loc4_);
+                  this._loader.load(uri);
                   return;
                }
             }
          }
       }
       
-      public function trustedLoadXmlFile(param1:String, param2:Function, param3:Function=null) : void {
-         if(FileUtils.getExtension(param1).toUpperCase() != "XML")
+      public function trustedLoadXmlFile(url:String, loadSuccessCallBack:Function, loadErrorCallBack:Function=null) : void {
+         if(FileUtils.getExtension(url).toUpperCase() != "XML")
          {
             throw new ApiError("loadXmlFile can only load file with XML extension");
          }
          else
          {
-            if(!param1)
+            if(!url)
             {
                throw new ApiError("loadXmlFile need a non-null url");
             }
             else
             {
-               if(param2 == null)
+               if(loadSuccessCallBack == null)
                {
                   throw new ApiError("loadXmlFile need a non-null success callback function");
                }
                else
                {
-                  _loc4_ = new Uri(param1);
-                  _loc4_.tag = 
+                  uri = new Uri(url);
+                  uri.tag = 
                      {
-                        "loadSuccessCallBack":param2,
-                        "loadErrorCallBack":param3
+                        "loadSuccessCallBack":loadSuccessCallBack,
+                        "loadErrorCallBack":loadErrorCallBack
                      };
-                  this._loader.load(_loc4_);
+                  this._loader.load(uri);
                   return;
                }
             }
          }
       }
       
-      public function openFile(param1:String, param2:String="update") : ModuleFilestream {
-         var _loc3_:ModuleFilestream = new ModuleFilestream(param1,param2,this._module);
-         this._openedFiles[_loc3_] = param1;
-         return _loc3_;
+      public function openFile(url:String, openMode:String="update") : ModuleFilestream {
+         var mf:ModuleFilestream = new ModuleFilestream(url,openMode,this._module);
+         this._openedFiles[mf] = url;
+         return mf;
       }
       
-      public function deleteFile(param1:String) : void {
-         var param1:String = ModuleFilestream.cleanUrl(param1);
-         var _loc2_:File = new File(this._module.storagePath + param1 + ".dmf");
-         if((_loc2_.exists) && !_loc2_.isDirectory)
+      public function deleteFile(url:String) : void {
+         var url:String = ModuleFilestream.cleanUrl(url);
+         var file:File = new File(this._module.storagePath + url + ".dmf");
+         if((file.exists) && (!file.isDirectory))
          {
-            _loc2_.deleteFile();
+            file.deleteFile();
          }
       }
       
-      public function deleteDir(param1:String, param2:Boolean=true) : void {
-         var param1:String = ModuleFilestream.cleanUrl(param1);
-         var _loc3_:File = new File(this._module.storagePath + param1);
-         if((_loc3_.exists) && (_loc3_.isDirectory))
+      public function deleteDir(url:String, recursive:Boolean=true) : void {
+         var url:String = ModuleFilestream.cleanUrl(url);
+         var file:File = new File(this._module.storagePath + url);
+         if((file.exists) && (file.isDirectory))
          {
-            _loc3_.deleteDirectory(param2);
+            file.deleteDirectory(recursive);
          }
       }
       
-      public function getDirectoryContent(param1:String=null, param2:Boolean=false, param3:Boolean=false) : Array {
-         var _loc6_:Array = null;
-         var _loc7_:File = null;
-         var param1:String = param1?ModuleFilestream.cleanUrl(param1):"";
-         var _loc4_:Array = [];
-         var _loc5_:File = new File(this._module.storagePath + param1);
-         if((_loc5_.exists) && (_loc5_.isDirectory))
+      public function getDirectoryContent(url:String=null, hideFiles:Boolean=false, hideDirectories:Boolean=false) : Array {
+         var files:Array = null;
+         var file:File = null;
+         var url:String = url?ModuleFilestream.cleanUrl(url):"";
+         var result:Array = [];
+         var dir:File = new File(this._module.storagePath + url);
+         if((dir.exists) && (dir.isDirectory))
          {
-            _loc6_ = _loc5_.getDirectoryListing();
-            for each (_loc7_ in _loc6_)
+            files = dir.getDirectoryListing();
+            for each (file in files)
             {
-               if(!_loc7_.isDirectory && !param2)
+               if((!file.isDirectory) && (!hideFiles))
                {
-                  _loc4_.push(_loc7_.name.substr(_loc7_.name.lastIndexOf(".dm")));
+                  result.push(file.name.substr(file.name.lastIndexOf(".dm")));
                }
-               if((_loc7_.isDirectory) && !param3)
+               if((file.isDirectory) && (!hideDirectories))
                {
-                  _loc4_.push(_loc7_.name);
+                  result.push(file.name);
                }
             }
          }
-         return _loc4_;
+         return result;
       }
       
-      public function isDirectory(param1:String) : Boolean {
-         var param1:String = param1?ModuleFilestream.cleanUrl(param1):"";
-         var _loc2_:File = new File(this._module.storagePath + param1);
-         return (_loc2_.exists) && (_loc2_.isDirectory);
+      public function isDirectory(url:String) : Boolean {
+         var url:String = url?ModuleFilestream.cleanUrl(url):"";
+         var dir:File = new File(this._module.storagePath + url);
+         return (dir.exists) && (dir.isDirectory);
       }
       
-      public function createDirectory(param1:String) : void {
-         var param1:String = param1?ModuleFilestream.cleanUrl(param1):"";
-         var _loc2_:File = new File(this._module.storagePath + param1);
-         ModuleFilestream.checkCreation(param1,this._module);
-         _loc2_.createDirectory();
+      public function createDirectory(url:String) : void {
+         var url:String = url?ModuleFilestream.cleanUrl(url):"";
+         var dir:File = new File(this._module.storagePath + url);
+         ModuleFilestream.checkCreation(url,this._module);
+         dir.createDirectory();
       }
       
       public function getAvaibleSpace() : uint {
@@ -202,12 +202,11 @@ package com.ankamagames.dofus.uiApi
          return ModuleFileManager.getInstance().getMaxFileCount(this._module.id);
       }
       
-      private function onLoaded(param1:ResourceLoadedEvent) : void {
-         param1.uri.tag.loadSuccessCallBack(param1.resource);
+      private function onLoaded(e:ResourceLoadedEvent) : void {
+         e.uri.tag.loadSuccessCallBack(e.resource);
       }
       
-      private function onError(param1:ResourceErrorEvent) : void {
-         var e:ResourceErrorEvent = param1;
+      private function onError(e:ResourceErrorEvent) : void {
          if(e.uri.tag.loadErrorCallBack)
          {
             try

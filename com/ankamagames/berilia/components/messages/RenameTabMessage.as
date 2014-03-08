@@ -5,10 +5,10 @@ package com.ankamagames.berilia.components.messages
    public class RenameTabMessage extends ComponentMessage
    {
       
-      public function RenameTabMessage(param1:InteractiveObject, param2:int, param3:String) {
-         super(param1);
-         this._index = param2;
-         this._name = param3;
+      public function RenameTabMessage(target:InteractiveObject, index:int, name:String) {
+         super(target);
+         this._index = index;
+         this._name = name;
       }
       
       private var _index:int;

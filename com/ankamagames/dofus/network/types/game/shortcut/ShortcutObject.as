@@ -17,8 +17,8 @@ package com.ankamagames.dofus.network.types.game.shortcut
          return 367;
       }
       
-      public function initShortcutObject(param1:uint=0) : ShortcutObject {
-         super.initShortcut(param1);
+      public function initShortcutObject(slot:uint=0) : ShortcutObject {
+         super.initShortcut(slot);
          return this;
       }
       
@@ -26,20 +26,20 @@ package com.ankamagames.dofus.network.types.game.shortcut
          super.reset();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ShortcutObject(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ShortcutObject(output);
       }
       
-      public function serializeAs_ShortcutObject(param1:IDataOutput) : void {
-         super.serializeAs_Shortcut(param1);
+      public function serializeAs_ShortcutObject(output:IDataOutput) : void {
+         super.serializeAs_Shortcut(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ShortcutObject(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ShortcutObject(input);
       }
       
-      public function deserializeAs_ShortcutObject(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_ShortcutObject(input:IDataInput) : void {
+         super.deserialize(input);
       }
    }
 }

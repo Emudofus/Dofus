@@ -9,14 +9,14 @@ package com.ankamagames.dofus.logic.game.approach.actions
          super();
       }
       
-      public static function create(param1:String, param2:uint, param3:Boolean, param4:Array, param5:int) : CharacterCreationAction {
-         var _loc6_:CharacterCreationAction = new CharacterCreationAction();
-         _loc6_.name = param1;
-         _loc6_.breed = param2;
-         _loc6_.sex = param3;
-         _loc6_.colors = param4;
-         _loc6_.head = param5;
-         return _loc6_;
+      public static function create(name:String, breed:uint, sex:Boolean, colors:Array, head:int) : CharacterCreationAction {
+         var a:CharacterCreationAction = new CharacterCreationAction();
+         a.name = name;
+         a.breed = breed;
+         a.sex = sex;
+         a.colors = colors;
+         a.head = head;
+         return a;
       }
       
       public var name:String;

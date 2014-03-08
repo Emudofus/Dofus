@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 205;
       }
       
-      public function initGameFightSpellCooldown(param1:int=0, param2:uint=0) : GameFightSpellCooldown {
-         this.spellId = param1;
-         this.cooldown = param2;
+      public function initGameFightSpellCooldown(spellId:int=0, cooldown:uint=0) : GameFightSpellCooldown {
+         this.spellId = spellId;
+         this.cooldown = cooldown;
          return this;
       }
       
@@ -32,30 +32,30 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.cooldown = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightSpellCooldown(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightSpellCooldown(output);
       }
       
-      public function serializeAs_GameFightSpellCooldown(param1:IDataOutput) : void {
-         param1.writeInt(this.spellId);
+      public function serializeAs_GameFightSpellCooldown(output:IDataOutput) : void {
+         output.writeInt(this.spellId);
          if(this.cooldown < 0)
          {
             throw new Error("Forbidden value (" + this.cooldown + ") on element cooldown.");
          }
          else
          {
-            param1.writeByte(this.cooldown);
+            output.writeByte(this.cooldown);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightSpellCooldown(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightSpellCooldown(input);
       }
       
-      public function deserializeAs_GameFightSpellCooldown(param1:IDataInput) : void {
-         this.spellId = param1.readInt();
-         this.cooldown = param1.readByte();
+      public function deserializeAs_GameFightSpellCooldown(input:IDataInput) : void {
+         this.spellId = input.readInt();
+         this.cooldown = input.readByte();
          if(this.cooldown < 0)
          {
             throw new Error("Forbidden value (" + this.cooldown + ") on element of GameFightSpellCooldown.cooldown.");

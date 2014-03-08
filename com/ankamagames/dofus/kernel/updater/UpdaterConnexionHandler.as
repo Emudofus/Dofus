@@ -67,12 +67,12 @@ package com.ankamagames.dofus.kernel.updater
          return _currentConnection;
       }
       
-      public function onConnect(param1:Event) : void {
+      public function onConnect(e:Event) : void {
          StatisticReportingManager.getInstance().report("UpdaterConnexion - " + BuildInfos.BUILD_TYPE + " - " + BuildInfos.BUILD_VERSION,"success");
          PartManager.getInstance().initialize();
       }
       
-      public function onIoError(param1:IOErrorEvent) : void {
+      public function onIoError(e:IOErrorEvent) : void {
          if(CommandLineArguments.getInstance().hasArgument("update-server-port"))
          {
             StatisticReportingManager.getInstance().report("UpdaterConnexion - " + BuildInfos.BUILD_TYPE + " - " + BuildInfos.BUILD_VERSION,"failed");

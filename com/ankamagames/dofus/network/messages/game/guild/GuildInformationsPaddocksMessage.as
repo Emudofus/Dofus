@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.guild
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.paddock.PaddockContentInformations;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,9 +32,9 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5959;
       }
       
-      public function initGuildInformationsPaddocksMessage(param1:uint=0, param2:Vector.<PaddockContentInformations>=null) : GuildInformationsPaddocksMessage {
-         this.nbPaddockMax = param1;
-         this.paddocksInformations = param2;
+      public function initGuildInformationsPaddocksMessage(nbPaddockMax:uint=0, paddocksInformations:Vector.<PaddockContentInformations>=null) : GuildInformationsPaddocksMessage {
+         this.nbPaddockMax = nbPaddockMax;
+         this.paddocksInformations = paddocksInformations;
          this._isInitialized = true;
          return this;
       }
@@ -45,60 +45,60 @@ package com.ankamagames.dofus.network.messages.game.guild
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildInformationsPaddocksMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildInformationsPaddocksMessage(output);
       }
       
-      public function serializeAs_GuildInformationsPaddocksMessage(param1:IDataOutput) : void {
+      public function serializeAs_GuildInformationsPaddocksMessage(output:IDataOutput) : void {
          if(this.nbPaddockMax < 0)
          {
             throw new Error("Forbidden value (" + this.nbPaddockMax + ") on element nbPaddockMax.");
          }
          else
          {
-            param1.writeByte(this.nbPaddockMax);
-            param1.writeShort(this.paddocksInformations.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.paddocksInformations.length)
+            output.writeByte(this.nbPaddockMax);
+            output.writeShort(this.paddocksInformations.length);
+            _i2 = 0;
+            while(_i2 < this.paddocksInformations.length)
             {
-               (this.paddocksInformations[_loc2_] as PaddockContentInformations).serializeAs_PaddockContentInformations(param1);
-               _loc2_++;
+               (this.paddocksInformations[_i2] as PaddockContentInformations).serializeAs_PaddockContentInformations(output);
+               _i2++;
             }
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildInformationsPaddocksMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildInformationsPaddocksMessage(input);
       }
       
-      public function deserializeAs_GuildInformationsPaddocksMessage(param1:IDataInput) : void {
-         var _loc4_:PaddockContentInformations = null;
-         this.nbPaddockMax = param1.readByte();
+      public function deserializeAs_GuildInformationsPaddocksMessage(input:IDataInput) : void {
+         var _item2:PaddockContentInformations = null;
+         this.nbPaddockMax = input.readByte();
          if(this.nbPaddockMax < 0)
          {
             throw new Error("Forbidden value (" + this.nbPaddockMax + ") on element of GuildInformationsPaddocksMessage.nbPaddockMax.");
          }
          else
          {
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            _paddocksInformationsLen = input.readUnsignedShort();
+            _i2 = 0;
+            while(_i2 < _paddocksInformationsLen)
             {
-               _loc4_ = new PaddockContentInformations();
-               _loc4_.deserialize(param1);
-               this.paddocksInformations.push(_loc4_);
-               _loc3_++;
+               _item2 = new PaddockContentInformations();
+               _item2.deserialize(input);
+               this.paddocksInformations.push(_item2);
+               _i2++;
             }
             return;
          }

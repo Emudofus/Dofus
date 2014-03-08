@@ -9,12 +9,12 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(param1:uint, param2:uint, param3:uint) : TeleportRequestAction {
-         var _loc4_:TeleportRequestAction = new TeleportRequestAction();
-         _loc4_.teleportType = param1;
-         _loc4_.mapId = param2;
-         _loc4_.cost = param3;
-         return _loc4_;
+      public static function create(teleportType:uint, mapId:uint, cost:uint) : TeleportRequestAction {
+         var action:TeleportRequestAction = new TeleportRequestAction();
+         action.teleportType = teleportType;
+         action.mapId = mapId;
+         action.cost = cost;
+         return action;
       }
       
       public var mapId:uint;

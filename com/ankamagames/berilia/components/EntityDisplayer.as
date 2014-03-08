@@ -50,16 +50,16 @@ package com.ankamagames.berilia.components
       
       private static const _skinModifier:Dictionary = new Dictionary();
       
-      public static function setSubEntityDefaultBehavior(param1:uint, param2:ISubEntityBehavior) : void {
-         _subEntitiesBehaviors[param1] = param2;
+      public static function setSubEntityDefaultBehavior(category:uint, behavior:ISubEntityBehavior) : void {
+         _subEntitiesBehaviors[category] = behavior;
       }
       
-      public static function setAnimationModifier(param1:uint, param2:IAnimationModifier) : void {
-         _animationModifier[param1] = param2;
+      public static function setAnimationModifier(boneId:uint, am:IAnimationModifier) : void {
+         _animationModifier[boneId] = am;
       }
       
-      public static function setSkinModifier(param1:uint, param2:ISkinModifier) : void {
-         _skinModifier[param1] = param2;
+      public static function setSkinModifier(boneId:uint, sm:ISkinModifier) : void {
+         _skinModifier[boneId] = sm;
       }
       
       private var _entity:TiphonSprite;
@@ -114,18 +114,18 @@ package com.ankamagames.berilia.components
       
       public var withoutMount:Boolean = false;
       
-      public function set look(param1:*) : void {
-         var _loc2_:TiphonEntityLook = null;
-         var _loc3_:TiphonSprite = null;
+      public function set look(rawLook:*) : void {
+         var look:TiphonEntityLook = null;
+         var entity:TiphonSprite = null;
          if(lookAdaptater != null)
          {
-            _loc2_ = lookAdaptater(param1);
+            look = lookAdaptater(rawLook);
          }
          else
          {
-            if(param1 is TiphonEntityLook)
+            if(rawLook is TiphonEntityLook)
             {
-               _loc2_ = param1 as TiphonEntityLook;
+               look = rawLook as TiphonEntityLook;
             }
             else
             {
@@ -134,45 +134,45 @@ package com.ankamagames.berilia.components
          }
          if(this._entity)
          {
-            this._entity.visible = !(_loc2_ == null);
+            this._entity.visible = !(look == null);
          }
          if(this.withoutMount)
          {
-            _loc2_ = TiphonUtility.getLookWithoutMount(_loc2_);
+            look = TiphonUtility.getLookWithoutMount(look);
          }
-         if(_loc2_ != null)
+         if(look != null)
          {
             if(this.clearSubEntities)
             {
-               _loc2_.resetSubEntities();
+               look.resetSubEntities();
             }
             else
             {
                if(this.clearAuras)
                {
-                  _loc2_.removeSubEntity(6);
+                  look.removeSubEntity(6);
                }
             }
          }
-         if((_loc2_) && (this._lookUpdate))
+         if((look) && (this._lookUpdate))
          {
-            if(_loc2_.toString() == this._lookUpdate.toString())
+            if(look.toString() == this._lookUpdate.toString())
             {
                return;
             }
          }
-         this._lookUpdate = _loc2_?_loc2_.clone():_loc2_;
+         this._lookUpdate = look?look.clone():look;
          if(this._useCache)
          {
-            _loc3_ = this._cache[_loc2_.toString()];
-            if(_loc3_)
+            entity = this._cache[look.toString()];
+            if(entity)
             {
                if(this._entity)
                {
                   this.destroyOldEntity(this._entity);
                }
-               addChild(_loc3_);
-               this._entity = _loc3_;
+               addChild(entity);
+               this._entity = entity;
                this._fromCache = true;
                return;
             }
@@ -186,50 +186,50 @@ package com.ankamagames.berilia.components
          return this._entity?this._entity.look:this._lookUpdate;
       }
       
-      public function set direction(param1:uint) : void {
-         this._direction = param1;
-         if(!this._listenForUpdate && this._entity is TiphonSprite)
+      public function set direction(n:uint) : void {
+         this._direction = n;
+         if((!this._listenForUpdate) && (this._entity is TiphonSprite))
          {
-            TiphonSprite(this._entity).setDirection(param1);
+            TiphonSprite(this._entity).setDirection(n);
          }
       }
       
-      public function set animation(param1:String) : void {
-         this._animation = param1;
+      public function set animation(anim:String) : void {
+         this._animation = anim;
          if(this._entity is TiphonSprite)
          {
-            TiphonSprite(this._entity).setAnimation(param1);
+            TiphonSprite(this._entity).setAnimation(anim);
          }
       }
       
-      public function set gotoAndStop(param1:int) : void {
+      public function set gotoAndStop(value:int) : void {
          if(this._entity)
          {
-            if(param1 == -1)
+            if(value == -1)
             {
                this._entity.stopAnimationAtEnd();
             }
             else
             {
-               this._entity.stopAnimation(param1);
+               this._entity.stopAnimation(value);
             }
          }
          else
          {
-            this._gotoAndStop = param1;
+            this._gotoAndStop = value;
          }
       }
       
-      public function set staticDisplay(param1:Boolean) : void {
-         this._staticDisplay = param1;
+      public function set staticDisplay(b:Boolean) : void {
+         this._staticDisplay = b;
       }
       
       public function get staticDisplay() : Boolean {
          return this._staticDisplay;
       }
       
-      override public function set scale(param1:Number) : void {
-         this._scale = param1;
+      override public function set scale(n:Number) : void {
+         this._scale = n;
       }
       
       override public function get scale() : Number {
@@ -244,17 +244,17 @@ package com.ankamagames.berilia.components
          return this._animation;
       }
       
-      public function set view(param1:String) : void {
-         this._view = param1;
+      public function set view(value:String) : void {
+         this._view = value;
          if(this._entity is TiphonSprite)
          {
-            this._entity.setView(param1);
+            this._entity.setView(value);
          }
       }
       
-      override public function set handCursor(param1:Boolean) : void {
-         super.handCursor = param1;
-         if(param1)
+      override public function set handCursor(value:Boolean) : void {
+         super.handCursor = value;
+         if(value)
          {
             addEventListener(MouseEvent.MOUSE_OVER,this.mouseOver);
             addEventListener(MouseEvent.MOUSE_OUT,this.mouseOut);
@@ -270,8 +270,8 @@ package com.ankamagames.berilia.components
          return this._useCache;
       }
       
-      public function set useCache(param1:Boolean) : void {
-         this._useCache = param1;
+      public function set useCache(value:Boolean) : void {
+         this._useCache = value;
          if(!this._cache)
          {
             this._cache = new Object();
@@ -282,7 +282,7 @@ package com.ankamagames.berilia.components
          return super.cacheAsBitmap;
       }
       
-      override public function set cacheAsBitmap(param1:Boolean) : void {
+      override public function set cacheAsBitmap(value:Boolean) : void {
          _log.fatal("Attention : Il ne faut surtout pas utiliser la propriété cacheAsBitmap sur les EntityDisplayer. TiphonSprite le gère déjà.");
       }
       
@@ -291,7 +291,7 @@ package com.ankamagames.berilia.components
       }
       
       public function updateMask() : void {
-         if(this._scale > 1 || !(this.yOffset == 0))
+         if((this._scale > 1) || (!(this.yOffset == 0)))
          {
             if(this._mask)
             {
@@ -323,7 +323,7 @@ package com.ankamagames.berilia.components
          }
          else
          {
-            if((this._mask) && (this._mask.parent) && this._mask.parent == this)
+            if((this._mask) && (this._mask.parent) && (this._mask.parent == this))
             {
                removeChild(this._mask);
             }
@@ -333,70 +333,70 @@ package com.ankamagames.berilia.components
       }
       
       public function updateScaleAndOffsets() : void {
-         var _loc1_:* = NaN;
-         var _loc2_:Rectangle = null;
-         var _loc3_:DisplayInfoSprite = null;
-         var _loc4_:* = NaN;
-         var _loc5_:* = NaN;
+         var entRatio:* = NaN;
+         var b:Rectangle = null;
+         var dis:DisplayInfoSprite = null;
+         var r:* = NaN;
+         var m:* = NaN;
          this._entity.x = 0;
          this._entity.y = 0;
          if(this._view != null)
          {
-            _loc3_ = TiphonSprite(this._entity).getDisplayInfoSprite(this._view);
-            if(_loc3_ != null)
+            dis = TiphonSprite(this._entity).getDisplayInfoSprite(this._view);
+            if(dis != null)
             {
                TiphonSprite(this._entity).look.setScales(1,1);
                TiphonSprite(this._entity).setView(this._view);
-               _loc1_ = this._entity.width / this._entity.height;
+               entRatio = this._entity.width / this._entity.height;
                if(this._entity.width > this._entity.height)
                {
-                  this._entity.height = width / _loc1_ * this._scale;
+                  this._entity.height = width / entRatio * this._scale;
                   this._entity.width = width * this._scale;
                }
                else
                {
-                  this._entity.width = height * _loc1_ * this._scale;
+                  this._entity.width = height * entRatio * this._scale;
                   this._entity.height = height * this._scale;
                }
-               _loc2_ = TiphonSprite(this._entity).getBounds(this);
-               this._entity.x = (width - this._entity.width) / 2 - _loc2_.left + this.xOffset;
-               this._entity.y = (height - this._entity.height) / 2 - _loc2_.top + this.yOffset;
-               _loc4_ = _loc3_.width / _loc3_.height;
-               _loc5_ = width / height < _loc3_.width / _loc3_.height?width / _loc3_.getRect(this).width:height / _loc3_.getRect(this).height;
-               this._entity.height = this._entity.height * _loc5_;
-               this._entity.width = this._entity.width * _loc5_;
-               this._entity.x = this._entity.x - _loc3_.getRect(this).x;
-               this._entity.y = this._entity.y - _loc3_.getRect(this).y;
+               b = TiphonSprite(this._entity).getBounds(this);
+               this._entity.x = (width - this._entity.width) / 2 - b.left + this.xOffset;
+               this._entity.y = (height - this._entity.height) / 2 - b.top + this.yOffset;
+               r = dis.width / dis.height;
+               m = width / height < dis.width / dis.height?width / dis.getRect(this).width:height / dis.getRect(this).height;
+               this._entity.height = this._entity.height * m;
+               this._entity.width = this._entity.width * m;
+               this._entity.x = this._entity.x - dis.getRect(this).x;
+               this._entity.y = this._entity.y - dis.getRect(this).y;
             }
          }
          else
          {
-            _loc1_ = this._entity.width / this._entity.height;
+            entRatio = this._entity.width / this._entity.height;
             if(this._entity.width > this._entity.height)
             {
-               this._entity.height = width / _loc1_ * this._scale;
+               this._entity.height = width / entRatio * this._scale;
                this._entity.width = width * this._scale;
             }
             else
             {
-               this._entity.width = height * _loc1_ * this._scale;
+               this._entity.width = height * entRatio * this._scale;
                this._entity.height = height * this._scale;
             }
-            _loc2_ = TiphonSprite(this._entity).getBounds(this);
-            this._entity.x = (width - this._entity.width) / 2 - _loc2_.left + this.xOffset;
-            this._entity.y = (height - this._entity.height) / 2 - _loc2_.top + this.yOffset;
+            b = TiphonSprite(this._entity).getBounds(this);
+            this._entity.x = (width - this._entity.width) / 2 - b.left + this.xOffset;
+            this._entity.y = (height - this._entity.height) / 2 - b.top + this.yOffset;
          }
       }
       
-      public function setAnimationAndDirection(param1:String, param2:uint) : void {
-         var _loc3_:SerialSequencer = null;
+      public function setAnimationAndDirection(anim:String, dir:uint) : void {
+         var seq:SerialSequencer = null;
          if(!this._fromCache)
          {
-            this._animation = param1;
-            this._direction = param2;
+            this._animation = anim;
+            this._direction = dir;
             if(this._entity is TiphonSprite)
             {
-               _loc3_ = new SerialSequencer();
+               seq = new SerialSequencer();
                if(this._animation == "AnimStatique")
                {
                   TiphonSprite(this._entity).setAnimationAndDirection("AnimStatique",this._direction);
@@ -409,67 +409,67 @@ package com.ankamagames.berilia.components
                   }
                   else
                   {
-                     _loc3_.addStep(new SetDirectionStep(TiphonSprite(this._entity),this._direction));
-                     _loc3_.addStep(new PlayAnimationStep(TiphonSprite(this._entity),this._animation,false));
-                     _loc3_.addStep(new SetAnimationStep(TiphonSprite(this._entity),"AnimStatique"));
-                     _loc3_.start();
+                     seq.addStep(new SetDirectionStep(TiphonSprite(this._entity),this._direction));
+                     seq.addStep(new PlayAnimationStep(TiphonSprite(this._entity),this._animation,false));
+                     seq.addStep(new SetAnimationStep(TiphonSprite(this._entity),"AnimStatique"));
+                     seq.start();
                   }
                }
             }
          }
       }
       
-      public function equipCharacter(param1:Array, param2:int=0) : void {
-         var _loc3_:Array = null;
-         var _loc4_:TiphonEntityLook = null;
-         var _loc5_:Array = null;
-         var _loc6_:* = 0;
+      public function equipCharacter(list:Array, numDelete:int=0) : void {
+         var base:Array = null;
+         var tel:TiphonEntityLook = null;
+         var bones:Array = null;
+         var k:* = 0;
          if(this._entity is TiphonSprite)
          {
-            _loc3_ = TiphonSprite(this._entity).look.toString().split("|");
-            if(param1.length)
+            base = TiphonSprite(this._entity).look.toString().split("|");
+            if(list.length)
             {
-               param1.unshift(_loc3_[1].split(","));
-               _loc3_[1] = param1.join(",");
+               list.unshift(base[1].split(","));
+               base[1] = list.join(",");
             }
             else
             {
-               if(param2 < _loc3_[1].length)
+               if(numDelete < base[1].length)
                {
-                  _loc5_ = _loc3_[1].split(",");
-                  _loc6_ = 0;
-                  while(_loc6_ < param2)
+                  bones = base[1].split(",");
+                  k = 0;
+                  while(k < numDelete)
                   {
-                     _loc5_.pop();
-                     _loc6_++;
+                     bones.pop();
+                     k++;
                   }
-                  _loc3_[1] = _loc5_.join(",");
+                  base[1] = bones.join(",");
                }
             }
-            _loc4_ = TiphonEntityLook.fromString(_loc3_.join("|"));
-            this._entity.look.updateFrom(_loc4_);
+            tel = TiphonEntityLook.fromString(base.join("|"));
+            this._entity.look.updateFrom(tel);
          }
          else
          {
-            if(!this._entity && (param1.length))
+            if((!this._entity) && (list.length))
             {
-               this._waitingForEquipement = param1;
+               this._waitingForEquipement = list;
             }
          }
       }
       
-      public function getSlotPosition(param1:String) : Point {
-         var _loc2_:Object = null;
-         var _loc3_:Point = null;
-         var _loc4_:Point = null;
-         if((this._entity) && this._entity is TiphonSprite)
+      public function getSlotPosition(name:String) : Point {
+         var s:Object = null;
+         var p:Point = null;
+         var point:Point = null;
+         if((this._entity) && (this._entity is TiphonSprite))
          {
-            _loc2_ = TiphonSprite(this._entity).getSlot(param1);
-            if(_loc2_)
+            s = TiphonSprite(this._entity).getSlot(name);
+            if(s)
             {
-               _loc3_ = _loc2_.localToGlobal(new Point(_loc2_.x,_loc2_.y));
-               _loc4_ = this.globalToLocal(_loc3_);
-               return _loc4_;
+               p = s.localToGlobal(new Point(s.x,s.y));
+               point = this.globalToLocal(p);
+               return point;
             }
             _log.error("Null entity, cannot get slot position.");
             return null;
@@ -478,20 +478,20 @@ package com.ankamagames.berilia.components
          return null;
       }
       
-      public function getSlotBounds(param1:String) : Rectangle {
-         var _loc2_:Rectangle = null;
-         var _loc3_:DisplayObject = null;
-         var _loc4_:Point = null;
+      public function getSlotBounds(pSlotName:String) : Rectangle {
+         var bounds:Rectangle = null;
+         var slot:DisplayObject = null;
+         var localPos:Point = null;
          if(this._entity)
          {
-            _loc3_ = this._entity.getSlot(param1);
-            if(_loc3_)
+            slot = this._entity.getSlot(pSlotName);
+            if(slot)
             {
-               _loc4_ = this.getSlotPosition(param1);
-               _loc2_ = new Rectangle(_loc4_.x,_loc4_.y,_loc3_.width,_loc3_.height);
+               localPos = this.getSlotPosition(pSlotName);
+               bounds = new Rectangle(localPos.x,localPos.y,slot.width,slot.height);
             }
          }
-         return _loc2_;
+         return bounds;
       }
       
       public function getEntityBounds() : Rectangle {
@@ -499,8 +499,8 @@ package com.ankamagames.berilia.components
       }
       
       override public function remove() : void {
-         var _loc1_:ISubEntityBehavior = null;
-         var _loc2_:TiphonSprite = null;
+         var behavior:ISubEntityBehavior = null;
+         var ts:TiphonSprite = null;
          if(this._entity)
          {
             (this._entity as EventDispatcher).removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onCharacterReady);
@@ -515,9 +515,9 @@ package com.ankamagames.berilia.components
          }
          if(this._cache)
          {
-            for each (_loc2_ in this._cache)
+            for each (ts in this._cache)
             {
-               _loc2_.destroy();
+               ts.destroy();
             }
             this._cache = null;
          }
@@ -525,32 +525,32 @@ package com.ankamagames.berilia.components
          EnterFrameDispatcher.removeEventListener(this.onFade);
          removeEventListener(MouseEvent.MOUSE_OVER,this.mouseOver);
          removeEventListener(MouseEvent.MOUSE_OUT,this.mouseOut);
-         for each (_loc1_ in _subEntitiesBehaviors)
+         for each (behavior in _subEntitiesBehaviors)
          {
-            if(_loc1_)
+            if(behavior)
             {
-               _loc1_.remove();
+               behavior.remove();
             }
          }
          super.remove();
       }
       
-      public function setColor(param1:uint, param2:uint) : void {
+      public function setColor(index:uint, color:uint) : void {
          if((TiphonSprite(this._entity)) && (TiphonSprite(this._entity).look))
          {
-            TiphonSprite(this._entity).look.setColor(param1,param2);
+            TiphonSprite(this._entity).look.setColor(index,color);
          }
       }
       
-      public function resetColor(param1:uint) : void {
+      public function resetColor(index:uint) : void {
          if((TiphonSprite(this._entity)) && (TiphonSprite(this._entity).look))
          {
-            TiphonSprite(this._entity).look.resetColor(param1);
+            TiphonSprite(this._entity).look.resetColor(index);
          }
       }
       
-      private function onCharacterReady(param1:Event) : void {
-         var _loc2_:* = undefined;
+      private function onCharacterReady(e:Event) : void {
+         var cat:* = undefined;
          (this._entity as EventDispatcher).removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onCharacterReady);
          if(this._entity.rawAnimation)
          {
@@ -584,11 +584,11 @@ package com.ankamagames.berilia.components
          {
             this._entity.skinModifier = _skinModifier[this._entity.look.getBone()];
          }
-         for (_loc2_ in _subEntitiesBehaviors)
+         for (cat in _subEntitiesBehaviors)
          {
-            if(_subEntitiesBehaviors[_loc2_])
+            if(_subEntitiesBehaviors[cat])
             {
-               (this._entity as TiphonSprite).setSubEntityBehaviour(_loc2_,_subEntitiesBehaviors[_loc2_]);
+               (this._entity as TiphonSprite).setSubEntityBehaviour(cat,_subEntitiesBehaviors[cat]);
             }
          }
          this._entity.visible = true;
@@ -607,7 +607,7 @@ package com.ankamagames.berilia.components
                this._oldEntity = null;
             }
          }
-         if(!this._entity.height || !this.autoSize)
+         if((!this._entity.height) || (!this.autoSize))
          {
             Berilia.getInstance().handler.process(new EntityReadyMessage(InteractiveObject(this)));
             return;
@@ -620,20 +620,20 @@ package com.ankamagames.berilia.components
          }
       }
       
-      private function destroyOldEntity(param1:TiphonSprite) : void {
-         if(param1.parent)
+      private function destroyOldEntity(entity:TiphonSprite) : void {
+         if(entity.parent)
          {
-            removeChild(param1);
+            removeChild(entity);
          }
          if(!this._useCache)
          {
-            param1.destroy();
+            entity.destroy();
          }
       }
       
-      private function needUpdate(param1:Event=null) : void {
-         var _loc2_:* = undefined;
-         var _loc3_:String = null;
+      private function needUpdate(e:Event=null) : void {
+         var cat:* = undefined;
+         var key:String = null;
          EnterFrameDispatcher.removeEventListener(this.needUpdate);
          this._listenForUpdate = false;
          if(this._oldEntity)
@@ -663,16 +663,16 @@ package com.ankamagames.berilia.components
          }
          if(this._useCache)
          {
-            _loc3_ = this._entity.look.toString();
-            this._cache[_loc3_] = this._entity;
+            key = this._entity.look.toString();
+            this._cache[key] = this._entity;
          }
          this._originalScaleX = (this._entity as TiphonSprite).look.getScaleX();
          this._originalScaleY = (this._entity as TiphonSprite).look.getScaleY();
-         for (_loc2_ in _subEntitiesBehaviors)
+         for (cat in _subEntitiesBehaviors)
          {
-            if(_subEntitiesBehaviors[_loc2_])
+            if(_subEntitiesBehaviors[cat])
             {
-               (this._entity as TiphonSprite).setSubEntityBehaviour(_loc2_,_subEntitiesBehaviors[_loc2_]);
+               (this._entity as TiphonSprite).setSubEntityBehaviour(cat,_subEntitiesBehaviors[cat]);
             }
          }
          (this._entity as EventDispatcher).addEventListener(TiphonEvent.RENDER_SUCCEED,this.onCharacterReady);
@@ -684,7 +684,7 @@ package com.ankamagames.berilia.components
          }
       }
       
-      private function onFade(param1:Event) : void {
+      private function onFade(e:Event) : void {
          if(this._entity)
          {
             this._entity.alpha = this._entity.alpha + (1 - this._entity.alpha) / 3;
@@ -704,11 +704,11 @@ package com.ankamagames.berilia.components
          }
       }
       
-      private function mouseOver(param1:MouseEvent) : void {
+      private function mouseOver(e:MouseEvent) : void {
          this._entity.transform.colorTransform = new ColorTransform(1.3,1.3,1.3,1);
       }
       
-      private function mouseOut(param1:MouseEvent) : void {
+      private function mouseOut(e:MouseEvent) : void {
          this._entity.transform.colorTransform = new ColorTransform(1,1,1,1);
       }
    }

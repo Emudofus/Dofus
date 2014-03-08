@@ -4,12 +4,12 @@ package com.ankamagames.tubul.types
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.tubul.interfaces.ISound;
    import com.ankamagames.jerakine.BalanceManager.BalanceManager;
    import com.ankamagames.tubul.events.PlaylistEvent;
    import com.ankamagames.tubul.events.FadeEvent;
    import com.ankamagames.tubul.events.SoundCompleteEvent;
+   import __AS3__.vec.*;
    import com.ankamagames.tubul.enum.EventListenerPriority;
    import com.ankamagames.tubul.interfaces.IAudioBus;
    import com.ankamagames.tubul.events.SoundSilenceEvent;
@@ -17,13 +17,13 @@ package com.ankamagames.tubul.types
    public class PlayList extends EventDispatcher
    {
       
-      public function PlayList(param1:Boolean=false, param2:Boolean=false, param3:SoundSilence=null, param4:VolumeFadeEffect=null, param5:VolumeFadeEffect=null) {
+      public function PlayList(pShuffle:Boolean=false, pLoop:Boolean=false, pSilence:SoundSilence=null, pFadeIn:VolumeFadeEffect=null, pFadeOut:VolumeFadeEffect=null) {
          super();
-         this.shuffle = param1;
-         this.loop = param2;
-         this._silence = param3;
-         this._fadeIn = param4;
-         this._fadeOut = param5;
+         this.shuffle = pShuffle;
+         this.loop = pLoop;
+         this._silence = pSilence;
+         this._fadeIn = pFadeIn;
+         this._fadeOut = pFadeOut;
          if(this._silence)
          {
             this.playSilenceBetweenTwoSounds(true,this._silence);
@@ -68,11 +68,11 @@ package com.ankamagames.tubul.types
       }
       
       public function get playingSoundIndex() : int {
-         var _loc1_:uint = 0;
+         var index:uint = 0;
          if(this._isPlaying)
          {
-            _loc1_ = this._sounds.indexOf(this._playingSound);
-            return _loc1_;
+            index = this._sounds.indexOf(this._playingSound);
+            return index;
          }
          return -1;
       }
@@ -85,42 +85,42 @@ package com.ankamagames.tubul.types
          return this._isPlaying;
       }
       
-      public function addSound(param1:ISound) : uint {
-         this._sounds.push(param1);
-         this._balanceManager.addItem(param1);
+      public function addSound(pSound:ISound) : uint {
+         this._sounds.push(pSound);
+         this._balanceManager.addItem(pSound);
          return this._sounds.length;
       }
       
-      public function removeSound(param1:ISound) : uint {
-         var _loc2_:int = this._sounds.indexOf(param1);
-         if(_loc2_ != -1)
+      public function removeSound(pSound:ISound) : uint {
+         var index:int = this._sounds.indexOf(pSound);
+         if(index != -1)
          {
-            if(param1.isPlaying)
+            if(pSound.isPlaying)
             {
-               param1.stop();
+               pSound.stop();
             }
-            this._balanceManager.removeItem(param1);
-            this._sounds.splice(_loc2_,1);
+            this._balanceManager.removeItem(pSound);
+            this._sounds.splice(index,1);
          }
          return this._sounds.length;
       }
       
-      public function removeSoundBySoundId(param1:String, param2:Boolean=true) : uint {
-         var _loc3_:ISound = null;
-         var _loc4_:* = 0;
-         for each (_loc3_ in this._sounds)
+      public function removeSoundBySoundId(pSoundId:String, pRemoveAll:Boolean=true) : uint {
+         var sound:ISound = null;
+         var index:* = 0;
+         for each (sound in this._sounds)
          {
-            if(_loc3_.uri.fileName.split(".")[0] == param1)
+            if(sound.uri.fileName.split(".")[0] == pSoundId)
             {
-               _loc4_ = this._sounds.indexOf(_loc3_);
-               if(_loc4_ != -1)
+               index = this._sounds.indexOf(sound);
+               if(index != -1)
                {
-                  if(_loc3_.isPlaying)
+                  if(sound.isPlaying)
                   {
-                     _loc3_.stop();
+                     sound.stop();
                   }
-                  this._balanceManager.removeItem(_loc3_);
-                  this._sounds.splice(_loc4_,1);
+                  this._balanceManager.removeItem(sound);
+                  this._sounds.splice(index,1);
                }
             }
          }
@@ -132,7 +132,7 @@ package com.ankamagames.tubul.types
          {
             return;
          }
-         if((this._sounds) && this._sounds.length > 0)
+         if((this._sounds) && (this._sounds.length > 0))
          {
             this._isPlaying = true;
             if(this.shuffle)
@@ -147,11 +147,11 @@ package com.ankamagames.tubul.types
          }
       }
       
-      public function nextSound(param1:VolumeFadeEffect=null, param2:Boolean=false) : void {
-         var _loc3_:* = 0;
-         if((param2) && (this._playingSound))
+      public function nextSound(pFadeOutCurrentSound:VolumeFadeEffect=null, pPlaySilenceBefore:Boolean=false) : void {
+         var index:* = 0;
+         if((pPlaySilenceBefore) && (this._playingSound))
          {
-            this._playingSound.stop(param1);
+            this._playingSound.stop(pFadeOutCurrentSound);
          }
          else
          {
@@ -162,8 +162,8 @@ package com.ankamagames.tubul.types
             }
             else
             {
-               _loc3_ = this._sounds.indexOf(this._playingSound);
-               if(_loc3_ == this._sounds.length-1)
+               index = this._sounds.indexOf(this._playingSound);
+               if(index == this._sounds.length - 1)
                {
                   _log.info("We reached the end of the playlist.");
                   if(this.loop)
@@ -180,7 +180,7 @@ package com.ankamagames.tubul.types
                }
                else
                {
-                  this._playingSound = this._sounds[_loc3_ + 1] as ISound;
+                  this._playingSound = this._sounds[index + 1] as ISound;
                }
             }
             if(this._playingSound)
@@ -200,16 +200,16 @@ package com.ankamagames.tubul.types
          }
       }
       
-      public function stop(param1:VolumeFadeEffect=null) : void {
+      public function stop(pFadeOut:VolumeFadeEffect=null) : void {
          if(this._playingSound == null)
          {
             return;
          }
-         if(param1)
+         if(pFadeOut)
          {
-            param1.attachToSoundSource(this._playingSound);
-            param1.addEventListener(FadeEvent.COMPLETE,this.onFadeOutStopPlaylistComplete);
-            param1.start();
+            pFadeOut.attachToSoundSource(this._playingSound);
+            pFadeOut.addEventListener(FadeEvent.COMPLETE,this.onFadeOutStopPlaylistComplete);
+            pFadeOut.start();
          }
          else
          {
@@ -225,46 +225,46 @@ package com.ankamagames.tubul.types
          this.init();
       }
       
-      public function playSilenceBetweenTwoSounds(param1:Boolean=false, param2:SoundSilence=null) : void {
-         this._playSilence = param1;
-         if(param1 == false && !(this._silence == null))
+      public function playSilenceBetweenTwoSounds(pPlay:Boolean=false, pSilence:SoundSilence=null) : void {
+         this._playSilence = pPlay;
+         if((pPlay == false) && (!(this._silence == null)))
          {
             this._silence.clean();
             this._silence = null;
             return;
          }
-         if(param1 == true)
+         if(pPlay == true)
          {
-            if(param2 == null && this._silence == null)
+            if((pSilence == null) && (this._silence == null))
             {
                _log.error("Aucun silence à jouer !");
                this._playSilence = false;
                return;
             }
-            if(param2 != null)
+            if(pSilence != null)
             {
                if(this._silence != null)
                {
                   this._silence.clean();
                }
-               this._silence = param2;
+               this._silence = pSilence;
             }
             return;
          }
       }
       
       private function init() : void {
-         var _loc1_:ISound = null;
+         var s:ISound = null;
          if(this._silence)
          {
             this._silence.clean();
          }
          if(this._sounds)
          {
-            for each (_loc1_ in this._sounds)
+            for each (s in this._sounds)
             {
-               _loc1_.stop();
-               _loc1_ = null;
+               s.stop();
+               s = null;
             }
          }
          this._sounds = new Vector.<ISound>();
@@ -272,39 +272,39 @@ package com.ankamagames.tubul.types
          this._isPlaying = false;
       }
       
-      private function playSound(param1:ISound) : void {
-         var _loc3_:* = false;
-         var _loc4_:VolumeFadeEffect = null;
-         var _loc5_:VolumeFadeEffect = null;
-         var _loc6_:PlaylistEvent = null;
-         this._playingSound = param1;
+      private function playSound(pSound:ISound) : void {
+         var loop:* = false;
+         var fadeIn:VolumeFadeEffect = null;
+         var fadeOut:VolumeFadeEffect = null;
+         var event:PlaylistEvent = null;
+         this._playingSound = pSound;
          this._playingSound.eventDispatcher.addEventListener(SoundCompleteEvent.SOUND_COMPLETE,this.onSoundComplete,false,EventListenerPriority.NORMAL);
-         var _loc2_:IAudioBus = this._playingSound.bus;
-         if(_loc2_ != null)
+         var bus:IAudioBus = this._playingSound.bus;
+         if(bus != null)
          {
-            _loc3_ = false;
+            loop = false;
             if(this._playingSound.totalLoops > -1)
             {
-               _loc3_ = true;
+               loop = true;
             }
             if(this._fadeIn)
             {
-               _loc4_ = this._fadeIn.clone();
+               fadeIn = this._fadeIn.clone();
             }
             if(this._fadeOut)
             {
-               _loc5_ = this._fadeOut.clone();
+               fadeOut = this._fadeOut.clone();
             }
-            this._playingSound.play(_loc3_,this._playingSound.totalLoops,_loc4_,_loc5_);
-            _loc6_ = new PlaylistEvent(PlaylistEvent.NEW_SOUND);
-            _loc6_.newSound = this._playingSound;
-            dispatchEvent(_loc6_);
+            this._playingSound.play(loop,this._playingSound.totalLoops,fadeIn,fadeOut);
+            event = new PlaylistEvent(PlaylistEvent.NEW_SOUND);
+            event.newSound = this._playingSound;
+            dispatchEvent(event);
          }
       }
       
-      private function onSoundComplete(param1:SoundCompleteEvent) : void {
+      private function onSoundComplete(pEvent:SoundCompleteEvent) : void {
          this._playingSound.eventDispatcher.removeEventListener(SoundCompleteEvent.SOUND_COMPLETE,this.onSoundComplete);
-         if((this._playSilence) && !(this._silence == null))
+         if((this._playSilence) && (!(this._silence == null)))
          {
             if(!this._silence.hasEventListener(SoundSilenceEvent.COMPLETE))
             {
@@ -315,20 +315,20 @@ package com.ankamagames.tubul.types
          }
          else
          {
-            param1.stopImmediatePropagation();
+            pEvent.stopImmediatePropagation();
             this.nextSound();
          }
       }
       
-      private function onSilenceComplete(param1:SoundSilenceEvent) : void {
-         var _loc2_:SoundCompleteEvent = new SoundCompleteEvent(SoundCompleteEvent.SOUND_COMPLETE);
-         _loc2_.sound = this.playingSound;
-         dispatchEvent(_loc2_);
+      private function onSilenceComplete(pEvent:SoundSilenceEvent) : void {
+         var e:SoundCompleteEvent = new SoundCompleteEvent(SoundCompleteEvent.SOUND_COMPLETE);
+         e.sound = this.playingSound;
+         dispatchEvent(e);
          _log.info("Playlist silence End");
          this.nextSound();
       }
       
-      private function onFadeOutStopPlaylistComplete(param1:FadeEvent) : void {
+      private function onFadeOutStopPlaylistComplete(pEvent:FadeEvent) : void {
          this.stop();
       }
    }

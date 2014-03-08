@@ -7,7 +7,6 @@ package com.ankamagames.dofus.console.moduleLUA
    import com.ankamagames.dofus.console.moduleLogger.TextFieldScrollBar;
    import com.ankamagames.dofus.console.moduleLogger.TextFieldOldScrollBarH;
    import com.ankamagames.dofus.misc.utils.frames.LuaScriptRecorderFrame;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.lua.LuaPlayer;
    import flash.display.NativeWindowInitOptions;
    import flash.events.Event;
@@ -32,6 +31,7 @@ package com.ankamagames.dofus.console.moduleLUA
    import com.ankamagames.atouin.types.SpriteWrapper;
    import com.ankamagames.atouin.types.WorldEntitySprite;
    import com.ankamagames.atouin.Atouin;
+   import __AS3__.vec.*;
    
    public class ConsoleLUA extends Object
    {
@@ -161,12 +161,12 @@ package com.ankamagames.dofus.console.moduleLUA
       private var _luaPlayer:LuaPlayer;
       
       private function createWindow() : void {
-         var _loc1_:NativeWindowInitOptions = null;
+         var options:NativeWindowInitOptions = null;
          if(!this._window)
          {
-            _loc1_ = new NativeWindowInitOptions();
-            _loc1_.resizable = true;
-            this._window = new NativeWindow(_loc1_);
+            options = new NativeWindowInitOptions();
+            options.resizable = true;
+            this._window = new NativeWindow(options);
             this._window.width = 800;
             this._window.height = 600;
             this._window.title = "LUA Console";
@@ -188,42 +188,42 @@ package com.ankamagames.dofus.console.moduleLUA
          this._textField.mouseWheelEnabled = false;
          this._scrollBar = new TextFieldScrollBar(this._textField,this._lines,10,SCROLL_BG_COLOR,SCROLL_COLOR);
          this._scrollBarH = new TextFieldOldScrollBarH(this._textField,5,SCROLL_BG_COLOR,SCROLL_COLOR);
-         var _loc1_:TextFormat = new TextFormat();
-         _loc1_.font = "Courier New";
-         _loc1_.size = 16;
-         _loc1_.color = OUTPUT_COLOR;
-         this._textField.defaultTextFormat = _loc1_;
+         var textFormat:TextFormat = new TextFormat();
+         textFormat.font = "Courier New";
+         textFormat.size = 16;
+         textFormat.color = OUTPUT_COLOR;
+         this._textField.defaultTextFormat = textFormat;
          this._textField.styleSheet = CONSOLE_STYLE;
-         var _loc2_:* = 0;
+         var posX:int = 0;
          this._iconList = new Sprite();
          this._iconList.doubleClickEnabled = true;
          this._iconList.addEventListener(MouseEvent.DOUBLE_CLICK,this.unlockBtns);
          this._btns = new Array();
-         var _loc3_:* = 0;
-         while(_loc3_ < BTN_EXPORT + 1)
+         var i:int = 0;
+         while(i < BTN_EXPORT + 1)
          {
-            this._btns[_loc3_] = new ConsoleIcon(btnIcons[_loc3_],ICON_SIZE,btnToolTips[_loc3_]);
-            this._btns[_loc3_].x = _loc2_;
-            this._iconList.addChild(this._btns[_loc3_]);
-            _loc2_ = _loc2_ + (ICON_SIZE + ICON_INTERVAL);
-            if(_loc3_ == BTN_TIMER_AUTO || _loc3_ == BTN_MOVE_SLIDE)
+            this._btns[i] = new ConsoleIcon(btnIcons[i],ICON_SIZE,btnToolTips[i]);
+            this._btns[i].x = posX;
+            this._iconList.addChild(this._btns[i]);
+            posX = posX + (ICON_SIZE + ICON_INTERVAL);
+            if((i == BTN_TIMER_AUTO) || (i == BTN_MOVE_SLIDE))
             {
-               _loc2_ = _loc2_ + ICON_INTERVAL_BREAK;
+               posX = posX + ICON_INTERVAL_BREAK;
             }
-            if(_loc3_ == BTN_CAMERA_ZOOM_OUT)
+            if(i == BTN_CAMERA_ZOOM_OUT)
             {
                this._zoomState = new TextField();
-               _loc1_ = new TextFormat();
-               _loc1_.font = "Arial";
-               _loc1_.size = 18;
-               _loc1_.color = 16777215;
-               this._zoomState.defaultTextFormat = _loc1_;
-               this._zoomState.x = _loc2_;
+               textFormat = new TextFormat();
+               textFormat.font = "Arial";
+               textFormat.size = 18;
+               textFormat.color = 16777215;
+               this._zoomState.defaultTextFormat = textFormat;
+               this._zoomState.x = posX;
                this._zoomState.text = "x1";
                this._iconList.addChild(this._zoomState);
-               _loc2_ = _loc2_ + (this._zoomState.width + ICON_INTERVAL_BREAK);
+               posX = posX + (this._zoomState.width + ICON_INTERVAL_BREAK);
             }
-            _loc3_++;
+            i++;
          }
          this._btns[BTN_RECORD].addEventListener(MouseEvent.CLICK,this.toggleRecord);
          this._btns[BTN_TIMER_AUTO].addEventListener(MouseEvent.CLICK,this.setAutoTimer);
@@ -259,9 +259,8 @@ package com.ankamagames.dofus.console.moduleLUA
          this.onResize();
       }
       
-      protected function toggleRecord(param1:MouseEvent) : void {
+      protected function toggleRecord(event:MouseEvent) : void {
          var pausingRecording:Boolean = false;
-         var event:MouseEvent = param1;
          try
          {
             this._recording = !this._recording;
@@ -318,11 +317,11 @@ package com.ankamagames.dofus.console.moduleLUA
          }
       }
       
-      protected function setAutoTimer(param1:MouseEvent) : void {
-         param1.target.toggled = !param1.target.toggled;
+      protected function setAutoTimer(event:MouseEvent) : void {
+         event.target.toggled = !event.target.toggled;
       }
       
-      protected function toggleTimer(param1:MouseEvent) : void {
+      protected function toggleTimer(event:MouseEvent) : void {
          this._btns[BTN_TIMER].toggled = this._waitStart == -1;
          if(this._waitStart == -1)
          {
@@ -339,44 +338,43 @@ package com.ankamagames.dofus.console.moduleLUA
          }
       }
       
-      protected function toggleMoveType(param1:MouseEvent) : void {
-         this._frame.moveType = int(param1.target.name.replace("moveBtn",""));
+      protected function toggleMoveType(event:MouseEvent) : void {
+         this._frame.moveType = int(event.target.name.replace("moveBtn",""));
          this._btns[BTN_MOVE_DEFAULT].toggled = this._btns[BTN_MOVE_WALK].toggled = this._btns[BTN_MOVE_RUN].toggled = this._btns[BTN_MOVE_TELEPORT].toggled = this._btns[BTN_MOVE_SLIDE].toggled = false;
-         param1.target.toggled = true;
+         event.target.toggled = true;
       }
       
-      protected function toggleCameraAutoFollow(param1:MouseEvent) : void {
-         param1.target.toggled = !param1.target.toggled;
-         this._frame.autoFollowCam(param1.target.toggled);
+      protected function toggleCameraAutoFollow(event:MouseEvent) : void {
+         event.target.toggled = !event.target.toggled;
+         this._frame.autoFollowCam(event.target.toggled);
       }
       
-      protected function setZoom(param1:MouseEvent) : void {
-         var _loc2_:int = this.getZoomValue();
+      protected function setZoom(event:MouseEvent) : void {
+         var currentZoom:int = this.getZoomValue();
          this._btns[BTN_CAMERA_ZOOM_IN].enabled = true;
          this._btns[BTN_CAMERA_ZOOM_OUT].enabled = true;
-         if(param1.target == this._btns[BTN_CAMERA_ZOOM_IN])
+         if(event.target == this._btns[BTN_CAMERA_ZOOM_IN])
          {
-            _loc2_++;
-            if(_loc2_ == AtouinConstants.MAX_ZOOM)
+            currentZoom++;
+            if(currentZoom == AtouinConstants.MAX_ZOOM)
             {
                this._btns[BTN_CAMERA_ZOOM_IN].enabled = false;
             }
          }
          else
          {
-            _loc2_--;
-            if(_loc2_ == 1)
+            currentZoom--;
+            if(currentZoom == 1)
             {
                this._btns[BTN_CAMERA_ZOOM_OUT].enabled = false;
             }
          }
-         this._zoomState.text = "x" + _loc2_.toString();
-         this._frame.cameraZoom(_loc2_,true);
+         this._zoomState.text = "x" + currentZoom.toString();
+         this._frame.cameraZoom(currentZoom,true);
       }
       
-      protected function playScript(param1:MouseEvent) : void {
+      protected function playScript(event:MouseEvent) : void {
          var script:String = null;
-         var event:MouseEvent = param1;
          try
          {
             if(!this._luaPlayer)
@@ -409,7 +407,7 @@ package com.ankamagames.dofus.console.moduleLUA
          }
       }
       
-      protected function stopRecord(param1:MouseEvent) : void {
+      protected function stopRecord(event:MouseEvent) : void {
          if((this._frame) && (this._frame.running))
          {
             this._frame.stop();
@@ -419,57 +417,54 @@ package com.ankamagames.dofus.console.moduleLUA
          this.enableButtons(true,[BTN_RECORD,BTN_PLAY]);
       }
       
-      protected function loadScript(param1:MouseEvent) : void {
+      protected function loadScript(event:MouseEvent) : void {
          var file:File = null;
-         var event:MouseEvent = param1;
          file = File.documentsDirectory;
          file.browseForOpen("Open LUA script...",[new FileFilter("Script LUA File","*.lua")]);
-         file.addEventListener(Event.SELECT,function(param1:Event):void
+         file.addEventListener(Event.SELECT,function(event:Event):void
          {
             stopRecord(null);
             clearConsole();
-            var _loc2_:FileStream = new FileStream();
-            _loc2_.open(file,FileMode.READ);
-            _loadedScript = _loc2_.readUTFBytes(_loc2_.bytesAvailable);
+            var stream:FileStream = new FileStream();
+            stream.open(file,FileMode.READ);
+            _loadedScript = stream.readUTFBytes(stream.bytesAvailable);
             if(_frame)
             {
                _frame.luaScript = _loadedScript;
             }
-            _loc2_.close();
+            stream.close();
             printLine("<span class=\'gray\'>> Script \'" + file.name + "\' loaded.</span>",false);
             printLine(_loadedScript);
             _btns[BTN_PLAY].enabled = true;
          });
       }
       
-      protected function export(param1:MouseEvent) : void {
+      protected function export(event:MouseEvent) : void {
          var file:File = null;
-         var event:MouseEvent = param1;
          if(!this._frame)
          {
             return;
          }
          file = File.documentsDirectory.resolvePath("script.lua");
          file.browseForSave("Export .lua file");
-         file.addEventListener(Event.SELECT,function(param1:Event):void
+         file.addEventListener(Event.SELECT,function(event:Event):void
          {
             stopRecord(null);
-            file = param1.target as File;
-            var _loc2_:FileStream = new FileStream();
-            _loc2_.open(file,FileMode.WRITE);
-            _loc2_.writeUTFBytes(_frame.luaScript);
-            _loc2_.close();
+            file = event.target as File;
+            var stream:FileStream = new FileStream();
+            stream.open(file,FileMode.WRITE);
+            stream.writeUTFBytes(_frame.luaScript);
+            stream.close();
             printLine("<span class=\'gray\'>> Script exported as " + file.name + " in " + file.parent.nativePath + "</span>",false);
          });
       }
       
-      protected function resetWorld(param1:MouseEvent) : void {
+      protected function resetWorld(event:MouseEvent) : void {
          var rpContextFrame:RoleplayContextFrame = null;
          var ies:Vector.<InteractiveElement> = null;
          var i:int = 0;
          var worldObject:SpriteWrapper = null;
          var entity:WorldEntitySprite = null;
-         var event:MouseEvent = param1;
          try
          {
             rpContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
@@ -496,15 +491,15 @@ package com.ankamagames.dofus.console.moduleLUA
          }
       }
       
-      protected function toggleAutoReset(param1:MouseEvent) : void {
-         param1.target.toggled = !param1.target.toggled;
+      protected function toggleAutoReset(event:MouseEvent) : void {
+         event.target.toggled = !event.target.toggled;
          if(this._luaPlayer)
          {
             this._luaPlayer.resetOnComplete = !this._luaPlayer.resetOnComplete;
          }
       }
       
-      protected function unlockBtns(param1:MouseEvent) : void {
+      protected function unlockBtns(event:MouseEvent) : void {
          if(!this._iconList.mouseChildren)
          {
             this._iconList.mouseChildren = true;
@@ -525,8 +520,8 @@ package com.ankamagames.dofus.console.moduleLUA
          }
       }
       
-      public function display(param1:Boolean=false) : void {
-         if(param1)
+      public function display(quietMode:Boolean=false) : void {
+         if(quietMode)
          {
             return;
          }
@@ -545,19 +540,19 @@ package com.ankamagames.dofus.console.moduleLUA
          }
       }
       
-      public function printLine(param1:String, param2:Boolean=true) : void {
-         if(param2)
+      public function printLine(text:String, needHighlight:Boolean=true) : void {
+         if(needHighlight)
          {
-            param1 = param1.replace(new RegExp("\\r","gi"),"");
-            param1 = param1.replace(new RegExp("(\".*\")","g"),"<span class=\'string\'>$&</span>");
-            param1 = param1.replace(new RegExp("local","g"),"<span class=\'local\'>local</span>");
-            param1 = param1.replace(new RegExp("(?<![a-z])([+-]?[0-9]+(?:\\.[0-9]+)?)","g"),"<span class=\'number\'>$&</span>");
-            param1 = param1.replace(new RegExp("(?<=[\\.])[^.(]+(?=[(])","g"),"<span class=\'function\'>$&</span>");
-            param1 = param1.replace(new RegExp("\\(","g"),"<span class=\'function\'>$&</span>");
-            param1 = param1.replace(new RegExp("\\)","g"),"<span class=\'function\'>$&</span>");
+            text = text.replace(new RegExp("\\r","gi"),"");
+            text = text.replace(new RegExp("(\".*\")","g"),"<span class=\'string\'>$&</span>");
+            text = text.replace(new RegExp("local","g"),"<span class=\'local\'>local</span>");
+            text = text.replace(new RegExp("(?<![a-z])([+-]?[0-9]+(?:\\.[0-9]+)?)","g"),"<span class=\'number\'>$&</span>");
+            text = text.replace(new RegExp("(?<=[\\.])[^.(]+(?=[(])","g"),"<span class=\'function\'>$&</span>");
+            text = text.replace(new RegExp("\\(","g"),"<span class=\'function\'>$&</span>");
+            text = text.replace(new RegExp("\\)","g"),"<span class=\'function\'>$&</span>");
          }
-         var _loc3_:Array = param1.split("\n");
-         this._lines.push.apply(this._lines,_loc3_);
+         var newLines:Array = text.split("\n");
+         this._lines.push.apply(this._lines,newLines);
          this._scrollBar.updateScrolling();
          this._scrollBarH.resize();
       }
@@ -569,19 +564,19 @@ package com.ankamagames.dofus.console.moduleLUA
          this._scrollBarH.resize();
       }
       
-      private function onScriptCompleted(param1:LuaPlayerEvent) : void {
+      private function onScriptCompleted(event:LuaPlayerEvent) : void {
          this.printLine("<span class=\'gray\'>> Script finished playing.</span>",false);
          this._iconList.mouseChildren = true;
          this._iconList.alpha = 1;
       }
       
-      private function onScriptError(param1:LuaPlayerEvent) : void {
-         this.printLine("<span class=\'gray\'>> Script could not be played. Error:</span>\n<span class=\'red\'>" + param1.stackTrace + "</span>",false);
+      private function onScriptError(event:LuaPlayerEvent) : void {
+         this.printLine("<span class=\'gray\'>> Script could not be played. Error:</span>\n<span class=\'red\'>" + event.stackTrace + "</span>",false);
          this._iconList.mouseChildren = true;
          this._iconList.alpha = 1;
       }
       
-      private function onResize(param1:Event=null) : void {
+      private function onResize(event:Event=null) : void {
          this._backGround.graphics.clear();
          this._backGround.graphics.beginFill(BACKGROUND_COLOR);
          this._backGround.graphics.drawRect(0,0,this._window.stage.stageWidth,this._window.stage.stageHeight);
@@ -598,52 +593,52 @@ package com.ankamagames.dofus.console.moduleLUA
          this._textField.width = this._window.stage.stageWidth - TextFieldScrollBar.WIDTH;
          this._textField.height = this._window.stage.stageHeight - this._textField.y - SCROLLBAR_SIZE;
          this._textField.scrollV = 0;
-         var _loc2_:* = "";
-         var _loc3_:* = 0;
-         while(_loc3_ < 200)
+         var text:String = "";
+         var i:int = 0;
+         while(i < 200)
          {
-            _loc2_ = _loc2_ + "o\n";
-            _loc3_++;
+            text = text + "o\n";
+            i++;
          }
-         this._textField.text = _loc2_;
-         var _loc4_:int = this._textField.numLines - this._textField.maxScrollV;
+         this._textField.text = text;
+         var numLines:int = this._textField.numLines - this._textField.maxScrollV;
          this._textField.text = "";
          this._scrollBar.addEventListener(Event.CHANGE,this.onScrollVChange);
          this._scrollBar.scrollAtEnd();
-         this._scrollBar.resize(_loc4_);
+         this._scrollBar.resize(numLines);
          this._scrollBarH.resize();
       }
       
-      private function onScrollVChange(param1:Event) : void {
+      private function onScrollVChange(e:Event) : void {
          this._scrollBarH.resize();
       }
       
-      private function onClosing(param1:Event) : void {
+      private function onClosing(event:Event) : void {
          this.stopRecord(null);
          this._window.visible = false;
-         param1.preventDefault();
+         event.preventDefault();
       }
       
-      private function enableButtons(param1:Boolean, param2:Array) : void {
-         var _loc3_:* = 0;
-         while(_loc3_ < this._btns.length - 4)
+      private function enableButtons(enabled:Boolean, buttonIDs:Array) : void {
+         var i:int = 0;
+         while(i < this._btns.length - 4)
          {
-            if(param2.indexOf(_loc3_) != -1)
+            if(buttonIDs.indexOf(i) != -1)
             {
-               this._btns[_loc3_].enabled = param1;
+               this._btns[i].enabled = enabled;
             }
             else
             {
-               if(_loc3_ >= BTN_MOVE_DEFAULT && _loc3_ <= BTN_CAMERA_ZOOM_OUT)
+               if((i >= BTN_MOVE_DEFAULT) && (i <= BTN_CAMERA_ZOOM_OUT))
                {
-                  this._btns[_loc3_].enabled = this._btns[BTN_TIMER].enabled;
+                  this._btns[i].enabled = this._btns[BTN_TIMER].enabled;
                }
                else
                {
-                  this._btns[_loc3_].enabled = !param1;
+                  this._btns[i].enabled = !enabled;
                }
             }
-            _loc3_++;
+            i++;
          }
          this._btns[BTN_TIMER_AUTO].enabled = true;
          if((this._frame) && (this._frame.running))

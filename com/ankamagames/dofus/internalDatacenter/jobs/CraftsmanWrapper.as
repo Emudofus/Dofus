@@ -13,30 +13,30 @@ package com.ankamagames.dofus.internalDatacenter.jobs
          super();
       }
       
-      public static function create(param1:JobCrafterDirectoryListEntry) : CraftsmanWrapper {
-         var _loc2_:CraftsmanWrapper = new CraftsmanWrapper();
-         _loc2_.playerId = param1.playerInfo.playerId;
-         _loc2_.playerName = param1.playerInfo.playerName;
-         _loc2_.alignmentSide = param1.playerInfo.alignmentSide;
-         _loc2_.breed = param1.playerInfo.breed;
-         _loc2_.sex = param1.playerInfo.sex;
-         _loc2_.isInWorkshop = param1.playerInfo.isInWorkshop;
-         _loc2_.mapId = param1.playerInfo.mapId;
-         _loc2_.subAreaId = param1.playerInfo.subAreaId;
-         _loc2_.worldPos = "(" + param1.playerInfo.worldX + ", " + param1.playerInfo.worldY + ")";
-         _loc2_.statusId = param1.playerInfo.status.statusId;
-         if(param1.playerInfo.status is PlayerStatusExtended)
+      public static function create(informations:JobCrafterDirectoryListEntry) : CraftsmanWrapper {
+         var obj:CraftsmanWrapper = new CraftsmanWrapper();
+         obj.playerId = informations.playerInfo.playerId;
+         obj.playerName = informations.playerInfo.playerName;
+         obj.alignmentSide = informations.playerInfo.alignmentSide;
+         obj.breed = informations.playerInfo.breed;
+         obj.sex = informations.playerInfo.sex;
+         obj.isInWorkshop = informations.playerInfo.isInWorkshop;
+         obj.mapId = informations.playerInfo.mapId;
+         obj.subAreaId = informations.playerInfo.subAreaId;
+         obj.worldPos = "(" + informations.playerInfo.worldX + ", " + informations.playerInfo.worldY + ")";
+         obj.statusId = informations.playerInfo.status.statusId;
+         if(informations.playerInfo.status is PlayerStatusExtended)
          {
-            _loc2_.awayMessage = PlayerStatusExtended(param1.playerInfo.status).message;
+            obj.awayMessage = PlayerStatusExtended(informations.playerInfo.status).message;
          }
-         _loc2_.jobId = param1.jobInfo.jobId;
-         _loc2_.jobLevel = param1.jobInfo.jobLevel;
-         _loc2_.minSlots = param1.jobInfo.minSlots;
-         _loc2_.specialization = Job.getJobById(param1.jobInfo.jobId).specializationOfId > 0;
-         _loc2_.notFree = !((param1.jobInfo.userDefinedParams & CrafterDirectoryParamBitEnum.CRAFT_OPTION_NOT_FREE) == 0);
-         _loc2_.notFreeExceptOnFail = !((param1.jobInfo.userDefinedParams & CrafterDirectoryParamBitEnum.CRAFT_OPTION_NOT_FREE_EXCEPT_ON_FAIL) == 0);
-         _loc2_.resourcesRequired = !((param1.jobInfo.userDefinedParams & CrafterDirectoryParamBitEnum.CRAFT_OPTION_RESOURCES_REQUIRED) == 0);
-         return _loc2_;
+         obj.jobId = informations.jobInfo.jobId;
+         obj.jobLevel = informations.jobInfo.jobLevel;
+         obj.minSlots = informations.jobInfo.minSlots;
+         obj.specialization = Job.getJobById(informations.jobInfo.jobId).specializationOfId > 0;
+         obj.notFree = !((informations.jobInfo.userDefinedParams & CrafterDirectoryParamBitEnum.CRAFT_OPTION_NOT_FREE) == 0);
+         obj.notFreeExceptOnFail = !((informations.jobInfo.userDefinedParams & CrafterDirectoryParamBitEnum.CRAFT_OPTION_NOT_FREE_EXCEPT_ON_FAIL) == 0);
+         obj.resourcesRequired = !((informations.jobInfo.userDefinedParams & CrafterDirectoryParamBitEnum.CRAFT_OPTION_RESOURCES_REQUIRED) == 0);
+         return obj;
       }
       
       public var playerId:int;

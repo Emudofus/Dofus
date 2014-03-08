@@ -5,9 +5,9 @@ package nochump.util.zip
    public class ZipEntry extends Object
    {
       
-      public function ZipEntry(param1:String) {
+      public function ZipEntry(name:String) {
          super();
-         this._name = param1;
+         this._name = name;
       }
       
       private var _name:String;
@@ -37,65 +37,65 @@ package nochump.util.zip
       }
       
       public function get time() : Number {
-         var _loc1_:Date = new Date((this.dostime >> 25 & 127) + 1980,this.dostime >> 21 & 15-1,this.dostime >> 16 & 31,this.dostime >> 11 & 31,this.dostime >> 5 & 63,(this.dostime & 31) << 1);
-         return _loc1_.time;
+         var d:Date = new Date((this.dostime >> 25 & 127) + 1980,(this.dostime >> 21 & 15) - 1,this.dostime >> 16 & 31,this.dostime >> 11 & 31,this.dostime >> 5 & 63,(this.dostime & 31) << 1);
+         return d.time;
       }
       
-      public function set time(param1:Number) : void {
-         var _loc2_:Date = new Date(param1);
-         this.dostime = (_loc2_.fullYear - 1980 & 127) << 25 | _loc2_.month + 1 << 21 | _loc2_.day << 16 | _loc2_.hours << 11 | _loc2_.minutes << 5 | _loc2_.seconds >> 1;
+      public function set time(time:Number) : void {
+         var d:Date = new Date(time);
+         this.dostime = (d.fullYear - 1980 & 127) << 25 | d.month + 1 << 21 | d.day << 16 | d.hours << 11 | d.minutes << 5 | d.seconds >> 1;
       }
       
       public function get size() : int {
          return this._size;
       }
       
-      public function set size(param1:int) : void {
-         this._size = param1;
+      public function set size(size:int) : void {
+         this._size = size;
       }
       
       public function get compressedSize() : int {
          return this._compressedSize;
       }
       
-      public function set compressedSize(param1:int) : void {
-         this._compressedSize = param1;
+      public function set compressedSize(csize:int) : void {
+         this._compressedSize = csize;
       }
       
       public function get crc() : uint {
          return this._crc;
       }
       
-      public function set crc(param1:uint) : void {
-         this._crc = param1;
+      public function set crc(crc:uint) : void {
+         this._crc = crc;
       }
       
       public function get method() : int {
          return this._method;
       }
       
-      public function set method(param1:int) : void {
-         this._method = param1;
+      public function set method(method:int) : void {
+         this._method = method;
       }
       
       public function get extra() : ByteArray {
          return this._extra;
       }
       
-      public function set extra(param1:ByteArray) : void {
-         this._extra = param1;
+      public function set extra(extra:ByteArray) : void {
+         this._extra = extra;
       }
       
       public function get comment() : String {
          return this._comment;
       }
       
-      public function set comment(param1:String) : void {
-         this._comment = param1;
+      public function set comment(comment:String) : void {
+         this._comment = comment;
       }
       
       public function isDirectory() : Boolean {
-         return this._name.charAt(this._name.length-1) == "/";
+         return this._name.charAt(this._name.length - 1) == "/";
       }
       
       public function toString() : String {

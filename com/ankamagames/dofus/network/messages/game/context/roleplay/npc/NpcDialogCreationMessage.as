@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 5618;
       }
       
-      public function initNpcDialogCreationMessage(param1:int=0, param2:int=0) : NpcDialogCreationMessage {
-         this.mapId = param1;
-         this.npcId = param2;
+      public function initNpcDialogCreationMessage(mapId:int=0, npcId:int=0) : NpcDialogCreationMessage {
+         this.mapId = mapId;
+         this.npcId = npcId;
          this._isInitialized = true;
          return this;
       }
@@ -42,32 +42,32 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_NpcDialogCreationMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_NpcDialogCreationMessage(output);
       }
       
-      public function serializeAs_NpcDialogCreationMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.mapId);
-         param1.writeInt(this.npcId);
+      public function serializeAs_NpcDialogCreationMessage(output:IDataOutput) : void {
+         output.writeInt(this.mapId);
+         output.writeInt(this.npcId);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_NpcDialogCreationMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_NpcDialogCreationMessage(input);
       }
       
-      public function deserializeAs_NpcDialogCreationMessage(param1:IDataInput) : void {
-         this.mapId = param1.readInt();
-         this.npcId = param1.readInt();
+      public function deserializeAs_NpcDialogCreationMessage(input:IDataInput) : void {
+         this.mapId = input.readInt();
+         this.npcId = input.readInt();
       }
    }
 }

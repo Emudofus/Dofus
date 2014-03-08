@@ -7,10 +7,10 @@ package com.ankamagames.berilia.types.event
    public class UiRenderEvent extends Event
    {
       
-      public function UiRenderEvent(param1:String, param2:Boolean=false, param3:Boolean=false, param4:UiRootContainer=null, param5:UiRenderer=null) {
-         super(param1,param2,param3);
-         this._secUiTarget = param4;
-         this._uiRenderer = param5;
+      public function UiRenderEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false, uiTarget:UiRootContainer=null, uiRenderer:UiRenderer=null) {
+         super(type,bubbles,cancelable);
+         this._secUiTarget = uiTarget;
+         this._uiRenderer = uiRenderer;
       }
       
       public static var UIRenderComplete:String = "UIRenderComplete";

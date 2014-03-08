@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.character.choice
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,8 +31,8 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 6475;
       }
       
-      public function initBasicCharactersListMessage(param1:Vector.<CharacterBaseInformations>=null) : BasicCharactersListMessage {
-         this.characters = param1;
+      public function initBasicCharactersListMessage(characters:Vector.<CharacterBaseInformations>=null) : BasicCharactersListMessage {
+         this.characters = characters;
          this._isInitialized = true;
          return this;
       }
@@ -42,47 +42,47 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_BasicCharactersListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_BasicCharactersListMessage(output);
       }
       
-      public function serializeAs_BasicCharactersListMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.characters.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.characters.length)
+      public function serializeAs_BasicCharactersListMessage(output:IDataOutput) : void {
+         output.writeShort(this.characters.length);
+         var _i1:uint = 0;
+         while(_i1 < this.characters.length)
          {
-            param1.writeShort((this.characters[_loc2_] as CharacterBaseInformations).getTypeId());
-            (this.characters[_loc2_] as CharacterBaseInformations).serialize(param1);
-            _loc2_++;
+            output.writeShort((this.characters[_i1] as CharacterBaseInformations).getTypeId());
+            (this.characters[_i1] as CharacterBaseInformations).serialize(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_BasicCharactersListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_BasicCharactersListMessage(input);
       }
       
-      public function deserializeAs_BasicCharactersListMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         var _loc5_:CharacterBaseInformations = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_BasicCharactersListMessage(input:IDataInput) : void {
+         var _id1:uint = 0;
+         var _item1:CharacterBaseInformations = null;
+         var _charactersLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _charactersLen)
          {
-            _loc4_ = param1.readUnsignedShort();
-            _loc5_ = ProtocolTypeManager.getInstance(CharacterBaseInformations,_loc4_);
-            _loc5_.deserialize(param1);
-            this.characters.push(_loc5_);
-            _loc3_++;
+            _id1 = input.readUnsignedShort();
+            _item1 = ProtocolTypeManager.getInstance(CharacterBaseInformations,_id1);
+            _item1.deserialize(input);
+            this.characters.push(_item1);
+            _i1++;
          }
       }
    }

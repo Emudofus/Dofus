@@ -55,16 +55,16 @@ package com.ankamagames.berilia.components
       
       private static const _subEntitiesBehaviors:Dictionary = new Dictionary();
       
-      public static function setSubEntityDefaultBehavior(param1:uint, param2:ISubEntityBehavior) : void {
-         _subEntitiesBehaviors[param1] = param2;
+      public static function setSubEntityDefaultBehavior(category:uint, behavior:ISubEntityBehavior) : void {
+         _subEntitiesBehaviors[category] = behavior;
       }
       
-      public static function setAnimationModifier(param1:uint, param2:IAnimationModifier) : void {
-         _animationModifier[param1] = param2;
+      public static function setAnimationModifier(boneId:uint, am:IAnimationModifier) : void {
+         _animationModifier[boneId] = am;
       }
       
-      public static function setSkinModifier(param1:uint, param2:ISkinModifier) : void {
-         _skinModifier[param1] = param2;
+      public static function setSkinModifier(boneId:uint, sm:ISkinModifier) : void {
+         _skinModifier[boneId] = sm;
       }
       
       private var _nSelectedChara:int;
@@ -117,86 +117,86 @@ package com.ankamagames.berilia.components
          return this._nWidthEllipsis;
       }
       
-      public function set widthEllipsis(param1:int) : void {
-         this._nWidthEllipsis = param1;
+      public function set widthEllipsis(i:int) : void {
+         this._nWidthEllipsis = i;
       }
       
       public function get heightEllipsis() : int {
          return this._nHeightEllipsis;
       }
       
-      public function set heightEllipsis(param1:int) : void {
-         this._nHeightEllipsis = param1;
+      public function set heightEllipsis(i:int) : void {
+         this._nHeightEllipsis = i;
       }
       
       public function get xEllipsis() : int {
          return this._nXCenterEllipsis;
       }
       
-      public function set xEllipsis(param1:int) : void {
-         this._nXCenterEllipsis = param1;
+      public function set xEllipsis(i:int) : void {
+         this._nXCenterEllipsis = i;
       }
       
       public function get yEllipsis() : int {
          return this._nYCenterEllipsis;
       }
       
-      public function set yEllipsis(param1:int) : void {
-         this._nYCenterEllipsis = param1;
+      public function set yEllipsis(i:int) : void {
+         this._nYCenterEllipsis = i;
       }
       
       public function get charaCtr() : Object {
          return this._charaSelCtr;
       }
       
-      public function set charaCtr(param1:Object) : void {
-         this._charaSelCtr = param1;
+      public function set charaCtr(ctr:Object) : void {
+         this._charaSelCtr = ctr;
       }
       
       public function get frontCtr() : Object {
          return this._frontZCtr;
       }
       
-      public function set frontCtr(param1:Object) : void {
-         this._frontZCtr = param1;
+      public function set frontCtr(ctr:Object) : void {
+         this._frontZCtr = ctr;
       }
       
       public function get midCtr() : Object {
          return this._midZCtr;
       }
       
-      public function set midCtr(param1:Object) : void {
-         this._midZCtr = param1;
+      public function set midCtr(ctr:Object) : void {
+         this._midZCtr = ctr;
       }
       
       public function get mountainUri() : String {
          return this._sMountainUri;
       }
       
-      public function set mountainUri(param1:String) : void {
-         this._sMountainUri = param1;
+      public function set mountainUri(s:String) : void {
+         this._sMountainUri = s;
       }
       
       public function get selectedChara() : int {
          return this._nSelectedChara;
       }
       
-      public function set selectedChara(param1:int) : void {
-         this._nSelectedChara = param1;
+      public function set selectedChara(i:int) : void {
+         this._nSelectedChara = i;
       }
       
       public function get isWheeling() : Boolean {
          return this._bMovingMountains;
       }
       
-      public function set entities(param1:*) : void {
-         if(!this.isIterable(param1))
+      public function set entities(data:*) : void {
+         if(!this.isIterable(data))
          {
             throw new ArgumentError("entities must be either Array or Vector.");
          }
          else
          {
-            this._aEntitiesLook = SecureCenter.unsecure(param1);
+            this._aEntitiesLook = SecureCenter.unsecure(data);
             return;
          }
       }
@@ -205,14 +205,14 @@ package com.ankamagames.berilia.components
          return SecureCenter.secure(this._aEntitiesLook);
       }
       
-      public function set dataProvider(param1:*) : void {
-         if(!this.isIterable(param1))
+      public function set dataProvider(data:*) : void {
+         if(!this.isIterable(data))
          {
             throw new ArgumentError("dataProvider must be either Array or Vector.");
          }
          else
          {
-            this._aCharactersList = param1;
+            this._aCharactersList = data;
             this.finalize();
             return;
          }
@@ -226,8 +226,8 @@ package com.ankamagames.berilia.components
          return this._finalized;
       }
       
-      public function set finalized(param1:Boolean) : void {
-         this._finalized = param1;
+      public function set finalized(b:Boolean) : void {
+         this._finalized = b;
       }
       
       public function finalize() : void {
@@ -249,33 +249,33 @@ package com.ankamagames.berilia.components
       }
       
       override public function remove() : void {
-         var _loc1_:GraphicContainer = null;
-         var _loc2_:* = 0;
-         var _loc3_:* = 0;
-         var _loc4_:ISubEntityBehavior = null;
-         var _loc5_:TiphonEntity = null;
-         var _loc6_:uint = 0;
+         var g:GraphicContainer = null;
+         var num:* = 0;
+         var i:* = 0;
+         var behavior:ISubEntityBehavior = null;
+         var tiphonEntity:TiphonEntity = null;
+         var numChildrenCtr:uint = 0;
          if(!__removed)
          {
-            for each (_loc1_ in this._aMountainsCtr)
+            for each (g in this._aMountainsCtr)
             {
-               _loc1_.remove();
+               g.remove();
             }
-            _loc2_ = this._aSprites.length;
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            num = this._aSprites.length;
+            i = 0;
+            while(i < num)
             {
-               _loc5_ = this._aSprites[_loc3_];
-               _loc5_.destroy();
-               _loc3_++;
+               tiphonEntity = this._aSprites[i];
+               tiphonEntity.destroy();
+               i++;
             }
             if(this._charaSelCtr)
             {
-               _loc6_ = this._charaSelCtr.numChildren;
-               while(_loc6_ > 0)
+               numChildrenCtr = this._charaSelCtr.numChildren;
+               while(numChildrenCtr > 0)
                {
                   this._charaSelCtr.removeChildAt(0);
-                  _loc6_--;
+                  numChildrenCtr--;
                }
             }
             this._aCharactersList = null;
@@ -287,109 +287,109 @@ package com.ankamagames.berilia.components
             this._charaSelCtr = null;
             this._midZCtr = null;
             this._frontZCtr = null;
-            for each (_loc4_ in _subEntitiesBehaviors)
+            for each (behavior in _subEntitiesBehaviors)
             {
-               if(_loc4_)
+               if(behavior)
                {
-                  _loc4_.remove();
+                  behavior.remove();
                }
             }
          }
          super.remove();
       }
       
-      public function wheel(param1:int) : void {
-         this.rotateMountains(param1);
+      public function wheel(sens:int) : void {
+         this.rotateMountains(sens);
       }
       
-      public function wheelChara(param1:int) : void {
-         var _loc2_:int = IAnimated(this._aSprites[this._nSelectedChara]).getDirection() + param1;
-         _loc2_ = _loc2_ == 8?0:_loc2_;
-         _loc2_ = _loc2_ < 0?7:_loc2_;
-         IAnimated(this._aSprites[this._nSelectedChara]).setDirection(_loc2_);
+      public function wheelChara(sens:int) : void {
+         var dir:int = IAnimated(this._aSprites[this._nSelectedChara]).getDirection() + sens;
+         dir = dir == 8?0:dir;
+         dir = dir < 0?7:dir;
+         IAnimated(this._aSprites[this._nSelectedChara]).setDirection(dir);
          this.createMountainsCtrBitmap(this._aSprites[this._nSelectedChara].parent,this._nSelectedChara);
       }
       
-      public function setAnimation(param1:String, param2:int=0) : void {
-         var _loc3_:SerialSequencer = new SerialSequencer();
-         var _loc4_:TiphonSprite = this._aSprites[this._nSelectedChara];
-         if(param1 == "AnimStatique")
+      public function setAnimation(animationName:String, direction:int=0) : void {
+         var seq:SerialSequencer = new SerialSequencer();
+         var sprite:TiphonSprite = this._aSprites[this._nSelectedChara];
+         if(animationName == "AnimStatique")
          {
-            _loc4_.setAnimationAndDirection("AnimStatique",param2);
+            sprite.setAnimationAndDirection("AnimStatique",direction);
          }
          else
          {
-            _loc3_.addStep(new SetDirectionStep(_loc4_,param2));
-            _loc3_.addStep(new PlayAnimationStep(_loc4_,param1,false));
-            _loc3_.addStep(new SetAnimationStep(_loc4_,"AnimStatique"));
-            _loc3_.start();
+            seq.addStep(new SetDirectionStep(sprite,direction));
+            seq.addStep(new PlayAnimationStep(sprite,animationName,false));
+            seq.addStep(new SetAnimationStep(sprite,"AnimStatique"));
+            seq.start();
          }
       }
       
-      public function equipCharacter(param1:Array, param2:int=0) : void {
-         var _loc6_:Array = null;
-         var _loc7_:* = 0;
-         var _loc3_:TiphonSprite = this._aSprites[this._nSelectedChara];
-         var _loc4_:Array = _loc3_.look.toString().split("|");
-         if(param1.length)
+      public function equipCharacter(list:Array, numDelete:int=0) : void {
+         var bones:Array = null;
+         var k:* = 0;
+         var sprite:TiphonSprite = this._aSprites[this._nSelectedChara];
+         var base:Array = sprite.look.toString().split("|");
+         if(list.length)
          {
-            param1.unshift(_loc4_[1].split(","));
-            _loc4_[1] = param1.join(",");
+            list.unshift(base[1].split(","));
+            base[1] = list.join(",");
          }
          else
          {
-            _loc6_ = _loc4_[1].split(",");
-            _loc7_ = 0;
-            while(_loc7_ < param2)
+            bones = base[1].split(",");
+            k = 0;
+            while(k < numDelete)
             {
-               _loc6_.pop();
-               _loc7_++;
+               bones.pop();
+               k++;
             }
-            _loc4_[1] = _loc6_.join(",");
+            base[1] = bones.join(",");
          }
-         var _loc5_:TiphonEntityLook = TiphonEntityLook.fromString(_loc4_.join("|"));
-         _loc3_.look.updateFrom(_loc5_);
+         var tel:TiphonEntityLook = TiphonEntityLook.fromString(base.join("|"));
+         sprite.look.updateFrom(tel);
       }
       
-      public function getMountainCtr(param1:int) : Object {
-         return this._aMountainsCtr[param1];
+      public function getMountainCtr(i:int) : Object {
+         return this._aMountainsCtr[i];
       }
       
       private function charactersDisplay() : void {
-         var _loc3_:GraphicContainer = null;
-         var _loc4_:TiphonEntity = null;
-         var _loc5_:uint = 0;
-         var _loc6_:* = 0;
-         var _loc7_:* = NaN;
-         var _loc8_:* = 0;
-         var _loc9_:* = NaN;
-         var _loc10_:* = NaN;
-         var _loc11_:GraphicContainer = null;
-         var _loc12_:CBI = null;
-         var _loc13_:TiphonEntity = null;
-         var _loc14_:* = undefined;
-         var _loc15_:Texture = null;
-         var _loc16_:InstanceEvent = null;
-         var _loc1_:int = this._aSprites.length;
-         var _loc2_:* = 0;
-         while(_loc2_ < _loc1_)
+         var g:GraphicContainer = null;
+         var te:TiphonEntity = null;
+         var children:uint = 0;
+         var j:* = 0;
+         var t:* = NaN;
+         var i:* = 0;
+         var angle:* = NaN;
+         var coef:* = NaN;
+         var ctr:GraphicContainer = null;
+         var characterInfo:CBI = null;
+         var oPerso:TiphonEntity = null;
+         var cat:* = undefined;
+         var mountain:Texture = null;
+         var ie:InstanceEvent = null;
+         var num:int = this._aSprites.length;
+         var k:int = 0;
+         while(k < num)
          {
-            _loc4_ = this._aSprites.shift();
-            _loc4_.destroy();
-            _loc2_++;
+            te = this._aSprites.shift();
+            te.destroy();
+            k++;
          }
-         for each (_loc3_ in this._aMountainsCtr)
+         for each (g in this._aMountainsCtr)
          {
-            _loc3_.remove();
+            g.remove();
          }
          if(this._aMountainsCtr.length > 0)
          {
-            _loc5_ = this._aMountainsCtr.numChildren;
-            _loc6_ = _loc5_-1;
-            while(_loc6_ >= 0)
+            children = this._aMountainsCtr.numChildren;
+            j = children - 1;
+            while(j >= 0)
             {
-               this._aMountainsCtr.removeChild(this._aMountainsCtr.getChildAt(_loc6_));
-               _loc6_--;
+               this._aMountainsCtr.removeChild(this._aMountainsCtr.getChildAt(j));
+               j--;
             }
             this._aMountainsCtr = new Array();
             this._ctrDepth = new Array();
@@ -400,162 +400,162 @@ package com.ankamagames.berilia.components
          }
          else
          {
-            _loc7_ = 2 * Math.PI / this._nNbCharacters;
+            t = 2 * Math.PI / this._nNbCharacters;
             this._nRotation = 0;
             this._nRotationPieceTrg = 0;
             this._aRenderePartNames = new Array();
-            _loc8_ = 0;
-            while(_loc8_ < this._nNbCharacters)
+            i = 0;
+            while(i < this._nNbCharacters)
             {
-               if(this._aCharactersList[_loc8_])
+               if(this._aCharactersList[i])
                {
-                  _loc9_ = _loc7_ * _loc8_ % (2 * Math.PI);
-                  _loc10_ = Math.abs(_loc9_ - Math.PI) / Math.PI;
-                  _loc11_ = new GraphicContainer();
-                  _loc11_.x = this._nWidthEllipsis * Math.cos(_loc9_ + Math.PI / 2) + this._nXCenterEllipsis;
-                  _loc11_.y = this._nHeightEllipsis * Math.sin(_loc9_ + Math.PI / 2) + this._nYCenterEllipsis;
-                  _loc12_ = new CBI(this._aCharactersList[_loc8_].id,this._aCharactersList[_loc8_].breedId,new Array());
-                  this._aEntitiesLook[_loc8_].look = SecureCenter.unsecure(this._aEntitiesLook[_loc8_].look);
-                  _loc13_ = new TiphonEntity(this._aEntitiesLook[_loc8_].id,this._aEntitiesLook[_loc8_].look);
-                  _loc11_.addChild(_loc13_);
-                  _loc13_.name = "char" + _loc8_;
-                  _loc13_.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onMoutainPartRendered);
-                  if(_animationModifier[_loc13_.look.getBone()])
+                  angle = t * i % (2 * Math.PI);
+                  coef = Math.abs(angle - Math.PI) / Math.PI;
+                  ctr = new GraphicContainer();
+                  ctr.x = this._nWidthEllipsis * Math.cos(angle + Math.PI / 2) + this._nXCenterEllipsis;
+                  ctr.y = this._nHeightEllipsis * Math.sin(angle + Math.PI / 2) + this._nYCenterEllipsis;
+                  characterInfo = new CBI(this._aCharactersList[i].id,this._aCharactersList[i].breedId,new Array());
+                  this._aEntitiesLook[i].look = SecureCenter.unsecure(this._aEntitiesLook[i].look);
+                  oPerso = new TiphonEntity(this._aEntitiesLook[i].id,this._aEntitiesLook[i].look);
+                  ctr.addChild(oPerso);
+                  oPerso.name = "char" + i;
+                  oPerso.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onMoutainPartRendered);
+                  if(_animationModifier[oPerso.look.getBone()])
                   {
-                     _loc13_.addAnimationModifier(_animationModifier[_loc13_.look.getBone()]);
+                     oPerso.addAnimationModifier(_animationModifier[oPerso.look.getBone()]);
                   }
-                  if(_skinModifier[_loc13_.look.getBone()])
+                  if(_skinModifier[oPerso.look.getBone()])
                   {
-                     _loc13_.skinModifier = _skinModifier[_loc13_.look.getBone()];
+                     oPerso.skinModifier = _skinModifier[oPerso.look.getBone()];
                   }
-                  for (_loc14_ in _subEntitiesBehaviors)
+                  for (cat in _subEntitiesBehaviors)
                   {
-                     if(_subEntitiesBehaviors[_loc14_])
+                     if(_subEntitiesBehaviors[cat])
                      {
-                        _loc13_.setSubEntityBehaviour(_loc14_,_subEntitiesBehaviors[_loc14_]);
+                        oPerso.setSubEntityBehaviour(cat,_subEntitiesBehaviors[cat]);
                      }
                   }
-                  if(_loc13_.look.getBone() == 1)
+                  if(oPerso.look.getBone() == 1)
                   {
-                     _loc13_.setAnimationAndDirection("AnimStatique",2);
+                     oPerso.setAnimationAndDirection("AnimStatique",2);
                   }
                   else
                   {
-                     _loc13_.setAnimationAndDirection("AnimStatique",3);
+                     oPerso.setAnimationAndDirection("AnimStatique",3);
                   }
-                  _loc13_.x = -5;
-                  _loc13_.y = -64;
-                  _loc13_.scaleX = 2.2;
-                  _loc13_.scaleY = 2.2;
-                  _loc13_.cacheAsBitmap = true;
-                  this._aSprites[_loc8_] = _loc13_;
-                  _loc11_.scaleX = _loc11_.scaleY = Math.max(0.3,_loc10_);
-                  _loc11_.alpha = Math.max(0.3,_loc10_);
-                  _loc11_.useHandCursor = true;
-                  _loc11_.buttonMode = true;
+                  oPerso.x = -5;
+                  oPerso.y = -64;
+                  oPerso.scaleX = 2.2;
+                  oPerso.scaleY = 2.2;
+                  oPerso.cacheAsBitmap = true;
+                  this._aSprites[i] = oPerso;
+                  ctr.scaleX = ctr.scaleY = Math.max(0.3,coef);
+                  ctr.alpha = Math.max(0.3,coef);
+                  ctr.useHandCursor = true;
+                  ctr.buttonMode = true;
                   if(this._nNbCharacters == 2)
                   {
-                     if(_loc8_ == 1)
+                     if(i == 1)
                      {
-                        _loc11_.x = this._nWidthEllipsis * Math.cos(_loc9_ + Math.PI / 6 + Math.PI / 2) + this._nXCenterEllipsis;
-                        _loc11_.y = this._nHeightEllipsis * Math.sin(_loc9_ + Math.PI / 6 + Math.PI / 2) + this._nYCenterEllipsis;
+                        ctr.x = this._nWidthEllipsis * Math.cos(angle + Math.PI / 6 + Math.PI / 2) + this._nXCenterEllipsis;
+                        ctr.y = this._nHeightEllipsis * Math.sin(angle + Math.PI / 6 + Math.PI / 2) + this._nYCenterEllipsis;
                      }
                   }
                   if(this._nNbCharacters == 4)
                   {
-                     if(_loc8_ == 2)
+                     if(i == 2)
                      {
-                        _loc11_.x = this._nWidthEllipsis * Math.cos(_loc9_ + Math.PI / 6 + Math.PI / 2) + this._nXCenterEllipsis;
-                        _loc11_.y = this._nHeightEllipsis * Math.sin(_loc9_ + Math.PI / 6 + Math.PI / 2) + this._nYCenterEllipsis;
+                        ctr.x = this._nWidthEllipsis * Math.cos(angle + Math.PI / 6 + Math.PI / 2) + this._nXCenterEllipsis;
+                        ctr.y = this._nHeightEllipsis * Math.sin(angle + Math.PI / 6 + Math.PI / 2) + this._nYCenterEllipsis;
                      }
                   }
-                  _loc15_ = new Texture();
-                  _loc11_.addChildAt(_loc15_,0);
-                  _loc15_.name = "char" + _loc8_;
-                  _loc15_.dispatchMessages = true;
-                  _loc15_.addEventListener(Event.COMPLETE,this.onMoutainPartRendered);
-                  _loc15_.scale = 1.2;
-                  _loc15_.y = -62;
-                  _loc15_.uri = new Uri(this._sMountainUri + "assets.swf|base_" + _loc12_.breed);
-                  _loc15_.finalize();
-                  _loc16_ = new InstanceEvent(_loc11_,this._uiClass.uiClass);
-                  _loc16_.push(EventEnums.EVENT_ONRELEASE_MSG);
-                  _loc16_.push(EventEnums.EVENT_ONDOUBLECLICK_MSG);
-                  UIEventManager.getInstance().registerInstance(_loc16_);
-                  if(_loc8_ == 0)
+                  mountain = new Texture();
+                  ctr.addChildAt(mountain,0);
+                  mountain.name = "char" + i;
+                  mountain.dispatchMessages = true;
+                  mountain.addEventListener(Event.COMPLETE,this.onMoutainPartRendered);
+                  mountain.scale = 1.2;
+                  mountain.y = -62;
+                  mountain.uri = new Uri(this._sMountainUri + "assets.swf|base_" + characterInfo.breed);
+                  mountain.finalize();
+                  ie = new InstanceEvent(ctr,this._uiClass.uiClass);
+                  ie.push(EventEnums.EVENT_ONRELEASE_MSG);
+                  ie.push(EventEnums.EVENT_ONDOUBLECLICK_MSG);
+                  UIEventManager.getInstance().registerInstance(ie);
+                  if(i == 0)
                   {
                      this._charaSelCtr.addChild(this._midZCtr);
                   }
-                  if(this._aEntitiesLook[_loc8_].disabled)
+                  if(this._aEntitiesLook[i].disabled)
                   {
-                     _loc11_.transform.colorTransform = new ColorTransform(0.6,0.6,0.6,1);
+                     ctr.transform.colorTransform = new ColorTransform(0.6,0.6,0.6,1);
                   }
-                  this._charaSelCtr.addChild(_loc11_);
-                  this._ctrDepth.push(this._charaSelCtr.getChildIndex(_loc11_));
-                  this._aMountainsCtr[_loc8_] = _loc11_;
+                  this._charaSelCtr.addChild(ctr);
+                  this._ctrDepth.push(this._charaSelCtr.getChildIndex(ctr));
+                  this._aMountainsCtr[i] = ctr;
                }
-               _loc8_++;
+               i++;
             }
             this._charaSelCtr.addChild(this._frontZCtr);
          }
       }
       
-      private function onMoutainPartRendered(param1:Event) : void {
-         if(param1.type == TiphonEvent.RENDER_SUCCEED)
+      private function onMoutainPartRendered(event:Event) : void {
+         if(event.type == TiphonEvent.RENDER_SUCCEED)
          {
-            param1.target.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onMoutainPartRendered);
+            event.target.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onMoutainPartRendered);
          }
          else
          {
-            if(param1.type == Event.COMPLETE)
+            if(event.type == Event.COMPLETE)
             {
-               param1.target.removeEventListener(Event.COMPLETE,this.onMoutainPartRendered);
+               event.target.removeEventListener(Event.COMPLETE,this.onMoutainPartRendered);
             }
          }
-         if((this._aRenderePartNames[param1.target.name]) && (param1.target.stage))
+         if((this._aRenderePartNames[event.target.name]) && (event.target.stage))
          {
-            this.createMountainsCtrBitmap(this._aRenderePartNames[param1.target.name],int(param1.target.name.replace("char","")));
+            this.createMountainsCtrBitmap(this._aRenderePartNames[event.target.name],int(event.target.name.replace("char","")));
          }
          else
          {
-            this._aRenderePartNames[param1.target.name] = param1.target.parent;
+            this._aRenderePartNames[event.target.name] = event.target.parent;
          }
       }
       
-      private function createMountainsCtrBitmap(param1:GraphicContainer, param2:int) : void {
-         var _loc5_:Bitmap = null;
-         var _loc3_:Number = param1.alpha;
-         param1.alpha = 1;
-         var _loc4_:Number = param1.scaleX;
-         param1.scaleX = param1.scaleY = 1;
-         if(param1.numChildren > 2)
+      private function createMountainsCtrBitmap(ctr:GraphicContainer, charWheelID:int) : void {
+         var bmp:Bitmap = null;
+         var previousAlpha:Number = ctr.alpha;
+         ctr.alpha = 1;
+         var previousScale:Number = ctr.scaleX;
+         ctr.scaleX = ctr.scaleY = 1;
+         if(ctr.numChildren > 2)
          {
-            _loc5_ = param1.getChildAt(2) as Bitmap;
-            if((_loc5_) && (_loc5_.bitmapData))
+            bmp = ctr.getChildAt(2) as Bitmap;
+            if((bmp) && (bmp.bitmapData))
             {
-               _loc5_.bitmapData.dispose();
+               bmp.bitmapData.dispose();
             }
          }
-         var _loc6_:Rectangle = param1.getBounds(param1);
-         var _loc7_:BitmapData = new BitmapData(_loc6_.width,_loc6_.height,true,5596808);
-         _loc7_.draw(param1,new Matrix(1,0,0,1,-_loc6_.x,-_loc6_.y));
-         if(!_loc5_)
+         var bounds:Rectangle = ctr.getBounds(ctr);
+         var bmpData:BitmapData = new BitmapData(bounds.width,bounds.height,true,5596808);
+         bmpData.draw(ctr,new Matrix(1,0,0,1,-bounds.x,-bounds.y));
+         if(!bmp)
          {
-            _loc5_ = new Bitmap(_loc7_,"auto",true);
+            bmp = new Bitmap(bmpData,"auto",true);
          }
          else
          {
-            _loc5_.bitmapData = _loc7_;
+            bmp.bitmapData = bmpData;
          }
-         _loc5_.x = _loc6_.x;
-         _loc5_.y = _loc6_.y;
-         param1.alpha = _loc3_;
-         param1.scaleX = param1.scaleY = _loc4_;
-         param1.addChild(_loc5_);
-         if(param1.numChildren == 3)
+         bmp.x = bounds.x;
+         bmp.y = bounds.y;
+         ctr.alpha = previousAlpha;
+         ctr.scaleX = ctr.scaleY = previousScale;
+         ctr.addChild(bmp);
+         if(ctr.numChildren == 3)
          {
-            param1.getChildAt(0).visible = param1.getChildAt(1).visible = param2 == this._nSelectedChara;
-            param1.getChildAt(2).visible = !(param2 == this._nSelectedChara);
+            ctr.getChildAt(0).visible = ctr.getChildAt(1).visible = charWheelID == this._nSelectedChara;
+            ctr.getChildAt(2).visible = !(charWheelID == this._nSelectedChara);
          }
       }
       
@@ -564,10 +564,10 @@ package com.ankamagames.berilia.components
          this._bMovingMountains = false;
       }
       
-      private function rotateMountains(param1:int) : void {
-         var _loc3_:IInterfaceListener = null;
-         var _loc4_:IInterfaceListener = null;
-         this._nSelectedChara = this._nSelectedChara - param1;
+      private function rotateMountains(sens:int) : void {
+         var listener:IInterfaceListener = null;
+         var listener2:IInterfaceListener = null;
+         this._nSelectedChara = this._nSelectedChara - sens;
          if(this._nSelectedChara >= this._aCharactersList.length)
          {
             this._nSelectedChara = this._nSelectedChara - this._aCharactersList.length;
@@ -576,9 +576,9 @@ package com.ankamagames.berilia.components
          {
             this._nSelectedChara = this._aCharactersList.length + this._nSelectedChara;
          }
-         var _loc2_:Number = 2 * Math.PI / this._nNbCharacters;
-         this._sens = param1;
-         this._nRotationStep = _loc2_;
+         var t:Number = 2 * Math.PI / this._nNbCharacters;
+         this._sens = sens;
+         this._nRotationStep = t;
          if(isNaN(this._nRotationPieceTrg))
          {
             this._nRotationPieceTrg = this._nRotation + this._nRotationStep * this._sens;
@@ -587,62 +587,62 @@ package com.ankamagames.berilia.components
          {
             this._nRotationPieceTrg = this._nRotationPieceTrg + this._nRotationStep * this._sens;
          }
-         if(param1 == 1)
+         if(sens == 1)
          {
-            for each (_loc3_ in Berilia.getInstance().UISoundListeners)
+            for each (listener in Berilia.getInstance().UISoundListeners)
             {
-               _loc3_.playUISound("16079");
+               listener.playUISound("16079");
             }
          }
          else
          {
-            for each (_loc4_ in Berilia.getInstance().UISoundListeners)
+            for each (listener2 in Berilia.getInstance().UISoundListeners)
             {
-               _loc4_.playUISound("16080");
+               listener2.playUISound("16080");
             }
          }
          EnterFrameDispatcher.addEventListener(this.onRotateMountains,"mountainsRotation",StageShareManager.stage.frameRate);
       }
       
-      private function isIterable(param1:*) : Boolean {
-         if(param1 is Array)
+      private function isIterable(obj:*) : Boolean {
+         if(obj is Array)
          {
             return true;
          }
-         if(!(param1["length"] == null) && !(param1["length"] == 0) && !isNaN(param1["length"]) && !(param1[0] == null) && !(param1 is String))
+         if((!(obj["length"] == null)) && (!(obj["length"] == 0)) && (!isNaN(obj["length"])) && (!(obj[0] == null)) && (!(obj is String)))
          {
             return true;
          }
          return false;
       }
       
-      override public function process(param1:Message) : Boolean {
+      override public function process(msg:Message) : Boolean {
          return false;
       }
       
-      public function eventOnRelease(param1:DisplayObject) : void {
+      public function eventOnRelease(target:DisplayObject) : void {
       }
       
-      public function eventOnDoubleClick(param1:DisplayObject) : void {
+      public function eventOnDoubleClick(target:DisplayObject) : void {
          if(this._bMovingMountains)
          {
          }
       }
       
-      public function eventOnRollOver(param1:DisplayObject) : void {
+      public function eventOnRollOver(target:DisplayObject) : void {
       }
       
-      public function eventOnRollOut(param1:DisplayObject) : void {
+      public function eventOnRollOut(target:DisplayObject) : void {
       }
       
-      public function eventOnShortcut(param1:String) : Boolean {
+      public function eventOnShortcut(s:String) : Boolean {
          return false;
       }
       
-      private function onRotateMountains(param1:Event) : void {
-         var _loc4_:GraphicContainer = null;
-         var _loc5_:* = NaN;
-         var _loc6_:* = NaN;
+      private function onRotateMountains(e:Event) : void {
+         var ctr:GraphicContainer = null;
+         var angle:* = NaN;
+         var coef:* = NaN;
          this._bMovingMountains = true;
          if(this._nRotationStep == 0)
          {
@@ -656,54 +656,54 @@ package com.ankamagames.berilia.components
          {
             this._nRotation = this._nRotation + (this._nRotationPieceTrg - this._nRotation) / 3;
          }
-         var _loc2_:Array = new Array();
-         var _loc3_:* = 0;
-         for each (_loc4_ in this._aMountainsCtr)
+         var zOrder:Array = new Array();
+         var i:int = 0;
+         for each (ctr in this._aMountainsCtr)
          {
-            _loc5_ = (this._nRotation + this._nRotationStep * _loc3_) % (2 * Math.PI);
-            _loc6_ = Math.abs(Math.PI - (_loc5_ < 0?_loc5_ + 2 * Math.PI:_loc5_) % (2 * Math.PI)) / Math.PI;
-            _loc2_.push(
+            angle = (this._nRotation + this._nRotationStep * i) % (2 * Math.PI);
+            coef = Math.abs(Math.PI - (angle < 0?angle + 2 * Math.PI:angle) % (2 * Math.PI)) / Math.PI;
+            zOrder.push(
                {
-                  "ctr":_loc4_,
-                  "z":_loc6_
+                  "ctr":ctr,
+                  "z":coef
                });
-            _loc4_.x = this._nWidthEllipsis * Math.cos(_loc5_ + Math.PI / 2) + this._nXCenterEllipsis;
-            _loc4_.y = this._nHeightEllipsis * Math.sin(_loc5_ + Math.PI / 2) + this._nYCenterEllipsis;
+            ctr.x = this._nWidthEllipsis * Math.cos(angle + Math.PI / 2) + this._nXCenterEllipsis;
+            ctr.y = this._nHeightEllipsis * Math.sin(angle + Math.PI / 2) + this._nYCenterEllipsis;
             if(this._nNbCharacters == 2)
             {
-               if(_loc4_.y < 300)
+               if(ctr.y < 300)
                {
-                  _loc4_.x = this._nWidthEllipsis * Math.cos(_loc5_ + Math.PI / 6 + Math.PI / 2) + this._nXCenterEllipsis;
-                  _loc4_.y = this._nHeightEllipsis * Math.sin(_loc5_ + Math.PI / 6 + Math.PI / 2) + this._nYCenterEllipsis;
+                  ctr.x = this._nWidthEllipsis * Math.cos(angle + Math.PI / 6 + Math.PI / 2) + this._nXCenterEllipsis;
+                  ctr.y = this._nHeightEllipsis * Math.sin(angle + Math.PI / 6 + Math.PI / 2) + this._nYCenterEllipsis;
                }
             }
             if(this._nNbCharacters == 4)
             {
-               if(_loc4_.y < 300)
+               if(ctr.y < 300)
                {
-                  _loc4_.x = this._nWidthEllipsis * Math.cos(_loc5_ + Math.PI / 6 + Math.PI / 2) + this._nXCenterEllipsis;
-                  _loc4_.y = this._nHeightEllipsis * Math.sin(_loc5_ + Math.PI / 6 + Math.PI / 2) + this._nYCenterEllipsis;
+                  ctr.x = this._nWidthEllipsis * Math.cos(angle + Math.PI / 6 + Math.PI / 2) + this._nXCenterEllipsis;
+                  ctr.y = this._nHeightEllipsis * Math.sin(angle + Math.PI / 6 + Math.PI / 2) + this._nYCenterEllipsis;
                }
             }
-            _loc4_.scaleX = _loc4_.scaleY = Math.max(0.3,_loc6_);
-            _loc4_.alpha = Math.max(0.3,_loc6_);
-            if(_loc4_.numChildren == 3)
+            ctr.scaleX = ctr.scaleY = Math.max(0.3,coef);
+            ctr.alpha = Math.max(0.3,coef);
+            if(ctr.numChildren == 3)
             {
-               _loc4_.getChildAt(0).visible = _loc4_.getChildAt(1).visible = _loc3_ == this._nSelectedChara;
-               _loc4_.getChildAt(2).visible = !(_loc3_ == this._nSelectedChara);
+               ctr.getChildAt(0).visible = ctr.getChildAt(1).visible = i == this._nSelectedChara;
+               ctr.getChildAt(2).visible = !(i == this._nSelectedChara);
             }
-            _loc3_++;
+            i++;
          }
-         _loc2_.sortOn("z",Array.NUMERIC);
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         zOrder.sortOn("z",Array.NUMERIC);
+         i = 0;
+         while(i < zOrder.length)
          {
-            _loc2_[_loc3_].ctr.parent.addChildAt(_loc2_[_loc3_].ctr,this._ctrDepth[_loc3_]);
-            _loc3_++;
+            zOrder[i].ctr.parent.addChildAt(zOrder[i].ctr,this._ctrDepth[i]);
+            i++;
          }
          if(this._charaSelCtr)
          {
-            this._charaSelCtr.setChildIndex(this._frontZCtr,this._charaSelCtr.numChildren-1);
+            this._charaSelCtr.setChildIndex(this._frontZCtr,this._charaSelCtr.numChildren - 1);
          }
          if(this._nRotationPieceTrg == this._nRotation)
          {
@@ -720,9 +720,9 @@ import com.ankamagames.tiphon.types.look.TiphonEntityLook;
 class TiphonEntity extends TiphonSprite implements IEntity
 {
    
-   function TiphonEntity(param1:uint, param2:TiphonEntityLook) {
-      super(param2);
-      this._id = param1;
+   function TiphonEntity(id:uint, look:TiphonEntityLook) {
+      super(look);
+      this._id = id;
       mouseEnabled = false;
       mouseChildren = false;
    }
@@ -733,26 +733,26 @@ class TiphonEntity extends TiphonSprite implements IEntity
       return this._id;
    }
    
-   public function set id(param1:int) : void {
-      this._id = param1;
+   public function set id(nValue:int) : void {
+      this._id = nValue;
    }
    
    public function get position() : MapPoint {
       return null;
    }
    
-   public function set position(param1:MapPoint) : void {
+   public function set position(oValue:MapPoint) : void {
    }
 }
 class CBI extends Object
 {
    
-   function CBI(param1:uint, param2:int, param3:Array) {
+   function CBI(id:uint, breed:int, colors:Array) {
       this.colors = new Array();
       super();
-      this.id = param1;
-      this.breed = param2;
-      this.colors = param3;
+      this.id = id;
+      this.breed = breed;
+      this.colors = colors;
    }
    
    public var id:int;

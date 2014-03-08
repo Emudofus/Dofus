@@ -20,36 +20,34 @@ package com.ankamagames.dofus.console.debug
       
       private var length:int;
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         var _loc4_:Timer = null;
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var t:Timer = null;
+         switch(cmd)
          {
             case "jptest":
-               _loc4_ = new Timer(500,this.length / 10);
-               _loc4_.addEventListener(TimerEvent.TIMER,this.testCharacter);
-               _loc4_.start();
+               t = new Timer(500,this.length / 10);
+               t.addEventListener(TimerEvent.TIMER,this.testCharacter);
+               t.start();
                break;
          }
       }
       
-      private function testCharacter(param1:TimerEvent) : void {
-         var _loc2_:String = this.characters.substr(10 * Timer(param1.target).currentCount,10);
-         var _loc3_:ChatClientMultiMessage = new ChatClientMultiMessage();
-         _loc3_.initChatAbstractClientMessage(_loc2_);
-         ConnectionsHandler.getConnection().send(_loc3_);
+      private function testCharacter(event:TimerEvent) : void {
+         var char:String = this.characters.substr(10 * Timer(event.target).currentCount,10);
+         var ccmm:ChatClientMultiMessage = new ChatClientMultiMessage();
+         ccmm.initChatAbstractClientMessage(char);
+         ConnectionsHandler.getConnection().send(ccmm);
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "jptest":
                return "test japanese characters set";
-            default:
-               return "Unknown command";
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return [];
       }
    }

@@ -26,9 +26,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6269;
       }
       
-      public function initPartyPledgeLoyaltyRequestMessage(param1:uint=0, param2:Boolean=false) : PartyPledgeLoyaltyRequestMessage {
-         super.initAbstractPartyMessage(param1);
-         this.loyal = param2;
+      public function initPartyPledgeLoyaltyRequestMessage(partyId:uint=0, loyal:Boolean=false) : PartyPledgeLoyaltyRequestMessage {
+         super.initAbstractPartyMessage(partyId);
+         this.loyal = loyal;
          this._isInitialized = true;
          return this;
       }
@@ -39,32 +39,32 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PartyPledgeLoyaltyRequestMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartyPledgeLoyaltyRequestMessage(output);
       }
       
-      public function serializeAs_PartyPledgeLoyaltyRequestMessage(param1:IDataOutput) : void {
-         super.serializeAs_AbstractPartyMessage(param1);
-         param1.writeBoolean(this.loyal);
+      public function serializeAs_PartyPledgeLoyaltyRequestMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractPartyMessage(output);
+         output.writeBoolean(this.loyal);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PartyPledgeLoyaltyRequestMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartyPledgeLoyaltyRequestMessage(input);
       }
       
-      public function deserializeAs_PartyPledgeLoyaltyRequestMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.loyal = param1.readBoolean();
+      public function deserializeAs_PartyPledgeLoyaltyRequestMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.loyal = input.readBoolean();
       }
    }
 }

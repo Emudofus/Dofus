@@ -1,5 +1,6 @@
 package com.ankamagames.jerakine.json
 {
+   import __AS3__.vec.*;
    import flash.utils.Dictionary;
    import flash.utils.describeType;
    import flash.utils.getQualifiedClassName;
@@ -7,11 +8,11 @@ package com.ankamagames.jerakine.json
    public class JSONEncoder extends Object
    {
       
-      public function JSONEncoder(param1:*, param2:uint=0, param3:Boolean=false) {
+      public function JSONEncoder(value:*, pMaxDepth:uint=0, pShowObjectType:Boolean=false) {
          super();
-         this._depthLimit = param2;
-         this._showObjectType = param3;
-         this.jsonString = this.convertToString(param1);
+         this._depthLimit = pMaxDepth;
+         this._showObjectType = pShowObjectType;
+         this.jsonString = this.convertToString(value);
       }
       
       private var _depthLimit:uint = 0;
@@ -24,110 +25,97 @@ package com.ankamagames.jerakine.json
          return this.jsonString;
       }
       
-      private function convertToString(param1:*, param2:int=0) : String {
-         if(!(this._depthLimit == 0) && param2 > this._depthLimit)
+      private function convertToString(value:*, depth:int=0) : String {
+         if((!(this._depthLimit == 0)) && (depth > this._depthLimit))
          {
             return "";
          }
-         if(param1 is String)
+         if(value is String)
          {
-            return this.escapeString(param1 as String);
+            return this.escapeString(value as String);
          }
-         if(param1 is Number)
+         if(value is Number)
          {
-            return isFinite(param1 as Number)?param1.toString():"null";
+            return isFinite(value as Number)?value.toString():"null";
          }
-         if(param1 is Boolean)
+         if(value is Boolean)
          {
-            return param1?"true":"false";
+            return value?"true":"false";
          }
-         if(param1 is Array || param1 is Vector.<int> || param1 is Vector.<uint> || param1 is Vector.<String> || param1 is Vector.<Boolean> || param1 is Vector.<*> || param1 is Dictionary)
+         if((value is Array) || (value is Vector.<int>) || (value is Vector.<uint>) || (value is Vector.<String>) || (value is Vector.<Boolean>) || (value is Vector.<*>) || (value is Dictionary))
          {
-            return this.arrayToString(param1,param2 + 1);
+            return this.arrayToString(value,depth + 1);
          }
-         if(param1 is Object && !(param1 == null))
+         if((value is Object) && (!(value == null)))
          {
-            return this.objectToString(param1,param2 + 1);
+            return this.objectToString(value,depth + 1);
          }
          return "null";
       }
       
-      private function escapeString(param1:String) : String {
-         var _loc3_:String = null;
-         var _loc6_:String = null;
-         var _loc7_:String = null;
-         var _loc2_:* = "";
-         var _loc4_:Number = param1.length;
-         var _loc5_:* = 0;
-         while(_loc5_ < _loc4_)
+      private function escapeString(str:String) : String {
+         var ch:String = null;
+         var hexCode:String = null;
+         var zeroPad:String = null;
+         var s:String = "";
+         var len:Number = str.length;
+         var i:int = 0;
+         while(i < len)
          {
-            _loc3_ = param1.charAt(_loc5_);
-            switch(_loc3_)
+            ch = str.charAt(i);
+            switch(ch)
             {
                case "\"":
-                  _loc2_ = _loc2_ + "\\\"";
+                  s = s + "\\\"";
                   break;
                case "\\":
-                  _loc2_ = _loc2_ + "\\\\";
+                  s = s + "\\\\";
                   break;
                case "\b":
-                  _loc2_ = _loc2_ + "\\b";
+                  s = s + "\\b";
                   break;
                case "\f":
-                  _loc2_ = _loc2_ + "\\f";
+                  s = s + "\\f";
                   break;
                case "\n":
-                  _loc2_ = _loc2_ + "\\n";
+                  s = s + "\\n";
                   break;
                case "\r":
-                  _loc2_ = _loc2_ + "\\r";
+                  s = s + "\\r";
                   break;
                case "\t":
-                  _loc2_ = _loc2_ + "\\t";
+                  s = s + "\\t";
                   break;
-               default:
-                  if(_loc3_ < " ")
-                  {
-                     _loc6_ = _loc3_.charCodeAt(0).toString(16);
-                     _loc7_ = _loc6_.length == 2?"00":"000";
-                     _loc2_ = _loc2_ + ("\\u" + _loc7_ + _loc6_);
-                  }
-                  else
-                  {
-                     _loc2_ = _loc2_ + _loc3_;
-                  }
             }
-            _loc5_++;
+            i++;
          }
-         return "\"" + _loc2_ + "\"";
+         return "\"" + s + "\"";
       }
       
-      private function arrayToString(param1:*, param2:int) : String {
-         var _loc4_:* = undefined;
-         if(!(this._depthLimit == 0) && param2 > this._depthLimit)
+      private function arrayToString(a:*, depth:int) : String {
+         var value:* = undefined;
+         if((!(this._depthLimit == 0)) && (depth > this._depthLimit))
          {
             return "";
          }
-         var _loc3_:* = "";
-         for each (_loc4_ in param1)
+         var s:String = "";
+         for each (value in a)
          {
-            if(_loc3_.length > 0)
+            if(s.length > 0)
             {
-               _loc3_ = _loc3_ + ",";
+               s = s + ",";
             }
-            _loc3_ = _loc3_ + this.convertToString(_loc4_);
+            s = s + this.convertToString(value);
          }
-         return "[" + _loc3_ + "]";
+         return "[" + s + "]";
       }
       
-      private function objectToString(param1:Object, param2:int) : String {
+      private function objectToString(o:Object, depth:int) : String {
          var className:Array = null;
          var value:Object = null;
          var key:String = null;
          var v:XML = null;
-         var o:Object = param1;
-         var depth:int = param2;
-         if(!(this._depthLimit == 0) && depth > this._depthLimit)
+         if((!(this._depthLimit == 0)) && (depth > this._depthLimit))
          {
             return "";
          }
@@ -150,9 +138,9 @@ package com.ankamagames.jerakine.json
          }
          else
          {
-            for each (v in classInfo..*.(name() == "variable" || name() == "accessor" && attribute("access").charAt(0) == "r"))
+            for each (v in classInfo..*.((name() == "variable") || (name() == "accessor") && (attribute("access").charAt(0) == "r")))
             {
-               if(!((v.metadata) && v.metadata.(@name == "Transient").length() > 0))
+               if(!((v.metadata) && (v.metadata.(@name == "Transient").length() > 0)))
                {
                   if(s.length > 0)
                   {

@@ -5,18 +5,18 @@ package com.ankamagames.tiphon.types.look
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.DefaultableColor;
    
    public class TiphonEntityLook extends Object implements EntityLookObserver, ISecurizable
    {
       
-      public function TiphonEntityLook(param1:String=null) {
+      public function TiphonEntityLook(sLook:String=null) {
          super();
          MEMORY_LOG[this] = 1;
-         if(param1)
+         if(sLook)
          {
-            fromString(param1,this);
+            fromString(sLook,this);
          }
       }
       
@@ -24,8 +24,8 @@ package com.ankamagames.tiphon.types.look
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TiphonEntityLook));
       
-      public static function fromString(param1:String, param2:TiphonEntityLook=null) : TiphonEntityLook {
-         return EntityLookParser.fromString(param1,EntityLookParser.CURRENT_FORMAT_VERSION,EntityLookParser.DEFAULT_NUMBER_BASE,param2);
+      public static function fromString(str:String, tiphonInstance:TiphonEntityLook=null) : TiphonEntityLook {
+         return EntityLookParser.fromString(str,EntityLookParser.CURRENT_FORMAT_VERSION,EntityLookParser.DEFAULT_NUMBER_BASE,tiphonInstance);
       }
       
       private var _observers:Dictionary;
@@ -60,8 +60,8 @@ package com.ankamagames.tiphon.types.look
          return this._skins;
       }
       
-      public function set defaultSkin(param1:int) : void {
-         if(!(this._defaultSkin == -1) && (this._skins))
+      public function set defaultSkin(id:int) : void {
+         if((!(this._defaultSkin == -1)) && (this._skins))
          {
             this._skins.shift();
          }
@@ -69,19 +69,19 @@ package com.ankamagames.tiphon.types.look
          {
             this._skins = new Vector.<uint>(0,false);
          }
-         this._defaultSkin = param1;
-         if(!this._skins.length || !(this._skins[0] == this._defaultSkin))
+         this._defaultSkin = id;
+         if((!this._skins.length) || (!(this._skins[0] == this._defaultSkin)))
          {
-            this._skins.unshift(param1);
+            this._skins.unshift(id);
          }
       }
       
       public function get firstSkin() : uint {
-         if(!this._skins || !this._skins.length)
+         if((!this._skins) || (!this._skins.length))
          {
             return 0;
          }
-         if(!(this._defaultSkin == -1) && this._skins.length > 1)
+         if((!(this._defaultSkin == -1)) && (this._skins.length > 1))
          {
             return this._skins[1];
          }
@@ -96,18 +96,18 @@ package com.ankamagames.tiphon.types.look
          return this._bone;
       }
       
-      public function setBone(param1:uint) : void {
-         var _loc2_:Object = null;
-         if(this._bone == param1)
+      public function setBone(bone:uint) : void {
+         var elo:Object = null;
+         if(this._bone == bone)
          {
             return;
          }
-         this._bone = param1;
+         this._bone = bone;
          if(!this._locked)
          {
-            for (_loc2_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc2_.boneChanged(this);
+               elo.boneChanged(this);
             }
          }
          else
@@ -116,43 +116,43 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function getSkins(param1:Boolean=false, param2:Boolean=true) : Vector.<uint> {
+      public function getSkins(byRef:Boolean=false, keepDefaultSkin:Boolean=true) : Vector.<uint> {
          if(!this._skins)
          {
             return null;
          }
-         if(param1)
+         if(byRef)
          {
             return this._skins;
          }
-         var _loc3_:uint = this._skins.length;
-         var _loc4_:uint = 0;
-         if(!param2 && !(this._defaultSkin == -1))
+         var skinsLength:uint = this._skins.length;
+         var offset:uint = 0;
+         if((!keepDefaultSkin) && (!(this._defaultSkin == -1)))
          {
-            _loc4_ = 1;
+            offset = 1;
          }
-         var _loc5_:Vector.<uint> = new Vector.<uint>(_loc3_,true);
-         var _loc6_:uint = _loc4_;
-         while(_loc6_ < _loc3_)
+         var skinsDeepCopy:Vector.<uint> = new Vector.<uint>(skinsLength,true);
+         var i:uint = offset;
+         while(i < skinsLength)
          {
-            _loc5_[_loc6_ - _loc4_] = this._skins[_loc6_];
-            _loc6_++;
+            skinsDeepCopy[i - offset] = this._skins[i];
+            i++;
          }
-         return _loc5_;
+         return skinsDeepCopy;
       }
       
       public function resetSkins() : void {
-         var _loc1_:Object = null;
-         if(!this._skins || this._skins.length == 0)
+         var elo:Object = null;
+         if((!this._skins) || (this._skins.length == 0))
          {
             return;
          }
          this._skins = null;
          if(!this._locked)
          {
-            for (_loc1_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc1_.skinsChanged(this);
+               elo.skinsChanged(this);
             }
          }
          else
@@ -161,25 +161,25 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function addSkin(param1:uint, param2:Boolean=false) : void {
-         var _loc3_:Object = null;
+      public function addSkin(skin:uint, addInFirstPosition:Boolean=false) : void {
+         var elo:Object = null;
          if(!this._skins)
          {
             this._skins = new Vector.<uint>(0,false);
          }
-         if(!param2)
+         if(!addInFirstPosition)
          {
-            this._skins.push(param1);
+            this._skins.push(skin);
          }
          else
          {
-            this._skins.unshift(param1);
+            this._skins.unshift(skin);
          }
          if(!this._locked)
          {
-            for (_loc3_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc3_.skinsChanged(this);
+               elo.skinsChanged(this);
             }
          }
          else
@@ -188,23 +188,23 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function removeSkin(param1:uint) : void {
-         var _loc3_:Object = null;
+      public function removeSkin(skin:uint) : void {
+         var elo:Object = null;
          if(!this._skins)
          {
             return;
          }
-         var _loc2_:int = this._skins.indexOf(param1);
-         if(_loc2_ == -1)
+         var skinPos:int = this._skins.indexOf(skin);
+         if(skinPos == -1)
          {
             return;
          }
-         this._skins = this._skins.slice(0,_loc2_).concat(this._skins.slice(_loc2_ + 1));
+         this._skins = this._skins.slice(0,skinPos).concat(this._skins.slice(skinPos + 1));
          if(!this._locked)
          {
-            for (_loc3_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc3_.skinsChanged(this);
+               elo.skinsChanged(this);
             }
          }
          else
@@ -213,51 +213,51 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function getColors(param1:Boolean=false) : Array {
-         var _loc3_:String = null;
+      public function getColors(byRef:Boolean=false) : Array {
+         var colorIndex:String = null;
          if(!this._colors)
          {
             return null;
          }
-         if(param1)
+         if(byRef)
          {
             return this._colors;
          }
-         var _loc2_:Array = new Array();
-         for (_loc3_ in this._colors)
+         var colorsDeepCopy:Array = new Array();
+         for (colorIndex in this._colors)
          {
-            _loc2_[uint(_loc3_)] = this._colors[_loc3_];
+            colorsDeepCopy[uint(colorIndex)] = this._colors[colorIndex];
          }
-         return _loc2_;
+         return colorsDeepCopy;
       }
       
-      public function getColor(param1:uint) : DefaultableColor {
-         var _loc2_:DefaultableColor = null;
-         if(!this._colors || !this._colors[param1])
+      public function getColor(index:uint) : DefaultableColor {
+         var defaultColor:DefaultableColor = null;
+         if((!this._colors) || (!this._colors[index]))
          {
-            _loc2_ = new DefaultableColor();
-            _loc2_.isDefault = true;
-            return _loc2_;
+            defaultColor = new DefaultableColor();
+            defaultColor.isDefault = true;
+            return defaultColor;
          }
-         return new DefaultableColor(this._colors[param1]);
+         return new DefaultableColor(this._colors[index]);
       }
       
-      public function hasColor(param1:uint) : Boolean {
-         return (this._colors) && (this._colors[param1]);
+      public function hasColor(index:uint) : Boolean {
+         return (this._colors) && (this._colors[index]);
       }
       
-      public function resetColor(param1:uint) : void {
-         var _loc2_:Object = null;
-         if(!this._colors || !this._colors[param1])
+      public function resetColor(index:uint) : void {
+         var elo:Object = null;
+         if((!this._colors) || (!this._colors[index]))
          {
             return;
          }
-         delete this._colors[[param1]];
+         delete this._colors[[index]];
          if(!this._locked)
          {
-            for (_loc2_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc2_.colorsChanged(this);
+               elo.colorsChanged(this);
             }
          }
          else
@@ -267,7 +267,7 @@ package com.ankamagames.tiphon.types.look
       }
       
       public function resetColors() : void {
-         var _loc1_:Object = null;
+         var elo:Object = null;
          if(!this._colors)
          {
             return;
@@ -275,9 +275,9 @@ package com.ankamagames.tiphon.types.look
          this._colors = null;
          if(!this._locked)
          {
-            for (_loc1_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc1_.colorsChanged(this);
+               elo.colorsChanged(this);
             }
          }
          else
@@ -286,29 +286,29 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function setColor(param1:uint, param2:uint) : void {
-         var _loc3_:Object = null;
+      public function setColor(index:uint, color:uint) : void {
+         var elo:Object = null;
          if(!this._colors)
          {
             this._colors = new Array();
          }
-         if((this._colors[param1]) && this._colors[param1] == param2)
+         if((this._colors[index]) && (this._colors[index] == color))
          {
             return;
          }
-         if(param2 == 0)
+         if(color == 0)
          {
-            this._colors[param1] = 1;
+            this._colors[index] = 1;
          }
          else
          {
-            this._colors[param1] = param2;
+            this._colors[index] = color;
          }
          if(!this._locked)
          {
-            for (_loc3_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc3_.colorsChanged(this);
+               elo.colorsChanged(this);
             }
          }
          else
@@ -321,18 +321,18 @@ package com.ankamagames.tiphon.types.look
          return this._scaleX;
       }
       
-      public function setScaleX(param1:Number) : void {
-         var _loc2_:Object = null;
-         if(this._scaleX == param1)
+      public function setScaleX(value:Number) : void {
+         var elo:Object = null;
+         if(this._scaleX == value)
          {
             return;
          }
-         this._scaleX = param1;
+         this._scaleX = value;
          if(!this._locked)
          {
-            for (_loc2_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc2_.scalesChanged(this);
+               elo.scalesChanged(this);
             }
          }
          else
@@ -345,18 +345,18 @@ package com.ankamagames.tiphon.types.look
          return this._scaleY;
       }
       
-      public function setScaleY(param1:Number) : void {
-         var _loc2_:Object = null;
-         if(this._scaleY == param1)
+      public function setScaleY(value:Number) : void {
+         var elo:Object = null;
+         if(this._scaleY == value)
          {
             return;
          }
-         this._scaleY = param1;
+         this._scaleY = value;
          if(!this._locked)
          {
-            for (_loc2_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc2_.scalesChanged(this);
+               elo.scalesChanged(this);
             }
          }
          else
@@ -365,19 +365,19 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function setScales(param1:Number, param2:Number) : void {
-         var _loc3_:Object = null;
-         if(this._scaleX == param1 && this._scaleY == param2)
+      public function setScales(x:Number, y:Number) : void {
+         var elo:Object = null;
+         if((this._scaleX == x) && (this._scaleY == y))
          {
             return;
          }
-         this._scaleX = param1;
-         this._scaleY = param2;
+         this._scaleX = x;
+         this._scaleY = y;
          if(!this._locked)
          {
-            for (_loc3_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc3_.scalesChanged(this);
+               elo.scalesChanged(this);
             }
          }
          else
@@ -386,87 +386,87 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function getSubEntities(param1:Boolean=false) : Array {
-         var _loc3_:String = null;
-         var _loc4_:uint = 0;
-         var _loc5_:String = null;
-         var _loc6_:uint = 0;
+      public function getSubEntities(byRef:Boolean=false) : Array {
+         var subEntityCategory:String = null;
+         var category:uint = 0;
+         var subEntityIndex:String = null;
+         var index:uint = 0;
          if(!this._subEntities)
          {
             return null;
          }
-         if(param1)
+         if(byRef)
          {
             return this._subEntities;
          }
-         var _loc2_:Array = new Array();
-         for (_loc3_ in this._subEntities)
+         var subEntitesDeepCopy:Array = new Array();
+         for (subEntityCategory in this._subEntities)
          {
-            _loc4_ = uint(_loc3_);
-            if(!_loc2_[_loc4_])
+            category = uint(subEntityCategory);
+            if(!subEntitesDeepCopy[category])
             {
-               _loc2_[_loc4_] = new Array();
+               subEntitesDeepCopy[category] = new Array();
             }
-            for (_loc5_ in this._subEntities[_loc3_])
+            for (subEntityIndex in this._subEntities[subEntityCategory])
             {
-               _loc6_ = uint(_loc5_);
-               _loc2_[_loc4_][_loc6_] = this._subEntities[_loc3_][_loc5_];
+               index = uint(subEntityIndex);
+               subEntitesDeepCopy[category][index] = this._subEntities[subEntityCategory][subEntityIndex];
             }
          }
-         return _loc2_;
+         return subEntitesDeepCopy;
       }
       
-      public function getSubEntitiesFromCategory(param1:uint) : Array {
-         var _loc3_:String = null;
-         var _loc4_:uint = 0;
+      public function getSubEntitiesFromCategory(category:uint) : Array {
+         var subEntityIndex:String = null;
+         var index:uint = 0;
          if(!this._subEntities)
          {
             return null;
          }
-         var _loc2_:Array = new Array();
-         for (_loc3_ in this._subEntities[param1])
+         var subEntitiesDeepCopy:Array = new Array();
+         for (subEntityIndex in this._subEntities[category])
          {
-            _loc4_ = uint(_loc3_);
-            _loc2_[_loc4_] = this._subEntities[param1][_loc3_];
+            index = uint(subEntityIndex);
+            subEntitiesDeepCopy[index] = this._subEntities[category][subEntityIndex];
          }
-         return _loc2_;
+         return subEntitiesDeepCopy;
       }
       
-      public function getSubEntity(param1:uint, param2:uint) : TiphonEntityLook {
+      public function getSubEntity(category:uint, index:uint) : TiphonEntityLook {
          if(!this._subEntities)
          {
             return null;
          }
-         if(!this._subEntities[param1])
+         if(!this._subEntities[category])
          {
             return null;
          }
-         return this._subEntities[param1][param2];
+         return this._subEntities[category][index];
       }
       
       public function resetSubEntities() : void {
-         var _loc1_:String = null;
-         var _loc2_:String = null;
-         var _loc3_:TiphonEntityLook = null;
-         var _loc4_:Object = null;
+         var subEntityCategory:String = null;
+         var subEntityIndex:String = null;
+         var subEntity:TiphonEntityLook = null;
+         var elo:Object = null;
          if(!this._subEntities)
          {
             return;
          }
-         for (_loc1_ in this._subEntities)
+         for (subEntityCategory in this._subEntities)
          {
-            for (_loc2_ in this._subEntities[_loc1_])
+            for (subEntityIndex in this._subEntities[subEntityCategory])
             {
-               _loc3_ = this._subEntities[_loc1_][_loc2_];
-               _loc3_.removeObserver(this);
+               subEntity = this._subEntities[subEntityCategory][subEntityIndex];
+               subEntity.removeObserver(this);
             }
          }
          this._subEntities = null;
          if(!this._locked)
          {
-            for (_loc4_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc4_.subEntitiesChanged(this);
+               elo.subEntitiesChanged(this);
             }
          }
          else
@@ -475,23 +475,23 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function addSubEntity(param1:uint, param2:uint, param3:TiphonEntityLook) : void {
-         var _loc4_:Object = null;
+      public function addSubEntity(category:uint, index:uint, subEntity:TiphonEntityLook) : void {
+         var elo:Object = null;
          if(!this._subEntities)
          {
             this._subEntities = new Array();
          }
-         if(!this._subEntities[param1])
+         if(!this._subEntities[category])
          {
-            this._subEntities[param1] = new Array();
+            this._subEntities[category] = new Array();
          }
-         param3.addObserver(this);
-         this._subEntities[param1][param2] = param3;
+         subEntity.addObserver(this);
+         this._subEntities[category][index] = subEntity;
          if(!this._locked)
          {
-            for (_loc4_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc4_.subEntitiesChanged(this);
+               elo.subEntitiesChanged(this);
             }
          }
          else
@@ -500,22 +500,22 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function removeSubEntity(param1:uint, param2:uint=0) : void {
-         var _loc3_:Object = null;
-         if(!this._subEntities || !this._subEntities[param1] || !this._subEntities[param1][param2])
+      public function removeSubEntity(category:uint, index:uint=0) : void {
+         var elo:Object = null;
+         if((!this._subEntities) || (!this._subEntities[category]) || (!this._subEntities[category][index]))
          {
             return;
          }
-         delete this._subEntities[param1][[param2]];
-         if(this._subEntities[param1].length == 1)
+         delete this._subEntities[category][[index]];
+         if(this._subEntities[category].length == 1)
          {
-            delete this._subEntities[[param1]];
+            delete this._subEntities[[category]];
          }
          if(!this._locked)
          {
-            for (_loc3_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc3_.subEntitiesChanged(this);
+               elo.subEntitiesChanged(this);
             }
          }
          else
@@ -537,201 +537,201 @@ package com.ankamagames.tiphon.types.look
          this._subEntitiesChangedWhileLocked = false;
       }
       
-      public function unlock(param1:Boolean=false) : void {
-         var _loc2_:Object = null;
-         var _loc3_:Object = null;
-         var _loc4_:Object = null;
-         var _loc5_:Object = null;
-         var _loc6_:Object = null;
+      public function unlock(silentUnlock:Boolean=false) : void {
+         var elo0:Object = null;
+         var elo1:Object = null;
+         var elo2:Object = null;
+         var elo3:Object = null;
+         var elo4:Object = null;
          if(!this._locked)
          {
             return;
          }
          this._locked = false;
-         if(!param1)
+         if(!silentUnlock)
          {
             if(this._boneChangedWhileLocked)
             {
-               for (_loc2_ in this._observers)
+               for (elo0 in this._observers)
                {
-                  _loc2_.boneChanged(this);
+                  elo0.boneChanged(this);
                }
                this._boneChangedWhileLocked = false;
             }
             if(this._skinsChangedWhileLocked)
             {
-               for (_loc3_ in this._observers)
+               for (elo1 in this._observers)
                {
-                  _loc3_.skinsChanged(this);
+                  elo1.skinsChanged(this);
                }
                this._skinsChangedWhileLocked = false;
             }
             if(this._colorsChangedWhileLocked)
             {
-               for (_loc4_ in this._observers)
+               for (elo2 in this._observers)
                {
-                  _loc4_.colorsChanged(this);
+                  elo2.colorsChanged(this);
                }
                this._colorsChangedWhileLocked = false;
             }
             if(this._scalesChangedWhileLocked)
             {
-               for (_loc5_ in this._observers)
+               for (elo3 in this._observers)
                {
-                  _loc5_.scalesChanged(this);
+                  elo3.scalesChanged(this);
                }
                this._scalesChangedWhileLocked = false;
             }
             if(this._subEntitiesChangedWhileLocked)
             {
-               for (_loc6_ in this._observers)
+               for (elo4 in this._observers)
                {
-                  _loc6_.subEntitiesChanged(this);
+                  elo4.subEntitiesChanged(this);
                }
                this._subEntitiesChangedWhileLocked = false;
             }
          }
       }
       
-      public function addObserver(param1:EntityLookObserver) : void {
+      public function addObserver(elo:EntityLookObserver) : void {
          if(!this._observers)
          {
             this._observers = new Dictionary(true);
          }
-         this._observers[param1] = 1;
+         this._observers[elo] = 1;
       }
       
-      public function removeObserver(param1:EntityLookObserver) : void {
+      public function removeObserver(elo:EntityLookObserver) : void {
          if(!this._observers)
          {
             return;
          }
-         delete this._observers[[param1]];
+         delete this._observers[[elo]];
       }
       
       public function toString() : String {
          return EntityLookParser.toString(this);
       }
       
-      public function equals(param1:TiphonEntityLook) : Boolean {
-         var _loc2_:* = false;
-         var _loc3_:* = false;
-         var _loc4_:String = null;
-         var _loc5_:uint = 0;
-         var _loc6_:String = null;
-         var _loc7_:String = null;
-         var _loc8_:String = null;
-         var _loc9_:String = null;
-         var _loc10_:String = null;
-         var _loc11_:TiphonEntityLook = null;
-         var _loc12_:String = null;
-         var _loc13_:TiphonEntityLook = null;
-         if(this._bone != param1._bone)
+      public function equals(el:TiphonEntityLook) : Boolean {
+         var hasSubentities:* = false;
+         var elHasSubentities:* = false;
+         var subCat:String = null;
+         var skin:uint = 0;
+         var colorIndexStr:String = null;
+         var colorIndexStr2:String = null;
+         var subEntityCatStr:String = null;
+         var subEntityCatStr2:String = null;
+         var subEntityCatIndexStr:String = null;
+         var se:TiphonEntityLook = null;
+         var subEntityCatIndexStr2:String = null;
+         var se2:TiphonEntityLook = null;
+         if(this._bone != el._bone)
          {
             return false;
          }
-         if(this._scaleX != param1._scaleX)
+         if(this._scaleX != el._scaleX)
          {
             return false;
          }
-         if(this._scaleY != param1._scaleY)
+         if(this._scaleY != el._scaleY)
          {
             return false;
          }
-         if(this._skins == null && !(param1._skins == null) || !(this._skins == null) && param1._skins == null)
+         if((this._skins == null) && (!(el._skins == null)) || (!(this._skins == null)) && (el._skins == null))
          {
             return false;
          }
-         if((this._skins) && (param1._skins))
+         if((this._skins) && (el._skins))
          {
-            if(this._skins.length != param1._skins.length)
+            if(this._skins.length != el._skins.length)
             {
                return false;
             }
-            for each (_loc5_ in this._skins)
+            for each (skin in this._skins)
             {
-               if(param1._skins.indexOf(_loc5_) == -1)
+               if(el._skins.indexOf(skin) == -1)
                {
                   return false;
                }
             }
          }
-         if(this._colors == null && !(param1._colors == null) || !(this._colors == null) && param1._colors == null)
+         if((this._colors == null) && (!(el._colors == null)) || (!(this._colors == null)) && (el._colors == null))
          {
             return false;
          }
-         if((this._colors) && (param1._colors))
+         if((this._colors) && (el._colors))
          {
-            for (_loc6_ in this._colors)
+            for (colorIndexStr in this._colors)
             {
-               if(param1._colors[_loc6_] != this._colors[_loc6_])
+               if(el._colors[colorIndexStr] != this._colors[colorIndexStr])
                {
                   return false;
                }
             }
-            for (_loc7_ in param1._colors)
+            for (colorIndexStr2 in el._colors)
             {
-               if(this._colors[_loc7_] != param1._colors[_loc7_])
+               if(this._colors[colorIndexStr2] != el._colors[colorIndexStr2])
                {
                   return false;
                }
             }
          }
-         for (_loc4_ in this._subEntities)
+         for (subCat in this._subEntities)
          {
-            if(this._subEntities[_loc4_])
+            if(this._subEntities[subCat])
             {
-               _loc2_ = true;
+               hasSubentities = true;
                break;
             }
          }
-         for (_loc4_ in param1._subEntities)
+         for (subCat in el._subEntities)
          {
-            if(param1._subEntities[_loc4_])
+            if(el._subEntities[subCat])
             {
-               _loc3_ = true;
+               elHasSubentities = true;
                break;
             }
          }
-         if(_loc2_ != _loc3_)
+         if(hasSubentities != elHasSubentities)
          {
             return false;
          }
-         if((this._subEntities) && (param1._subEntities))
+         if((this._subEntities) && (el._subEntities))
          {
-            for (_loc8_ in this._subEntities)
+            for (subEntityCatStr in this._subEntities)
             {
-               if(!param1._subEntities || param1._subEntities[_loc8_] == null)
+               if((!el._subEntities) || (el._subEntities[subEntityCatStr] == null))
                {
                   return false;
                }
-               for (_loc10_ in this._subEntities[_loc8_])
+               for (subEntityCatIndexStr in this._subEntities[subEntityCatStr])
                {
-                  _loc11_ = param1._subEntities[_loc8_][_loc10_];
-                  if(_loc11_ == null)
+                  se = el._subEntities[subEntityCatStr][subEntityCatIndexStr];
+                  if(se == null)
                   {
                      return false;
                   }
-                  if(!_loc11_.equals(this._subEntities[_loc8_][_loc10_]))
+                  if(!se.equals(this._subEntities[subEntityCatStr][subEntityCatIndexStr]))
                   {
                      return false;
                   }
                }
             }
-            for (_loc9_ in param1._subEntities)
+            for (subEntityCatStr2 in el._subEntities)
             {
-               if(!this._subEntities || this._subEntities[_loc9_] == null)
+               if((!this._subEntities) || (this._subEntities[subEntityCatStr2] == null))
                {
                   return false;
                }
-               for (_loc12_ in param1._subEntities[_loc9_])
+               for (subEntityCatIndexStr2 in el._subEntities[subEntityCatStr2])
                {
-                  _loc13_ = this._subEntities[_loc9_][_loc12_];
-                  if(_loc13_ == null)
+                  se2 = this._subEntities[subEntityCatStr2][subEntityCatIndexStr2];
+                  if(se2 == null)
                   {
                      return false;
                   }
-                  if(!_loc13_.equals(param1._subEntities[_loc9_][_loc12_]))
+                  if(!se2.equals(el._subEntities[subEntityCatStr2][subEntityCatIndexStr2]))
                   {
                      return false;
                   }
@@ -741,36 +741,36 @@ package com.ankamagames.tiphon.types.look
          return true;
       }
       
-      public function updateFrom(param1:TiphonEntityLook) : void {
-         if(this.equals(param1))
+      public function updateFrom(el:TiphonEntityLook) : void {
+         if(this.equals(el))
          {
             return;
          }
          this.lock();
          this._boneChangedWhileLocked = true;
-         this.setBone(param1.getBone());
+         this.setBone(el.getBone());
          this.resetColors();
          this._colorsChangedWhileLocked = true;
-         this._colors = param1.getColors();
+         this._colors = el.getColors();
          this.resetSkins();
          this._skinsChangedWhileLocked = true;
-         this._skins = param1.getSkins();
-         this._defaultSkin = param1.defaultSkin;
+         this._skins = el.getSkins();
+         this._defaultSkin = el.defaultSkin;
          this.resetSubEntities();
          this._subEntitiesChangedWhileLocked = true;
-         this._subEntities = param1.getSubEntities();
-         this.setScales(param1.getScaleX(),param1.getScaleY());
+         this._subEntities = el.getSubEntities();
+         this.setScales(el.getScaleX(),el.getScaleY());
          this._scalesChangedWhileLocked = true;
          this.unlock(false);
       }
       
-      public function boneChanged(param1:TiphonEntityLook) : void {
-         var _loc2_:Object = null;
+      public function boneChanged(look:TiphonEntityLook) : void {
+         var elo:Object = null;
          if(!this._locked)
          {
-            for (_loc2_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc2_.subEntitiesChanged(this);
+               elo.subEntitiesChanged(this);
             }
          }
          else
@@ -779,13 +779,13 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function skinsChanged(param1:TiphonEntityLook) : void {
-         var _loc2_:Object = null;
+      public function skinsChanged(look:TiphonEntityLook) : void {
+         var elo:Object = null;
          if(!this._locked)
          {
-            for (_loc2_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc2_.subEntitiesChanged(this);
+               elo.subEntitiesChanged(this);
             }
          }
          else
@@ -794,13 +794,13 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function colorsChanged(param1:TiphonEntityLook) : void {
-         var _loc2_:Object = null;
+      public function colorsChanged(look:TiphonEntityLook) : void {
+         var elo:Object = null;
          if(!this._locked)
          {
-            for (_loc2_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc2_.subEntitiesChanged(this);
+               elo.subEntitiesChanged(this);
             }
          }
          else
@@ -809,13 +809,13 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function scalesChanged(param1:TiphonEntityLook) : void {
-         var _loc2_:Object = null;
+      public function scalesChanged(look:TiphonEntityLook) : void {
+         var elo:Object = null;
          if(!this._locked)
          {
-            for (_loc2_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc2_.subEntitiesChanged(this);
+               elo.subEntitiesChanged(this);
             }
          }
          else
@@ -824,13 +824,13 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function subEntitiesChanged(param1:TiphonEntityLook) : void {
-         var _loc2_:Object = null;
+      public function subEntitiesChanged(look:TiphonEntityLook) : void {
+         var elo:Object = null;
          if(!this._locked)
          {
-            for (_loc2_ in this._observers)
+            for (elo in this._observers)
             {
-               _loc2_.subEntitiesChanged(this);
+               elo.subEntitiesChanged(this);
             }
          }
          else
@@ -840,31 +840,31 @@ package com.ankamagames.tiphon.types.look
       }
       
       public function clone() : TiphonEntityLook {
-         var _loc2_:String = null;
-         var _loc3_:String = null;
-         var _loc1_:TiphonEntityLook = new TiphonEntityLook();
-         _loc1_._bone = this._bone;
-         _loc1_._colors = this._colors?this._colors.concat():this._colors;
-         _loc1_._skins = this._skins?this._skins.concat():this._skins;
-         _loc1_._defaultSkin = this._defaultSkin;
-         _loc1_._scaleX = this._scaleX;
-         _loc1_._scaleY = this._scaleY;
+         var i:String = null;
+         var j:String = null;
+         var o:TiphonEntityLook = new TiphonEntityLook();
+         o._bone = this._bone;
+         o._colors = this._colors?this._colors.concat():this._colors;
+         o._skins = this._skins?this._skins.concat():this._skins;
+         o._defaultSkin = this._defaultSkin;
+         o._scaleX = this._scaleX;
+         o._scaleY = this._scaleY;
          if(this._subEntities)
          {
-            _loc1_._subEntities = [];
-            for (_loc2_ in this._subEntities)
+            o._subEntities = [];
+            for (i in this._subEntities)
             {
-               _loc1_._subEntities[_loc2_] = [];
-               for (_loc3_ in this._subEntities[_loc2_])
+               o._subEntities[i] = [];
+               for (j in this._subEntities[i])
                {
-                  if(this._subEntities[_loc2_][_loc3_])
+                  if(this._subEntities[i][j])
                   {
-                     _loc1_._subEntities[_loc2_][_loc3_] = this._subEntities[_loc2_][_loc3_].clone();
+                     o._subEntities[i][j] = this._subEntities[i][j].clone();
                   }
                }
             }
          }
-         return _loc1_;
+         return o;
       }
       
       public function getSecureObject() : * {

@@ -58,63 +58,63 @@ package com.ankamagames.berilia.managers
          this._cache = Cache.create(30,new LruGarbageCollector(),getQualifiedClassName(this));
       }
       
-      public function getTemplate(param1:String) : XmlTemplate {
-         var _loc2_:Array = param1.split("/");
-         var _loc3_:String = _loc2_[_loc2_.length-1];
-         if(-1 == _loc3_.indexOf(".xml"))
+      public function getTemplate(sName:String) : XmlTemplate {
+         var aTmp:Array = sName.split("/");
+         var sFileName:String = aTmp[aTmp.length - 1];
+         if(-1 == sFileName.indexOf(".xml"))
          {
-            _loc3_ = _loc3_ + ".xml";
+            sFileName = sFileName + ".xml";
          }
-         return this._aTemplates[_loc3_];
+         return this._aTemplates[sFileName];
       }
       
-      public function isRegistered(param1:String) : Boolean {
-         var _loc2_:Array = param1.split("/");
-         var _loc3_:String = _loc2_[_loc2_.length-1];
-         return !(this._aTemplates[_loc3_] == null);
+      public function isRegistered(sPath:String) : Boolean {
+         var aTmp:Array = sPath.split("/");
+         var sFileName:String = aTmp[aTmp.length - 1];
+         return !(this._aTemplates[sFileName] == null);
       }
       
-      public function isLoaded(param1:String) : Boolean {
-         var _loc2_:Array = param1.split("/");
-         var _loc3_:String = _loc2_[_loc2_.length-1];
-         return this._aTemplates[_loc3_] is XmlTemplate;
+      public function isLoaded(sPath:String) : Boolean {
+         var aTmp:Array = sPath.split("/");
+         var sFileName:String = aTmp[aTmp.length - 1];
+         return this._aTemplates[sFileName] is XmlTemplate;
       }
       
-      public function areLoaded(param1:Array) : Boolean {
-         var _loc2_:uint = 0;
-         while(_loc2_ < param1.length)
+      public function areLoaded(aPath:Array) : Boolean {
+         var i:uint = 0;
+         while(i < aPath.length)
          {
-            if(!this.isLoaded(param1[_loc2_]))
+            if(!this.isLoaded(aPath[i]))
             {
                return false;
             }
-            _loc2_++;
+            i++;
          }
-         return !(param1.length == 0);
+         return !(aPath.length == 0);
       }
       
-      public function register(param1:String) : void {
-         var _loc2_:Array = param1.split("/");
-         var _loc3_:String = _loc2_[_loc2_.length-1];
-         if(this.isRegistered(_loc3_))
+      public function register(sPath:String) : void {
+         var aTmp:Array = sPath.split("/");
+         var sFileName:String = aTmp[aTmp.length - 1];
+         if(this.isRegistered(sFileName))
          {
-            if(this.isLoaded(_loc3_))
+            if(this.isLoaded(sFileName))
             {
-               dispatchEvent(new TemplateLoadedEvent(param1));
+               dispatchEvent(new TemplateLoadedEvent(sPath));
             }
             return;
          }
-         this._aTemplates[_loc3_] = false;
-         this._loader.load(new Uri(param1));
+         this._aTemplates[sFileName] = false;
+         this._loader.load(new Uri(sPath));
       }
       
-      public function objectLoaded(param1:ResourceLoadedEvent) : void {
-         this._aTemplates[param1.uri.fileName] = new XmlTemplate(param1.resource,param1.uri.fileName);
-         dispatchEvent(new TemplateLoadedEvent(param1.uri.uri));
+      public function objectLoaded(e:ResourceLoadedEvent) : void {
+         this._aTemplates[e.uri.fileName] = new XmlTemplate(e.resource,e.uri.fileName);
+         dispatchEvent(new TemplateLoadedEvent(e.uri.uri));
       }
       
-      public function objectLoadedFailed(param1:ResourceErrorEvent) : void {
-         _log.debug("objectLoadedFailed : " + param1.uri + " : " + param1.errorMsg);
+      public function objectLoadedFailed(e:ResourceErrorEvent) : void {
+         _log.debug("objectLoadedFailed : " + e.uri + " : " + e.errorMsg);
       }
    }
 }

@@ -24,29 +24,29 @@ package com.ankamagames.jerakine.utils.misc
       
       public static var show_total_time:Boolean = true;
       
-      public static function start(param1:String="") : void {
-         var param1:String = param1.length?param1:"Chrono " + times.length;
+      public static function start(label:String="") : void {
+         var label:String = label.length?label:"Chrono " + times.length;
          times.push(getTimer());
-         labels.push(param1);
+         labels.push(label);
          level = level + 1;
          indent = indent + "  ";
-         _log.trace(">>" + indent + "START " + param1);
+         _log.trace(">>" + indent + "START " + label);
       }
       
       public static function stop() : int {
-         var _loc1_:int = getTimer() - times.pop();
-         if(!show_total_time && (times.length))
+         var elapsed:int = getTimer() - times.pop();
+         if((!show_total_time) && (times.length))
          {
-            times[times.length-1] = times[times.length-1] - _loc1_;
+            times[times.length - 1] = times[times.length - 1] - elapsed;
          }
-         _log.trace("<<" + indent + "DONE " + labels.pop() + " " + _loc1_ + "ms.");
-         level = level-1;
+         _log.trace("<<" + indent + "DONE " + labels.pop() + " " + elapsed + "ms.");
+         level = level - 1;
          indent = indent.slice(0,2 * level + 1);
-         return _loc1_;
+         return elapsed;
       }
       
-      public static function display(param1:String) : void {
-         _log.trace("!!" + indent + "TRACE " + param1);
+      public static function display(str:String) : void {
+         _log.trace("!!" + indent + "TRACE " + str);
       }
    }
 }

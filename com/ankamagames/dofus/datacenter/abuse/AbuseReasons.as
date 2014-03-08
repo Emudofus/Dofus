@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.abuse
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AbuseReasons));
       
-      public static function getReasonNameById(param1:uint) : AbuseReasons {
-         return GameData.getObject(MODULE,param1) as AbuseReasons;
+      public static function getReasonNameById(id:uint) : AbuseReasons {
+         return GameData.getObject(MODULE,id) as AbuseReasons;
       }
       
       public static function getReasonNames() : Array {

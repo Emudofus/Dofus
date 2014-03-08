@@ -17,19 +17,19 @@ package com.ankamagames.dofus.datacenter.effects.instances
       public var mountId:uint;
       
       override public function clone() : EffectInstance {
-         var _loc1_:EffectInstanceMount = new EffectInstanceMount();
-         _loc1_.rawZone = rawZone;
-         _loc1_.effectId = effectId;
-         _loc1_.duration = duration;
-         _loc1_.delay = delay;
-         _loc1_.date = this.date;
-         _loc1_.modelId = this.modelId;
-         _loc1_.mountId = this.mountId;
-         _loc1_.random = random;
-         _loc1_.group = group;
-         _loc1_.targetId = targetId;
-         _loc1_.targetMask = targetMask;
-         return _loc1_;
+         var o:EffectInstanceMount = new EffectInstanceMount();
+         o.rawZone = rawZone;
+         o.effectId = effectId;
+         o.duration = duration;
+         o.delay = delay;
+         o.date = this.date;
+         o.modelId = this.modelId;
+         o.mountId = this.mountId;
+         o.random = random;
+         o.group = group;
+         o.targetId = targetId;
+         o.targetMask = targetMask;
+         return o;
       }
       
       override public function get parameter0() : Object {
@@ -44,17 +44,17 @@ package com.ankamagames.dofus.datacenter.effects.instances
          return this.mountId;
       }
       
-      override public function setParameter(param1:uint, param2:*) : void {
-         switch(param1)
+      override public function setParameter(paramIndex:uint, value:*) : void {
+         switch(paramIndex)
          {
             case 0:
-               this.date = Number(param2);
+               this.date = Number(value);
                break;
             case 1:
-               this.modelId = uint(param2);
+               this.modelId = uint(value);
                break;
             case 2:
-               this.mountId = uint(param2);
+               this.mountId = uint(value);
                break;
          }
       }

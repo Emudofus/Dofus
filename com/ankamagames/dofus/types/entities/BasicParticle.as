@@ -5,12 +5,12 @@ package com.ankamagames.dofus.types.entities
    public class BasicParticle extends Object implements IParticule
    {
       
-      public function BasicParticle(param1:DisplayObject, param2:uint, param3:Boolean, param4:Function) {
+      public function BasicParticle(sprite:DisplayObject, life:uint, subExplosion:Boolean, deathCallback:Function) {
          super();
-         this._sprite = param1;
-         this._life = this._initialLife = param2;
-         this._subExplosion = param3;
-         this._deathCallback = param4;
+         this._sprite = sprite;
+         this._life = this._initialLife = life;
+         this._subExplosion = subExplosion;
+         this._deathCallback = deathCallback;
       }
       
       protected var _sprite:DisplayObject;
@@ -26,17 +26,17 @@ package com.ankamagames.dofus.types.entities
       protected var _deathCallback:Function;
       
       public function update() : void {
-         var _loc1_:* = false;
-         var _loc2_:Number = this._life / this._initialLife;
-         if((this._subExplosion) && Math.random() > _loc2_)
+         var explode:* = false;
+         var prcLife:Number = this._life / this._initialLife;
+         if((this._subExplosion) && (Math.random() > prcLife))
          {
-            _loc1_ = true;
+            explode = true;
          }
-         if((!this._life || (_loc1_)) && !this._deathDispatched)
+         if(((!this._life) || (explode)) && (!this._deathDispatched))
          {
-            this._deathCallback(this,_loc1_);
+            this._deathCallback(this,explode);
          }
-         this._sprite.alpha = _loc2_ > 1 / 2?1:_loc2_ * 2;
+         this._sprite.alpha = prcLife > 1 / 2?1:prcLife * 2;
          if(this._life)
          {
             this._life--;
@@ -55,8 +55,8 @@ package com.ankamagames.dofus.types.entities
          return this._subExplosion;
       }
       
-      public function set subExplosion(param1:Boolean) : void {
-         this._subExplosion = param1;
+      public function set subExplosion(v:Boolean) : void {
+         this._subExplosion = v;
       }
    }
 }

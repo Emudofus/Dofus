@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.effects
       
       public static const MODULE:String = "Effects";
       
-      public static function getEffectById(param1:uint) : Effect {
-         return GameData.getObject(MODULE,param1) as Effect;
+      public static function getEffectById(id:uint) : Effect {
+         return GameData.getObject(MODULE,id) as Effect;
       }
       
       public var id:int;

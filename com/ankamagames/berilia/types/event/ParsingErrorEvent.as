@@ -5,10 +5,10 @@ package com.ankamagames.berilia.types.event
    public class ParsingErrorEvent extends Event
    {
       
-      public function ParsingErrorEvent(param1:String, param2:String) {
+      public function ParsingErrorEvent(url:String, msg:String) {
          super(ERROR);
-         this._url = param1;
-         this._msg = param2;
+         this._url = url;
+         this._msg = msg;
       }
       
       public static const ERROR:String = "ParsingErrorEvent_Error";

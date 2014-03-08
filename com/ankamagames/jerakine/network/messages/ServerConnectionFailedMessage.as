@@ -6,10 +6,10 @@ package com.ankamagames.jerakine.network.messages
    public class ServerConnectionFailedMessage extends Object implements Message
    {
       
-      public function ServerConnectionFailedMessage(param1:ServerConnection, param2:String) {
+      public function ServerConnectionFailedMessage(failedConnection:ServerConnection, errorMessage:String) {
          super();
-         this._errorMessage = param2;
-         this._failedConnection = param1;
+         this._errorMessage = errorMessage;
+         this._failedConnection = failedConnection;
       }
       
       private var _failedConnection:ServerConnection;

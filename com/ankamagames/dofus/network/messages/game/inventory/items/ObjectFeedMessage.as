@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6290;
       }
       
-      public function initObjectFeedMessage(param1:uint=0, param2:uint=0, param3:uint=0) : ObjectFeedMessage {
-         this.objectUID = param1;
-         this.foodUID = param2;
-         this.foodQuantity = param3;
+      public function initObjectFeedMessage(objectUID:uint=0, foodUID:uint=0, foodQuantity:uint=0) : ObjectFeedMessage {
+         this.objectUID = objectUID;
+         this.foodUID = foodUID;
+         this.foodQuantity = foodQuantity;
          this._isInitialized = true;
          return this;
       }
@@ -46,68 +46,68 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ObjectFeedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectFeedMessage(output);
       }
       
-      public function serializeAs_ObjectFeedMessage(param1:IDataOutput) : void {
+      public function serializeAs_ObjectFeedMessage(output:IDataOutput) : void {
          if(this.objectUID < 0)
          {
             throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
          }
          else
          {
-            param1.writeInt(this.objectUID);
+            output.writeInt(this.objectUID);
             if(this.foodUID < 0)
             {
                throw new Error("Forbidden value (" + this.foodUID + ") on element foodUID.");
             }
             else
             {
-               param1.writeInt(this.foodUID);
+               output.writeInt(this.foodUID);
                if(this.foodQuantity < 0)
                {
                   throw new Error("Forbidden value (" + this.foodQuantity + ") on element foodQuantity.");
                }
                else
                {
-                  param1.writeShort(this.foodQuantity);
+                  output.writeShort(this.foodQuantity);
                   return;
                }
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ObjectFeedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectFeedMessage(input);
       }
       
-      public function deserializeAs_ObjectFeedMessage(param1:IDataInput) : void {
-         this.objectUID = param1.readInt();
+      public function deserializeAs_ObjectFeedMessage(input:IDataInput) : void {
+         this.objectUID = input.readInt();
          if(this.objectUID < 0)
          {
             throw new Error("Forbidden value (" + this.objectUID + ") on element of ObjectFeedMessage.objectUID.");
          }
          else
          {
-            this.foodUID = param1.readInt();
+            this.foodUID = input.readInt();
             if(this.foodUID < 0)
             {
                throw new Error("Forbidden value (" + this.foodUID + ") on element of ObjectFeedMessage.foodUID.");
             }
             else
             {
-               this.foodQuantity = param1.readShort();
+               this.foodQuantity = input.readShort();
                if(this.foodQuantity < 0)
                {
                   throw new Error("Forbidden value (" + this.foodQuantity + ") on element of ObjectFeedMessage.foodQuantity.");

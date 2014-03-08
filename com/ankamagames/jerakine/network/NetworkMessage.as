@@ -21,49 +21,49 @@ package com.ankamagames.jerakine.network
       
       public static const BIT_MASK:uint = 3;
       
-      public static function writePacket(param1:IDataOutput, param2:int, param3:ByteArray) : void {
-         var _loc5_:uint = 0;
-         var _loc6_:uint = 0;
-         var _loc4_:uint = computeTypeLen(param3.length);
-         param1.writeShort(subComputeStaticHeader(param2,_loc4_));
-         switch(_loc4_)
+      public static function writePacket(output:IDataOutput, id:int, data:ByteArray) : void {
+         var high:uint = 0;
+         var low:uint = 0;
+         var typeLen:uint = computeTypeLen(data.length);
+         output.writeShort(subComputeStaticHeader(id,typeLen));
+         switch(typeLen)
          {
             case 0:
                return;
             case 1:
-               param1.writeByte(param3.length);
+               output.writeByte(data.length);
                break;
             case 2:
-               param1.writeShort(param3.length);
+               output.writeShort(data.length);
                break;
             case 3:
-               _loc5_ = param3.length >> 16 & 255;
-               _loc6_ = param3.length & 65535;
-               param1.writeByte(_loc5_);
-               param1.writeShort(_loc6_);
+               high = data.length >> 16 & 255;
+               low = data.length & 65535;
+               output.writeByte(high);
+               output.writeShort(low);
                break;
          }
-         param1.writeBytes(param3,0,param3.length);
+         output.writeBytes(data,0,data.length);
       }
       
-      private static function computeTypeLen(param1:uint) : uint {
-         if(param1 > 65535)
+      private static function computeTypeLen(len:uint) : uint {
+         if(len > 65535)
          {
             return 3;
          }
-         if(param1 > 255)
+         if(len > 255)
          {
             return 2;
          }
-         if(param1 > 0)
+         if(len > 0)
          {
             return 1;
          }
          return 0;
       }
       
-      private static function subComputeStaticHeader(param1:uint, param2:uint) : uint {
-         return param1 << BIT_RIGHT_SHIFT_LEN_PACKET_ID | param2;
+      private static function subComputeStaticHeader(msgId:uint, typeLen:uint) : uint {
+         return msgId << BIT_RIGHT_SHIFT_LEN_PACKET_ID | typeLen;
       }
       
       private var _instance_id:uint;
@@ -80,19 +80,19 @@ package com.ankamagames.jerakine.network
          throw new AbstractMethodCallError();
       }
       
-      public function pack(param1:IDataOutput) : void {
+      public function pack(output:IDataOutput) : void {
          throw new AbstractMethodCallError();
       }
       
-      public function unpack(param1:IDataInput, param2:uint) : void {
+      public function unpack(input:IDataInput, length:uint) : void {
          throw new AbstractMethodCallError();
       }
       
-      public function readExternal(param1:IDataInput) : void {
+      public function readExternal(input:IDataInput) : void {
          throw new AbstractMethodCallError();
       }
       
-      public function writeExternal(param1:IDataOutput) : void {
+      public function writeExternal(output:IDataOutput) : void {
          throw new AbstractMethodCallError();
       }
       

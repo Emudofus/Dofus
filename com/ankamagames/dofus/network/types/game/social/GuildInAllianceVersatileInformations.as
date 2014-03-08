@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.social
          return 437;
       }
       
-      public function initGuildInAllianceVersatileInformations(param1:uint=0, param2:uint=0, param3:uint=0, param4:uint=0, param5:uint=0) : GuildInAllianceVersatileInformations {
-         super.initGuildVersatileInformations(param1,param2,param3,param4);
-         this.allianceId = param5;
+      public function initGuildInAllianceVersatileInformations(guildId:uint=0, leaderId:uint=0, guildLevel:uint=0, nbMembers:uint=0, allianceId:uint=0) : GuildInAllianceVersatileInformations {
+         super.initGuildVersatileInformations(guildId,leaderId,guildLevel,nbMembers);
+         this.allianceId = allianceId;
          return this;
       }
       
@@ -30,30 +30,30 @@ package com.ankamagames.dofus.network.types.game.social
          this.allianceId = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildInAllianceVersatileInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildInAllianceVersatileInformations(output);
       }
       
-      public function serializeAs_GuildInAllianceVersatileInformations(param1:IDataOutput) : void {
-         super.serializeAs_GuildVersatileInformations(param1);
+      public function serializeAs_GuildInAllianceVersatileInformations(output:IDataOutput) : void {
+         super.serializeAs_GuildVersatileInformations(output);
          if(this.allianceId < 0)
          {
             throw new Error("Forbidden value (" + this.allianceId + ") on element allianceId.");
          }
          else
          {
-            param1.writeInt(this.allianceId);
+            output.writeInt(this.allianceId);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildInAllianceVersatileInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildInAllianceVersatileInformations(input);
       }
       
-      public function deserializeAs_GuildInAllianceVersatileInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.allianceId = param1.readInt();
+      public function deserializeAs_GuildInAllianceVersatileInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.allianceId = input.readInt();
          if(this.allianceId < 0)
          {
             throw new Error("Forbidden value (" + this.allianceId + ") on element of GuildInAllianceVersatileInformations.allianceId.");

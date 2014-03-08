@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:String="bag") : OpenInventoryAction {
-         var _loc2_:OpenInventoryAction = new OpenInventoryAction();
-         _loc2_.behavior = param1;
-         return _loc2_;
+      public static function create(behavior:String="bag") : OpenInventoryAction {
+         var a:OpenInventoryAction = new OpenInventoryAction();
+         a.behavior = behavior;
+         return a;
       }
       
       public var behavior:String;

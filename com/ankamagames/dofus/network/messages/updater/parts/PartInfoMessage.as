@@ -31,9 +31,9 @@ package com.ankamagames.dofus.network.messages.updater.parts
          return 1508;
       }
       
-      public function initPartInfoMessage(param1:ContentPart=null, param2:Number=0) : PartInfoMessage {
-         this.part = param1;
-         this.installationPercent = param2;
+      public function initPartInfoMessage(part:ContentPart=null, installationPercent:Number=0) : PartInfoMessage {
+         this.part = part;
+         this.installationPercent = installationPercent;
          this._isInitialized = true;
          return this;
       }
@@ -43,33 +43,33 @@ package com.ankamagames.dofus.network.messages.updater.parts
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PartInfoMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartInfoMessage(output);
       }
       
-      public function serializeAs_PartInfoMessage(param1:IDataOutput) : void {
-         this.part.serializeAs_ContentPart(param1);
-         param1.writeFloat(this.installationPercent);
+      public function serializeAs_PartInfoMessage(output:IDataOutput) : void {
+         this.part.serializeAs_ContentPart(output);
+         output.writeFloat(this.installationPercent);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PartInfoMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartInfoMessage(input);
       }
       
-      public function deserializeAs_PartInfoMessage(param1:IDataInput) : void {
+      public function deserializeAs_PartInfoMessage(input:IDataInput) : void {
          this.part = new ContentPart();
-         this.part.deserialize(param1);
-         this.installationPercent = param1.readFloat();
+         this.part.deserialize(input);
+         this.installationPercent = input.readFloat();
       }
    }
 }

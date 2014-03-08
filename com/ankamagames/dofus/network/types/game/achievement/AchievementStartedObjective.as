@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.achievement
          return 402;
       }
       
-      public function initAchievementStartedObjective(param1:uint=0, param2:uint=0, param3:uint=0) : AchievementStartedObjective {
-         super.initAchievementObjective(param1,param2);
-         this.value = param3;
+      public function initAchievementStartedObjective(id:uint=0, maxValue:uint=0, value:uint=0) : AchievementStartedObjective {
+         super.initAchievementObjective(id,maxValue);
+         this.value = value;
          return this;
       }
       
@@ -30,30 +30,30 @@ package com.ankamagames.dofus.network.types.game.achievement
          this.value = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AchievementStartedObjective(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AchievementStartedObjective(output);
       }
       
-      public function serializeAs_AchievementStartedObjective(param1:IDataOutput) : void {
-         super.serializeAs_AchievementObjective(param1);
+      public function serializeAs_AchievementStartedObjective(output:IDataOutput) : void {
+         super.serializeAs_AchievementObjective(output);
          if(this.value < 0)
          {
             throw new Error("Forbidden value (" + this.value + ") on element value.");
          }
          else
          {
-            param1.writeShort(this.value);
+            output.writeShort(this.value);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AchievementStartedObjective(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AchievementStartedObjective(input);
       }
       
-      public function deserializeAs_AchievementStartedObjective(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.value = param1.readShort();
+      public function deserializeAs_AchievementStartedObjective(input:IDataInput) : void {
+         super.deserialize(input);
+         this.value = input.readShort();
          if(this.value < 0)
          {
             throw new Error("Forbidden value (" + this.value + ") on element of AchievementStartedObjective.value.");

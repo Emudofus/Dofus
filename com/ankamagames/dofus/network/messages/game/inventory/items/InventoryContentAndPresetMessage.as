@@ -1,9 +1,9 @@
 package com.ankamagames.dofus.network.messages.game.inventory.items
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.inventory.preset.Preset;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,9 +30,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6162;
       }
       
-      public function initInventoryContentAndPresetMessage(param1:Vector.<ObjectItem>=null, param2:uint=0, param3:Vector.<Preset>=null) : InventoryContentAndPresetMessage {
-         super.initInventoryContentMessage(param1,param2);
-         this.presets = param3;
+      public function initInventoryContentAndPresetMessage(objects:Vector.<ObjectItem>=null, kamas:uint=0, presets:Vector.<Preset>=null) : InventoryContentAndPresetMessage {
+         super.initInventoryContentMessage(objects,kamas);
+         this.presets = presets;
          this._isInitialized = true;
          return this;
       }
@@ -43,46 +43,46 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_InventoryContentAndPresetMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_InventoryContentAndPresetMessage(output);
       }
       
-      public function serializeAs_InventoryContentAndPresetMessage(param1:IDataOutput) : void {
-         super.serializeAs_InventoryContentMessage(param1);
-         param1.writeShort(this.presets.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.presets.length)
+      public function serializeAs_InventoryContentAndPresetMessage(output:IDataOutput) : void {
+         super.serializeAs_InventoryContentMessage(output);
+         output.writeShort(this.presets.length);
+         var _i1:uint = 0;
+         while(_i1 < this.presets.length)
          {
-            (this.presets[_loc2_] as Preset).serializeAs_Preset(param1);
-            _loc2_++;
+            (this.presets[_i1] as Preset).serializeAs_Preset(output);
+            _i1++;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_InventoryContentAndPresetMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_InventoryContentAndPresetMessage(input);
       }
       
-      public function deserializeAs_InventoryContentAndPresetMessage(param1:IDataInput) : void {
-         var _loc4_:Preset = null;
-         super.deserialize(param1);
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_InventoryContentAndPresetMessage(input:IDataInput) : void {
+         var _item1:Preset = null;
+         super.deserialize(input);
+         var _presetsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _presetsLen)
          {
-            _loc4_ = new Preset();
-            _loc4_.deserialize(param1);
-            this.presets.push(_loc4_);
-            _loc3_++;
+            _item1 = new Preset();
+            _item1.deserialize(input);
+            this.presets.push(_item1);
+            _i1++;
          }
       }
    }

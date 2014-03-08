@@ -13,9 +13,9 @@ package com.ankamagames.jerakine.resources.protocols.impl
          super();
       }
       
-      public function load(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:ICache, param5:Class, param6:Boolean) : void {
-         getAdapter(param1,param5);
-         _adapter.loadDirectly(param1,param1.protocol + "://" + param1.path,param2,param3);
+      public function load(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, cache:ICache, forcedAdapter:Class, uniqueFile:Boolean) : void {
+         getAdapter(uri,forcedAdapter);
+         _adapter.loadDirectly(uri,uri.protocol + "://" + uri.path,observer,dispatchProgress);
       }
       
       override protected function release() : void {

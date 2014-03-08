@@ -22,67 +22,67 @@ package com.ankamagames.dofus.uiApi
          super();
       }
       
-      public static function getScreen(param1:Rectangle=null, param2:Number=1.0) : BitmapData {
-         return capture(StageShareManager.stage,param1,new Rectangle(0,0,StageShareManager.startWidth,StageShareManager.startHeight),param2);
+      public static function getScreen(rect:Rectangle=null, scale:Number=1.0) : BitmapData {
+         return capture(StageShareManager.stage,rect,new Rectangle(0,0,StageShareManager.startWidth,StageShareManager.startHeight),scale);
       }
       
-      public static function getBattleField(param1:Rectangle=null, param2:Number=1.0) : BitmapData {
-         return capture(Atouin.getInstance().worldContainer,param1,new Rectangle(0,0,AtouinConstants.CELL_WIDTH * AtouinConstants.MAP_WIDTH,AtouinConstants.CELL_HEIGHT * AtouinConstants.MAP_HEIGHT),param2);
+      public static function getBattleField(rect:Rectangle=null, scale:Number=1.0) : BitmapData {
+         return capture(Atouin.getInstance().worldContainer,rect,new Rectangle(0,0,AtouinConstants.CELL_WIDTH * AtouinConstants.MAP_WIDTH,AtouinConstants.CELL_HEIGHT * AtouinConstants.MAP_HEIGHT),scale);
       }
       
-      public static function getFromTarget(param1:Object, param2:Rectangle=null, param3:Number=1.0, param4:Boolean=false) : BitmapData {
-         var param1:Object = SecureCenter.unsecure(param1);
-         if(!param1 || !(param1 is DisplayObject))
+      public static function getFromTarget(target:Object, rect:Rectangle=null, scale:Number=1.0, transparent:Boolean=false) : BitmapData {
+         var target:Object = SecureCenter.unsecure(target);
+         if((!target) || (!(target is DisplayObject)))
          {
             return null;
          }
-         var _loc5_:* = param1 as DisplayObject;
-         var _loc6_:Rectangle = _loc5_.getBounds(_loc5_);
-         if(!_loc6_.width || !_loc6_.height)
+         var dObj:DisplayObject = target as DisplayObject;
+         var bounds:Rectangle = dObj.getBounds(dObj);
+         if((!bounds.width) || (!bounds.height))
          {
             return null;
          }
-         return capture(_loc5_,param2,_loc6_,param3,param4);
+         return capture(dObj,rect,bounds,scale,transparent);
       }
       
-      public static function jpegEncode(param1:BitmapData, param2:uint=80, param3:Boolean=true, param4:String="image.jpg") : ByteArray {
-         var _loc5_:ByteArray = new JPEGEncoder(param2).encode(param1);
-         if((param3) && (AirScanner.hasAir()))
+      public static function jpegEncode(img:BitmapData, quality:uint=80, askForSave:Boolean=true, fileName:String="image.jpg") : ByteArray {
+         var encodedImg:ByteArray = new JPEGEncoder(quality).encode(img);
+         if((askForSave) && (AirScanner.hasAir()))
          {
-            File.desktopDirectory.save(_loc5_,param4);
+            File.desktopDirectory.save(encodedImg,fileName);
          }
-         return _loc5_;
+         return encodedImg;
       }
       
-      public static function pngEncode(param1:BitmapData, param2:Boolean=true, param3:String="image.png") : ByteArray {
-         var _loc4_:ByteArray = new PNGEncoder().encode(param1);
-         if((param2) && (AirScanner.hasAir()))
+      public static function pngEncode(img:BitmapData, askForSave:Boolean=true, fileName:String="image.png") : ByteArray {
+         var encodedImg:ByteArray = new PNGEncoder().encode(img);
+         if((askForSave) && (AirScanner.hasAir()))
          {
-            File.desktopDirectory.save(_loc4_,param3);
+            File.desktopDirectory.save(encodedImg,fileName);
          }
-         return _loc4_;
+         return encodedImg;
       }
       
-      private static function capture(param1:DisplayObject, param2:Rectangle, param3:Rectangle, param4:Number=1.0, param5:Boolean=false) : BitmapData {
-         var _loc6_:Rectangle = null;
-         var _loc7_:Matrix = null;
-         var _loc8_:BitmapData = null;
-         if(!param2)
+      private static function capture(target:DisplayObject, rect:Rectangle, maxRect:Rectangle, scale:Number=1.0, transparent:Boolean=false) : BitmapData {
+         var rect2:Rectangle = null;
+         var matrix:Matrix = null;
+         var data:BitmapData = null;
+         if(!rect)
          {
-            _loc6_ = param3;
+            rect2 = maxRect;
          }
          else
          {
-            _loc6_ = param3.intersection(param2);
+            rect2 = maxRect.intersection(rect);
          }
-         if(param1)
+         if(target)
          {
-            _loc7_ = new Matrix();
-            _loc7_.scale(param4,param4);
-            _loc7_.translate(-_loc6_.x * param4,-_loc6_.y * param4);
-            _loc8_ = new BitmapData(_loc6_.width * param4,_loc6_.height * param4,param5,param5?16711680:4.294967295E9);
-            _loc8_.draw(param1,_loc7_);
-            return _loc8_;
+            matrix = new Matrix();
+            matrix.scale(scale,scale);
+            matrix.translate(-rect2.x * scale,-rect2.y * scale);
+            data = new BitmapData(rect2.width * scale,rect2.height * scale,transparent,transparent?16711680:4.294967295E9);
+            data.draw(target,matrix);
+            return data;
          }
          return null;
       }

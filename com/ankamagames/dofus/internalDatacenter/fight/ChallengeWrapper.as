@@ -40,27 +40,27 @@ package com.ankamagames.dofus.internalDatacenter.fight
       
       private var _uri:Uri;
       
-      public function set id(param1:uint) : void {
-         this._challenge = Challenge.getChallengeById(param1);
-         this._id = param1;
+      public function set id(id:uint) : void {
+         this._challenge = Challenge.getChallengeById(id);
+         this._id = id;
       }
       
-      public function set targetId(param1:int) : void {
-         this._targetId = param1;
-         this._targetName = this.getFightFrame().getFighterName(param1);
-         this._targetLevel = this.getFightFrame().getFighterLevel(param1);
+      public function set targetId(targetId:int) : void {
+         this._targetId = targetId;
+         this._targetName = this.getFightFrame().getFighterName(targetId);
+         this._targetLevel = this.getFightFrame().getFighterLevel(targetId);
       }
       
-      public function set xpBonus(param1:uint) : void {
-         this._xpBonus = param1;
+      public function set xpBonus(xpBonus:uint) : void {
+         this._xpBonus = xpBonus;
       }
       
-      public function set dropBonus(param1:uint) : void {
-         this._dropBonus = param1;
+      public function set dropBonus(dropBonus:uint) : void {
+         this._dropBonus = dropBonus;
       }
       
-      public function set result(param1:uint) : void {
-         this._result = param1;
+      public function set result(result:uint) : void {
+         this._result = result;
       }
       
       public function get id() : uint {
@@ -107,10 +107,9 @@ package com.ankamagames.dofus.internalDatacenter.fight
          return this._challenge.name;
       }
       
-      override flash_proxy function getProperty(param1:*) : * {
+      override flash_proxy function getProperty(name:*) : * {
          var l:* = undefined;
          var r:* = undefined;
-         var name:* = param1;
          if(isAttribute(name))
          {
             return this[name];

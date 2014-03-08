@@ -21,11 +21,11 @@ package com.ankamagames.dofus.types.entities
    public class Projectile extends TiphonSprite implements IDisplayable, IMovable, IEntity
    {
       
-      public function Projectile(param1:int, param2:TiphonEntityLook, param3:Boolean=false, param4:Boolean=true) {
-         super(param2);
-         this.startPlayingOnlyWhenDisplayed = param4;
-         this.id = param1;
-         if(!param3)
+      public function Projectile(nId:int, look:TiphonEntityLook, postInit:Boolean=false, startPlayingOnlyWhenDisplayed:Boolean=true) {
+         super(look);
+         this.startPlayingOnlyWhenDisplayed = startPlayingOnlyWhenDisplayed;
+         this.id = nId;
+         if(!postInit)
          {
             this.init();
          }
@@ -49,32 +49,32 @@ package com.ankamagames.dofus.types.entities
          return this._displayBehavior;
       }
       
-      public function set displayBehaviors(param1:IDisplayBehavior) : void {
-         this._displayBehavior = param1;
+      public function set displayBehaviors(oValue:IDisplayBehavior) : void {
+         this._displayBehavior = oValue;
       }
       
       public function get movementBehavior() : IMovementBehavior {
          return this._movementBehavior;
       }
       
-      public function set movementBehavior(param1:IMovementBehavior) : void {
-         this._movementBehavior = param1;
+      public function set movementBehavior(oValue:IMovementBehavior) : void {
+         this._movementBehavior = oValue;
       }
       
       public function get id() : int {
          return this._id;
       }
       
-      public function set id(param1:int) : void {
-         this._id = param1;
+      public function set id(nValue:int) : void {
+         this._id = nValue;
       }
       
       public function get position() : MapPoint {
          return this._position;
       }
       
-      public function set position(param1:MapPoint) : void {
-         this._position = param1;
+      public function set position(oValue:MapPoint) : void {
+         this._position = oValue;
       }
       
       public function get isMoving() : Boolean {
@@ -91,11 +91,11 @@ package com.ankamagames.dofus.types.entities
       
       public var startPlayingOnlyWhenDisplayed:Boolean;
       
-      public function init(param1:int=-1) : void {
+      public function init(direction:int=-1) : void {
          this._displayBehavior = AtouinDisplayBehavior.getInstance();
          this._movementBehavior = ParableMovementBehavior.getInstance();
-         setDirection(param1 == -1?DirectionsEnum.RIGHT:param1);
-         if(!this.startPlayingOnlyWhenDisplayed || (parent))
+         setDirection(direction == -1?DirectionsEnum.RIGHT:direction);
+         if((!this.startPlayingOnlyWhenDisplayed) || (parent))
          {
             this.setAnim();
          }
@@ -105,8 +105,8 @@ package com.ankamagames.dofus.types.entities
          }
       }
       
-      public function display(param1:uint=0) : void {
-         this._displayBehavior.display(this,param1);
+      public function display(strata:uint=0) : void {
+         this._displayBehavior.display(this,strata);
          this._displayed = true;
       }
       
@@ -121,15 +121,15 @@ package com.ankamagames.dofus.types.entities
          super.destroy();
       }
       
-      public function move(param1:MovementPath, param2:Function=null) : void {
-         this._movementBehavior.move(this,param1,param2);
+      public function move(path:MovementPath, callback:Function=null) : void {
+         this._movementBehavior.move(this,path,callback);
       }
       
-      public function jump(param1:MapPoint) : void {
-         this._movementBehavior.jump(this,param1);
+      public function jump(newPosition:MapPoint) : void {
+         this._movementBehavior.jump(this,newPosition);
       }
       
-      public function stop(param1:Boolean=false) : void {
+      public function stop(forceStop:Boolean=false) : void {
          this._movementBehavior.stop(this);
       }
       
@@ -137,7 +137,7 @@ package com.ankamagames.dofus.types.entities
          setAnimation("FX");
       }
       
-      private function onProjectileAdded(param1:Event) : void {
+      private function onProjectileAdded(e:Event) : void {
          removeEventListener(Event.ADDED_TO_STAGE,this.onProjectileAdded);
          this.setAnim();
       }

@@ -36,24 +36,24 @@ package com.ankamagames.jerakine.resources.protocols
          throw new AbstractMethodCallError("AbstractProtocol childs must override the release method in order to free their resources.");
       }
       
-      protected function loadDirectly(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:Class) : void {
-         this.getAdapter(param1,param4);
-         this._adapter.loadDirectly(param1,param1.path,param2,param3);
+      protected function loadDirectly(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, forcedAdapter:Class) : void {
+         this.getAdapter(uri,forcedAdapter);
+         this._adapter.loadDirectly(uri,uri.path,observer,dispatchProgress);
       }
       
-      protected function loadFromData(param1:Uri, param2:ByteArray, param3:IResourceObserver, param4:Boolean, param5:Class) : void {
-         this.getAdapter(param1,param5);
-         this._adapter.loadFromData(param1,param2,param3,param4);
+      protected function loadFromData(uri:Uri, data:ByteArray, observer:IResourceObserver, dispatchProgress:Boolean, forcedAdapter:Class) : void {
+         this.getAdapter(uri,forcedAdapter);
+         this._adapter.loadFromData(uri,data,observer,dispatchProgress);
       }
       
-      protected function getAdapter(param1:Uri, param2:Class) : void {
-         if(param2 == null)
+      protected function getAdapter(uri:Uri, forcedAdapter:Class) : void {
+         if(forcedAdapter == null)
          {
-            this._adapter = AdapterFactory.getAdapter(param1);
+            this._adapter = AdapterFactory.getAdapter(uri);
          }
          else
          {
-            this._adapter = new param2();
+            this._adapter = new forcedAdapter();
          }
       }
    }

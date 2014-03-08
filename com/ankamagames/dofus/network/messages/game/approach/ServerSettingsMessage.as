@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.approach
          return 6340;
       }
       
-      public function initServerSettingsMessage(param1:String="", param2:uint=0, param3:uint=0) : ServerSettingsMessage {
-         this.lang = param1;
-         this.community = param2;
-         this.gameType = param3;
+      public function initServerSettingsMessage(lang:String="", community:uint=0, gameType:uint=0) : ServerSettingsMessage {
+         this.lang = lang;
+         this.community = community;
+         this.gameType = gameType;
          this._isInitialized = true;
          return this;
       }
@@ -46,55 +46,55 @@ package com.ankamagames.dofus.network.messages.game.approach
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ServerSettingsMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ServerSettingsMessage(output);
       }
       
-      public function serializeAs_ServerSettingsMessage(param1:IDataOutput) : void {
-         param1.writeUTF(this.lang);
+      public function serializeAs_ServerSettingsMessage(output:IDataOutput) : void {
+         output.writeUTF(this.lang);
          if(this.community < 0)
          {
             throw new Error("Forbidden value (" + this.community + ") on element community.");
          }
          else
          {
-            param1.writeByte(this.community);
+            output.writeByte(this.community);
             if(this.gameType < 0)
             {
                throw new Error("Forbidden value (" + this.gameType + ") on element gameType.");
             }
             else
             {
-               param1.writeByte(this.gameType);
+               output.writeByte(this.gameType);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ServerSettingsMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ServerSettingsMessage(input);
       }
       
-      public function deserializeAs_ServerSettingsMessage(param1:IDataInput) : void {
-         this.lang = param1.readUTF();
-         this.community = param1.readByte();
+      public function deserializeAs_ServerSettingsMessage(input:IDataInput) : void {
+         this.lang = input.readUTF();
+         this.community = input.readByte();
          if(this.community < 0)
          {
             throw new Error("Forbidden value (" + this.community + ") on element of ServerSettingsMessage.community.");
          }
          else
          {
-            this.gameType = param1.readByte();
+            this.gameType = input.readByte();
             if(this.gameType < 0)
             {
                throw new Error("Forbidden value (" + this.gameType + ") on element of ServerSettingsMessage.gameType.");

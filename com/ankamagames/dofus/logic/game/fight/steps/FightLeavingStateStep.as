@@ -7,10 +7,10 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightLeavingStateStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightLeavingStateStep(param1:int, param2:int) {
+      public function FightLeavingStateStep(fighterId:int, stateId:int) {
          super();
-         this._fighterId = param1;
-         this._stateId = param2;
+         this._fighterId = fighterId;
+         this._stateId = stateId;
       }
       
       private var _fighterId:int;

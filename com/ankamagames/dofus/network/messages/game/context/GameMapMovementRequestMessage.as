@@ -2,7 +2,7 @@ package com.ankamagames.dofus.network.messages.game.context
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,9 +31,9 @@ package com.ankamagames.dofus.network.messages.game.context
          return 950;
       }
       
-      public function initGameMapMovementRequestMessage(param1:Vector.<uint>=null, param2:uint=0) : GameMapMovementRequestMessage {
-         this.keyMovements = param1;
-         this.mapId = param2;
+      public function initGameMapMovementRequestMessage(keyMovements:Vector.<uint>=null, mapId:uint=0) : GameMapMovementRequestMessage {
+         this.keyMovements = keyMovements;
+         this.mapId = mapId;
          this._isInitialized = true;
          return this;
       }
@@ -44,33 +44,33 @@ package com.ankamagames.dofus.network.messages.game.context
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameMapMovementRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameMapMovementRequestMessage(output);
       }
       
-      public function serializeAs_GameMapMovementRequestMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.keyMovements.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.keyMovements.length)
+      public function serializeAs_GameMapMovementRequestMessage(output:IDataOutput) : void {
+         output.writeShort(this.keyMovements.length);
+         var _i1:uint = 0;
+         while(_i1 < this.keyMovements.length)
          {
-            if(this.keyMovements[_loc2_] < 0)
+            if(this.keyMovements[_i1] < 0)
             {
-               throw new Error("Forbidden value (" + this.keyMovements[_loc2_] + ") on element 1 (starting at 1) of keyMovements.");
+               throw new Error("Forbidden value (" + this.keyMovements[_i1] + ") on element 1 (starting at 1) of keyMovements.");
             }
             else
             {
-               param1.writeShort(this.keyMovements[_loc2_]);
-               _loc2_++;
+               output.writeShort(this.keyMovements[_i1]);
+               _i1++;
                continue;
             }
          }
@@ -80,34 +80,34 @@ package com.ankamagames.dofus.network.messages.game.context
          }
          else
          {
-            param1.writeInt(this.mapId);
+            output.writeInt(this.mapId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameMapMovementRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameMapMovementRequestMessage(input);
       }
       
-      public function deserializeAs_GameMapMovementRequestMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_GameMapMovementRequestMessage(input:IDataInput) : void {
+         var _val1:uint = 0;
+         var _keyMovementsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _keyMovementsLen)
          {
-            _loc4_ = param1.readShort();
-            if(_loc4_ < 0)
+            _val1 = input.readShort();
+            if(_val1 < 0)
             {
-               throw new Error("Forbidden value (" + _loc4_ + ") on elements of keyMovements.");
+               throw new Error("Forbidden value (" + _val1 + ") on elements of keyMovements.");
             }
             else
             {
-               this.keyMovements.push(_loc4_);
-               _loc3_++;
+               this.keyMovements.push(_val1);
+               _i1++;
                continue;
             }
          }
-         this.mapId = param1.readInt();
+         this.mapId = input.readInt();
          if(this.mapId < 0)
          {
             throw new Error("Forbidden value (" + this.mapId + ") on element of GameMapMovementRequestMessage.mapId.");

@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.monsters
       
       public static const MODULE:String = "MonsterSuperRaces";
       
-      public static function getMonsterSuperRaceById(param1:uint) : MonsterSuperRace {
-         return GameData.getObject(MODULE,param1) as MonsterSuperRace;
+      public static function getMonsterSuperRaceById(id:uint) : MonsterSuperRace {
+         return GameData.getObject(MODULE,id) as MonsterSuperRace;
       }
       
       public static function getMonsterSuperRaces() : Array {

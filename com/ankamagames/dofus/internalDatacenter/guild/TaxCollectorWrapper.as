@@ -21,49 +21,49 @@ package com.ankamagames.dofus.internalDatacenter.guild
          super();
       }
       
-      public static function create(param1:TaxCollectorInformations, param2:TaxCollectorFightersInformation=null) : TaxCollectorWrapper {
-         var _loc3_:TaxCollectorWrapper = null;
-         var _loc4_:TaxCollectorComplementaryInformations = null;
-         _loc3_ = new TaxCollectorWrapper();
-         _loc3_.uniqueId = param1.uniqueId;
-         _loc3_.lastName = TaxCollectorName.getTaxCollectorNameById(param1.lastNameId).name;
-         _loc3_.firstName = TaxCollectorFirstname.getTaxCollectorFirstnameById(param1.firtNameId).firstname;
-         _loc3_.additionalInformation = param1.additionalInfos;
-         _loc3_.mapWorldX = param1.worldX;
-         _loc3_.mapWorldY = param1.worldY;
-         _loc3_.subareaId = param1.subAreaId;
-         _loc3_.state = param1.state;
-         _loc3_.entityLook = param1.look;
-         _loc3_.fightTime = 0;
-         _loc3_.waitTimeForPlacement = 0;
-         _loc3_.nbPositionPerTeam = 5;
-         for each (_loc4_ in param1.complements)
+      public static function create(pInformations:TaxCollectorInformations, pFightersInformations:TaxCollectorFightersInformation=null) : TaxCollectorWrapper {
+         var item:TaxCollectorWrapper = null;
+         var comp:TaxCollectorComplementaryInformations = null;
+         item = new TaxCollectorWrapper();
+         item.uniqueId = pInformations.uniqueId;
+         item.lastName = TaxCollectorName.getTaxCollectorNameById(pInformations.lastNameId).name;
+         item.firstName = TaxCollectorFirstname.getTaxCollectorFirstnameById(pInformations.firtNameId).firstname;
+         item.additionalInformation = pInformations.additionalInfos;
+         item.mapWorldX = pInformations.worldX;
+         item.mapWorldY = pInformations.worldY;
+         item.subareaId = pInformations.subAreaId;
+         item.state = pInformations.state;
+         item.entityLook = pInformations.look;
+         item.fightTime = 0;
+         item.waitTimeForPlacement = 0;
+         item.nbPositionPerTeam = 5;
+         for each (comp in pInformations.complements)
          {
-            if(_loc4_ is TaxCollectorLootInformations)
+            if(comp is TaxCollectorLootInformations)
             {
-               _loc3_.kamas = (_loc4_ as TaxCollectorLootInformations).kamas;
-               _loc3_.experience = (_loc4_ as TaxCollectorLootInformations).experience;
-               _loc3_.pods = (_loc4_ as TaxCollectorLootInformations).pods;
-               _loc3_.itemsValue = (_loc4_ as TaxCollectorLootInformations).itemsValue;
+               item.kamas = (comp as TaxCollectorLootInformations).kamas;
+               item.experience = (comp as TaxCollectorLootInformations).experience;
+               item.pods = (comp as TaxCollectorLootInformations).pods;
+               item.itemsValue = (comp as TaxCollectorLootInformations).itemsValue;
             }
             else
             {
-               if(_loc4_ is TaxCollectorGuildInformations)
+               if(comp is TaxCollectorGuildInformations)
                {
-                  _loc3_.guild = (_loc4_ as TaxCollectorGuildInformations).guild;
+                  item.guild = (comp as TaxCollectorGuildInformations).guild;
                }
                else
                {
-                  if(_loc4_ is TaxCollectorWaitingForHelpInformations)
+                  if(comp is TaxCollectorWaitingForHelpInformations)
                   {
-                     _loc3_.fightTime = (_loc4_ as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.timeLeftBeforeFight * 100 + getTimer();
-                     _loc3_.waitTimeForPlacement = (_loc4_ as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.waitTimeForPlacement * 100;
-                     _loc3_.nbPositionPerTeam = (_loc4_ as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.nbPositionForDefensors;
+                     item.fightTime = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.timeLeftBeforeFight * 100 + getTimer();
+                     item.waitTimeForPlacement = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.waitTimeForPlacement * 100;
+                     item.nbPositionPerTeam = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.nbPositionForDefensors;
                   }
                }
             }
          }
-         return _loc3_;
+         return item;
       }
       
       public var uniqueId:int;
@@ -100,42 +100,42 @@ package com.ankamagames.dofus.internalDatacenter.guild
       
       public var itemsValue:int;
       
-      public function update(param1:TaxCollectorInformations, param2:TaxCollectorFightersInformation=null) : void {
-         var _loc3_:TaxCollectorComplementaryInformations = null;
-         this.uniqueId = param1.uniqueId;
-         this.lastName = TaxCollectorName.getTaxCollectorNameById(param1.lastNameId).name;
-         this.firstName = TaxCollectorFirstname.getTaxCollectorFirstnameById(param1.firtNameId).firstname;
-         this.additionalInformation = param1.additionalInfos;
-         this.mapWorldX = param1.worldX;
-         this.mapWorldY = param1.worldY;
-         this.subareaId = param1.subAreaId;
-         this.state = param1.state;
-         this.entityLook = param1.look;
+      public function update(pInformations:TaxCollectorInformations, pFightersInformations:TaxCollectorFightersInformation=null) : void {
+         var comp:TaxCollectorComplementaryInformations = null;
+         this.uniqueId = pInformations.uniqueId;
+         this.lastName = TaxCollectorName.getTaxCollectorNameById(pInformations.lastNameId).name;
+         this.firstName = TaxCollectorFirstname.getTaxCollectorFirstnameById(pInformations.firtNameId).firstname;
+         this.additionalInformation = pInformations.additionalInfos;
+         this.mapWorldX = pInformations.worldX;
+         this.mapWorldY = pInformations.worldY;
+         this.subareaId = pInformations.subAreaId;
+         this.state = pInformations.state;
+         this.entityLook = pInformations.look;
          this.fightTime = 0;
          this.waitTimeForPlacement = 0;
          this.nbPositionPerTeam = 5;
-         for each (_loc3_ in param1.complements)
+         for each (comp in pInformations.complements)
          {
-            if(_loc3_ is TaxCollectorLootInformations)
+            if(comp is TaxCollectorLootInformations)
             {
-               this.kamas = (_loc3_ as TaxCollectorLootInformations).kamas;
-               this.experience = (_loc3_ as TaxCollectorLootInformations).experience;
-               this.pods = (_loc3_ as TaxCollectorLootInformations).pods;
-               this.itemsValue = (_loc3_ as TaxCollectorLootInformations).itemsValue;
+               this.kamas = (comp as TaxCollectorLootInformations).kamas;
+               this.experience = (comp as TaxCollectorLootInformations).experience;
+               this.pods = (comp as TaxCollectorLootInformations).pods;
+               this.itemsValue = (comp as TaxCollectorLootInformations).itemsValue;
             }
             else
             {
-               if(_loc3_ is TaxCollectorGuildInformations)
+               if(comp is TaxCollectorGuildInformations)
                {
-                  this.guild = (_loc3_ as TaxCollectorGuildInformations).guild;
+                  this.guild = (comp as TaxCollectorGuildInformations).guild;
                }
                else
                {
-                  if(_loc3_ is TaxCollectorWaitingForHelpInformations)
+                  if(comp is TaxCollectorWaitingForHelpInformations)
                   {
-                     this.fightTime = (_loc3_ as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.timeLeftBeforeFight * 100 + getTimer();
-                     this.waitTimeForPlacement = (_loc3_ as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.waitTimeForPlacement * 100;
-                     this.nbPositionPerTeam = (_loc3_ as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.nbPositionForDefensors;
+                     this.fightTime = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.timeLeftBeforeFight * 100 + getTimer();
+                     this.waitTimeForPlacement = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.waitTimeForPlacement * 100;
+                     this.nbPositionPerTeam = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.nbPositionForDefensors;
                   }
                }
             }

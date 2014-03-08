@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.approach.actions
          super();
       }
       
-      public static function create(param1:String) : GetPartInfoAction {
-         var _loc2_:GetPartInfoAction = new GetPartInfoAction();
-         _loc2_.id = param1;
-         return _loc2_;
+      public static function create(id:String) : GetPartInfoAction {
+         var a:GetPartInfoAction = new GetPartInfoAction();
+         a.id = id;
+         return a;
       }
       
       public var id:String;

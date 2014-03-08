@@ -23,10 +23,10 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.job
          return 97;
       }
       
-      public function initJobCrafterDirectorySettings(param1:uint=0, param2:uint=0, param3:uint=0) : JobCrafterDirectorySettings {
-         this.jobId = param1;
-         this.minSlot = param2;
-         this.userDefinedParams = param3;
+      public function initJobCrafterDirectorySettings(jobId:uint=0, minSlot:uint=0, userDefinedParams:uint=0) : JobCrafterDirectorySettings {
+         this.jobId = jobId;
+         this.minSlot = minSlot;
+         this.userDefinedParams = userDefinedParams;
          return this;
       }
       
@@ -36,58 +36,58 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.job
          this.userDefinedParams = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_JobCrafterDirectorySettings(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_JobCrafterDirectorySettings(output);
       }
       
-      public function serializeAs_JobCrafterDirectorySettings(param1:IDataOutput) : void {
+      public function serializeAs_JobCrafterDirectorySettings(output:IDataOutput) : void {
          if(this.jobId < 0)
          {
             throw new Error("Forbidden value (" + this.jobId + ") on element jobId.");
          }
          else
          {
-            param1.writeByte(this.jobId);
-            if(this.minSlot < 0 || this.minSlot > 9)
+            output.writeByte(this.jobId);
+            if((this.minSlot < 0) || (this.minSlot > 9))
             {
                throw new Error("Forbidden value (" + this.minSlot + ") on element minSlot.");
             }
             else
             {
-               param1.writeByte(this.minSlot);
+               output.writeByte(this.minSlot);
                if(this.userDefinedParams < 0)
                {
                   throw new Error("Forbidden value (" + this.userDefinedParams + ") on element userDefinedParams.");
                }
                else
                {
-                  param1.writeByte(this.userDefinedParams);
+                  output.writeByte(this.userDefinedParams);
                   return;
                }
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_JobCrafterDirectorySettings(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_JobCrafterDirectorySettings(input);
       }
       
-      public function deserializeAs_JobCrafterDirectorySettings(param1:IDataInput) : void {
-         this.jobId = param1.readByte();
+      public function deserializeAs_JobCrafterDirectorySettings(input:IDataInput) : void {
+         this.jobId = input.readByte();
          if(this.jobId < 0)
          {
             throw new Error("Forbidden value (" + this.jobId + ") on element of JobCrafterDirectorySettings.jobId.");
          }
          else
          {
-            this.minSlot = param1.readByte();
-            if(this.minSlot < 0 || this.minSlot > 9)
+            this.minSlot = input.readByte();
+            if((this.minSlot < 0) || (this.minSlot > 9))
             {
                throw new Error("Forbidden value (" + this.minSlot + ") on element of JobCrafterDirectorySettings.minSlot.");
             }
             else
             {
-               this.userDefinedParams = param1.readByte();
+               this.userDefinedParams = input.readByte();
                if(this.userDefinedParams < 0)
                {
                   throw new Error("Forbidden value (" + this.userDefinedParams + ") on element of JobCrafterDirectorySettings.userDefinedParams.");

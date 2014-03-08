@@ -22,18 +22,18 @@ package com.ankamagames.dofus.internalDatacenter.userInterface
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ButtonWrapper));
       
-      public static function create(param1:uint, param2:int, param3:String, param4:Function, param5:String, param6:String="") : ButtonWrapper {
-         var _loc7_:ButtonWrapper = new ButtonWrapper();
-         _loc7_.id = param1;
-         _loc7_.position = param2;
-         _loc7_.callback = param4;
-         _loc7_.uriName = param3;
-         _loc7_.name = param5;
-         _loc7_.shortcut = param6;
-         return _loc7_;
+      public static function create(buttonId:uint, position:int, uriName:String, callback:Function, name:String, shortcut:String="") : ButtonWrapper {
+         var button:ButtonWrapper = new ButtonWrapper();
+         button.id = buttonId;
+         button.position = position;
+         button.callback = callback;
+         button.uriName = uriName;
+         button.name = name;
+         button.shortcut = shortcut;
+         return button;
       }
       
-      public static function getButtonWrapperById(param1:uint) : ButtonWrapper {
+      public static function getButtonWrapperById(id:uint) : ButtonWrapper {
          return null;
       }
       
@@ -89,7 +89,7 @@ package com.ankamagames.dofus.internalDatacenter.userInterface
          return 0;
       }
       
-      public function set endTime(param1:int) : void {
+      public function set endTime(t:int) : void {
       }
       
       public function get timer() : int {
@@ -100,37 +100,37 @@ package com.ankamagames.dofus.internalDatacenter.userInterface
          return this._active;
       }
       
-      public function set active(param1:Boolean) : void {
-         this._active = param1;
+      public function set active(active:Boolean) : void {
+         this._active = active;
       }
       
-      override flash_proxy function getProperty(param1:*) : * {
-         if(isAttribute(param1))
+      override flash_proxy function getProperty(name:*) : * {
+         if(isAttribute(name))
          {
-            return this[param1];
+            return this[name];
          }
-         return "Error_on_buttonWrapper_" + param1;
+         return "Error_on_buttonWrapper_" + name;
       }
       
-      override flash_proxy function hasProperty(param1:*) : Boolean {
-         return isAttribute(param1);
+      override flash_proxy function hasProperty(name:*) : Boolean {
+         return isAttribute(name);
       }
       
       public function toString() : String {
          return "[ButtonWrapper#" + this.id + "]";
       }
       
-      public function setPosition(param1:int) : void {
-         this.position = param1;
+      public function setPosition(value:int) : void {
+         this.position = value;
       }
       
-      public function addHolder(param1:ISlotDataHolder) : void {
+      public function addHolder(h:ISlotDataHolder) : void {
       }
       
-      public function removeHolder(param1:ISlotDataHolder) : void {
+      public function removeHolder(h:ISlotDataHolder) : void {
       }
       
-      public function getIconUri(param1:Boolean=true) : Uri {
+      public function getIconUri(pngMode:Boolean=true) : Uri {
          return this.iconUri;
       }
    }

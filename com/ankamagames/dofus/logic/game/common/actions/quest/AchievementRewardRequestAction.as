@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.quest
          super();
       }
       
-      public static function create(param1:int) : AchievementRewardRequestAction {
-         var _loc2_:AchievementRewardRequestAction = new AchievementRewardRequestAction();
-         _loc2_.achievementId = param1;
-         return _loc2_;
+      public static function create(achievementId:int) : AchievementRewardRequestAction {
+         var action:AchievementRewardRequestAction = new AchievementRewardRequestAction();
+         action.achievementId = achievementId;
+         return action;
       }
       
       public var achievementId:int;

@@ -3,7 +3,7 @@ package com.somerandomdude.colortoolkit.schemes
    public class ColorScheme extends Object
    {
       
-      public function ColorScheme(... rest) {
+      public function ColorScheme(... colors) {
          super();
       }
       
@@ -13,14 +13,14 @@ package com.somerandomdude.colortoolkit.schemes
          return this._colors;
       }
       
-      public function addColor(param1:int) : void {
+      public function addColor(colortest:int) : void {
          if(!this._colors)
          {
             this._colors = new ColorList();
          }
       }
       
-      public function removeColor(param1:int) : void {
+      public function removeColor(colortest:int) : void {
       }
    }
 }

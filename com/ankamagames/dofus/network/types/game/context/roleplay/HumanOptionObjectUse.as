@@ -23,10 +23,10 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 449;
       }
       
-      public function initHumanOptionObjectUse(param1:uint=0, param2:Number=0, param3:uint=0) : HumanOptionObjectUse {
-         this.delayTypeId = param1;
-         this.delayEndTime = param2;
-         this.objectGID = param3;
+      public function initHumanOptionObjectUse(delayTypeId:uint=0, delayEndTime:Number=0, objectGID:uint=0) : HumanOptionObjectUse {
+         this.delayTypeId = delayTypeId;
+         this.delayEndTime = delayEndTime;
+         this.objectGID = objectGID;
          return this;
       }
       
@@ -36,53 +36,53 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.objectGID = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_HumanOptionObjectUse(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HumanOptionObjectUse(output);
       }
       
-      public function serializeAs_HumanOptionObjectUse(param1:IDataOutput) : void {
-         super.serializeAs_HumanOption(param1);
-         param1.writeByte(this.delayTypeId);
+      public function serializeAs_HumanOptionObjectUse(output:IDataOutput) : void {
+         super.serializeAs_HumanOption(output);
+         output.writeByte(this.delayTypeId);
          if(this.delayEndTime < 0)
          {
             throw new Error("Forbidden value (" + this.delayEndTime + ") on element delayEndTime.");
          }
          else
          {
-            param1.writeDouble(this.delayEndTime);
+            output.writeDouble(this.delayEndTime);
             if(this.objectGID < 0)
             {
                throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
             }
             else
             {
-               param1.writeShort(this.objectGID);
+               output.writeShort(this.objectGID);
                return;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_HumanOptionObjectUse(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HumanOptionObjectUse(input);
       }
       
-      public function deserializeAs_HumanOptionObjectUse(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.delayTypeId = param1.readByte();
+      public function deserializeAs_HumanOptionObjectUse(input:IDataInput) : void {
+         super.deserialize(input);
+         this.delayTypeId = input.readByte();
          if(this.delayTypeId < 0)
          {
             throw new Error("Forbidden value (" + this.delayTypeId + ") on element of HumanOptionObjectUse.delayTypeId.");
          }
          else
          {
-            this.delayEndTime = param1.readDouble();
+            this.delayEndTime = input.readDouble();
             if(this.delayEndTime < 0)
             {
                throw new Error("Forbidden value (" + this.delayEndTime + ") on element of HumanOptionObjectUse.delayEndTime.");
             }
             else
             {
-               this.objectGID = param1.readShort();
+               this.objectGID = input.readShort();
                if(this.objectGID < 0)
                {
                   throw new Error("Forbidden value (" + this.objectGID + ") on element of HumanOptionObjectUse.objectGID.");

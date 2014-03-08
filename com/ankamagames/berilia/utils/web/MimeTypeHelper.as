@@ -7,9 +7,8 @@ package com.ankamagames.berilia.utils.web
          super();
       }
       
-      public static function getMimeType(param1:String) : String {
+      public static function getMimeType(fileExtension:String) : String {
          var mimeNode:XML = null;
-         var fileExtension:String = param1;
          mimeNode = MimeTypeHelper.mimetypeXml.mimeType.(attribute("fileExtension") == fileExtension)[0];
          if(mimeNode)
          {

@@ -2,7 +2,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -34,10 +34,10 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 5617;
       }
       
-      public function initNpcDialogQuestionMessage(param1:uint=0, param2:Vector.<String>=null, param3:Vector.<uint>=null) : NpcDialogQuestionMessage {
-         this.messageId = param1;
-         this.dialogParams = param2;
-         this.visibleReplies = param3;
+      public function initNpcDialogQuestionMessage(messageId:uint=0, dialogParams:Vector.<String>=null, visibleReplies:Vector.<uint>=null) : NpcDialogQuestionMessage {
+         this.messageId = messageId;
+         this.dialogParams = dialogParams;
+         this.visibleReplies = visibleReplies;
          this._isInitialized = true;
          return this;
       }
@@ -49,47 +49,47 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_NpcDialogQuestionMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_NpcDialogQuestionMessage(output);
       }
       
-      public function serializeAs_NpcDialogQuestionMessage(param1:IDataOutput) : void {
+      public function serializeAs_NpcDialogQuestionMessage(output:IDataOutput) : void {
          if(this.messageId < 0)
          {
             throw new Error("Forbidden value (" + this.messageId + ") on element messageId.");
          }
          else
          {
-            param1.writeShort(this.messageId);
-            param1.writeShort(this.dialogParams.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.dialogParams.length)
+            output.writeShort(this.messageId);
+            output.writeShort(this.dialogParams.length);
+            _i2 = 0;
+            while(_i2 < this.dialogParams.length)
             {
-               param1.writeUTF(this.dialogParams[_loc2_]);
-               _loc2_++;
+               output.writeUTF(this.dialogParams[_i2]);
+               _i2++;
             }
-            param1.writeShort(this.visibleReplies.length);
-            _loc3_ = 0;
-            while(_loc3_ < this.visibleReplies.length)
+            output.writeShort(this.visibleReplies.length);
+            _i3 = 0;
+            while(_i3 < this.visibleReplies.length)
             {
-               if(this.visibleReplies[_loc3_] < 0)
+               if(this.visibleReplies[_i3] < 0)
                {
-                  throw new Error("Forbidden value (" + this.visibleReplies[_loc3_] + ") on element 3 (starting at 1) of visibleReplies.");
+                  throw new Error("Forbidden value (" + this.visibleReplies[_i3] + ") on element 3 (starting at 1) of visibleReplies.");
                }
                else
                {
-                  param1.writeShort(this.visibleReplies[_loc3_]);
-                  _loc3_++;
+                  output.writeShort(this.visibleReplies[_i3]);
+                  _i3++;
                   continue;
                }
             }
@@ -97,41 +97,41 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_NpcDialogQuestionMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_NpcDialogQuestionMessage(input);
       }
       
-      public function deserializeAs_NpcDialogQuestionMessage(param1:IDataInput) : void {
-         var _loc6_:String = null;
-         var _loc7_:uint = 0;
-         this.messageId = param1.readShort();
+      public function deserializeAs_NpcDialogQuestionMessage(input:IDataInput) : void {
+         var _val2:String = null;
+         var _val3:uint = 0;
+         this.messageId = input.readShort();
          if(this.messageId < 0)
          {
             throw new Error("Forbidden value (" + this.messageId + ") on element of NpcDialogQuestionMessage.messageId.");
          }
          else
          {
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            _dialogParamsLen = input.readUnsignedShort();
+            _i2 = 0;
+            while(_i2 < _dialogParamsLen)
             {
-               _loc6_ = param1.readUTF();
-               this.dialogParams.push(_loc6_);
-               _loc3_++;
+               _val2 = input.readUTF();
+               this.dialogParams.push(_val2);
+               _i2++;
             }
-            _loc4_ = param1.readUnsignedShort();
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            _visibleRepliesLen = input.readUnsignedShort();
+            _i3 = 0;
+            while(_i3 < _visibleRepliesLen)
             {
-               _loc7_ = param1.readShort();
-               if(_loc7_ < 0)
+               _val3 = input.readShort();
+               if(_val3 < 0)
                {
-                  throw new Error("Forbidden value (" + _loc7_ + ") on elements of visibleReplies.");
+                  throw new Error("Forbidden value (" + _val3 + ") on elements of visibleReplies.");
                }
                else
                {
-                  this.visibleReplies.push(_loc7_);
-                  _loc5_++;
+                  this.visibleReplies.push(_val3);
+                  _i3++;
                   continue;
                }
             }

@@ -17,44 +17,44 @@ package com.ankamagames.jerakine.eval
       
       private static const STRING:uint = 1;
       
-      public function eval(param1:String) : * {
-         return this.complexEval(param1);
+      public function eval(expr:String) : * {
+         return this.complexEval(expr);
       }
       
-      private function simpleEval(param1:String) : * {
-         var _loc2_:Function = null;
-         var _loc4_:String = null;
-         var _loc12_:Array = null;
-         var _loc13_:* = undefined;
-         var _loc15_:* = false;
-         var _loc16_:* = false;
-         var _loc17_:uint = 0;
-         var _loc3_:* = "";
-         var _loc5_:* = false;
-         var _loc6_:* = false;
-         var _loc7_:* = "";
-         var _loc8_:uint = STRING;
-         var _loc9_:Array = new Array();
-         var _loc10_:uint = 0;
-         while(_loc10_ < param1.length)
+      private function simpleEval(expr:String) : * {
+         var operator:Function = null;
+         var currentChar:String = null;
+         var partialOp:Array = null;
+         var lastOp:* = undefined;
+         var ok:* = false;
+         var wait:* = false;
+         var k:uint = 0;
+         var currentOperator:String = "";
+         var inQuote:Boolean = false;
+         var protect:Boolean = false;
+         var currentParam:String = "";
+         var currentType:uint = STRING;
+         var op:Array = new Array();
+         var i:uint = 0;
+         while(i < expr.length)
          {
-            _loc4_ = param1.charAt(_loc10_);
-            if(_loc4_ == "\'" && !_loc6_)
+            currentChar = expr.charAt(i);
+            if((currentChar == "\'") && (!protect))
             {
-               _loc8_ = STRING;
-               _loc5_ = !_loc5_;
+               currentType = STRING;
+               inQuote = !inQuote;
             }
             else
             {
-               if(_loc4_ == "\\")
+               if(currentChar == "\\")
                {
-                  _loc6_ = true;
+                  protect = true;
                }
                else
                {
-                  if(!_loc5_)
+                  if(!inQuote)
                   {
-                     switch(_loc4_)
+                     switch(currentChar)
                      {
                         case "(":
                         case ")":
@@ -72,168 +72,59 @@ package com.ankamagames.jerakine.eval
                         case "7":
                         case "8":
                         case "9":
-                           _loc8_ = NUMBER;
-                           _loc3_ = "";
-                           _loc2_ = null;
-                           _loc7_ = _loc7_ + _loc4_;
+                           currentType = NUMBER;
+                           currentOperator = "";
+                           operator = null;
+                           currentParam = currentParam + currentChar;
                            break;
                         case ".":
-                           _loc7_ = _loc7_ + ".";
+                           currentParam = currentParam + ".";
                            break;
-                        default:
-                           if(_loc4_ == "-" || _loc4_ == "+")
-                           {
-                              if(!_loc7_.length)
-                              {
-                                 _loc7_ = _loc7_ + _loc4_;
-                                 break;
-                              }
-                           }
-                           _loc15_ = true;
-                           _loc16_ = false;
-                           _loc3_ = _loc3_ + _loc4_;
-                           switch(_loc3_)
-                           {
-                              case "-":
-                                 _loc2_ = this.minus;
-                                 break;
-                              case "+":
-                                 _loc2_ = this.plus;
-                                 break;
-                              case "*":
-                                 _loc2_ = this.multiply;
-                                 break;
-                              case "/":
-                                 _loc2_ = this.divide;
-                                 break;
-                              case ">":
-                                 if(param1.charAt(_loc10_ + 1) != "=")
-                                 {
-                                    _loc2_ = this.sup;
-                                 }
-                                 else
-                                 {
-                                    _loc16_ = true;
-                                    _loc15_ = false;
-                                 }
-                                 break;
-                              case ">=":
-                                 _loc2_ = this.supOrEquals;
-                                 break;
-                              case "<":
-                                 if(param1.charAt(_loc10_ + 1) != "=")
-                                 {
-                                    _loc2_ = this.inf;
-                                 }
-                                 else
-                                 {
-                                    _loc16_ = true;
-                                    _loc15_ = false;
-                                 }
-                                 break;
-                              case "<=":
-                                 _loc2_ = this.infOrEquals;
-                                 break;
-                              case "&&":
-                                 _loc2_ = this.and;
-                                 break;
-                              case "||":
-                                 _loc2_ = this.or;
-                                 break;
-                              case "==":
-                                 _loc2_ = this.equals;
-                                 break;
-                              case "!=":
-                                 _loc2_ = this.diff;
-                                 break;
-                              case "?":
-                                 _loc2_ = this.ternary;
-                                 break;
-                              case ":":
-                                 _loc2_ = this.opElse;
-                                 break;
-                              case "|":
-                              case "=":
-                              case "&":
-                              case "!":
-                                 _loc16_ = true;
-                              default:
-                                 _loc15_ = false;
-                           }
-                           if(_loc15_)
-                           {
-                              if(_loc7_.length)
-                              {
-                                 if(_loc8_ == STRING)
-                                 {
-                                    _loc9_.push(_loc7_);
-                                 }
-                                 else
-                                 {
-                                    _loc9_.push(parseFloat(_loc7_));
-                                 }
-                                 _loc9_.push(_loc2_);
-                              }
-                              else
-                              {
-                                 _log.warn(this.showPosInExpr(_loc10_,param1));
-                                 _log.warn("Expecting Number at char " + _loc10_ + ", but found operator " + _loc4_);
-                              }
-                              _loc7_ = "";
-                           }
-                           else
-                           {
-                              if(!_loc16_)
-                              {
-                                 _log.warn(this.showPosInExpr(_loc10_,param1));
-                                 _log.warn("Bad character at " + _loc10_);
-                              }
-                           }
                      }
                   }
                   else
                   {
-                     _loc3_ = "";
-                     _loc2_ = null;
-                     _loc7_ = _loc7_ + _loc4_;
-                     _loc6_ = false;
+                     currentOperator = "";
+                     operator = null;
+                     currentParam = currentParam + currentChar;
+                     protect = false;
                   }
                }
             }
-            _loc10_++;
+            i++;
          }
-         if(_loc7_.length)
+         if(currentParam.length)
          {
-            if(_loc8_ == STRING)
+            if(currentType == STRING)
             {
-               _loc9_.push(_loc7_);
+               op.push(currentParam);
             }
             else
             {
-               _loc9_.push(parseFloat(_loc7_));
+               op.push(parseFloat(currentParam));
             }
          }
-         var _loc11_:Array = [this.divide,this.multiply,this.minus,this.plus,this.sup,this.inf,this.supOrEquals,this.infOrEquals,this.equals,this.diff,this.and,this.or,this.ternary];
-         var _loc14_:uint = 0;
-         while(_loc14_ < _loc11_.length)
+         var operatorPriority:Array = [this.divide,this.multiply,this.minus,this.plus,this.sup,this.inf,this.supOrEquals,this.infOrEquals,this.equals,this.diff,this.and,this.or,this.ternary];
+         var j:uint = 0;
+         while(j < operatorPriority.length)
          {
-            _loc12_ = new Array();
-            _loc17_ = 0;
-            while(_loc17_ < _loc9_.length)
+            partialOp = new Array();
+            k = 0;
+            while(k < op.length)
             {
-               if(_loc9_[_loc17_] is Function && _loc9_[_loc17_] == _loc11_[_loc14_])
+               if((op[k] is Function) && (op[k] == operatorPriority[j]))
                {
-                  _loc13_ = _loc12_[_loc12_.length-1];
-                  if(_loc13_ is Number || (_loc9_[_loc17_] == this.plus || _loc9_[_loc17_] == this.ternary || _loc9_[_loc17_] == this.equals || _loc9_[_loc17_] == this.diff) && _loc13_ is String)
+                  lastOp = partialOp[partialOp.length - 1];
+                  if((lastOp is Number) || ((op[k] == this.plus) || (op[k] == this.ternary) || (op[k] == this.equals) || (op[k] == this.diff)) && (lastOp is String))
                   {
-                     if(_loc9_[_loc17_ + 1] is Number || (_loc9_[_loc17_] == this.plus || _loc9_[_loc17_] == this.ternary || _loc9_[_loc17_] == this.equals || _loc9_[_loc17_] == this.diff) && _loc9_[_loc17_ + 1] is String)
+                     if((op[k + 1] is Number) || ((op[k] == this.plus) || (op[k] == this.ternary) || (op[k] == this.equals) || (op[k] == this.diff)) && (op[k + 1] is String))
                      {
-                        if(_loc9_[_loc17_] === this.ternary)
+                        if(op[k] === this.ternary)
                         {
-                           if(_loc9_[_loc17_ + 2] == this.opElse)
+                           if(op[k + 2] == this.opElse)
                            {
-                              _loc12_[_loc12_.length-1] = this.ternary(_loc13_,_loc9_[_loc17_ + 1],_loc9_[_loc17_ + 3]);
-                              _loc17_ = _loc17_ + 2;
+                              partialOp[partialOp.length - 1] = this.ternary(lastOp,op[k + 1],op[k + 3]);
+                              k = k + 2;
                            }
                            else
                            {
@@ -242,27 +133,27 @@ package com.ankamagames.jerakine.eval
                         }
                         else
                         {
-                           _loc12_[_loc12_.length-1] = _loc9_[_loc17_](_loc13_,_loc9_[_loc17_ + 1]);
+                           partialOp[partialOp.length - 1] = op[k](lastOp,op[k + 1]);
                         }
                      }
                      else
                      {
-                        _log.warn("Expect Number, but find [" + _loc9_[_loc17_ + 1] + "]");
+                        _log.warn("Expect Number, but find [" + op[k + 1] + "]");
                      }
-                     _loc17_++;
+                     k++;
                   }
                   else
                   {
-                     _loc13_ = _loc9_[_loc17_-1];
-                     if(_loc13_ is Number || (_loc9_[_loc17_] == this.plus || _loc9_[_loc17_] == this.ternary || _loc9_[_loc17_] == this.equals || _loc9_[_loc17_] == this.diff) && _loc13_ is String)
+                     lastOp = op[k - 1];
+                     if((lastOp is Number) || ((op[k] == this.plus) || (op[k] == this.ternary) || (op[k] == this.equals) || (op[k] == this.diff)) && (lastOp is String))
                      {
-                        if(_loc9_[_loc17_ + 1] is Number || (_loc9_[_loc17_] == this.plus || _loc9_[_loc17_] == this.ternary || _loc9_[_loc17_] == this.equals || _loc9_[_loc17_] == this.diff) && _loc9_[_loc17_ + 1] is String)
+                        if((op[k + 1] is Number) || ((op[k] == this.plus) || (op[k] == this.ternary) || (op[k] == this.equals) || (op[k] == this.diff)) && (op[k + 1] is String))
                         {
-                           if(_loc9_[_loc17_] === this.ternary)
+                           if(op[k] === this.ternary)
                            {
-                              if(_loc9_[_loc17_ + 2] == this.opElse)
+                              if(op[k + 2] == this.opElse)
                               {
-                                 _loc12_[_loc12_.length-1] = this.ternary(_loc13_,_loc9_[_loc17_ + 1],_loc9_[_loc17_ + 3]);
+                                 partialOp[partialOp.length - 1] = this.ternary(lastOp,op[k + 1],op[k + 3]);
                               }
                               else
                               {
@@ -271,165 +162,166 @@ package com.ankamagames.jerakine.eval
                            }
                            else
                            {
-                              _loc12_.push(_loc9_[_loc17_](_loc13_,_loc9_[_loc17_ + 1]));
+                              partialOp.push(op[k](lastOp,op[k + 1]));
                            }
                         }
                         else
                         {
-                           _log.warn("Expect Number,  but find [" + _loc9_[_loc17_ + 1] + "]");
+                           _log.warn("Expect Number,  but find [" + op[k + 1] + "]");
                         }
-                        _loc17_++;
+                        k++;
                      }
                   }
                }
                else
                {
-                  _loc12_.push(_loc9_[_loc17_]);
+                  partialOp.push(op[k]);
                }
-               _loc17_++;
+               k++;
             }
-            _loc9_ = _loc12_;
-            _loc14_++;
+            op = partialOp;
+            j++;
          }
-         return _loc9_[0];
+         return op[0];
       }
       
-      private function complexEval(param1:String) : * {
-         var _loc2_:* = 0;
-         var _loc5_:* = undefined;
-         var _loc6_:uint = 0;
-         var param1:String = this.trim(param1);
-         var _loc3_:* = true;
-         var _loc4_:* = 0;
-         while(_loc3_)
+      private function complexEval(expr:String) : * {
+         var start:* = 0;
+         var res:* = undefined;
+         var i:uint = 0;
+         var expr:String = this.trim(expr);
+         var modif:Boolean = true;
+         var parenthCount:int = 0;
+         loop0:
+         while(modif)
          {
-            _loc3_ = false;
-            _loc6_ = 0;
-            while(_loc6_ < param1.length)
+            modif = false;
+            i = 0;
+            while(i < expr.length)
             {
-               if(param1.charAt(_loc6_) == "(")
+               if(expr.charAt(i) == "(")
                {
-                  if(!_loc4_)
+                  if(!parenthCount)
                   {
-                     _loc2_ = _loc6_;
+                     start = i;
                   }
-                  _loc4_++;
+                  parenthCount++;
                }
-               if(param1.charAt(_loc6_) == ")")
+               if(expr.charAt(i) == ")")
                {
-                  _loc4_--;
-                  if(!_loc4_)
+                  parenthCount--;
+                  if(!parenthCount)
                   {
-                     _loc5_ = this.complexEval(param1.substr(_loc2_ + 1,_loc6_ - _loc2_-1));
-                     param1 = param1.substr(0,_loc2_) + (_loc5_ is Number?_loc5_:"\'" + _loc5_ + "\'") + param1.substr(_loc6_ + 1);
-                     _loc3_ = true;
-                     break;
+                     res = this.complexEval(expr.substr(start + 1,i - start - 1));
+                     expr = expr.substr(0,start) + (res is Number?res:"\'" + res + "\'") + expr.substr(i + 1);
+                     modif = true;
+                     continue loop0;
                   }
                }
-               _loc6_++;
+               i++;
             }
          }
-         if(_loc4_)
+         if(parenthCount)
          {
-            _log.warn("Missing right parenthesis in " + param1);
+            _log.warn("Missing right parenthesis in " + expr);
          }
-         return this.simpleEval(param1);
+         return this.simpleEval(expr);
       }
       
-      private function plus(param1:*, param2:*) : * {
-         return param1 + param2;
+      private function plus(a:*, b:*) : * {
+         return a + b;
       }
       
-      private function minus(param1:Number, param2:Number) : Number {
-         return param1 - param2;
+      private function minus(a:Number, b:Number) : Number {
+         return a - b;
       }
       
-      private function multiply(param1:Number, param2:Number) : Number {
-         return param1 * param2;
+      private function multiply(a:Number, b:Number) : Number {
+         return a * b;
       }
       
-      private function divide(param1:Number, param2:Number) : Number {
-         return param1 / param2;
+      private function divide(a:Number, b:Number) : Number {
+         return a / b;
       }
       
-      private function sup(param1:Number, param2:Number) : Number {
-         return param1 > param2?1:0;
+      private function sup(a:Number, b:Number) : Number {
+         return a > b?1:0;
       }
       
-      private function supOrEquals(param1:Number, param2:Number) : Number {
-         return param1 >= param2?1:0;
+      private function supOrEquals(a:Number, b:Number) : Number {
+         return a >= b?1:0;
       }
       
-      private function inf(param1:Number, param2:Number) : Number {
-         return param1 < param2?1:0;
+      private function inf(a:Number, b:Number) : Number {
+         return a < b?1:0;
       }
       
-      private function infOrEquals(param1:Number, param2:Number) : Number {
-         return param1 <= param2?1:0;
+      private function infOrEquals(a:Number, b:Number) : Number {
+         return a <= b?1:0;
       }
       
-      private function and(param1:Number, param2:Number) : Number {
-         return (param1) && (param2)?1:0;
+      private function and(a:Number, b:Number) : Number {
+         return (a) && (b)?1:0;
       }
       
-      private function or(param1:Number, param2:Number) : Number {
-         return (param1) || (param2)?1:0;
+      private function or(a:Number, b:Number) : Number {
+         return (a) || (b)?1:0;
       }
       
-      private function equals(param1:*, param2:*) : Number {
-         return param1 == param2?1:0;
+      private function equals(a:*, b:*) : Number {
+         return a == b?1:0;
       }
       
-      private function diff(param1:*, param2:*) : Number {
-         return param1 != param2?1:0;
+      private function diff(a:*, b:*) : Number {
+         return a != b?1:0;
       }
       
-      private function ternary(param1:Number, param2:*, param3:*) : * {
-         return param1?param2:param3;
+      private function ternary(cond:Number, a:*, b:*) : * {
+         return cond?a:b;
       }
       
       private function opElse() : void {
       }
       
-      private function showPosInExpr(param1:uint, param2:String) : String {
-         var _loc3_:* = param2 + "\n";
-         var _loc4_:uint = 0;
-         while(_loc4_ < param1)
+      private function showPosInExpr(pos:uint, expr:String) : String {
+         var res:String = expr + "\n";
+         var i:uint = 0;
+         while(i < pos)
          {
-            _loc3_ = _loc3_ + " ";
-            _loc4_++;
+            res = res + " ";
+            i++;
          }
-         return _loc3_ + "^";
+         return res + "^";
       }
       
-      private function trim(param1:String) : String {
-         var _loc5_:String = null;
-         var _loc2_:* = "";
-         var _loc3_:* = false;
-         var _loc4_:* = false;
-         var _loc6_:uint = 0;
-         while(_loc6_ < param1.length)
+      private function trim(str:String) : String {
+         var curChar:String = null;
+         var res:String = "";
+         var protect:Boolean = false;
+         var inQuote:Boolean = false;
+         var i:uint = 0;
+         while(i < str.length)
          {
-            _loc5_ = param1.charAt(_loc6_);
-            if(_loc5_ == "\'" && !_loc3_)
+            curChar = str.charAt(i);
+            if((curChar == "\'") && (!protect))
             {
-               _loc4_ = !_loc4_;
+               inQuote = !inQuote;
             }
-            if(_loc5_ == "\\")
+            if(curChar == "\\")
             {
-               _loc3_ = true;
+               protect = true;
             }
             else
             {
-               _loc3_ = false;
+               protect = false;
             }
-            if(!(_loc5_ == " ") || (_loc4_))
+            if((!(curChar == " ")) || (inQuote))
             {
-               _loc2_ = _loc2_ + _loc5_;
+               res = res + curChar;
             }
-            _loc6_++;
+            i++;
          }
-         return _loc2_;
+         return res;
       }
    }
 }

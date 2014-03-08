@@ -3,9 +3,9 @@ package com.ankamagames.berilia.types.template
    public class TemplateVar extends Object
    {
       
-      public function TemplateVar(param1:String) {
+      public function TemplateVar(varName:String) {
          super();
-         this.name = param1;
+         this.name = varName;
       }
       
       public var name:String;
@@ -13,9 +13,9 @@ package com.ankamagames.berilia.types.template
       public var value:String;
       
       public function clone() : TemplateVar {
-         var _loc1_:TemplateVar = new TemplateVar(this.name);
-         _loc1_.value = this.value;
-         return _loc1_;
+         var tmp:TemplateVar = new TemplateVar(this.name);
+         tmp.value = this.value;
+         return tmp;
       }
    }
 }

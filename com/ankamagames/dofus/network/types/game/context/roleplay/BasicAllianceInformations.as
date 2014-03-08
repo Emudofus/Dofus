@@ -22,9 +22,9 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 419;
       }
       
-      public function initBasicAllianceInformations(param1:uint=0, param2:String="") : BasicAllianceInformations {
-         this.allianceId = param1;
-         this.allianceTag = param2;
+      public function initBasicAllianceInformations(allianceId:uint=0, allianceTag:String="") : BasicAllianceInformations {
+         this.allianceId = allianceId;
+         this.allianceTag = allianceTag;
          return this;
       }
       
@@ -33,38 +33,38 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.allianceTag = "";
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_BasicAllianceInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_BasicAllianceInformations(output);
       }
       
-      public function serializeAs_BasicAllianceInformations(param1:IDataOutput) : void {
-         super.serializeAs_AbstractSocialGroupInfos(param1);
+      public function serializeAs_BasicAllianceInformations(output:IDataOutput) : void {
+         super.serializeAs_AbstractSocialGroupInfos(output);
          if(this.allianceId < 0)
          {
             throw new Error("Forbidden value (" + this.allianceId + ") on element allianceId.");
          }
          else
          {
-            param1.writeInt(this.allianceId);
-            param1.writeUTF(this.allianceTag);
+            output.writeInt(this.allianceId);
+            output.writeUTF(this.allianceTag);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_BasicAllianceInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_BasicAllianceInformations(input);
       }
       
-      public function deserializeAs_BasicAllianceInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.allianceId = param1.readInt();
+      public function deserializeAs_BasicAllianceInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.allianceId = input.readInt();
          if(this.allianceId < 0)
          {
             throw new Error("Forbidden value (" + this.allianceId + ") on element of BasicAllianceInformations.allianceId.");
          }
          else
          {
-            this.allianceTag = param1.readUTF();
+            this.allianceTag = input.readUTF();
             return;
          }
       }

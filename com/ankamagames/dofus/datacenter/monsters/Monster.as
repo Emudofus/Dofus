@@ -14,8 +14,8 @@ package com.ankamagames.dofus.datacenter.monsters
       
       public static const MODULE:String = "Monsters";
       
-      public static function getMonsterById(param1:uint) : Monster {
-         return GameData.getObject(MODULE,param1) as Monster;
+      public static function getMonsterById(id:uint) : Monster {
+         return GameData.getObject(MODULE,id) as Monster;
       }
       
       public static function getMonsters() : Array {
@@ -78,12 +78,12 @@ package com.ankamagames.dofus.datacenter.monsters
          return MonsterRace.getMonsterRaceById(this.race);
       }
       
-      public function getMonsterGrade(param1:uint) : MonsterGrade {
-         if(param1 < 1 || param1 > this.grades.length)
+      public function getMonsterGrade(grade:uint) : MonsterGrade {
+         if((grade < 1) || (grade > this.grades.length))
          {
-            param1 = this.grades.length;
+            grade = this.grades.length;
          }
-         return this.grades[param1-1] as MonsterGrade;
+         return this.grades[grade - 1] as MonsterGrade;
       }
       
       public function toString() : String {

@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          return 6230;
       }
       
-      public function initShortcutBarSwapRequestMessage(param1:uint=0, param2:uint=0, param3:uint=0) : ShortcutBarSwapRequestMessage {
-         this.barType = param1;
-         this.firstSlot = param2;
-         this.secondSlot = param3;
+      public function initShortcutBarSwapRequestMessage(barType:uint=0, firstSlot:uint=0, secondSlot:uint=0) : ShortcutBarSwapRequestMessage {
+         this.barType = barType;
+         this.firstSlot = firstSlot;
+         this.secondSlot = secondSlot;
          this._isInitialized = true;
          return this;
       }
@@ -46,62 +46,62 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ShortcutBarSwapRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ShortcutBarSwapRequestMessage(output);
       }
       
-      public function serializeAs_ShortcutBarSwapRequestMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.barType);
-         if(this.firstSlot < 0 || this.firstSlot > 99)
+      public function serializeAs_ShortcutBarSwapRequestMessage(output:IDataOutput) : void {
+         output.writeByte(this.barType);
+         if((this.firstSlot < 0) || (this.firstSlot > 99))
          {
             throw new Error("Forbidden value (" + this.firstSlot + ") on element firstSlot.");
          }
          else
          {
-            param1.writeInt(this.firstSlot);
-            if(this.secondSlot < 0 || this.secondSlot > 99)
+            output.writeInt(this.firstSlot);
+            if((this.secondSlot < 0) || (this.secondSlot > 99))
             {
                throw new Error("Forbidden value (" + this.secondSlot + ") on element secondSlot.");
             }
             else
             {
-               param1.writeInt(this.secondSlot);
+               output.writeInt(this.secondSlot);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ShortcutBarSwapRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ShortcutBarSwapRequestMessage(input);
       }
       
-      public function deserializeAs_ShortcutBarSwapRequestMessage(param1:IDataInput) : void {
-         this.barType = param1.readByte();
+      public function deserializeAs_ShortcutBarSwapRequestMessage(input:IDataInput) : void {
+         this.barType = input.readByte();
          if(this.barType < 0)
          {
             throw new Error("Forbidden value (" + this.barType + ") on element of ShortcutBarSwapRequestMessage.barType.");
          }
          else
          {
-            this.firstSlot = param1.readInt();
-            if(this.firstSlot < 0 || this.firstSlot > 99)
+            this.firstSlot = input.readInt();
+            if((this.firstSlot < 0) || (this.firstSlot > 99))
             {
                throw new Error("Forbidden value (" + this.firstSlot + ") on element of ShortcutBarSwapRequestMessage.firstSlot.");
             }
             else
             {
-               this.secondSlot = param1.readInt();
-               if(this.secondSlot < 0 || this.secondSlot > 99)
+               this.secondSlot = input.readInt();
+               if((this.secondSlot < 0) || (this.secondSlot > 99))
                {
                   throw new Error("Forbidden value (" + this.secondSlot + ") on element of ShortcutBarSwapRequestMessage.secondSlot.");
                }

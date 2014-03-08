@@ -23,29 +23,29 @@ package com.ankamagames.dofus.console
          super();
       }
       
-      public function registerInstructions(param1:ConsoleHandler) : void {
-         var _loc3_:* = undefined;
-         var _loc2_:Array = new Array();
-         for each (_loc3_ in Emoticon.getEmoticons())
+      public function registerInstructions(console:ConsoleHandler) : void {
+         var emote:* = undefined;
+         var emoteShortcuts:Array = new Array();
+         for each (emote in Emoticon.getEmoticons())
          {
-            _loc2_.push(_loc3_.shortcut);
+            emoteShortcuts.push(emote.shortcut);
          }
-         param1.addHandler(["whois","version","ver","about","whoami","mapid","cellid","time","mlog"],new InfoInstructionHandler());
-         param1.addHandler(["aping","ping"],new LatencyInstructionHandler());
-         param1.addHandler(["f","ignore","invite"],new SocialInstructionHandler());
-         param1.addHandler(["w","whisper","msg","t","g","p","a","r","b","m"],new MessagingInstructionHandler());
-         param1.addHandler(["spectator","list","players","kick"],new FightInstructionHandler());
-         param1.addHandler(_loc2_,new EmoteInstructionHandler());
-         param1.addHandler(["tab","clear"],new OptionsInstructionHandler());
+         console.addHandler(["whois","version","ver","about","whoami","mapid","cellid","time","mlog"],new InfoInstructionHandler());
+         console.addHandler(["aping","ping"],new LatencyInstructionHandler());
+         console.addHandler(["f","ignore","invite"],new SocialInstructionHandler());
+         console.addHandler(["w","whisper","msg","t","g","p","a","r","b","m"],new MessagingInstructionHandler());
+         console.addHandler(["spectator","list","players","kick"],new FightInstructionHandler());
+         console.addHandler(emoteShortcuts,new EmoteInstructionHandler());
+         console.addHandler(["tab","clear"],new OptionsInstructionHandler());
          if(BuildInfos.BUILD_TYPE != BuildTypeEnum.RELEASE)
          {
-            param1.addHandler(["savereplaylog","sd","showsmilies","shieldmax","shieldmoy","shieldmin"],new MiscInstructionHandler());
+            console.addHandler(["savereplaylog","sd","showsmilies","shieldmax","shieldmoy","shieldmin"],new MiscInstructionHandler());
          }
          else
          {
-            param1.addHandler(["savereplaylog","showsmilies","shieldmax","shieldmoy","shieldmin"],new MiscInstructionHandler());
+            console.addHandler(["savereplaylog","showsmilies","shieldmax","shieldmoy","shieldmin"],new MiscInstructionHandler());
          }
-         param1.addHandler(["away",I18n.getUiText("ui.chat.status.away").toLocaleLowerCase(),I18n.getUiText("ui.chat.status.solo").toLocaleLowerCase(),I18n.getUiText("ui.chat.status.private").toLocaleLowerCase(),I18n.getUiText("ui.chat.status.availiable").toLocaleLowerCase(),"invisible","release"],new StatusInstructionHandler());
+         console.addHandler(["away",I18n.getUiText("ui.chat.status.away").toLocaleLowerCase(),I18n.getUiText("ui.chat.status.solo").toLocaleLowerCase(),I18n.getUiText("ui.chat.status.private").toLocaleLowerCase(),I18n.getUiText("ui.chat.status.availiable").toLocaleLowerCase(),"invisible","release"],new StatusInstructionHandler());
       }
    }
 }

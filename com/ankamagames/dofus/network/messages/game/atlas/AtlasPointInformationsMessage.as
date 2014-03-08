@@ -29,8 +29,8 @@ package com.ankamagames.dofus.network.messages.game.atlas
          return 5956;
       }
       
-      public function initAtlasPointInformationsMessage(param1:AtlasPointsInformations=null) : AtlasPointInformationsMessage {
-         this.type = param1;
+      public function initAtlasPointInformationsMessage(type:AtlasPointsInformations=null) : AtlasPointInformationsMessage {
+         this.type = type;
          this._isInitialized = true;
          return this;
       }
@@ -40,31 +40,31 @@ package com.ankamagames.dofus.network.messages.game.atlas
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AtlasPointInformationsMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AtlasPointInformationsMessage(output);
       }
       
-      public function serializeAs_AtlasPointInformationsMessage(param1:IDataOutput) : void {
-         this.type.serializeAs_AtlasPointsInformations(param1);
+      public function serializeAs_AtlasPointInformationsMessage(output:IDataOutput) : void {
+         this.type.serializeAs_AtlasPointsInformations(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AtlasPointInformationsMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AtlasPointInformationsMessage(input);
       }
       
-      public function deserializeAs_AtlasPointInformationsMessage(param1:IDataInput) : void {
+      public function deserializeAs_AtlasPointInformationsMessage(input:IDataInput) : void {
          this.type = new AtlasPointsInformations();
-         this.type.deserialize(param1);
+         this.type.deserialize(input);
       }
    }
 }

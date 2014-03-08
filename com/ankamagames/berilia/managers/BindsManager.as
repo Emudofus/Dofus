@@ -93,8 +93,8 @@ package com.ankamagames.berilia.managers
       }
       
       override public function initialize() : void {
-         var _loc5_:File = null;
-         var _loc6_:Bind = null;
+         var file:File = null;
+         var s:Bind = null;
          super.initialize();
          this._shortcutsLoaded = false;
          this._bindsLoaded = false;
@@ -109,27 +109,27 @@ package com.ankamagames.berilia.managers
          this._waitingBinds = new Array();
          this._aRegisterKey = StoreDataManager.getInstance().getSetData(BeriliaConstants.DATASTORE_BINDS,"registeredKeys",new Array());
          this.fillShortcutsEnum();
-         var _loc1_:String = LangManager.getInstance().getEntry("config.binds.path.root").split("file://")[1];
-         if(!_loc1_)
+         var path:String = LangManager.getInstance().getEntry("config.binds.path.root").split("file://")[1];
+         if(!path)
          {
-            _loc1_ = LangManager.getInstance().getEntry("config.binds.path.root");
+            path = LangManager.getInstance().getEntry("config.binds.path.root");
          }
-         var _loc2_:File = new File(File.applicationDirectory.nativePath + File.separator + _loc1_);
-         _loc2_.createDirectory();
-         var _loc3_:Array = _loc2_.getDirectoryListing();
-         var _loc4_:Array = new Array();
-         for each (_loc5_ in _loc3_)
+         var bindFilesPath:File = new File(File.applicationDirectory.nativePath + File.separator + path);
+         bindFilesPath.createDirectory();
+         var bindFiles:Array = bindFilesPath.getDirectoryListing();
+         var uris:Array = new Array();
+         for each (file in bindFiles)
          {
-            if(!_loc5_.isDirectory && _loc5_.extension == "xml")
+            if((!file.isDirectory) && (file.extension == "xml"))
             {
-               _loc4_.push(new Uri(_loc5_.nativePath));
+               uris.push(new Uri(file.nativePath));
             }
          }
-         this._loaderKeyboard.load(_loc4_);
+         this._loaderKeyboard.load(uris);
          if(this._aRegisterKey.length == 0)
          {
-            _loc6_ = new Bind("ALL","ALL",true,true,true);
-            this._aRegisterKey.push(_loc6_);
+            s = new Bind("ALL","ALL",true,true,true);
+            this._aRegisterKey.push(s);
          }
       }
       
@@ -137,250 +137,250 @@ package com.ankamagames.berilia.managers
          return this._aRegisterKey;
       }
       
-      public function getShortcutString(param1:uint, param2:uint) : String {
-         if(ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[param1] != null)
+      public function getShortcutString(nKeyCode:uint, nCharCode:uint) : String {
+         if(ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[nKeyCode] != null)
          {
-            return ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[param1];
+            return ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[nKeyCode];
          }
-         if(param2 == 0)
+         if(nCharCode == 0)
          {
             return null;
          }
-         return String.fromCharCode(param2);
+         return String.fromCharCode(nCharCode);
       }
       
-      public function getBind(param1:Bind, param2:Boolean=false) : Bind {
-         var _loc5_:Bind = null;
+      public function getBind(s:Bind, returnDisabled:Boolean=false) : Bind {
+         var b:Bind = null;
          if(this._aRegisterKey == null)
          {
             return null;
          }
-         var _loc3_:* = -1;
-         var _loc4_:int = this._aRegisterKey.length;
-         while(++_loc3_ < _loc4_)
+         var i:int = -1;
+         var num:int = this._aRegisterKey.length;
+         while(++i < num)
          {
-            _loc5_ = this._aRegisterKey[_loc3_] as Bind;
-            if((_loc5_) && (_loc5_.equals(param1)) && ((param2) || !_loc5_.disabled))
+            b = this._aRegisterKey[i] as Bind;
+            if((b) && (b.equals(s)) && ((returnDisabled) || (!b.disabled)))
             {
-               return _loc5_;
+               return b;
             }
          }
          return null;
       }
       
-      public function isRegister(param1:Bind) : Boolean {
-         var _loc2_:uint = 0;
-         while(_loc2_ < this._aRegisterKey.length)
+      public function isRegister(s:Bind) : Boolean {
+         var i:uint = 0;
+         while(i < this._aRegisterKey.length)
          {
-            if((this._aRegisterKey[_loc2_]) && (this._aRegisterKey[_loc2_].equals(param1)))
+            if((this._aRegisterKey[i]) && (this._aRegisterKey[i].equals(s)))
             {
                return true;
             }
-            _loc2_++;
+            i++;
          }
          return false;
       }
       
-      public function isPermanent(param1:Bind) : Boolean {
-         var _loc2_:Shortcut = null;
-         var _loc3_:uint = 0;
-         while(_loc3_ < this._aRegisterKey.length)
+      public function isPermanent(s:Bind) : Boolean {
+         var shortcut:Shortcut = null;
+         var i:uint = 0;
+         while(i < this._aRegisterKey.length)
          {
-            if((this._aRegisterKey[_loc3_]) && (this._aRegisterKey[_loc3_].equals(param1)))
+            if((this._aRegisterKey[i]) && (this._aRegisterKey[i].equals(s)))
             {
-               _loc2_ = Shortcut.getShortcutByName(this._aRegisterKey[_loc3_].targetedShortcut);
-               if(!(_loc2_ == null) && !_loc2_.bindable)
+               shortcut = Shortcut.getShortcutByName(this._aRegisterKey[i].targetedShortcut);
+               if((!(shortcut == null)) && (!shortcut.bindable))
                {
                   return true;
                }
             }
-            _loc3_++;
+            i++;
          }
          return false;
       }
       
-      public function isDisabled(param1:Bind) : Boolean {
-         var _loc3_:Bind = null;
-         var _loc2_:uint = 0;
-         while(_loc2_ < this._aRegisterKey.length)
+      public function isDisabled(s:Bind) : Boolean {
+         var b:Bind = null;
+         var i:uint = 0;
+         while(i < this._aRegisterKey.length)
          {
-            if((this._aRegisterKey[_loc2_]) && (this._aRegisterKey[_loc2_].equals(param1)))
+            if((this._aRegisterKey[i]) && (this._aRegisterKey[i].equals(s)))
             {
-               _loc3_ = this._aRegisterKey[_loc2_] as Bind;
-               return _loc3_.disabled;
+               b = this._aRegisterKey[i] as Bind;
+               return b.disabled;
             }
-            _loc2_++;
+            i++;
          }
          return false;
       }
       
-      public function setDisabled(param1:Bind, param2:Boolean) : void {
-         var _loc4_:Bind = null;
-         var _loc3_:uint = 0;
-         while(_loc3_ < this._aRegisterKey.length)
+      public function setDisabled(s:Bind, disabled:Boolean) : void {
+         var b:Bind = null;
+         var i:uint = 0;
+         while(i < this._aRegisterKey.length)
          {
-            if((this._aRegisterKey[_loc3_]) && (this._aRegisterKey[_loc3_].equals(param1)))
+            if((this._aRegisterKey[i]) && (this._aRegisterKey[i].equals(s)))
             {
-               _loc4_ = this._aRegisterKey[_loc3_] as Bind;
-               _loc4_.disabled = param2;
+               b = this._aRegisterKey[i] as Bind;
+               b.disabled = disabled;
                return;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public function isRegisteredName(param1:String) : Boolean {
-         var _loc2_:uint = 0;
-         while(_loc2_ < this._aRegisterKey.length)
+      public function isRegisteredName(s:String) : Boolean {
+         var i:uint = 0;
+         while(i < this._aRegisterKey.length)
          {
-            if((this._aRegisterKey[_loc2_]) && this._aRegisterKey[_loc2_].targetedShortcut == param1)
+            if((this._aRegisterKey[i]) && (this._aRegisterKey[i].targetedShortcut == s))
             {
                return true;
             }
-            _loc2_++;
+            i++;
          }
          return false;
       }
       
-      public function canBind(param1:Bind) : Boolean {
-         var _loc2_:uint = 0;
-         while(_loc2_ < ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.length)
+      public function canBind(s:Bind) : Boolean {
+         var i:uint = 0;
+         while(i < ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.length)
          {
-            if(ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN[_loc2_].equals(param1))
+            if(ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN[i].equals(s))
             {
                return false;
             }
-            _loc2_++;
+            i++;
          }
          return true;
       }
       
-      public function removeBind(param1:Bind) : void {
-         var _loc3_:String = null;
-         var _loc2_:uint = 0;
-         while(_loc2_ < this._aRegisterKey.length)
+      public function removeBind(b:Bind) : void {
+         var target:String = null;
+         var i:uint = 0;
+         while(i < this._aRegisterKey.length)
          {
-            if((this._aRegisterKey[_loc2_]) && (this._aRegisterKey[_loc2_].equals(param1)))
+            if((this._aRegisterKey[i]) && (this._aRegisterKey[i].equals(b)))
             {
-               _loc3_ = Bind(this._aRegisterKey[_loc2_]).targetedShortcut;
-               Bind(this._aRegisterKey[_loc2_]).reset();
+               target = Bind(this._aRegisterKey[i]).targetedShortcut;
+               Bind(this._aRegisterKey[i]).reset();
                StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_BINDS,"registeredKeys",this._aRegisterKey,true);
-               KernelEventsManager.getInstance().processCallback(BeriliaHookList.ShortcutUpdate,_loc3_,null);
+               KernelEventsManager.getInstance().processCallback(BeriliaHookList.ShortcutUpdate,target,null);
                break;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      public function addBind(param1:Bind) : void {
-         if(!this.canBind(param1))
+      public function addBind(bind:Bind) : void {
+         if(!this.canBind(bind))
          {
-            _log.warn(param1.toString() + " cannot be bind.");
+            _log.warn(bind.toString() + " cannot be bind.");
             return;
          }
-         this.removeBind(param1);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this._aRegisterKey.length)
+         this.removeBind(bind);
+         var i:uint = 0;
+         while(i < this._aRegisterKey.length)
          {
-            if((this._aRegisterKey[_loc2_]) && Bind(this._aRegisterKey[_loc2_]).targetedShortcut == param1.targetedShortcut)
+            if((this._aRegisterKey[i]) && (Bind(this._aRegisterKey[i]).targetedShortcut == bind.targetedShortcut))
             {
-               this._aRegisterKey.splice(_loc2_,1,param1);
+               this._aRegisterKey.splice(i,1,bind);
                StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_BINDS,"registeredKeys",this._aRegisterKey,true);
-               KernelEventsManager.getInstance().processCallback(BeriliaHookList.ShortcutUpdate,param1.targetedShortcut,param1);
+               KernelEventsManager.getInstance().processCallback(BeriliaHookList.ShortcutUpdate,bind.targetedShortcut,bind);
                return;
             }
-            _loc2_++;
+            i++;
          }
-         this._aRegisterKey.push(param1);
+         this._aRegisterKey.push(bind);
          StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_BINDS,"registeredKeys",this._aRegisterKey,true);
-         KernelEventsManager.getInstance().processCallback(BeriliaHookList.ShortcutUpdate,param1.targetedShortcut,param1);
+         KernelEventsManager.getInstance().processCallback(BeriliaHookList.ShortcutUpdate,bind.targetedShortcut,bind);
       }
       
-      public function isRegisteredShortcut(param1:Bind, param2:Boolean=false) : Boolean {
-         return !(_aEvent[param1.targetedShortcut] == null) || !param2 && (_aEvent["ALL"]);
+      public function isRegisteredShortcut(s:Bind, disableGenericBind:Boolean=false) : Boolean {
+         return (!(_aEvent[s.targetedShortcut] == null)) || (!disableGenericBind) && (_aEvent["ALL"]);
       }
       
-      public function getBindFromShortcut(param1:String, param2:Boolean=false) : Bind {
-         var _loc3_:Bind = null;
-         for each (_loc3_ in this._aRegisterKey)
+      public function getBindFromShortcut(shorcutName:String, returnDisabled:Boolean=false) : Bind {
+         var b:Bind = null;
+         for each (b in this._aRegisterKey)
          {
-            if((_loc3_) && (_loc3_.targetedShortcut == param1) && ((param2) || !_loc3_.disabled))
+            if((b) && (b.targetedShortcut == shorcutName) && ((returnDisabled) || (!b.disabled)))
             {
-               return _loc3_;
+               return b;
             }
          }
          return null;
       }
       
-      public function processCallback(param1:*, ... rest) : void {
-         var _loc4_:GenericListener = null;
-         var _loc6_:Array = null;
-         var _loc7_:TextField = null;
-         var _loc8_:UiRootContainer = null;
-         var _loc9_:* = false;
-         var _loc10_:uint = 0;
-         var _loc11_:UiRootContainer = null;
-         var _loc12_:* = undefined;
-         var _loc3_:Bind = Bind(param1);
-         if(!this.isRegisteredShortcut(_loc3_))
+      public function processCallback(o:*, ... args) : void {
+         var e:GenericListener = null;
+         var aGe:Array = null;
+         var currentFocus:TextField = null;
+         var inputUi:UiRootContainer = null;
+         var modalUi:* = false;
+         var i:uint = 0;
+         var urc:UiRootContainer = null;
+         var result:* = undefined;
+         var s:Bind = Bind(o);
+         if(!this.isRegisteredShortcut(s))
          {
             return;
          }
-         var _loc5_:* = true;
-         if(_aEvent[_loc3_.targetedShortcut])
+         var bContinue:Boolean = true;
+         if(_aEvent[s.targetedShortcut])
          {
-            _loc6_ = _aEvent[_loc3_.targetedShortcut].concat(_aEvent["ALL"]);
-            _loc6_.sortOn("sortIndex",Array.DESCENDING | Array.NUMERIC);
-            _loc7_ = FocusHandler.getInstance().getFocus() as TextField;
-            if((_loc7_) && (_loc7_.parent is Input) && (Input(_loc7_.parent).focusEventHandlerPriority))
+            aGe = _aEvent[s.targetedShortcut].concat(_aEvent["ALL"]);
+            aGe.sortOn("sortIndex",Array.DESCENDING | Array.NUMERIC);
+            currentFocus = FocusHandler.getInstance().getFocus() as TextField;
+            if((currentFocus) && (currentFocus.parent is Input) && (Input(currentFocus.parent).focusEventHandlerPriority))
             {
-               _loc8_ = Input(_loc7_.parent).getUi();
-               _loc9_ = false;
-               _loc10_ = 0;
-               while(_loc10_ < _loc6_.length)
+               inputUi = Input(currentFocus.parent).getUi();
+               modalUi = false;
+               i = 0;
+               while(i < aGe.length)
                {
-                  _loc4_ = _loc6_[_loc10_];
-                  if(((_loc4_) && (_loc4_.listenerType == GenericListener.LISTENER_TYPE_UI)) && (_loc4_.listenerContext) && (_loc4_.listenerContext.object))
+                  e = aGe[i];
+                  if(((e) && (e.listenerType == GenericListener.LISTENER_TYPE_UI)) && (e.listenerContext) && (e.listenerContext.object))
                   {
-                     _loc11_ = UiRootContainer(_loc4_.listenerContext.object);
-                     if(_loc11_)
+                     urc = UiRootContainer(e.listenerContext.object);
+                     if(urc)
                      {
-                        if(_loc11_.modal)
+                        if(urc.modal)
                         {
-                           _loc9_ = true;
+                           modalUi = true;
                         }
-                        if(_loc8_ == _loc11_ && !_loc9_ || _loc11_.modal == true)
+                        if((inputUi == urc) && (!modalUi) || (urc.modal == true))
                         {
-                           _loc6_ = _loc6_.splice(_loc10_,1);
-                           _loc6_.unshift(_loc4_);
+                           aGe = aGe.splice(i,1);
+                           aGe.unshift(e);
                         }
                      }
                   }
-                  _loc10_++;
+                  i++;
                }
             }
-            for each (_loc4_ in _loc6_)
+            for each (e in aGe)
             {
-               if(!_loc5_)
+               if(!bContinue)
                {
                   break;
                }
-               if(_loc4_)
+               if(e)
                {
-                  if((Berilia.getInstance().getUi(_loc4_.listener)) && Berilia.getInstance().getUi(_loc4_.listener).depth < Berilia.getInstance().highestModalDepth)
+                  if((Berilia.getInstance().getUi(e.listener)) && (Berilia.getInstance().getUi(e.listener).depth < Berilia.getInstance().highestModalDepth))
                   {
                      return;
                   }
-                  _log.info("Dispatch " + rest + " to " + _loc4_.listener);
-                  ModuleLogger.log(_loc3_,_loc4_.listener);
-                  _loc12_ = _loc4_.getCallback().apply(null,rest);
-                  if(_loc12_ === null || !(_loc12_ is Boolean))
+                  _log.info("Dispatch " + args + " to " + e.listener);
+                  ModuleLogger.log(s,e.listener);
+                  result = e.getCallback().apply(null,args);
+                  if((result === null) || (!(result is Boolean)))
                   {
-                     throw new ApiError(_loc4_.getCallback() + " does not return a Boolean value");
+                     throw new ApiError(e.getCallback() + " does not return a Boolean value");
                   }
                   else
                   {
-                     _loc5_ = !_loc12_;
+                     bContinue = !result;
                      continue;
                   }
                }
@@ -394,114 +394,114 @@ package com.ankamagames.berilia.managers
       }
       
       public function reset() : void {
-         var _loc2_:Bind = null;
-         var _loc3_:Shortcut = null;
-         var _loc1_:Array = new Array();
-         for each (_loc2_ in this._aRegisterKey)
+         var bind:Bind = null;
+         var shortcut:Shortcut = null;
+         var nameIndexed:Array = new Array();
+         for each (bind in this._aRegisterKey)
          {
-            if(_loc2_)
+            if(bind)
             {
-               _loc1_[_loc2_.targetedShortcut] = _loc2_;
+               nameIndexed[bind.targetedShortcut] = bind;
             }
          }
-         for each (_loc3_ in Shortcut.getShortcuts())
+         for each (shortcut in Shortcut.getShortcuts())
          {
-            if(_loc1_[_loc3_.name] == null || _loc1_[_loc3_.name].key == null || !(_loc3_.defaultBind == _loc1_[_loc3_.name]))
+            if((nameIndexed[shortcut.name] == null) || (nameIndexed[shortcut.name].key == null) || (!(shortcut.defaultBind == nameIndexed[shortcut.name])))
             {
-               if(_loc3_.defaultBind)
+               if(shortcut.defaultBind)
                {
-                  this.addBind(_loc3_.defaultBind.copy());
+                  this.addBind(shortcut.defaultBind.copy());
                }
                else
                {
-                  this.removeBind(_loc1_[_loc3_.name]);
+                  this.removeBind(nameIndexed[shortcut.name]);
                }
             }
          }
       }
       
-      public function changeKeyboard(param1:String, param2:Boolean=false) : void {
-         var _loc3_:LocalizedKeyboard = null;
-         for each (_loc3_ in this._avaibleKeyboard)
+      public function changeKeyboard(locale:String, removeOldBind:Boolean=false) : void {
+         var k:LocalizedKeyboard = null;
+         for each (k in this._avaibleKeyboard)
          {
-            if(_loc3_.locale == param1)
+            if(k.locale == locale)
             {
-               StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_BINDS,"locale",param1);
-               _loc3_.uri.tag = param2;
-               this._loader.load(_loc3_.uri);
+               StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_BINDS,"locale",locale);
+               k.uri.tag = removeOldBind;
+               this._loader.load(k.uri);
                break;
             }
          }
       }
       
-      public function getRegisteredBind(param1:Bind) : Bind {
-         var _loc2_:uint = 0;
-         while(_loc2_ < this._aRegisterKey.length)
+      public function getRegisteredBind(s:Bind) : Bind {
+         var i:uint = 0;
+         while(i < this._aRegisterKey.length)
          {
-            if((this._aRegisterKey[_loc2_]) && (this._aRegisterKey[_loc2_].equals(param1)))
+            if((this._aRegisterKey[i]) && (this._aRegisterKey[i].equals(s)))
             {
-               return this._aRegisterKey[_loc2_];
+               return this._aRegisterKey[i];
             }
-            _loc2_++;
+            i++;
          }
          return null;
       }
       
-      public function newShortcut(param1:Shortcut) : void {
-         var _loc2_:Bind = null;
-         var _loc4_:Bind = null;
-         var _loc3_:* = 0;
-         while(_loc3_ < this._waitingBinds.length)
+      public function newShortcut(shortcut:Shortcut) : void {
+         var bind:Bind = null;
+         var b:Bind = null;
+         var i:int = 0;
+         while(i < this._waitingBinds.length)
          {
-            if(this._waitingBinds[_loc3_].targetedShortcut == param1.name)
+            if(this._waitingBinds[i].targetedShortcut == shortcut.name)
             {
-               _loc2_ = this._waitingBinds[_loc3_];
+               bind = this._waitingBinds[i];
                break;
             }
-            _loc3_++;
+            i++;
          }
-         if(!_loc2_)
+         if(!bind)
          {
             return;
          }
-         this._waitingBinds.splice(_loc3_,1);
-         if(!this.canBind(_loc2_))
+         this._waitingBinds.splice(i,1);
+         if(!this.canBind(bind))
          {
-            _log.warn(_loc2_.toString() + " cannot be bind.");
+            _log.warn(bind.toString() + " cannot be bind.");
             return;
          }
-         param1.defaultBind = _loc2_.copy();
-         if(this.isRegister(_loc2_))
+         shortcut.defaultBind = bind.copy();
+         if(this.isRegister(bind))
          {
             return;
          }
-         for each (_loc4_ in this._aRegisterKey)
+         for each (b in this._aRegisterKey)
          {
-            if((_loc4_) && _loc4_.targetedShortcut == _loc2_.targetedShortcut)
+            if((b) && (b.targetedShortcut == bind.targetedShortcut))
             {
                return;
             }
          }
-         this._aRegisterKey.push(_loc2_);
+         this._aRegisterKey.push(bind);
          StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_BINDS,"registeredKeys",this._aRegisterKey,true);
       }
       
       public function checkBinds() : void {
-         var _loc1_:* = false;
-         var _loc2_:Object = null;
+         var updateData:* = false;
+         var o:Object = null;
          this._shortcutsLoaded = true;
-         if((this._shortcutsLoaded && this._bindsLoaded) && (this._bindsToCheck) && this._bindsToCheck.length > 0)
+         if((this._shortcutsLoaded && this._bindsLoaded) && (this._bindsToCheck) && (this._bindsToCheck.length > 0))
          {
-            _loc1_ = false;
-            for each (_loc2_ in this._bindsToCheck)
+            updateData = false;
+            for each (o in this._bindsToCheck)
             {
-               if(!Shortcut.getShortcutByName(_loc2_.bind.targetedShortcut))
+               if(!Shortcut.getShortcutByName(o.bind.targetedShortcut))
                {
-                  this._aRegisterKey.splice(_loc2_.index,1,null);
-                  _loc1_ = true;
+                  this._aRegisterKey.splice(o.index,1,null);
+                  updateData = true;
                }
             }
-            if(_loc1_)
+            if(updateData)
             {
                StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_BINDS,"registeredKeys",this._aRegisterKey,true);
             }
@@ -510,7 +510,7 @@ package com.ankamagames.berilia.managers
       }
       
       private function fillShortcutsEnum() : void {
-         var _loc1_:String = null;
+         var i:String = null;
          ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.push(new Bind("C","",false,true));
          ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.push(new Bind("V","",false,true));
          ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.push(new Bind("(F4)","",true,false));
@@ -552,100 +552,100 @@ package com.ankamagames.berilia.managers
          }
       }
       
-      private function parseBindsXml(param1:String, param2:Boolean) : void {
-         var _loc4_:Bind = null;
-         var _loc5_:Shortcut = null;
-         var _loc7_:Bind = null;
-         var _loc8_:* = false;
-         var _loc9_:Array = null;
-         var _loc10_:Vector.<uint> = null;
-         var _loc11_:XML = null;
-         var _loc12_:Object = null;
-         var _loc13_:uint = 0;
-         var _loc14_:* = 0;
-         var _loc3_:XML = XML(param1);
-         var _loc6_:Array = new Array();
-         for each (_loc7_ in this._aRegisterKey)
+      private function parseBindsXml(sXml:String, removeOldbinds:Boolean) : void {
+         var s:Bind = null;
+         var shortcut:Shortcut = null;
+         var bind:Bind = null;
+         var init:* = false;
+         var registeredKeys:Array = null;
+         var elementsToRemove:Vector.<uint> = null;
+         var xBind:XML = null;
+         var o:Object = null;
+         var i:uint = 0;
+         var nbElementsToRemove:* = 0;
+         var binds:XML = XML(sXml);
+         var nameIndexed:Array = new Array();
+         for each (bind in this._aRegisterKey)
          {
-            if(_loc7_)
+            if(bind)
             {
-               _loc6_[_loc7_.targetedShortcut] = _loc7_;
+               nameIndexed[bind.targetedShortcut] = bind;
             }
          }
-         _loc8_ = this._aRegisterKey.length > 1;
-         _loc9_ = new Array();
-         if(_loc8_)
+         init = this._aRegisterKey.length > 1;
+         registeredKeys = new Array();
+         if(init)
          {
-            _loc13_ = 0;
-            while(_loc13_ < this._aRegisterKey.length)
+            i = 0;
+            while(i < this._aRegisterKey.length)
             {
-               if(!this._aRegisterKey[_loc13_] || this._aRegisterKey[_loc13_].targetedShortcut == "ALL" && !(_loc13_ == this._aRegisterKey.length-1))
+               if((!this._aRegisterKey[i]) || (this._aRegisterKey[i].targetedShortcut == "ALL") && (!(i == this._aRegisterKey.length - 1)))
                {
-                  if(!_loc10_)
+                  if(!elementsToRemove)
                   {
-                     _loc10_ = new Vector.<uint>(0);
+                     elementsToRemove = new Vector.<uint>(0);
                   }
-                  _loc10_.push(_loc13_);
+                  elementsToRemove.push(i);
                }
-               _loc13_++;
+               i++;
             }
-            _loc14_ = _loc10_?_loc10_.length:0;
-            _loc13_ = 0;
-            while(_loc13_ < _loc14_)
+            nbElementsToRemove = elementsToRemove?elementsToRemove.length:0;
+            i = 0;
+            while(i < nbElementsToRemove)
             {
-               this._aRegisterKey.splice(_loc10_[_loc13_],1);
-               _loc13_++;
+               this._aRegisterKey.splice(elementsToRemove[i],1);
+               i++;
             }
-            _loc13_ = 0;
-            while(_loc13_ < this._aRegisterKey.length)
+            i = 0;
+            while(i < this._aRegisterKey.length)
             {
-               if(this._aRegisterKey[_loc13_])
+               if(this._aRegisterKey[i])
                {
-                  _loc9_[this._aRegisterKey[_loc13_].targetedShortcut] = 
+                  registeredKeys[this._aRegisterKey[i].targetedShortcut] = 
                      {
-                        "exist":(Shortcut.getShortcutByName(this._aRegisterKey[_loc13_].targetedShortcut)?true:false),
-                        "bind":this._aRegisterKey[_loc13_],
-                        "index":_loc13_
+                        "exist":(Shortcut.getShortcutByName(this._aRegisterKey[i].targetedShortcut)?true:false),
+                        "bind":this._aRegisterKey[i],
+                        "index":i
                      };
                }
-               _loc13_++;
+               i++;
             }
          }
-         for each (_loc11_ in _loc3_..bind)
+         for each (xBind in binds..bind)
          {
-            _loc5_ = Shortcut.getShortcutByName(_loc11_..@shortcut);
-            _loc4_ = new Bind(_loc11_,_loc11_..@shortcut,_loc11_..@alt == true,_loc11_..@ctrl == true,_loc11_..@shift == true);
-            if(_loc9_[_loc4_.targetedShortcut])
+            shortcut = Shortcut.getShortcutByName(xBind..@shortcut);
+            s = new Bind(xBind,xBind..@shortcut,xBind..@alt == true,xBind..@ctrl == true,xBind..@shift == true);
+            if(registeredKeys[s.targetedShortcut])
             {
-               _loc9_[_loc4_.targetedShortcut].exist = true;
+               registeredKeys[s.targetedShortcut].exist = true;
             }
-            if(!_loc5_)
+            if(!shortcut)
             {
-               this._waitingBinds.push(_loc4_);
+               this._waitingBinds.push(s);
             }
             else
             {
-               if(!this.canBind(_loc4_))
+               if(!this.canBind(s))
                {
-                  _log.warn(_loc4_.toString() + " cannot be bind.");
+                  _log.warn(s.toString() + " cannot be bind.");
                }
                else
                {
-                  _loc5_.defaultBind = _loc4_.copy();
-                  if(!this.isRegister(_loc4_))
+                  shortcut.defaultBind = s.copy();
+                  if(!this.isRegister(s))
                   {
-                     if(_loc6_[_loc4_.targetedShortcut])
+                     if(nameIndexed[s.targetedShortcut])
                      {
-                        if(param2)
+                        if(removeOldbinds)
                         {
-                           this.addBind(_loc4_);
+                           this.addBind(s);
                         }
                      }
                      else
                      {
-                        if(!_loc8_)
+                        if(!init)
                         {
-                           this._aRegisterKey.push(_loc4_);
+                           this._aRegisterKey.push(s);
                         }
                      }
                   }
@@ -656,17 +656,17 @@ package com.ankamagames.berilia.managers
          {
             this._bindsToCheck = new Array();
          }
-         for each (_loc12_ in _loc9_)
+         for each (o in registeredKeys)
          {
-            if(!_loc12_.exist || (this._shortcutsLoaded) && !Shortcut.getShortcutByName(_loc12_.bind.targetedShortcut))
+            if((!o.exist) || (this._shortcutsLoaded) && (!Shortcut.getShortcutByName(o.bind.targetedShortcut)))
             {
                if(!this._shortcutsLoaded)
                {
-                  this._bindsToCheck.push(_loc12_);
+                  this._bindsToCheck.push(o);
                }
                else
                {
-                  this._aRegisterKey.splice(_loc12_.index,1,null);
+                  this._aRegisterKey.splice(o.index,1,null);
                }
             }
          }
@@ -677,29 +677,29 @@ package com.ankamagames.berilia.managers
          }
       }
       
-      public function objectLoaded(param1:ResourceLoadedEvent) : void {
-         this.parseBindsXml(param1.resource,param1.uri.tag);
+      public function objectLoaded(e:ResourceLoadedEvent) : void {
+         this.parseBindsXml(e.resource,e.uri.tag);
       }
       
-      public function keyboardFileLoaded(param1:ResourceLoadedEvent) : void {
-         var _loc2_:XML = XML(param1.resource);
-         this._avaibleKeyboard.push(new LocalizedKeyboard(param1.uri,_loc2_.@locale,_loc2_.@description));
+      public function keyboardFileLoaded(e:ResourceLoadedEvent) : void {
+         var xml:XML = XML(e.resource);
+         this._avaibleKeyboard.push(new LocalizedKeyboard(e.uri,xml.@locale,xml.@description));
       }
       
-      public function keyboardFileAllLoaded(param1:ResourceLoaderProgressEvent) : void {
-         var _loc2_:String = null;
+      public function keyboardFileAllLoaded(e:ResourceLoaderProgressEvent) : void {
+         var locale:String = null;
          try
          {
-            _loc2_ = StoreDataManager.getInstance().getSetData(BeriliaConstants.DATASTORE_BINDS,"locale",LangManager.getInstance().getEntry("config.binds.current"));
-            this.changeKeyboard(_loc2_);
+            locale = StoreDataManager.getInstance().getSetData(BeriliaConstants.DATASTORE_BINDS,"locale",LangManager.getInstance().getEntry("config.binds.current"));
+            this.changeKeyboard(locale);
          }
          catch(e:Error)
          {
          }
       }
       
-      public function objectLoadedFailed(param1:ResourceErrorEvent) : void {
-         _log.debug("objectLoadedFailed : " + param1.uri + ", " + param1.errorMsg);
+      public function objectLoadedFailed(e:ResourceErrorEvent) : void {
+         _log.debug("objectLoadedFailed : " + e.uri + ", " + e.errorMsg);
       }
    }
 }

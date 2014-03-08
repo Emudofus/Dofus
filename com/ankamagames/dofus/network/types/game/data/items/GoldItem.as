@@ -19,8 +19,8 @@ package com.ankamagames.dofus.network.types.game.data.items
          return 123;
       }
       
-      public function initGoldItem(param1:uint=0) : GoldItem {
-         this.sum = param1;
+      public function initGoldItem(sum:uint=0) : GoldItem {
+         this.sum = sum;
          return this;
       }
       
@@ -28,30 +28,30 @@ package com.ankamagames.dofus.network.types.game.data.items
          this.sum = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GoldItem(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GoldItem(output);
       }
       
-      public function serializeAs_GoldItem(param1:IDataOutput) : void {
-         super.serializeAs_Item(param1);
+      public function serializeAs_GoldItem(output:IDataOutput) : void {
+         super.serializeAs_Item(output);
          if(this.sum < 0)
          {
             throw new Error("Forbidden value (" + this.sum + ") on element sum.");
          }
          else
          {
-            param1.writeInt(this.sum);
+            output.writeInt(this.sum);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GoldItem(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GoldItem(input);
       }
       
-      public function deserializeAs_GoldItem(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.sum = param1.readInt();
+      public function deserializeAs_GoldItem(input:IDataInput) : void {
+         super.deserialize(input);
+         this.sum = input.readInt();
          if(this.sum < 0)
          {
             throw new Error("Forbidden value (" + this.sum + ") on element of GoldItem.sum.");

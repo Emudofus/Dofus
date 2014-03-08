@@ -3,7 +3,6 @@ package com.ankamagames.dofus.kernel.sound.manager
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.kernel.sound.type.LocalizedMapSound;
    import com.ankamagames.tubul.interfaces.ISound;
    import com.ankamagames.atouin.data.map.Map;
@@ -20,6 +19,7 @@ package com.ankamagames.dofus.kernel.sound.manager
    import com.ankamagames.tubul.types.SoundSilence;
    import com.ankamagames.tubul.Tubul;
    import com.ankamagames.dofus.kernel.sound.type.SoundDofus;
+   import __AS3__.vec.*;
    
    public class LocalizedSoundsManager extends Object
    {
@@ -41,24 +41,24 @@ package com.ankamagames.dofus.kernel.sound.manager
          return this._isInitialized;
       }
       
-      public function setMap(param1:Map) : void {
-         var _loc2_:Layer = null;
-         var _loc3_:Cell = null;
-         var _loc4_:BasicElement = null;
-         var _loc5_:SoundElement = null;
-         var _loc6_:LocalizedMapSound = null;
+      public function setMap(pMap:Map) : void {
+         var layer:Layer = null;
+         var cell:Cell = null;
+         var element:BasicElement = null;
+         var elem:SoundElement = null;
+         var lms:LocalizedMapSound = null;
          this.removeLocalizedSounds();
-         for each (_loc2_ in param1.layers)
+         for each (layer in pMap.layers)
          {
-            for each (_loc3_ in _loc2_.cells)
+            for each (cell in layer.cells)
             {
-               for each (_loc4_ in _loc3_.elements)
+               for each (element in cell.elements)
                {
-                  if(_loc4_ is SoundElement)
+                  if(element is SoundElement)
                   {
-                     _loc5_ = _loc4_ as SoundElement;
-                     _loc6_ = new LocalizedMapSound(_loc5_.soundId.toString(),_loc5_.cell.pixelCoords,_loc5_.nullVolumeDistance,_loc5_.fullVolumeDistance,_loc5_.minDelayBetweenLoops,_loc5_.maxDelayBetweenLoops,_loc5_.baseVolume);
-                     this._localizedSounds.push(_loc6_);
+                     elem = element as SoundElement;
+                     lms = new LocalizedMapSound(elem.soundId.toString(),elem.cell.pixelCoords,elem.nullVolumeDistance,elem.fullVolumeDistance,elem.minDelayBetweenLoops,elem.maxDelayBetweenLoops,elem.baseVolume);
+                     this._localizedSounds.push(lms);
                   }
                }
             }
@@ -67,49 +67,49 @@ package com.ankamagames.dofus.kernel.sound.manager
       }
       
       public function playLocalizedSounds() : void {
-         var _loc1_:LocalizedMapSound = null;
-         var _loc2_:uint = 0;
-         var _loc3_:String = null;
-         var _loc4_:Uri = null;
-         var _loc5_:ISound = null;
-         for each (_loc1_ in this._localizedSounds)
+         var lms:LocalizedMapSound = null;
+         var busId:uint = 0;
+         var soundPath:String = null;
+         var soundUri:Uri = null;
+         var localizedSound:ISound = null;
+         for each (lms in this._localizedSounds)
          {
-            _loc2_ = SoundUtil.getBusIdBySoundId(_loc1_.soundId);
-            _loc3_ = SoundUtil.getConfigEntryByBusId(_loc2_);
-            _loc4_ = new Uri(_loc3_ + _loc1_.soundId + ".mp3");
+            busId = SoundUtil.getBusIdBySoundId(lms.soundId);
+            soundPath = SoundUtil.getConfigEntryByBusId(busId);
+            soundUri = new Uri(soundPath + lms.soundId + ".mp3");
             if(SoundManager.getInstance().manager is ClassicSoundManager)
             {
-               _loc5_ = SoundFactory.getSound(EnumSoundType.LOCALIZED_SOUND,_loc4_);
-               _loc5_.busId = _loc2_;
-               (_loc5_ as LocalizedSound).saturationRange = _loc1_.saturationRange;
-               (_loc5_ as LocalizedSound).silence = new SoundSilence(_loc1_.silenceMin,_loc1_.silenceMax);
-               (_loc5_ as LocalizedSound).range = _loc1_.range;
-               (_loc5_ as LocalizedSound).volumeMax = _loc1_.volumeMax;
-               (_loc5_ as LocalizedSound).position = _loc1_.position;
-               (_loc5_ as LocalizedSound).updateObserverPosition(Tubul.getInstance().earPosition);
-               SoundManager.getInstance().manager.playSound(_loc5_);
+               localizedSound = SoundFactory.getSound(EnumSoundType.LOCALIZED_SOUND,soundUri);
+               localizedSound.busId = busId;
+               (localizedSound as LocalizedSound).saturationRange = lms.saturationRange;
+               (localizedSound as LocalizedSound).silence = new SoundSilence(lms.silenceMin,lms.silenceMax);
+               (localizedSound as LocalizedSound).range = lms.range;
+               (localizedSound as LocalizedSound).volumeMax = lms.volumeMax;
+               (localizedSound as LocalizedSound).position = lms.position;
+               (localizedSound as LocalizedSound).updateObserverPosition(Tubul.getInstance().earPosition);
+               SoundManager.getInstance().manager.playSound(localizedSound);
             }
             if(SoundManager.getInstance().manager is RegSoundManager)
             {
-               _loc5_ = new SoundDofus(_loc1_.soundId);
-               _loc5_.busId = _loc2_;
-               (_loc5_ as SoundDofus).saturationRange = _loc1_.saturationRange;
-               (_loc5_ as SoundDofus).silence = new SoundSilence(_loc1_.silenceMin,_loc1_.silenceMax);
-               (_loc5_ as SoundDofus).range = _loc1_.range;
-               (_loc5_ as SoundDofus).volumeMax = _loc1_.volumeMax;
-               (_loc5_ as SoundDofus).position = _loc1_.position;
-               _loc5_.play();
+               localizedSound = new SoundDofus(lms.soundId);
+               localizedSound.busId = busId;
+               (localizedSound as SoundDofus).saturationRange = lms.saturationRange;
+               (localizedSound as SoundDofus).silence = new SoundSilence(lms.silenceMin,lms.silenceMax);
+               (localizedSound as SoundDofus).range = lms.range;
+               (localizedSound as SoundDofus).volumeMax = lms.volumeMax;
+               (localizedSound as SoundDofus).position = lms.position;
+               localizedSound.play();
             }
-            this._sounds.push(_loc5_);
+            this._sounds.push(localizedSound);
          }
       }
       
       public function stopLocalizedSounds() : void {
-         var _loc1_:ISound = null;
-         for each (_loc1_ in this._sounds)
+         var sound:ISound = null;
+         for each (sound in this._sounds)
          {
-            _loc1_.stop();
-            _loc1_ = null;
+            sound.stop();
+            sound = null;
          }
          this._sounds = new Vector.<ISound>();
       }

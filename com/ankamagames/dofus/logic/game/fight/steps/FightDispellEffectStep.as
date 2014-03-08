@@ -10,10 +10,10 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightDispellEffectStep extends AbstractSequencable implements IFightStep, ISequencableListener
    {
       
-      public function FightDispellEffectStep(param1:int, param2:int) {
+      public function FightDispellEffectStep(fighterId:int, boostUID:int) {
          super();
-         this._fighterId = param1;
-         this._boostUID = param2;
+         this._fighterId = fighterId;
+         this._boostUID = boostUID;
       }
       
       private var _fighterId:int;
@@ -27,18 +27,18 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc2_:StateBuff = null;
-         var _loc1_:BasicBuff = BuffManager.getInstance().getBuff(this._boostUID,this._fighterId);
-         if((_loc1_) && _loc1_ is StateBuff)
+         var sb:StateBuff = null;
+         var buff:BasicBuff = BuffManager.getInstance().getBuff(this._boostUID,this._fighterId);
+         if((buff) && (buff is StateBuff))
          {
-            _loc2_ = _loc1_ as StateBuff;
-            if(_loc2_.actionId == 952)
+            sb = buff as StateBuff;
+            if(sb.actionId == 952)
             {
-               this._virtualStep = new FightEnteringStateStep(_loc2_.targetId,_loc2_.stateId,_loc2_.effects.durationString);
+               this._virtualStep = new FightEnteringStateStep(sb.targetId,sb.stateId,sb.effects.durationString);
             }
             else
             {
-               this._virtualStep = new FightLeavingStateStep(_loc2_.targetId,_loc2_.stateId);
+               this._virtualStep = new FightLeavingStateStep(sb.targetId,sb.stateId);
             }
          }
          BuffManager.getInstance().dispellUniqueBuff(this._fighterId,this._boostUID,true,false,true);
@@ -53,7 +53,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          }
       }
       
-      public function stepFinished(param1:ISequencable, param2:Boolean=false) : void {
+      public function stepFinished(step:ISequencable, withTimout:Boolean=false) : void {
          this._virtualStep.removeListener(this);
          executeCallbacks();
       }

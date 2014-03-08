@@ -8,8 +8,8 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    public class BankView extends StorageGenericView
    {
       
-      public function BankView(param1:HookLock) {
-         super(param1);
+      public function BankView(hookLock:HookLock) {
+         super(hookLock);
       }
       
       override public function get name() : String {
@@ -18,7 +18,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
       
       override public function updateView() : void {
          super.updateView();
-         if(StorageOptionManager.getInstance().bankCategory == StorageOptionManager.ALL_CATEGORY && !StorageOptionManager.getInstance().hasBankFilter())
+         if((StorageOptionManager.getInstance().bankCategory == StorageOptionManager.ALL_CATEGORY) && (!StorageOptionManager.getInstance().hasBankFilter()))
          {
             _hookLock.addHook(InventoryHookList.BankViewContent,[content,InventoryManager.getInstance().bankInventory.localKamas]);
          }

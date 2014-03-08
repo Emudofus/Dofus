@@ -49,8 +49,8 @@ package com.ankamagames.berilia.components
          return this._scrollBottomMargin;
       }
       
-      public function set scrollBottomMargin(param1:int) : void {
-         this._scrollBottomMargin = param1;
+      public function set scrollBottomMargin(value:int) : void {
+         this._scrollBottomMargin = value;
          this._sbScrollBar.height = height - this._scrollTopMargin - this._scrollBottomMargin;
       }
       
@@ -58,23 +58,23 @@ package com.ankamagames.berilia.components
          return this._scrollTopMargin;
       }
       
-      public function set scrollTopMargin(param1:int) : void {
-         this._scrollTopMargin = param1;
+      public function set scrollTopMargin(value:int) : void {
+         this._scrollTopMargin = value;
          this._sbScrollBar.y = this._scrollTopMargin;
          this._sbScrollBar.height = height - this._scrollTopMargin - this._scrollBottomMargin;
       }
       
-      public function set scrollCss(param1:Uri) : void {
-         this._sbScrollBar.css = param1;
+      public function set scrollCss(sUrl:Uri) : void {
+         this._sbScrollBar.css = sUrl;
       }
       
       public function get scrollCss() : Uri {
          return this._sbScrollBar.css;
       }
       
-      override public function set width(param1:Number) : void {
-         this.___width = param1;
-         super.width = param1;
+      override public function set width(nW:Number) : void {
+         this.___width = nW;
+         super.width = nW;
          this.updateScrollBarPos();
       }
       
@@ -82,11 +82,11 @@ package com.ankamagames.berilia.components
          return this.___width;
       }
       
-      override public function set height(param1:Number) : void {
-         if(!(param1 == super.height) || !(param1 == this._sbScrollBar.height - this._scrollTopMargin - this._scrollBottomMargin))
+      override public function set height(nH:Number) : void {
+         if((!(nH == super.height)) || (!(nH == this._sbScrollBar.height - this._scrollTopMargin - this._scrollBottomMargin)))
          {
-            super.height = param1;
-            this._sbScrollBar.height = param1 - this._scrollTopMargin - this._scrollBottomMargin;
+            super.height = nH;
+            this._sbScrollBar.height = nH - this._scrollTopMargin - this._scrollBottomMargin;
             if(this._bFinalized)
             {
                this.updateScrollBar();
@@ -94,24 +94,24 @@ package com.ankamagames.berilia.components
          }
       }
       
-      override public function set text(param1:String) : void {
-         super.text = param1;
+      override public function set text(sValue:String) : void {
+         super.text = sValue;
          if(this._bFinalized)
          {
             this.updateScrollBar(true);
          }
       }
       
-      public function set scrollPos(param1:int) : void {
-         this._nScrollPos = param1;
+      public function set scrollPos(nValue:int) : void {
+         this._nScrollPos = nValue;
       }
       
-      override public function set css(param1:Uri) : void {
-         super.css = param1;
+      override public function set css(sValue:Uri) : void {
+         super.css = sValue;
       }
       
-      override public function set scrollV(param1:int) : void {
-         super.scrollV = param1;
+      override public function set scrollV(nVal:int) : void {
+         super.scrollV = nVal;
          if(this._bFinalized)
          {
             this.updateScrollBar();
@@ -126,20 +126,20 @@ package com.ankamagames.berilia.components
          return (this._bFinalized) && (super.finalized);
       }
       
-      override public function set finalized(param1:Boolean) : void {
-         this._bFinalized = param1;
+      override public function set finalized(b:Boolean) : void {
+         this._bFinalized = b;
       }
       
       public function get hideScroll() : Boolean {
          return this._bHideScroll;
       }
       
-      public function set hideScroll(param1:Boolean) : void {
-         this._bHideScroll = param1;
+      public function set hideScroll(hideScroll:Boolean) : void {
+         this._bHideScroll = hideScroll;
       }
       
-      override public function appendText(param1:String, param2:String=null) : void {
-         super.appendText(param1,param2);
+      override public function appendText(sTxt:String, style:String=null) : void {
+         super.appendText(sTxt,style);
          if(this._bFinalized)
          {
             this.updateScrollBar();
@@ -177,15 +177,15 @@ package com.ankamagames.berilia.components
          super.remove();
       }
       
-      override public function process(param1:Message) : Boolean {
-         if(param1 is MouseWheelMessage && (this._sbScrollBar) && (this._sbScrollBar.visible))
+      override public function process(msg:Message) : Boolean {
+         if((msg is MouseWheelMessage) && (this._sbScrollBar) && (this._sbScrollBar.visible))
          {
             return true;
          }
-         return super.process(param1);
+         return super.process(msg);
       }
       
-      private function updateScrollBar(param1:Boolean=false) : void {
+      private function updateScrollBar(reset:Boolean=false) : void {
          if(_tText.numLines * _tText.getLineMetrics(0).height < height)
          {
             _tText.scrollV = 0;
@@ -201,7 +201,7 @@ package com.ankamagames.berilia.components
             this._sbScrollBar.disabled = false;
             this._sbScrollBar.total = _tText.numLines;
             this._sbScrollBar.max = _tText.maxScrollV;
-            if(param1)
+            if(reset)
             {
                _tText.scrollV = 0;
                this._sbScrollBar.value = 0;
@@ -235,12 +235,12 @@ package com.ankamagames.berilia.components
          }
       }
       
-      private function onTextWheel(param1:MouseEvent) : void {
-         param1.delta = param1.delta * 3;
-         this._sbScrollBar.onWheel(param1);
+      private function onTextWheel(e:MouseEvent) : void {
+         e.delta = e.delta * 3;
+         this._sbScrollBar.onWheel(e);
       }
       
-      private function onScroll(param1:Event) : void {
+      private function onScroll(e:Event) : void {
          _tText.scrollV = this._sbScrollBar.value / this._sbScrollBar.max * _tText.maxScrollV;
       }
    }

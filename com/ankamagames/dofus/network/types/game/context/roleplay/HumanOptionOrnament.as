@@ -19,8 +19,8 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 411;
       }
       
-      public function initHumanOptionOrnament(param1:uint=0) : HumanOptionOrnament {
-         this.ornamentId = param1;
+      public function initHumanOptionOrnament(ornamentId:uint=0) : HumanOptionOrnament {
+         this.ornamentId = ornamentId;
          return this;
       }
       
@@ -28,30 +28,30 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.ornamentId = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_HumanOptionOrnament(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HumanOptionOrnament(output);
       }
       
-      public function serializeAs_HumanOptionOrnament(param1:IDataOutput) : void {
-         super.serializeAs_HumanOption(param1);
+      public function serializeAs_HumanOptionOrnament(output:IDataOutput) : void {
+         super.serializeAs_HumanOption(output);
          if(this.ornamentId < 0)
          {
             throw new Error("Forbidden value (" + this.ornamentId + ") on element ornamentId.");
          }
          else
          {
-            param1.writeShort(this.ornamentId);
+            output.writeShort(this.ornamentId);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_HumanOptionOrnament(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HumanOptionOrnament(input);
       }
       
-      public function deserializeAs_HumanOptionOrnament(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.ornamentId = param1.readShort();
+      public function deserializeAs_HumanOptionOrnament(input:IDataInput) : void {
+         super.deserialize(input);
+         this.ornamentId = input.readShort();
          if(this.ornamentId < 0)
          {
             throw new Error("Forbidden value (" + this.ornamentId + ") on element of HumanOptionOrnament.ornamentId.");

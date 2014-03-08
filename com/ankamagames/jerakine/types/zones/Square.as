@@ -5,8 +5,8 @@ package com.ankamagames.jerakine.types.zones
    public class Square extends ZRectangle
    {
       
-      public function Square(param1:uint, param2:uint, param3:IDataMapProvider) {
-         super(param1,param2,param2,param3);
+      public function Square(nMinRadius:uint, nRadius:uint, dataMapProvider:IDataMapProvider) {
+         super(nMinRadius,nRadius,nRadius,dataMapProvider);
       }
       
       override public function get surface() : uint {

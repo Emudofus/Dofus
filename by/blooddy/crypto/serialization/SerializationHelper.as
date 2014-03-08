@@ -18,14 +18,13 @@ package by.blooddy.crypto.serialization
       
       private static const _HASH_INSTANCE:Dictionary = new Dictionary(true);
       
-      public static function getPropertyNames(param1:Object) : Array {
+      public static function getPropertyNames(o:Object) : Array {
          var arr:Array = null;
          var c:Object = null;
          var n:String = null;
          var list:XMLList = null;
          var x:XML = null;
-         var o:Object = param1;
-         if(!(typeof o == "object") || !o)
+         if((!(typeof o == "object")) || (!o))
          {
             Error.throwError(TypeError,2007,"o");
          }
@@ -46,10 +45,10 @@ package by.blooddy.crypto.serialization
             for each (x in describeType(o).*)
             {
                n = x.name();
-               if((n == "accessor" && x.@access.charAt(0) == "r" || n == "variable" || n == "constant") && x.@uri.length() <= 0)
+               if(((n == "accessor") && (x.@access.charAt(0) == "r") || (n == "variable") || (n == "constant")) && (x.@uri.length() <= 0))
                {
                   list = x.metadata;
-                  if(list.length() <= 0 || list.(@name == "Transient").length() <= 0)
+                  if((list.length() <= 0) || (list.(@name == "Transient").length() <= 0))
                   {
                      arr.push(x.@name.toString());
                   }

@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.fight.actions
       }
       
       public static function create() : ShowTacticModeAction {
-         var _loc1_:ShowTacticModeAction = new ShowTacticModeAction();
-         return _loc1_;
+         var a:ShowTacticModeAction = new ShowTacticModeAction();
+         return a;
       }
    }
 }

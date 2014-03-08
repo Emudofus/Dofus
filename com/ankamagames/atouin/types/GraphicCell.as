@@ -6,14 +6,14 @@ package com.ankamagames.atouin.types
    public class GraphicCell extends Sprite implements ICustomUnicNameGetter
    {
       
-      public function GraphicCell(param1:uint) {
+      public function GraphicCell(cellId:uint) {
          this._dropValidator = this.returnTrueFunction;
          this._removeDropSource = this.returnTrueFunction;
          this._processDrop = this.returnTrueFunction;
          super();
-         this.cellId = param1;
-         name = param1.toString();
-         this._name = "cell::" + param1;
+         this.cellId = cellId;
+         name = cellId.toString();
+         this._name = "cell::" + cellId;
          buttonMode = true;
          mouseChildren = false;
          cacheAsBitmap = true;
@@ -33,31 +33,31 @@ package com.ankamagames.atouin.types
          return this._name;
       }
       
-      public function set dropValidator(param1:Function) : void {
-         this._dropValidator = param1;
+      public function set dropValidator(dv:Function) : void {
+         this._dropValidator = dv;
       }
       
       public function get dropValidator() : Function {
          return this._dropValidator;
       }
       
-      public function set removeDropSource(param1:Function) : void {
-         this._removeDropSource = param1;
+      public function set removeDropSource(rds:Function) : void {
+         this._removeDropSource = rds;
       }
       
       public function get removeDropSource() : Function {
          return this._removeDropSource;
       }
       
-      public function set processDrop(param1:Function) : void {
-         this._processDrop = param1;
+      public function set processDrop(pd:Function) : void {
+         this._processDrop = pd;
       }
       
       public function get processDrop() : Function {
          return this._processDrop;
       }
       
-      private function returnTrueFunction(... rest) : Boolean {
+      private function returnTrueFunction(... args) : Boolean {
          return true;
       }
    }

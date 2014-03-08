@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.guild
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.social.GuildVersatileInformations;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,8 +31,8 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6435;
       }
       
-      public function initGuildVersatileInfoListMessage(param1:Vector.<GuildVersatileInformations>=null) : GuildVersatileInfoListMessage {
-         this.guilds = param1;
+      public function initGuildVersatileInfoListMessage(guilds:Vector.<GuildVersatileInformations>=null) : GuildVersatileInfoListMessage {
+         this.guilds = guilds;
          this._isInitialized = true;
          return this;
       }
@@ -42,47 +42,47 @@ package com.ankamagames.dofus.network.messages.game.guild
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildVersatileInfoListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildVersatileInfoListMessage(output);
       }
       
-      public function serializeAs_GuildVersatileInfoListMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.guilds.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.guilds.length)
+      public function serializeAs_GuildVersatileInfoListMessage(output:IDataOutput) : void {
+         output.writeShort(this.guilds.length);
+         var _i1:uint = 0;
+         while(_i1 < this.guilds.length)
          {
-            param1.writeShort((this.guilds[_loc2_] as GuildVersatileInformations).getTypeId());
-            (this.guilds[_loc2_] as GuildVersatileInformations).serialize(param1);
-            _loc2_++;
+            output.writeShort((this.guilds[_i1] as GuildVersatileInformations).getTypeId());
+            (this.guilds[_i1] as GuildVersatileInformations).serialize(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildVersatileInfoListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildVersatileInfoListMessage(input);
       }
       
-      public function deserializeAs_GuildVersatileInfoListMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         var _loc5_:GuildVersatileInformations = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_GuildVersatileInfoListMessage(input:IDataInput) : void {
+         var _id1:uint = 0;
+         var _item1:GuildVersatileInformations = null;
+         var _guildsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _guildsLen)
          {
-            _loc4_ = param1.readUnsignedShort();
-            _loc5_ = ProtocolTypeManager.getInstance(GuildVersatileInformations,_loc4_);
-            _loc5_.deserialize(param1);
-            this.guilds.push(_loc5_);
-            _loc3_++;
+            _id1 = input.readUnsignedShort();
+            _item1 = ProtocolTypeManager.getInstance(GuildVersatileInformations,_id1);
+            _item1.deserialize(input);
+            this.guilds.push(_item1);
+            _i1++;
          }
       }
    }

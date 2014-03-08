@@ -12,15 +12,19 @@ package com.ankamagames.dofus.internalDatacenter.guild
          super();
       }
       
-      public static function create(param1:uint, param2:CharacterMinimalPlusLookInformations) : SocialFightersWrapper {
-         var _loc3_:SocialFightersWrapper = new SocialFightersWrapper();
-         _loc3_.ally = param1;
-         _loc3_.playerCharactersInformations = param2;
-         if(param2.entityLook != null)
+      public static function create(pAlly:uint, pFightersInformations:CharacterMinimalPlusLookInformations) : SocialFightersWrapper {
+         var item:SocialFightersWrapper = new SocialFightersWrapper();
+         item.ally = pAlly;
+         item.playerCharactersInformations = pFightersInformations;
+         if(pFightersInformations.entityLook != null)
          {
-            _loc3_.entityLook = EntityLookAdapter.getRiderLook(param2.entityLook);
+            item.entityLook = EntityLookAdapter.getRiderLook(pFightersInformations.entityLook);
          }
-         return _loc3_;
+         else
+         {
+            trace("Le entityLook est null :(");
+         }
+         return item;
       }
       
       public var ally:uint;
@@ -29,12 +33,16 @@ package com.ankamagames.dofus.internalDatacenter.guild
       
       public var entityLook:TiphonEntityLook;
       
-      public function update(param1:uint, param2:CharacterMinimalPlusLookInformations) : void {
-         this.ally = param1;
-         this.playerCharactersInformations = param2;
-         if(param2.entityLook != null)
+      public function update(pAlly:uint, pFightersInformations:CharacterMinimalPlusLookInformations) : void {
+         this.ally = pAlly;
+         this.playerCharactersInformations = pFightersInformations;
+         if(pFightersInformations.entityLook != null)
          {
-            this.entityLook = EntityLookAdapter.getRiderLook(param2.entityLook);
+            this.entityLook = EntityLookAdapter.getRiderLook(pFightersInformations.entityLook);
+         }
+         else
+         {
+            trace("Le entityLook est null :(");
          }
       }
    }

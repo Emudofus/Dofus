@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.misc
       
       private static var _log:Logger = Log.getLogger(getQualifiedClassName(Month));
       
-      public static function getMonthById(param1:int) : Month {
-         return GameData.getObject(MODULE,param1) as Month;
+      public static function getMonthById(id:int) : Month {
+         return GameData.getObject(MODULE,id) as Month;
       }
       
       public static function getMonths() : Array {

@@ -39,14 +39,14 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6460;
       }
       
-      public function initMimicryObjectFeedAndAssociateRequestMessage(param1:uint=0, param2:uint=0, param3:uint=0, param4:uint=0, param5:uint=0, param6:uint=0, param7:Boolean=false) : MimicryObjectFeedAndAssociateRequestMessage {
-         this.mimicryUID = param1;
-         this.mimicryPos = param2;
-         this.foodUID = param3;
-         this.foodPos = param4;
-         this.hostUID = param5;
-         this.hostPos = param6;
-         this.preview = param7;
+      public function initMimicryObjectFeedAndAssociateRequestMessage(mimicryUID:uint=0, mimicryPos:uint=0, foodUID:uint=0, foodPos:uint=0, hostUID:uint=0, hostPos:uint=0, preview:Boolean=false) : MimicryObjectFeedAndAssociateRequestMessage {
+         this.mimicryUID = mimicryUID;
+         this.mimicryPos = mimicryPos;
+         this.foodUID = foodUID;
+         this.foodPos = foodPos;
+         this.hostUID = hostUID;
+         this.hostPos = hostPos;
+         this.preview = preview;
          this._isInitialized = true;
          return this;
       }
@@ -62,64 +62,64 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MimicryObjectFeedAndAssociateRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MimicryObjectFeedAndAssociateRequestMessage(output);
       }
       
-      public function serializeAs_MimicryObjectFeedAndAssociateRequestMessage(param1:IDataOutput) : void {
+      public function serializeAs_MimicryObjectFeedAndAssociateRequestMessage(output:IDataOutput) : void {
          if(this.mimicryUID < 0)
          {
             throw new Error("Forbidden value (" + this.mimicryUID + ") on element mimicryUID.");
          }
          else
          {
-            param1.writeInt(this.mimicryUID);
-            if(this.mimicryPos < 0 || this.mimicryPos > 255)
+            output.writeInt(this.mimicryUID);
+            if((this.mimicryPos < 0) || (this.mimicryPos > 255))
             {
                throw new Error("Forbidden value (" + this.mimicryPos + ") on element mimicryPos.");
             }
             else
             {
-               param1.writeByte(this.mimicryPos);
+               output.writeByte(this.mimicryPos);
                if(this.foodUID < 0)
                {
                   throw new Error("Forbidden value (" + this.foodUID + ") on element foodUID.");
                }
                else
                {
-                  param1.writeInt(this.foodUID);
-                  if(this.foodPos < 0 || this.foodPos > 255)
+                  output.writeInt(this.foodUID);
+                  if((this.foodPos < 0) || (this.foodPos > 255))
                   {
                      throw new Error("Forbidden value (" + this.foodPos + ") on element foodPos.");
                   }
                   else
                   {
-                     param1.writeByte(this.foodPos);
+                     output.writeByte(this.foodPos);
                      if(this.hostUID < 0)
                      {
                         throw new Error("Forbidden value (" + this.hostUID + ") on element hostUID.");
                      }
                      else
                      {
-                        param1.writeInt(this.hostUID);
-                        if(this.hostPos < 0 || this.hostPos > 255)
+                        output.writeInt(this.hostUID);
+                        if((this.hostPos < 0) || (this.hostPos > 255))
                         {
                            throw new Error("Forbidden value (" + this.hostPos + ") on element hostPos.");
                         }
                         else
                         {
-                           param1.writeByte(this.hostPos);
-                           param1.writeBoolean(this.preview);
+                           output.writeByte(this.hostPos);
+                           output.writeBoolean(this.preview);
                            return;
                         }
                      }
@@ -129,54 +129,54 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MimicryObjectFeedAndAssociateRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MimicryObjectFeedAndAssociateRequestMessage(input);
       }
       
-      public function deserializeAs_MimicryObjectFeedAndAssociateRequestMessage(param1:IDataInput) : void {
-         this.mimicryUID = param1.readInt();
+      public function deserializeAs_MimicryObjectFeedAndAssociateRequestMessage(input:IDataInput) : void {
+         this.mimicryUID = input.readInt();
          if(this.mimicryUID < 0)
          {
             throw new Error("Forbidden value (" + this.mimicryUID + ") on element of MimicryObjectFeedAndAssociateRequestMessage.mimicryUID.");
          }
          else
          {
-            this.mimicryPos = param1.readUnsignedByte();
-            if(this.mimicryPos < 0 || this.mimicryPos > 255)
+            this.mimicryPos = input.readUnsignedByte();
+            if((this.mimicryPos < 0) || (this.mimicryPos > 255))
             {
                throw new Error("Forbidden value (" + this.mimicryPos + ") on element of MimicryObjectFeedAndAssociateRequestMessage.mimicryPos.");
             }
             else
             {
-               this.foodUID = param1.readInt();
+               this.foodUID = input.readInt();
                if(this.foodUID < 0)
                {
                   throw new Error("Forbidden value (" + this.foodUID + ") on element of MimicryObjectFeedAndAssociateRequestMessage.foodUID.");
                }
                else
                {
-                  this.foodPos = param1.readUnsignedByte();
-                  if(this.foodPos < 0 || this.foodPos > 255)
+                  this.foodPos = input.readUnsignedByte();
+                  if((this.foodPos < 0) || (this.foodPos > 255))
                   {
                      throw new Error("Forbidden value (" + this.foodPos + ") on element of MimicryObjectFeedAndAssociateRequestMessage.foodPos.");
                   }
                   else
                   {
-                     this.hostUID = param1.readInt();
+                     this.hostUID = input.readInt();
                      if(this.hostUID < 0)
                      {
                         throw new Error("Forbidden value (" + this.hostUID + ") on element of MimicryObjectFeedAndAssociateRequestMessage.hostUID.");
                      }
                      else
                      {
-                        this.hostPos = param1.readUnsignedByte();
-                        if(this.hostPos < 0 || this.hostPos > 255)
+                        this.hostPos = input.readUnsignedByte();
+                        if((this.hostPos < 0) || (this.hostPos > 255))
                         {
                            throw new Error("Forbidden value (" + this.hostPos + ") on element of MimicryObjectFeedAndAssociateRequestMessage.hostPos.");
                         }
                         else
                         {
-                           this.preview = param1.readBoolean();
+                           this.preview = input.readBoolean();
                            return;
                         }
                      }

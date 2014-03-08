@@ -40,15 +40,15 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6342;
       }
       
-      public function initPartyMemberInFightMessage(param1:uint=0, param2:uint=0, param3:int=0, param4:uint=0, param5:String="", param6:int=0, param7:MapCoordinatesExtended=null, param8:int=0) : PartyMemberInFightMessage {
-         super.initAbstractPartyMessage(param1);
-         this.reason = param2;
-         this.memberId = param3;
-         this.memberAccountId = param4;
-         this.memberName = param5;
-         this.fightId = param6;
-         this.fightMap = param7;
-         this.secondsBeforeFightStart = param8;
+      public function initPartyMemberInFightMessage(partyId:uint=0, reason:uint=0, memberId:int=0, memberAccountId:uint=0, memberName:String="", fightId:int=0, fightMap:MapCoordinatesExtended=null, secondsBeforeFightStart:int=0) : PartyMemberInFightMessage {
+         super.initAbstractPartyMessage(partyId);
+         this.reason = reason;
+         this.memberId = memberId;
+         this.memberAccountId = memberAccountId;
+         this.memberName = memberName;
+         this.fightId = fightId;
+         this.fightMap = fightMap;
+         this.secondsBeforeFightStart = secondsBeforeFightStart;
          this._isInitialized = true;
          return this;
       }
@@ -64,65 +64,65 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PartyMemberInFightMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartyMemberInFightMessage(output);
       }
       
-      public function serializeAs_PartyMemberInFightMessage(param1:IDataOutput) : void {
-         super.serializeAs_AbstractPartyMessage(param1);
-         param1.writeByte(this.reason);
-         param1.writeInt(this.memberId);
+      public function serializeAs_PartyMemberInFightMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractPartyMessage(output);
+         output.writeByte(this.reason);
+         output.writeInt(this.memberId);
          if(this.memberAccountId < 0)
          {
             throw new Error("Forbidden value (" + this.memberAccountId + ") on element memberAccountId.");
          }
          else
          {
-            param1.writeInt(this.memberAccountId);
-            param1.writeUTF(this.memberName);
-            param1.writeInt(this.fightId);
-            this.fightMap.serializeAs_MapCoordinatesExtended(param1);
-            param1.writeInt(this.secondsBeforeFightStart);
+            output.writeInt(this.memberAccountId);
+            output.writeUTF(this.memberName);
+            output.writeInt(this.fightId);
+            this.fightMap.serializeAs_MapCoordinatesExtended(output);
+            output.writeInt(this.secondsBeforeFightStart);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PartyMemberInFightMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartyMemberInFightMessage(input);
       }
       
-      public function deserializeAs_PartyMemberInFightMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.reason = param1.readByte();
+      public function deserializeAs_PartyMemberInFightMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.reason = input.readByte();
          if(this.reason < 0)
          {
             throw new Error("Forbidden value (" + this.reason + ") on element of PartyMemberInFightMessage.reason.");
          }
          else
          {
-            this.memberId = param1.readInt();
-            this.memberAccountId = param1.readInt();
+            this.memberId = input.readInt();
+            this.memberAccountId = input.readInt();
             if(this.memberAccountId < 0)
             {
                throw new Error("Forbidden value (" + this.memberAccountId + ") on element of PartyMemberInFightMessage.memberAccountId.");
             }
             else
             {
-               this.memberName = param1.readUTF();
-               this.fightId = param1.readInt();
+               this.memberName = input.readUTF();
+               this.fightId = input.readInt();
                this.fightMap = new MapCoordinatesExtended();
-               this.fightMap.deserialize(param1);
-               this.secondsBeforeFightStart = param1.readInt();
+               this.fightMap.deserialize(input);
+               this.secondsBeforeFightStart = input.readInt();
                return;
             }
          }

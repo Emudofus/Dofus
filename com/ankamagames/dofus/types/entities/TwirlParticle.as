@@ -5,21 +5,21 @@ package com.ankamagames.dofus.types.entities
    public class TwirlParticle extends BasicParticle
    {
       
-      public function TwirlParticle(param1:DisplayObject, param2:uint, param3:Boolean, param4:Function, param5:int, param6:uint=10) {
+      public function TwirlParticle(sprite:DisplayObject, life:uint, subExplosion:Boolean, deathCallback:Function, yLimitTop:int, maxRotationRay:uint=10) {
          this.halfg = this.g / 2;
-         super(param1,param2,param3,param4);
-         var _loc7_:Number = 0.1;
-         this.speed = _loc7_ * 3 / 4 + _loc7_ * Math.random() / 2;
+         super(sprite,life,subExplosion,deathCallback);
+         var speed:Number = 0.1;
+         this.speed = speed * 3 / 4 + speed * Math.random() / 2;
          _sprite.scaleX = _sprite.scaleY = Math.random() * 0.5 + 0.5;
-         var _loc8_:Number = Math.random() * Math.PI * 2;
-         this.vx = Math.cos(_loc8_) * Math.random() * 75;
-         this.vy = Math.sin(_loc8_) * Math.random() * 75;
-         this._rotationRayon = Math.random() * param6;
+         var angle:Number = Math.random() * Math.PI * 2;
+         this.vx = Math.cos(angle) * Math.random() * 75;
+         this.vy = Math.sin(angle) * Math.random() * 75;
+         this._rotationRayon = Math.random() * maxRotationRay;
          this._rotationOffset = Math.random() * Math.PI * 2;
          this._rotationDir = Math.random() > 0.5?1:-1;
          this._startX = _sprite.x;
          this._startY = _sprite.y;
-         this._yLimitTop = param5;
+         this._yLimitTop = yLimitTop;
       }
       
       private var vyi:Number;

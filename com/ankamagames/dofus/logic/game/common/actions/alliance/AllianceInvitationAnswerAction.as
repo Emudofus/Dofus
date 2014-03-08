@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.alliance
          super();
       }
       
-      public static function create(param1:Boolean) : AllianceInvitationAnswerAction {
-         var _loc2_:AllianceInvitationAnswerAction = new AllianceInvitationAnswerAction();
-         _loc2_.accept = param1;
-         return _loc2_;
+      public static function create(pAccept:Boolean) : AllianceInvitationAnswerAction {
+         var action:AllianceInvitationAnswerAction = new AllianceInvitationAnswerAction();
+         action.accept = pAccept;
+         return action;
       }
       
       public var accept:Boolean;

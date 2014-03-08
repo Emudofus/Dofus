@@ -6,10 +6,10 @@ package com.ankamagames.berilia.components.messages
    public class MapElementRollOverMessage extends ComponentMessage
    {
       
-      public function MapElementRollOverMessage(param1:GraphicContainer, param2:MapElement) {
-         super(param1);
-         this._targetedElement = param2;
-         _target = param1;
+      public function MapElementRollOverMessage(target:GraphicContainer, targetedElement:MapElement) {
+         super(target);
+         this._targetedElement = targetedElement;
+         _target = target;
       }
       
       private var _targetedElement:MapElement;

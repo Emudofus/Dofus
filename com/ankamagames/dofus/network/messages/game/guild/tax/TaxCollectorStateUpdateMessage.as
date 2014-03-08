@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 6455;
       }
       
-      public function initTaxCollectorStateUpdateMessage(param1:int=0, param2:int=0) : TaxCollectorStateUpdateMessage {
-         this.uniqueId = param1;
-         this.state = param2;
+      public function initTaxCollectorStateUpdateMessage(uniqueId:int=0, state:int=0) : TaxCollectorStateUpdateMessage {
+         this.uniqueId = uniqueId;
+         this.state = state;
          this._isInitialized = true;
          return this;
       }
@@ -42,32 +42,32 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_TaxCollectorStateUpdateMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TaxCollectorStateUpdateMessage(output);
       }
       
-      public function serializeAs_TaxCollectorStateUpdateMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.uniqueId);
-         param1.writeByte(this.state);
+      public function serializeAs_TaxCollectorStateUpdateMessage(output:IDataOutput) : void {
+         output.writeInt(this.uniqueId);
+         output.writeByte(this.state);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_TaxCollectorStateUpdateMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TaxCollectorStateUpdateMessage(input);
       }
       
-      public function deserializeAs_TaxCollectorStateUpdateMessage(param1:IDataInput) : void {
-         this.uniqueId = param1.readInt();
-         this.state = param1.readByte();
+      public function deserializeAs_TaxCollectorStateUpdateMessage(input:IDataInput) : void {
+         this.uniqueId = input.readInt();
+         this.state = input.readByte();
       }
    }
 }

@@ -13,15 +13,15 @@ package com.ankamagames.tiphon.sequence
    public class PlayAnimationStep extends AbstractSequencable
    {
       
-      public function PlayAnimationStep(param1:TiphonSprite, param2:String, param3:Boolean=true, param4:Boolean=true, param5:String="animation_event_end", param6:int=1, param7:String="") {
+      public function PlayAnimationStep(target:TiphonSprite, animationName:String, backToLastAnimationAtEnd:Boolean=true, waitEvent:Boolean=true, eventEnd:String="animation_event_end", loop:int=1, endAnimationName:String="") {
          super();
-         this._endEvent = param5;
-         this._target = param1;
-         this._animationName = param2;
-         this._loop = param6;
-         this._waitEvent = param4;
-         this._backToLastAnimationAtEnd = param3;
-         this._endAnimationName = param7;
+         this._endEvent = eventEnd;
+         this._target = target;
+         this._animationName = animationName;
+         this._loop = loop;
+         this._waitEvent = waitEvent;
+         this._backToLastAnimationAtEnd = backToLastAnimationAtEnd;
+         this._endAnimationName = endAnimationName;
       }
       
       private static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayAnimationStep));
@@ -52,16 +52,16 @@ package com.ankamagames.tiphon.sequence
          return this._animationName;
       }
       
-      public function set animation(param1:String) : void {
-         this._animationName = param1;
+      public function set animation(anim:String) : void {
+         this._animationName = anim;
       }
       
-      public function set waitEvent(param1:Boolean) : void {
-         this._waitEvent = param1;
+      public function set waitEvent(v:Boolean) : void {
+         this._waitEvent = v;
       }
       
       override public function start() : void {
-         var _loc2_:String = null;
+         var s:String = null;
          if(!this._target)
          {
             this._callbackExecuted = true;
@@ -84,14 +84,14 @@ package com.ankamagames.tiphon.sequence
          this._target.addEventListener(TiphonEvent.RENDER_FAILED,this.onAnimationFail);
          this._target.addEventListener(TiphonEvent.SPRITE_INIT_FAILED,this.onAnimationFail);
          this._target.overrideNextAnimation = true;
-         var _loc1_:Array = this._target.getAvaibleDirection(this._animationName,true);
-         if(!_loc1_[this._target.getDirection()])
+         var directions:Array = this._target.getAvaibleDirection(this._animationName,true);
+         if(!directions[this._target.getDirection()])
          {
-            for (_loc2_ in _loc1_)
+            for (s in directions)
             {
-               if(_loc1_[_loc2_])
+               if(directions[s])
                {
-                  this._target.setDirection(uint(_loc2_));
+                  this._target.setDirection(uint(s));
                   break;
                }
             }
@@ -105,50 +105,50 @@ package com.ankamagames.tiphon.sequence
          }
       }
       
-      private function onCustomEvent(param1:TiphonEvent) : void {
+      private function onCustomEvent(e:TiphonEvent) : void {
          this._target.removeEventListener(this._endEvent,this.onCustomEvent);
          this._callbackExecuted = true;
          executeCallbacks();
       }
       
-      private function onAnimationFail(param1:TiphonEvent) : void {
+      private function onAnimationFail(e:TiphonEvent) : void {
          if(this._endEvent != TiphonEvent.ANIMATION_END)
          {
-            this.onCustomEvent(param1);
+            this.onCustomEvent(e);
          }
-         this.onAnimationEnd(param1);
+         this.onAnimationEnd(e);
       }
       
-      private function onRemoveFromStage(param1:Event) : void {
-         var _loc4_:TiphonSprite = null;
-         var _loc2_:Boolean = this._target.isPlayingAnimation();
-         var _loc3_:Array = this._target.getSubEntitiesList();
-         if(!_loc2_ && _loc3_.length > 0)
+      private function onRemoveFromStage(e:Event) : void {
+         var subEntity:TiphonSprite = null;
+         var playingAnim:Boolean = this._target.isPlayingAnimation();
+         var subEntities:Array = this._target.getSubEntitiesList();
+         if((!playingAnim) && (subEntities.length > 0))
          {
-            for each (_loc4_ in _loc3_)
+            for each (subEntity in subEntities)
             {
-               if(_loc4_.isPlayingAnimation())
+               if(subEntity.isPlayingAnimation())
                {
-                  _loc2_ = true;
+                  playingAnim = true;
                   break;
                }
             }
          }
-         if(!_loc2_)
+         if(!playingAnim)
          {
-            setTimeout(this.onAnimationEnd,1,param1);
+            setTimeout(this.onAnimationEnd,1,e);
          }
       }
       
-      private function onAnimationEnd(param1:Event) : void {
-         var _loc2_:String = null;
+      private function onAnimationEnd(e:Event) : void {
+         var currentSpriteAnimation:String = null;
          if(this._target)
          {
             if(this._loop > 0)
             {
                this._loop--;
             }
-            if(this._loop > 0 || this._loop == -1)
+            if((this._loop > 0) || (this._loop == -1))
             {
                this._target.setAnimation(this._animationName);
                return;
@@ -161,10 +161,10 @@ package com.ankamagames.tiphon.sequence
             this._target.removeEventListener(TiphonEvent.RENDER_FAILED,this.onAnimationEnd);
             this._target.removeEventListener(TiphonEvent.SPRITE_INIT_FAILED,this.onAnimationFail);
             this._target.removeEventListener(Event.REMOVED_FROM_STAGE,this.onRemoveFromStage);
-            _loc2_ = this._target.getAnimation();
+            currentSpriteAnimation = this._target.getAnimation();
             if(this._backToLastAnimationAtEnd)
             {
-               if((_loc2_) && (this._lastSpriteAnimation) && !(this._lastSpriteAnimation.indexOf(_loc2_) == -1))
+               if((currentSpriteAnimation) && (this._lastSpriteAnimation) && (!(this._lastSpriteAnimation.indexOf(currentSpriteAnimation) == -1)))
                {
                   if(this._endAnimationName)
                   {
@@ -187,10 +187,10 @@ package com.ankamagames.tiphon.sequence
          return "play " + this._animationName + " on " + (this._target?this._target.name:this._target);
       }
       
-      override protected function onTimeOut(param1:TimerEvent) : void {
+      override protected function onTimeOut(e:TimerEvent) : void {
          this._callbackExecuted = true;
          this.onAnimationEnd(null);
-         super.onTimeOut(param1);
+         super.onTimeOut(e);
       }
    }
 }

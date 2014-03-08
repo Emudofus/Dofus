@@ -10,11 +10,11 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightModifyEffectsDurationStep extends AbstractSequencable implements IFightStep, ISequencableListener
    {
       
-      public function FightModifyEffectsDurationStep(param1:int, param2:int, param3:int) {
+      public function FightModifyEffectsDurationStep(sourceId:int, targetId:int, delta:int) {
          super();
-         this._sourceId = param1;
-         this._targetId = param2;
-         this._delta = param3;
+         this._sourceId = sourceId;
+         this._targetId = targetId;
+         this._delta = delta;
       }
       
       private var _sourceId:int;
@@ -43,7 +43,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          }
       }
       
-      public function stepFinished(param1:ISequencable, param2:Boolean=false) : void {
+      public function stepFinished(step:ISequencable, withTimout:Boolean=false) : void {
          this._virtualStep.removeListener(this);
          executeCallbacks();
       }

@@ -130,44 +130,44 @@ package com.ankamagames.atouin.managers
          return this._currentRenderId;
       }
       
-      public function fromMap(param1:Map, param2:ByteArray=null) : uint {
-         this._currentMap = WorldPoint.fromMapId(param1.id);
-         var _loc3_:RenderRequest = new RenderRequest(this._currentMap,false,param2);
-         this._renderRequestStack.push(_loc3_);
-         this._currentRenderId = _loc3_.renderId;
+      public function fromMap(map:Map, decryptionKey:ByteArray=null) : uint {
+         this._currentMap = WorldPoint.fromMapId(map.id);
+         var request:RenderRequest = new RenderRequest(this._currentMap,false,decryptionKey);
+         this._renderRequestStack.push(request);
+         this._currentRenderId = request.renderId;
          Atouin.getInstance().showWorld(true);
          this._renderer.initRenderContainer(Atouin.getInstance().worldContainer);
          Atouin.getInstance().options.groundCacheMode = 0;
-         var _loc4_:ResourceLoadedEvent = new ResourceLoadedEvent(ResourceLoadedEvent.LOADED);
-         _loc4_.resource = param1;
-         this.onMapLoaded(_loc4_);
+         var rle:ResourceLoadedEvent = new ResourceLoadedEvent(ResourceLoadedEvent.LOADED);
+         rle.resource = map;
+         this.onMapLoaded(rle);
          return this._currentRenderId;
       }
       
-      public function display(param1:WorldPoint, param2:Boolean=false, param3:ByteArray=null) : uint {
-         var _loc4_:RenderRequest = new RenderRequest(param1,param2,param3);
-         _log.debug("Ask render map " + param1.mapId + ", renderRequestID: " + _loc4_.renderId);
-         this._renderRequestStack.push(_loc4_);
+      public function display(pMap:WorldPoint, forceReloadWithoutCache:Boolean=false, decryptionKey:ByteArray=null) : uint {
+         var request:RenderRequest = new RenderRequest(pMap,forceReloadWithoutCache,decryptionKey);
+         _log.debug("Ask render map " + pMap.mapId + ", renderRequestID: " + request.renderId);
+         this._renderRequestStack.push(request);
          this.checkForRender();
-         return _loc4_.renderId;
+         return request.renderId;
       }
       
-      public function isBoundingBox(param1:int) : Boolean {
-         if(MapRenderer.boundingBoxElements[param1])
+      public function isBoundingBox(pictoId:int) : Boolean {
+         if(MapRenderer.boundingBoxElements[pictoId])
          {
             return true;
          }
          return false;
       }
       
-      public function cacheAsBitmapEnabled(param1:Boolean) : void {
-         var _loc2_:Array = MapRenderer.cachedAsBitmapElement;
-         var _loc3_:int = _loc2_.length;
-         var _loc4_:* = 0;
-         while(_loc4_ < _loc3_)
+      public function cacheAsBitmapEnabled(yes:Boolean) : void {
+         var ls:Array = MapRenderer.cachedAsBitmapElement;
+         var num:int = ls.length;
+         var i:int = 0;
+         while(i < num)
          {
-            _loc2_[_loc4_].cacheAsBitmap = param1;
-            _loc4_++;
+            ls[i].cacheAsBitmap = yes;
+            i++;
          }
       }
       
@@ -183,12 +183,12 @@ package com.ankamagames.atouin.managers
          return this._currentDataMap;
       }
       
-      public function activeIdentifiedElements(param1:Boolean) : void {
-         var _loc3_:Object = null;
-         var _loc2_:Dictionary = this._renderer.identifiedElements;
-         for each (_loc3_ in _loc2_)
+      public function activeIdentifiedElements(active:Boolean) : void {
+         var ie:Object = null;
+         var identifiedElements:Dictionary = this._renderer.identifiedElements;
+         for each (ie in identifiedElements)
          {
-            _loc3_.sprite.mouseEnabled = param1;
+            ie.sprite.mouseEnabled = active;
          }
       }
       
@@ -199,7 +199,7 @@ package com.ankamagames.atouin.managers
       private var matrix:Matrix;
       
       public function capture() : void {
-         var _loc1_:DisplayObjectContainer = null;
+         var ctr:DisplayObjectContainer = null;
          if((Atouin.getInstance().options.tweentInterMap) || (Atouin.getInstance().options.hideInterMap))
          {
             if(this._screenshotData == null)
@@ -208,42 +208,42 @@ package com.ankamagames.atouin.managers
                this._screenshot = new Bitmap(this._screenshotData);
                this._screenshot.smoothing = true;
             }
-            _loc1_ = Atouin.getInstance().rootContainer;
+            ctr = Atouin.getInstance().rootContainer;
             this.matrix.identity();
-            this.matrix.scale(_loc1_.scaleX,_loc1_.scaleY);
-            this.matrix.translate(_loc1_.x,_loc1_.y);
-            this._screenshotData.draw(_loc1_,this.matrix,null,null,null,true);
+            this.matrix.scale(ctr.scaleX,ctr.scaleY);
+            this.matrix.translate(ctr.x,ctr.y);
+            this._screenshotData.draw(ctr,this.matrix,null,null,null,true);
             if(AirScanner.isStreamingVersion())
             {
                this._screenshot.filters = [new BlurFilter()];
             }
-            _loc1_.addChild(this._screenshot);
+            ctr.addChild(this._screenshot);
          }
       }
       
-      public function getIdentifiedEntityElement(param1:uint) : TiphonSprite {
-         if((this._renderer) && (this._renderer.identifiedElements) && (this._renderer.identifiedElements[param1]))
+      public function getIdentifiedEntityElement(id:uint) : TiphonSprite {
+         if((this._renderer) && (this._renderer.identifiedElements) && (this._renderer.identifiedElements[id]))
          {
-            if(this._renderer.identifiedElements[param1].sprite is TiphonSprite)
+            if(this._renderer.identifiedElements[id].sprite is TiphonSprite)
             {
-               return this._renderer.identifiedElements[param1].sprite as TiphonSprite;
+               return this._renderer.identifiedElements[id].sprite as TiphonSprite;
             }
          }
          return null;
       }
       
-      public function getIdentifiedElement(param1:uint) : InteractiveObject {
-         if((this._renderer) && (this._renderer.identifiedElements) && (this._renderer.identifiedElements[param1]))
+      public function getIdentifiedElement(id:uint) : InteractiveObject {
+         if((this._renderer) && (this._renderer.identifiedElements) && (this._renderer.identifiedElements[id]))
          {
-            return this._renderer.identifiedElements[param1].sprite;
+            return this._renderer.identifiedElements[id].sprite;
          }
          return null;
       }
       
-      public function getIdentifiedElementPosition(param1:uint) : MapPoint {
-         if((this._renderer) && (this._renderer.identifiedElements) && (this._renderer.identifiedElements[param1]))
+      public function getIdentifiedElementPosition(id:uint) : MapPoint {
+         if((this._renderer) && (this._renderer.identifiedElements) && (this._renderer.identifiedElements[id]))
          {
-            return this._renderer.identifiedElements[param1].position;
+            return this._renderer.identifiedElements[id].position;
          }
          return null;
       }
@@ -256,8 +256,8 @@ package com.ankamagames.atouin.managers
          this._renderRequestStack = [];
       }
       
-      public function hideBackgroundForTacticMode(param1:Boolean) : void {
-         this._renderer.modeTactic(param1);
+      public function hideBackgroundForTacticMode(yes:Boolean) : void {
+         this._renderer.modeTactic(yes);
       }
       
       private function init() : void {
@@ -278,17 +278,17 @@ package com.ankamagames.atouin.managers
          this._currentMapRendered = true;
          InteractiveCellManager.getInstance().updateInteractiveCell(this._currentDataMap);
          this._renderRequestStack.shift();
-         var _loc1_:MapsLoadingCompleteMessage = new MapsLoadingCompleteMessage(this._currentMap,MapDisplayManager.getInstance().getDataMapContainer().dataMap);
-         _loc1_.renderRequestId = this._currentRenderId;
-         Atouin.getInstance().handler.process(_loc1_);
+         var msg:MapsLoadingCompleteMessage = new MapsLoadingCompleteMessage(this._currentMap,MapDisplayManager.getInstance().getDataMapContainer().dataMap);
+         msg.renderRequestId = this._currentRenderId;
+         Atouin.getInstance().handler.process(msg);
          this.checkForRender();
       }
       
       private function checkForRender() : void {
-         var _loc5_:Map = null;
-         var _loc6_:MapsLoadingCompleteMessage = null;
-         var _loc7_:Atouin = null;
-         if(!this._currentMapRendered && (this._currentMap))
+         var dataMap:Map = null;
+         var msg:MapsLoadingCompleteMessage = null;
+         var atouin:Atouin = null;
+         if((!this._currentMapRendered) && (this._currentMap))
          {
             return;
          }
@@ -296,45 +296,44 @@ package com.ankamagames.atouin.managers
          {
             return;
          }
-         var _loc1_:RenderRequest = RenderRequest(this._renderRequestStack[0]);
-         var _loc2_:WorldPoint = _loc1_.map;
-         var _loc3_:Boolean = _loc1_.forceReloadWithoutCache;
+         var request:RenderRequest = RenderRequest(this._renderRequestStack[0]);
+         var pMap:WorldPoint = request.map;
+         var forceReloadWithoutCache:Boolean = request.forceReloadWithoutCache;
          Atouin.getInstance().showWorld(true);
          this._renderer.initRenderContainer(Atouin.getInstance().worldContainer);
-         if(((!_loc3_) && (this._currentMap)) && (this._currentMap.mapId == _loc2_.mapId) && !Atouin.getInstance().options.reloadLoadedMap)
+         if(((!forceReloadWithoutCache) && (this._currentMap)) && (this._currentMap.mapId == pMap.mapId) && (!Atouin.getInstance().options.reloadLoadedMap))
          {
             this._renderRequestStack.shift();
-            _log.debug("Map " + _loc2_.mapId + " is the same, renderRequestID: " + _loc1_.renderId);
-            _loc5_ = MapDisplayManager.getInstance().getDataMapContainer().dataMap;
-            _loc6_ = new MapsLoadingCompleteMessage(this._currentMap,_loc5_);
-            _loc7_ = Atouin.getInstance();
-            _loc7_.handler.process(_loc6_);
-            _loc6_.renderRequestId = _loc1_.renderId;
-            if(!(_loc5_.zoomScale == 1) && (_loc7_.options.useInsideAutoZoom))
+            _log.debug("Map " + pMap.mapId + " is the same, renderRequestID: " + request.renderId);
+            dataMap = MapDisplayManager.getInstance().getDataMapContainer().dataMap;
+            msg = new MapsLoadingCompleteMessage(this._currentMap,dataMap);
+            atouin = Atouin.getInstance();
+            atouin.handler.process(msg);
+            msg.renderRequestId = request.renderId;
+            if((!(dataMap.zoomScale == 1)) && (atouin.options.useInsideAutoZoom))
             {
-               _loc7_.rootContainer.scaleX = _loc5_.zoomScale;
-               _loc7_.rootContainer.scaleY = _loc5_.zoomScale;
-               _loc7_.rootContainer.x = _loc5_.zoomOffsetX;
-               _loc7_.rootContainer.y = _loc5_.zoomOffsetY;
-               _loc7_.currentZoom = _loc5_.zoomScale;
+               atouin.rootContainer.scaleX = dataMap.zoomScale;
+               atouin.rootContainer.scaleY = dataMap.zoomScale;
+               atouin.rootContainer.x = dataMap.zoomOffsetX;
+               atouin.rootContainer.y = dataMap.zoomOffsetY;
+               atouin.currentZoom = dataMap.zoomScale;
             }
             this.checkForRender();
             return;
          }
          this._currentMapRendered = false;
          this._lastMap = this._currentMap;
-         this._currentMap = _loc2_;
-         this._currentRenderId = _loc1_.renderId;
-         this._forceReloadWithoutCache = _loc3_;
-         var _loc4_:MapsLoadingStartedMessage = new MapsLoadingStartedMessage();
-         Atouin.getInstance().handler.process(_loc4_);
+         this._currentMap = pMap;
+         this._currentRenderId = request.renderId;
+         this._forceReloadWithoutCache = forceReloadWithoutCache;
+         var msg2:MapsLoadingStartedMessage = new MapsLoadingStartedMessage();
+         Atouin.getInstance().handler.process(msg2);
          this._nMapLoadStart = getTimer();
          this._loader.cancel();
-         this._loader.load(new Uri(getMapUriFromId(_loc2_.mapId)),null);
+         this._loader.load(new Uri(getMapUriFromId(pMap.mapId)),null);
       }
       
-      private function onMapLoaded(param1:ResourceLoadedEvent) : void {
-         var e:ResourceLoadedEvent = param1;
+      private function onMapLoaded(e:ResourceLoadedEvent) : void {
          var request:RenderRequest = RenderRequest(this._renderRequestStack[0]);
          this._nMapLoadEnd = getTimer();
          var map:Map = new Map();
@@ -368,26 +367,26 @@ package com.ankamagames.atouin.managers
          FrustumManager.getInstance().updateMap();
       }
       
-      private function onMapFailed(param1:ResourceErrorEvent) : void {
-         _log.error("Impossible de charger la map " + param1.uri + " : " + param1.errorMsg);
+      private function onMapFailed(e:ResourceErrorEvent) : void {
+         _log.error("Impossible de charger la map " + e.uri + " : " + e.errorMsg);
          this._currentMapRendered = true;
          this._renderRequestStack.shift();
          this.checkForRender();
          this.signalMapLoadingFailure(MapLoadingFailedMessage.NO_FILE);
       }
       
-      private function logGfxLoadTime(param1:Event) : void {
-         if(param1.type == RenderMapEvent.GFX_LOADING_START)
+      private function logGfxLoadTime(e:Event) : void {
+         if(e.type == RenderMapEvent.GFX_LOADING_START)
          {
             this._nGfxLoadStart = getTimer();
          }
-         if(param1.type == RenderMapEvent.GFX_LOADING_END)
+         if(e.type == RenderMapEvent.GFX_LOADING_END)
          {
             this._nGfxLoadEnd = getTimer();
          }
       }
       
-      private function tweenInterMap(param1:Event) : void {
+      private function tweenInterMap(e:Event) : void {
          this._screenshot.alpha = this._screenshot.alpha - this._screenshot.alpha / 3;
          if(this._screenshot.alpha < 0.01)
          {
@@ -397,7 +396,7 @@ package com.ankamagames.atouin.managers
          }
       }
       
-      private function mapRenderProgress(param1:ProgressEvent) : void {
+      private function mapRenderProgress(e:ProgressEvent) : void {
          if(!this._currentMap)
          {
             this._currentMapRendered = true;
@@ -405,48 +404,48 @@ package com.ankamagames.atouin.managers
             this.signalMapLoadingFailure(MapLoadingFailedMessage.CLIENT_SHUTDOWN);
             return;
          }
-         var _loc2_:MapRenderProgressMessage = new MapRenderProgressMessage(param1.bytesLoaded / param1.bytesTotal * 100);
-         _loc2_.id = this._currentMap.mapId;
-         _loc2_.renderRequestId = this._currentRenderId;
-         Atouin.getInstance().handler.process(_loc2_);
+         var msg:MapRenderProgressMessage = new MapRenderProgressMessage(e.bytesLoaded / e.bytesTotal * 100);
+         msg.id = this._currentMap.mapId;
+         msg.renderRequestId = this._currentRenderId;
+         Atouin.getInstance().handler.process(msg);
       }
       
-      private function signalMapLoadingFailure(param1:uint) : void {
-         var _loc2_:MapLoadingFailedMessage = new MapLoadingFailedMessage();
+      private function signalMapLoadingFailure(errorReasonId:uint) : void {
+         var msg:MapLoadingFailedMessage = new MapLoadingFailedMessage();
          if(!this._currentMap)
          {
-            _loc2_.id = 0;
+            msg.id = 0;
          }
          else
          {
-            _loc2_.id = this._currentMap.mapId;
+            msg.id = this._currentMap.mapId;
          }
-         _loc2_.errorReason = param1;
-         Atouin.getInstance().handler.process(_loc2_);
+         msg.errorReason = errorReasonId;
+         Atouin.getInstance().handler.process(msg);
       }
       
-      private function mapRendered(param1:RenderMapEvent) : void {
-         var _loc2_:uint = 0;
-         var _loc3_:uint = 0;
-         var _loc4_:* = 0;
-         var _loc5_:MapLoadedMessage = null;
-         if(param1.type == RenderMapEvent.MAP_RENDER_START)
+      private function mapRendered(e:RenderMapEvent) : void {
+         var tt:uint = 0;
+         var tml:uint = 0;
+         var tgl:* = 0;
+         var msg:MapLoadedMessage = null;
+         if(e.type == RenderMapEvent.MAP_RENDER_START)
          {
             this._nRenderMapStart = getTimer();
          }
-         if(param1.type == RenderMapEvent.MAP_RENDER_END)
+         if(e.type == RenderMapEvent.MAP_RENDER_END)
          {
             this.mapDisplayed();
             this._nRenderMapEnd = getTimer();
-            _loc2_ = this._nRenderMapEnd - this._nMapLoadStart;
-            _loc3_ = this._nMapLoadEnd - this._nMapLoadStart;
-            _loc4_ = this._nGfxLoadEnd - this._nGfxLoadStart;
-            _loc5_ = new MapLoadedMessage();
-            _loc5_.dataLoadingTime = _loc3_;
-            _loc5_.gfxLoadingTime = _loc4_;
-            _loc5_.renderingTime = this._nRenderMapEnd - this._nRenderMapStart;
-            _loc5_.globalRenderingTime = _loc2_;
-            _log.info("map rendered [total : " + _loc2_ + "ms, " + (_loc2_ < 100?" " + (_loc2_ < 10?" ":""):"") + "map load : " + _loc3_ + "ms, " + (_loc3_ < 100?" " + (_loc3_ < 10?" ":""):"") + "gfx load : " + _loc4_ + "ms, " + (_loc4_ < 100?" " + (_loc4_ < 10?" ":""):"") + "render : " + (this._nRenderMapEnd - this._nRenderMapStart) + "ms] file : " + (this._currentMap?this._currentMap.mapId.toString():"???") + ".dlm" + (this._isDefaultMap?" (/!\\ DEFAULT MAP) ":"") + " / renderRequestID #" + this._currentRenderId);
+            tt = this._nRenderMapEnd - this._nMapLoadStart;
+            tml = this._nMapLoadEnd - this._nMapLoadStart;
+            tgl = this._nGfxLoadEnd - this._nGfxLoadStart;
+            msg = new MapLoadedMessage();
+            msg.dataLoadingTime = tml;
+            msg.gfxLoadingTime = tgl;
+            msg.renderingTime = this._nRenderMapEnd - this._nRenderMapStart;
+            msg.globalRenderingTime = tt;
+            _log.info("map rendered [total : " + tt + "ms, " + (tt < 100?" " + (tt < 10?" ":""):"") + "map load : " + tml + "ms, " + (tml < 100?" " + (tml < 10?" ":""):"") + "gfx load : " + tgl + "ms, " + (tgl < 100?" " + (tgl < 10?" ":""):"") + "render : " + (this._nRenderMapEnd - this._nRenderMapStart) + "ms] file : " + (this._currentMap?this._currentMap.mapId.toString():"???") + ".dlm" + (this._isDefaultMap?" (/!\\ DEFAULT MAP) ":"") + " / renderRequestID #" + this._currentRenderId);
             if((this._screenshot) && (this._screenshot.parent))
             {
                if(Atouin.getInstance().options.tweentInterMap)
@@ -459,8 +458,8 @@ package com.ankamagames.atouin.managers
                   this.removeScreenShot();
                }
             }
-            _loc5_.id = this._currentMap.mapId;
-            Atouin.getInstance().handler.process(_loc5_);
+            msg.id = this._currentMap.mapId;
+            Atouin.getInstance().handler.process(msg);
          }
       }
       
@@ -476,12 +475,12 @@ import flash.utils.ByteArray;
 class RenderRequest extends Object
 {
    
-   function RenderRequest(param1:WorldPoint, param2:Boolean, param3:ByteArray) {
+   function RenderRequest(map:WorldPoint, forceReloadWithoutCache:Boolean, decryptionKey:ByteArray) {
       super();
       this.renderId = RENDER_ID++;
-      this.map = param1;
-      this.forceReloadWithoutCache = param2;
-      this.decryptionKey = param3;
+      this.map = map;
+      this.forceReloadWithoutCache = forceReloadWithoutCache;
+      this.decryptionKey = decryptionKey;
    }
    
    private static var RENDER_ID:uint = 0;

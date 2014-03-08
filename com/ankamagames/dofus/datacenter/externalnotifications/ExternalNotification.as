@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.externalnotifications
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ExternalNotification));
       
-      public static function getExternalNotificationById(param1:int) : ExternalNotification {
-         return GameData.getObject(MODULE,param1) as ExternalNotification;
+      public static function getExternalNotificationById(pId:int) : ExternalNotification {
+         return GameData.getObject(MODULE,pId) as ExternalNotification;
       }
       
       public static function getExternalNotifications() : Array {

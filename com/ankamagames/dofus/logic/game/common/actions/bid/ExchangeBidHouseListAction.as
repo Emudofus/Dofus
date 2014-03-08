@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.bid
          super();
       }
       
-      public static function create(param1:uint) : ExchangeBidHouseListAction {
-         var _loc2_:ExchangeBidHouseListAction = new ExchangeBidHouseListAction();
-         _loc2_.id = param1;
-         return _loc2_;
+      public static function create(pId:uint) : ExchangeBidHouseListAction {
+         var a:ExchangeBidHouseListAction = new ExchangeBidHouseListAction();
+         a.id = pId;
+         return a;
       }
       
       public var id:uint;

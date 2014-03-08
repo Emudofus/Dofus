@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.fight.actions
       }
       
       public static function create() : TogglePointCellAction {
-         var _loc1_:TogglePointCellAction = new TogglePointCellAction();
-         return _loc1_;
+         var a:TogglePointCellAction = new TogglePointCellAction();
+         return a;
       }
    }
 }

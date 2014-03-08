@@ -2,7 +2,7 @@ package com.ankamagames.jerakine.utils.misc
 {
    import com.ankamagames.jerakine.logger.Logger;
    import flash.utils.ByteArray;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
@@ -16,174 +16,217 @@ package com.ankamagames.jerakine.utils.misc
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StringUtils));
       
-      public static function cleanString(param1:String) : String {
-         var param1:String = param1.split("&").join("&amp;");
-         param1 = param1.split("<").join("&lt;");
-         param1 = param1.split(">").join("&gt;");
-         return param1;
+      public static function cleanString(s:String) : String {
+         var s:String = s.split("&").join("&amp;");
+         s = s.split("<").join("&lt;");
+         s = s.split(">").join("&gt;");
+         return s;
       }
       
-      public static function convertLatinToUtf(param1:String) : String {
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.writeMultiByte(decodeURI(param1),"iso-8859-1");
-         _loc2_.position = 0;
-         return _loc2_.readUTFBytes(_loc2_.length);
+      public static function convertLatinToUtf(str:String) : String {
+         var b:ByteArray = new ByteArray();
+         b.writeMultiByte(decodeURI(str),"iso-8859-1");
+         b.position = 0;
+         return b.readUTFBytes(b.length);
       }
       
-      public static function fill(param1:String, param2:uint, param3:String, param4:Boolean=true) : String {
-         if(!param3 || !param3.length)
+      public static function fill(str:String, len:uint, char:String, before:Boolean=true) : String {
+         if((!char) || (!char.length))
          {
-            return param1;
+            return str;
          }
-         while(param1.length != param2)
+         while(str.length != len)
          {
-            if(param4)
+            if(before)
             {
-               param1 = param3 + param1;
+               str = char + str;
             }
             else
             {
-               param1 = param1 + param3;
+               str = str + char;
             }
          }
-         return param1;
+         return str;
       }
       
-      public static function formatArray(param1:Array, param2:Array=null) : String {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
-      }
-      
-      public static function replace(param1:String, param2:*=null, param3:*=null) : String {
-         var _loc6_:uint = 0;
-         if(!param2)
+      public static function formatArray(data:Array, header:Array=null) : String {
+         var row:* = undefined;
+         var i:* = undefined;
+         var len:uint = 0;
+         var lenIndex:* = undefined;
+         var headerLine:Array = null;
+         var headerSubLine:Array = null;
+         var line:Array = null;
+         var str:String = null;
+         var colSep:String = " | ";
+         var headerColSep:String = "-+-";
+         var spaces:String = "                                                                                                               ";
+         var headerSep:String = "---------------------------------------------------------------------------------------------------------------";
+         var length:Array = [];
+         var result:Array = [];
+         for each (row in data)
          {
-            return param1;
-         }
-         if(!param3)
-         {
-            if(param2 is Array)
+            for (i in row)
             {
-               param3 = new Array(param2.length);
+               lenIndex = header?header[i]:i;
+               length[lenIndex] = isNaN(length[lenIndex])?String(row[i]).length:Math.max(length[lenIndex],String(row[i]).length);
+            }
+         }
+         if((i is String) || (header))
+         {
+            headerLine = [];
+            headerSubLine = [];
+            row = header?header:row;
+            for (i in row)
+            {
+               lenIndex = header?header[i]:i;
+               length[lenIndex] = isNaN(length[lenIndex])?lenIndex.length:Math.max(length[lenIndex],lenIndex.length);
+               headerLine.push(lenIndex + spaces.substr(0,length[lenIndex] - lenIndex.length));
+               headerSubLine.push(headerSep.substr(0,length[lenIndex]));
+            }
+            result.push(headerLine.join(colSep));
+            result.push(headerSubLine.join(headerColSep));
+         }
+         for each (row in data)
+         {
+            line = [];
+            for (i in row)
+            {
+               str = row[i];
+               lenIndex = header?header[i]:i;
+               line.push(str + spaces.substr(0,length[lenIndex] - String(str).length));
+            }
+            result.push(line.join(colSep));
+         }
+         return result.join("\n");
+      }
+      
+      public static function replace(src:String, pFrom:*=null, pTo:*=null) : String {
+         var i:uint = 0;
+         if(!pFrom)
+         {
+            return src;
+         }
+         if(!pTo)
+         {
+            if(pFrom is Array)
+            {
+               pTo = new Array(pFrom.length);
             }
             else
             {
-               return param1.split(param2).join("");
+               return src.split(pFrom).join("");
             }
          }
-         if(!(param2 is Array))
+         if(!(pFrom is Array))
          {
-            return param1.split(param2).join(param3);
+            return src.split(pFrom).join(pTo);
          }
-         var _loc4_:Number = param2.length;
-         var _loc5_:String = param1;
-         if(param3 is Array)
+         var lLength:Number = pFrom.length;
+         var lString:String = src;
+         if(pTo is Array)
          {
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_)
+            i = 0;
+            while(i < lLength)
             {
-               _loc5_ = _loc5_.split(param2[_loc6_]).join(param3[_loc6_]);
-               _loc6_++;
+               lString = lString.split(pFrom[i]).join(pTo[i]);
+               i++;
             }
          }
          else
          {
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_)
+            i = 0;
+            while(i < lLength)
             {
-               _loc5_ = _loc5_.split(param2[_loc6_]).join(param3);
-               _loc6_++;
+               lString = lString.split(pFrom[i]).join(pTo);
+               i++;
             }
          }
-         return _loc5_;
+         return lString;
       }
       
-      public static function concatSameString(param1:String, param2:String) : String {
-         var _loc3_:int = param1.indexOf(param2);
-         var _loc4_:* = 0;
-         var _loc5_:int = _loc3_;
-         while(_loc5_ != -1)
+      public static function concatSameString(pString:String, pStringToConcat:String) : String {
+         var firstIndex:int = pString.indexOf(pStringToConcat);
+         var previousIndex:int = 0;
+         var currentIndex:int = firstIndex;
+         while(currentIndex != -1)
          {
-            _loc4_ = _loc5_;
-            _loc5_ = param1.indexOf(param2,_loc4_ + 1);
-            if(_loc5_ == _loc3_)
+            previousIndex = currentIndex;
+            currentIndex = pString.indexOf(pStringToConcat,previousIndex + 1);
+            if(currentIndex == firstIndex)
             {
                break;
             }
-            if(_loc5_ == _loc4_ + param2.length)
+            if(currentIndex == previousIndex + pStringToConcat.length)
             {
-               param1 = param1.substring(0,_loc5_) + param1.substring(_loc5_ + param2.length);
-               _loc5_ = _loc5_ - param2.length;
+               pString = pString.substring(0,currentIndex) + pString.substring(currentIndex + pStringToConcat.length);
+               currentIndex = currentIndex - pStringToConcat.length;
             }
          }
-         return param1;
+         return pString;
       }
       
-      public static function getDelimitedText(param1:String, param2:String, param3:String, param4:Boolean=false) : Vector.<String> {
-         var _loc8_:String = null;
-         var _loc9_:String = null;
-         var _loc10_:String = null;
-         var _loc5_:Vector.<String> = new Vector.<String>();
-         var _loc6_:* = false;
-         var _loc7_:String = param1;
-         while(!_loc6_)
+      public static function getDelimitedText(pText:String, pFirstDelimiter:String, pSecondDelimiter:String, pIncludeDelimiter:Boolean=false) : Vector.<String> {
+         var delimitedText:String = null;
+         var firstPart:String = null;
+         var secondPart:String = null;
+         var returnedArray:Vector.<String> = new Vector.<String>();
+         var exit:Boolean = false;
+         var text:String = pText;
+         while(!exit)
          {
-            _loc8_ = getSingleDelimitedText(_loc7_,param2,param3,param4);
-            if(_loc8_ == "")
+            delimitedText = getSingleDelimitedText(text,pFirstDelimiter,pSecondDelimiter,pIncludeDelimiter);
+            if(delimitedText == "")
             {
-               _loc6_ = true;
+               exit = true;
             }
             else
             {
-               _loc5_.push(_loc8_);
-               if(!param4)
+               returnedArray.push(delimitedText);
+               if(!pIncludeDelimiter)
                {
-                  _loc8_ = param2 + _loc8_ + param3;
+                  delimitedText = pFirstDelimiter + delimitedText + pSecondDelimiter;
                }
-               _loc9_ = _loc7_.slice(0,_loc7_.indexOf(_loc8_));
-               _loc10_ = _loc7_.slice(_loc7_.indexOf(_loc8_) + _loc8_.length);
-               _loc7_ = _loc9_ + _loc10_;
+               firstPart = text.slice(0,text.indexOf(delimitedText));
+               secondPart = text.slice(text.indexOf(delimitedText) + delimitedText.length);
+               text = firstPart + secondPart;
             }
          }
-         return _loc5_;
+         return returnedArray;
       }
       
-      public static function getAllIndexOf(param1:String, param2:String) : Array {
-         var _loc7_:* = 0;
-         var _loc3_:Array = new Array();
-         var _loc4_:uint = 0;
-         var _loc5_:* = false;
-         var _loc6_:uint = 0;
-         while(!_loc5_)
+      public static function getAllIndexOf(pStringLookFor:String, pWholeString:String) : Array {
+         var nextIndex:* = 0;
+         var returnedArray:Array = new Array();
+         var usage:uint = 0;
+         var exit:Boolean = false;
+         var currentIndex:uint = 0;
+         while(!exit)
          {
-            _loc7_ = param2.indexOf(param1,_loc6_);
-            if(_loc7_ < _loc6_)
+            nextIndex = pWholeString.indexOf(pStringLookFor,currentIndex);
+            if(nextIndex < currentIndex)
             {
-               _loc5_ = true;
+               exit = true;
             }
             else
             {
-               _loc3_.push(_loc7_);
-               _loc6_ = _loc7_ + param1.length;
+               returnedArray.push(nextIndex);
+               currentIndex = nextIndex + pStringLookFor.length;
             }
          }
-         return _loc3_;
+         return returnedArray;
       }
       
       private static var pattern:Vector.<RegExp>;
       
       private static var patternReplace:Vector.<String>;
       
-      public static function noAccent(param1:String) : String {
-         if(pattern == null || patternReplace == null)
+      public static function noAccent(source:String) : String {
+         if((pattern == null) || (patternReplace == null))
          {
             initPattern();
          }
-         return decomposeUnicode(param1);
+         return decomposeUnicode(source);
       }
       
       private static function initPattern() : void {
@@ -251,134 +294,155 @@ package com.ankamagames.jerakine.utils.misc
       
       private static var accents:String = "ŠŒŽšœžÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜŸÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿþ";
       
-      private static function decomposeUnicode(param1:String) : String {
-         var _loc2_:* = 0;
-         var _loc6_:uint = 0;
-         var _loc3_:int = param1.length > accents.length?accents.length:param1.length;
-         var _loc4_:String = _loc3_ == accents.length?param1:accents;
-         var _loc5_:String = _loc3_ == accents.length?accents:param1;
-         _loc2_ = 0;
-         while(_loc2_ < _loc3_)
+      private static function decomposeUnicode(str:String) : String {
+         var i:* = 0;
+         var j:uint = 0;
+         var len:int = str.length > accents.length?accents.length:str.length;
+         var left:String = len == accents.length?str:accents;
+         var right:String = len == accents.length?accents:str;
+         i = 0;
+         while(i < len)
          {
-            if(_loc4_.indexOf(_loc5_.charAt(_loc2_)) != -1)
+            if(left.indexOf(right.charAt(i)) != -1)
             {
-               _loc6_ = 0;
-               while(_loc6_ < pattern.length)
+               j = 0;
+               while(j < pattern.length)
                {
-                  param1 = param1.replace(pattern[_loc6_],patternReplace[_loc6_]);
-                  _loc6_++;
+                  str = str.replace(pattern[j],patternReplace[j]);
+                  j++;
                }
-               return param1;
+               return str;
             }
-            _loc2_++;
+            i++;
          }
-         return param1;
+         return str;
       }
       
-      private static function getSingleDelimitedText(param1:String, param2:String, param3:String, param4:Boolean=false) : String {
-         var _loc7_:* = 0;
-         var _loc8_:* = 0;
-         var _loc9_:* = 0;
-         var _loc5_:* = "";
-         var _loc6_:uint = 0;
-         var _loc10_:uint = 0;
-         var _loc11_:* = false;
-         _loc7_ = param1.indexOf(param2,_loc6_);
-         if(_loc7_ == -1)
+      private static function getSingleDelimitedText(pStringEntry:String, pFirstDelimiter:String, pSecondDelimiter:String, pIncludeDelimiter:Boolean=false) : String {
+         var firstDelimiterIndex:* = 0;
+         var nextFirstDelimiterIndex:* = 0;
+         var nextSecondDelimiterIndex:* = 0;
+         var delimitedContent:String = "";
+         var currentIndex:uint = 0;
+         var secondDelimiterToSkip:uint = 0;
+         var exit:Boolean = false;
+         firstDelimiterIndex = pStringEntry.indexOf(pFirstDelimiter,currentIndex);
+         if(firstDelimiterIndex == -1)
          {
             return "";
          }
-         _loc6_ = _loc7_ + param2.length;
-         while(!_loc11_)
+         currentIndex = firstDelimiterIndex + pFirstDelimiter.length;
+         while(!exit)
          {
-            _loc8_ = param1.indexOf(param2,_loc6_);
-            _loc9_ = param1.indexOf(param3,_loc6_);
-            if(_loc9_ == -1)
+            nextFirstDelimiterIndex = pStringEntry.indexOf(pFirstDelimiter,currentIndex);
+            nextSecondDelimiterIndex = pStringEntry.indexOf(pSecondDelimiter,currentIndex);
+            if(nextSecondDelimiterIndex == -1)
             {
                trace("Erreur ! On n\'a pas trouvé d\'occurence du second délimiteur.");
-               _loc11_ = true;
+               exit = true;
             }
-            if(_loc8_ < _loc9_ && !(_loc8_ == -1))
+            if((nextFirstDelimiterIndex < nextSecondDelimiterIndex) && (!(nextFirstDelimiterIndex == -1)))
             {
-               _loc10_ = _loc10_ + getAllIndexOf(param2,param1.slice(_loc8_ + param2.length,_loc9_)).length;
-               _loc6_ = _loc9_ + param2.length;
+               secondDelimiterToSkip = secondDelimiterToSkip + getAllIndexOf(pFirstDelimiter,pStringEntry.slice(nextFirstDelimiterIndex + pFirstDelimiter.length,nextSecondDelimiterIndex)).length;
+               currentIndex = nextSecondDelimiterIndex + pFirstDelimiter.length;
             }
             else
             {
-               if(_loc10_ > 1)
+               if(secondDelimiterToSkip > 1)
                {
-                  _loc6_ = _loc9_ + param3.length;
-                  _loc10_--;
+                  currentIndex = nextSecondDelimiterIndex + pSecondDelimiter.length;
+                  secondDelimiterToSkip--;
                }
                else
                {
-                  _loc5_ = param1.slice(_loc7_,_loc9_ + param3.length);
-                  _loc11_ = true;
+                  delimitedContent = pStringEntry.slice(firstDelimiterIndex,nextSecondDelimiterIndex + pSecondDelimiter.length);
+                  exit = true;
                }
             }
          }
-         if(!param4 && !(_loc5_ == ""))
+         if((!pIncludeDelimiter) && (!(delimitedContent == "")))
          {
-            _loc5_ = _loc5_.slice(param2.length);
-            _loc5_ = _loc5_.slice(0,_loc5_.length - param3.length);
+            delimitedContent = delimitedContent.slice(pFirstDelimiter.length);
+            delimitedContent = delimitedContent.slice(0,delimitedContent.length - pSecondDelimiter.length);
          }
-         return _loc5_;
+         return delimitedContent;
       }
       
-      public static function kamasToString(param1:Number, param2:String="-") : String {
-         if(param2 == "-")
+      public static function kamasToString(kamas:Number, unit:String="-") : String {
+         if(unit == "-")
          {
-            param2 = I18n.getUiText("ui.common.short.kama",[]);
+            unit = I18n.getUiText("ui.common.short.kama",[]);
          }
-         var _loc3_:String = formateIntToString(param1);
-         if(param2 == "")
+         var kamaString:String = formateIntToString(kamas);
+         if(unit == "")
          {
-            return _loc3_;
+            return kamaString;
          }
-         return _loc3_ + " " + param2;
+         return kamaString + " " + unit;
       }
       
-      public static function stringToKamas(param1:String, param2:String="-") : int {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
-      }
-      
-      public static function formateIntToString(param1:Number) : String {
-         var _loc6_:* = 0;
-         var _loc2_:* = "";
-         var _loc3_:Number = 1000;
-         var _loc4_:String = I18n.getUiText("ui.common.numberSeparator");
-         while(param1 / _loc3_ >= 1)
+      public static function stringToKamas(string:String, unit:String="-") : int {
+         var str2:String = null;
+         var tmp:String = string;
+         do
          {
-            _loc6_ = int(param1 % _loc3_ / (_loc3_ / 1000));
-            if(_loc6_ < 10)
+               str2 = tmp;
+               tmp = str2.replace(I18n.getUiText("ui.common.numberSeparator"),"");
+            }while(str2 != tmp);
+            
+            do
             {
-               _loc2_ = "00" + _loc6_ + _loc4_ + _loc2_;
-            }
-            else
-            {
-               if(_loc6_ < 100)
+                  str2 = tmp;
+                  tmp = str2.replace(" ","");
+               }while(str2 != tmp);
+               
+               if(unit == "-")
                {
-                  _loc2_ = "0" + _loc6_ + _loc4_ + _loc2_;
+                  unit = I18n.getUiText("ui.common.short.kama",[]);
                }
-               else
+               if(str2.substr(str2.length - unit.length) == unit)
                {
-                  _loc2_ = _loc6_ + _loc4_ + _loc2_;
+                  str2 = str2.substr(0,str2.length - unit.length);
                }
+               return int(str2);
             }
-            _loc3_ = _loc3_ * 1000;
+            
+            public static function formateIntToString(val:Number) : String {
+               var numx3:* = 0;
+               var str:String = "";
+               var modulo:Number = 1000;
+               var numberSeparator:String = I18n.getUiText("ui.common.numberSeparator");
+               while(true)
+               {
+                  if(val / modulo < 1)
+                  {
+                     str = int(val % modulo / (modulo / 1000)) + numberSeparator + str;
+                     break;
+                  }
+                  numx3 = int(val % modulo / (modulo / 1000));
+                  if(numx3 < 10)
+                  {
+                     str = "00" + numx3 + numberSeparator + str;
+                  }
+                  else
+                  {
+                     if(numx3 < 100)
+                     {
+                        str = "0" + numx3 + numberSeparator + str;
+                     }
+                     else
+                     {
+                        str = numx3 + numberSeparator + str;
+                     }
+                  }
+                  modulo = modulo * 1000;
+               }
+               var f:* = str.charAt(str.length - 1);
+               if(str.charAt(str.length - 1) == numberSeparator)
+               {
+                  return str.substr(0,str.length - 1);
+               }
+               return str;
+            }
          }
-         _loc2_ = int(param1 % _loc3_ / (_loc3_ / 1000)) + _loc4_ + _loc2_;
-         var _loc5_:* = _loc2_.charAt(_loc2_.length-1);
-         if(_loc2_.charAt(_loc2_.length-1) == _loc4_)
-         {
-            return _loc2_.substr(0,_loc2_.length-1);
-         }
-         return _loc2_;
       }
-   }
-}

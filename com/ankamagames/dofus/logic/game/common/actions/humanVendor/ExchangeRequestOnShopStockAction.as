@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.humanVendor
       }
       
       public static function create() : ExchangeRequestOnShopStockAction {
-         var _loc1_:ExchangeRequestOnShopStockAction = new ExchangeRequestOnShopStockAction();
-         return _loc1_;
+         var a:ExchangeRequestOnShopStockAction = new ExchangeRequestOnShopStockAction();
+         return a;
       }
    }
 }

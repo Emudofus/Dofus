@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.paddock
          return 133;
       }
       
-      public function initPaddockAbandonnedInformations(param1:uint=0, param2:uint=0, param3:uint=0, param4:Boolean=false, param5:int=0) : PaddockAbandonnedInformations {
-         super.initPaddockBuyableInformations(param1,param2,param3,param4);
-         this.guildId = param5;
+      public function initPaddockAbandonnedInformations(maxOutdoorMount:uint=0, maxItems:uint=0, price:uint=0, locked:Boolean=false, guildId:int=0) : PaddockAbandonnedInformations {
+         super.initPaddockBuyableInformations(maxOutdoorMount,maxItems,price,locked);
+         this.guildId = guildId;
          return this;
       }
       
@@ -30,22 +30,22 @@ package com.ankamagames.dofus.network.types.game.paddock
          this.guildId = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PaddockAbandonnedInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PaddockAbandonnedInformations(output);
       }
       
-      public function serializeAs_PaddockAbandonnedInformations(param1:IDataOutput) : void {
-         super.serializeAs_PaddockBuyableInformations(param1);
-         param1.writeInt(this.guildId);
+      public function serializeAs_PaddockAbandonnedInformations(output:IDataOutput) : void {
+         super.serializeAs_PaddockBuyableInformations(output);
+         output.writeInt(this.guildId);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PaddockAbandonnedInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PaddockAbandonnedInformations(input);
       }
       
-      public function deserializeAs_PaddockAbandonnedInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.guildId = param1.readInt();
+      public function deserializeAs_PaddockAbandonnedInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.guildId = input.readInt();
       }
    }
 }

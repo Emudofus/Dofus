@@ -38,17 +38,17 @@ package com.ankamagames.atouin.entities.behaviours.display
          return _self;
       }
       
-      public function display(param1:IDisplayable, param2:uint=0) : void {
-         var _loc3_:IEntity = param1 as IEntity;
-         EntitiesManager.getInstance().addAnimatedEntity(_loc3_.id,_loc3_,param2);
+      public function display(displayable:IDisplayable, strata:uint=0) : void {
+         var entity:IEntity = displayable as IEntity;
+         EntitiesManager.getInstance().addAnimatedEntity(entity.id,entity,strata);
       }
       
-      public function remove(param1:IDisplayable) : void {
-         EntitiesManager.getInstance().removeEntity((param1 as IEntity).id);
+      public function remove(entity:IDisplayable) : void {
+         EntitiesManager.getInstance().removeEntity((entity as IEntity).id);
       }
       
-      public function getAbsoluteBounds(param1:IDisplayable) : IRectangle {
-         return EntitiesDisplayManager.getInstance().getAbsoluteBounds(param1);
+      public function getAbsoluteBounds(entity:IDisplayable) : IRectangle {
+         return EntitiesDisplayManager.getInstance().getAbsoluteBounds(entity);
       }
    }
 }

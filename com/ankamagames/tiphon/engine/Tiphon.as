@@ -65,33 +65,33 @@ package com.ankamagames.tiphon.engine
       
       private var _waitForInit:Boolean;
       
-      public function addRasterizeAnimation(param1:String) : void {
+      public function addRasterizeAnimation(animName:String) : void {
       }
       
-      public function isRasterizeAnimation(param1:String) : Boolean {
-         return this._rasterizedAnimationNameList[param1];
+      public function isRasterizeAnimation(animName:String) : Boolean {
+         return this._rasterizedAnimationNameList[animName];
       }
       
       public function get options() : * {
          return this._toOptions;
       }
       
-      public function init(param1:String, param2:String, param3:String=null) : void {
-         if(param1.split("://").length == 1)
+      public function init(sSwfSkullPath:String, sSwfSkinPath:String, animIndexPath:String=null) : void {
+         if(sSwfSkullPath.split("://").length == 1)
          {
-            param1 = "file://" + param1;
+            sSwfSkullPath = "file://" + sSwfSkullPath;
          }
-         if(param2.split("://").length == 1)
+         if(sSwfSkinPath.split("://").length == 1)
          {
-            param2 = "file://" + param2;
+            sSwfSkinPath = "file://" + sSwfSkinPath;
          }
-         TiphonConstants.SWF_SKULL_PATH = param1;
-         TiphonConstants.SWF_SKIN_PATH = param2;
-         if(param3)
+         TiphonConstants.SWF_SKULL_PATH = sSwfSkullPath;
+         TiphonConstants.SWF_SKIN_PATH = sSwfSkinPath;
+         if(animIndexPath)
          {
             this._waitForInit = true;
             BoneIndexManager.getInstance().addEventListener(Event.INIT,this.onBoneIndexManagerInit);
-            BoneIndexManager.getInstance().init(param3);
+            BoneIndexManager.getInstance().init(animIndexPath);
          }
          TiphonFpsManager.init();
          TiphonEventsManager.addListener(this,TiphonEvent.PLAYANIM_EVENT);
@@ -101,43 +101,43 @@ package com.ankamagames.tiphon.engine
          }
       }
       
-      public function setDisplayOptions(param1:*) : void {
-         this._toOptions = param1;
+      public function setDisplayOptions(topt:*) : void {
+         this._toOptions = topt;
       }
       
-      public function handleFLAEvent(param1:String, param2:String, param3:String, param4:Object=null) : void {
-         var _loc5_:TiphonSprite = param4 as TiphonSprite;
-         if(param3 == TiphonEvent.EVENT_SHOT)
+      public function handleFLAEvent(pAnimationName:String, pType:String, pParams:String, pSprite:Object=null) : void {
+         var tiphonSprite:TiphonSprite = pSprite as TiphonSprite;
+         if(pParams == TiphonEvent.EVENT_SHOT)
          {
-            _loc5_.onAnimationEvent(TiphonEvent.EVENT_SHOT);
+            tiphonSprite.onAnimationEvent(TiphonEvent.EVENT_SHOT);
          }
          else
          {
-            if(param3 == TiphonEvent.EVENT_END)
+            if(pParams == TiphonEvent.EVENT_END)
             {
-               _loc5_.onAnimationEvent(TiphonEvent.EVENT_END);
+               tiphonSprite.onAnimationEvent(TiphonEvent.EVENT_END);
             }
             else
             {
-               if(param3 == TiphonEvent.PLAYER_STOP)
+               if(pParams == TiphonEvent.PLAYER_STOP)
                {
-                  _loc5_.onAnimationEvent(TiphonEvent.PLAYER_STOP);
+                  tiphonSprite.onAnimationEvent(TiphonEvent.PLAYER_STOP);
                }
                else
                {
-                  if(param2 == TiphonEvent.PLAYANIM_EVENT)
+                  if(pType == TiphonEvent.PLAYANIM_EVENT)
                   {
-                     _loc5_.onAnimationEvent(TiphonEvent.PLAYANIM_EVENT,param3);
+                     tiphonSprite.onAnimationEvent(TiphonEvent.PLAYANIM_EVENT,pParams);
                   }
                }
             }
          }
       }
       
-      public function removeEntitySound(param1:IEntity) : void {
+      public function removeEntitySound(pEntityId:IEntity) : void {
       }
       
-      private function onBoneIndexManagerInit(param1:Event) : void {
+      private function onBoneIndexManagerInit(e:Event) : void {
          dispatchEvent(new Event(Event.INIT));
       }
    }

@@ -17,14 +17,14 @@ package com.ankamagames.dofus.console
          super();
       }
       
-      public function registerInstructions(param1:ConsoleHandler) : void {
-         param1.addHandler("version",new VersionInstructionHandler());
-         param1.addHandler("mapid",new DisplayMapInstructionHandler());
-         param1.addHandler(["savereplaylog"],new MiscInstructionHandler());
-         param1.addHandler(["uiinspector","inspectuielement","loadui","unloadui","clearuicache","useuicache","uilist","reloadui","modulelist"],new UiHandlerInstructionHandler());
-         param1.addHandler(["sendaction","listactions","sendhook"],new ActionsInstructionHandler());
-         param1.addHandler(["adduisoundelement"],new SoundInstructionHandler());
-         param1.addHandler(["lua","luarecorder"],new LuaInstructionHandler());
+      public function registerInstructions(console:ConsoleHandler) : void {
+         console.addHandler("version",new VersionInstructionHandler());
+         console.addHandler("mapid",new DisplayMapInstructionHandler());
+         console.addHandler(["savereplaylog"],new MiscInstructionHandler());
+         console.addHandler(["uiinspector","inspectuielement","loadui","unloadui","clearuicache","useuicache","uilist","reloadui","modulelist"],new UiHandlerInstructionHandler());
+         console.addHandler(["sendaction","listactions","sendhook"],new ActionsInstructionHandler());
+         console.addHandler(["adduisoundelement"],new SoundInstructionHandler());
+         console.addHandler(["lua","luarecorder"],new LuaInstructionHandler());
       }
    }
 }

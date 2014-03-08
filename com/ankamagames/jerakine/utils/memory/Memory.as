@@ -19,14 +19,14 @@ package com.ankamagames.jerakine.utils.memory
       }
       
       public static function humanReadableUsage() : String {
-         var _loc1_:uint = System.totalMemory;
-         var _loc2_:uint = 0;
-         while(_loc1_ > MOD)
+         var memory:uint = System.totalMemory;
+         var i:uint = 0;
+         while(memory > MOD)
          {
-            _loc1_ = _loc1_ / MOD;
-            _loc2_++;
+            memory = memory / MOD;
+            i++;
          }
-         return _loc1_ + " " + UNITS[_loc2_];
+         return memory + " " + UNITS[i];
       }
       
       public static function gc() : void {

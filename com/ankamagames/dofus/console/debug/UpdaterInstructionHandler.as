@@ -14,8 +14,8 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      private static function stateToString(param1:int) : String {
-         switch(param1)
+      private static function stateToString(state:int) : String {
+         switch(state)
          {
             case PartStateEnum.PART_BEING_UPDATER:
                return "PART_BEING_UPDATER";
@@ -23,8 +23,6 @@ package com.ankamagames.dofus.console.debug
                return "PART_NOT_INSTALLED";
             case PartStateEnum.PART_UP_TO_DATE:
                return "PART_UP_TO_DATE";
-            default:
-               return "(unknow state)";
          }
       }
       
@@ -45,9 +43,9 @@ package com.ankamagames.dofus.console.debug
          return this._updaterDebugFrame;
       }
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         this._lastConsole = param1;
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         this._lastConsole = console;
+         switch(cmd)
          {
             case "partdebug":
                break;
@@ -55,47 +53,47 @@ package com.ankamagames.dofus.console.debug
                this.updaterDebugFrame.partListRequest(this.onPartInfo);
                break;
             case "partinfo":
-               if(param3.length == 1)
+               if(args.length == 1)
                {
-                  this.updaterDebugFrame.partInfoRequest(param3[0],this.onPartInfo);
+                  this.updaterDebugFrame.partInfoRequest(args[0],this.onPartInfo);
                }
                else
                {
-                  param1.output("bad arguments");
+                  console.output("bad arguments");
                }
                break;
             case "updaterspeed":
-               if(param3.length == 1)
+               if(args.length == 1)
                {
-                  this.updaterDebugFrame.setUpdaterSpeedRequest(param3[0],this.onGetUpdaterSpeed);
+                  this.updaterDebugFrame.setUpdaterSpeedRequest(args[0],this.onGetUpdaterSpeed);
                }
                else
                {
-                  if(param3.length == 0)
+                  if(args.length == 0)
                   {
                      this.updaterDebugFrame.getUpdaterSpeedRequest(this.onGetUpdaterSpeed);
                   }
                   else
                   {
-                     param1.output("bad arguments");
+                     console.output("bad arguments");
                   }
                }
                break;
             case "downloadpart":
-               if(param3.length == 1)
+               if(args.length == 1)
                {
-                  this.updaterDebugFrame.downloadPartRequest(param3[0],this.onPartInfo);
+                  this.updaterDebugFrame.downloadPartRequest(args[0],this.onPartInfo);
                }
                else
                {
-                  param1.output("bad arguments");
+                  console.output("bad arguments");
                }
                break;
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "partdebug":
                return "enable client part debugging tools. Must be run before any other part debug command";
@@ -107,27 +105,25 @@ package com.ankamagames.dofus.console.debug
                return "get or set updater download speed (1 : slower, 10 : faster)";
             case "downloadpart":
                return "ask for part download by part name";
-            default:
-               return "No help for command \'" + param1 + "\'";
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
-         var _loc4_:Array = [];
-         if(0)
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+         var possibilities:Array = [];
+         if(false?0:0)
          {
          }
-         return _loc4_;
+         return possibilities;
       }
       
-      private function onGetUpdaterSpeed(param1:int) : void {
-         this._lastConsole.output("updater download speed : " + param1);
+      private function onGetUpdaterSpeed(speed:int) : void {
+         this._lastConsole.output("updater download speed : " + speed);
       }
       
-      private function onPartInfo(param1:ContentPart) : void {
-         if(param1)
+      private function onPartInfo(part:ContentPart) : void {
+         if(part)
          {
-            this._lastConsole.output(param1.id + "\t\t\t" + stateToString(param1.state));
+            this._lastConsole.output(part.id + "\t\t\t" + stateToString(part.state));
          }
          else
          {

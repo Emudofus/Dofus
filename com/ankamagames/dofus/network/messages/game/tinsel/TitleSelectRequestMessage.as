@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.tinsel
          return 6365;
       }
       
-      public function initTitleSelectRequestMessage(param1:uint=0) : TitleSelectRequestMessage {
-         this.titleId = param1;
+      public function initTitleSelectRequestMessage(titleId:uint=0) : TitleSelectRequestMessage {
+         this.titleId = titleId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.tinsel
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_TitleSelectRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TitleSelectRequestMessage(output);
       }
       
-      public function serializeAs_TitleSelectRequestMessage(param1:IDataOutput) : void {
+      public function serializeAs_TitleSelectRequestMessage(output:IDataOutput) : void {
          if(this.titleId < 0)
          {
             throw new Error("Forbidden value (" + this.titleId + ") on element titleId.");
          }
          else
          {
-            param1.writeShort(this.titleId);
+            output.writeShort(this.titleId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_TitleSelectRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TitleSelectRequestMessage(input);
       }
       
-      public function deserializeAs_TitleSelectRequestMessage(param1:IDataInput) : void {
-         this.titleId = param1.readShort();
+      public function deserializeAs_TitleSelectRequestMessage(input:IDataInput) : void {
+         this.titleId = input.readShort();
          if(this.titleId < 0)
          {
             throw new Error("Forbidden value (" + this.titleId + ") on element of TitleSelectRequestMessage.titleId.");

@@ -52,70 +52,70 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:GameRolePlayDelayedActionMessage = null;
-         var _loc3_:DelayedActionMessage = null;
-         var _loc4_:GameRolePlayDelayedActionFinishedMessage = null;
-         var _loc5_:GameRolePlayDelayedObjectUseMessage = null;
+      public function process(msg:Message) : Boolean {
+         var grpdaMsg:GameRolePlayDelayedActionMessage = null;
+         var dam:DelayedActionMessage = null;
+         var grpdafMsg:GameRolePlayDelayedActionFinishedMessage = null;
+         var grdoum:GameRolePlayDelayedObjectUseMessage = null;
          switch(true)
          {
-            case param1 is CurrentMapMessage:
+            case msg is CurrentMapMessage:
                this.removeAll();
                break;
-            case param1 is GameContextRemoveElementMessage:
-               this.removeEntity(GameContextRemoveElementMessage(param1).id);
+            case msg is GameContextRemoveElementMessage:
+               this.removeEntity(GameContextRemoveElementMessage(msg).id);
                break;
-            case param1 is GameRolePlayDelayedActionMessage:
-               _loc2_ = param1 as GameRolePlayDelayedActionMessage;
-               switch(_loc2_.delayTypeId)
+            case msg is GameRolePlayDelayedActionMessage:
+               grpdaMsg = msg as GameRolePlayDelayedActionMessage;
+               switch(grpdaMsg.delayTypeId)
                {
                   case DelayedActionTypeEnum.DELAYED_ACTION_OBJECT_USE:
-                     _loc5_ = param1 as GameRolePlayDelayedObjectUseMessage;
-                     this.showItemUse(_loc5_.delayedCharacterId,_loc5_.objectGID,_loc2_.delayEndTime);
+                     grdoum = msg as GameRolePlayDelayedObjectUseMessage;
+                     this.showItemUse(grdoum.delayedCharacterId,grdoum.objectGID,grpdaMsg.delayEndTime);
                      break;
                }
                return true;
-            case param1 is DelayedActionMessage:
-               _loc3_ = param1 as DelayedActionMessage;
-               this.showItemUse(_loc3_.playerId,_loc3_.itemId,_loc3_.endTime);
+            case msg is DelayedActionMessage:
+               dam = msg as DelayedActionMessage;
+               this.showItemUse(dam.playerId,dam.itemId,dam.endTime);
                return true;
-            case param1 is GameRolePlayDelayedActionFinishedMessage:
-               _loc4_ = param1 as GameRolePlayDelayedActionFinishedMessage;
-               this.removeEntity(_loc4_.delayedCharacterId);
+            case msg is GameRolePlayDelayedActionFinishedMessage:
+               grpdafMsg = msg as GameRolePlayDelayedActionFinishedMessage;
+               this.removeEntity(grpdafMsg.delayedCharacterId);
                return true;
          }
          return false;
       }
       
-      public function showItemUse(param1:int, param2:uint, param3:Number) : void {
-         var _loc4_:* = NaN;
-         var _loc5_:DelayedActionItem = null;
-         var _loc6_:IRectangle = null;
-         var _loc7_:Tooltip = null;
-         if(DofusEntities.getEntity(param1))
+      public function showItemUse(playerId:int, itemId:uint, endTime:Number) : void {
+         var delay:* = NaN;
+         var w:DelayedActionItem = null;
+         var absBounds:IRectangle = null;
+         var delayTooltip:Tooltip = null;
+         if(DofusEntities.getEntity(playerId))
          {
-            _loc4_ = param3 - TimeManager.getInstance().getUtcTimestamp();
-            _loc5_ = new DelayedActionItem(param1,DelayedActionTypeEnum.DELAYED_ACTION_OBJECT_USE,param2,_loc4_);
-            _loc6_ = (DofusEntities.getEntity(param1) as IDisplayable).absoluteBounds;
-            _loc7_ = TooltipManager.show(_loc5_,_loc6_,UiModuleManager.getInstance().getModule("Ankama_Tooltips"),false,TOOLTIP_NAME + param1,LocationEnum.POINT_BOTTOM,LocationEnum.POINT_TOP,0,true,null,null,{"endTime":_loc4_},null,false,-1);
-            _loc7_.mustBeHidden = false;
-            this._delayedActionEntities[param1] = TOOLTIP_NAME + param1;
+            delay = endTime - TimeManager.getInstance().getUtcTimestamp();
+            w = new DelayedActionItem(playerId,DelayedActionTypeEnum.DELAYED_ACTION_OBJECT_USE,itemId,delay);
+            absBounds = (DofusEntities.getEntity(playerId) as IDisplayable).absoluteBounds;
+            delayTooltip = TooltipManager.show(w,absBounds,UiModuleManager.getInstance().getModule("Ankama_Tooltips"),false,TOOLTIP_NAME + playerId,LocationEnum.POINT_BOTTOM,LocationEnum.POINT_TOP,0,true,null,null,{"endTime":delay},null,false,-1);
+            delayTooltip.mustBeHidden = false;
+            this._delayedActionEntities[playerId] = TOOLTIP_NAME + playerId;
          }
       }
       
-      private function removeEntity(param1:int) : void {
-         if(this._delayedActionEntities[param1])
+      private function removeEntity(id:int) : void {
+         if(this._delayedActionEntities[id])
          {
-            TooltipManager.hide(this._delayedActionEntities[param1]);
-            delete this._delayedActionEntities[[param1]];
+            TooltipManager.hide(this._delayedActionEntities[id]);
+            delete this._delayedActionEntities[[id]];
          }
       }
       
       private function removeAll() : void {
-         var _loc1_:* = undefined;
-         for (_loc1_ in this._delayedActionEntities)
+         var id:* = undefined;
+         for (id in this._delayedActionEntities)
          {
-            this.removeEntity(_loc1_);
+            this.removeEntity(id);
          }
       }
    }

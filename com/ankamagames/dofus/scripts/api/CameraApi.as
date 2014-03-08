@@ -19,24 +19,24 @@ package com.ankamagames.dofus.scripts.api
          return this._camera.currentZoom;
       }
       
-      public function set currentZoom(param1:Number) : void {
-         this._camera.currentZoom = param1;
+      public function set currentZoom(pZoom:Number) : void {
+         this._camera.currentZoom = pZoom;
       }
       
-      public function setZoom(param1:Number) : ISequencable {
-         return this._camera.setZoom(param1);
+      public function setZoom(pZoom:Number) : ISequencable {
+         return this._camera.setZoom(pZoom);
       }
       
-      public function zoom(... rest) : ISequencable {
-         return this._camera.zoom(rest);
+      public function zoom(... pArgs) : ISequencable {
+         return this._camera.zoom(pArgs);
       }
       
-      public function moveTo(... rest) : ISequencable {
-         return this._camera.moveTo(rest);
+      public function moveTo(... pArgs) : ISequencable {
+         return this._camera.moveTo(pArgs);
       }
       
-      public function follow(param1:ScriptEntity) : ISequencable {
-         return this._camera.follow(param1);
+      public function follow(pEntity:ScriptEntity) : ISequencable {
+         return this._camera.follow(pEntity);
       }
       
       public function stop() : ISequencable {

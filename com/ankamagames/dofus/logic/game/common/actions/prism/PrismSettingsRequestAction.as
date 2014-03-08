@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.prism
          super();
       }
       
-      public static function create(param1:uint, param2:uint) : PrismSettingsRequestAction {
-         var _loc3_:PrismSettingsRequestAction = new PrismSettingsRequestAction();
-         _loc3_.subAreaId = param1;
-         _loc3_.startDefenseTime = param2;
-         return _loc3_;
+      public static function create(subAreaId:uint, startDefenseTime:uint) : PrismSettingsRequestAction {
+         var action:PrismSettingsRequestAction = new PrismSettingsRequestAction();
+         action.subAreaId = subAreaId;
+         action.startDefenseTime = startDefenseTime;
+         return action;
       }
       
       public var subAreaId:uint;

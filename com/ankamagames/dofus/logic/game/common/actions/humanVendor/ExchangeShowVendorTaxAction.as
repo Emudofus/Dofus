@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.humanVendor
       }
       
       public static function create() : ExchangeShowVendorTaxAction {
-         var _loc1_:ExchangeShowVendorTaxAction = new ExchangeShowVendorTaxAction();
-         return _loc1_;
+         var a:ExchangeShowVendorTaxAction = new ExchangeShowVendorTaxAction();
+         return a;
       }
    }
 }

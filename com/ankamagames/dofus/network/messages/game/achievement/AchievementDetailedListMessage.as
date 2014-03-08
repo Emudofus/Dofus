@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.achievement
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.achievement.Achievement;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,9 +33,9 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6358;
       }
       
-      public function initAchievementDetailedListMessage(param1:Vector.<Achievement>=null, param2:Vector.<Achievement>=null) : AchievementDetailedListMessage {
-         this.startedAchievements = param1;
-         this.finishedAchievements = param2;
+      public function initAchievementDetailedListMessage(startedAchievements:Vector.<Achievement>=null, finishedAchievements:Vector.<Achievement>=null) : AchievementDetailedListMessage {
+         this.startedAchievements = startedAchievements;
+         this.finishedAchievements = finishedAchievements;
          this._isInitialized = true;
          return this;
       }
@@ -46,61 +46,61 @@ package com.ankamagames.dofus.network.messages.game.achievement
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AchievementDetailedListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AchievementDetailedListMessage(output);
       }
       
-      public function serializeAs_AchievementDetailedListMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.startedAchievements.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.startedAchievements.length)
+      public function serializeAs_AchievementDetailedListMessage(output:IDataOutput) : void {
+         output.writeShort(this.startedAchievements.length);
+         var _i1:uint = 0;
+         while(_i1 < this.startedAchievements.length)
          {
-            (this.startedAchievements[_loc2_] as Achievement).serializeAs_Achievement(param1);
-            _loc2_++;
+            (this.startedAchievements[_i1] as Achievement).serializeAs_Achievement(output);
+            _i1++;
          }
-         param1.writeShort(this.finishedAchievements.length);
-         var _loc3_:uint = 0;
-         while(_loc3_ < this.finishedAchievements.length)
+         output.writeShort(this.finishedAchievements.length);
+         var _i2:uint = 0;
+         while(_i2 < this.finishedAchievements.length)
          {
-            (this.finishedAchievements[_loc3_] as Achievement).serializeAs_Achievement(param1);
-            _loc3_++;
+            (this.finishedAchievements[_i2] as Achievement).serializeAs_Achievement(output);
+            _i2++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AchievementDetailedListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AchievementDetailedListMessage(input);
       }
       
-      public function deserializeAs_AchievementDetailedListMessage(param1:IDataInput) : void {
-         var _loc6_:Achievement = null;
-         var _loc7_:Achievement = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_AchievementDetailedListMessage(input:IDataInput) : void {
+         var _item1:Achievement = null;
+         var _item2:Achievement = null;
+         var _startedAchievementsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _startedAchievementsLen)
          {
-            _loc6_ = new Achievement();
-            _loc6_.deserialize(param1);
-            this.startedAchievements.push(_loc6_);
-            _loc3_++;
+            _item1 = new Achievement();
+            _item1.deserialize(input);
+            this.startedAchievements.push(_item1);
+            _i1++;
          }
-         var _loc4_:uint = param1.readUnsignedShort();
-         var _loc5_:uint = 0;
-         while(_loc5_ < _loc4_)
+         var _finishedAchievementsLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2 < _finishedAchievementsLen)
          {
-            _loc7_ = new Achievement();
-            _loc7_.deserialize(param1);
-            this.finishedAchievements.push(_loc7_);
-            _loc5_++;
+            _item2 = new Achievement();
+            _item2.deserialize(input);
+            this.finishedAchievements.push(_item2);
+            _i2++;
          }
       }
    }

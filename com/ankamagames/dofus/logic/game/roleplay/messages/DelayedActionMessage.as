@@ -5,11 +5,11 @@ package com.ankamagames.dofus.logic.game.roleplay.messages
    public class DelayedActionMessage extends Object implements Message
    {
       
-      public function DelayedActionMessage(param1:int, param2:uint, param3:Number) {
+      public function DelayedActionMessage(playerId:int, itemId:uint, endTime:Number) {
          super();
-         this._playerId = param1;
-         this._itemId = param2;
-         this._endTime = param3;
+         this._playerId = playerId;
+         this._itemId = itemId;
+         this._endTime = endTime;
       }
       
       private var _playerId:int;

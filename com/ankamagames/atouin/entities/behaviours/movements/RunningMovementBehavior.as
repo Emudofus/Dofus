@@ -15,8 +15,8 @@ package com.ankamagames.atouin.entities.behaviours.movements
       
       private static const RUN_ANIMATION:String = "AnimCourse";
       
-      public static function getInstance(param1:Number=0.0) : RunningMovementBehavior {
-         return getFromCache(param1,RunningMovementBehavior) as RunningMovementBehavior;
+      public static function getInstance(speedAdjust:Number=0.0) : RunningMovementBehavior {
+         return getFromCache(speedAdjust,RunningMovementBehavior) as RunningMovementBehavior;
       }
       
       override protected function getLinearVelocity() : Number {

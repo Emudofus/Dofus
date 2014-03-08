@@ -32,63 +32,63 @@ package com.ankamagames.dofus.logic.common.managers
       
       private var _accounts:Dictionary;
       
-      public function getIsKnowAccount(param1:String) : Boolean {
-         return this._accounts.hasOwnProperty(param1);
+      public function getIsKnowAccount(playerName:String) : Boolean {
+         return this._accounts.hasOwnProperty(playerName);
       }
       
-      public function getAccountId(param1:String) : int {
-         if(this._accounts[param1])
+      public function getAccountId(playerName:String) : int {
+         if(this._accounts[playerName])
          {
-            return this._accounts[param1].id;
+            return this._accounts[playerName].id;
          }
          return 0;
       }
       
-      public function getAccountName(param1:String) : String {
-         if(this._accounts[param1])
+      public function getAccountName(playerName:String) : String {
+         if(this._accounts[playerName])
          {
-            return this._accounts[param1].name;
+            return this._accounts[playerName].name;
          }
          return "";
       }
       
-      public function setAccount(param1:String, param2:int, param3:String=null) : void {
-         this._accounts[param1] = 
+      public function setAccount(playerName:String, accountId:int, accountName:String=null) : void {
+         this._accounts[playerName] = 
             {
-               "id":param2,
-               "name":param3
+               "id":accountId,
+               "name":accountName
             };
       }
       
-      public function setAccountFromId(param1:int, param2:int, param3:String=null) : void {
-         var _loc5_:GameRolePlayNamedActorInformations = null;
-         var _loc6_:FightEntitiesFrame = null;
-         var _loc7_:GameFightFighterNamedInformations = null;
-         var _loc4_:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-         if(_loc4_)
+      public function setAccountFromId(playerId:int, accountId:int, accountName:String=null) : void {
+         var entityInfo:GameRolePlayNamedActorInformations = null;
+         var _fightEntityFrame:FightEntitiesFrame = null;
+         var fightInfo:GameFightFighterNamedInformations = null;
+         var _roleplayEntityFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+         if(_roleplayEntityFrame)
          {
-            _loc5_ = _loc4_.getEntityInfos(param1) as GameRolePlayNamedActorInformations;
-            if(_loc5_)
+            entityInfo = _roleplayEntityFrame.getEntityInfos(playerId) as GameRolePlayNamedActorInformations;
+            if(entityInfo)
             {
-               this._accounts[_loc5_.name] = 
+               this._accounts[entityInfo.name] = 
                   {
-                     "id":param2,
-                     "name":param3
+                     "id":accountId,
+                     "name":accountName
                   };
             }
          }
          else
          {
-            _loc6_ = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-            if(_loc6_)
+            _fightEntityFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+            if(_fightEntityFrame)
             {
-               _loc7_ = _loc6_.getEntityInfos(param1) as GameFightFighterNamedInformations;
-               if(_loc7_)
+               fightInfo = _fightEntityFrame.getEntityInfos(playerId) as GameFightFighterNamedInformations;
+               if(fightInfo)
                {
-                  this._accounts[_loc7_.name] = 
+                  this._accounts[fightInfo.name] = 
                      {
-                        "id":param2,
-                        "name":param3
+                        "id":accountId,
+                        "name":accountName
                      };
                }
             }

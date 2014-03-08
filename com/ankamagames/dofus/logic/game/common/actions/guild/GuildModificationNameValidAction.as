@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.guild
          super();
       }
       
-      public static function create(param1:String) : GuildModificationNameValidAction {
-         var _loc2_:GuildModificationNameValidAction = new GuildModificationNameValidAction();
-         _loc2_.guildName = param1;
-         return _loc2_;
+      public static function create(pGuildName:String) : GuildModificationNameValidAction {
+         var action:GuildModificationNameValidAction = new GuildModificationNameValidAction();
+         action.guildName = pGuildName;
+         return action;
       }
       
       public var guildName:String;

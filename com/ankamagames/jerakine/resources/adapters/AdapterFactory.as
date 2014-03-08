@@ -15,9 +15,9 @@ package com.ankamagames.jerakine.resources.adapters
       
       private static var _customAdapters:Dictionary = new Dictionary();
       
-      public static function getAdapter(param1:Uri) : IAdapter {
-         var _loc3_:* = undefined;
-         switch(param1.fileType)
+      public static function getAdapter(uri:Uri) : IAdapter {
+         var ca:* = undefined;
+         switch(uri.fileType)
          {
             case "xml":
             case "meta":
@@ -45,45 +45,15 @@ package com.ankamagames.jerakine.resources.adapters
                return new ZipAdapter();
             case "mp3":
                return new MP3Adapter();
-            default:
-               if(param1.subPath)
-               {
-                  switch(FileUtils.getExtension(param1.path))
-                  {
-                     case "swf":
-                        return new AdvancedSwfAdapter();
-                  }
-               }
-               _loc2_ = _customAdapters[param1.fileType] as Class;
-               if(_loc2_)
-               {
-                  _loc3_ = new _loc2_();
-                  if(!(_loc3_ is IAdapter))
-                  {
-                     throw new ResourceError("Registered custom adapter for extension " + param1.fileType + " isn\'t an IAdapter class.");
-                  }
-                  else
-                  {
-                     return _loc3_;
-                  }
-               }
-               else
-               {
-                  if(param1.fileType.substr(-1) == "s")
-                  {
-                     return new SignedFileAdapter();
-                  }
-                  return new BinaryAdapter();
-               }
          }
       }
       
-      public static function addAdapter(param1:String, param2:Class) : void {
-         _customAdapters[param1] = param2;
+      public static function addAdapter(extension:String, adapter:Class) : void {
+         _customAdapters[extension] = adapter;
       }
       
-      public static function removeAdapter(param1:String) : void {
-         delete _customAdapters[[param1]];
+      public static function removeAdapter(extension:String) : void {
+         delete _customAdapters[[extension]];
       }
       
       private var include_SimpleLoaderAdapter:SimpleLoaderAdapter = null;

@@ -15,10 +15,10 @@ package com.ankamagames.jerakine.logger.targets
       
       public function FileTarget() {
          super();
-         var _loc1_:Date = new Date();
-         this._name = CustomSharedObject.getCustomSharedObjectDirectory() + "/logs/log_" + _loc1_.fullYear + "-" + _loc1_.month + "-" + _loc1_.day + "_" + _loc1_.hours + "h" + _loc1_.minutes + "m" + _loc1_.seconds + "s" + _loc1_.milliseconds + ".log";
-         var _loc2_:File = new File(this._name);
-         _fileStream.openAsync(_loc2_,FileMode.WRITE);
+         var date:Date = new Date();
+         this._name = CustomSharedObject.getCustomSharedObjectDirectory() + "/logs/log_" + date.fullYear + "-" + date.month + "-" + date.day + "_" + date.hours + "h" + date.minutes + "m" + date.seconds + "s" + date.milliseconds + ".log";
+         var file:File = new File(this._name);
+         _fileStream.openAsync(file,FileMode.WRITE);
       }
       
       private static var _socket:XMLSocket = new XMLSocket();
@@ -29,12 +29,12 @@ package com.ankamagames.jerakine.logger.targets
       
       private static var _fileStream:FileStream = new FileStream();
       
-      private static function send(param1:int, param2:String) : void {
-         _fileStream.writeUTFBytes("[" + param1 + "] " + param2);
+      private static function send(level:int, message:String) : void {
+         _fileStream.writeUTFBytes("[" + level + "] " + message);
       }
       
-      private static function getKeyName(param1:int) : String {
-         switch(param1)
+      private static function getKeyName(level:int) : String {
+         switch(level)
          {
             case LogLevel.TRACE:
                return "trace";
@@ -48,35 +48,33 @@ package com.ankamagames.jerakine.logger.targets
                return "error";
             case LogLevel.FATAL:
                return "fatal";
-            default:
-               return "severe";
          }
       }
       
-      private static function onSocket(param1:Event) : void {
-         var _loc2_:LoggerHistoryElement = null;
+      private static function onSocket(e:Event) : void {
+         var o:LoggerHistoryElement = null;
          _connecting = false;
-         for each (_loc2_ in _history)
+         for each (o in _history)
          {
-            send(_loc2_.level,_loc2_.message);
+            send(o.level,o.message);
          }
          _history = new Array();
       }
       
-      private static function onSocketError(param1:Event) : void {
+      private static function onSocketError(e:Event) : void {
          _connecting = false;
       }
       
       private var _name:String;
       
-      override public function logEvent(param1:LogEvent) : void {
-         if(param1 is TextLogEvent)
+      override public function logEvent(event:LogEvent) : void {
+         if(event is TextLogEvent)
          {
-            send(param1.level,param1.message + "\n");
+            send(event.level,event.message + "\n");
          }
       }
       
-      public function configure(param1:XML) : void {
+      public function configure(config:XML) : void {
       }
       
       public function get name() : String {

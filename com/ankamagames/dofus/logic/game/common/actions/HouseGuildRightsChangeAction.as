@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:int) : HouseGuildRightsChangeAction {
-         var _loc2_:HouseGuildRightsChangeAction = new HouseGuildRightsChangeAction();
-         _loc2_.rights = param1;
-         return _loc2_;
+      public static function create(rights:int) : HouseGuildRightsChangeAction {
+         var action:HouseGuildRightsChangeAction = new HouseGuildRightsChangeAction();
+         action.rights = rights;
+         return action;
       }
       
       public var rights:int;

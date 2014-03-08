@@ -29,8 +29,8 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5952;
       }
       
-      public function initGuildPaddockBoughtMessage(param1:PaddockContentInformations=null) : GuildPaddockBoughtMessage {
-         this.paddockInfo = param1;
+      public function initGuildPaddockBoughtMessage(paddockInfo:PaddockContentInformations=null) : GuildPaddockBoughtMessage {
+         this.paddockInfo = paddockInfo;
          this._isInitialized = true;
          return this;
       }
@@ -40,31 +40,31 @@ package com.ankamagames.dofus.network.messages.game.guild
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildPaddockBoughtMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildPaddockBoughtMessage(output);
       }
       
-      public function serializeAs_GuildPaddockBoughtMessage(param1:IDataOutput) : void {
-         this.paddockInfo.serializeAs_PaddockContentInformations(param1);
+      public function serializeAs_GuildPaddockBoughtMessage(output:IDataOutput) : void {
+         this.paddockInfo.serializeAs_PaddockContentInformations(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildPaddockBoughtMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildPaddockBoughtMessage(input);
       }
       
-      public function deserializeAs_GuildPaddockBoughtMessage(param1:IDataInput) : void {
+      public function deserializeAs_GuildPaddockBoughtMessage(input:IDataInput) : void {
          this.paddockInfo = new PaddockContentInformations();
-         this.paddockInfo.deserialize(param1);
+         this.paddockInfo.deserialize(input);
       }
    }
 }

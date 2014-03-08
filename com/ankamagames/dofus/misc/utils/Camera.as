@@ -21,9 +21,9 @@ package com.ankamagames.dofus.misc.utils
    public class Camera extends Object
    {
       
-      public function Camera(param1:Number=1) {
+      public function Camera(pZoom:Number=1) {
          super();
-         this._zoom = param1;
+         this._zoom = pZoom;
          this._container = Atouin.getInstance().rootContainer;
       }
       
@@ -53,8 +53,8 @@ package com.ankamagames.dofus.misc.utils
          return this._zoom;
       }
       
-      public function set currentZoom(param1:Number) : void {
-         this._zoom = param1;
+      public function set currentZoom(pZoom:Number) : void {
+         this._zoom = pZoom;
       }
       
       public function get x() : Number {
@@ -65,36 +65,35 @@ package com.ankamagames.dofus.misc.utils
          return this._y;
       }
       
-      public function setZoom(param1:Number) : ISequencable {
-         var pZoom:Number = param1;
-         return new CallbackStep(new Callback(function(param1:Camera, param2:Number):void
+      public function setZoom(pZoom:Number) : ISequencable {
+         return new CallbackStep(new Callback(function(pCamera:Camera, pNewZoom:Number):void
          {
-            param1.currentZoom = param2;
+            pCamera.currentZoom = pNewZoom;
          },this,pZoom));
       }
       
-      public function zoom(param1:Array) : ISequencable {
-         var _loc2_:Array = param1;
-         var _loc3_:* = true;
-         if(_loc2_[_loc2_.length-1] is Boolean)
+      public function zoom(pArgs:Array) : ISequencable {
+         var args:Array = pArgs;
+         var instant:Boolean = true;
+         if(args[args.length - 1] is Boolean)
          {
-            _loc3_ = _loc2_.pop();
+            instant = args.pop();
          }
-         return new CameraZoomStep(this,_loc2_,_loc3_);
+         return new CameraZoomStep(this,args,instant);
       }
       
-      public function moveTo(param1:Array) : ISequencable {
-         var _loc2_:Array = param1;
-         var _loc3_:* = true;
-         if(_loc2_[_loc2_.length-1] is Boolean)
+      public function moveTo(pArgs:Array) : ISequencable {
+         var args:Array = pArgs;
+         var instant:Boolean = true;
+         if(args[args.length - 1] is Boolean)
          {
-            _loc3_ = _loc2_.pop();
+            instant = args.pop();
          }
-         return new CameraMoveStep(this,_loc2_,_loc3_);
+         return new CameraMoveStep(this,args,instant);
       }
       
-      public function follow(param1:ScriptEntity) : ISequencable {
-         return new CameraFollowStep(this,DofusEntities.getEntity(param1.id) as AnimatedCharacter);
+      public function follow(pEntity:ScriptEntity) : ISequencable {
+         return new CameraFollowStep(this,DofusEntities.getEntity(pEntity.id) as AnimatedCharacter);
       }
       
       public function stop() : ISequencable {
@@ -105,16 +104,16 @@ package com.ankamagames.dofus.misc.utils
          return new CallbackStep(new Callback(this.zoomOnPos,MIN_SCALE,0,0));
       }
       
-      public function followEntity(param1:AnimatedCharacter) : void {
+      public function followEntity(pEntity:AnimatedCharacter) : void {
          this.stop().start();
-         this._entityToFollow = param1;
+         this._entityToFollow = pEntity;
          EnterFrameDispatcher.addEventListener(this.onEnterFrame,"Camera");
       }
       
-      public function zoomOnPos(param1:Number, param2:Number, param3:Number) : void {
-         var _loc4_:* = NaN;
-         var _loc5_:* = NaN;
-         if(param1 <= MIN_SCALE)
+      public function zoomOnPos(pTargetZoom:Number, pTargetX:Number, pTargetY:Number) : void {
+         var finalX:* = NaN;
+         var finalY:* = NaN;
+         if(pTargetZoom <= MIN_SCALE)
          {
             this._container.scaleX = MIN_SCALE;
             this._container.scaleY = MIN_SCALE;
@@ -126,55 +125,55 @@ package com.ankamagames.dofus.misc.utils
          else
          {
             MapDisplayManager.getInstance().cacheAsBitmapEnabled(false);
-            this._container.scaleX = param1;
-            this._container.scaleY = param1;
-            _loc4_ = -param2 * param1 + CENTER_X;
-            _loc5_ = -param3 * param1 + CENTER_Y;
-            if((LASTCELL_X - param2) * param1 < LASTCELL_X / 2)
+            this._container.scaleX = pTargetZoom;
+            this._container.scaleY = pTargetZoom;
+            finalX = -pTargetX * pTargetZoom + CENTER_X;
+            finalY = -pTargetY * pTargetZoom + CENTER_Y;
+            if((LASTCELL_X - pTargetX) * pTargetZoom < LASTCELL_X / 2)
             {
-               _loc4_ = _loc4_ + (CENTER_X - (1262 - param2) * param1);
-               if(_loc4_ < -param2 * param1)
+               finalX = finalX + (CENTER_X - (1262 - pTargetX) * pTargetZoom);
+               if(finalX < -pTargetX * pTargetZoom)
                {
-                  _loc4_ = -param2 * param1 + CENTER_X;
+                  finalX = -pTargetX * pTargetZoom + CENTER_X;
                }
             }
             else
             {
-               if(param2 < CENTER_X / param1)
+               if(pTargetX < CENTER_X / pTargetZoom)
                {
-                  _loc4_ = 0;
+                  finalX = 0;
                }
             }
-            if((LASTCELL_Y - param3) * param1 < LASTCELL_Y / 2)
+            if((LASTCELL_Y - pTargetY) * pTargetZoom < LASTCELL_Y / 2)
             {
-               _loc5_ = _loc5_ + (CENTER_Y - (876 - OFFSCREEN_Y - param3) * param1);
-               if(_loc5_ < -param3 * param1)
+               finalY = finalY + (CENTER_Y - (876 - OFFSCREEN_Y - pTargetY) * pTargetZoom);
+               if(finalY < -pTargetY * pTargetZoom)
                {
-                  _loc5_ = -param3 * param1 + CENTER_Y;
+                  finalY = -pTargetY * pTargetZoom + CENTER_Y;
                }
-               _loc5_ = _loc5_ + OFFSCREEN_Y;
+               finalY = finalY + OFFSCREEN_Y;
             }
             else
             {
-               if(param3 < CENTER_Y / param1)
+               if(pTargetY < CENTER_Y / pTargetZoom)
                {
-                  _loc5_ = 0;
+                  finalY = 0;
                }
             }
-            this._container.x = _loc4_;
-            this._container.y = _loc5_;
-            Atouin.getInstance().currentZoom = param1;
+            this._container.x = finalX;
+            this._container.y = finalY;
+            Atouin.getInstance().currentZoom = pTargetZoom;
          }
-         this._x = param2;
-         this._y = param3;
+         this._x = pTargetX;
+         this._y = pTargetY;
       }
       
-      private function onEnterFrame(param1:Event) : void {
-         var _loc2_:Point = this._entityToFollow.parent.localToGlobal(new Point(this._entityToFollow.x,this._entityToFollow.y));
-         var _loc3_:Point = this._container.globalToLocal(_loc2_);
+      private function onEnterFrame(pEvent:Event) : void {
+         var entityPos:Point = this._entityToFollow.parent.localToGlobal(new Point(this._entityToFollow.x,this._entityToFollow.y));
+         var pos:Point = this._container.globalToLocal(entityPos);
          if(this._zoom > MIN_SCALE)
          {
-            this.zoomOnPos(this._zoom,_loc3_.x,_loc3_.y);
+            this.zoomOnPos(this._zoom,pos.x,pos.y);
          }
       }
    }

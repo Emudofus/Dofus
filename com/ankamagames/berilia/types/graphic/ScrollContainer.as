@@ -50,26 +50,26 @@ package com.ankamagames.berilia.types.graphic
       
       private var _scrollBarSize:uint = 16;
       
-      public function set finalized(param1:Boolean) : void {
-         this._finalized = param1;
+      public function set finalized(b:Boolean) : void {
+         this._finalized = b;
       }
       
       public function get finalized() : Boolean {
          return this._finalized;
       }
       
-      override public function set width(param1:Number) : void {
-         super.width = param1;
-         this._mask.width = param1;
+      override public function set width(n:Number) : void {
+         super.width = n;
+         this._mask.width = n;
       }
       
-      override public function set height(param1:Number) : void {
-         super.height = param1;
-         this._mask.height = param1;
+      override public function set height(n:Number) : void {
+         super.height = n;
+         this._mask.height = n;
       }
       
-      public function set scrollbarCss(param1:Uri) : void {
-         this._scrollBarCss = param1;
+      public function set scrollbarCss(sValue:Uri) : void {
+         this._scrollBarCss = sValue;
       }
       
       public function get verticalScrollSpeed() : Number {
@@ -80,18 +80,18 @@ package com.ankamagames.berilia.types.graphic
          return this._vScrollbarSpeed;
       }
       
-      public function set verticalScrollSpeed(param1:Number) : void {
+      public function set verticalScrollSpeed(speed:Number) : void {
          if(this._vScrollbar)
          {
-            this._vScrollbar.scrollSpeed = param1;
+            this._vScrollbar.scrollSpeed = speed;
          }
-         this._vScrollbarSpeed = param1;
+         this._vScrollbarSpeed = speed;
       }
       
-      public function set verticalScrollbarValue(param1:int) : void {
+      public function set verticalScrollbarValue(value:int) : void {
          if(this._vScrollbar)
          {
-            this._vScrollbar.value = param1;
+            this._vScrollbar.value = value;
             this.onVerticalScroll(null);
          }
       }
@@ -108,8 +108,8 @@ package com.ankamagames.berilia.types.graphic
          return this._useHorizontalScroll;
       }
       
-      public function set useHorizontalScroll(param1:Boolean) : void {
-         this._useHorizontalScroll = param1;
+      public function set useHorizontalScroll(yes:Boolean) : void {
+         this._useHorizontalScroll = yes;
       }
       
       public function get horizontalScrollSpeed() : Number {
@@ -120,18 +120,18 @@ package com.ankamagames.berilia.types.graphic
          return this._hScrollbarSpeed;
       }
       
-      public function set horizontalScrollSpeed(param1:Number) : void {
+      public function set horizontalScrollSpeed(speed:Number) : void {
          if(this._hScrollbar)
          {
-            this._hScrollbar.scrollSpeed = param1;
+            this._hScrollbar.scrollSpeed = speed;
          }
-         this._hScrollbarSpeed = param1;
+         this._hScrollbarSpeed = speed;
       }
       
-      public function set horizontalScrollbarValue(param1:int) : void {
+      public function set horizontalScrollbarValue(value:int) : void {
          if(this._hScrollbar)
          {
-            this._hScrollbar.value = param1;
+            this._hScrollbar.value = value;
             this.onHorizontalScroll(null);
          }
       }
@@ -144,30 +144,30 @@ package com.ankamagames.berilia.types.graphic
          return -1;
       }
       
-      override public function addChild(param1:DisplayObject) : DisplayObject {
-         param1.addEventListener(Event.REMOVED,this.onChildRemoved);
-         this.getStrata(0).addChild(param1);
+      override public function addChild(child:DisplayObject) : DisplayObject {
+         child.addEventListener(Event.REMOVED,this.onChildRemoved);
+         this.getStrata(0).addChild(child);
          this.finalize();
-         param1.addEventListener(UiRenderEvent.UIRenderComplete,this.onChildFinalized);
-         return param1;
+         child.addEventListener(UiRenderEvent.UIRenderComplete,this.onChildFinalized);
+         return child;
       }
       
-      override public function addContent(param1:GraphicContainer, param2:int=-1) : GraphicContainer {
-         param1.addEventListener(Event.REMOVED,this.onChildRemoved);
-         this.getStrata(0).addChild(param1);
+      override public function addContent(child:GraphicContainer, index:int=-1) : GraphicContainer {
+         child.addEventListener(Event.REMOVED,this.onChildRemoved);
+         this.getStrata(0).addChild(child);
          this.finalize();
-         param1.addEventListener(UiRenderEvent.UIRenderComplete,this.onChildFinalized);
-         return param1;
+         child.addEventListener(UiRenderEvent.UIRenderComplete,this.onChildFinalized);
+         return child;
       }
       
       public function finalize() : void {
-         var _loc1_:Boolean = width < Math.floor(this._content.width) && (this._useHorizontalScroll);
-         var _loc2_:* = height < Math.floor(this._content.height);
+         var hScroll:Boolean = (width < Math.floor(this._content.width)) && (this._useHorizontalScroll);
+         var vScroll:Boolean = height < Math.floor(this._content.height);
          this._mask.height = height;
          this._mask.width = width;
          this._content.x = 0;
          this._content.y = 0;
-         if(_loc1_)
+         if(hScroll)
          {
             if(!this._hScrollbar)
             {
@@ -188,8 +188,8 @@ package com.ankamagames.berilia.types.graphic
                super.addChild(this._hScrollbar);
             }
             this._mask.height = height - this._scrollBarSize;
-            this._hScrollbar.width = width - (_loc2_?this._scrollBarSize:0);
-            this._hScrollbar.max = this._content.width - width + (_loc2_?this._scrollBarSize:0);
+            this._hScrollbar.width = width - (vScroll?this._scrollBarSize:0);
+            this._hScrollbar.max = this._content.width - width + (vScroll?this._scrollBarSize:0);
          }
          else
          {
@@ -198,7 +198,7 @@ package com.ankamagames.berilia.types.graphic
                removeChild(this._hScrollbar);
             }
          }
-         if(_loc2_)
+         if(vScroll)
          {
             if(!this._vScrollbar)
             {
@@ -219,8 +219,8 @@ package com.ankamagames.berilia.types.graphic
                super.addChild(this._vScrollbar);
             }
             this._mask.width = width - this._scrollBarSize;
-            this._vScrollbar.height = height - (_loc1_?this._scrollBarSize:0);
-            this._vScrollbar.max = this._content.height - height + (_loc2_?this._scrollBarSize:0);
+            this._vScrollbar.height = height - (hScroll?this._scrollBarSize:0);
+            this._vScrollbar.max = this._content.height - height + (vScroll?this._scrollBarSize:0);
          }
          else
          {
@@ -230,71 +230,69 @@ package com.ankamagames.berilia.types.graphic
             }
          }
          this._finalized = true;
-         var _loc3_:Shape = new Shape();
-         _loc3_.graphics.beginFill(0,0);
-         _loc3_.graphics.drawRect(0,0,__width,__height);
-         super.addChild(_loc3_);
+         var mouseEventCatcher:Shape = new Shape();
+         mouseEventCatcher.graphics.beginFill(0,0);
+         mouseEventCatcher.graphics.drawRect(0,0,__width,__height);
+         super.addChild(mouseEventCatcher);
          getUi().iAmFinalized(this);
       }
       
-      override public function process(param1:Message) : Boolean {
+      override public function process(msg:Message) : Boolean {
          switch(true)
          {
-            case param1 is MouseWheelMessage:
-               if((this._vScrollbar) && !(this._vScrollbar.parent == null))
+            case msg is MouseWheelMessage:
+               if((this._vScrollbar) && (!(this._vScrollbar.parent == null)))
                {
-                  this._vScrollbar.onWheel(MouseWheelMessage(param1).mouseEvent);
+                  this._vScrollbar.onWheel(MouseWheelMessage(msg).mouseEvent);
                }
                else
                {
-                  if((this._hScrollbar) && !(this._hScrollbar.parent == null))
+                  if((this._hScrollbar) && (!(this._hScrollbar.parent == null)))
                   {
-                     this._hScrollbar.onWheel(MouseWheelMessage(param1).mouseEvent);
+                     this._hScrollbar.onWheel(MouseWheelMessage(msg).mouseEvent);
                   }
                }
                return true;
-            default:
-               return false;
          }
       }
       
-      override public function getStrata(param1:uint) : Sprite {
-         var _loc2_:uint = 0;
-         var _loc3_:uint = 0;
-         if(_aStrata[param1] != null)
+      override public function getStrata(nStrata:uint) : Sprite {
+         var nIndex:uint = 0;
+         var i:uint = 0;
+         if(_aStrata[nStrata] != null)
          {
-            return _aStrata[param1];
+            return _aStrata[nStrata];
          }
-         _aStrata[param1] = new Sprite();
-         _aStrata[param1].name = "strata_" + param1;
-         _aStrata[param1].mouseEnabled = mouseEnabled;
-         _loc2_ = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _aStrata.length)
+         _aStrata[nStrata] = new Sprite();
+         _aStrata[nStrata].name = "strata_" + nStrata;
+         _aStrata[nStrata].mouseEnabled = mouseEnabled;
+         nIndex = 0;
+         i = 0;
+         while(i < _aStrata.length)
          {
-            if(_aStrata[_loc3_] != null)
+            if(_aStrata[i] != null)
             {
-               this._content.addChildAt(_aStrata[_loc3_],_loc2_++);
+               this._content.addChildAt(_aStrata[i],nIndex++);
             }
-            _loc3_++;
+            i++;
          }
-         return _aStrata[param1];
+         return _aStrata[nStrata];
       }
       
-      private function onVerticalScroll(param1:Event) : void {
+      private function onVerticalScroll(e:Event) : void {
          this._content.y = -this._vScrollbar.value;
       }
       
-      private function onHorizontalScroll(param1:Event) : void {
+      private function onHorizontalScroll(e:Event) : void {
          this._content.x = -this._hScrollbar.value;
       }
       
-      private function onChildFinalized(param1:Event) : void {
-         param1.target.removeEventListener(UiRenderEvent.UIRenderComplete,this.onChildFinalized);
+      private function onChildFinalized(e:Event) : void {
+         e.target.removeEventListener(UiRenderEvent.UIRenderComplete,this.onChildFinalized);
          this.finalize();
       }
       
-      private function onChildRemoved(param1:Event) : void {
+      private function onChildRemoved(e:Event) : void {
       }
    }
 }

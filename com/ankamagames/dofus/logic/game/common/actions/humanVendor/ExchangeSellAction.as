@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.humanVendor
          super();
       }
       
-      public static function create(param1:uint, param2:uint) : ExchangeSellAction {
-         var _loc3_:ExchangeSellAction = new ExchangeSellAction();
-         _loc3_.objectUID = param1;
-         _loc3_.quantity = param2;
-         return _loc3_;
+      public static function create(pObjectUID:uint, pQuantity:uint) : ExchangeSellAction {
+         var a:ExchangeSellAction = new ExchangeSellAction();
+         a.objectUID = pObjectUID;
+         a.quantity = pQuantity;
+         return a;
       }
       
       public var objectUID:uint;

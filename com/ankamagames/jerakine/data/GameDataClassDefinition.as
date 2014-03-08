@@ -1,15 +1,15 @@
 package com.ankamagames.jerakine.data
 {
-   import __AS3__.vec.Vector;
    import flash.utils.IDataInput;
    import flash.utils.getDefinitionByName;
+   import __AS3__.vec.*;
    
    public class GameDataClassDefinition extends Object
    {
       
-      public function GameDataClassDefinition(param1:String, param2:String) {
+      public function GameDataClassDefinition(packageName:String, className:String) {
          super();
-         this._class = getDefinitionByName(param1 + "." + param2) as Class;
+         this._class = getDefinitionByName(packageName + "." + className) as Class;
          this._fields = new Vector.<GameDataField>();
       }
       
@@ -21,24 +21,24 @@ package com.ankamagames.jerakine.data
          return this._fields;
       }
       
-      public function read(param1:String, param2:IDataInput) : * {
-         var _loc4_:GameDataField = null;
-         var _loc3_:* = new this._class();
-         for each (_loc4_ in this._fields)
+      public function read(module:String, stream:IDataInput) : * {
+         var field:GameDataField = null;
+         var inst:* = new this._class();
+         for each (field in this._fields)
          {
-            _loc3_[_loc4_.name] = _loc4_.readData(param1,param2);
+            inst[field.name] = field.readData(module,stream);
          }
-         if(_loc3_ is IPostInit)
+         if(inst is IPostInit)
          {
-            IPostInit(_loc3_).postInit();
+            IPostInit(inst).postInit();
          }
-         return _loc3_;
+         return inst;
       }
       
-      public function addField(param1:String, param2:IDataInput) : void {
-         var _loc3_:GameDataField = new GameDataField(param1);
-         _loc3_.readType(param2);
-         this._fields.push(_loc3_);
+      public function addField(fieldName:String, stream:IDataInput) : void {
+         var field:GameDataField = new GameDataField(fieldName);
+         field.readType(stream);
+         this._fields.push(field);
       }
    }
 }

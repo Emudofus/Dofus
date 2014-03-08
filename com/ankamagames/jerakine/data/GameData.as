@@ -28,68 +28,68 @@ package com.ankamagames.jerakine.data
       
       private static var _overrides:Dictionary = new Dictionary();
       
-      public static function addOverride(param1:String, param2:int, param3:uint) : void {
-         if(!_overrides[param1])
+      public static function addOverride(moduleId:String, keyId:int, newKeyId:uint) : void {
+         if(!_overrides[moduleId])
          {
-            _overrides[param1] = [];
+            _overrides[moduleId] = [];
          }
-         _overrides[param1][param2] = param3;
+         _overrides[moduleId][keyId] = newKeyId;
       }
       
-      public static function getObject(param1:String, param2:int) : Object {
-         var _loc3_:Object = null;
-         var _loc4_:WeakReference = null;
-         if((_overrides[param1]) && (_overrides[param1][param2]))
+      public static function getObject(moduleId:String, keyId:int) : Object {
+         var o:Object = null;
+         var wr:WeakReference = null;
+         if((_overrides[moduleId]) && (_overrides[moduleId][keyId]))
          {
-            param2 = _overrides[param1][param2];
+            keyId = _overrides[moduleId][keyId];
          }
-         if(!_directObjectCaches[param1])
+         if(!_directObjectCaches[moduleId])
          {
-            _directObjectCaches[param1] = new Dictionary();
+            _directObjectCaches[moduleId] = new Dictionary();
          }
          else
          {
-            _loc4_ = _directObjectCaches[param1][param2];
-            if(_loc4_)
+            wr = _directObjectCaches[moduleId][keyId];
+            if(wr)
             {
-               _loc3_ = _loc4_.object;
-               if(_loc3_)
+               o = wr.object;
+               if(o)
                {
-                  return _loc3_;
+                  return o;
                }
             }
          }
-         if(!_objectCaches[param1])
+         if(!_objectCaches[moduleId])
          {
-            _objectCaches[param1] = new Cache(GameDataFileAccessor.getInstance().getCount(param1) * CACHE_SIZE_RATIO,new LruGarbageCollector());
+            _objectCaches[moduleId] = new Cache(GameDataFileAccessor.getInstance().getCount(moduleId) * CACHE_SIZE_RATIO,new LruGarbageCollector());
          }
          else
          {
-            _loc3_ = (_objectCaches[param1] as Cache).peek(param2);
-            if(_loc3_)
+            o = (_objectCaches[moduleId] as Cache).peek(keyId);
+            if(o)
             {
-               return _loc3_;
+               return o;
             }
          }
-         _loc3_ = GameDataFileAccessor.getInstance().getObject(param1,param2);
-         _directObjectCaches[param1][param2] = new WeakReference(_loc3_);
-         (_objectCaches[param1] as Cache).store(param2,_loc3_);
-         return _loc3_;
+         o = GameDataFileAccessor.getInstance().getObject(moduleId,keyId);
+         _directObjectCaches[moduleId][keyId] = new WeakReference(o);
+         (_objectCaches[moduleId] as Cache).store(keyId,o);
+         return o;
       }
       
-      public static function getObjects(param1:String) : Array {
-         var _loc2_:Array = null;
-         if(_objectsCaches[param1])
+      public static function getObjects(moduleId:String) : Array {
+         var objects:Array = null;
+         if(_objectsCaches[moduleId])
          {
-            _loc2_ = _objectsCaches[param1].object as Array;
-            if(_loc2_)
+            objects = _objectsCaches[moduleId].object as Array;
+            if(objects)
             {
-               return _loc2_;
+               return objects;
             }
          }
-         _loc2_ = GameDataFileAccessor.getInstance().getObjects(param1);
-         _objectsCaches[param1] = new SoftReference(_loc2_);
-         return _loc2_;
+         objects = GameDataFileAccessor.getInstance().getObjects(moduleId);
+         _objectsCaches[moduleId] = new SoftReference(objects);
+         return objects;
       }
    }
 }

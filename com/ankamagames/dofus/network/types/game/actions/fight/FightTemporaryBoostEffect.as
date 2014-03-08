@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.actions.fight
          return 209;
       }
       
-      public function initFightTemporaryBoostEffect(param1:uint=0, param2:int=0, param3:int=0, param4:uint=1, param5:uint=0, param6:uint=0, param7:int=0) : FightTemporaryBoostEffect {
-         super.initAbstractFightDispellableEffect(param1,param2,param3,param4,param5,param6);
-         this.delta = param7;
+      public function initFightTemporaryBoostEffect(uid:uint=0, targetId:int=0, turnDuration:int=0, dispelable:uint=1, spellId:uint=0, parentBoostUid:uint=0, delta:int=0) : FightTemporaryBoostEffect {
+         super.initAbstractFightDispellableEffect(uid,targetId,turnDuration,dispelable,spellId,parentBoostUid);
+         this.delta = delta;
          return this;
       }
       
@@ -30,22 +30,22 @@ package com.ankamagames.dofus.network.types.game.actions.fight
          this.delta = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FightTemporaryBoostEffect(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FightTemporaryBoostEffect(output);
       }
       
-      public function serializeAs_FightTemporaryBoostEffect(param1:IDataOutput) : void {
-         super.serializeAs_AbstractFightDispellableEffect(param1);
-         param1.writeShort(this.delta);
+      public function serializeAs_FightTemporaryBoostEffect(output:IDataOutput) : void {
+         super.serializeAs_AbstractFightDispellableEffect(output);
+         output.writeShort(this.delta);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FightTemporaryBoostEffect(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FightTemporaryBoostEffect(input);
       }
       
-      public function deserializeAs_FightTemporaryBoostEffect(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.delta = param1.readShort();
+      public function deserializeAs_FightTemporaryBoostEffect(input:IDataInput) : void {
+         super.deserialize(input);
+         this.delta = input.readShort();
       }
    }
 }

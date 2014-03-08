@@ -12,8 +12,8 @@ package com.ankamagames.atouin.data.elements.subtypes
    public class NormalGraphicalElementData extends GraphicalElementData
    {
       
-      public function NormalGraphicalElementData(param1:int, param2:int) {
-         super(param1,param2);
+      public function NormalGraphicalElementData(elementId:int, elementType:int) {
+         super(elementId,elementType);
          MEMORY_LOG[this] = 1;
       }
       
@@ -31,28 +31,28 @@ package com.ankamagames.atouin.data.elements.subtypes
       
       public var size:Point;
       
-      override public function fromRaw(param1:IDataInput, param2:int) : void {
-         this.gfxId = param1.readInt();
+      override public function fromRaw(raw:IDataInput, version:int) : void {
+         this.gfxId = raw.readInt();
          if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
          {
             _log.debug("  (ElementData) Element gfx id : " + this.gfxId);
          }
-         this.height = param1.readByte();
+         this.height = raw.readByte();
          if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
          {
             _log.debug("  (ElementData) Element height : " + this.height);
          }
-         this.horizontalSymmetry = param1.readBoolean();
+         this.horizontalSymmetry = raw.readBoolean();
          if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
          {
             _log.debug("  (ElementData) Element horizontals symmetry : " + this.horizontalSymmetry);
          }
-         this.origin = new Point(param1.readShort(),param1.readShort());
+         this.origin = new Point(raw.readShort(),raw.readShort());
          if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
          {
             _log.debug("  (ElementData) Origin : (" + this.origin.x + ";" + this.origin.y + ")");
          }
-         this.size = new Point(param1.readShort(),param1.readShort());
+         this.size = new Point(raw.readShort(),raw.readShort());
          if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
          {
             _log.debug("  (ElementData) Size : (" + this.size.x + ";" + this.size.y + ")");

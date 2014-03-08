@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6375;
       }
       
-      public function initAchievementRewardErrorMessage(param1:int=0) : AchievementRewardErrorMessage {
-         this.achievementId = param1;
+      public function initAchievementRewardErrorMessage(achievementId:int=0) : AchievementRewardErrorMessage {
+         this.achievementId = achievementId;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.achievement
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AchievementRewardErrorMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AchievementRewardErrorMessage(output);
       }
       
-      public function serializeAs_AchievementRewardErrorMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.achievementId);
+      public function serializeAs_AchievementRewardErrorMessage(output:IDataOutput) : void {
+         output.writeShort(this.achievementId);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AchievementRewardErrorMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AchievementRewardErrorMessage(input);
       }
       
-      public function deserializeAs_AchievementRewardErrorMessage(param1:IDataInput) : void {
-         this.achievementId = param1.readShort();
+      public function deserializeAs_AchievementRewardErrorMessage(input:IDataInput) : void {
+         this.achievementId = input.readShort();
       }
    }
 }

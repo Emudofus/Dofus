@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 700;
       }
       
-      public function initGameFightStartingMessage(param1:uint=0, param2:int=0, param3:int=0) : GameFightStartingMessage {
-         this.fightType = param1;
-         this.attackerId = param2;
-         this.defenderId = param3;
+      public function initGameFightStartingMessage(fightType:uint=0, attackerId:int=0, defenderId:int=0) : GameFightStartingMessage {
+         this.fightType = fightType;
+         this.attackerId = attackerId;
+         this.defenderId = defenderId;
          this._isInitialized = true;
          return this;
       }
@@ -46,40 +46,40 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightStartingMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightStartingMessage(output);
       }
       
-      public function serializeAs_GameFightStartingMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.fightType);
-         param1.writeInt(this.attackerId);
-         param1.writeInt(this.defenderId);
+      public function serializeAs_GameFightStartingMessage(output:IDataOutput) : void {
+         output.writeByte(this.fightType);
+         output.writeInt(this.attackerId);
+         output.writeInt(this.defenderId);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightStartingMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightStartingMessage(input);
       }
       
-      public function deserializeAs_GameFightStartingMessage(param1:IDataInput) : void {
-         this.fightType = param1.readByte();
+      public function deserializeAs_GameFightStartingMessage(input:IDataInput) : void {
+         this.fightType = input.readByte();
          if(this.fightType < 0)
          {
             throw new Error("Forbidden value (" + this.fightType + ") on element of GameFightStartingMessage.fightType.");
          }
          else
          {
-            this.attackerId = param1.readInt();
-            this.defenderId = param1.readInt();
+            this.attackerId = input.readInt();
+            this.defenderId = input.readInt();
             return;
          }
       }

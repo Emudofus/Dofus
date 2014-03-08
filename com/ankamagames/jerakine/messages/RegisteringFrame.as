@@ -22,11 +22,11 @@ package com.ankamagames.jerakine.messages
          return this._priority;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:Function = this._registeredTypes[param1["constructor"]];
-         if(_loc2_ != null)
+      public function process(msg:Message) : Boolean {
+         var handler:Function = this._registeredTypes[msg["constructor"]];
+         if(handler != null)
          {
-            return _loc2_(param1);
+            return handler(msg);
          }
          return false;
       }
@@ -43,14 +43,14 @@ package com.ankamagames.jerakine.messages
          return true;
       }
       
-      protected function register(param1:Class, param2:Function) : void {
-         if(!this._allowsRegistration || !param1 || (this._registeredTypes[param1]))
+      protected function register(type:Class, handler:Function) : void {
+         if((!this._allowsRegistration) || (!type) || (this._registeredTypes[type]))
          {
             throw new IllegalOperationError();
          }
          else
          {
-            this._registeredTypes[param1] = param2;
+            this._registeredTypes[type] = handler;
             return;
          }
       }

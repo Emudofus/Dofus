@@ -13,19 +13,19 @@ package com.ankamagames.dofus.internalDatacenter.connection
          super();
       }
       
-      public static function create(param1:uint, param2:String, param3:uint, param4:EntityLook, param5:uint, param6:Boolean, param7:uint=0, param8:uint=0, param9:uint=0, param10:Boolean=false) : BasicCharacterWrapper {
-         var _loc11_:BasicCharacterWrapper = new BasicCharacterWrapper();
-         _loc11_.id = param1;
-         _loc11_.name = param2;
-         _loc11_.level = param3;
-         _loc11_.entityLook = EntityLookAdapter.fromNetwork(param4);
-         _loc11_.breedId = param5;
-         _loc11_.sex = param6;
-         _loc11_.deathState = param7;
-         _loc11_.deathCount = param8;
-         _loc11_.bonusXp = param9;
-         _loc11_.unusable = param10;
-         return _loc11_;
+      public static function create(id:uint, name:String, level:uint, entityLook:EntityLook, breed:uint, sex:Boolean, deathState:uint=0, deathCount:uint=0, bonusXp:uint=0, unusable:Boolean=false) : BasicCharacterWrapper {
+         var obj:BasicCharacterWrapper = new BasicCharacterWrapper();
+         obj.id = id;
+         obj.name = name;
+         obj.level = level;
+         obj.entityLook = EntityLookAdapter.fromNetwork(entityLook);
+         obj.breedId = breed;
+         obj.sex = sex;
+         obj.deathState = deathState;
+         obj.deathCount = deathCount;
+         obj.bonusXp = bonusXp;
+         obj.unusable = unusable;
+         return obj;
       }
       
       public var id:uint;

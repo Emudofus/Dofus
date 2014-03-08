@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:String) : LockableUseCodeAction {
-         var _loc2_:LockableUseCodeAction = new LockableUseCodeAction();
-         _loc2_.code = param1;
-         return _loc2_;
+      public static function create(code:String) : LockableUseCodeAction {
+         var action:LockableUseCodeAction = new LockableUseCodeAction();
+         action.code = code;
+         return action;
       }
       
       public var code:String;

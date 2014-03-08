@@ -19,7 +19,7 @@ package com.somerandomdude.colortoolkit
    public class Color extends CoreColor
    {
       
-      public function Color(param1:int) {
+      public function Color(color:int) {
          super();
          this._cmyk = new CMYK();
          this._rgb = new RGB();
@@ -27,7 +27,7 @@ package com.somerandomdude.colortoolkit
          this._gray = new Gray();
          this._lab = new Lab();
          this._xyz = new XYZ();
-         this.color = param1;
+         this.color = color;
       }
       
       private var _cmyk:CMYK;
@@ -82,11 +82,11 @@ package com.somerandomdude.colortoolkit
          return this._tetradAngle;
       }
       
-      public function set analogousAngle(param1:Number) : void {
-         this._analogousAngle = param1;
+      public function set analogousAngle(value:Number) : void {
+         this._analogousAngle = value;
          if(this._analogous)
          {
-            this._analogous.angle = param1;
+            this._analogous.angle = value;
          }
       }
       
@@ -94,11 +94,11 @@ package com.somerandomdude.colortoolkit
          return this._tetradAngle;
       }
       
-      public function set analogousContrast(param1:Number) : void {
-         this._analogousContrast = param1;
+      public function set analogousContrast(value:Number) : void {
+         this._analogousContrast = value;
          if(this._analogous)
          {
-            this._analogous.contrast = param1;
+            this._analogous.contrast = value;
          }
       }
       
@@ -175,24 +175,24 @@ package com.somerandomdude.colortoolkit
       }
       
       public function get tetradScheme2() : ColorList {
-         var _loc1_:Tetrad = new Tetrad(_color,this._tetradAngle);
-         _loc1_.alt = true;
-         _loc1_.primaryColor = _color;
-         return _loc1_.colors;
+         var tetrad:Tetrad = new Tetrad(_color,this._tetradAngle);
+         tetrad.alt = true;
+         tetrad.primaryColor = _color;
+         return tetrad.colors;
       }
       
       public function get tetradAngle() : Number {
          return this._tetradAngle;
       }
       
-      public function set tetradAngle(param1:Number) : void {
+      public function set tetradAngle(value:Number) : void {
          if(!this._tetrad)
          {
             this._tetrad = new Tetrad(_color,this._tetradAngle);
          }
          else
          {
-            this._tetrad.angle = param1;
+            this._tetrad.angle = value;
          }
       }
       
@@ -212,14 +212,14 @@ package com.somerandomdude.colortoolkit
          return this._triadAngle;
       }
       
-      public function set triadAngle(param1:Number) : void {
+      public function set triadAngle(value:Number) : void {
          if(!this._triad)
          {
             this._triad = new Triad(_color,this._triadAngle);
          }
          else
          {
-            this._triad.angle = param1;
+            this._triad.angle = value;
          }
       }
       
@@ -227,8 +227,8 @@ package com.somerandomdude.colortoolkit
          return this._rgb.red;
       }
       
-      public function set red(param1:Number) : void {
-         this._rgb.red = param1;
+      public function set red(value:Number) : void {
+         this._rgb.red = value;
          this._color = this._rgb.color;
       }
       
@@ -236,8 +236,8 @@ package com.somerandomdude.colortoolkit
          return this._rgb.green;
       }
       
-      public function set green(param1:Number) : void {
-         this._rgb.green = param1;
+      public function set green(value:Number) : void {
+         this._rgb.green = value;
          this._color = this._rgb.color;
       }
       
@@ -245,8 +245,8 @@ package com.somerandomdude.colortoolkit
          return this._rgb.blue;
       }
       
-      public function set blue(param1:Number) : void {
-         this._rgb.blue = param1;
+      public function set blue(value:Number) : void {
+         this._rgb.blue = value;
          this._color = this._rgb.color;
       }
       
@@ -254,8 +254,8 @@ package com.somerandomdude.colortoolkit
          return this._cmyk.cyan;
       }
       
-      public function set cyan(param1:Number) : void {
-         this._cmyk.cyan = param1;
+      public function set cyan(value:Number) : void {
+         this._cmyk.cyan = value;
          this.color = this._cmyk.color;
       }
       
@@ -263,8 +263,8 @@ package com.somerandomdude.colortoolkit
          return this._cmyk.magenta;
       }
       
-      public function set magenta(param1:Number) : void {
-         this._cmyk.magenta = param1;
+      public function set magenta(value:Number) : void {
+         this._cmyk.magenta = value;
          this.color = this._cmyk.color;
       }
       
@@ -272,8 +272,8 @@ package com.somerandomdude.colortoolkit
          return this._cmyk.yellow;
       }
       
-      public function set yellow(param1:Number) : void {
-         this._cmyk.yellow = param1;
+      public function set yellow(value:Number) : void {
+         this._cmyk.yellow = value;
          this.color = this._cmyk.color;
       }
       
@@ -281,8 +281,8 @@ package com.somerandomdude.colortoolkit
          return this._cmyk.black;
       }
       
-      public function set black(param1:Number) : void {
-         this._cmyk.black = param1;
+      public function set black(value:Number) : void {
+         this._cmyk.black = value;
          this.color = this._cmyk.color;
       }
       
@@ -290,8 +290,8 @@ package com.somerandomdude.colortoolkit
          return this._hsb.hue;
       }
       
-      public function set hue(param1:Number) : void {
-         this._hsb.hue = param1;
+      public function set hue(value:Number) : void {
+         this._hsb.hue = value;
          this.color = this._hsb.color;
       }
       
@@ -299,8 +299,8 @@ package com.somerandomdude.colortoolkit
          return this._hsb.saturation;
       }
       
-      public function set saturation(param1:Number) : void {
-         this._hsb.saturation = param1;
+      public function set saturation(value:Number) : void {
+         this._hsb.saturation = value;
          this.color = this._hsb.color;
       }
       
@@ -308,8 +308,8 @@ package com.somerandomdude.colortoolkit
          return this._hsb.brightness;
       }
       
-      public function set brightness(param1:Number) : void {
-         this._hsb.brightness = param1;
+      public function set brightness(value:Number) : void {
+         this._hsb.brightness = value;
          this.color = this._hsb.color;
       }
       
@@ -321,8 +321,8 @@ package com.somerandomdude.colortoolkit
          return this._lab.lightness;
       }
       
-      public function set lightness(param1:Number) : void {
-         this._lab.lightness = param1;
+      public function set lightness(value:Number) : void {
+         this._lab.lightness = value;
          this.color = this._lab.color;
       }
       
@@ -330,8 +330,8 @@ package com.somerandomdude.colortoolkit
          return this._lab.a;
       }
       
-      public function set a(param1:Number) : void {
-         this._lab.a = param1;
+      public function set a(value:Number) : void {
+         this._lab.a = value;
          this.color = this._lab.color;
       }
       
@@ -339,8 +339,8 @@ package com.somerandomdude.colortoolkit
          return this._lab.b;
       }
       
-      public function set b(param1:Number) : void {
-         this._lab.b = param1;
+      public function set b(value:Number) : void {
+         this._lab.b = value;
          this.color = this._lab.color;
       }
       
@@ -348,8 +348,8 @@ package com.somerandomdude.colortoolkit
          return this._xyz.x;
       }
       
-      public function set x(param1:Number) : void {
-         this._xyz.x = param1;
+      public function set x(value:Number) : void {
+         this._xyz.x = value;
          this.color = this._xyz.color;
       }
       
@@ -357,8 +357,8 @@ package com.somerandomdude.colortoolkit
          return this._xyz.y;
       }
       
-      public function set y(param1:Number) : void {
-         this._xyz.y = param1;
+      public function set y(value:Number) : void {
+         this._xyz.y = value;
          this.color = this._xyz.color;
       }
       
@@ -366,8 +366,8 @@ package com.somerandomdude.colortoolkit
          return this._xyz.z;
       }
       
-      public function set z(param1:Number) : void {
-         this._xyz.z = param1;
+      public function set z(value:Number) : void {
+         this._xyz.z = value;
          this.color = this._xyz.color;
       }
       
@@ -375,14 +375,14 @@ package com.somerandomdude.colortoolkit
          return this._color;
       }
       
-      public function set color(param1:int) : void {
-         this._color = param1;
-         this._cmyk.color = param1;
-         this._hsb.color = param1;
-         this._rgb.color = param1;
-         this._lab.color = param1;
-         this._xyz.color = param1;
-         this._gray.convertHexToGrayscale(param1);
+      public function set color(value:int) : void {
+         this._color = value;
+         this._cmyk.color = value;
+         this._hsb.color = value;
+         this._rgb.color = value;
+         this._lab.color = value;
+         this._xyz.color = value;
+         this._gray.convertHexToGrayscale(value);
       }
    }
 }

@@ -6,9 +6,9 @@ package com.ankamagames.jerakine.types.events
    public class RegisterClassLogEvent extends LogEvent
    {
       
-      public function RegisterClassLogEvent(param1:String) {
+      public function RegisterClassLogEvent(className:String) {
          super(null,null,0);
-         this._className = param1;
+         this._className = className;
       }
       
       private var _className:String;

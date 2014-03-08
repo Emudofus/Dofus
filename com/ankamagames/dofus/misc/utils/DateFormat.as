@@ -11,12 +11,10 @@ package com.ankamagames.dofus.misc.utils
       
       public static var DAYS:Array = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
       
-      public static function formatDate(param1:String, param2:Date) : String {
-         var formatStyle:String = param1;
-         var date:Date = param2;
-         var leadZero:Function = function(param1:int):String
+      public static function formatDate(formatStyle:String, date:Date) : String {
+         var leadZero:Function = function(num:int):String
          {
-            return param1 < 10?"0" + String(param1):String(param1);
+            return num < 10?"0" + String(num):String(num);
          };
          var dateFormated:String = formatStyle;
          dateFormated = dateFormated.replace(new RegExp("d","g"),leadZero(date.date));
@@ -58,36 +56,36 @@ package com.ankamagames.dofus.misc.utils
          return dateFormated;
       }
       
-      public static function dayOfYear(param1:uint, param2:uint, param3:uint) : uint {
-         if(param2 == 0)
+      public static function dayOfYear(year:uint, month:uint, day:uint) : uint {
+         if(month == 0)
          {
-            return param3-1;
+            return day - 1;
          }
-         var _loc4_:Boolean = leapYear(param1);
-         var _loc5_:uint = 0;
-         var _loc6_:uint = 0;
-         while(_loc6_ < param2)
+         var isLeapYear:Boolean = leapYear(year);
+         var total:uint = 0;
+         var i:uint = 0;
+         while(i < month)
          {
-            _loc5_ = _loc5_ + DateFormat.numberOfDaysInMonth(_loc6_,_loc4_);
-            _loc6_++;
+            total = total + DateFormat.numberOfDaysInMonth(i,isLeapYear);
+            i++;
          }
-         return _loc5_ + param3-1;
+         return total + day - 1;
       }
       
-      public static function leapYear(param1:uint) : Boolean {
-         return param1 % 4 == 0 && !(param1 % 100 == 0) || param1 % 100 == 0;
+      public static function leapYear(year:uint) : Boolean {
+         return (year % 4 == 0) && (!(year % 100 == 0)) || (year % 100 == 0);
       }
       
-      public static function numberOfDaysInMonth(param1:uint, param2:Boolean=false) : uint {
-         if(param1 == 1)
+      public static function numberOfDaysInMonth(month:uint, isLeapYear:Boolean=false) : uint {
+         if(month == 1)
          {
-            return param2?29:28;
+            return isLeapYear?29:28;
          }
-         if(param1 <= 6 && (param1 & 1) == 1)
+         if((month <= 6) && ((month & 1) == 1))
          {
             return 30;
          }
-         if(param1 > 6 && (param1 & 1) == 0)
+         if((month > 6) && ((month & 1) == 0))
          {
             return 30;
          }

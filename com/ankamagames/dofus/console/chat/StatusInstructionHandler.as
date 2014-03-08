@@ -19,62 +19,62 @@ package com.ankamagames.dofus.console.chat
          super();
       }
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         var _loc4_:PlayerStatus = null;
-         var _loc6_:GameRolePlayFreeSoulRequestMessage = null;
-         var _loc7_:String = null;
-         var _loc8_:String = null;
-         var _loc5_:PlayerStatusUpdateRequestMessage = new PlayerStatusUpdateRequestMessage();
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var status:PlayerStatus = null;
+         var grpfsrmmsg:GameRolePlayFreeSoulRequestMessage = null;
+         var message:String = null;
+         var s:String = null;
+         var psurmsg:PlayerStatusUpdateRequestMessage = new PlayerStatusUpdateRequestMessage();
+         switch(cmd)
          {
             case "away":
             case I18n.getUiText("ui.chat.status.away").toLocaleLowerCase():
-               if(param3.length > 0)
+               if(args.length > 0)
                {
-                  _loc7_ = "";
-                  for each (_loc8_ in param3)
+                  message = "";
+                  for each (s in args)
                   {
-                     _loc7_ = _loc7_ + (_loc8_ + " ");
+                     message = message + (s + " ");
                   }
-                  _loc4_ = new PlayerStatusExtended();
-                  PlayerStatusExtended(_loc4_).initPlayerStatusExtended(PlayerStatusEnum.PLAYER_STATUS_AFK,_loc7_);
-                  KernelEventsManager.getInstance().processCallback(SocialHookList.NewAwayMessage,_loc7_);
+                  status = new PlayerStatusExtended();
+                  PlayerStatusExtended(status).initPlayerStatusExtended(PlayerStatusEnum.PLAYER_STATUS_AFK,message);
+                  KernelEventsManager.getInstance().processCallback(SocialHookList.NewAwayMessage,message);
                }
                else
                {
-                  _loc4_ = new PlayerStatus();
-                  _loc4_.initPlayerStatus(PlayerStatusEnum.PLAYER_STATUS_AFK);
+                  status = new PlayerStatus();
+                  status.initPlayerStatus(PlayerStatusEnum.PLAYER_STATUS_AFK);
                }
-               _loc5_.initPlayerStatusUpdateRequestMessage(_loc4_);
-               ConnectionsHandler.getConnection().send(_loc5_);
+               psurmsg.initPlayerStatusUpdateRequestMessage(status);
+               ConnectionsHandler.getConnection().send(psurmsg);
                break;
             case I18n.getUiText("ui.chat.status.solo").toLocaleLowerCase():
-               _loc4_ = new PlayerStatus();
-               _loc4_.initPlayerStatus(PlayerStatusEnum.PLAYER_STATUS_SOLO);
-               _loc5_.initPlayerStatusUpdateRequestMessage(_loc4_);
-               ConnectionsHandler.getConnection().send(_loc5_);
+               status = new PlayerStatus();
+               status.initPlayerStatus(PlayerStatusEnum.PLAYER_STATUS_SOLO);
+               psurmsg.initPlayerStatusUpdateRequestMessage(status);
+               ConnectionsHandler.getConnection().send(psurmsg);
                break;
             case I18n.getUiText("ui.chat.status.private").toLocaleLowerCase():
-               _loc4_ = new PlayerStatus();
-               _loc4_.initPlayerStatus(PlayerStatusEnum.PLAYER_STATUS_PRIVATE);
-               _loc5_.initPlayerStatusUpdateRequestMessage(_loc4_);
-               ConnectionsHandler.getConnection().send(_loc5_);
+               status = new PlayerStatus();
+               status.initPlayerStatus(PlayerStatusEnum.PLAYER_STATUS_PRIVATE);
+               psurmsg.initPlayerStatusUpdateRequestMessage(status);
+               ConnectionsHandler.getConnection().send(psurmsg);
                break;
             case I18n.getUiText("ui.chat.status.availiable").toLocaleLowerCase():
-               _loc4_ = new PlayerStatus();
-               _loc4_.initPlayerStatus(PlayerStatusEnum.PLAYER_STATUS_AVAILABLE);
-               _loc5_.initPlayerStatusUpdateRequestMessage(_loc4_);
-               ConnectionsHandler.getConnection().send(_loc5_);
+               status = new PlayerStatus();
+               status.initPlayerStatus(PlayerStatusEnum.PLAYER_STATUS_AVAILABLE);
+               psurmsg.initPlayerStatusUpdateRequestMessage(status);
+               ConnectionsHandler.getConnection().send(psurmsg);
                break;
             case "release":
-               _loc6_ = new GameRolePlayFreeSoulRequestMessage();
-               ConnectionsHandler.getConnection().send(_loc6_);
+               grpfsrmmsg = new GameRolePlayFreeSoulRequestMessage();
+               ConnectionsHandler.getConnection().send(grpfsrmmsg);
                break;
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "away":
             case I18n.getUiText("ui.chat.status.away").toLocaleLowerCase():
@@ -87,12 +87,10 @@ package com.ankamagames.dofus.console.chat
                return "- /" + I18n.getUiText("ui.chat.status.availiable").toLocaleLowerCase() + I18n.getUiText("ui.common.colon") + I18n.getUiText("ui.chat.status.availiabletooltip");
             case "release":
                return I18n.getUiText("ui.common.freeSoul");
-            default:
-               return I18n.getUiText("ui.chat.console.noHelp",[param1]);
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return [];
       }
    }

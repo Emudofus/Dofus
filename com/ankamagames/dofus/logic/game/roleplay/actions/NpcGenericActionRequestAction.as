@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(param1:int, param2:int) : NpcGenericActionRequestAction {
-         var _loc3_:NpcGenericActionRequestAction = new NpcGenericActionRequestAction();
-         _loc3_.npcId = param1;
-         _loc3_.actionId = param2;
-         return _loc3_;
+      public static function create(npcId:int, actionId:int) : NpcGenericActionRequestAction {
+         var a:NpcGenericActionRequestAction = new NpcGenericActionRequestAction();
+         a.npcId = npcId;
+         a.actionId = actionId;
+         return a;
       }
       
       public var npcId:int;

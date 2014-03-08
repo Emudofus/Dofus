@@ -12,13 +12,13 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightActionPointsVariationStep extends AbstractStatContextualStep implements IFightStep
    {
       
-      public function FightActionPointsVariationStep(param1:int, param2:int, param3:Boolean, param4:Boolean=true, param5:Boolean=true) {
-         super(COLOR,param2 > 0?"+" + param2:param2.toString(),param1,BLOCKING);
-         this._showChatmessage = param5;
-         this._intValue = param2;
-         this._voluntarlyUsed = param3;
-         _virtual = (this._voluntarlyUsed) && !OptionManager.getOptionManager("dofus").showUsedPaPm;
-         this._updateFighterInfos = param4;
+      public function FightActionPointsVariationStep(entityId:int, value:int, voluntarlyUsed:Boolean, updateFighterInfos:Boolean=true, showChatmessage:Boolean=true) {
+         super(COLOR,value > 0?"+" + value:value.toString(),entityId,BLOCKING);
+         this._showChatmessage = showChatmessage;
+         this._intValue = value;
+         this._voluntarlyUsed = voluntarlyUsed;
+         _virtual = (this._voluntarlyUsed) && (!OptionManager.getOptionManager("dofus").showUsedPaPm);
+         this._updateFighterInfos = updateFighterInfos;
       }
       
       public static const COLOR:uint = 255;
@@ -46,12 +46,12 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc1_:GameFightFighterInformations = null;
+         var fighterInfos:GameFightFighterInformations = null;
          if(this._updateFighterInfos)
          {
-            _loc1_ = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_targetId) as GameFightFighterInformations;
-            _loc1_.stats.actionPoints = _loc1_.stats.actionPoints + this._intValue;
-            if(CurrentPlayedFighterManager.getInstance().currentFighterId == _targetId && !this._voluntarlyUsed)
+            fighterInfos = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_targetId) as GameFightFighterInformations;
+            fighterInfos.stats.actionPoints = fighterInfos.stats.actionPoints + this._intValue;
+            if((CurrentPlayedFighterManager.getInstance().currentFighterId == _targetId) && (!this._voluntarlyUsed))
             {
                CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent + this._intValue;
             }

@@ -26,9 +26,9 @@ package com.ankamagames.dofus.network.messages.connection
          return 6174;
       }
       
-      public function initIdentificationFailedBannedMessage(param1:uint=99, param2:Number=0) : IdentificationFailedBannedMessage {
-         super.initIdentificationFailedMessage(param1);
-         this.banEndDate = param2;
+      public function initIdentificationFailedBannedMessage(reason:uint=99, banEndDate:Number=0) : IdentificationFailedBannedMessage {
+         super.initIdentificationFailedMessage(reason);
+         this.banEndDate = banEndDate;
          this._isInitialized = true;
          return this;
       }
@@ -39,40 +39,40 @@ package com.ankamagames.dofus.network.messages.connection
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_IdentificationFailedBannedMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_IdentificationFailedBannedMessage(output);
       }
       
-      public function serializeAs_IdentificationFailedBannedMessage(param1:IDataOutput) : void {
-         super.serializeAs_IdentificationFailedMessage(param1);
+      public function serializeAs_IdentificationFailedBannedMessage(output:IDataOutput) : void {
+         super.serializeAs_IdentificationFailedMessage(output);
          if(this.banEndDate < 0)
          {
             throw new Error("Forbidden value (" + this.banEndDate + ") on element banEndDate.");
          }
          else
          {
-            param1.writeDouble(this.banEndDate);
+            output.writeDouble(this.banEndDate);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_IdentificationFailedBannedMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_IdentificationFailedBannedMessage(input);
       }
       
-      public function deserializeAs_IdentificationFailedBannedMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.banEndDate = param1.readDouble();
+      public function deserializeAs_IdentificationFailedBannedMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.banEndDate = input.readDouble();
          if(this.banEndDate < 0)
          {
             throw new Error("Forbidden value (" + this.banEndDate + ") on element of IdentificationFailedBannedMessage.banEndDate.");

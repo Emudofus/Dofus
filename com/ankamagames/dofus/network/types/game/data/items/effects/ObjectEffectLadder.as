@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 81;
       }
       
-      public function initObjectEffectLadder(param1:uint=0, param2:uint=0, param3:uint=0) : ObjectEffectLadder {
-         super.initObjectEffectCreature(param1,param2);
-         this.monsterCount = param3;
+      public function initObjectEffectLadder(actionId:uint=0, monsterFamilyId:uint=0, monsterCount:uint=0) : ObjectEffectLadder {
+         super.initObjectEffectCreature(actionId,monsterFamilyId);
+         this.monsterCount = monsterCount;
          return this;
       }
       
@@ -30,30 +30,30 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          this.monsterCount = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ObjectEffectLadder(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectEffectLadder(output);
       }
       
-      public function serializeAs_ObjectEffectLadder(param1:IDataOutput) : void {
-         super.serializeAs_ObjectEffectCreature(param1);
+      public function serializeAs_ObjectEffectLadder(output:IDataOutput) : void {
+         super.serializeAs_ObjectEffectCreature(output);
          if(this.monsterCount < 0)
          {
             throw new Error("Forbidden value (" + this.monsterCount + ") on element monsterCount.");
          }
          else
          {
-            param1.writeInt(this.monsterCount);
+            output.writeInt(this.monsterCount);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ObjectEffectLadder(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectEffectLadder(input);
       }
       
-      public function deserializeAs_ObjectEffectLadder(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.monsterCount = param1.readInt();
+      public function deserializeAs_ObjectEffectLadder(input:IDataInput) : void {
+         super.deserialize(input);
+         this.monsterCount = input.readInt();
          if(this.monsterCount < 0)
          {
             throw new Error("Forbidden value (" + this.monsterCount + ") on element of ObjectEffectLadder.monsterCount.");

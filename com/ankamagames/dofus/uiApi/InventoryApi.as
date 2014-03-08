@@ -31,124 +31,124 @@ package com.ankamagames.dofus.uiApi
       
       private var _module:UiModule;
       
-      public function set module(param1:UiModule) : void {
-         this._module = param1;
+      public function set module(value:UiModule) : void {
+         this._module = value;
       }
       
       public function destroy() : void {
          this._module = null;
       }
       
-      public function getStorageObjectGID(param1:uint, param2:uint=1) : Object {
-         var _loc6_:ItemWrapper = null;
-         var _loc3_:Array = new Array();
-         var _loc4_:uint = 0;
-         var _loc5_:Vector.<ItemWrapper> = InventoryManager.getInstance().realInventory;
-         for each (_loc6_ in _loc5_)
+      public function getStorageObjectGID(pObjectGID:uint, quantity:uint=1) : Object {
+         var iw:ItemWrapper = null;
+         var returnItems:Array = new Array();
+         var numberReturn:uint = 0;
+         var inventory:Vector.<ItemWrapper> = InventoryManager.getInstance().realInventory;
+         for each (iw in inventory)
          {
-            if(!(!(_loc6_.objectGID == param1) || _loc6_.position < 63 || (_loc6_.linked)))
+            if(!((!(iw.objectGID == pObjectGID)) || (iw.position < 63) || (iw.linked)))
             {
-               if(_loc6_.quantity >= param2 - _loc4_)
+               if(iw.quantity >= quantity - numberReturn)
                {
-                  _loc3_.push(
+                  returnItems.push(
                      {
-                        "objectUID":_loc6_.objectUID,
-                        "quantity":param2 - _loc4_
+                        "objectUID":iw.objectUID,
+                        "quantity":quantity - numberReturn
                      });
-                  _loc4_ = param2;
-                  return _loc3_;
+                  numberReturn = quantity;
+                  return returnItems;
                }
-               _loc3_.push(
+               returnItems.push(
                   {
-                     "objectUID":_loc6_.objectUID,
-                     "quantity":_loc6_.quantity
+                     "objectUID":iw.objectUID,
+                     "quantity":iw.quantity
                   });
-               _loc4_ = _loc4_ + _loc6_.quantity;
+               numberReturn = numberReturn + iw.quantity;
             }
          }
          return null;
       }
       
-      public function getStorageObjectsByType(param1:uint) : Array {
-         var _loc4_:ItemWrapper = null;
-         var _loc2_:Array = new Array();
-         var _loc3_:Vector.<ItemWrapper> = InventoryManager.getInstance().realInventory;
-         for each (_loc4_ in _loc3_)
+      public function getStorageObjectsByType(objectType:uint) : Array {
+         var iw:ItemWrapper = null;
+         var returnItems:Array = new Array();
+         var inventory:Vector.<ItemWrapper> = InventoryManager.getInstance().realInventory;
+         for each (iw in inventory)
          {
-            if(!(!(_loc4_.typeId == param1) || _loc4_.position < 63))
+            if(!((!(iw.typeId == objectType)) || (iw.position < 63)))
             {
-               _loc2_.push(_loc4_);
+               returnItems.push(iw);
             }
          }
-         return _loc2_;
+         return returnItems;
       }
       
-      public function getItemQty(param1:uint, param2:uint=0) : uint {
-         var _loc5_:ItemWrapper = null;
-         var _loc3_:uint = 0;
-         var _loc4_:Vector.<ItemWrapper> = InventoryManager.getInstance().realInventory;
-         for each (_loc5_ in _loc4_)
+      public function getItemQty(pObjectGID:uint, pObjectUID:uint=0) : uint {
+         var item:ItemWrapper = null;
+         var quantity:uint = 0;
+         var inventory:Vector.<ItemWrapper> = InventoryManager.getInstance().realInventory;
+         for each (item in inventory)
          {
-            if(!(_loc5_.position < 63 || !(_loc5_.objectGID == param1) || param2 > 0 && !(_loc5_.objectUID == param2)))
+            if(!((item.position < 63) || (!(item.objectGID == pObjectGID)) || (pObjectUID > 0) && (!(item.objectUID == pObjectUID))))
             {
-               _loc3_ = _loc3_ + _loc5_.quantity;
+               quantity = quantity + item.quantity;
             }
          }
-         return _loc3_;
+         return quantity;
       }
       
-      public function getItem(param1:uint) : ItemWrapper {
-         return InventoryManager.getInstance().inventory.getItem(param1);
+      public function getItem(objectUID:uint) : ItemWrapper {
+         return InventoryManager.getInstance().inventory.getItem(objectUID);
       }
       
-      public function getEquipementItemByPosition(param1:uint) : ItemWrapper {
-         if(param1 > 15 && !(param1 == CharacterInventoryPositionEnum.INVENTORY_POSITION_COMPANION))
+      public function getEquipementItemByPosition(pPosition:uint) : ItemWrapper {
+         if((pPosition > 15) && (!(pPosition == CharacterInventoryPositionEnum.INVENTORY_POSITION_COMPANION)))
          {
             return null;
          }
-         var _loc2_:Vector.<ItemWrapper> = InventoryManager.getInstance().inventory.getView("equipment").content;
-         return _loc2_[param1];
+         var equipementList:Vector.<ItemWrapper> = InventoryManager.getInstance().inventory.getView("equipment").content;
+         return equipementList[pPosition];
       }
       
       public function getEquipement() : Vector.<ItemWrapper> {
-         var _loc1_:Vector.<ItemWrapper> = InventoryManager.getInstance().inventory.getView("equipment").content;
-         return _loc1_;
+         var equipementList:Vector.<ItemWrapper> = InventoryManager.getInstance().inventory.getView("equipment").content;
+         return equipementList;
       }
       
       public function getEquipementForPreset() : Array {
-         var _loc3_:Uri = null;
-         var _loc5_:* = false;
-         var _loc6_:ItemWrapper = null;
-         var _loc7_:MountWrapper = null;
-         var _loc1_:Vector.<ItemWrapper> = InventoryManager.getInstance().inventory.getView("equipment").content;
-         var _loc2_:Array = new Array(16);
-         var _loc4_:* = 0;
-         while(_loc4_ < 16)
+         var emptyUri:Uri = null;
+         var objExists:* = false;
+         var item:ItemWrapper = null;
+         var mountFakeItemWrapper:MountWrapper = null;
+         var equipmentList:Vector.<ItemWrapper> = InventoryManager.getInstance().inventory.getView("equipment").content;
+         var equipmentPreset:Array = new Array(16);
+         var i:int = 0;
+         while(i < 16)
          {
-            _loc5_ = false;
-            for each (_loc6_ in _loc1_)
+            objExists = false;
+            for each (item in equipmentList)
             {
-               if(_loc6_)
+               if(item)
                {
-                  if(_loc6_.position == _loc4_)
+                  if(item.position == i)
                   {
-                     _loc2_[_loc4_] = _loc6_;
-                     _loc5_ = true;
+                     equipmentPreset[i] = item;
+                     objExists = true;
                   }
                }
                else
                {
-                  if(_loc4_ == 8 && (PlayedCharacterManager.getInstance().isRidding))
+                  if((i == 8) && (PlayedCharacterManager.getInstance().isRidding))
                   {
-                     _loc7_ = MountWrapper.create();
-                     _loc2_[_loc4_] = _loc7_;
-                     _loc5_ = true;
+                     mountFakeItemWrapper = MountWrapper.create();
+                     equipmentPreset[i] = mountFakeItemWrapper;
+                     objExists = true;
                   }
                }
             }
-            if(!_loc5_)
+            if(!objExists)
             {
-               switch(_loc4_)
+               switch(i)
                {
                   case 9:
                   case 10:
@@ -156,21 +156,19 @@ package com.ankamagames.dofus.uiApi
                   case 12:
                   case 13:
                   case 14:
-                     _loc3_ = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotDofus");
+                     emptyUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotDofus");
                      break;
-                  default:
-                     _loc3_ = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotItem" + _loc4_);
                }
-               _loc2_[_loc4_] = SimpleTextureWrapper.create(_loc3_);
+               equipmentPreset[i] = SimpleTextureWrapper.create(emptyUri);
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return equipmentPreset;
       }
       
-      public function getVoidItemForPreset(param1:int) : SimpleTextureWrapper {
-         var _loc2_:Uri = null;
-         switch(param1)
+      public function getVoidItemForPreset(index:int) : SimpleTextureWrapper {
+         var emptyUri:Uri = null;
+         switch(index)
          {
             case 9:
             case 10:
@@ -178,12 +176,10 @@ package com.ankamagames.dofus.uiApi
             case 12:
             case 13:
             case 14:
-               _loc2_ = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotDofus");
+               emptyUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotDofus");
                break;
-            default:
-               _loc2_ = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotItem" + param1);
          }
-         return SimpleTextureWrapper.create(_loc2_);
+         return SimpleTextureWrapper.create(emptyUri);
       }
       
       public function getCurrentWeapon() : ItemWrapper {
@@ -191,40 +187,40 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function getPresets() : Array {
-         var _loc4_:PresetWrapper = null;
-         var _loc1_:Array = new Array();
-         var _loc2_:Uri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin").concat("bitmap/emptySlot.png"));
-         var _loc3_:* = 0;
-         while(_loc3_ < 8)
+         var preset:PresetWrapper = null;
+         var presets:Array = new Array();
+         var emptyUri:Uri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin").concat("bitmap/emptySlot.png"));
+         var i:int = 0;
+         while(i < 8)
          {
-            _loc4_ = InventoryManager.getInstance().presets[_loc3_];
-            if(_loc4_)
+            preset = InventoryManager.getInstance().presets[i];
+            if(preset)
             {
-               _loc1_.push(_loc4_);
+               presets.push(preset);
             }
             else
             {
-               _loc1_.push(SimpleTextureWrapper.create(_loc2_));
+               presets.push(SimpleTextureWrapper.create(emptyUri));
             }
-            _loc3_++;
+            i++;
          }
-         return _loc1_;
+         return presets;
       }
       
       public function removeSelectedItem() : Boolean {
-         var _loc2_:RoleplayPointCellFrame = null;
-         var _loc1_:InventoryManagementFrame = Kernel.getWorker().getFrame(InventoryManagementFrame) as InventoryManagementFrame;
-         if((_loc1_) && (_loc1_.roleplayPointCellFrame) && (_loc1_.roleplayPointCellFrame.object))
+         var rpcfrm:RoleplayPointCellFrame = null;
+         var frm:InventoryManagementFrame = Kernel.getWorker().getFrame(InventoryManagementFrame) as InventoryManagementFrame;
+         if((frm) && (frm.roleplayPointCellFrame) && (frm.roleplayPointCellFrame.object))
          {
-            _loc2_ = Kernel.getWorker().getFrame(RoleplayPointCellFrame) as RoleplayPointCellFrame;
-            if(_loc2_)
+            rpcfrm = Kernel.getWorker().getFrame(RoleplayPointCellFrame) as RoleplayPointCellFrame;
+            if(rpcfrm)
             {
-               _loc2_.cancelShow();
+               rpcfrm.cancelShow();
             }
             else
             {
-               Kernel.getWorker().removeFrame(_loc1_.roleplayPointCellFrame.object as RoleplayPointCellFrame);
-               _loc1_.roleplayPointCellFrame = null;
+               Kernel.getWorker().removeFrame(frm.roleplayPointCellFrame.object as RoleplayPointCellFrame);
+               frm.roleplayPointCellFrame = null;
             }
             return true;
          }

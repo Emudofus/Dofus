@@ -33,41 +33,41 @@ package com.ankamagames.jerakine.resources.adapters
       
       private var _signedFileAdapter:SignedFileAdapter;
       
-      public function loadDirectly(param1:Uri, param2:String, param3:IResourceObserver, param4:Boolean) : void {
+      public function loadDirectly(uri:Uri, path:String, observer:IResourceObserver, dispatchProgress:Boolean) : void {
          if(this._ldr)
          {
             throw new IllegalOperationError("A single adapter can\'t handle two simultaneous loadings.");
          }
          else
          {
-            this._observer = param3;
-            this._uri = param1;
-            this._dispatchProgress = param4;
-            if(param1.fileType.charAt(param1.fileType.length-1) == "s")
+            this._observer = observer;
+            this._uri = uri;
+            this._dispatchProgress = dispatchProgress;
+            if(uri.fileType.charAt(uri.fileType.length - 1) == "s")
             {
                this._signedFileAdapter = new SignedFileAdapter(null,true);
-               this._signedFileAdapter.loadDirectly(param1,param2,new ResourceObserverWrapper(this.onSignedFileLoaded,this.onSignedFileError),false);
+               this._signedFileAdapter.loadDirectly(uri,path,new ResourceObserverWrapper(this.onSignedFileLoaded,this.onSignedFileError),false);
             }
             else
             {
                this.prepareLoader();
-               this._ldr.load(new URLRequest(param2),param1.loaderContext);
+               this._ldr.load(new URLRequest(path),uri.loaderContext);
             }
             return;
          }
       }
       
-      public function loadFromData(param1:Uri, param2:ByteArray, param3:IResourceObserver, param4:Boolean) : void {
+      public function loadFromData(uri:Uri, data:ByteArray, observer:IResourceObserver, dispatchProgress:Boolean) : void {
          if(this._ldr)
          {
             throw new IllegalOperationError("A single adapter can\'t handle two simultaneous loadings.");
          }
          else
          {
-            this._observer = param3;
-            this._uri = param1;
+            this._observer = observer;
+            this._uri = uri;
             this.prepareLoader();
-            this._ldr.loadBytes(param2,param1.loaderContext);
+            this._ldr.loadBytes(data,uri.loaderContext);
             return;
          }
       }
@@ -78,7 +78,7 @@ package com.ankamagames.jerakine.resources.adapters
          this._uri = null;
       }
       
-      protected function getResource(param1:LoaderInfo) : * {
+      protected function getResource(ldr:LoaderInfo) : * {
          return this._ldr;
       }
       
@@ -113,28 +113,28 @@ package com.ankamagames.jerakine.resources.adapters
          this._ldr = null;
       }
       
-      protected function onInit(param1:Event) : void {
-         var _loc2_:* = this.getResource(LoaderInfo(param1.target));
-         this._observer.onLoaded(this._uri,this.getResourceType(),_loc2_);
+      protected function onInit(e:Event) : void {
+         var res:* = this.getResource(LoaderInfo(e.target));
+         this._observer.onLoaded(this._uri,this.getResourceType(),res);
          this._uri = null;
       }
       
-      protected function onError(param1:ErrorEvent) : void {
+      protected function onError(ee:ErrorEvent) : void {
          this.releaseLoader();
-         this._observer.onFailed(this._uri,param1.text,ResourceErrorCode.RESOURCE_NOT_FOUND);
+         this._observer.onFailed(this._uri,ee.text,ResourceErrorCode.RESOURCE_NOT_FOUND);
          this._uri = null;
       }
       
-      protected function onProgress(param1:ProgressEvent) : void {
-         this._observer.onProgress(this._uri,param1.bytesLoaded,param1.bytesTotal);
+      protected function onProgress(pe:ProgressEvent) : void {
+         this._observer.onProgress(this._uri,pe.bytesLoaded,pe.bytesTotal);
       }
       
-      private function onSignedFileLoaded(param1:Uri, param2:uint, param3:*) : void {
-         this.loadFromData(param1,param3 as ByteArray,this._observer,this._dispatchProgress);
+      private function onSignedFileLoaded(uri:Uri, resourceType:uint, resource:*) : void {
+         this.loadFromData(uri,resource as ByteArray,this._observer,this._dispatchProgress);
       }
       
-      private function onSignedFileError(param1:Uri, param2:String, param3:uint) : void {
-         this.onError(new ErrorEvent(param2));
+      private function onSignedFileError(uri:Uri, errorMsg:String, errorCode:uint) : void {
+         this.onError(new ErrorEvent(errorMsg));
       }
    }
 }

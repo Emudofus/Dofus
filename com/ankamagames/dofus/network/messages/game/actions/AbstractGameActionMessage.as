@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.actions
          return 1000;
       }
       
-      public function initAbstractGameActionMessage(param1:uint=0, param2:int=0) : AbstractGameActionMessage {
-         this.actionId = param1;
-         this.sourceId = param2;
+      public function initAbstractGameActionMessage(actionId:uint=0, sourceId:int=0) : AbstractGameActionMessage {
+         this.actionId = actionId;
+         this.sourceId = sourceId;
          this._isInitialized = true;
          return this;
       }
@@ -42,46 +42,46 @@ package com.ankamagames.dofus.network.messages.game.actions
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AbstractGameActionMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AbstractGameActionMessage(output);
       }
       
-      public function serializeAs_AbstractGameActionMessage(param1:IDataOutput) : void {
+      public function serializeAs_AbstractGameActionMessage(output:IDataOutput) : void {
          if(this.actionId < 0)
          {
             throw new Error("Forbidden value (" + this.actionId + ") on element actionId.");
          }
          else
          {
-            param1.writeShort(this.actionId);
-            param1.writeInt(this.sourceId);
+            output.writeShort(this.actionId);
+            output.writeInt(this.sourceId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AbstractGameActionMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AbstractGameActionMessage(input);
       }
       
-      public function deserializeAs_AbstractGameActionMessage(param1:IDataInput) : void {
-         this.actionId = param1.readShort();
+      public function deserializeAs_AbstractGameActionMessage(input:IDataInput) : void {
+         this.actionId = input.readShort();
          if(this.actionId < 0)
          {
             throw new Error("Forbidden value (" + this.actionId + ") on element of AbstractGameActionMessage.actionId.");
          }
          else
          {
-            this.sourceId = param1.readInt();
+            this.sourceId = input.readInt();
             return;
          }
       }

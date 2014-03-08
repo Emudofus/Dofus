@@ -29,28 +29,28 @@ package com.ankamagames.dofus.datacenter.misc
          return this._lang;
       }
       
-      public function set lang(param1:String) : void {
-         this._lang = param1;
+      public function set lang(value:String) : void {
+         this._lang = value;
       }
       
-      public function set type(param1:int) : void {
-         this._type = param1;
+      public function set type(t:int) : void {
+         this._type = t;
       }
       
       public function get type() : int {
          return this._type;
       }
       
-      public function set oldValue(param1:int) : void {
-         this._oldValue = param1;
+      public function set oldValue(ov:int) : void {
+         this._oldValue = ov;
       }
       
       public function get oldValue() : int {
          return this._oldValue;
       }
       
-      public function set newValue(param1:int) : void {
-         this._newValue = param1;
+      public function set newValue(nv:int) : void {
+         this._newValue = nv;
       }
       
       public function get newValue() : int {

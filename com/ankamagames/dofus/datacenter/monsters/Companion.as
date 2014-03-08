@@ -14,8 +14,8 @@ package com.ankamagames.dofus.datacenter.monsters
       
       public static const MODULE:String = "Companions";
       
-      public static function getCompanionById(param1:uint) : Companion {
-         return GameData.getObject(MODULE,param1) as Companion;
+      public static function getCompanionById(id:uint) : Companion {
+         return GameData.getObject(MODULE,id) as Companion;
       }
       
       public static function getCompanions() : Array {

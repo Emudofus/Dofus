@@ -25,28 +25,28 @@ package com.ankamagames.dofus.internalDatacenter.appearance
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TitleWrapper));
       
-      public static function create(param1:uint, param2:int=-1, param3:Boolean=true) : TitleWrapper {
-         var _loc4_:TitleWrapper = new TitleWrapper();
-         if(!_cache[param1] || !param3)
+      public static function create(titleId:uint, position:int=-1, useCache:Boolean=true) : TitleWrapper {
+         var title:TitleWrapper = new TitleWrapper();
+         if((!_cache[titleId]) || (!useCache))
          {
-            _loc4_ = new TitleWrapper();
-            _loc4_.id = param1;
-            if(param3)
+            title = new TitleWrapper();
+            title.id = titleId;
+            if(useCache)
             {
-               _cache[param1] = _loc4_;
+               _cache[titleId] = title;
             }
          }
          else
          {
-            _loc4_ = _cache[param1];
+            title = _cache[titleId];
          }
-         _loc4_.id = param1;
-         _loc4_.text = _loc4_.text;
-         return _loc4_;
+         title.id = titleId;
+         title.text = title.text;
+         return title;
       }
       
-      public static function getTitleWrapperById(param1:uint) : TitleWrapper {
-         return _cache[param1];
+      public static function getTitleWrapperById(id:uint) : TitleWrapper {
+         return _cache[id];
       }
       
       private var _uri:Uri;
@@ -95,14 +95,14 @@ package com.ankamagames.dofus.internalDatacenter.appearance
          return 0;
       }
       
-      public function set endTime(param1:int) : void {
+      public function set endTime(t:int) : void {
       }
       
       public function get timer() : int {
          return 0;
       }
       
-      public function set timerToStart(param1:int) : void {
+      public function set timerToStart(t:int) : void {
       }
       
       public function get active() : Boolean {
@@ -121,10 +121,9 @@ package com.ankamagames.dofus.internalDatacenter.appearance
          return false;
       }
       
-      override flash_proxy function getProperty(param1:*) : * {
+      override flash_proxy function getProperty(name:*) : * {
          var t:* = undefined;
          var r:* = undefined;
-         var name:* = param1;
          if(isAttribute(name))
          {
             return this[name];
@@ -144,21 +143,21 @@ package com.ankamagames.dofus.internalDatacenter.appearance
          }
       }
       
-      override flash_proxy function hasProperty(param1:*) : Boolean {
-         return isAttribute(param1);
+      override flash_proxy function hasProperty(name:*) : Boolean {
+         return isAttribute(name);
       }
       
       public function toString() : String {
          return "[TitleWrapper#" + this.id + "]";
       }
       
-      public function addHolder(param1:ISlotDataHolder) : void {
+      public function addHolder(h:ISlotDataHolder) : void {
       }
       
-      public function removeHolder(param1:ISlotDataHolder) : void {
+      public function removeHolder(h:ISlotDataHolder) : void {
       }
       
-      public function getIconUri(param1:Boolean=true) : Uri {
+      public function getIconUri(pngMode:Boolean=true) : Uri {
          if(!this._uri)
          {
             this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/illusUi/genericTitleIcon.png"));

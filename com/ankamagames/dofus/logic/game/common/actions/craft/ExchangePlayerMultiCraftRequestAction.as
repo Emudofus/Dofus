@@ -9,12 +9,12 @@ package com.ankamagames.dofus.logic.game.common.actions.craft
          super();
       }
       
-      public static function create(param1:int, param2:uint, param3:uint) : ExchangePlayerMultiCraftRequestAction {
-         var _loc4_:ExchangePlayerMultiCraftRequestAction = new ExchangePlayerMultiCraftRequestAction();
-         _loc4_.exchangeType = param1;
-         _loc4_.target = param2;
-         _loc4_.skillId = param3;
-         return _loc4_;
+      public static function create(pExchangeType:int, pTarget:uint, pSkillId:uint) : ExchangePlayerMultiCraftRequestAction {
+         var action:ExchangePlayerMultiCraftRequestAction = new ExchangePlayerMultiCraftRequestAction();
+         action.exchangeType = pExchangeType;
+         action.target = pTarget;
+         action.skillId = pSkillId;
+         return action;
       }
       
       public var exchangeType:int;

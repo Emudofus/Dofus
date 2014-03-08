@@ -8,9 +8,9 @@ package com.ankamagames.berilia.types.data
    public class RadioGroup extends Object
    {
       
-      public function RadioGroup(param1:String) {
+      public function RadioGroup(name:String) {
          super();
-         this.name = param1;
+         this.name = name;
          this._items = new Array();
       }
       
@@ -22,16 +22,16 @@ package com.ankamagames.berilia.types.data
       
       public var name:String;
       
-      public function addItem(param1:IRadioItem) : void {
-         this._items[param1.id] = param1;
-         if(param1.selected)
+      public function addItem(item:IRadioItem) : void {
+         this._items[item.id] = item;
+         if(item.selected)
          {
-            this._selected = param1;
+            this._selected = item;
          }
       }
       
-      public function removeItem(param1:IRadioItem) : void {
-         delete this._items[[param1.id]];
+      public function removeItem(item:IRadioItem) : void {
+         delete this._items[[item.id]];
       }
       
       public function destroy() : void {
@@ -47,31 +47,31 @@ package com.ankamagames.berilia.types.data
          return null;
       }
       
-      public function set value(param1:*) : void {
-         var _loc2_:IRadioItem = null;
-         for each (_loc2_ in this._items)
+      public function set value(v:*) : void {
+         var item:IRadioItem = null;
+         for each (item in this._items)
          {
-            if(_loc2_.value == param1)
+            if(item.value == v)
             {
-               this.selectedItem = _loc2_;
+               this.selectedItem = item;
             }
          }
       }
       
-      public function set selectedItem(param1:IRadioItem) : void {
-         var _loc2_:IRadioItem = null;
-         if(this._selected == param1)
+      public function set selectedItem(item:IRadioItem) : void {
+         var currentItem:IRadioItem = null;
+         if(this._selected == item)
          {
             return;
          }
-         for each (_loc2_ in this._items)
+         for each (currentItem in this._items)
          {
-            if(_loc2_.selected != param1 == _loc2_)
+            if(currentItem.selected != item == currentItem)
             {
-               _loc2_.selected = param1 == _loc2_;
+               currentItem.selected = item == currentItem;
             }
          }
-         this._selected = param1;
+         this._selected = item;
       }
       
       public function get selectedItem() : IRadioItem {

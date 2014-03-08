@@ -50,71 +50,73 @@ package com.ankamagames.dofus.misc.utils
       
       private var _dt:DataStoreType;
       
-      public function report(param1:String, param2:String) : Boolean {
-         var _loc3_:String = null;
-         var _loc4_:URLRequest = null;
-         var _loc5_:URLLoader = null;
-         if(!param1)
+      public function report(key:String, value:String) : Boolean {
+         var oldValue:String = null;
+         var urlRequest:URLRequest = null;
+         var urlLoader:URLLoader = null;
+         if(!key)
          {
             return false;
          }
          try
          {
-            _loc3_ = StoreDataManager.getInstance().getData(this._dt,param1);
-            if((_loc3_) && _loc3_ == param2)
+            oldValue = StoreDataManager.getInstance().getData(this._dt,key);
+            if((oldValue) && (oldValue == value))
             {
                return false;
             }
-            _loc4_ = new URLRequest(WEB_SERVICE);
-            _loc4_.method = URLRequestMethod.POST;
-            _loc4_.data = new URLVariables();
-            _loc4_.data.guid = MD5.hash(PlayerManager.getInstance().nickname);
-            _loc4_.data.version = BuildInfos.BUILD_TYPE;
-            _loc4_.data.key = param1;
-            _loc4_.data.value = param2;
-            _loc5_ = new URLLoader();
-            _loc5_.addEventListener(Event.COMPLETE,this.onSended);
-            _loc5_.addEventListener(IOErrorEvent.IO_ERROR,this.onSendError);
-            _loc5_.load(_loc4_);
-            StoreDataManager.getInstance().setData(this._dt,param1,param2);
+            urlRequest = new URLRequest(WEB_SERVICE);
+            urlRequest.method = URLRequestMethod.POST;
+            urlRequest.data = new URLVariables();
+            urlRequest.data.guid = MD5.hash(PlayerManager.getInstance().nickname);
+            urlRequest.data.version = BuildInfos.BUILD_TYPE;
+            urlRequest.data.key = key;
+            urlRequest.data.value = value;
+            urlLoader = new URLLoader();
+            urlLoader.addEventListener(Event.COMPLETE,this.onSended);
+            urlLoader.addEventListener(IOErrorEvent.IO_ERROR,this.onSendError);
+            urlLoader.load(urlRequest);
+            StoreDataManager.getInstance().setData(this._dt,key,value);
             return true;
          }
          catch(e:Error)
          {
          }
          return false;
-         if((_loc3_) && _loc3_ == param2)
+         if((oldValue) && (oldValue == value))
          {
             return false;
          }
-         _loc4_ = new URLRequest(WEB_SERVICE);
-         _loc4_.method = URLRequestMethod.POST;
-         _loc4_.data = new URLVariables();
-         _loc4_.data.guid = MD5.hash(PlayerManager.getInstance().nickname);
-         _loc4_.data.version = BuildInfos.BUILD_TYPE;
-         _loc4_.data.key = param1;
-         _loc4_.data.value = param2;
-         _loc5_ = new URLLoader();
-         _loc5_.addEventListener(Event.COMPLETE,this.onSended);
-         _loc5_.addEventListener(IOErrorEvent.IO_ERROR,this.onSendError);
-         _loc5_.load(_loc4_);
-         StoreDataManager.getInstance().setData(this._dt,param1,param2);
+         urlRequest = new URLRequest(WEB_SERVICE);
+         urlRequest.method = URLRequestMethod.POST;
+         urlRequest.data = new URLVariables();
+         urlRequest.data.guid = MD5.hash(PlayerManager.getInstance().nickname);
+         urlRequest.data.version = BuildInfos.BUILD_TYPE;
+         urlRequest.data.key = key;
+         urlRequest.data.value = value;
+         urlLoader = new URLLoader();
+         urlLoader.addEventListener(Event.COMPLETE,this.onSended);
+         urlLoader.addEventListener(IOErrorEvent.IO_ERROR,this.onSendError);
+         urlLoader.load(urlRequest);
+         StoreDataManager.getInstance().setData(this._dt,key,value);
          return true;
       }
       
-      public function isReported(param1:String) : Boolean {
-         var _loc2_:String = StoreDataManager.getInstance().getData(this._dt,param1);
-         if(_loc2_)
+      public function isReported(key:String) : Boolean {
+         var oldValue:String = StoreDataManager.getInstance().getData(this._dt,key);
+         if(oldValue)
          {
             return true;
          }
          return false;
       }
       
-      private function onSended(param1:Event) : void {
+      private function onSended(e:Event) : void {
+         trace("ok");
       }
       
-      private function onSendError(param1:Event) : void {
+      private function onSendError(e:Event) : void {
+         trace("error");
       }
    }
 }

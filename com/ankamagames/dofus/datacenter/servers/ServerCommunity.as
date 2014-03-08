@@ -19,8 +19,8 @@ package com.ankamagames.dofus.datacenter.servers
       
       private static var _log:Logger = Log.getLogger(getQualifiedClassName(ServerCommunity));
       
-      public static function getServerCommunityById(param1:int) : ServerCommunity {
-         return GameData.getObject(MODULE,param1) as ServerCommunity;
+      public static function getServerCommunityById(id:int) : ServerCommunity {
+         return GameData.getObject(MODULE,id) as ServerCommunity;
       }
       
       public static function getServerCommunities() : Array {

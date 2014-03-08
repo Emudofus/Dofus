@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.common.actions
          super();
       }
       
-      public static function create(param1:Boolean, param2:Boolean=true) : ChangeWorldInteractionAction {
-         var _loc3_:ChangeWorldInteractionAction = new ChangeWorldInteractionAction();
-         _loc3_.enabled = param1;
-         _loc3_.total = param2;
-         return _loc3_;
+      public static function create(enabled:Boolean, total:Boolean=true) : ChangeWorldInteractionAction {
+         var a:ChangeWorldInteractionAction = new ChangeWorldInteractionAction();
+         a.enabled = enabled;
+         a.total = total;
+         return a;
       }
       
       public var enabled:Boolean;

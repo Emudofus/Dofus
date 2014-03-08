@@ -12,9 +12,8 @@ package com.ankamagames.dofus.console.moduleLogger
    public final class TypeMessage extends Object
    {
       
-      public function TypeMessage(... rest) {
+      public function TypeMessage(... args) {
          var object:Object = null;
-         var args:Array = rest;
          this.search1 = new RegExp("<","g");
          this.search2 = new RegExp(">","g");
          this.vectorExp = new RegExp("Vector.<(.*)::(.*)>","g");
@@ -22,7 +21,7 @@ package com.ankamagames.dofus.console.moduleLogger
          try
          {
             object = args[0];
-            if(object is String && args.length == 2)
+            if((object is String) && (args.length == 2))
             {
                this.displayLog(object as String,args[1]);
             }
@@ -70,7 +69,7 @@ package com.ankamagames.dofus.console.moduleLogger
             }
          }
          return;
-         if(object is String && args.length == 2)
+         if((object is String) && (args.length == 2))
          {
             this.displayLog(object as String,args[1]);
          }
@@ -138,122 +137,122 @@ package com.ankamagames.dofus.console.moduleLogger
       
       private var search2:RegExp;
       
-      private function displayBind(param1:Bind, param2:Object) : void {
+      private function displayBind(bind:Bind, ui:Object) : void {
          this.type = TYPE_SHORTCUT;
-         var _loc3_:String = "Shortcut : " + param1.key.toUpperCase() + " --&gt; \"" + param1.targetedShortcut + "\" " + (param1.alt?"Alt+":"") + (param1.ctrl?"Ctrl+":"") + (param1.shift?"Shift+":"");
+         var textBind:String = "Shortcut : " + bind.key.toUpperCase() + " --&gt; \"" + bind.targetedShortcut + "\" " + (bind.alt?"Alt+":"") + (bind.ctrl?"Ctrl+":"") + (bind.shift?"Shift+":"");
          this.name = "Shortcut";
-         this.textInfo = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'yellow\'> BIND   : <a href=\'event:@shortcut\'>" + _loc3_ + "</a></span>" + "\n<span class=\'gray+\'>" + TAB + "target : " + param2 + "</span>\n";
+         this.textInfo = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'yellow\'> BIND   : <a href=\'event:@shortcut\'>" + textBind + "</a></span>" + "\n<span class=\'gray+\'>" + TAB + "target : " + ui + "</span>\n";
       }
       
-      private function displayInteractionMessage(param1:Message, param2:DisplayObject) : void {
-         var _loc6_:Array = null;
-         var _loc7_:* = 0;
-         var _loc8_:* = 0;
+      private function displayInteractionMessage(msg:Message, ui:DisplayObject) : void {
+         var infos:Array = null;
+         var num:* = 0;
+         var i:* = 0;
          this.type = TYPE_UI;
-         var _loc3_:String = getQualifiedClassName(param1);
-         if(_loc3_.indexOf("::") != -1)
+         var className:String = getQualifiedClassName(msg);
+         if(className.indexOf("::") != -1)
          {
-            _loc3_ = _loc3_.split("::")[1];
+            className = className.split("::")[1];
          }
-         this.name = _loc3_;
-         var _loc4_:* = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'green\'> UI     : <a href=\'event:@" + this.name + "\'>" + this.name + "</a></span>" + "\n<span class=\'gray+\'>" + TAB + "target : " + param2.name + "</span><span class=\'gray\'>";
-         var _loc5_:String = String(param1);
-         if(_loc5_.indexOf("@") != -1)
+         this.name = className;
+         var text:String = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'green\'> UI     : <a href=\'event:@" + this.name + "\'>" + this.name + "</a></span>" + "\n<span class=\'gray+\'>" + TAB + "target : " + ui.name + "</span><span class=\'gray\'>";
+         var baseName:String = String(msg);
+         if(baseName.indexOf("@") != -1)
          {
-            _loc6_ = _loc5_.split("@");
-            _loc7_ = _loc6_.length;
-            _loc8_ = 1;
-            while(_loc8_ < _loc7_)
+            infos = baseName.split("@");
+            num = infos.length;
+            i = 1;
+            while(i < num)
             {
-               _loc4_ = _loc4_ + ("\n" + TAB + _loc6_[_loc8_]);
-               _loc8_++;
+               text = text + ("\n" + TAB + infos[i]);
+               i++;
             }
          }
-         this.textInfo = _loc4_ + "</span>\n";
+         this.textInfo = text + "</span>\n";
       }
       
       private var vectorExp:RegExp;
       
-      private function displayHookInformations(param1:Hook, param2:Array) : void {
-         var _loc6_:Object = null;
-         var _loc7_:String = null;
-         var _loc8_:String = null;
+      private function displayHookInformations(hook:Hook, args:Array) : void {
+         var arg:Object = null;
+         var className:String = null;
+         var textArg:String = null;
          this.type = TYPE_HOOK;
-         this.name = param1.name;
-         var _loc3_:* = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'blue\'> HOOK   : <a href=\'event:@" + this.name + "\'>" + this.name + "</a></span>" + "<span class=\'gray\'>";
-         var _loc4_:int = param2.length;
-         var _loc5_:* = 0;
-         while(_loc5_ < _loc4_)
+         this.name = hook.name;
+         var text:String = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'blue\'> HOOK   : <a href=\'event:@" + this.name + "\'>" + this.name + "</a></span>" + "<span class=\'gray\'>";
+         var num:int = args.length;
+         var i:int = 0;
+         while(i < num)
          {
-            _loc6_ = param2[_loc5_];
-            _loc7_ = getQualifiedClassName(_loc6_);
-            _loc7_ = _loc7_.replace(this.vectorExp,"Vector.<$2>");
-            _loc7_ = _loc7_.replace(this.search1,"&lt;");
-            _loc7_ = _loc7_.replace(this.search2,"&gt;");
-            if(_loc7_.indexOf("::") != -1)
+            arg = args[i];
+            className = getQualifiedClassName(arg);
+            className = className.replace(this.vectorExp,"Vector.<$2>");
+            className = className.replace(this.search1,"&lt;");
+            className = className.replace(this.search2,"&gt;");
+            if(className.indexOf("::") != -1)
             {
-               _loc7_ = _loc7_.split("::")[1];
+               className = className.split("::")[1];
             }
-            if(_loc6_ != null)
+            if(arg != null)
             {
-               _loc8_ = _loc6_.toString();
-               _loc8_ = _loc8_.replace(this.search1,"&lt;");
-               _loc8_ = _loc8_.replace(this.search2,"&gt;");
+               textArg = arg.toString();
+               textArg = textArg.replace(this.search1,"&lt;");
+               textArg = textArg.replace(this.search2,"&gt;");
             }
-            _loc3_ = _loc3_ + ("\n" + TAB + "arg" + _loc5_ + ":" + _loc7_ + " = " + _loc8_);
-            _loc5_++;
+            text = text + ("\n" + TAB + "arg" + i + ":" + className + " = " + textArg);
+            i++;
          }
-         _loc3_ = _loc3_ + "</span>\n";
-         this.textInfo = _loc3_;
+         text = text + "</span>\n";
+         this.textInfo = text;
       }
       
-      private function displayLog(param1:String, param2:int) : void {
-         var _loc3_:String = null;
-         this.name = param1;
-         if(param2 == LogLevel.DEBUG)
+      private function displayLog(text:String, level:int) : void {
+         var finalText:String = null;
+         this.name = text;
+         if(level == LogLevel.DEBUG)
          {
-            _loc3_ = "<span class=\'blue\'>";
+            finalText = "<span class=\'blue\'>";
          }
          else
          {
-            if(param2 == LogLevel.TRACE)
+            if(level == LogLevel.TRACE)
             {
-               _loc3_ = "<span class=\'green\'>";
+               finalText = "<span class=\'green\'>";
             }
             else
             {
-               if(param2 == LogLevel.INFO)
+               if(level == LogLevel.INFO)
                {
-                  _loc3_ = "<span class=\'yellow\'>";
+                  finalText = "<span class=\'yellow\'>";
                }
                else
                {
-                  if(param2 == LogLevel.WARN)
+                  if(level == LogLevel.WARN)
                   {
-                     _loc3_ = "<span class=\'orange\'>";
+                     finalText = "<span class=\'orange\'>";
                   }
                   else
                   {
-                     if(param2 == LogLevel.ERROR)
+                     if(level == LogLevel.ERROR)
                      {
-                        _loc3_ = "<span class=\'red\'>";
+                        finalText = "<span class=\'red\'>";
                      }
                      else
                      {
-                        if(param2 == LogLevel.FATAL)
+                        if(level == LogLevel.FATAL)
                         {
-                           _loc3_ = "<span class=\'red+\'>";
+                           finalText = "<span class=\'red+\'>";
                         }
                         else
                         {
-                           if(param2 == LOG_CHAT)
+                           if(level == LOG_CHAT)
                            {
                               this.logType = LOG_CHAT;
-                              _loc3_ = "<span class=\'white\'>";
+                              finalText = "<span class=\'white\'>";
                            }
                            else
                            {
-                              _loc3_ = "<span class=\'gray\'>";
+                              finalText = "<span class=\'gray\'>";
                            }
                         }
                      }
@@ -261,42 +260,42 @@ package com.ankamagames.dofus.console.moduleLogger
                }
             }
          }
-         _loc3_ = _loc3_ + ("[" + this.getDate() + "] " + param1 + "</span>");
-         this.textInfo = _loc3_;
+         finalText = finalText + ("[" + this.getDate() + "] " + text + "</span>");
+         this.textInfo = finalText;
       }
       
-      private function displayActionInformations(param1:Action) : void {
-         var _loc6_:XML = null;
-         var _loc7_:String = null;
-         var _loc8_:String = null;
-         var _loc9_:String = null;
+      private function displayActionInformations(action:Action) : void {
+         var variable:XML = null;
+         var name:String = null;
+         var typel:String = null;
+         var value:String = null;
          this.type = TYPE_ACTION;
-         var _loc2_:String = getQualifiedClassName(param1).split("::")[1];
-         this.name = _loc2_;
-         var _loc3_:* = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'pink\'> ACTION : <a href=\'event:@" + this.name + "\'>" + this.name + "</a></span>" + "<span class=\'gray\'>";
-         var _loc4_:XML = describeType(param1);
-         var _loc5_:XMLList = _loc4_.elements("variable");
-         for each (_loc6_ in _loc5_)
+         var actionName:String = getQualifiedClassName(action).split("::")[1];
+         this.name = actionName;
+         var text:String = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'pink\'> ACTION : <a href=\'event:@" + this.name + "\'>" + this.name + "</a></span>" + "<span class=\'gray\'>";
+         var infos:XML = describeType(action);
+         var variables:XMLList = infos.elements("variable");
+         for each (variable in variables)
          {
-            _loc7_ = _loc6_.attribute("name");
-            _loc8_ = _loc6_.attribute("type");
-            _loc8_ = _loc8_.replace(this.search1,"&lt;");
-            _loc8_ = _loc8_.replace(this.search2,"&gt;");
-            _loc9_ = String(param1[_loc7_]);
-            _loc9_ = _loc9_.replace(this.search1,"&lt;");
-            _loc9_ = _loc9_.replace(this.search2,"&gt;");
-            _loc3_ = _loc3_ + ("\n" + TAB + _loc7_ + ":" + _loc8_ + " = " + _loc9_);
+            name = variable.attribute("name");
+            typel = variable.attribute("type");
+            typel = typel.replace(this.search1,"&lt;");
+            typel = typel.replace(this.search2,"&gt;");
+            value = String(action[name]);
+            value = value.replace(this.search1,"&lt;");
+            value = value.replace(this.search2,"&gt;");
+            text = text + ("\n" + TAB + name + ":" + typel + " = " + value);
          }
-         _loc3_ = _loc3_ + "</span>\n";
-         this.textInfo = _loc3_;
+         text = text + "</span>\n";
+         this.textInfo = text;
       }
       
       private function getDate() : String {
-         var _loc1_:Date = new Date();
-         var _loc2_:int = _loc1_.hours;
-         var _loc3_:int = _loc1_.minutes;
-         var _loc4_:int = _loc1_.seconds;
-         return (_loc2_ < 10?"0" + _loc2_:_loc2_) + ":" + (_loc3_ < 10?"0" + _loc3_:_loc3_) + ":" + (_loc4_ < 10?"0" + _loc4_:_loc4_);
+         var date:Date = new Date();
+         var hours:int = date.hours;
+         var minutes:int = date.minutes;
+         var seconds:int = date.seconds;
+         return (hours < 10?"0" + hours:hours) + ":" + (minutes < 10?"0" + minutes:minutes) + ":" + (seconds < 10?"0" + seconds:seconds);
       }
    }
 }

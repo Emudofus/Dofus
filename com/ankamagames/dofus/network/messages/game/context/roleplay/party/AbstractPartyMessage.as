@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6274;
       }
       
-      public function initAbstractPartyMessage(param1:uint=0) : AbstractPartyMessage {
-         this.partyId = param1;
+      public function initAbstractPartyMessage(partyId:uint=0) : AbstractPartyMessage {
+         this.partyId = partyId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AbstractPartyMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AbstractPartyMessage(output);
       }
       
-      public function serializeAs_AbstractPartyMessage(param1:IDataOutput) : void {
+      public function serializeAs_AbstractPartyMessage(output:IDataOutput) : void {
          if(this.partyId < 0)
          {
             throw new Error("Forbidden value (" + this.partyId + ") on element partyId.");
          }
          else
          {
-            param1.writeInt(this.partyId);
+            output.writeInt(this.partyId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AbstractPartyMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AbstractPartyMessage(input);
       }
       
-      public function deserializeAs_AbstractPartyMessage(param1:IDataInput) : void {
-         this.partyId = param1.readInt();
+      public function deserializeAs_AbstractPartyMessage(input:IDataInput) : void {
+         this.partyId = input.readInt();
          if(this.partyId < 0)
          {
             throw new Error("Forbidden value (" + this.partyId + ") on element of AbstractPartyMessage.partyId.");

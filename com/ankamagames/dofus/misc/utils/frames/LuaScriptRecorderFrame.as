@@ -73,9 +73,9 @@ package com.ankamagames.dofus.misc.utils.frames
       
       private var _currentCameraZoom:int;
       
-      private function addScriptLine(param1:String, param2:Boolean=false) : void {
-         var _loc3_:* = 0;
-         if(!this._paused && (this._running) || (param2))
+      private function addScriptLine(line:String, overrideRunningStatus:Boolean=false) : void {
+         var time:* = 0;
+         if((!this._paused) && (this._running) || (overrideRunningStatus))
          {
             if(this._luaScript != "")
             {
@@ -87,21 +87,21 @@ package com.ankamagames.dofus.misc.utils.frames
                {
                   this._waitStartTime = this._mainSeqStartTime;
                }
-               _loc3_ = getTimer();
+               time = getTimer();
                if(this._charMoveStartTime)
                {
-                  param1 = "seq.add(player.wait(" + String(this._charMoveStartTime - this._waitStartTime) + "))\n" + param1;
+                  line = "seq.add(player.wait(" + String(this._charMoveStartTime - this._waitStartTime) + "))\n" + line;
                }
                else
                {
-                  param1 = "seq.add(player.wait(" + String(_loc3_ - this._waitStartTime) + "))\n" + param1;
+                  line = "seq.add(player.wait(" + String(time - this._waitStartTime) + "))\n" + line;
                }
                this._charMoveStartTime = 0;
                this._waitModTime = 0;
                this._waitStartTime = getTimer();
             }
-            this._luaScript = this._luaScript + param1;
-            ConsoleLUA.getInstance().printLine(param1);
+            this._luaScript = this._luaScript + line;
+            ConsoleLUA.getInstance().printLine(line);
          }
       }
       
@@ -117,212 +117,211 @@ package com.ankamagames.dofus.misc.utils.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:String = null;
-         var _loc3_:String = null;
-         var _loc5_:GameMapMovementMessage = null;
-         var _loc6_:EntityMovementCompleteMessage = null;
-         var _loc7_:ChatServerMessage = null;
-         var _loc8_:GameMapChangeOrientationMessage = null;
-         var _loc9_:EmotePlayMessage = null;
-         var _loc10_:GameRolePlayShowActorMessage = null;
-         var _loc11_:TiphonEntityLook = null;
-         var _loc12_:InteractiveUsedMessage = null;
-         var _loc13_:InteractiveUseEndedMessage = null;
-         var _loc14_:ChatSmileyMessage = null;
-         var _loc15_:CellOverMessage = null;
-         var _loc16_:* = 0;
-         var _loc17_:* = 0;
-         var _loc18_:* = 0;
-         var _loc19_:* = false;
-         var _loc20_:RoleplayInteractivesFrame = null;
-         var _loc21_:IEntity = null;
-         var _loc22_:String = null;
-         var _loc23_:MapPoint = null;
-         var _loc24_:uint = 0;
-         var _loc4_:* = false;
+      public function process(msg:Message) : Boolean {
+         var cmd:String = null;
+         var param:String = null;
+         var gmmm:GameMapMovementMessage = null;
+         var emcm:EntityMovementCompleteMessage = null;
+         var csm:ChatServerMessage = null;
+         var gmcomsg:GameMapChangeOrientationMessage = null;
+         var epmsg:EmotePlayMessage = null;
+         var grpsam:GameRolePlayShowActorMessage = null;
+         var tel:TiphonEntityLook = null;
+         var iumsg:InteractiveUsedMessage = null;
+         var iuemsg:InteractiveUseEndedMessage = null;
+         var scmsg:ChatSmileyMessage = null;
+         var comsg:CellOverMessage = null;
+         var time:* = 0;
+         var waitValRes:* = 0;
+         var waitValPlayer:* = 0;
+         var autoTimerVal:* = false;
+         var rif:RoleplayInteractivesFrame = null;
+         var user:IEntity = null;
+         var useAnimation:String = null;
+         var worldPos:MapPoint = null;
+         var useDirection:uint = 0;
+         var useQuote:Boolean = false;
          switch(true)
          {
-            case param1 is GameMapMovementMessage:
-               _loc5_ = param1 as GameMapMovementMessage;
-               if(_loc5_.actorId == this._playerId)
+            case msg is GameMapMovementMessage:
+               gmmm = msg as GameMapMovementMessage;
+               if(gmmm.actorId == this._playerId)
                {
                   this._charMoveStartTime = getTimer();
                }
                return false;
-            case param1 is EntityMovementCompleteMessage:
-               _loc6_ = param1 as EntityMovementCompleteMessage;
-               if(_loc6_.entity.id == this._playerId)
+            case msg is EntityMovementCompleteMessage:
+               emcm = msg as EntityMovementCompleteMessage;
+               if(emcm.entity.id == this._playerId)
                {
                   switch(this._moveType)
                   {
                      case LuaMoveEnum.MOVE_DEFAULT:
-                        _loc2_ = "move";
+                        cmd = "move";
                         break;
                      case LuaMoveEnum.MOVE_WALK:
-                        _loc2_ = "walk";
+                        cmd = "walk";
                         break;
                      case LuaMoveEnum.MOVE_RUN:
-                        _loc2_ = "run";
+                        cmd = "run";
                         break;
                      case LuaMoveEnum.MOVE_TELEPORT:
-                        _loc2_ = "teleport";
+                        cmd = "teleport";
                         break;
                      case LuaMoveEnum.MOVE_SLIDE:
-                        _loc2_ = "slide";
+                        cmd = "slide";
                         break;
                   }
-                  _loc3_ = _loc6_.entity.position.x + ", " + _loc6_.entity.position.y;
-                  this._playerX = _loc6_.entity.position.x;
-                  this._playerY = _loc6_.entity.position.y;
+                  param = emcm.entity.position.x + ", " + emcm.entity.position.y;
+                  this._playerX = emcm.entity.position.x;
+                  this._playerY = emcm.entity.position.y;
                   break;
                }
                return false;
-            case param1 is ChatServerMessage:
-               _loc7_ = param1 as ChatServerMessage;
-               if(_loc7_.senderId == this._playerId)
+            case msg is ChatServerMessage:
+               csm = msg as ChatServerMessage;
+               if(csm.senderId == this._playerId)
                {
-                  _loc4_ = true;
-                  if(_loc7_.content.substr(0,6).toLowerCase() == "/think")
+                  useQuote = true;
+                  if(csm.content.substr(0,6).toLowerCase() == "/think")
                   {
-                     _loc2_ = "think";
-                     _loc3_ = _loc7_.content.substr(7);
+                     cmd = "think";
+                     param = csm.content.substr(7);
                   }
                   else
                   {
-                     _loc2_ = "speak";
-                     _loc3_ = _loc7_.content;
+                     cmd = "speak";
+                     param = csm.content;
                   }
                   break;
                }
                return false;
-            case param1 is GameMapChangeOrientationMessage:
-               _loc8_ = param1 as GameMapChangeOrientationMessage;
-               if(_loc8_.orientation.id == this._playerId)
+            case msg is GameMapChangeOrientationMessage:
+               gmcomsg = msg as GameMapChangeOrientationMessage;
+               if(gmcomsg.orientation.id == this._playerId)
                {
-                  _loc2_ = "setDirection";
-                  _loc3_ = _loc8_.orientation.direction.toString();
+                  cmd = "setDirection";
+                  param = gmcomsg.orientation.direction.toString();
                   break;
                }
                return false;
-            case param1 is EmotePlayMessage:
-               _loc9_ = param1 as EmotePlayMessage;
-               if(_loc9_.actorId == this._playerId)
+            case msg is EmotePlayMessage:
+               epmsg = msg as EmotePlayMessage;
+               if(epmsg.actorId == this._playerId)
                {
-                  _loc2_ = "playEmote";
-                  _loc3_ = _loc9_.emoteId.toString();
+                  cmd = "playEmote";
+                  param = epmsg.emoteId.toString();
                   break;
                }
                return false;
-            case param1 is GameRolePlayShowActorMessage:
-               _loc10_ = param1 as GameRolePlayShowActorMessage;
-               _loc11_ = EntityLookAdapter.fromNetwork(_loc10_.informations.look);
-               if(_loc10_.informations.contextualId == this._playerId && !(_loc11_ as EntityLook == PlayedCharacterManager.getInstance().realEntityLook))
+            case msg is GameRolePlayShowActorMessage:
+               grpsam = msg as GameRolePlayShowActorMessage;
+               tel = EntityLookAdapter.fromNetwork(grpsam.informations.look);
+               if((grpsam.informations.contextualId == this._playerId) && (!(tel as EntityLook == PlayedCharacterManager.getInstance().realEntityLook)))
                {
-                  _loc4_ = true;
-                  _loc2_ = "look";
-                  _loc3_ = _loc11_.toString();
+                  useQuote = true;
+                  cmd = "look";
+                  param = tel.toString();
                   break;
                }
                return false;
-            case param1 is InteractiveUsedMessage:
-               _loc12_ = param1 as InteractiveUsedMessage;
-               if(_loc12_.entityId == this._playerId)
+            case msg is InteractiveUsedMessage:
+               iumsg = msg as InteractiveUsedMessage;
+               if(iumsg.entityId == this._playerId)
                {
                   if(!this._waitStartTime)
                   {
                      this._waitStartTime = this._mainSeqStartTime;
                   }
-                  _loc16_ = getTimer();
-                  _loc17_ = _loc16_ - this._mainSeqStartTime;
-                  _loc18_ = _loc16_ - this._waitStartTime;
-                  _loc19_ = this._autoTimer;
+                  time = getTimer();
+                  waitValRes = time - this._mainSeqStartTime;
+                  waitValPlayer = time - this._waitStartTime;
+                  autoTimerVal = this._autoTimer;
                   this._autoTimer = false;
-                  _loc20_ = Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame;
-                  _loc21_ = DofusEntities.getEntity(_loc12_.entityId);
-                  _loc22_ = Skill.getSkillById(_loc12_.skillId).useAnimation;
-                  _loc23_ = Atouin.getInstance().getIdentifiedElementPosition(_loc12_.elemId);
-                  _loc24_ = _loc20_.getUseDirection(_loc21_ as TiphonSprite,_loc22_,_loc23_);
-                  this.createLine("player","wait",_loc18_.toString(),false);
-                  this.createLine("player","setDirection",_loc24_.toString(),_loc4_);
-                  this.createLine("player","setAnimation","\"" + _loc22_ + "\", 5",false);
-                  this.addScriptLine("local harvestedRes" + resourceID + " = EntityApi.getWorldEntity(" + _loc12_.elemId + ")");
+                  rif = Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame;
+                  user = DofusEntities.getEntity(iumsg.entityId);
+                  useAnimation = Skill.getSkillById(iumsg.skillId).useAnimation;
+                  worldPos = Atouin.getInstance().getIdentifiedElementPosition(iumsg.elemId);
+                  useDirection = rif.getUseDirection(user as TiphonSprite,useAnimation,worldPos);
+                  this.createLine("player","wait",waitValPlayer.toString(),false);
+                  this.createLine("player","setDirection",useDirection.toString(),useQuote);
+                  this.createLine("player","setAnimation","\"" + useAnimation + "\", 5",false);
+                  this.addScriptLine("local harvestedRes" + resourceID + " = EntityApi.getWorldEntity(" + iumsg.elemId + ")");
                   this.addScriptLine("local seqRes" + resourceID + " = SeqApi.create()");
-                  this.addScriptLine("seqRes" + resourceID + ".add(harvestedRes" + resourceID + ".wait(" + _loc17_.toString() + "))");
+                  this.addScriptLine("seqRes" + resourceID + ".add(harvestedRes" + resourceID + ".wait(" + waitValRes.toString() + "))");
                   this.addScriptLine("seqRes" + resourceID + ".add(harvestedRes" + resourceID + ".setAnimation(\"AnimState2\", 5, \"AnimState2_to_AnimState1\"))");
                   this.addScriptLine("seqRes" + resourceID + ".add(harvestedRes" + resourceID + ".wait(500))");
                   this.addScriptLine("seqRes" + resourceID + ".add(harvestedRes" + resourceID + ".setAnimation(\"AnimState1\", -1, \"none\"))");
                   this._waitStartTime = getTimer();
                   resourceID++;
-                  this._elementID = _loc12_.elemId;
-                  this._autoTimer = _loc19_;
+                  this._elementID = iumsg.elemId;
+                  this._autoTimer = autoTimerVal;
                }
                return false;
-            case param1 is InteractiveUseEndedMessage:
-               _loc13_ = param1 as InteractiveUseEndedMessage;
-               if(this._elementID == _loc13_.elemId)
+            case msg is InteractiveUseEndedMessage:
+               iuemsg = msg as InteractiveUseEndedMessage;
+               if(this._elementID == iuemsg.elemId)
                {
                   this._waitStartTime = getTimer();
                   this._elementID = 0;
                }
                return false;
-            case param1 is ChatSmileyMessage:
-               _loc14_ = param1 as ChatSmileyMessage;
-               if(_loc14_.entityId == this._playerId)
+            case msg is ChatSmileyMessage:
+               scmsg = msg as ChatSmileyMessage;
+               if(scmsg.entityId == this._playerId)
                {
-                  _loc2_ = "playSmiley";
-                  _loc3_ = _loc14_.smileyId.toString();
+                  cmd = "playSmiley";
+                  param = scmsg.smileyId.toString();
                   break;
                }
                return false;
-            case param1 is CellOverMessage:
-               _loc15_ = param1 as CellOverMessage;
-               this._currentCell = _loc15_.cell;
+            case msg is CellOverMessage:
+               comsg = msg as CellOverMessage;
+               this._currentCell = comsg.cell;
                return false;
-            case param1 is MouseWheelMessage:
-            default:
+            case msg is MouseWheelMessage:
                return false;
          }
-         this.createLine("player",_loc2_,_loc3_,_loc4_);
+         this.createLine("player",cmd,param,useQuote);
          return false;
       }
       
-      public function cameraZoom(param1:Number, param2:Boolean=false) : void {
-         var _loc4_:String = null;
-         var _loc3_:SystemApi = new SystemApi();
-         if(param1 <= 0 || param1 > AtouinConstants.MAX_ZOOM)
+      public function cameraZoom(value:Number, centerOnCharacter:Boolean=false) : void {
+         var param:String = null;
+         var sysApi:SystemApi = new SystemApi();
+         if((value <= 0) || (value > AtouinConstants.MAX_ZOOM))
          {
             return;
          }
-         if(this._currentCameraZoom != param1)
+         if(this._currentCameraZoom != value)
          {
-            this.addScriptLine("seq.add(CameraApi.setZoom(" + param1 + "))");
+            this.addScriptLine("seq.add(CameraApi.setZoom(" + value + "))");
          }
-         this._currentCameraZoom = param1;
+         this._currentCameraZoom = value;
          if(this._currentCameraZoom == 1)
          {
             this.addScriptLine("seq.add(CameraApi.zoom(0))");
             return;
          }
-         if(param2)
+         if(centerOnCharacter)
          {
-            _loc4_ = "player";
+            param = "player";
          }
          else
          {
-            _loc4_ = this._currentCell.x.toString() + ", " + this._currentCell.y.toString();
+            param = this._currentCell.x.toString() + ", " + this._currentCell.y.toString();
          }
-         this.addScriptLine("seq.add(CameraApi.zoom(" + _loc4_ + "))");
+         this.addScriptLine("seq.add(CameraApi.zoom(" + param + "))");
       }
       
-      public function createLine(param1:String, param2:String, param3:String, param4:Boolean) : void {
-         if(param4)
+      public function createLine(entity:String, cmd:String, param:String, useQuote:Boolean) : void {
+         if(useQuote)
          {
-            this.addScriptLine("seq.add(" + param1 + "." + param2 + "(\"" + param3 + "\"))");
+            this.addScriptLine("seq.add(" + entity + "." + cmd + "(\"" + param + "\"))");
          }
          else
          {
-            this.addScriptLine("seq.add(" + param1 + "." + param2 + "(" + param3 + "))");
+            this.addScriptLine("seq.add(" + entity + "." + cmd + "(" + param + "))");
          }
       }
       
@@ -333,51 +332,51 @@ package com.ankamagames.dofus.misc.utils.frames
       }
       
       public function addSeqStart() : void {
-         var _loc1_:Boolean = this._autoTimer;
+         var autoTimerVal:Boolean = this._autoTimer;
          this._autoTimer = false;
          this.addScriptLine("seq.start()",true);
-         var _loc2_:* = 0;
-         while(_loc2_ < resourceID)
+         var i:int = 0;
+         while(i < resourceID)
          {
-            this.addScriptLine("seqRes" + _loc2_ + ".start()",true);
-            _loc2_++;
+            this.addScriptLine("seqRes" + i + ".start()",true);
+            i++;
          }
-         this._autoTimer = _loc1_;
+         this._autoTimer = autoTimerVal;
       }
       
-      public function start(param1:Boolean) : void {
+      public function start(autoTimer:Boolean) : void {
          this._luaScript = "";
          this._running = true;
          this._paused = false;
          this._moveType = LuaMoveEnum.MOVE_DEFAULT;
          this._playerId = PlayedCharacterManager.getInstance().id;
-         var _loc2_:IEntity = EntitiesManager.getInstance().getEntity(this._playerId);
-         this._playerX = _loc2_.position.x;
-         this._playerY = _loc2_.position.y;
+         var entity:IEntity = EntitiesManager.getInstance().getEntity(this._playerId);
+         this._playerX = entity.position.x;
+         this._playerY = entity.position.y;
          this.addScriptLine("local player = EntityApi.getPlayer()");
          this.addScriptLine("local seq = SeqApi.create()");
          this.createLine("player","teleport",this._playerX.toString() + ", " + this._playerY.toString(),false);
-         this._autoTimer = param1;
+         this._autoTimer = autoTimer;
          this._mainSeqStartTime = getTimer();
          this._waitStartTime = 0;
          this._charMoveStartTime = 0;
          resourceID = 0;
       }
       
-      public function set pause(param1:Boolean) : void {
-         this._paused = param1;
+      public function set pause(paused:Boolean) : void {
+         this._paused = paused;
          if(this._paused == false)
          {
             this._waitStartTime = getTimer();
          }
       }
       
-      public function wait(param1:Number) : void {
-         this.createLine("player","wait",param1.toString(),false);
+      public function wait(time:Number) : void {
+         this.createLine("player","wait",time.toString(),false);
       }
       
-      public function autoFollowCam(param1:Boolean) : void {
-         if(param1)
+      public function autoFollowCam(enabled:Boolean) : void {
+         if(enabled)
          {
             this.addScriptLine("seq.add(CameraApi.follow(player))");
          }
@@ -391,8 +390,8 @@ package com.ankamagames.dofus.misc.utils.frames
          return this._running;
       }
       
-      public function set moveType(param1:int) : void {
-         this._moveType = param1;
+      public function set moveType(moveType:int) : void {
+         this._moveType = moveType;
       }
       
       public function get luaScript() : String {
@@ -403,8 +402,8 @@ package com.ankamagames.dofus.misc.utils.frames
          return Priority.ULTIMATE_HIGHEST_DEPTH_OF_DOOM;
       }
       
-      public function set luaScript(param1:String) : void {
-         this._luaScript = param1;
+      public function set luaScript(value:String) : void {
+         this._luaScript = value;
       }
    }
 }

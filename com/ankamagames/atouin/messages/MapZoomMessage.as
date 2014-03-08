@@ -5,11 +5,11 @@ package com.ankamagames.atouin.messages
    public class MapZoomMessage extends Object implements Message
    {
       
-      public function MapZoomMessage(param1:Number, param2:int, param3:int) {
+      public function MapZoomMessage(value:Number, posX:int, posY:int) {
          super();
-         this._value = param1;
-         this._posX = param2;
-         this._posY = param3;
+         this._value = value;
+         this._posX = posX;
+         this._posY = posY;
       }
       
       private var _value:Number;

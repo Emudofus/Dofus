@@ -5,9 +5,9 @@ package com.ankamagames.jerakine.sequencer
    public class CallbackStep extends AbstractSequencable
    {
       
-      public function CallbackStep(param1:Callback) {
+      public function CallbackStep(callback:Callback) {
          super();
-         this._callback = param1;
+         this._callback = callback;
       }
       
       private var _callback:Callback;

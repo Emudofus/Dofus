@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6399;
       }
       
-      public function initAllianceGuildLeavingMessage(param1:Boolean=false, param2:int=0) : AllianceGuildLeavingMessage {
-         this.kicked = param1;
-         this.guildId = param2;
+      public function initAllianceGuildLeavingMessage(kicked:Boolean=false, guildId:int=0) : AllianceGuildLeavingMessage {
+         this.kicked = kicked;
+         this.guildId = guildId;
          this._isInitialized = true;
          return this;
       }
@@ -42,32 +42,32 @@ package com.ankamagames.dofus.network.messages.game.alliance
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AllianceGuildLeavingMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AllianceGuildLeavingMessage(output);
       }
       
-      public function serializeAs_AllianceGuildLeavingMessage(param1:IDataOutput) : void {
-         param1.writeBoolean(this.kicked);
-         param1.writeInt(this.guildId);
+      public function serializeAs_AllianceGuildLeavingMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.kicked);
+         output.writeInt(this.guildId);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AllianceGuildLeavingMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AllianceGuildLeavingMessage(input);
       }
       
-      public function deserializeAs_AllianceGuildLeavingMessage(param1:IDataInput) : void {
-         this.kicked = param1.readBoolean();
-         this.guildId = param1.readInt();
+      public function deserializeAs_AllianceGuildLeavingMessage(input:IDataInput) : void {
+         this.kicked = input.readBoolean();
+         this.guildId = input.readInt();
       }
    }
 }

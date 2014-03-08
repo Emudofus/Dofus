@@ -17,26 +17,26 @@ package com.ankamagames.dofus.datacenter.breeds
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Head));
       
-      public static function getHeadById(param1:int) : Head {
-         return GameData.getObject(MODULE,param1) as Head;
+      public static function getHeadById(id:int) : Head {
+         return GameData.getObject(MODULE,id) as Head;
       }
       
       public static function getHeads() : Array {
          return GameData.getObjects(MODULE);
       }
       
-      public static function getHead(param1:uint, param2:uint) : Array {
-         var _loc5_:Head = null;
-         var _loc3_:Array = GameData.getObjects(MODULE);
-         var _loc4_:Array = [];
-         for each (_loc5_ in _loc3_)
+      public static function getHead(breed:uint, gender:uint) : Array {
+         var head:Head = null;
+         var heads:Array = GameData.getObjects(MODULE);
+         var result:Array = [];
+         for each (head in heads)
          {
-            if(_loc5_.breed == param1 && _loc5_.gender == param2)
+            if((head.breed == breed) && (head.gender == gender))
             {
-               _loc4_.push(_loc5_);
+               result.push(head);
             }
          }
-         return _loc4_;
+         return result;
       }
       
       public var id:int;

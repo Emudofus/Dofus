@@ -17,11 +17,11 @@ package com.ankamagames.dofus.logic.game.fight.types.castSpellManager
    public class SpellManager extends Object
    {
       
-      public function SpellManager(param1:SpellCastInFightManager, param2:uint, param3:uint) {
+      public function SpellManager(spellCastManager:SpellCastInFightManager, pSpellId:uint, pSpellLevel:uint) {
          super();
-         this._spellCastManager = param1;
-         this._spellId = param2;
-         this._spellLevel = param3;
+         this._spellCastManager = spellCastManager;
+         this._spellId = pSpellId;
+         this._spellLevel = pSpellLevel;
          this._targetsThisTurn = new Dictionary();
       }
       
@@ -49,8 +49,8 @@ package com.ankamagames.dofus.logic.game.fight.types.castSpellManager
          return this._castThisTurn;
       }
       
-      public function set spellLevel(param1:uint) : void {
-         this._spellLevel = param1;
+      public function set spellLevel(pSpellLevel:uint) : void {
+         this._spellLevel = pSpellLevel;
       }
       
       public function get spellLevel() : uint {
@@ -65,35 +65,35 @@ package com.ankamagames.dofus.logic.game.fight.types.castSpellManager
          return Spell.getSpellById(this._spellId).getSpellLevel(this._spellLevel);
       }
       
-      public function cast(param1:int, param2:Array, param3:Boolean=true) : void {
-         var _loc4_:* = 0;
-         this._lastCastTurn = param1;
-         for each (_loc4_ in param2)
+      public function cast(pTurn:int, pTarget:Array, pCountForCooldown:Boolean=true) : void {
+         var target:* = 0;
+         this._lastCastTurn = pTurn;
+         for each (target in pTarget)
          {
-            if(this._targetsThisTurn[_loc4_] == null)
+            if(this._targetsThisTurn[target] == null)
             {
-               this._targetsThisTurn[_loc4_] = 0;
+               this._targetsThisTurn[target] = 0;
             }
-            this._targetsThisTurn[_loc4_] = this._targetsThisTurn[_loc4_] + 1;
+            this._targetsThisTurn[target] = this._targetsThisTurn[target] + 1;
          }
-         if(param3)
+         if(pCountForCooldown)
          {
             this._castThisTurn++;
          }
          this.updateSpellWrapper();
       }
       
-      public function resetInitialCooldown(param1:int) : void {
-         this._lastInitialCooldownReset = param1;
+      public function resetInitialCooldown(pTurn:int) : void {
+         this._lastInitialCooldownReset = pTurn;
          this.updateSpellWrapper();
       }
       
-      public function getCastOnEntity(param1:int) : uint {
-         if(this._targetsThisTurn[param1] == null)
+      public function getCastOnEntity(pEntityId:int) : uint {
+         if(this._targetsThisTurn[pEntityId] == null)
          {
             return 0;
          }
-         return this._targetsThisTurn[param1];
+         return this._targetsThisTurn[pEntityId];
       }
       
       public function newTurn() : void {
@@ -103,26 +103,24 @@ package com.ankamagames.dofus.logic.game.fight.types.castSpellManager
       }
       
       public function get cooldown() : int {
-         var _loc5_:CharacterSpellModification = null;
-         var _loc6_:* = 0;
-         var _loc8_:* = 0;
-         var _loc1_:Spell = Spell.getSpellById(this._spellId);
-         var _loc2_:SpellLevel = _loc1_.getSpellLevel(this._spellLevel);
-         var _loc3_:SpellModificator = new SpellModificator();
-         var _loc4_:CharacterCharacteristicsInformations = PlayedCharacterManager.getInstance().characteristics;
-         for each (_loc5_ in _loc4_.spellModifications)
+         var spellModification:CharacterSpellModification = null;
+         var interval:* = 0;
+         var cooldown:* = 0;
+         var spell:Spell = Spell.getSpellById(this._spellId);
+         var spellLevel:SpellLevel = spell.getSpellLevel(this._spellLevel);
+         var spellModifs:SpellModificator = new SpellModificator();
+         var characteristics:CharacterCharacteristicsInformations = PlayedCharacterManager.getInstance().characteristics;
+         for each (spellModification in characteristics.spellModifications)
          {
-            if(_loc5_.spellId == this._spellId)
+            if(spellModification.spellId == this._spellId)
             {
-               switch(_loc5_.modificationType)
+               switch(spellModification.modificationType)
                {
                   case CharacterSpellModificationTypeEnum.CAST_INTERVAL:
-                     _loc3_.castInterval = _loc5_.value;
+                     spellModifs.castInterval = spellModification.value;
                      continue;
                   case CharacterSpellModificationTypeEnum.CAST_INTERVAL_SET:
-                     _loc3_.castIntervalSet = _loc5_.value;
-                     continue;
-                  default:
+                     spellModifs.castIntervalSet = spellModification.value;
                      continue;
                }
             }
@@ -131,61 +129,61 @@ package com.ankamagames.dofus.logic.game.fight.types.castSpellManager
                continue;
             }
          }
-         if(_loc3_.getTotalBonus(_loc3_.castIntervalSet))
+         if(spellModifs.getTotalBonus(spellModifs.castIntervalSet))
          {
-            _loc6_ = -_loc3_.getTotalBonus(_loc3_.castInterval) + _loc3_.getTotalBonus(_loc3_.castIntervalSet);
+            interval = -spellModifs.getTotalBonus(spellModifs.castInterval) + spellModifs.getTotalBonus(spellModifs.castIntervalSet);
          }
          else
          {
-            _loc6_ = _loc2_.minCastInterval - _loc3_.getTotalBonus(_loc3_.castInterval);
+            interval = spellLevel.minCastInterval - spellModifs.getTotalBonus(spellModifs.castInterval);
          }
-         if(_loc6_ == 63)
+         if(interval == 63)
          {
             return 63;
          }
-         var _loc7_:int = this._lastInitialCooldownReset + _loc2_.initialCooldown - this._spellCastManager.currentTurn;
-         if(this._lastCastTurn >= this._lastInitialCooldownReset + _loc2_.initialCooldown || _loc2_.initialCooldown == 0)
+         var initialCooldown:int = this._lastInitialCooldownReset + spellLevel.initialCooldown - this._spellCastManager.currentTurn;
+         if((this._lastCastTurn >= this._lastInitialCooldownReset + spellLevel.initialCooldown) || (spellLevel.initialCooldown == 0))
          {
-            _loc8_ = _loc6_ + this._lastCastTurn - this._spellCastManager.currentTurn;
+            cooldown = interval + this._lastCastTurn - this._spellCastManager.currentTurn;
          }
          else
          {
-            _loc8_ = _loc7_;
+            cooldown = initialCooldown;
          }
-         if(_loc8_ <= 0)
+         if(cooldown <= 0)
          {
-            _loc8_ = 0;
+            cooldown = 0;
          }
-         return _loc8_;
+         return cooldown;
       }
       
-      public function forceCooldown(param1:int) : void {
-         var _loc5_:SpellWrapper = null;
-         var _loc2_:Spell = Spell.getSpellById(this._spellId);
-         var _loc3_:SpellLevel = _loc2_.getSpellLevel(this._spellLevel);
-         this._lastCastTurn = param1 + this._spellCastManager.currentTurn - _loc3_.minCastInterval;
-         var _loc4_:Array = SpellWrapper.getSpellWrappersById(this._spellId,this._spellCastManager.entityId);
-         for each (_loc5_ in _loc4_)
+      public function forceCooldown(cooldown:int) : void {
+         var spellW:SpellWrapper = null;
+         var spell:Spell = Spell.getSpellById(this._spellId);
+         var spellL:SpellLevel = spell.getSpellLevel(this._spellLevel);
+         this._lastCastTurn = cooldown + this._spellCastManager.currentTurn - spellL.minCastInterval;
+         var spellWs:Array = SpellWrapper.getSpellWrappersById(this._spellId,this._spellCastManager.entityId);
+         for each (spellW in spellWs)
          {
-            _loc5_.actualCooldown = param1;
+            spellW.actualCooldown = cooldown;
          }
       }
       
-      public function forceLastCastTurn(param1:int, param2:Boolean=false) : void {
-         this._lastCastTurn = param1;
-         this.updateSpellWrapper(param2);
+      public function forceLastCastTurn(pLastCastTurn:int, reallyForceNoKidding:Boolean=false) : void {
+         this._lastCastTurn = pLastCastTurn;
+         this.updateSpellWrapper(reallyForceNoKidding);
       }
       
-      private function updateSpellWrapper(param1:Boolean=false) : void {
-         var _loc5_:SpellWrapper = null;
-         var _loc2_:Array = SpellWrapper.getSpellWrappersById(this._spellId,this._spellCastManager.entityId);
-         var _loc3_:Spell = Spell.getSpellById(this._spellId);
-         var _loc4_:SpellLevel = _loc3_.getSpellLevel(this._spellLevel);
-         for each (_loc5_ in _loc2_)
+      private function updateSpellWrapper(forceLastCastTurn:Boolean=false) : void {
+         var spellW:SpellWrapper = null;
+         var spellWs:Array = SpellWrapper.getSpellWrappersById(this._spellId,this._spellCastManager.entityId);
+         var spell:Spell = Spell.getSpellById(this._spellId);
+         var spellLevel:SpellLevel = spell.getSpellLevel(this._spellLevel);
+         for each (spellW in spellWs)
          {
-            if(_loc5_.actualCooldown != 63)
+            if(spellW.actualCooldown != 63)
             {
-               _loc5_.actualCooldown = this.cooldown;
+               spellW.actualCooldown = this.cooldown;
             }
          }
       }

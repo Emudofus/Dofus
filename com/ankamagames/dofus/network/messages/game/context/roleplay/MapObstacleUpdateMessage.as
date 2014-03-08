@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.interactive.MapObstacle;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,8 +30,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 6051;
       }
       
-      public function initMapObstacleUpdateMessage(param1:Vector.<MapObstacle>=null) : MapObstacleUpdateMessage {
-         this.obstacles = param1;
+      public function initMapObstacleUpdateMessage(obstacles:Vector.<MapObstacle>=null) : MapObstacleUpdateMessage {
+         this.obstacles = obstacles;
          this._isInitialized = true;
          return this;
       }
@@ -41,44 +41,44 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MapObstacleUpdateMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MapObstacleUpdateMessage(output);
       }
       
-      public function serializeAs_MapObstacleUpdateMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.obstacles.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.obstacles.length)
+      public function serializeAs_MapObstacleUpdateMessage(output:IDataOutput) : void {
+         output.writeShort(this.obstacles.length);
+         var _i1:uint = 0;
+         while(_i1 < this.obstacles.length)
          {
-            (this.obstacles[_loc2_] as MapObstacle).serializeAs_MapObstacle(param1);
-            _loc2_++;
+            (this.obstacles[_i1] as MapObstacle).serializeAs_MapObstacle(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MapObstacleUpdateMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MapObstacleUpdateMessage(input);
       }
       
-      public function deserializeAs_MapObstacleUpdateMessage(param1:IDataInput) : void {
-         var _loc4_:MapObstacle = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_MapObstacleUpdateMessage(input:IDataInput) : void {
+         var _item1:MapObstacle = null;
+         var _obstaclesLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _obstaclesLen)
          {
-            _loc4_ = new MapObstacle();
-            _loc4_.deserialize(param1);
-            this.obstacles.push(_loc4_);
-            _loc3_++;
+            _item1 = new MapObstacle();
+            _item1.deserialize(input);
+            this.obstacles.push(_item1);
+            _i1++;
          }
       }
    }

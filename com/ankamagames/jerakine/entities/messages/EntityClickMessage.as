@@ -5,8 +5,8 @@ package com.ankamagames.jerakine.entities.messages
    public class EntityClickMessage extends EntityInteractionMessage
    {
       
-      public function EntityClickMessage(param1:IInteractive) {
-         super(param1);
+      public function EntityClickMessage(entity:IInteractive) {
+         super(entity);
       }
    }
 }

@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.pvp
          return 6456;
       }
       
-      public function initUpdateSelfAgressableStatusMessage(param1:uint=0, param2:uint=0) : UpdateSelfAgressableStatusMessage {
-         this.status = param1;
-         this.probationTime = param2;
+      public function initUpdateSelfAgressableStatusMessage(status:uint=0, probationTime:uint=0) : UpdateSelfAgressableStatusMessage {
+         this.status = status;
+         this.probationTime = probationTime;
          this._isInitialized = true;
          return this;
       }
@@ -42,46 +42,46 @@ package com.ankamagames.dofus.network.messages.game.pvp
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_UpdateSelfAgressableStatusMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_UpdateSelfAgressableStatusMessage(output);
       }
       
-      public function serializeAs_UpdateSelfAgressableStatusMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.status);
+      public function serializeAs_UpdateSelfAgressableStatusMessage(output:IDataOutput) : void {
+         output.writeByte(this.status);
          if(this.probationTime < 0)
          {
             throw new Error("Forbidden value (" + this.probationTime + ") on element probationTime.");
          }
          else
          {
-            param1.writeInt(this.probationTime);
+            output.writeInt(this.probationTime);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_UpdateSelfAgressableStatusMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_UpdateSelfAgressableStatusMessage(input);
       }
       
-      public function deserializeAs_UpdateSelfAgressableStatusMessage(param1:IDataInput) : void {
-         this.status = param1.readByte();
+      public function deserializeAs_UpdateSelfAgressableStatusMessage(input:IDataInput) : void {
+         this.status = input.readByte();
          if(this.status < 0)
          {
             throw new Error("Forbidden value (" + this.status + ") on element of UpdateSelfAgressableStatusMessage.status.");
          }
          else
          {
-            this.probationTime = param1.readInt();
+            this.probationTime = input.readInt();
             if(this.probationTime < 0)
             {
                throw new Error("Forbidden value (" + this.probationTime + ") on element of UpdateSelfAgressableStatusMessage.probationTime.");

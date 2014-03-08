@@ -7,9 +7,9 @@ package com.somerandomdude.colortoolkit.schemes
    public class Tetrad extends ColorWheelScheme implements IColorScheme
    {
       
-      public function Tetrad(param1:int, param2:Number=90) {
-         this._angle = param2;
-         super(param1);
+      public function Tetrad(primaryColor:int, angle:Number=90) {
+         this._angle = angle;
+         super(primaryColor);
       }
       
       private var _angle:Number;
@@ -18,59 +18,59 @@ package com.somerandomdude.colortoolkit.schemes
          return this._angle;
       }
       
-      public function set angle(param1:Number) : void {
+      public function set angle(value:Number) : void {
          _colors = new ColorList();
-         this._angle = param1;
+         this._angle = value;
          this.generate();
       }
       
       public var alt:Boolean;
       
       override protected function generate() : void {
-         var _loc5_:* = NaN;
-         var _loc1_:Color = new Color(_primaryColor);
-         var _loc2_:HSB = new HSB();
-         _loc2_.color = ColorUtil.rybRotate(_primaryColor,this._angle);
+         var multiplier:* = NaN;
+         var _primaryCol:Color = new Color(_primaryColor);
+         var c1:HSB = new HSB();
+         c1.color = ColorUtil.rybRotate(_primaryColor,this._angle);
          if(!this.alt)
          {
-            if(_loc1_.brightness < 50)
+            if(_primaryCol.brightness < 50)
             {
-               _loc2_.brightness = _loc2_.brightness + 20;
+               c1.brightness = c1.brightness + 20;
             }
             else
             {
-               _loc2_.brightness = _loc2_.brightness - 20;
+               c1.brightness = c1.brightness - 20;
             }
          }
          else
          {
-            _loc5_ = (50 - _loc1_.brightness) / 50;
-            _loc2_.brightness = _loc2_.brightness + Math.min(20,Math.max(-20,20 * _loc5_));
+            multiplier = (50 - _primaryCol.brightness) / 50;
+            c1.brightness = c1.brightness + Math.min(20,Math.max(-20,20 * multiplier));
          }
-         _colors.push(_loc2_.color);
-         var _loc3_:HSB = new HSB();
-         _loc3_.color = ColorUtil.rybRotate(_primaryColor,this._angle * 2);
+         _colors.push(c1.color);
+         var c2:HSB = new HSB();
+         c2.color = ColorUtil.rybRotate(_primaryColor,this._angle * 2);
          if(!this.alt)
          {
-            if(_loc1_.brightness > 50)
+            if(_primaryCol.brightness > 50)
             {
-               _loc3_.brightness = _loc3_.brightness + 10;
+               c2.brightness = c2.brightness + 10;
             }
             else
             {
-               _loc3_.brightness = _loc3_.brightness - 10;
+               c2.brightness = c2.brightness - 10;
             }
          }
          else
          {
-            _loc5_ = (50 - _loc1_.brightness) / 50;
-            _loc3_.brightness = _loc3_.brightness + Math.min(10,Math.max(-10,10 * _loc5_));
+            multiplier = (50 - _primaryCol.brightness) / 50;
+            c2.brightness = c2.brightness + Math.min(10,Math.max(-10,10 * multiplier));
          }
-         _colors.push(_loc3_.color);
-         var _loc4_:HSB = new HSB();
-         _loc4_.color = ColorUtil.rybRotate(_primaryColor,this._angle * 3);
-         _loc4_.brightness = _loc4_.brightness + 10;
-         _colors.push(_loc4_.color);
+         _colors.push(c2.color);
+         var c3:HSB = new HSB();
+         c3.color = ColorUtil.rybRotate(_primaryColor,this._angle * 3);
+         c3.brightness = c3.brightness + 10;
+         _colors.push(c3.color);
       }
    }
 }

@@ -14,8 +14,8 @@ package com.ankamagames.dofus.datacenter.appearance
       
       private static const MODULE:String = "SkinPositions";
       
-      public static function getSkinPositionById(param1:int) : SkinPosition {
-         return GameData.getObject(MODULE,param1) as SkinPosition;
+      public static function getSkinPositionById(id:int) : SkinPosition {
+         return GameData.getObject(MODULE,id) as SkinPosition;
       }
       
       public static function getAllSkinPositions() : Array {

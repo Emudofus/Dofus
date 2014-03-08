@@ -11,7 +11,6 @@ package com.ankamagames.tubul.types.sounds
    import com.ankamagames.jerakine.types.Uri;
    import flash.media.Sound;
    import flash.events.EventDispatcher;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.types.Callback;
    import com.ankamagames.jerakine.resources.loaders.IResourceLoader;
    import com.ankamagames.tubul.types.SoundSilence;
@@ -34,6 +33,7 @@ package com.ankamagames.tubul.types.sounds
    import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
    import com.ankamagames.tubul.enum.EnumSoundType;
    import com.ankamagames.tubul.factory.SoundFactory;
+   import __AS3__.vec.*;
    import com.ankamagames.tubul.events.LoadingSound.LoadingSoundEvent;
    import com.ankamagames.tubul.events.SoundCompleteEvent;
    import com.ankamagames.tubul.events.SoundSilenceEvent;
@@ -42,13 +42,13 @@ package com.ankamagames.tubul.types.sounds
    public class MP3SoundDofus extends Object implements ISound
    {
       
-      public function MP3SoundDofus(param1:uint, param2:Uri, param3:Boolean=false) {
+      public function MP3SoundDofus(id:uint, uri:Uri, isStereo:Boolean=false) {
          super();
          this.initSound();
-         this._uri = param2;
-         this._id = param1;
+         this._uri = uri;
+         this._id = id;
          this._effects = new Vector.<IEffect>();
-         this._stereo = param3;
+         this._stereo = isStereo;
          if(dicSound == null)
          {
             dicSound = new Dictionary(true);
@@ -149,17 +149,17 @@ package com.ankamagames.tubul.types.sounds
          return this._volume;
       }
       
-      public function set volume(param1:Number) : void {
-         if(param1 > 1)
+      public function set volume(pVolume:Number) : void {
+         if(pVolume > 1)
          {
-            param1 = 1;
+            pVolume = 1;
          }
-         if(param1 < 0)
+         if(pVolume < 0)
          {
-            param1 = 0;
+            pVolume = 0;
          }
-         this._volume = param1;
-         if((this._soundLoaded) && !(this._previousVolume == this._volume))
+         this._volume = pVolume;
+         if((this._soundLoaded) && (!(this._previousVolume == this._volume)))
          {
             this.applyParam();
          }
@@ -170,12 +170,12 @@ package com.ankamagames.tubul.types.sounds
          return this._busId;
       }
       
-      public function set busId(param1:int) : void {
-         this._busId = param1;
-         var _loc2_:IAudioBus = Tubul.getInstance().getBus(param1);
-         if(_loc2_ != null)
+      public function set busId(pBus:int) : void {
+         this._busId = pBus;
+         var audioBus:IAudioBus = Tubul.getInstance().getBus(pBus);
+         if(audioBus != null)
          {
-            _loc2_.eventDispatcher.addEventListener(AudioBusVolumeEvent.VOLUME_CHANGED,this.onAudioBusVolumeChanged);
+            audioBus.eventDispatcher.addEventListener(AudioBusVolumeEvent.VOLUME_CHANGED,this.onAudioBusVolumeChanged);
          }
       }
       
@@ -183,17 +183,17 @@ package com.ankamagames.tubul.types.sounds
          return this._fadeVolume;
       }
       
-      public function set currentFadeVolume(param1:Number) : void {
-         if(param1 > 1)
+      public function set currentFadeVolume(pFadeVolume:Number) : void {
+         if(pFadeVolume > 1)
          {
-            param1 = 1;
+            pFadeVolume = 1;
          }
-         if(param1 < 0)
+         if(pFadeVolume < 0)
          {
-            param1 = 0;
+            pFadeVolume = 0;
          }
-         this._fadeVolume = param1;
-         if((this._soundLoaded) && !(this._previousFadeVolume == this._fadeVolume))
+         this._fadeVolume = pFadeVolume;
+         if((this._soundLoaded) && (!(this._previousFadeVolume == this._fadeVolume)))
          {
             this.applyParam();
          }
@@ -216,8 +216,8 @@ package com.ankamagames.tubul.types.sounds
          return this._sound;
       }
       
-      public function set sound(param1:*) : void {
-         this._sound = param1;
+      public function set sound(sound:*) : void {
+         this._sound = sound;
          this._soundLoaded = true;
          this.finishLoading();
       }
@@ -230,8 +230,8 @@ package com.ankamagames.tubul.types.sounds
          return this._silence;
       }
       
-      public function set silence(param1:SoundSilence) : void {
-         this._silence = param1;
+      public function set silence(pSilence:SoundSilence) : void {
+         this._silence = pSilence;
       }
       
       public function get busVolume() : Number {
@@ -246,8 +246,8 @@ package com.ankamagames.tubul.types.sounds
          return this._noCutSilence;
       }
       
-      public function set noCutSilence(param1:Boolean) : void {
-         this._noCutSilence = param1;
+      public function set noCutSilence(pNoCutSilence:Boolean) : void {
+         this._noCutSilence = pNoCutSilence;
       }
       
       public function get isPlaying() : Boolean {
@@ -258,25 +258,25 @@ package com.ankamagames.tubul.types.sounds
          return Tubul.getInstance().getBus(this.busId);
       }
       
-      public function addEffect(param1:IEffect) : void {
-         this._effects.push(param1);
+      public function addEffect(pEffect:IEffect) : void {
+         this._effects.push(pEffect);
       }
       
-      public function removeEffect(param1:IEffect) : void {
-         var _loc3_:IEffect = null;
-         var _loc2_:uint = 0;
-         for each (_loc3_ in this._effects)
+      public function removeEffect(pEffect:IEffect) : void {
+         var effect:IEffect = null;
+         var compt:uint = 0;
+         for each (effect in this._effects)
          {
-            if(_loc3_ == param1)
+            if(effect == pEffect)
             {
-               this._effects.splice(_loc2_,1);
+               this._effects.splice(compt,1);
                return;
             }
          }
       }
       
-      public function play(param1:Boolean=false, param2:int=1, param3:VolumeFadeEffect=null, param4:VolumeFadeEffect=null) : void {
-         var _loc6_:Callback = null;
+      public function play(pLoop:Boolean=false, pLoops:int=1, pFadeIn:VolumeFadeEffect=null, pFadeOut:VolumeFadeEffect=null) : void {
+         var playCallback:Callback = null;
          if(this.bus == null)
          {
             return;
@@ -290,81 +290,81 @@ package com.ankamagames.tubul.types.sounds
          {
             return;
          }
-         this._loop = param1;
+         this._loop = pLoop;
          if(!this._loop)
          {
-            param2 = 1;
+            pLoops = 1;
          }
-         this.setLoops(param2);
+         this.setLoops(pLoops);
          if(!this._soundLoaded)
          {
-            _loc6_ = new Callback(this.play,param1,param2,param3,param4);
-            this._onLoadingComplete.push(_loc6_);
+            playCallback = new Callback(this.play,pLoop,pLoops,pFadeIn,pFadeOut);
+            this._onLoadingComplete.push(playCallback);
             return;
          }
          this._playing = true;
-         if((param3) && !(param3.beginningValue == -1))
+         if((pFadeIn) && (!(pFadeIn.beginningValue == -1)))
          {
-            this.currentFadeVolume = param3.beginningValue;
+            this.currentFadeVolume = pFadeIn.beginningValue;
          }
-         this._soundWrapper = new SoundWrapper(this._sound,param2);
+         this._soundWrapper = new SoundWrapper(this._sound,pLoops);
          this._soundWrapper.addEventListener(Event.SOUND_COMPLETE,this.onSoundComplete);
          this._soundWrapper.addEventListener(LoopEvent.SOUND_LOOP,this.onSoundLoop);
          this.applyParam();
-         var _loc5_:String = "Play / file : " + this._uri.fileName + " / id : " + this._id + " / vol. réel : " + Math.round(this.effectiveVolume * 1000) / 1000 + " / vol. : " + Math.round(this._volume * 1000) / 1000;
+         var textLog:String = "Play / file : " + this._uri.fileName + " / id : " + this._id + " / vol. réel : " + Math.round(this.effectiveVolume * 1000) / 1000 + " / vol. : " + Math.round(this._volume * 1000) / 1000;
          if(this is LocalizedSound)
          {
-            _loc5_ = _loc5_ + " / vol. max : " + (this as LocalizedSound).volumeMax;
+            textLog = textLog + " / vol. max : " + (this as LocalizedSound).volumeMax;
          }
-         _loc5_ = _loc5_ + " / vol. fade : " + Math.round(this._fadeVolume * 1000) / 1000 + " / bus : " + this.bus.name + " / vol. bus : " + Math.round(this.bus.effectiveVolume * 1000) / 1000;
-         if(param3 != null)
+         textLog = textLog + " / vol. fade : " + Math.round(this._fadeVolume * 1000) / 1000 + " / bus : " + this.bus.name + " / vol. bus : " + Math.round(this.bus.effectiveVolume * 1000) / 1000;
+         if(pFadeIn != null)
          {
-            _loc5_ = _loc5_ + "\n[fade in] Valeur de fin : " + param3.endingValue + " / " + param3.timeFade + " sec.";
+            textLog = textLog + "\n[fade in] Valeur de fin : " + pFadeIn.endingValue + " / " + pFadeIn.timeFade + " sec.";
          }
-         if(param4 != null)
+         if(pFadeOut != null)
          {
-            _loc5_ = _loc5_ + "\n                [fade out] Valeur de fin : " + param4.endingValue + " / " + param4.timeFade + " sec.";
+            textLog = textLog + "\n                [fade out] Valeur de fin : " + pFadeOut.endingValue + " / " + pFadeOut.timeFade + " sec.";
          }
-         _log.debug(_loc5_);
+         _log.debug(textLog);
          Tubul.getInstance().soundMerger.addSound(this._soundWrapper);
-         if(param3)
+         if(pFadeIn)
          {
-            this._currentRunningFade = param3;
+            this._currentRunningFade = pFadeIn;
             if(!this._currentRunningFade.hasEventListener(FadeEvent.COMPLETE))
             {
                this._currentRunningFade.addEventListener(FadeEvent.COMPLETE,this.onCurrentFadeComplete);
             }
-            param3.attachToSoundSource(this);
-            param3.start();
+            pFadeIn.attachToSoundSource(this);
+            pFadeIn.start();
          }
-         if(param4)
+         if(pFadeOut)
          {
-            this._soundWrapper.notifyWhenEndOfFile(true,param4.timeFade);
-            this._fadeOutFade = param4;
+            this._soundWrapper.notifyWhenEndOfFile(true,pFadeOut.timeFade);
+            this._fadeOutFade = pFadeOut;
             this._soundWrapper.addEventListener(SoundWrapperEvent.SOON_END_OF_FILE,this.onEndOfFile);
          }
       }
       
-      public function loadSound(param1:ICache) : void {
+      public function loadSound(cache:ICache) : void {
          this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SINGLE_LOADER);
          this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onLoaded);
          this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onFailed);
-         this._loader.load(this._uri,param1);
+         this._loader.load(this._uri,cache);
       }
       
-      public function stop(param1:VolumeFadeEffect=null) : void {
+      public function stop(pFadeEffect:VolumeFadeEffect=null) : void {
          this.clearLoader();
          if(this._silence)
          {
             this._silence.clean();
          }
-         if(!(this._soundWrapper == null) && (param1))
+         if((!(this._soundWrapper == null)) && (pFadeEffect))
          {
-            this._currentRunningFade = param1;
+            this._currentRunningFade = pFadeEffect;
             this._currentRunningFade.attachToSoundSource(this);
             this._currentRunningFade.addEventListener(FadeEvent.COMPLETE,this.onCurrentFadeComplete);
             this._stopAfterCurrentFade = true;
-            param1.start(false);
+            pFadeEffect.start(false);
          }
          else
          {
@@ -372,11 +372,11 @@ package com.ankamagames.tubul.types.sounds
          }
       }
       
-      public function applyDynamicMix(param1:VolumeFadeEffect, param2:uint, param3:VolumeFadeEffect) : void {
+      public function applyDynamicMix(pFadeIn:VolumeFadeEffect, pWaitingTime:uint, pFadeOut:VolumeFadeEffect) : void {
       }
       
-      public function setLoops(param1:int) : void {
-         this._totalLoop = param1;
+      public function setLoops(pLoops:int) : void {
+         this._totalLoop = pLoops;
          if(this._soundWrapper)
          {
             this._soundWrapper.loops = this._totalLoop;
@@ -384,33 +384,33 @@ package com.ankamagames.tubul.types.sounds
       }
       
       public function clone() : ISound {
-         var _loc1_:ISound = null;
-         var _loc2_:uint = 0;
+         var sound:ISound = null;
+         var type:uint = 0;
          if(this is LocalizedSound)
          {
-            _loc2_ = EnumSoundType.LOCALIZED_SOUND;
+            type = EnumSoundType.LOCALIZED_SOUND;
          }
          else
          {
-            _loc2_ = EnumSoundType.UNLOCALIZED_SOUND;
+            type = EnumSoundType.UNLOCALIZED_SOUND;
          }
-         _loc1_ = SoundFactory.getSound(_loc2_,this.uri);
-         _loc1_.busId = this.busId;
-         _loc1_.volume = this.volume;
-         _loc1_.currentFadeVolume = this.currentFadeVolume;
-         _loc1_.setLoops(this.totalLoops);
+         sound = SoundFactory.getSound(type,this.uri);
+         sound.busId = this.busId;
+         sound.volume = this.volume;
+         sound.currentFadeVolume = this.currentFadeVolume;
+         sound.setLoops(this.totalLoops);
          if(this.silence)
          {
-            _loc1_.silence = this.silence;
+            sound.silence = this.silence;
          }
-         _loc1_.noCutSilence = this.noCutSilence;
-         return _loc1_;
+         sound.noCutSilence = this.noCutSilence;
+         return sound;
       }
       
-      public function setCurrentLoop(param1:uint) : void {
+      public function setCurrentLoop(pLoop:uint) : void {
          if(this._soundWrapper)
          {
-            this._soundWrapper.currentLoop = param1;
+            this._soundWrapper.currentLoop = pLoop;
          }
       }
       
@@ -445,22 +445,22 @@ package com.ankamagames.tubul.types.sounds
       }
       
       private function finishLoading() : void {
-         var _loc1_:LoadingSoundEvent = new LoadingSoundEvent(LoadingSoundEvent.LOADED);
-         _loc1_.data = this;
-         this._eventDispatcher.dispatchEvent(_loc1_);
+         var lse:LoadingSoundEvent = new LoadingSoundEvent(LoadingSoundEvent.LOADED);
+         lse.data = this;
+         this._eventDispatcher.dispatchEvent(lse);
          this.processQueueFunction();
       }
       
       private function processQueueFunction() : void {
-         var _loc2_:Callback = null;
-         var _loc1_:int = this._onLoadingComplete.length;
-         if(_loc1_ > 0)
+         var callback:Callback = null;
+         var size:int = this._onLoadingComplete.length;
+         if(size > 0)
          {
             this._onLoadingComplete.reverse();
-            for each (_loc2_ in this._onLoadingComplete)
+            for each (callback in this._onLoadingComplete)
             {
-               _loc2_.exec();
-               _loc2_ = null;
+               callback.exec();
+               callback = null;
             }
          }
          this._onLoadingComplete = new Vector.<Callback>();
@@ -502,17 +502,17 @@ package com.ankamagames.tubul.types.sounds
             this.bus.eventDispatcher.removeEventListener(AudioBusVolumeEvent.VOLUME_CHANGED,this.onAudioBusVolumeChanged);
          }
          this._playing = false;
-         var _loc1_:SoundCompleteEvent = new SoundCompleteEvent(SoundCompleteEvent.SOUND_COMPLETE);
-         _loc1_.sound = this;
+         var sce:SoundCompleteEvent = new SoundCompleteEvent(SoundCompleteEvent.SOUND_COMPLETE);
+         sce.sound = this;
          if(this._eventDispatcher == null)
          {
             this._eventDispatcher = new EventDispatcher();
          }
-         this._eventDispatcher.dispatchEvent(_loc1_);
-         _loc1_ = null;
+         this._eventDispatcher.dispatchEvent(sce);
+         sce = null;
       }
       
-      protected function onSoundComplete(param1:Event) : void {
+      protected function onSoundComplete(pEvent:Event) : void {
          this._soundWrapper.currentLoop = 0;
          if(this._silence)
          {
@@ -526,24 +526,24 @@ package com.ankamagames.tubul.types.sounds
          }
       }
       
-      private function onLoaded(param1:ResourceLoadedEvent) : void {
+      private function onLoaded(pEvent:ResourceLoadedEvent) : void {
          this._soundLoaded = true;
-         this._sound = param1.resource;
+         this._sound = pEvent.resource;
          this.clearLoader();
-         var _loc2_:LoadingSoundEvent = new LoadingSoundEvent(LoadingSoundEvent.LOADED);
-         _loc2_.data = this;
-         this._eventDispatcher.dispatchEvent(_loc2_);
+         var lse:LoadingSoundEvent = new LoadingSoundEvent(LoadingSoundEvent.LOADED);
+         lse.data = this;
+         this._eventDispatcher.dispatchEvent(lse);
          this.processQueueFunction();
       }
       
-      private function onFailed(param1:ResourceErrorEvent) : void {
-         var _loc2_:LoadingSoundEvent = new LoadingSoundEvent(LoadingSoundEvent.LOADING_FAILED);
-         _loc2_.data = this;
-         _log.error("Cannot load " + param1.uri + " : " + param1.errorMsg);
-         this._eventDispatcher.dispatchEvent(_loc2_);
+      private function onFailed(pEvent:ResourceErrorEvent) : void {
+         var lse:LoadingSoundEvent = new LoadingSoundEvent(LoadingSoundEvent.LOADING_FAILED);
+         lse.data = this;
+         _log.error("Cannot load " + pEvent.uri + " : " + pEvent.errorMsg);
+         this._eventDispatcher.dispatchEvent(lse);
       }
       
-      private function onEndOfFile(param1:SoundWrapperEvent) : void {
+      private function onEndOfFile(pEvent:SoundWrapperEvent) : void {
          if(this._fadeOutFade)
          {
             this._currentRunningFade = this._fadeOutFade;
@@ -555,24 +555,24 @@ package com.ankamagames.tubul.types.sounds
             this._currentRunningFade.start();
             this._fadeOutFade = null;
          }
-         var _loc2_:MP3SoundEvent = new MP3SoundEvent(MP3SoundEvent.SOON_END_OF_FILE);
-         _loc2_.sound = this;
-         this.eventDispatcher.dispatchEvent(_loc2_);
+         var mse:MP3SoundEvent = new MP3SoundEvent(MP3SoundEvent.SOON_END_OF_FILE);
+         mse.sound = this;
+         this.eventDispatcher.dispatchEvent(mse);
       }
       
-      private function onAudioBusVolumeChanged(param1:AudioBusVolumeEvent) : void {
+      private function onAudioBusVolumeChanged(pEvent:AudioBusVolumeEvent) : void {
          this.applyParam();
       }
       
-      private function onSoundLoop(param1:LoopEvent) : void {
-         this._currentLoop = param1.loop;
-         var _loc2_:LoopEvent = new LoopEvent(LoopEvent.SOUND_LOOP);
-         _loc2_.loop = this._currentLoop;
-         _loc2_.sound = this;
-         this.eventDispatcher.dispatchEvent(_loc2_);
+      private function onSoundLoop(pEvent:LoopEvent) : void {
+         this._currentLoop = pEvent.loop;
+         var event:LoopEvent = new LoopEvent(LoopEvent.SOUND_LOOP);
+         event.loop = this._currentLoop;
+         event.sound = this;
+         this.eventDispatcher.dispatchEvent(event);
       }
       
-      private function onCurrentFadeComplete(param1:FadeEvent) : void {
+      private function onCurrentFadeComplete(pEvent:FadeEvent) : void {
          if(this._currentRunningFade == null)
          {
             return;
@@ -586,7 +586,7 @@ package com.ankamagames.tubul.types.sounds
          this._stopAfterCurrentFade = false;
       }
       
-      private function onSilenceComplete(param1:SoundSilenceEvent) : void {
+      private function onSilenceComplete(pEvent:SoundSilenceEvent) : void {
          this._silence.removeEventListener(SoundSilenceEvent.COMPLETE,this.onSilenceComplete);
          this.finishPlay();
       }

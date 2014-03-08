@@ -28,40 +28,40 @@ package com.ankamagames.dofus.modules.utils
          return this._header;
       }
       
-      public function set header(param1:Boolean) : void {
-         this._header = param1;
+      public function set header(value:Boolean) : void {
+         this._header = value;
       }
       
       public function get effects() : Boolean {
          return this._effects;
       }
       
-      public function set effects(param1:Boolean) : void {
-         this._effects = param1;
+      public function set effects(value:Boolean) : void {
+         this._effects = value;
       }
       
       public function get conditions() : Boolean {
          return this._conditions;
       }
       
-      public function set conditions(param1:Boolean) : void {
-         this._conditions = param1;
+      public function set conditions(value:Boolean) : void {
+         this._conditions = value;
       }
       
       public function get description() : Boolean {
          return this._description;
       }
       
-      public function set description(param1:Boolean) : void {
-         this._description = param1;
+      public function set description(value:Boolean) : void {
+         this._description = value;
       }
       
       public function get averagePrice() : Boolean {
          return this._averagePrice;
       }
       
-      public function set averagePrice(param1:Boolean) : void {
-         this._averagePrice = param1;
+      public function set averagePrice(value:Boolean) : void {
+         this._averagePrice = value;
       }
    }
 }

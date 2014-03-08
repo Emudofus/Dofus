@@ -7,41 +7,39 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class CommunityItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function CommunityItemCriterion(param1:String) {
-         super(param1);
+      public function CommunityItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get isRespected() : Boolean {
-         var _loc1_:int = PlayerManager.getInstance().server.communityId;
+         var serverCommunity:int = PlayerManager.getInstance().server.communityId;
          switch(_operator.text)
          {
             case ItemCriterionOperator.EQUAL:
-               return _loc1_ == criterionValue;
+               return serverCommunity == criterionValue;
             case ItemCriterionOperator.DIFFERENT:
-               return !(_loc1_ == criterionValue);
-            default:
-               return false;
+               return !(serverCommunity == criterionValue);
          }
       }
       
       override public function get text() : String {
-         var _loc1_:String = null;
-         var _loc2_:String = PlayerManager.getInstance().server.community.name;
+         var readableCriterion:String = null;
+         var readableCriterionValue:String = PlayerManager.getInstance().server.community.name;
          switch(_operator.text)
          {
             case ItemCriterionOperator.EQUAL:
-               _loc1_ = I18n.getUiText("ui.criterion.community",[_loc2_]);
+               readableCriterion = I18n.getUiText("ui.criterion.community",[readableCriterionValue]);
                break;
             case ItemCriterionOperator.DIFFERENT:
-               _loc1_ = I18n.getUiText("ui.criterion.notCommunity",[_loc2_]);
+               readableCriterion = I18n.getUiText("ui.criterion.notCommunity",[readableCriterionValue]);
                break;
          }
-         return _loc1_;
+         return readableCriterion;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:CommunityItemCriterion = new CommunityItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:CommunityItemCriterion = new CommunityItemCriterion(this.basicText);
+         return clonedCriterion;
       }
    }
 }

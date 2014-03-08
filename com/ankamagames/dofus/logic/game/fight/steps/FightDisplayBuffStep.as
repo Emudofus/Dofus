@@ -11,9 +11,9 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightDisplayBuffStep extends AbstractSequencable implements IFightStep, ISequencableListener
    {
       
-      public function FightDisplayBuffStep(param1:BasicBuff) {
+      public function FightDisplayBuffStep(buff:BasicBuff) {
          super();
-         this._buff = param1;
+         this._buff = buff;
       }
       
       private var _buff:BasicBuff;
@@ -25,20 +25,20 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc2_:String = null;
-         var _loc1_:* = true;
+         var statName:String = null;
+         var buffUnknown:Boolean = true;
          if(this._buff.actionId == ActionIdConverter.ACTION_CHARACTER_UPDATE_BOOST)
          {
-            _loc1_ = !BuffManager.getInstance().updateBuff(this._buff);
+            buffUnknown = !BuffManager.getInstance().updateBuff(this._buff);
          }
          else
          {
-            if(_loc1_)
+            if(buffUnknown)
             {
                if(this._buff is StatBuff)
                {
-                  _loc2_ = (this._buff as StatBuff).statName;
-                  switch(_loc2_)
+                  statName = (this._buff as StatBuff).statName;
+                  switch(statName)
                   {
                      case "movementPoints":
                         this._virtualStep = new FightMovementPointsVariationStep(this._buff.targetId,(this._buff as StatBuff).delta,false,false,false);
@@ -62,7 +62,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          }
       }
       
-      public function stepFinished(param1:ISequencable, param2:Boolean=false) : void {
+      public function stepFinished(step:ISequencable, withTimout:Boolean=false) : void {
          this._virtualStep.removeListener(this);
          executeCallbacks();
       }

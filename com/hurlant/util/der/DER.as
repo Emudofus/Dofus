@@ -11,214 +11,187 @@ package com.hurlant.util.der
       
       public static var indent:String = "";
       
-      public static function parse(param1:ByteArray, param2:*=null) : IAsn1Type {
-         var _loc3_:* = 0;
-         var _loc5_:* = 0;
-         var _loc6_:ByteArray = null;
-         var _loc7_:* = 0;
-         var _loc8_:* = 0;
-         var _loc9_:Sequence = null;
-         var _loc10_:Array = null;
-         var _loc11_:Set = null;
-         var _loc12_:ByteString = null;
-         var _loc13_:PrintableString = null;
-         var _loc14_:UTCTime = null;
-         var _loc15_:Object = null;
-         var _loc16_:* = false;
-         var _loc17_:* = false;
-         var _loc18_:String = null;
-         var _loc19_:* = undefined;
-         var _loc20_:IAsn1Type = null;
-         var _loc21_:* = 0;
-         var _loc22_:ByteArray = null;
-         _loc3_ = param1.readUnsignedByte();
-         var _loc4_:* = !((_loc3_ & 32) == 0);
-         _loc3_ = _loc3_ & 31;
-         _loc5_ = param1.readUnsignedByte();
-         if(_loc5_ >= 128)
+      public static function parse(der:ByteArray, structure:*=null) : IAsn1Type {
+         var type:* = 0;
+         var len:* = 0;
+         var b:ByteArray = null;
+         var count:* = 0;
+         var p:* = 0;
+         var o:Sequence = null;
+         var arrayStruct:Array = null;
+         var s:Set = null;
+         var bs:ByteString = null;
+         var ps:PrintableString = null;
+         var ut:UTCTime = null;
+         var tmpStruct:Object = null;
+         var wantConstructed:* = false;
+         var isConstructed:* = false;
+         var name:String = null;
+         var value:* = undefined;
+         var obj:IAsn1Type = null;
+         var size:* = 0;
+         var ba:ByteArray = null;
+         type = der.readUnsignedByte();
+         var constructed:Boolean = !((type & 32) == 0);
+         type = type & 31;
+         len = der.readUnsignedByte();
+         if(len >= 128)
          {
-            _loc7_ = _loc5_ & 127;
-            _loc5_ = 0;
-            while(_loc7_ > 0)
+            count = len & 127;
+            len = 0;
+            while(count > 0)
             {
-               _loc5_ = _loc5_ << 8 | param1.readUnsignedByte();
-               _loc7_--;
+               len = len << 8 | der.readUnsignedByte();
+               count--;
             }
          }
-         switch(_loc3_)
+         switch(type)
          {
             case 0:
             case 16:
-               _loc8_ = param1.position;
-               _loc9_ = new Sequence(_loc3_,_loc5_);
-               _loc10_ = param2 as Array;
-               if(_loc10_ != null)
+               p = der.position;
+               o = new Sequence(type,len);
+               arrayStruct = structure as Array;
+               if(arrayStruct != null)
                {
-                  _loc10_ = _loc10_.concat();
+                  arrayStruct = arrayStruct.concat();
                }
-               while(param1.position < _loc8_ + _loc5_)
+               while(der.position < p + len)
                {
-                  _loc15_ = null;
-                  if(_loc10_ != null)
+                  tmpStruct = null;
+                  if(arrayStruct != null)
                   {
-                     _loc15_ = _loc10_.shift();
+                     tmpStruct = arrayStruct.shift();
                   }
-                  if(_loc15_ != null)
+                  if(tmpStruct != null)
                   {
-                     while((_loc15_) && (_loc15_.optional))
+                     while((tmpStruct) && (tmpStruct.optional))
                      {
-                        _loc16_ = _loc15_.value is Array;
-                        _loc17_ = isConstructedType(param1);
-                        if(_loc16_ != _loc17_)
+                        wantConstructed = tmpStruct.value is Array;
+                        isConstructed = isConstructedType(der);
+                        if(wantConstructed != isConstructed)
                         {
-                           _loc9_.push(_loc15_.defaultValue);
-                           _loc9_[_loc15_.name] = _loc15_.defaultValue;
-                           _loc15_ = _loc10_.shift();
+                           o.push(tmpStruct.defaultValue);
+                           o[tmpStruct.name] = tmpStruct.defaultValue;
+                           tmpStruct = arrayStruct.shift();
                            continue;
                         }
                         break;
                      }
                   }
-                  if(_loc15_ != null)
+                  if(tmpStruct != null)
                   {
-                     _loc18_ = _loc15_.name;
-                     _loc19_ = _loc15_.value;
-                     if(_loc15_.extract)
+                     name = tmpStruct.name;
+                     value = tmpStruct.value;
+                     if(tmpStruct.extract)
                      {
-                        _loc21_ = getLengthOfNextElement(param1);
-                        _loc22_ = new ByteArray();
-                        _loc22_.writeBytes(param1,param1.position,_loc21_);
-                        _loc9_[_loc18_ + "_bin"] = _loc22_;
+                        size = getLengthOfNextElement(der);
+                        ba = new ByteArray();
+                        ba.writeBytes(der,der.position,size);
+                        o[name + "_bin"] = ba;
                      }
-                     _loc20_ = DER.parse(param1,_loc19_);
-                     _loc9_.push(_loc20_);
-                     _loc9_[_loc18_] = _loc20_;
+                     obj = DER.parse(der,value);
+                     o.push(obj);
+                     o[name] = obj;
                   }
                   else
                   {
-                     _loc9_.push(DER.parse(param1));
+                     o.push(DER.parse(der));
                   }
                }
-               return _loc9_;
+               return o;
             case 17:
-               _loc8_ = param1.position;
-               _loc11_ = new Set(_loc3_,_loc5_);
-               while(param1.position < _loc8_ + _loc5_)
+               p = der.position;
+               s = new Set(type,len);
+               while(der.position < p + len)
                {
-                  _loc11_.push(DER.parse(param1));
+                  s.push(DER.parse(der));
                }
-               return _loc11_;
+               return s;
             case 2:
-               _loc6_ = new ByteArray();
-               param1.readBytes(_loc6_,0,_loc5_);
-               _loc6_.position = 0;
-               return new Integer(_loc3_,_loc5_,_loc6_);
+               b = new ByteArray();
+               der.readBytes(b,0,len);
+               b.position = 0;
+               return new Integer(type,len,b);
             case 6:
-               _loc6_ = new ByteArray();
-               param1.readBytes(_loc6_,0,_loc5_);
-               _loc6_.position = 0;
-               return new ObjectIdentifier(_loc3_,_loc5_,_loc6_);
-            case 3:
-               trace("I DONT KNOW HOW TO HANDLE DER stuff of TYPE " + _loc3_);
-            case 4:
-               if(param1[param1.position] == 0)
-               {
-                  param1.position++;
-                  _loc5_--;
-               }
-            case 5:
-               _loc12_ = new ByteString(_loc3_,_loc5_);
-               param1.readBytes(_loc12_,0,_loc5_);
-               return _loc12_;
-            case 19:
-               return null;
-            case 34:
-               _loc13_ = new PrintableString(_loc3_,_loc5_);
-               _loc13_.setString(param1.readMultiByte(_loc5_,"US-ASCII"));
-               return _loc13_;
-            case 20:
-            case 23:
-               _loc13_ = new PrintableString(_loc3_,_loc5_);
-               _loc13_.setString(param1.readMultiByte(_loc5_,"latin1"));
-               return _loc13_;
-            default:
-               _loc14_ = new UTCTime(_loc3_,_loc5_);
-               _loc14_.setUTCTime(param1.readMultiByte(_loc5_,"US-ASCII"));
-               return _loc14_;
+               b = new ByteArray();
+               der.readBytes(b,0,len);
+               b.position = 0;
+               return new ObjectIdentifier(type,len,b);
          }
       }
       
-      private static function getLengthOfNextElement(param1:ByteArray) : int {
-         var _loc4_:* = 0;
-         var _loc2_:uint = param1.position;
-         param1.position++;
-         var _loc3_:int = param1.readUnsignedByte();
-         if(_loc3_ >= 128)
+      private static function getLengthOfNextElement(b:ByteArray) : int {
+         var count:* = 0;
+         var p:uint = b.position;
+         b.position++;
+         var len:int = b.readUnsignedByte();
+         if(len >= 128)
          {
-            _loc4_ = _loc3_ & 127;
-            _loc3_ = 0;
-            while(_loc4_ > 0)
+            count = len & 127;
+            len = 0;
+            while(count > 0)
             {
-               _loc3_ = _loc3_ << 8 | param1.readUnsignedByte();
-               _loc4_--;
+               len = len << 8 | b.readUnsignedByte();
+               count--;
             }
          }
-         _loc3_ = _loc3_ + (param1.position - _loc2_);
-         param1.position = _loc2_;
-         return _loc3_;
+         len = len + (b.position - p);
+         b.position = p;
+         return len;
       }
       
-      private static function isConstructedType(param1:ByteArray) : Boolean {
-         var _loc2_:int = param1[param1.position];
-         return !((_loc2_ & 32) == 0);
+      private static function isConstructedType(b:ByteArray) : Boolean {
+         var type:int = b[b.position];
+         return !((type & 32) == 0);
       }
       
-      public static function wrapDER(param1:int, param2:ByteArray) : ByteArray {
-         var _loc3_:ByteArray = new ByteArray();
-         _loc3_.writeByte(param1);
-         var _loc4_:int = param2.length;
-         if(_loc4_ < 128)
+      public static function wrapDER(type:int, data:ByteArray) : ByteArray {
+         var d:ByteArray = new ByteArray();
+         d.writeByte(type);
+         var len:int = data.length;
+         if(len < 128)
          {
-            _loc3_.writeByte(_loc4_);
+            d.writeByte(len);
          }
          else
          {
-            if(_loc4_ < 256)
+            if(len < 256)
             {
-               _loc3_.writeByte(1 | 128);
-               _loc3_.writeByte(_loc4_);
+               d.writeByte(1 | 128);
+               d.writeByte(len);
             }
             else
             {
-               if(_loc4_ < 65536)
+               if(len < 65536)
                {
-                  _loc3_.writeByte(2 | 128);
-                  _loc3_.writeByte(_loc4_ >> 8);
-                  _loc3_.writeByte(_loc4_);
+                  d.writeByte(2 | 128);
+                  d.writeByte(len >> 8);
+                  d.writeByte(len);
                }
                else
                {
-                  if(_loc4_ < 65536 * 256)
+                  if(len < 65536 * 256)
                   {
-                     _loc3_.writeByte(3 | 128);
-                     _loc3_.writeByte(_loc4_ >> 16);
-                     _loc3_.writeByte(_loc4_ >> 8);
-                     _loc3_.writeByte(_loc4_);
+                     d.writeByte(3 | 128);
+                     d.writeByte(len >> 16);
+                     d.writeByte(len >> 8);
+                     d.writeByte(len);
                   }
                   else
                   {
-                     _loc3_.writeByte(4 | 128);
-                     _loc3_.writeByte(_loc4_ >> 24);
-                     _loc3_.writeByte(_loc4_ >> 16);
-                     _loc3_.writeByte(_loc4_ >> 8);
-                     _loc3_.writeByte(_loc4_);
+                     d.writeByte(4 | 128);
+                     d.writeByte(len >> 24);
+                     d.writeByte(len >> 16);
+                     d.writeByte(len >> 8);
+                     d.writeByte(len);
                   }
                }
             }
          }
-         _loc3_.writeBytes(param2);
-         _loc3_.position = 0;
-         return _loc3_;
+         d.writeBytes(data);
+         d.position = 0;
+         return d;
       }
    }
 }

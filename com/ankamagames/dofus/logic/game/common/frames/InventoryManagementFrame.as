@@ -8,7 +8,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.jerakine.utils.memory.WeakReference;
    import com.ankamagames.jerakine.types.enums.Priority;
    import com.ankamagames.dofus.kernel.Kernel;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.shortcut.Shortcut;
    import com.ankamagames.dofus.internalDatacenter.items.ShortcutWrapper;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
@@ -87,6 +86,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
    import com.ankamagames.dofus.network.enums.ShortcutBarEnum;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import __AS3__.vec.*;
    import com.ankamagames.berilia.managers.UiModuleManager;
    import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
    import com.ankamagames.dofus.network.enums.ObjectErrorEnum;
@@ -141,20 +141,20 @@ package com.ankamagames.dofus.logic.game.common.frames
          return this._roleplayPointCellFrame;
       }
       
-      public function set roleplayPointCellFrame(param1:WeakReference) : void {
-         this._roleplayPointCellFrame = param1;
+      public function set roleplayPointCellFrame(val:WeakReference) : void {
+         this._roleplayPointCellFrame = val;
       }
       
-      public function getWrappersFromShortcuts(param1:Vector.<Shortcut>) : Array {
-         var _loc3_:Object = null;
-         var _loc4_:Shortcut = null;
-         var _loc2_:Array = new Array();
-         for each (_loc4_ in param1)
+      public function getWrappersFromShortcuts(shortcuts:Vector.<Shortcut>) : Array {
+         var shortcutProperties:Object = null;
+         var shortcut:Shortcut = null;
+         var wrappers:Array = new Array();
+         for each (shortcut in shortcuts)
          {
-            _loc3_ = this.getShortcutWrapperPropFromShortcut(_loc4_);
-            _loc2_[_loc4_.slot] = ShortcutWrapper.create(_loc4_.slot,_loc3_.id,_loc3_.type,_loc3_.gid);
+            shortcutProperties = this.getShortcutWrapperPropFromShortcut(shortcut);
+            wrappers[shortcut.slot] = ShortcutWrapper.create(shortcut.slot,shortcutProperties.id,shortcutProperties.type,shortcutProperties.gid);
          }
-         return _loc2_;
+         return wrappers;
       }
       
       public function pushed() : Boolean {
@@ -162,7 +162,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
+      public function process(msg:Message) : Boolean {
          var icapmsg:InventoryContentAndPresetMessage = null;
          var presetWrappers:Array = null;
          var icmsg:InventoryContentMessage = null;
@@ -251,7 +251,6 @@ package com.ankamagames.dofus.logic.game.common.frames
          var reason1:String = null;
          var reason2:String = null;
          var reason3:String = null;
-         var msg:Message = param1;
          switch(true)
          {
             case msg is InventoryContentAndPresetMessage:
@@ -268,7 +267,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   equipmentView = InventoryManager.getInstance().inventory.getView("equipment");
                   if((equipmentView) && (equipmentView.content))
                   {
-                     if((equipmentView.content[CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS]) && equipmentView.content[CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS].typeId == Inventory.PETSMOUNT_TYPE_ID)
+                     if((equipmentView.content[CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS]) && (equipmentView.content[CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS].typeId == Inventory.PETSMOUNT_TYPE_ID))
                      {
                         PlayedCharacterManager.getInstance().isPetsMounting = true;
                      }
@@ -298,7 +297,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   equipmentView = InventoryManager.getInstance().inventory.getView("equipment");
                   if((equipmentView) && (equipmentView.content))
                   {
-                     if((equipmentView.content[CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS]) && equipmentView.content[CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS].typeId == Inventory.PETSMOUNT_TYPE_ID)
+                     if((equipmentView.content[CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS]) && (equipmentView.content[CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS].typeId == Inventory.PETSMOUNT_TYPE_ID))
                      {
                         PlayedCharacterManager.getInstance().isPetsMounting = true;
                      }
@@ -336,7 +335,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                InventoryManager.getInstance().inventory.modifyItemQuantity(oqm.objectUID,oqm.quantity);
                for each (shortcutQty in InventoryManager.getInstance().shortcutBarItems)
                {
-                  if((shortcutQty) && shortcutQty.id == oqm.objectUID)
+                  if((shortcutQty) && (shortcutQty.id == oqm.objectUID))
                   {
                      shortcutQty.quantity = oqm.quantity;
                      KernelEventsManager.getInstance().processCallback(InventoryHookList.ShortcutBarViewContent,0);
@@ -350,7 +349,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   InventoryManager.getInstance().inventory.modifyItemQuantity(objoqm.objectUID,objoqm.quantity);
                   for each (shortcutsQty in InventoryManager.getInstance().shortcutBarItems)
                   {
-                     if((shortcutsQty) && shortcutsQty.id == objoqm.objectUID)
+                     if((shortcutsQty) && (shortcutsQty.id == objoqm.objectUID))
                      {
                         shortcutsQty.quantity = objoqm.quantity;
                      }
@@ -374,7 +373,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is ObjectMovementMessage:
                ommsg = msg as ObjectMovementMessage;
                InventoryManager.getInstance().inventory.modifyItemPosition(ommsg.objectUID,ommsg.position);
-               if((this._objectPositionModification) && ommsg.position <= 16 && ommsg.position >= 0 && !Berilia.getInstance().getUi("storage"))
+               if((this._objectPositionModification) && (ommsg.position <= 16) && (ommsg.position >= 0) && (!Berilia.getInstance().getUi("storage")))
                {
                   itwm = InventoryManager.getInstance().inventory.getItem(ommsg.objectUID);
                   KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,I18n.getUiText("ui.item.inUse",[itwm.name]),ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
@@ -527,7 +526,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                         {
                            if(effect.effectId == 707)
                            {
-                              if(int(effect.parameter2)-1 == pspa.presetId)
+                              if(int(effect.parameter2) - 1 == pspa.presetId)
                               {
                                  presetItem = realitem;
                                  break loop5;
@@ -549,7 +548,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is ObjectSetPositionAction:
                ospa = msg as ObjectSetPositionAction;
                itw = InventoryManager.getInstance().inventory.getItem(ospa.objectUID);
-               if((itw) && !(itw.position == ospa.position))
+               if((itw) && (!(itw.position == ospa.position)))
                {
                   this._movingObjectUID = ospa.objectUID;
                   if(!itw)
@@ -601,7 +600,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   _log.error("Impossible de retrouver l\'objet d\'UID " + oua.objectUID);
                   return true;
                }
-               if(!iw.usable && !iw.targetable)
+               if((!iw.usable) && (!iw.targetable))
                {
                   _log.error("L\'objet " + iw.name + " n\'est pas utilisable.");
                   return true;
@@ -627,8 +626,6 @@ package com.ankamagames.dofus.logic.game.common.frames
                      case CharacterInventoryPositionEnum.INVENTORY_POSITION_FIRST_BONUS:
                      case CharacterInventoryPositionEnum.INVENTORY_POSITION_SECOND_BONUS:
                         nbBonus++;
-                        continue;
-                     default:
                         continue;
                   }
                }
@@ -690,7 +687,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                InventoryManager.getInstance().presets[ipudmsg.preset.presetId] = newPW;
                for each (shortcutipud in InventoryManager.getInstance().shortcutBarItems)
                {
-                  if((shortcutipud) && (shortcutipud.realItem is PresetWrapper) && (shortcutipud.realItem as PresetWrapper).id == ipudmsg.preset.presetId)
+                  if((shortcutipud) && (shortcutipud.realItem is PresetWrapper) && ((shortcutipud.realItem as PresetWrapper).id == ipudmsg.preset.presetId))
                   {
                      shortcutipud.update(shortcutipud.slot,shortcutipud.id,shortcutipud.type,shortcutipud.gid);
                   }
@@ -831,120 +828,120 @@ package com.ankamagames.dofus.logic.game.common.frames
       }
       
       public function onAcceptDrop() : void {
-         var _loc1_:ObjectDropMessage = new ObjectDropMessage();
-         _loc1_.initObjectDropMessage(this._objectUIDToDrop,this._quantityToDrop);
+         var odropmsg:ObjectDropMessage = new ObjectDropMessage();
+         odropmsg.initObjectDropMessage(this._objectUIDToDrop,this._quantityToDrop);
          if(!PlayedCharacterManager.getInstance().isFighting)
          {
-            ConnectionsHandler.getConnection().send(_loc1_);
+            ConnectionsHandler.getConnection().send(odropmsg);
          }
       }
       
       public function onRefuseDrop() : void {
       }
       
-      private function onCellPointed(param1:Boolean, param2:uint, param3:int) : void {
-         var _loc4_:ObjectUseOnCellMessage = null;
-         var _loc5_:ObjectUseOnCharacterMessage = null;
-         if(param1)
+      private function onCellPointed(success:Boolean, cellId:uint, entityId:int) : void {
+         var oucmsg:ObjectUseOnCellMessage = null;
+         var ouCharmsg:ObjectUseOnCharacterMessage = null;
+         if(success)
          {
-            if(param3 < 0)
+            if(entityId < 0)
             {
-               _loc4_ = new ObjectUseOnCellMessage();
-               _loc4_.initObjectUseOnCellMessage(this._currentPointUseUIDObject,param2);
-               ConnectionsHandler.getConnection().send(_loc4_);
+               oucmsg = new ObjectUseOnCellMessage();
+               oucmsg.initObjectUseOnCellMessage(this._currentPointUseUIDObject,cellId);
+               ConnectionsHandler.getConnection().send(oucmsg);
             }
             else
             {
-               _loc5_ = new ObjectUseOnCharacterMessage();
-               _loc5_.initObjectUseOnCharacterMessage(this._currentPointUseUIDObject,param3);
-               ConnectionsHandler.getConnection().send(_loc5_);
+               ouCharmsg = new ObjectUseOnCharacterMessage();
+               ouCharmsg.initObjectUseOnCharacterMessage(this._currentPointUseUIDObject,entityId);
+               ConnectionsHandler.getConnection().send(ouCharmsg);
             }
             this._currentPointUseUIDObject = 0;
          }
       }
       
-      private function useItem(param1:ObjectUseAction, param2:ItemWrapper) : void {
-         var _loc3_:Texture = null;
-         var _loc4_:ObjectUseMultipleMessage = null;
-         var _loc5_:ObjectUseMessage = null;
-         if((this._roleplayPointCellFrame) && (this._roleplayPointCellFrame.object) && param1.objectUID == this._currentPointUseUIDObject)
+      private function useItem(oua:ObjectUseAction, iw:ItemWrapper) : void {
+         var cursorIcon:Texture = null;
+         var oummsg:ObjectUseMultipleMessage = null;
+         var oumsg:ObjectUseMessage = null;
+         if((this._roleplayPointCellFrame) && (this._roleplayPointCellFrame.object) && (oua.objectUID == this._currentPointUseUIDObject))
          {
             Kernel.getWorker().removeFrame(this._roleplayPointCellFrame.object as RoleplayPointCellFrame);
             this._roleplayPointCellFrame = null;
          }
-         if((param1.useOnCell) && (param2.targetable))
+         if((oua.useOnCell) && (iw.targetable))
          {
             if(!Kernel.getWorker().getFrame(FightContextFrame))
             {
-               this._currentPointUseUIDObject = param1.objectUID;
-               _loc3_ = new Texture();
-               _loc3_.uri = param2.iconUri;
-               _loc3_.finalize();
+               this._currentPointUseUIDObject = oua.objectUID;
+               cursorIcon = new Texture();
+               cursorIcon.uri = iw.iconUri;
+               cursorIcon.finalize();
                if(Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame)
                {
-                  this._roleplayPointCellFrame = new WeakReference(new RoleplayPointCellFrame(this.onCellPointed,_loc3_));
+                  this._roleplayPointCellFrame = new WeakReference(new RoleplayPointCellFrame(this.onCellPointed,cursorIcon));
                   Kernel.getWorker().addFrame(this._roleplayPointCellFrame.object as Frame);
                }
             }
          }
          else
          {
-            if(param1.quantity > 1)
+            if(oua.quantity > 1)
             {
-               _loc4_ = new ObjectUseMultipleMessage();
-               _loc4_.initObjectUseMultipleMessage(param1.objectUID,param1.quantity);
-               ConnectionsHandler.getConnection().send(_loc4_);
+               oummsg = new ObjectUseMultipleMessage();
+               oummsg.initObjectUseMultipleMessage(oua.objectUID,oua.quantity);
+               ConnectionsHandler.getConnection().send(oummsg);
             }
             else
             {
-               _loc5_ = new ObjectUseMessage();
-               _loc5_.initObjectUseMessage(param1.objectUID);
-               ConnectionsHandler.getConnection().send(_loc5_);
+               oumsg = new ObjectUseMessage();
+               oumsg.initObjectUseMessage(oua.objectUID);
+               ConnectionsHandler.getConnection().send(oumsg);
             }
          }
       }
       
-      private function addObject(param1:ObjectItem) : void {
-         InventoryManager.getInstance().inventory.addObjectItem(param1);
+      private function addObject(objectItem:ObjectItem) : void {
+         InventoryManager.getInstance().inventory.addObjectItem(objectItem);
       }
       
-      private function getShortcutWrapperPropFromShortcut(param1:Shortcut) : Object {
-         var _loc2_:uint = 0;
-         var _loc4_:uint = 0;
-         var _loc3_:uint = 0;
-         if(param1 is ShortcutObjectItem)
+      private function getShortcutWrapperPropFromShortcut(shortcut:Shortcut) : Object {
+         var id:uint = 0;
+         var type:uint = 0;
+         var gid:uint = 0;
+         if(shortcut is ShortcutObjectItem)
          {
-            _loc2_ = (param1 as ShortcutObjectItem).itemUID;
-            _loc3_ = (param1 as ShortcutObjectItem).itemGID;
-            _loc4_ = 0;
+            id = (shortcut as ShortcutObjectItem).itemUID;
+            gid = (shortcut as ShortcutObjectItem).itemGID;
+            type = 0;
          }
          else
          {
-            if(param1 is ShortcutObjectPreset)
+            if(shortcut is ShortcutObjectPreset)
             {
-               _loc2_ = (param1 as ShortcutObjectPreset).presetId;
-               _loc4_ = 1;
+               id = (shortcut as ShortcutObjectPreset).presetId;
+               type = 1;
             }
             else
             {
-               if(param1 is ShortcutEmote)
+               if(shortcut is ShortcutEmote)
                {
-                  _loc2_ = (param1 as ShortcutEmote).emoteId;
-                  _loc4_ = 4;
+                  id = (shortcut as ShortcutEmote).emoteId;
+                  type = 4;
                }
                else
                {
-                  if(param1 is ShortcutSmiley)
+                  if(shortcut is ShortcutSmiley)
                   {
-                     _loc2_ = (param1 as ShortcutSmiley).smileyId;
-                     _loc4_ = 3;
+                     id = (shortcut as ShortcutSmiley).smileyId;
+                     type = 3;
                   }
                   else
                   {
-                     if(param1 is ShortcutSpell)
+                     if(shortcut is ShortcutSpell)
                      {
-                        _loc2_ = (param1 as ShortcutSpell).spellId;
-                        _loc4_ = 2;
+                        id = (shortcut as ShortcutSpell).spellId;
+                        type = 2;
                      }
                   }
                }
@@ -952,9 +949,9 @@ package com.ankamagames.dofus.logic.game.common.frames
          }
          return 
             {
-               "id":_loc2_,
-               "gid":_loc3_,
-               "type":_loc4_
+               "id":id,
+               "gid":gid,
+               "type":type
             };
       }
    }

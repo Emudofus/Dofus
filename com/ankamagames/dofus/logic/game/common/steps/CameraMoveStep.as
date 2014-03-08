@@ -14,11 +14,11 @@ package com.ankamagames.dofus.logic.game.common.steps
    public class CameraMoveStep extends AbstractSequencable
    {
       
-      public function CameraMoveStep(param1:Camera, param2:Array, param3:Boolean) {
+      public function CameraMoveStep(pCamera:Camera, pArgs:Array, pInstant:Boolean) {
          super();
-         this._camera = param1;
-         this._args = param2;
-         this._instant = param3;
+         this._camera = pCamera;
+         this._args = pArgs;
+         this._instant = pInstant;
          this._container = Atouin.getInstance().worldContainer;
       }
       
@@ -33,17 +33,17 @@ package com.ankamagames.dofus.logic.game.common.steps
       private var _container:DisplayObjectContainer;
       
       override public function start() : void {
-         var _loc1_:MapPoint = null;
-         var _loc2_:GraphicCell = null;
-         var _loc3_:Point = null;
-         var _loc4_:Object = null;
-         var _loc5_:TweenLite = null;
-         if(this._camera.currentZoom > Atouin.getInstance().options.frustum.scale && !isNaN(this._camera.x) && !isNaN(this._camera.y))
+         var mp:MapPoint = null;
+         var cell:GraphicCell = null;
+         var cellPos:Point = null;
+         var camPosObj:Object = null;
+         var t:TweenLite = null;
+         if((this._camera.currentZoom > Atouin.getInstance().options.frustum.scale) && (!isNaN(this._camera.x)) && (!isNaN(this._camera.y)))
          {
-            _loc1_ = ScriptsUtil.getMapPoint(this._args);
-            _loc2_ = InteractiveCellManager.getInstance().getCell(_loc1_.cellId);
-            _loc3_ = _loc2_.parent.localToGlobal(new Point(_loc2_.x + _loc2_.width / 2,_loc2_.y + _loc2_.height / 2));
-            this._targetPos = this._container.globalToLocal(_loc3_);
+            mp = ScriptsUtil.getMapPoint(this._args);
+            cell = InteractiveCellManager.getInstance().getCell(mp.cellId);
+            cellPos = cell.parent.localToGlobal(new Point(cell.x + cell.width / 2,cell.y + cell.height / 2));
+            this._targetPos = this._container.globalToLocal(cellPos);
             if(this._instant)
             {
                this._camera.zoomOnPos(this._camera.currentZoom,this._targetPos.x,this._targetPos.y);
@@ -51,25 +51,25 @@ package com.ankamagames.dofus.logic.game.common.steps
             }
             else
             {
-               _loc4_ = 
+               camPosObj = 
                   {
                      "x":this._camera.x,
                      "y":this._camera.y
                   };
-               _loc5_ = new TweenLite(_loc4_,2,
+               t = new TweenLite(camPosObj,2,
                   {
                      "x":this._targetPos.x,
                      "y":this._targetPos.y,
                      "onUpdate":this.updatePos,
-                     "onUpdateParams":[_loc4_],
+                     "onUpdateParams":[camPosObj],
                      "onComplete":this.moveComplete
                   });
             }
          }
       }
       
-      private function updatePos(param1:Object) : void {
-         this._camera.zoomOnPos(this._camera.currentZoom,param1.x,param1.y);
+      private function updatePos(pCamPosObj:Object) : void {
+         this._camera.zoomOnPos(this._camera.currentZoom,pCamPosObj.x,pCamPosObj.y);
       }
       
       private function moveComplete() : void {

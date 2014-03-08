@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.common.actions
          super();
       }
       
-      public static function create(param1:String) : AuthorizedCommandAction {
-         var _loc2_:AuthorizedCommandAction = new AuthorizedCommandAction();
-         _loc2_.command = param1;
-         return _loc2_;
+      public static function create(command:String) : AuthorizedCommandAction {
+         var a:AuthorizedCommandAction = new AuthorizedCommandAction();
+         a.command = command;
+         return a;
       }
       
       public var command:String;

@@ -9,12 +9,12 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(param1:uint, param2:uint, param3:uint) : ShortcutBarAddRequestAction {
-         var _loc4_:ShortcutBarAddRequestAction = new ShortcutBarAddRequestAction();
-         _loc4_.barType = param1;
-         _loc4_.id = param2;
-         _loc4_.slot = param3;
-         return _loc4_;
+      public static function create(barType:uint, id:uint, slot:uint) : ShortcutBarAddRequestAction {
+         var a:ShortcutBarAddRequestAction = new ShortcutBarAddRequestAction();
+         a.barType = barType;
+         a.id = id;
+         a.slot = slot;
+         return a;
       }
       
       public var barType:uint;

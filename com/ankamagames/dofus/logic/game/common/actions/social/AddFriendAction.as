@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.social
          super();
       }
       
-      public static function create(param1:String) : AddFriendAction {
-         var _loc2_:AddFriendAction = new AddFriendAction();
-         _loc2_.name = param1;
-         return _loc2_;
+      public static function create(name:String) : AddFriendAction {
+         var a:AddFriendAction = new AddFriendAction();
+         a.name = name;
+         return a;
       }
       
       public var name:String;

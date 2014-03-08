@@ -9,49 +9,49 @@ package com.hurlant.util
          super();
       }
       
-      public static function toArray(param1:String) : ByteArray {
-         var param1:String = param1.replace(new RegExp("\\s|:","gm"),"");
-         var _loc2_:ByteArray = new ByteArray();
-         if(param1.length & 1 == 1)
+      public static function toArray(hex:String) : ByteArray {
+         var hex:String = hex.replace(new RegExp("\\s|:","gm"),"");
+         var a:ByteArray = new ByteArray();
+         if(hex.length & 1 == 1)
          {
-            param1 = "0" + param1;
+            hex = "0" + hex;
          }
-         var _loc3_:uint = 0;
-         while(_loc3_ < param1.length)
+         var i:uint = 0;
+         while(i < hex.length)
          {
-            _loc2_[_loc3_ / 2] = parseInt(param1.substr(_loc3_,2),16);
-            _loc3_ = _loc3_ + 2;
+            a[i / 2] = parseInt(hex.substr(i,2),16);
+            i = i + 2;
          }
-         return _loc2_;
+         return a;
       }
       
-      public static function fromArray(param1:ByteArray, param2:Boolean=false) : String {
-         var _loc3_:* = "";
-         var _loc4_:uint = 0;
-         while(_loc4_ < param1.length)
+      public static function fromArray(array:ByteArray, colons:Boolean=false) : String {
+         var s:String = "";
+         var i:uint = 0;
+         while(i < array.length)
          {
-            _loc3_ = _loc3_ + ("0" + param1[_loc4_].toString(16)).substr(-2,2);
-            if(param2)
+            s = s + ("0" + array[i].toString(16)).substr(-2,2);
+            if(colons)
             {
-               if(_loc4_ < param1.length-1)
+               if(i < array.length - 1)
                {
-                  _loc3_ = _loc3_ + ":";
+                  s = s + ":";
                }
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return s;
       }
       
-      public static function toString(param1:String) : String {
-         var _loc2_:ByteArray = toArray(param1);
-         return _loc2_.readUTFBytes(_loc2_.length);
+      public static function toString(hex:String) : String {
+         var a:ByteArray = toArray(hex);
+         return a.readUTFBytes(a.length);
       }
       
-      public static function fromString(param1:String, param2:Boolean=false) : String {
-         var _loc3_:ByteArray = new ByteArray();
-         _loc3_.writeUTFBytes(param1);
-         return fromArray(_loc3_,param2);
+      public static function fromString(str:String, colons:Boolean=false) : String {
+         var a:ByteArray = new ByteArray();
+         a.writeUTFBytes(str);
+         return fromArray(a,colons);
       }
    }
 }

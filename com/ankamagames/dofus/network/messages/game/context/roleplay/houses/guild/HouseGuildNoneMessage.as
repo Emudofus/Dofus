@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses.guil
          return 5701;
       }
       
-      public function initHouseGuildNoneMessage(param1:uint=0) : HouseGuildNoneMessage {
-         this.houseId = param1;
+      public function initHouseGuildNoneMessage(houseId:uint=0) : HouseGuildNoneMessage {
+         this.houseId = houseId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses.guil
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_HouseGuildNoneMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HouseGuildNoneMessage(output);
       }
       
-      public function serializeAs_HouseGuildNoneMessage(param1:IDataOutput) : void {
+      public function serializeAs_HouseGuildNoneMessage(output:IDataOutput) : void {
          if(this.houseId < 0)
          {
             throw new Error("Forbidden value (" + this.houseId + ") on element houseId.");
          }
          else
          {
-            param1.writeShort(this.houseId);
+            output.writeShort(this.houseId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_HouseGuildNoneMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HouseGuildNoneMessage(input);
       }
       
-      public function deserializeAs_HouseGuildNoneMessage(param1:IDataInput) : void {
-         this.houseId = param1.readShort();
+      public function deserializeAs_HouseGuildNoneMessage(input:IDataInput) : void {
+         this.houseId = input.readShort();
          if(this.houseId < 0)
          {
             throw new Error("Forbidden value (" + this.houseId + ") on element of HouseGuildNoneMessage.houseId.");

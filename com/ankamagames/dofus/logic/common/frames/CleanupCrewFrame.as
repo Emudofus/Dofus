@@ -82,70 +82,67 @@ package com.ankamagames.dofus.logic.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
+      public function process(msg:Message) : Boolean {
          switch(true)
          {
-            case param1 is ServerConnectionFailedMessage:
-            case param1 is BasicAckMessage:
-            case param1 is BasicNoOperationMessage:
-            case param1 is CredentialsAcknowledgementMessage:
-            case param1 is OnConnectionEventMessage:
-            case param1 is ExchangeBidHouseBuyResultMessage:
-            case param1 is ObjectJobAddedMessage:
-            case param1 is AllUiXmlParsedMessage:
-            case param1 is ConnectionResumedMessage:
-            case param1 is GameStartingMessage:
-            case param1 is BannerEmptySlotClickAction:
-            case param1 is MapRenderProgressMessage:
-            case param1 is GameEntitiesDispositionMessage:
-            case param1 is GameFightShowFighterMessage:
-            case param1 is TextureReadyMessage:
-            case param1 is EntityReadyMessage:
-            case param1 is MapRollOverMessage:
-            case param1 is ChangeMessage:
-            case param1 is SelectItemMessage:
-            case param1 is MapMoveMessage:
-            case param1 is TextClickMessage:
-            case param1 is DropMessage:
-            case param1 is MouseMiddleClickMessage:
-            case param1 is MapsLoadingStartedMessage:
-            case param1 is EntityMovementStartMessage:
-            case param1 is MapContainerRollOverMessage:
-            case param1 is MapContainerRollOutMessage:
-            case param1 is GameContextDestroyMessage:
-            case param1 is PlayerStatusUpdateMessage:
-            case param1 is MapComplementaryInformationsDataMessage:
-            case param1 is CellClickMessage:
-            case param1 is AdjacentMapClickMessage:
-            case param1 is AdjacentMapOutMessage:
-            case param1 is AdjacentMapOverMessage:
-            case param1 is EntityMouseOverMessage:
-            case param1 is InteractiveElementActivationMessage:
-            case param1 is InteractiveElementMouseOverMessage:
-            case param1 is InteractiveElementMouseOutMessage:
-            case param1 is MouseOverMessage:
-            case param1 is MouseOutMessage:
-            case param1 is MouseDownMessage:
-            case param1 is MouseUpMessage:
-            case param1 is MouseClickMessage:
-            case param1 is MouseDoubleClickMessage:
-            case param1 is KeyboardKeyDownMessage:
-            case param1 is KeyboardKeyUpMessage:
-            case param1 is MouseRightClickOutsideMessage:
-            case param1 is MouseRightClickMessage:
-            case param1 is MouseReleaseOutsideMessage:
-            case param1 is ItemRollOverMessage:
-            case param1 is ItemRollOutMessage:
-            case param1 is MouseWheelMessage:
-            case param1 is CellOverMessage:
-            case param1 is CellOutMessage:
-            case param1 is EntityMouseOutMessage:
-            case param1 is PlaySoundAction:
-            case param1 is ShowMonstersInfoAction:
-            case param1 is SlaveSwitchContextMessage:
-               return true;
-            default:
-               _log.warn("[Warning] " + (getQualifiedClassName(param1) as String).split("::")[1] + " wasn\'t stopped by a frame.");
+            case msg is ServerConnectionFailedMessage:
+            case msg is BasicAckMessage:
+            case msg is BasicNoOperationMessage:
+            case msg is CredentialsAcknowledgementMessage:
+            case msg is OnConnectionEventMessage:
+            case msg is ExchangeBidHouseBuyResultMessage:
+            case msg is ObjectJobAddedMessage:
+            case msg is AllUiXmlParsedMessage:
+            case msg is ConnectionResumedMessage:
+            case msg is GameStartingMessage:
+            case msg is BannerEmptySlotClickAction:
+            case msg is MapRenderProgressMessage:
+            case msg is GameEntitiesDispositionMessage:
+            case msg is GameFightShowFighterMessage:
+            case msg is TextureReadyMessage:
+            case msg is EntityReadyMessage:
+            case msg is MapRollOverMessage:
+            case msg is ChangeMessage:
+            case msg is SelectItemMessage:
+            case msg is MapMoveMessage:
+            case msg is TextClickMessage:
+            case msg is DropMessage:
+            case msg is MouseMiddleClickMessage:
+            case msg is MapsLoadingStartedMessage:
+            case msg is EntityMovementStartMessage:
+            case msg is MapContainerRollOverMessage:
+            case msg is MapContainerRollOutMessage:
+            case msg is GameContextDestroyMessage:
+            case msg is PlayerStatusUpdateMessage:
+            case msg is MapComplementaryInformationsDataMessage:
+            case msg is CellClickMessage:
+            case msg is AdjacentMapClickMessage:
+            case msg is AdjacentMapOutMessage:
+            case msg is AdjacentMapOverMessage:
+            case msg is EntityMouseOverMessage:
+            case msg is InteractiveElementActivationMessage:
+            case msg is InteractiveElementMouseOverMessage:
+            case msg is InteractiveElementMouseOutMessage:
+            case msg is MouseOverMessage:
+            case msg is MouseOutMessage:
+            case msg is MouseDownMessage:
+            case msg is MouseUpMessage:
+            case msg is MouseClickMessage:
+            case msg is MouseDoubleClickMessage:
+            case msg is KeyboardKeyDownMessage:
+            case msg is KeyboardKeyUpMessage:
+            case msg is MouseRightClickOutsideMessage:
+            case msg is MouseRightClickMessage:
+            case msg is MouseReleaseOutsideMessage:
+            case msg is ItemRollOverMessage:
+            case msg is ItemRollOutMessage:
+            case msg is MouseWheelMessage:
+            case msg is CellOverMessage:
+            case msg is CellOutMessage:
+            case msg is EntityMouseOutMessage:
+            case msg is PlaySoundAction:
+            case msg is ShowMonstersInfoAction:
+            case msg is SlaveSwitchContextMessage:
                return true;
          }
       }

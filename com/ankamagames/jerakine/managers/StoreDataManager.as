@@ -15,6 +15,7 @@ package com.ankamagames.jerakine.managers
    import flash.utils.getDefinitionByName;
    import com.ankamagames.jerakine.JerakineConstants;
    import com.ankamagames.jerakine.utils.crypto.Base64;
+   import __AS3__.vec.*;
    import flash.net.ObjectEncoding;
    import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
@@ -86,28 +87,28 @@ package com.ankamagames.jerakine.managers
       
       private var _describeType:Function;
       
-      public function getData(param1:DataStoreType, param2:String) : * {
-         var _loc3_:CustomSharedObject = null;
-         if(param1.persistant)
+      public function getData(dataType:DataStoreType, sKey:String) : * {
+         var so:CustomSharedObject = null;
+         if(dataType.persistant)
          {
-            switch(param1.location)
+            switch(dataType.location)
             {
                case DataStoreEnum.LOCATION_LOCAL:
-                  _loc3_ = this.getSharedObject(param1.category);
-                  return _loc3_.data[param2];
+                  so = this.getSharedObject(dataType.category);
+                  return so.data[sKey];
                case DataStoreEnum.LOCATION_SERVER:
                   break;
             }
             return;
          }
-         if(this._aData[param1.category] != null)
+         if(this._aData[dataType.category] != null)
          {
-            return this._aData[param1.category][param2];
+            return this._aData[dataType.category][sKey];
          }
          return null;
       }
       
-      public function registerClass(param1:*, param2:Boolean=false, param3:Boolean=true) : void {
+      public function registerClass(oInstance:*, deepClassScan:Boolean=false, keepClassInSo:Boolean=true) : void {
          var className:String = null;
          var sAlias:String = null;
          var aClassAlias:Array = null;
@@ -115,9 +116,6 @@ package com.ankamagames.jerakine.managers
          var key:String = null;
          var tmp:String = null;
          var leftBracePos:int = 0;
-         var oInstance:* = param1;
-         var deepClassScan:Boolean = param2;
-         var keepClassInSo:Boolean = param3;
          if(oInstance is IExternalizable)
          {
             throw new ArgumentError("Can\'t store a customized IExternalizable in a shared object.");
@@ -163,14 +161,14 @@ package com.ankamagames.jerakine.managers
                }
                if(deepClassScan)
                {
-                  if(oInstance is Dictionary || oInstance is Array || oInstance is Vector.<*> || oInstance is Vector.<uint>)
+                  if((oInstance is Dictionary) || (oInstance is Array) || (oInstance is Vector.<*>) || (oInstance is Vector.<uint>))
                   {
                      desc = oInstance;
                      if(oInstance is Vector.<*>)
                      {
                         tmp = getQualifiedClassName(oInstance);
                         leftBracePos = tmp.indexOf("<");
-                        tmp = tmp.substr(leftBracePos + 1,tmp.lastIndexOf(">") - leftBracePos-1);
+                        tmp = tmp.substr(leftBracePos + 1,tmp.lastIndexOf(">") - leftBracePos - 1);
                         this.registerClass(new getDefinitionByName(tmp) as Class(),true,keepClassInSo);
                      }
                   }
@@ -195,44 +193,44 @@ package com.ankamagames.jerakine.managers
          }
       }
       
-      public function getClass(param1:Object) : void {
-         var _loc3_:* = undefined;
-         var _loc2_:XML = this._describeType(param1);
-         this.registerClass(param1);
-         for (_loc3_ in _loc2_..accessor)
+      public function getClass(item:Object) : void {
+         var s:* = undefined;
+         var description:XML = this._describeType(item);
+         this.registerClass(item);
+         for (s in description..accessor)
          {
-            if(this.isComplexType(_loc3_))
+            if(this.isComplexType(s))
             {
-               this.getClass(_loc3_);
+               this.getClass(s);
             }
          }
       }
       
-      public function setData(param1:DataStoreType, param2:String, param3:*, param4:Boolean=false) : Boolean {
-         var _loc5_:CustomSharedObject = null;
-         if(this._aData[param1.category] == null)
+      public function setData(dataType:DataStoreType, sKey:String, oValue:*, deepClassScan:Boolean=false) : Boolean {
+         var so:CustomSharedObject = null;
+         if(this._aData[dataType.category] == null)
          {
-            this._aData[param1.category] = new Dictionary(true);
+            this._aData[dataType.category] = new Dictionary(true);
          }
-         this._aData[param1.category][param2] = param3;
-         if(param1.persistant)
+         this._aData[dataType.category][sKey] = oValue;
+         if(dataType.persistant)
          {
-            switch(param1.location)
+            switch(dataType.location)
             {
                case DataStoreEnum.LOCATION_LOCAL:
-                  this.registerClass(param3,param4);
-                  _loc5_ = this.getSharedObject(param1.category);
-                  _loc5_.data[param2] = param3;
+                  this.registerClass(oValue,deepClassScan);
+                  so = this.getSharedObject(dataType.category);
+                  so.data[sKey] = oValue;
                   if(!this._bStoreSequence)
                   {
-                     if(!_loc5_.flush())
+                     if(!so.flush())
                      {
                         return false;
                      }
                   }
                   else
                   {
-                     this._aStoreSequence[param1.category] = param1;
+                     this._aStoreSequence[dataType.category] = dataType;
                   }
                   return true;
                case DataStoreEnum.LOCATION_SERVER:
@@ -242,14 +240,14 @@ package com.ankamagames.jerakine.managers
          return true;
       }
       
-      public function getSetData(param1:DataStoreType, param2:String, param3:*) : * {
-         var _loc4_:* = this.getData(param1,param2);
-         if(_loc4_ != null)
+      public function getSetData(dataType:DataStoreType, sKey:String, oValue:*) : * {
+         var o:* = this.getData(dataType,sKey);
+         if(o != null)
          {
-            return _loc4_;
+            return o;
          }
-         this.setData(param1,param2,param3);
-         return param3;
+         this.setData(dataType,sKey,oValue);
+         return oValue;
       }
       
       public function startStoreSequence() : void {
@@ -262,46 +260,44 @@ package com.ankamagames.jerakine.managers
       }
       
       public function stopStoreSequence() : void {
-         var _loc1_:DataStoreType = null;
-         var _loc2_:String = null;
+         var dt:DataStoreType = null;
+         var s:String = null;
          this._bStoreSequence = !(--this._nCurrentSequenceNum == 0);
          if(this._bStoreSequence)
          {
             return;
          }
-         for (_loc2_ in this._aStoreSequence)
+         for (s in this._aStoreSequence)
          {
-            _loc1_ = this._aStoreSequence[_loc2_];
-            switch(_loc1_.location)
+            dt = this._aStoreSequence[s];
+            switch(dt.location)
             {
                case DataStoreEnum.LOCATION_LOCAL:
-                  this.getSharedObject(_loc1_.category).flush();
+                  this.getSharedObject(dt.category).flush();
                   continue;
                case DataStoreEnum.LOCATION_SERVER:
-                  continue;
-               default:
                   continue;
             }
          }
          this._aStoreSequence = null;
       }
       
-      public function clear(param1:DataStoreType) : void {
+      public function clear(dataType:DataStoreType) : void {
          this._aData = new Array();
-         var _loc2_:CustomSharedObject = this.getSharedObject(param1.category);
-         _loc2_.clear();
-         _loc2_.flush();
+         var so:CustomSharedObject = this.getSharedObject(dataType.category);
+         so.clear();
+         so.flush();
       }
       
       public function reset() : void {
-         var _loc1_:CustomSharedObject = null;
-         for each (_loc1_ in this._aSharedObjectCache)
+         var s:CustomSharedObject = null;
+         for each (s in this._aSharedObjectCache)
          {
-            _loc1_.clear();
+            s.clear();
             try
             {
-               _loc1_.flush();
-               _loc1_.close();
+               s.flush();
+               s.close();
             }
             catch(e:Error)
             {
@@ -312,47 +308,45 @@ package com.ankamagames.jerakine.managers
          _self = null;
       }
       
-      public function close(param1:DataStoreType) : void {
-         switch(param1.location)
+      public function close(dataType:DataStoreType) : void {
+         switch(dataType.location)
          {
             case DataStoreEnum.LOCATION_LOCAL:
-               this._aSharedObjectCache[param1.category].close();
-               delete this._aSharedObjectCache[[param1.category]];
+               this._aSharedObjectCache[dataType.category].close();
+               delete this._aSharedObjectCache[[dataType.category]];
                break;
          }
       }
       
-      private function getSharedObject(param1:String) : CustomSharedObject {
-         if(this._aSharedObjectCache[param1] != null)
+      private function getSharedObject(sName:String) : CustomSharedObject {
+         if(this._aSharedObjectCache[sName] != null)
          {
-            return this._aSharedObjectCache[param1];
+            return this._aSharedObjectCache[sName];
          }
-         var _loc2_:CustomSharedObject = CustomSharedObject.getLocal(param1);
-         _loc2_.objectEncoding = ObjectEncoding.AMF3;
-         this._aSharedObjectCache[param1] = _loc2_;
-         return _loc2_;
+         var so:CustomSharedObject = CustomSharedObject.getLocal(sName);
+         so.objectEncoding = ObjectEncoding.AMF3;
+         this._aSharedObjectCache[sName] = so;
+         return so;
       }
       
-      private function isComplexType(param1:*) : Boolean {
+      private function isComplexType(o:*) : Boolean {
          switch(true)
          {
-            case param1 is int:
-            case param1 is uint:
-            case param1 is Number:
-            case param1 is Boolean:
-            case param1 is Array:
-            case param1 is String:
-            case param1 == null:
-            case param1 == undefined:
+            case o is int:
+            case o is uint:
+            case o is Number:
+            case o is Boolean:
+            case o is Array:
+            case o is String:
+            case o == null:
+            case o == undefined:
                return false;
-            default:
-               return true;
          }
       }
       
-      private function isComplexTypeFromString(param1:String) : Boolean {
-         var _loc2_:* = undefined;
-         switch(param1)
+      private function isComplexTypeFromString(name:String) : Boolean {
+         var o:* = undefined;
+         switch(name)
          {
             case "int":
             case "uint":
@@ -361,36 +355,29 @@ package com.ankamagames.jerakine.managers
             case "Array":
             case "String":
                return false;
-            default:
-               _loc2_ = this._aRegisteredClassAlias[param1];
-               if(this._aRegisteredClassAlias[param1] === true)
-               {
-                  return false;
-               }
-               return true;
          }
       }
       
-      private function scanType(param1:*) : Object {
-         var _loc4_:XML = null;
-         var _loc5_:XML = null;
-         var _loc2_:Object = new Object();
-         var _loc3_:XML = this._describeType(param1);
-         for each (_loc4_ in _loc3_..accessor)
+      private function scanType(obj:*) : Object {
+         var accessor:XML = null;
+         var variable:XML = null;
+         var result:Object = new Object();
+         var def:XML = this._describeType(obj);
+         for each (accessor in def..accessor)
          {
-            if(this.isComplexTypeFromString(_loc4_.@type))
+            if(this.isComplexTypeFromString(accessor.@type))
             {
-               _loc2_[_loc4_.@name] = true;
+               result[accessor.@name] = true;
             }
          }
-         for each (_loc5_ in _loc3_..variable)
+         for each (variable in def..variable)
          {
-            if(this.isComplexTypeFromString(_loc5_.@type))
+            if(this.isComplexTypeFromString(variable.@type))
             {
-               _loc2_[_loc5_.@name] = true;
+               result[variable.@name] = true;
             }
          }
-         return _loc2_;
+         return result;
       }
    }
 }

@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:String) : HouseLockFromInsideAction {
-         var _loc2_:HouseLockFromInsideAction = new HouseLockFromInsideAction();
-         _loc2_.code = param1;
-         return _loc2_;
+      public static function create(code:String) : HouseLockFromInsideAction {
+         var action:HouseLockFromInsideAction = new HouseLockFromInsideAction();
+         action.code = code;
+         return action;
       }
       
       public var code:String;

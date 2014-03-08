@@ -6,9 +6,9 @@ package com.ankamagames.berilia.components.messages
    public class ItemRightClickMessage extends ComponentMessage
    {
       
-      public function ItemRightClickMessage(param1:Grid, param2:GridItem) {
-         super(param1);
-         this._gridItem = param2;
+      public function ItemRightClickMessage(grid:Grid, gridItem:GridItem) {
+         super(grid);
+         this._gridItem = gridItem;
       }
       
       private var _gridItem:GridItem;

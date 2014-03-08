@@ -5,10 +5,10 @@ package com.ankamagames.berilia.types.data
    public class ChunkData extends Object
    {
       
-      public function ChunkData(param1:String, param2:Uri) {
+      public function ChunkData(name:String, uri:Uri) {
          super();
-         this.name = param1;
-         this.uri = param2;
+         this.name = name;
+         this.uri = uri;
       }
       
       public var name:String;

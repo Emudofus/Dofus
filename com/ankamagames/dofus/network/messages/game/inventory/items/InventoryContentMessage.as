@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,9 +32,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3016;
       }
       
-      public function initInventoryContentMessage(param1:Vector.<ObjectItem>=null, param2:uint=0) : InventoryContentMessage {
-         this.objects = param1;
-         this.kamas = param2;
+      public function initInventoryContentMessage(objects:Vector.<ObjectItem>=null, kamas:uint=0) : InventoryContentMessage {
+         this.objects = objects;
+         this.kamas = kamas;
          this._isInitialized = true;
          return this;
       }
@@ -45,27 +45,27 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_InventoryContentMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_InventoryContentMessage(output);
       }
       
-      public function serializeAs_InventoryContentMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.objects.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.objects.length)
+      public function serializeAs_InventoryContentMessage(output:IDataOutput) : void {
+         output.writeShort(this.objects.length);
+         var _i1:uint = 0;
+         while(_i1 < this.objects.length)
          {
-            (this.objects[_loc2_] as ObjectItem).serializeAs_ObjectItem(param1);
-            _loc2_++;
+            (this.objects[_i1] as ObjectItem).serializeAs_ObjectItem(output);
+            _i1++;
          }
          if(this.kamas < 0)
          {
@@ -73,27 +73,27 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          }
          else
          {
-            param1.writeInt(this.kamas);
+            output.writeInt(this.kamas);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_InventoryContentMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_InventoryContentMessage(input);
       }
       
-      public function deserializeAs_InventoryContentMessage(param1:IDataInput) : void {
-         var _loc4_:ObjectItem = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_InventoryContentMessage(input:IDataInput) : void {
+         var _item1:ObjectItem = null;
+         var _objectsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _objectsLen)
          {
-            _loc4_ = new ObjectItem();
-            _loc4_.deserialize(param1);
-            this.objects.push(_loc4_);
-            _loc3_++;
+            _item1 = new ObjectItem();
+            _item1.deserialize(input);
+            this.objects.push(_item1);
+            _i1++;
          }
-         this.kamas = param1.readInt();
+         this.kamas = input.readInt();
          if(this.kamas < 0)
          {
             throw new Error("Forbidden value (" + this.kamas + ") on element of InventoryContentMessage.kamas.");

@@ -39,16 +39,16 @@ package com.ankamagames.dofus.network.types.game.friend
          return 77;
       }
       
-      public function initFriendSpouseInformations(param1:uint=0, param2:uint=0, param3:String="", param4:uint=0, param5:int=0, param6:int=0, param7:EntityLook=null, param8:BasicGuildInformations=null, param9:int=0) : FriendSpouseInformations {
-         this.spouseAccountId = param1;
-         this.spouseId = param2;
-         this.spouseName = param3;
-         this.spouseLevel = param4;
-         this.breed = param5;
-         this.sex = param6;
-         this.spouseEntityLook = param7;
-         this.guildInfo = param8;
-         this.alignmentSide = param9;
+      public function initFriendSpouseInformations(spouseAccountId:uint=0, spouseId:uint=0, spouseName:String="", spouseLevel:uint=0, breed:int=0, sex:int=0, spouseEntityLook:EntityLook=null, guildInfo:BasicGuildInformations=null, alignmentSide:int=0) : FriendSpouseInformations {
+         this.spouseAccountId = spouseAccountId;
+         this.spouseId = spouseId;
+         this.spouseName = spouseName;
+         this.spouseLevel = spouseLevel;
+         this.breed = breed;
+         this.sex = sex;
+         this.spouseEntityLook = spouseEntityLook;
+         this.guildInfo = guildInfo;
+         this.alignmentSide = alignmentSide;
          return this;
       }
       
@@ -62,78 +62,78 @@ package com.ankamagames.dofus.network.types.game.friend
          this.spouseEntityLook = new EntityLook();
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FriendSpouseInformations(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FriendSpouseInformations(output);
       }
       
-      public function serializeAs_FriendSpouseInformations(param1:IDataOutput) : void {
+      public function serializeAs_FriendSpouseInformations(output:IDataOutput) : void {
          if(this.spouseAccountId < 0)
          {
             throw new Error("Forbidden value (" + this.spouseAccountId + ") on element spouseAccountId.");
          }
          else
          {
-            param1.writeInt(this.spouseAccountId);
+            output.writeInt(this.spouseAccountId);
             if(this.spouseId < 0)
             {
                throw new Error("Forbidden value (" + this.spouseId + ") on element spouseId.");
             }
             else
             {
-               param1.writeInt(this.spouseId);
-               param1.writeUTF(this.spouseName);
-               if(this.spouseLevel < 1 || this.spouseLevel > 200)
+               output.writeInt(this.spouseId);
+               output.writeUTF(this.spouseName);
+               if((this.spouseLevel < 1) || (this.spouseLevel > 200))
                {
                   throw new Error("Forbidden value (" + this.spouseLevel + ") on element spouseLevel.");
                }
                else
                {
-                  param1.writeByte(this.spouseLevel);
-                  param1.writeByte(this.breed);
-                  param1.writeByte(this.sex);
-                  this.spouseEntityLook.serializeAs_EntityLook(param1);
-                  this.guildInfo.serializeAs_BasicGuildInformations(param1);
-                  param1.writeByte(this.alignmentSide);
+                  output.writeByte(this.spouseLevel);
+                  output.writeByte(this.breed);
+                  output.writeByte(this.sex);
+                  this.spouseEntityLook.serializeAs_EntityLook(output);
+                  this.guildInfo.serializeAs_BasicGuildInformations(output);
+                  output.writeByte(this.alignmentSide);
                   return;
                }
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FriendSpouseInformations(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FriendSpouseInformations(input);
       }
       
-      public function deserializeAs_FriendSpouseInformations(param1:IDataInput) : void {
-         this.spouseAccountId = param1.readInt();
+      public function deserializeAs_FriendSpouseInformations(input:IDataInput) : void {
+         this.spouseAccountId = input.readInt();
          if(this.spouseAccountId < 0)
          {
             throw new Error("Forbidden value (" + this.spouseAccountId + ") on element of FriendSpouseInformations.spouseAccountId.");
          }
          else
          {
-            this.spouseId = param1.readInt();
+            this.spouseId = input.readInt();
             if(this.spouseId < 0)
             {
                throw new Error("Forbidden value (" + this.spouseId + ") on element of FriendSpouseInformations.spouseId.");
             }
             else
             {
-               this.spouseName = param1.readUTF();
-               this.spouseLevel = param1.readUnsignedByte();
-               if(this.spouseLevel < 1 || this.spouseLevel > 200)
+               this.spouseName = input.readUTF();
+               this.spouseLevel = input.readUnsignedByte();
+               if((this.spouseLevel < 1) || (this.spouseLevel > 200))
                {
                   throw new Error("Forbidden value (" + this.spouseLevel + ") on element of FriendSpouseInformations.spouseLevel.");
                }
                else
                {
-                  this.breed = param1.readByte();
-                  this.sex = param1.readByte();
+                  this.breed = input.readByte();
+                  this.sex = input.readByte();
                   this.spouseEntityLook = new EntityLook();
-                  this.spouseEntityLook.deserialize(param1);
+                  this.spouseEntityLook.deserialize(input);
                   this.guildInfo = new BasicGuildInformations();
-                  this.guildInfo.deserialize(param1);
-                  this.alignmentSide = param1.readByte();
+                  this.guildInfo.deserialize(input);
+                  this.alignmentSide = input.readByte();
                   return;
                }
             }

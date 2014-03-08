@@ -25,32 +25,32 @@ package com.ankamagames.dofus.modules.utils
          return this._header;
       }
       
-      public function set header(param1:Boolean) : void {
-         this._header = param1;
+      public function set header(value:Boolean) : void {
+         this._header = value;
       }
       
       public function get effects() : Boolean {
          return this._effects;
       }
       
-      public function set effects(param1:Boolean) : void {
-         this._effects = param1;
+      public function set effects(value:Boolean) : void {
+         this._effects = value;
       }
       
       public function get description() : Boolean {
          return this._description;
       }
       
-      public function set description(param1:Boolean) : void {
-         this._description = param1;
+      public function set description(value:Boolean) : void {
+         this._description = value;
       }
       
       public function get CC_EC() : Boolean {
          return this._CC_EC;
       }
       
-      public function set CC_EC(param1:Boolean) : void {
-         this._CC_EC = param1;
+      public function set CC_EC(value:Boolean) : void {
+         this._CC_EC = value;
       }
    }
 }

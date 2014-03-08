@@ -11,72 +11,70 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         var _loc4_:Spell = null;
-         var _loc5_:Spell = null;
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var spell:Spell = null;
+         var spell2:Spell = null;
+         switch(cmd)
          {
             case "setspellscript":
-               if(param3.length == 2 || param3.length == 3)
+               if((args.length == 2) || (args.length == 3))
                {
-                  _loc4_ = Spell.getSpellById(parseInt(param3[0]));
-                  if(!_loc4_)
+                  spell = Spell.getSpellById(parseInt(args[0]));
+                  if(!spell)
                   {
-                     param1.output("Spell " + param3[0] + " doesn\'t exist");
+                     console.output("Spell " + args[0] + " doesn\'t exist");
                   }
                   else
                   {
-                     _loc4_.scriptId = parseInt(param3[1]);
-                     if(param3.length == 3)
+                     spell.scriptId = parseInt(args[1]);
+                     if(args.length == 3)
                      {
-                        _loc4_.scriptIdCritical = parseInt(param3[2]);
+                        spell.scriptIdCritical = parseInt(args[2]);
                      }
                   }
                }
                else
                {
-                  param1.output("Param count error : #1 Spell id, #2 script id, #3 script id (critical hit)");
+                  console.output("Param count error : #1 Spell id, #2 script id, #3 script id (critical hit)");
                }
                break;
             case "setspellscriptparam":
-               if(param3.length == 2 || param3.length == 3)
+               if((args.length == 2) || (args.length == 3))
                {
-                  _loc5_ = Spell.getSpellById(parseInt(param3[0]));
-                  if(!_loc5_)
+                  spell2 = Spell.getSpellById(parseInt(args[0]));
+                  if(!spell2)
                   {
-                     param1.output("Spell " + param3[0] + " doesn\'t exist");
+                     console.output("Spell " + args[0] + " doesn\'t exist");
                   }
                   else
                   {
-                     _loc5_.scriptParams = param3[1];
-                     if(param3.length == 3)
+                     spell2.scriptParams = args[1];
+                     if(args.length == 3)
                      {
-                        _loc5_.scriptParamsCritical = param3[2];
+                        spell2.scriptParamsCritical = args[2];
                      }
-                     _loc5_.useParamCache = false;
+                     spell2.useParamCache = false;
                   }
                }
                else
                {
-                  param1.output("Param count error : #1 Spell id, #2 script string parametters, #3 script string parameters (critical hit)");
+                  console.output("Param count error : #1 Spell id, #2 script string parametters, #3 script string parameters (critical hit)");
                }
                break;
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "setspellscriptparam":
                return "Change script parametters for given spell";
             case "setspellscript":
                return "Change script id used for given spell";
-            default:
-               return "Unknown command";
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return [];
       }
    }

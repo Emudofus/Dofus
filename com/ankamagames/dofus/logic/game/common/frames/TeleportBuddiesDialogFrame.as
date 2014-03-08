@@ -33,28 +33,26 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:TeleportBuddiesAnswerAction = null;
-         var _loc3_:TeleportBuddiesAnswerMessage = null;
-         var _loc4_:LeaveDialogMessage = null;
+      public function process(msg:Message) : Boolean {
+         var tbaa:TeleportBuddiesAnswerAction = null;
+         var tbamsg:TeleportBuddiesAnswerMessage = null;
+         var ldm:LeaveDialogMessage = null;
          switch(true)
          {
-            case param1 is TeleportBuddiesAnswerAction:
-               _loc2_ = param1 as TeleportBuddiesAnswerAction;
-               _loc3_ = new TeleportBuddiesAnswerMessage();
-               _loc3_.initTeleportBuddiesAnswerMessage(_loc2_.accept);
-               ConnectionsHandler.getConnection().send(_loc3_);
+            case msg is TeleportBuddiesAnswerAction:
+               tbaa = msg as TeleportBuddiesAnswerAction;
+               tbamsg = new TeleportBuddiesAnswerMessage();
+               tbamsg.initTeleportBuddiesAnswerMessage(tbaa.accept);
+               ConnectionsHandler.getConnection().send(tbamsg);
                return true;
-            case param1 is LeaveDialogMessage:
-               _loc4_ = param1 as LeaveDialogMessage;
-               if(_loc4_.dialogType == DialogTypeEnum.DIALOG_DUNGEON_MEETING)
+            case msg is LeaveDialogMessage:
+               ldm = msg as LeaveDialogMessage;
+               if(ldm.dialogType == DialogTypeEnum.DIALOG_DUNGEON_MEETING)
                {
                   Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
                   Kernel.getWorker().removeFrame(this);
                }
                return true;
-            default:
-               return false;
          }
       }
       

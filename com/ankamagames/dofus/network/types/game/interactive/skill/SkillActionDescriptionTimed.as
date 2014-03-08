@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.interactive.skill
          return 103;
       }
       
-      public function initSkillActionDescriptionTimed(param1:uint=0, param2:uint=0) : SkillActionDescriptionTimed {
-         super.initSkillActionDescription(param1);
-         this.time = param2;
+      public function initSkillActionDescriptionTimed(skillId:uint=0, time:uint=0) : SkillActionDescriptionTimed {
+         super.initSkillActionDescription(skillId);
+         this.time = time;
          return this;
       }
       
@@ -30,31 +30,31 @@ package com.ankamagames.dofus.network.types.game.interactive.skill
          this.time = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_SkillActionDescriptionTimed(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SkillActionDescriptionTimed(output);
       }
       
-      public function serializeAs_SkillActionDescriptionTimed(param1:IDataOutput) : void {
-         super.serializeAs_SkillActionDescription(param1);
-         if(this.time < 0 || this.time > 255)
+      public function serializeAs_SkillActionDescriptionTimed(output:IDataOutput) : void {
+         super.serializeAs_SkillActionDescription(output);
+         if((this.time < 0) || (this.time > 255))
          {
             throw new Error("Forbidden value (" + this.time + ") on element time.");
          }
          else
          {
-            param1.writeByte(this.time);
+            output.writeByte(this.time);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_SkillActionDescriptionTimed(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SkillActionDescriptionTimed(input);
       }
       
-      public function deserializeAs_SkillActionDescriptionTimed(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.time = param1.readUnsignedByte();
-         if(this.time < 0 || this.time > 255)
+      public function deserializeAs_SkillActionDescriptionTimed(input:IDataInput) : void {
+         super.deserialize(input);
+         this.time = input.readUnsignedByte();
+         if((this.time < 0) || (this.time > 255))
          {
             throw new Error("Forbidden value (" + this.time + ") on element of SkillActionDescriptionTimed.time.");
          }

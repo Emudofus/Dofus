@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.context.fight
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.context.fight.FightResultListEntry;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -37,11 +37,11 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 720;
       }
       
-      public function initGameFightEndMessage(param1:uint=0, param2:int=0, param3:int=0, param4:Vector.<FightResultListEntry>=null) : GameFightEndMessage {
-         this.duration = param1;
-         this.ageBonus = param2;
-         this.lootShareLimitMalus = param3;
-         this.results = param4;
+      public function initGameFightEndMessage(duration:uint=0, ageBonus:int=0, lootShareLimitMalus:int=0, results:Vector.<FightResultListEntry>=null) : GameFightEndMessage {
+         this.duration = duration;
+         this.ageBonus = ageBonus;
+         this.lootShareLimitMalus = lootShareLimitMalus;
+         this.results = results;
          this._isInitialized = true;
          return this;
       }
@@ -54,67 +54,67 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightEndMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightEndMessage(output);
       }
       
-      public function serializeAs_GameFightEndMessage(param1:IDataOutput) : void {
+      public function serializeAs_GameFightEndMessage(output:IDataOutput) : void {
          if(this.duration < 0)
          {
             throw new Error("Forbidden value (" + this.duration + ") on element duration.");
          }
          else
          {
-            param1.writeInt(this.duration);
-            param1.writeShort(this.ageBonus);
-            param1.writeShort(this.lootShareLimitMalus);
-            param1.writeShort(this.results.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.results.length)
+            output.writeInt(this.duration);
+            output.writeShort(this.ageBonus);
+            output.writeShort(this.lootShareLimitMalus);
+            output.writeShort(this.results.length);
+            _i4 = 0;
+            while(_i4 < this.results.length)
             {
-               param1.writeShort((this.results[_loc2_] as FightResultListEntry).getTypeId());
-               (this.results[_loc2_] as FightResultListEntry).serialize(param1);
-               _loc2_++;
+               output.writeShort((this.results[_i4] as FightResultListEntry).getTypeId());
+               (this.results[_i4] as FightResultListEntry).serialize(output);
+               _i4++;
             }
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightEndMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightEndMessage(input);
       }
       
-      public function deserializeAs_GameFightEndMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         var _loc5_:FightResultListEntry = null;
-         this.duration = param1.readInt();
+      public function deserializeAs_GameFightEndMessage(input:IDataInput) : void {
+         var _id4:uint = 0;
+         var _item4:FightResultListEntry = null;
+         this.duration = input.readInt();
          if(this.duration < 0)
          {
             throw new Error("Forbidden value (" + this.duration + ") on element of GameFightEndMessage.duration.");
          }
          else
          {
-            this.ageBonus = param1.readShort();
-            this.lootShareLimitMalus = param1.readShort();
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            this.ageBonus = input.readShort();
+            this.lootShareLimitMalus = input.readShort();
+            _resultsLen = input.readUnsignedShort();
+            _i4 = 0;
+            while(_i4 < _resultsLen)
             {
-               _loc4_ = param1.readUnsignedShort();
-               _loc5_ = ProtocolTypeManager.getInstance(FightResultListEntry,_loc4_);
-               _loc5_.deserialize(param1);
-               this.results.push(_loc5_);
-               _loc3_++;
+               _id4 = input.readUnsignedShort();
+               _item4 = ProtocolTypeManager.getInstance(FightResultListEntry,_id4);
+               _item4.deserialize(input);
+               this.results.push(_item4);
+               _i4++;
             }
             return;
          }

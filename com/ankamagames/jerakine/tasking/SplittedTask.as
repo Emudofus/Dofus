@@ -30,8 +30,8 @@ package com.ankamagames.jerakine.tasking
          return this._nPriority;
       }
       
-      public function set priority(param1:int) : void {
-         this._nPriority = param1;
+      public function set priority(p:int) : void {
+         this._nPriority = p;
       }
    }
 }

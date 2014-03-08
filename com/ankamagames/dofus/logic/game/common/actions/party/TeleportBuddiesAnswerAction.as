@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.party
          super();
       }
       
-      public static function create(param1:Boolean) : TeleportBuddiesAnswerAction {
-         var _loc2_:TeleportBuddiesAnswerAction = new TeleportBuddiesAnswerAction();
-         _loc2_.accept = param1;
-         return _loc2_;
+      public static function create(accept:Boolean) : TeleportBuddiesAnswerAction {
+         var a:TeleportBuddiesAnswerAction = new TeleportBuddiesAnswerAction();
+         a.accept = accept;
+         return a;
       }
       
       public var accept:Boolean;

@@ -25,54 +25,54 @@ package com.ankamagames.dofus.logic.common.managers
       
       public static var lastItemTooltipId:int = -1;
       
-      public static function showItem(param1:uint, param2:uint=0) : void {
-         var _loc3_:ItemWrapper = InventoryManager.getInstance().inventory.getItem(param2);
-         if(_loc3_)
+      public static function showItem(objectGID:uint, objectUID:uint=0) : void {
+         var itemWrapper:ItemWrapper = InventoryManager.getInstance().inventory.getItem(objectUID);
+         if(itemWrapper)
          {
-            KernelEventsManager.getInstance().processCallback(ChatHookList.ShowObjectLinked,_loc3_);
+            KernelEventsManager.getInstance().processCallback(ChatHookList.ShowObjectLinked,itemWrapper);
          }
          else
          {
-            KernelEventsManager.getInstance().processCallback(ChatHookList.ShowObjectLinked,ItemWrapper.create(0,0,param1,1,null));
+            KernelEventsManager.getInstance().processCallback(ChatHookList.ShowObjectLinked,ItemWrapper.create(0,0,objectGID,1,null));
          }
       }
       
-      public static function showChatItem(param1:int) : void {
-         if(param1 == lastItemTooltipId && (TooltipManager.isVisible("Hyperlink")))
+      public static function showChatItem(id:int) : void {
+         if((id == lastItemTooltipId) && (TooltipManager.isVisible("Hyperlink")))
          {
             TooltipManager.hide("Hyperlink");
             lastItemTooltipId = -1;
             return;
          }
-         lastItemTooltipId = param1;
+         lastItemTooltipId = id;
          HyperlinkSpellManager.lastSpellTooltipId = -1;
-         KernelEventsManager.getInstance().processCallback(ChatHookList.ShowObjectLinked,_itemList[param1]);
+         KernelEventsManager.getInstance().processCallback(ChatHookList.ShowObjectLinked,_itemList[id]);
       }
       
-      public static function duplicateChatHyperlink(param1:int) : void {
-         KernelEventsManager.getInstance().processCallback(ChatHookList.AddItemHyperlink,_itemList[param1]);
+      public static function duplicateChatHyperlink(id:int) : void {
+         KernelEventsManager.getInstance().processCallback(ChatHookList.AddItemHyperlink,_itemList[id]);
       }
       
-      public static function getItemName(param1:uint, param2:uint=0) : String {
-         var _loc3_:Item = Item.getItemById(param1);
-         if(_loc3_)
+      public static function getItemName(objectGID:uint, objectUID:uint=0) : String {
+         var item:Item = Item.getItemById(objectGID);
+         if(item)
          {
-            return "[" + _loc3_.name + "]";
+            return "[" + item.name + "]";
          }
          return "[null]";
       }
       
-      public static function newChatItem(param1:ItemWrapper) : String {
-         _itemList[_itemId] = param1;
-         var _loc2_:* = "{chatitem," + _itemId + "::[" + param1.realName + "]}";
+      public static function newChatItem(item:ItemWrapper) : String {
+         _itemList[_itemId] = item;
+         var code:String = "{chatitem," + _itemId + "::[" + item.realName + "]}";
          _itemId++;
-         return _loc2_;
+         return code;
       }
       
-      public static function rollOver(param1:int, param2:int, param3:uint, param4:uint=0) : void {
-         var _loc5_:Rectangle = new Rectangle(param1,param2,10,10);
-         var _loc6_:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.object"));
-         TooltipManager.show(_loc6_,_loc5_,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
+      public static function rollOver(pX:int, pY:int, objectGID:uint, objectUID:uint=0) : void {
+         var target:Rectangle = new Rectangle(pX,pY,10,10);
+         var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.object"));
+         TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
       }
    }
 }

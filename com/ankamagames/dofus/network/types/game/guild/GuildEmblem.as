@@ -25,11 +25,11 @@ package com.ankamagames.dofus.network.types.game.guild
          return 87;
       }
       
-      public function initGuildEmblem(param1:int=0, param2:int=0, param3:int=0, param4:int=0) : GuildEmblem {
-         this.symbolShape = param1;
-         this.symbolColor = param2;
-         this.backgroundShape = param3;
-         this.backgroundColor = param4;
+      public function initGuildEmblem(symbolShape:int=0, symbolColor:int=0, backgroundShape:int=0, backgroundColor:int=0) : GuildEmblem {
+         this.symbolShape = symbolShape;
+         this.symbolColor = symbolColor;
+         this.backgroundShape = backgroundShape;
+         this.backgroundColor = backgroundColor;
          return this;
       }
       
@@ -40,26 +40,26 @@ package com.ankamagames.dofus.network.types.game.guild
          this.backgroundColor = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildEmblem(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildEmblem(output);
       }
       
-      public function serializeAs_GuildEmblem(param1:IDataOutput) : void {
-         param1.writeShort(this.symbolShape);
-         param1.writeInt(this.symbolColor);
-         param1.writeShort(this.backgroundShape);
-         param1.writeInt(this.backgroundColor);
+      public function serializeAs_GuildEmblem(output:IDataOutput) : void {
+         output.writeShort(this.symbolShape);
+         output.writeInt(this.symbolColor);
+         output.writeShort(this.backgroundShape);
+         output.writeInt(this.backgroundColor);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildEmblem(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildEmblem(input);
       }
       
-      public function deserializeAs_GuildEmblem(param1:IDataInput) : void {
-         this.symbolShape = param1.readShort();
-         this.symbolColor = param1.readInt();
-         this.backgroundShape = param1.readShort();
-         this.backgroundColor = param1.readInt();
+      public function deserializeAs_GuildEmblem(input:IDataInput) : void {
+         this.symbolShape = input.readShort();
+         this.symbolColor = input.readInt();
+         this.backgroundShape = input.readShort();
+         this.backgroundColor = input.readInt();
       }
    }
 }

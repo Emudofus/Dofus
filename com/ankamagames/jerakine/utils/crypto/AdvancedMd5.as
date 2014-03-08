@@ -19,358 +19,358 @@ package com.ankamagames.jerakine.utils.crypto
       
       public static var b64pad:String = "";
       
-      public static function encrypt(param1:String) : String {
-         return hex_md5(param1);
+      public static function encrypt(string:String) : String {
+         return hex_md5(string);
       }
       
-      public static function hex_md5(param1:String) : String {
-         return rstr2hex(rstr_md5(str2rstr_utf8(param1)));
+      public static function hex_md5(string:String) : String {
+         return rstr2hex(rstr_md5(str2rstr_utf8(string)));
       }
       
-      public static function b64_md5(param1:String) : String {
-         return rstr2b64(rstr_md5(str2rstr_utf8(param1)));
+      public static function b64_md5(string:String) : String {
+         return rstr2b64(rstr_md5(str2rstr_utf8(string)));
       }
       
-      public static function any_md5(param1:String, param2:String) : String {
-         return rstr2any(rstr_md5(str2rstr_utf8(param1)),param2);
+      public static function any_md5(string:String, encoding:String) : String {
+         return rstr2any(rstr_md5(str2rstr_utf8(string)),encoding);
       }
       
-      public static function hex_hmac_md5(param1:String, param2:String) : String {
-         return rstr2hex(rstr_hmac_md5(str2rstr_utf8(param1),str2rstr_utf8(param2)));
+      public static function hex_hmac_md5(key:String, data:String) : String {
+         return rstr2hex(rstr_hmac_md5(str2rstr_utf8(key),str2rstr_utf8(data)));
       }
       
-      public static function b64_hmac_md5(param1:String, param2:String) : String {
-         return rstr2b64(rstr_hmac_md5(str2rstr_utf8(param1),str2rstr_utf8(param2)));
+      public static function b64_hmac_md5(key:String, data:String) : String {
+         return rstr2b64(rstr_hmac_md5(str2rstr_utf8(key),str2rstr_utf8(data)));
       }
       
-      public static function any_hmac_md5(param1:String, param2:String, param3:String) : String {
-         return rstr2any(rstr_hmac_md5(str2rstr_utf8(param1),str2rstr_utf8(param2)),param3);
+      public static function any_hmac_md5(key:String, data:String, encoding:String) : String {
+         return rstr2any(rstr_hmac_md5(str2rstr_utf8(key),str2rstr_utf8(data)),encoding);
       }
       
       public static function md5_vm_test() : Boolean {
          return hex_md5("abc") == "900150983cd24fb0d6963f7d28e17f72";
       }
       
-      public static function rstr_md5(param1:String) : String {
-         return binl2rstr(binl_md5(rstr2binl(param1),param1.length * 8));
+      public static function rstr_md5(string:String) : String {
+         return binl2rstr(binl_md5(rstr2binl(string),string.length * 8));
       }
       
-      public static function rstr_hmac_md5(param1:String, param2:String) : String {
-         var _loc3_:Array = rstr2binl(param1);
-         if(_loc3_.length > 16)
+      public static function rstr_hmac_md5(key:String, data:String) : String {
+         var bkey:Array = rstr2binl(key);
+         if(bkey.length > 16)
          {
-            _loc3_ = binl_md5(_loc3_,param1.length * 8);
+            bkey = binl_md5(bkey,key.length * 8);
          }
-         var _loc4_:Array = new Array(16);
-         var _loc5_:Array = new Array(16);
-         var _loc6_:Number = 0;
-         while(_loc6_ < 16)
+         var ipad:Array = new Array(16);
+         var opad:Array = new Array(16);
+         var i:Number = 0;
+         while(i < 16)
          {
-            _loc4_[_loc6_] = _loc3_[_loc6_] ^ 909522486;
-            _loc5_[_loc6_] = _loc3_[_loc6_] ^ 1549556828;
-            _loc6_++;
+            ipad[i] = bkey[i] ^ 909522486;
+            opad[i] = bkey[i] ^ 1549556828;
+            i++;
          }
-         var _loc7_:Array = binl_md5(_loc4_.concat(rstr2binl(param2)),512 + param2.length * 8);
-         return binl2rstr(binl_md5(_loc5_.concat(_loc7_),512 + 128));
+         var hash:Array = binl_md5(ipad.concat(rstr2binl(data)),512 + data.length * 8);
+         return binl2rstr(binl_md5(opad.concat(hash),512 + 128));
       }
       
-      public static function rstr2hex(param1:String) : String {
-         var _loc4_:* = NaN;
-         var _loc2_:String = hexcase?"0123456789ABCDEF":"0123456789abcdef";
-         var _loc3_:* = "";
-         var _loc5_:Number = 0;
-         while(_loc5_ < param1.length)
+      public static function rstr2hex(input:String) : String {
+         var x:* = NaN;
+         var hex_tab:String = hexcase?"0123456789ABCDEF":"0123456789abcdef";
+         var output:String = "";
+         var i:Number = 0;
+         while(i < input.length)
          {
-            _loc4_ = param1.charCodeAt(_loc5_);
-            _loc3_ = _loc3_ + (_loc2_.charAt(_loc4_ >>> 4 & 15) + _loc2_.charAt(_loc4_ & 15));
-            _loc5_++;
+            x = input.charCodeAt(i);
+            output = output + (hex_tab.charAt(x >>> 4 & 15) + hex_tab.charAt(x & 15));
+            i++;
          }
-         return _loc3_;
+         return output;
       }
       
-      public static function rstr2b64(param1:String) : String {
-         var _loc6_:* = NaN;
-         var _loc7_:* = NaN;
-         var _loc2_:* = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-         var _loc3_:* = "";
-         var _loc4_:Number = param1.length;
-         var _loc5_:Number = 0;
-         while(_loc5_ < _loc4_)
+      public static function rstr2b64(input:String) : String {
+         var triplet:* = NaN;
+         var j:* = NaN;
+         var tab:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+         var output:String = "";
+         var len:Number = input.length;
+         var i:Number = 0;
+         while(i < len)
          {
-            _loc6_ = param1.charCodeAt(_loc5_) << 16 | (_loc5_ + 1 < _loc4_?param1.charCodeAt(_loc5_ + 1) << 8:0) | (_loc5_ + 2 < _loc4_?param1.charCodeAt(_loc5_ + 2):0);
-            _loc7_ = 0;
-            while(_loc7_ < 4)
+            triplet = input.charCodeAt(i) << 16 | (i + 1 < len?input.charCodeAt(i + 1) << 8:0) | (i + 2 < len?input.charCodeAt(i + 2):0);
+            j = 0;
+            while(j < 4)
             {
-               if(_loc5_ * 8 + _loc7_ * 6 > param1.length * 8)
+               if(i * 8 + j * 6 > input.length * 8)
                {
-                  _loc3_ = _loc3_ + b64pad;
+                  output = output + b64pad;
                }
                else
                {
-                  _loc3_ = _loc3_ + _loc2_.charAt(_loc6_ >>> 6 * (3 - _loc7_) & 63);
+                  output = output + tab.charAt(triplet >>> 6 * (3 - j) & 63);
                }
-               _loc7_++;
+               j++;
             }
-            _loc5_ = _loc5_ + 3;
+            i = i + 3;
          }
-         return _loc3_;
+         return output;
       }
       
-      public static function rstr2any(param1:String, param2:String) : String {
-         var _loc5_:* = NaN;
-         var _loc6_:* = NaN;
-         var _loc7_:* = NaN;
-         var _loc8_:Array = null;
-         var _loc3_:Number = param2.length;
-         var _loc4_:Array = [];
-         var _loc9_:Array = new Array(param1.length / 2);
-         _loc5_ = 0;
-         while(_loc5_ < _loc9_.length)
+      public static function rstr2any(input:String, encoding:String) : String {
+         var i:* = NaN;
+         var q:* = NaN;
+         var x:* = NaN;
+         var quotient:Array = null;
+         var divisor:Number = encoding.length;
+         var remainders:Array = [];
+         var dividend:Array = new Array(input.length / 2);
+         i = 0;
+         while(i < dividend.length)
          {
-            _loc9_[_loc5_] = param1.charCodeAt(_loc5_ * 2) << 8 | param1.charCodeAt(_loc5_ * 2 + 1);
-            _loc5_++;
+            dividend[i] = input.charCodeAt(i * 2) << 8 | input.charCodeAt(i * 2 + 1);
+            i++;
          }
-         while(_loc9_.length > 0)
+         while(dividend.length > 0)
          {
-            _loc8_ = [];
-            _loc7_ = 0;
-            _loc5_ = 0;
-            while(_loc5_ < _loc9_.length)
+            quotient = [];
+            x = 0;
+            i = 0;
+            while(i < dividend.length)
             {
-               _loc7_ = (_loc7_ << 16) + _loc9_[_loc5_];
-               _loc6_ = Math.floor(_loc7_ / _loc3_);
-               _loc7_ = _loc7_ - _loc6_ * _loc3_;
-               if(_loc8_.length > 0 || _loc6_ > 0)
+               x = (x << 16) + dividend[i];
+               q = Math.floor(x / divisor);
+               x = x - q * divisor;
+               if((quotient.length > 0) || (q > 0))
                {
-                  _loc8_[_loc8_.length] = _loc6_;
+                  quotient[quotient.length] = q;
                }
-               _loc5_++;
+               i++;
             }
-            _loc4_[_loc4_.length] = _loc7_;
-            _loc9_ = _loc8_;
+            remainders[remainders.length] = x;
+            dividend = quotient;
          }
-         var _loc10_:* = "";
-         _loc5_ = _loc4_.length-1;
-         while(_loc5_ >= 0)
+         var output:String = "";
+         i = remainders.length - 1;
+         while(i >= 0)
          {
-            _loc10_ = _loc10_ + param2.charAt(_loc4_[_loc5_]);
-            _loc5_--;
+            output = output + encoding.charAt(remainders[i]);
+            i--;
          }
-         return _loc10_;
+         return output;
       }
       
-      public static function str2rstr_utf8(param1:String) : String {
-         var _loc4_:* = NaN;
-         var _loc5_:* = NaN;
-         var _loc2_:* = "";
-         var _loc3_:Number = -1;
-         while(++_loc3_ < param1.length)
+      public static function str2rstr_utf8(input:String) : String {
+         var x:* = NaN;
+         var y:* = NaN;
+         var output:String = "";
+         var i:Number = -1;
+         while(++i < input.length)
          {
-            _loc4_ = param1.charCodeAt(_loc3_);
-            _loc5_ = _loc3_ + 1 < param1.length?param1.charCodeAt(_loc3_ + 1):0;
-            if(55296 <= _loc4_ && _loc4_ <= 56319 && 56320 <= _loc5_ && _loc5_ <= 57343)
+            x = input.charCodeAt(i);
+            y = i + 1 < input.length?input.charCodeAt(i + 1):0;
+            if((55296 <= x) && (x <= 56319) && (56320 <= y) && (y <= 57343))
             {
-               _loc4_ = 65536 + ((_loc4_ & 1023) << 10) + (_loc5_ & 1023);
-               _loc3_++;
+               x = 65536 + ((x & 1023) << 10) + (y & 1023);
+               i++;
             }
-            if(_loc4_ <= 127)
+            if(x <= 127)
             {
-               _loc2_ = _loc2_ + String.fromCharCode(_loc4_);
+               output = output + String.fromCharCode(x);
             }
             else
             {
-               if(_loc4_ <= 2047)
+               if(x <= 2047)
                {
-                  _loc2_ = _loc2_ + String.fromCharCode(192 | _loc4_ >>> 6 & 31,128 | _loc4_ & 63);
+                  output = output + String.fromCharCode(192 | x >>> 6 & 31,128 | x & 63);
                }
                else
                {
-                  if(_loc4_ <= 65535)
+                  if(x <= 65535)
                   {
-                     _loc2_ = _loc2_ + String.fromCharCode(224 | _loc4_ >>> 12 & 15,128 | _loc4_ >>> 6 & 63,128 | _loc4_ & 63);
+                     output = output + String.fromCharCode(224 | x >>> 12 & 15,128 | x >>> 6 & 63,128 | x & 63);
                   }
                   else
                   {
-                     if(_loc4_ <= 2097151)
+                     if(x <= 2097151)
                      {
-                        _loc2_ = _loc2_ + String.fromCharCode(240 | _loc4_ >>> 18 & 7,128 | _loc4_ >>> 12 & 63,128 | _loc4_ >>> 6 & 63,128 | _loc4_ & 63);
+                        output = output + String.fromCharCode(240 | x >>> 18 & 7,128 | x >>> 12 & 63,128 | x >>> 6 & 63,128 | x & 63);
                      }
                   }
                }
             }
          }
-         return _loc2_;
+         return output;
       }
       
-      public static function str2rstr_utf16le(param1:String) : String {
-         var _loc2_:* = "";
-         var _loc3_:Number = 0;
-         while(_loc3_ < param1.length)
+      public static function str2rstr_utf16le(input:String) : String {
+         var output:String = "";
+         var i:Number = 0;
+         while(i < input.length)
          {
-            _loc2_ = _loc2_ + String.fromCharCode(param1.charCodeAt(_loc3_) & 255,param1.charCodeAt(_loc3_) >>> 8 & 255);
-            _loc3_++;
+            output = output + String.fromCharCode(input.charCodeAt(i) & 255,input.charCodeAt(i) >>> 8 & 255);
+            i++;
          }
-         return _loc2_;
+         return output;
       }
       
-      public static function str2rstr_utf16be(param1:String) : String {
-         var _loc2_:* = "";
-         var _loc3_:Number = 0;
-         while(_loc3_ < param1.length)
+      public static function str2rstr_utf16be(input:String) : String {
+         var output:String = "";
+         var i:Number = 0;
+         while(i < input.length)
          {
-            _loc2_ = _loc2_ + String.fromCharCode(param1.charCodeAt(_loc3_) >>> 8 & 255,param1.charCodeAt(_loc3_) & 255);
-            _loc3_++;
+            output = output + String.fromCharCode(input.charCodeAt(i) >>> 8 & 255,input.charCodeAt(i) & 255);
+            i++;
          }
-         return _loc2_;
+         return output;
       }
       
-      public static function rstr2binl(param1:String) : Array {
-         var _loc2_:Array = new Array(param1.length >> 2);
-         var _loc3_:Number = 0;
-         while(_loc3_ < _loc2_.length)
+      public static function rstr2binl(input:String) : Array {
+         var output:Array = new Array(input.length >> 2);
+         var i:Number = 0;
+         while(i < output.length)
          {
-            _loc2_[_loc3_] = 0;
-            _loc3_++;
+            output[i] = 0;
+            i++;
          }
-         _loc3_ = 0;
-         while(_loc3_ < param1.length * 8)
+         i = 0;
+         while(i < input.length * 8)
          {
-            _loc2_[_loc3_ >> 5] = _loc2_[_loc3_ >> 5] | (param1.charCodeAt(_loc3_ / 8) & 255) << _loc3_ % 32;
-            _loc3_ = _loc3_ + 8;
+            output[i >> 5] = output[i >> 5] | (input.charCodeAt(i / 8) & 255) << i % 32;
+            i = i + 8;
          }
-         return _loc2_;
+         return output;
       }
       
-      public static function binl2rstr(param1:Array) : String {
-         var _loc2_:* = "";
-         var _loc3_:Number = 0;
-         while(_loc3_ < param1.length * 32)
+      public static function binl2rstr(input:Array) : String {
+         var output:String = "";
+         var i:Number = 0;
+         while(i < input.length * 32)
          {
-            _loc2_ = _loc2_ + String.fromCharCode(param1[_loc3_ >> 5] >>> _loc3_ % 32 & 255);
-            _loc3_ = _loc3_ + 8;
+            output = output + String.fromCharCode(input[i >> 5] >>> i % 32 & 255);
+            i = i + 8;
          }
-         return _loc2_;
+         return output;
       }
       
-      public static function binl_md5(param1:Array, param2:Number) : Array {
-         var _loc8_:* = NaN;
-         var _loc9_:* = NaN;
-         var _loc10_:* = NaN;
-         var _loc11_:* = NaN;
-         param1[param2 >> 5] = param1[param2 >> 5] | 128 << param2 % 32;
-         param1[(param2 + 64 >>> 9 << 4) + 14] = param2;
-         var _loc3_:Number = 1732584193;
-         var _loc4_:Number = -271733879;
-         var _loc5_:Number = -1732584194;
-         var _loc6_:Number = 271733878;
-         var _loc7_:Number = 0;
-         while(_loc7_ < param1.length)
+      public static function binl_md5(x:Array, len:Number) : Array {
+         var olda:* = NaN;
+         var oldb:* = NaN;
+         var oldc:* = NaN;
+         var oldd:* = NaN;
+         x[len >> 5] = x[len >> 5] | 128 << len % 32;
+         x[(len + 64 >>> 9 << 4) + 14] = len;
+         var a:Number = 1732584193;
+         var b:Number = -271733879;
+         var c:Number = -1732584194;
+         var d:Number = 271733878;
+         var i:Number = 0;
+         while(i < x.length)
          {
-            _loc8_ = _loc3_;
-            _loc9_ = _loc4_;
-            _loc10_ = _loc5_;
-            _loc11_ = _loc6_;
-            _loc3_ = md5_ff(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 0],7,-680876936);
-            _loc6_ = md5_ff(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 1],12,-389564586);
-            _loc5_ = md5_ff(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 2],17,606105819);
-            _loc4_ = md5_ff(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 3],22,-1044525330);
-            _loc3_ = md5_ff(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 4],7,-176418897);
-            _loc6_ = md5_ff(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 5],12,1200080426);
-            _loc5_ = md5_ff(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 6],17,-1473231341);
-            _loc4_ = md5_ff(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 7],22,-45705983);
-            _loc3_ = md5_ff(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 8],7,1770035416);
-            _loc6_ = md5_ff(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 9],12,-1958414417);
-            _loc5_ = md5_ff(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 10],17,-42063);
-            _loc4_ = md5_ff(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 11],22,-1990404162);
-            _loc3_ = md5_ff(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 12],7,1804603682);
-            _loc6_ = md5_ff(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 13],12,-40341101);
-            _loc5_ = md5_ff(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 14],17,-1502002290);
-            _loc4_ = md5_ff(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 15],22,1236535329);
-            _loc3_ = md5_gg(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 1],5,-165796510);
-            _loc6_ = md5_gg(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 6],9,-1069501632);
-            _loc5_ = md5_gg(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 11],14,643717713);
-            _loc4_ = md5_gg(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 0],20,-373897302);
-            _loc3_ = md5_gg(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 5],5,-701558691);
-            _loc6_ = md5_gg(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 10],9,38016083);
-            _loc5_ = md5_gg(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 15],14,-660478335);
-            _loc4_ = md5_gg(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 4],20,-405537848);
-            _loc3_ = md5_gg(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 9],5,568446438);
-            _loc6_ = md5_gg(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 14],9,-1019803690);
-            _loc5_ = md5_gg(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 3],14,-187363961);
-            _loc4_ = md5_gg(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 8],20,1163531501);
-            _loc3_ = md5_gg(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 13],5,-1444681467);
-            _loc6_ = md5_gg(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 2],9,-51403784);
-            _loc5_ = md5_gg(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 7],14,1735328473);
-            _loc4_ = md5_gg(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 12],20,-1926607734);
-            _loc3_ = md5_hh(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 5],4,-378558);
-            _loc6_ = md5_hh(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 8],11,-2022574463);
-            _loc5_ = md5_hh(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 11],16,1839030562);
-            _loc4_ = md5_hh(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 14],23,-35309556);
-            _loc3_ = md5_hh(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 1],4,-1530992060);
-            _loc6_ = md5_hh(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 4],11,1272893353);
-            _loc5_ = md5_hh(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 7],16,-155497632);
-            _loc4_ = md5_hh(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 10],23,-1094730640);
-            _loc3_ = md5_hh(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 13],4,681279174);
-            _loc6_ = md5_hh(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 0],11,-358537222);
-            _loc5_ = md5_hh(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 3],16,-722521979);
-            _loc4_ = md5_hh(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 6],23,76029189);
-            _loc3_ = md5_hh(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 9],4,-640364487);
-            _loc6_ = md5_hh(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 12],11,-421815835);
-            _loc5_ = md5_hh(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 15],16,530742520);
-            _loc4_ = md5_hh(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 2],23,-995338651);
-            _loc3_ = md5_ii(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 0],6,-198630844);
-            _loc6_ = md5_ii(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 7],10,1126891415);
-            _loc5_ = md5_ii(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 14],15,-1416354905);
-            _loc4_ = md5_ii(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 5],21,-57434055);
-            _loc3_ = md5_ii(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 12],6,1700485571);
-            _loc6_ = md5_ii(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 3],10,-1894986606);
-            _loc5_ = md5_ii(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 10],15,-1051523);
-            _loc4_ = md5_ii(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 1],21,-2054922799);
-            _loc3_ = md5_ii(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 8],6,1873313359);
-            _loc6_ = md5_ii(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 15],10,-30611744);
-            _loc5_ = md5_ii(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 6],15,-1560198380);
-            _loc4_ = md5_ii(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 13],21,1309151649);
-            _loc3_ = md5_ii(_loc3_,_loc4_,_loc5_,_loc6_,param1[_loc7_ + 4],6,-145523070);
-            _loc6_ = md5_ii(_loc6_,_loc3_,_loc4_,_loc5_,param1[_loc7_ + 11],10,-1120210379);
-            _loc5_ = md5_ii(_loc5_,_loc6_,_loc3_,_loc4_,param1[_loc7_ + 2],15,718787259);
-            _loc4_ = md5_ii(_loc4_,_loc5_,_loc6_,_loc3_,param1[_loc7_ + 9],21,-343485551);
-            _loc3_ = safe_add(_loc3_,_loc8_);
-            _loc4_ = safe_add(_loc4_,_loc9_);
-            _loc5_ = safe_add(_loc5_,_loc10_);
-            _loc6_ = safe_add(_loc6_,_loc11_);
-            _loc7_ = _loc7_ + 16;
+            olda = a;
+            oldb = b;
+            oldc = c;
+            oldd = d;
+            a = md5_ff(a,b,c,d,x[i + 0],7,-680876936);
+            d = md5_ff(d,a,b,c,x[i + 1],12,-389564586);
+            c = md5_ff(c,d,a,b,x[i + 2],17,606105819);
+            b = md5_ff(b,c,d,a,x[i + 3],22,-1044525330);
+            a = md5_ff(a,b,c,d,x[i + 4],7,-176418897);
+            d = md5_ff(d,a,b,c,x[i + 5],12,1200080426);
+            c = md5_ff(c,d,a,b,x[i + 6],17,-1473231341);
+            b = md5_ff(b,c,d,a,x[i + 7],22,-45705983);
+            a = md5_ff(a,b,c,d,x[i + 8],7,1770035416);
+            d = md5_ff(d,a,b,c,x[i + 9],12,-1958414417);
+            c = md5_ff(c,d,a,b,x[i + 10],17,-42063);
+            b = md5_ff(b,c,d,a,x[i + 11],22,-1990404162);
+            a = md5_ff(a,b,c,d,x[i + 12],7,1804603682);
+            d = md5_ff(d,a,b,c,x[i + 13],12,-40341101);
+            c = md5_ff(c,d,a,b,x[i + 14],17,-1502002290);
+            b = md5_ff(b,c,d,a,x[i + 15],22,1236535329);
+            a = md5_gg(a,b,c,d,x[i + 1],5,-165796510);
+            d = md5_gg(d,a,b,c,x[i + 6],9,-1069501632);
+            c = md5_gg(c,d,a,b,x[i + 11],14,643717713);
+            b = md5_gg(b,c,d,a,x[i + 0],20,-373897302);
+            a = md5_gg(a,b,c,d,x[i + 5],5,-701558691);
+            d = md5_gg(d,a,b,c,x[i + 10],9,38016083);
+            c = md5_gg(c,d,a,b,x[i + 15],14,-660478335);
+            b = md5_gg(b,c,d,a,x[i + 4],20,-405537848);
+            a = md5_gg(a,b,c,d,x[i + 9],5,568446438);
+            d = md5_gg(d,a,b,c,x[i + 14],9,-1019803690);
+            c = md5_gg(c,d,a,b,x[i + 3],14,-187363961);
+            b = md5_gg(b,c,d,a,x[i + 8],20,1163531501);
+            a = md5_gg(a,b,c,d,x[i + 13],5,-1444681467);
+            d = md5_gg(d,a,b,c,x[i + 2],9,-51403784);
+            c = md5_gg(c,d,a,b,x[i + 7],14,1735328473);
+            b = md5_gg(b,c,d,a,x[i + 12],20,-1926607734);
+            a = md5_hh(a,b,c,d,x[i + 5],4,-378558);
+            d = md5_hh(d,a,b,c,x[i + 8],11,-2022574463);
+            c = md5_hh(c,d,a,b,x[i + 11],16,1839030562);
+            b = md5_hh(b,c,d,a,x[i + 14],23,-35309556);
+            a = md5_hh(a,b,c,d,x[i + 1],4,-1530992060);
+            d = md5_hh(d,a,b,c,x[i + 4],11,1272893353);
+            c = md5_hh(c,d,a,b,x[i + 7],16,-155497632);
+            b = md5_hh(b,c,d,a,x[i + 10],23,-1094730640);
+            a = md5_hh(a,b,c,d,x[i + 13],4,681279174);
+            d = md5_hh(d,a,b,c,x[i + 0],11,-358537222);
+            c = md5_hh(c,d,a,b,x[i + 3],16,-722521979);
+            b = md5_hh(b,c,d,a,x[i + 6],23,76029189);
+            a = md5_hh(a,b,c,d,x[i + 9],4,-640364487);
+            d = md5_hh(d,a,b,c,x[i + 12],11,-421815835);
+            c = md5_hh(c,d,a,b,x[i + 15],16,530742520);
+            b = md5_hh(b,c,d,a,x[i + 2],23,-995338651);
+            a = md5_ii(a,b,c,d,x[i + 0],6,-198630844);
+            d = md5_ii(d,a,b,c,x[i + 7],10,1126891415);
+            c = md5_ii(c,d,a,b,x[i + 14],15,-1416354905);
+            b = md5_ii(b,c,d,a,x[i + 5],21,-57434055);
+            a = md5_ii(a,b,c,d,x[i + 12],6,1700485571);
+            d = md5_ii(d,a,b,c,x[i + 3],10,-1894986606);
+            c = md5_ii(c,d,a,b,x[i + 10],15,-1051523);
+            b = md5_ii(b,c,d,a,x[i + 1],21,-2054922799);
+            a = md5_ii(a,b,c,d,x[i + 8],6,1873313359);
+            d = md5_ii(d,a,b,c,x[i + 15],10,-30611744);
+            c = md5_ii(c,d,a,b,x[i + 6],15,-1560198380);
+            b = md5_ii(b,c,d,a,x[i + 13],21,1309151649);
+            a = md5_ii(a,b,c,d,x[i + 4],6,-145523070);
+            d = md5_ii(d,a,b,c,x[i + 11],10,-1120210379);
+            c = md5_ii(c,d,a,b,x[i + 2],15,718787259);
+            b = md5_ii(b,c,d,a,x[i + 9],21,-343485551);
+            a = safe_add(a,olda);
+            b = safe_add(b,oldb);
+            c = safe_add(c,oldc);
+            d = safe_add(d,oldd);
+            i = i + 16;
          }
-         return [_loc3_,_loc4_,_loc5_,_loc6_];
+         return [a,b,c,d];
       }
       
-      public static function md5_cmn(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number) : Number {
-         return safe_add(bit_rol(safe_add(safe_add(param2,param1),safe_add(param4,param6)),param5),param3);
+      public static function md5_cmn(q:Number, a:Number, b:Number, x:Number, s:Number, t:Number) : Number {
+         return safe_add(bit_rol(safe_add(safe_add(a,q),safe_add(x,t)),s),b);
       }
       
-      public static function md5_ff(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number) : Number {
-         return md5_cmn(param2 & param3 | ~param2 & param4,param1,param2,param5,param6,param7);
+      public static function md5_ff(a:Number, b:Number, c:Number, d:Number, x:Number, s:Number, t:Number) : Number {
+         return md5_cmn(b & c | ~b & d,a,b,x,s,t);
       }
       
-      public static function md5_gg(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number) : Number {
-         return md5_cmn(param2 & param4 | param3 & ~param4,param1,param2,param5,param6,param7);
+      public static function md5_gg(a:Number, b:Number, c:Number, d:Number, x:Number, s:Number, t:Number) : Number {
+         return md5_cmn(b & d | c & ~d,a,b,x,s,t);
       }
       
-      public static function md5_hh(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number) : Number {
-         return md5_cmn(param2 ^ param3 ^ param4,param1,param2,param5,param6,param7);
+      public static function md5_hh(a:Number, b:Number, c:Number, d:Number, x:Number, s:Number, t:Number) : Number {
+         return md5_cmn(b ^ c ^ d,a,b,x,s,t);
       }
       
-      public static function md5_ii(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number) : Number {
-         return md5_cmn(param3 ^ (param2 | ~param4),param1,param2,param5,param6,param7);
+      public static function md5_ii(a:Number, b:Number, c:Number, d:Number, x:Number, s:Number, t:Number) : Number {
+         return md5_cmn(c ^ (b | ~d),a,b,x,s,t);
       }
       
-      public static function safe_add(param1:Number, param2:Number) : Number {
-         var _loc3_:Number = (param1 & 65535) + (param2 & 65535);
-         var _loc4_:Number = (param1 >> 16) + (param2 >> 16) + (_loc3_ >> 16);
-         return _loc4_ << 16 | _loc3_ & 65535;
+      public static function safe_add(x:Number, y:Number) : Number {
+         var lsw:Number = (x & 65535) + (y & 65535);
+         var msw:Number = (x >> 16) + (y >> 16) + (lsw >> 16);
+         return msw << 16 | lsw & 65535;
       }
       
-      public static function bit_rol(param1:Number, param2:Number) : Number {
-         return param1 << param2 | param1 >>> 32 - param2;
+      public static function bit_rol(num:Number, cnt:Number) : Number {
+         return num << cnt | num >>> 32 - cnt;
       }
    }
 }

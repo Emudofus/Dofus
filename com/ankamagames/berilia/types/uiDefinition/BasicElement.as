@@ -35,30 +35,30 @@ package com.ankamagames.berilia.types.uiDefinition
       
       public var cachedY:int = 2147483647;
       
-      public function setName(param1:String) : void {
-         this.name = param1;
-         this.properties["name"] = param1;
+      public function setName(sName:String) : void {
+         this.name = sName;
+         this.properties["name"] = sName;
       }
       
-      public function copy(param1:BasicElement) : void {
-         var _loc2_:String = null;
-         param1.strata = this.strata;
-         param1.size = this.size;
-         param1.minSize = this.minSize;
-         param1.maxSize = this.maxSize;
-         param1.anchors = this.anchors;
-         param1.event = this.event;
-         param1.properties = [];
-         for (_loc2_ in this.properties)
+      public function copy(target:BasicElement) : void {
+         var key:String = null;
+         target.strata = this.strata;
+         target.size = this.size;
+         target.minSize = this.minSize;
+         target.maxSize = this.maxSize;
+         target.anchors = this.anchors;
+         target.event = this.event;
+         target.properties = [];
+         for (key in this.properties)
          {
-            param1.properties[_loc2_] = this.properties[_loc2_];
+            target.properties[key] = this.properties[key];
          }
-         param1.className = this.className;
-         param1.cachedWidth = this.cachedWidth;
-         param1.cachedHeight = this.cachedHeight;
-         param1.cachedX = this.cachedX;
-         param1.cachedY = this.cachedY;
-         param1.setName(this.name);
+         target.className = this.className;
+         target.cachedWidth = this.cachedWidth;
+         target.cachedHeight = this.cachedHeight;
+         target.cachedX = this.cachedX;
+         target.cachedY = this.cachedY;
+         target.setName(this.name);
       }
    }
 }

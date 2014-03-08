@@ -23,9 +23,9 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 203;
       }
       
-      public function initGameFightMonsterWithAlignmentInformations(param1:int=0, param2:EntityLook=null, param3:EntityDispositionInformations=null, param4:uint=2, param5:Boolean=false, param6:GameFightMinimalStats=null, param7:uint=0, param8:uint=0, param9:ActorAlignmentInformations=null) : GameFightMonsterWithAlignmentInformations {
-         super.initGameFightMonsterInformations(param1,param2,param3,param4,param5,param6,param7,param8);
-         this.alignmentInfos = param9;
+      public function initGameFightMonsterWithAlignmentInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, alive:Boolean=false, stats:GameFightMinimalStats=null, creatureGenericId:uint=0, creatureGrade:uint=0, alignmentInfos:ActorAlignmentInformations=null) : GameFightMonsterWithAlignmentInformations {
+         super.initGameFightMonsterInformations(contextualId,look,disposition,teamId,alive,stats,creatureGenericId,creatureGrade);
+         this.alignmentInfos = alignmentInfos;
          return this;
       }
       
@@ -34,23 +34,23 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.alignmentInfos = new ActorAlignmentInformations();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightMonsterWithAlignmentInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightMonsterWithAlignmentInformations(output);
       }
       
-      public function serializeAs_GameFightMonsterWithAlignmentInformations(param1:IDataOutput) : void {
-         super.serializeAs_GameFightMonsterInformations(param1);
-         this.alignmentInfos.serializeAs_ActorAlignmentInformations(param1);
+      public function serializeAs_GameFightMonsterWithAlignmentInformations(output:IDataOutput) : void {
+         super.serializeAs_GameFightMonsterInformations(output);
+         this.alignmentInfos.serializeAs_ActorAlignmentInformations(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightMonsterWithAlignmentInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightMonsterWithAlignmentInformations(input);
       }
       
-      public function deserializeAs_GameFightMonsterWithAlignmentInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_GameFightMonsterWithAlignmentInformations(input:IDataInput) : void {
+         super.deserialize(input);
          this.alignmentInfos = new ActorAlignmentInformations();
-         this.alignmentInfos.deserialize(param1);
+         this.alignmentInfos.deserialize(input);
       }
    }
 }

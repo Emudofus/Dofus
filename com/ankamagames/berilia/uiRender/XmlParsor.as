@@ -88,12 +88,12 @@ package com.ankamagames.berilia.uiRender
          return this._xmlDoc?this._xmlDoc.toString():null;
       }
       
-      public function processFile(param1:String) : void {
-         this._sUrl = param1;
+      public function processFile(sUrl:String) : void {
+         this._sUrl = sUrl;
          this._loader.load(new Uri(this._sUrl));
       }
       
-      public function processXml(param1:String) : void {
+      public function processXml(sXml:String) : void {
          var errorLog:String = null;
          var i:uint = 0;
          var regOpenTagAdv:RegExp = null;
@@ -103,7 +103,6 @@ package com.ankamagames.berilia.uiRender
          var tag:String = null;
          var regCloseTag:RegExp = null;
          var closeTag:Array = null;
-         var sXml:String = param1;
          this._xmlDoc = new XMLDocument();
          this._xmlDoc.ignoreWhite = true;
          try
@@ -121,7 +120,7 @@ package com.ankamagames.berilia.uiRender
                i = 0;
                while(i < tmp.length)
                {
-                  if(tmp[i].substr(tmp[i].length-1) != "/")
+                  if(tmp[i].substr(tmp[i].length - 1) != "/")
                   {
                      tag = tmp[i].match(regOpenTag)[0];
                      if(!openTag[tag])
@@ -150,14 +149,14 @@ package com.ankamagames.berilia.uiRender
             errorLog = "";
             for (tag in openTag)
             {
-               if(!closeTag[tag] || !(closeTag[tag] == openTag[tag]))
+               if((!closeTag[tag]) || (!(closeTag[tag] == openTag[tag])))
                {
                   errorLog = errorLog + ("\n - " + tag + " have no closing tag");
                }
             }
             for (tag in closeTag)
             {
-               if(!openTag[tag] || !(openTag[tag] == closeTag[tag]))
+               if((!openTag[tag]) || (!(openTag[tag] == closeTag[tag])))
                {
                   errorLog = errorLog + ("\n - </" + tag.substr(1) + "> is lonely closing tag");
                }
@@ -170,9 +169,9 @@ package com.ankamagames.berilia.uiRender
       }
       
       private function preProccessXml() : void {
-         var _loc1_:XmlPreProcessor = new XmlPreProcessor(this._xmlDoc);
-         _loc1_.addEventListener(PreProcessEndEvent.PRE_PROCESS_END,this.onPreProcessCompleted);
-         _loc1_.processTemplate();
+         var tmp:XmlPreProcessor = new XmlPreProcessor(this._xmlDoc);
+         tmp.addEventListener(PreProcessEndEvent.PRE_PROCESS_END,this.onPreProcessCompleted);
+         tmp.processTemplate();
       }
       
       private function mainProcess() : void {
@@ -186,146 +185,144 @@ package com.ankamagames.berilia.uiRender
          }
       }
       
-      protected function parseMainNode(param1:XMLNode) : UiDefinition {
-         var _loc12_:XMLNode = null;
-         var _loc14_:* = 0;
-         var _loc2_:UiDefinition = new UiDefinition();
-         var _loc3_:Array = param1.childNodes;
-         if(!_loc3_.length)
+      protected function parseMainNode(mainNodes:XMLNode) : UiDefinition {
+         var xnNode:XMLNode = null;
+         var i:* = 0;
+         var ui:UiDefinition = new UiDefinition();
+         var aNodes:Array = mainNodes.childNodes;
+         if(!aNodes.length)
          {
             return null;
          }
-         var _loc4_:Object = param1.attributes;
-         var _loc5_:String = _loc4_[XmlAttributesEnum.ATTRIBUTE_DEBUG];
-         var _loc6_:String = _loc4_[XmlAttributesEnum.ATTRIBUTE_USECACHE];
-         var _loc7_:String = _loc4_[XmlAttributesEnum.ATTRIBUTE_USEPROPERTIESCACHE];
-         var _loc8_:String = _loc4_[XmlAttributesEnum.ATTRIBUTE_MODAL];
-         var _loc9_:String = _loc4_[XmlAttributesEnum.ATTRIBUTE_SCALABLE];
-         var _loc10_:String = _loc4_[XmlAttributesEnum.ATTRIBUTE_FOCUS];
-         var _loc11_:String = _loc4_[XmlAttributesEnum.ATTRIBUTE_TRANSMITFOCUS];
-         if(_loc5_)
+         var mainNodesAttributes:Object = mainNodes.attributes;
+         var attributesDebug:String = mainNodesAttributes[XmlAttributesEnum.ATTRIBUTE_DEBUG];
+         var attributesUseCache:String = mainNodesAttributes[XmlAttributesEnum.ATTRIBUTE_USECACHE];
+         var attributesUsePropertiesCache:String = mainNodesAttributes[XmlAttributesEnum.ATTRIBUTE_USEPROPERTIESCACHE];
+         var attributesModal:String = mainNodesAttributes[XmlAttributesEnum.ATTRIBUTE_MODAL];
+         var attributesScalable:String = mainNodesAttributes[XmlAttributesEnum.ATTRIBUTE_SCALABLE];
+         var attributesFocus:String = mainNodesAttributes[XmlAttributesEnum.ATTRIBUTE_FOCUS];
+         var attributesTransmitFocus:String = mainNodesAttributes[XmlAttributesEnum.ATTRIBUTE_TRANSMITFOCUS];
+         if(attributesDebug)
          {
-            _loc2_.debug = _loc5_ == "true";
+            ui.debug = attributesDebug == "true";
          }
-         if(_loc6_)
+         if(attributesUseCache)
          {
-            _loc2_.useCache = _loc6_ == "true";
+            ui.useCache = attributesUseCache == "true";
          }
-         if(_loc7_)
+         if(attributesUsePropertiesCache)
          {
-            _loc2_.usePropertiesCache = _loc7_ == "true";
+            ui.usePropertiesCache = attributesUsePropertiesCache == "true";
          }
-         if(_loc8_)
+         if(attributesModal)
          {
-            _loc2_.modal = _loc8_ == "true";
+            ui.modal = attributesModal == "true";
          }
-         if(_loc9_)
+         if(attributesScalable)
          {
-            _loc2_.scalable = _loc9_ == "true";
+            ui.scalable = attributesScalable == "true";
          }
-         if(_loc10_)
+         if(attributesFocus)
          {
-            _loc2_.giveFocus = _loc10_ == "true";
+            ui.giveFocus = attributesFocus == "true";
          }
-         if(_loc11_)
+         if(attributesTransmitFocus)
          {
-            _loc2_.transmitFocus = _loc11_ == "true";
+            ui.transmitFocus = attributesTransmitFocus == "true";
          }
-         var _loc13_:int = _loc3_.length;
-         _loc14_ = 0;
-         while(_loc14_ < _loc13_)
+         var numNodes:int = aNodes.length;
+         i = 0;
+         while(i < numNodes)
          {
-            _loc12_ = _loc3_[_loc14_];
-            switch(_loc12_.nodeName)
+            xnNode = aNodes[i];
+            switch(xnNode.nodeName)
             {
                case XmlTagsEnum.TAG_CONSTANTS:
-                  this.parseConstants(_loc12_,_loc2_.constants);
+                  this.parseConstants(xnNode,ui.constants);
                   break;
                case XmlTagsEnum.TAG_CONTAINER:
                case XmlTagsEnum.TAG_SCROLLCONTAINER:
                case XmlTagsEnum.TAG_STATECONTAINER:
                case XmlTagsEnum.TAG_BUTTON:
-                  _loc2_.graphicTree.push(this.parseGraphicElement(_loc12_));
+                  ui.graphicTree.push(this.parseGraphicElement(xnNode));
                   break;
                case XmlTagsEnum.TAG_SHORTCUTS:
-                  _loc2_.shortcutsEvents = this.parseShortcutsEvent(_loc12_);
+                  ui.shortcutsEvents = this.parseShortcutsEvent(xnNode);
                   break;
-               default:
-                  this._log.warn("[" + this._sUrl + "] " + _loc12_.nodeName + " is not allow or unknow. " + this.suggest(_loc12_.nodeName,[XmlTagsEnum.TAG_CONTAINER,XmlTagsEnum.TAG_STATECONTAINER,XmlTagsEnum.TAG_BUTTON,XmlTagsEnum.TAG_SHORTCUTS]));
             }
-            _loc14_ = _loc14_ + 1;
+            i = i + 1;
          }
-         this.cleanLocalConstants(_loc2_.constants);
-         return _loc2_;
+         this.cleanLocalConstants(ui.constants);
+         return ui;
       }
       
-      private function cleanLocalConstants(param1:Array) : void {
-         var _loc2_:String = null;
-         for (_loc2_ in param1)
+      private function cleanLocalConstants(constants:Array) : void {
+         var constant:String = null;
+         for (constant in constants)
          {
-            LangManager.getInstance().deleteEntry("local." + _loc2_);
+            LangManager.getInstance().deleteEntry("local." + constant);
          }
       }
       
-      protected function parseConstants(param1:XMLNode, param2:Array) : void {
-         var _loc3_:XMLNode = null;
-         var _loc6_:* = 0;
-         var _loc7_:String = null;
-         var _loc8_:String = null;
-         var _loc9_:String = null;
-         var _loc10_:String = null;
-         var _loc4_:Array = param1.childNodes;
-         var _loc5_:int = _loc4_.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+      protected function parseConstants(xnNode:XMLNode, constants:Array) : void {
+         var xnCurrentNode:XMLNode = null;
+         var i:* = 0;
+         var value:String = null;
+         var nodeName:String = null;
+         var nameAttribute:String = null;
+         var typeAttribute:String = null;
+         var xnNodeChildNodes:Array = xnNode.childNodes;
+         var xnNodechildNodesLength:int = xnNodeChildNodes.length;
+         i = 0;
+         while(i < xnNodechildNodesLength)
          {
-            _loc3_ = _loc4_[_loc6_];
-            _loc8_ = _loc3_.nodeName;
-            if(_loc8_ != XmlTagsEnum.TAG_CONSTANT)
+            xnCurrentNode = xnNodeChildNodes[i];
+            nodeName = xnCurrentNode.nodeName;
+            if(nodeName != XmlTagsEnum.TAG_CONSTANT)
             {
-               this._log.error(_loc8_ + " found, wrong node name, waiting for " + XmlTagsEnum.TAG_CONSTANT + " in " + this._sUrl);
+               this._log.error(nodeName + " found, wrong node name, waiting for " + XmlTagsEnum.TAG_CONSTANT + " in " + this._sUrl);
             }
             else
             {
-               _loc9_ = _loc3_.attributes["name"];
-               if(!_loc9_)
+               nameAttribute = xnCurrentNode.attributes["name"];
+               if(!nameAttribute)
                {
                   this._log.error("Constant name\'s not found in " + this._sUrl);
                }
                else
                {
-                  _loc7_ = LangManager.getInstance().replaceKey(_loc3_.attributes["value"]);
-                  _loc10_ = _loc3_.attributes["type"];
-                  if(_loc10_)
+                  value = LangManager.getInstance().replaceKey(xnCurrentNode.attributes["value"]);
+                  typeAttribute = xnCurrentNode.attributes["type"];
+                  if(typeAttribute)
                   {
-                     _loc10_ = _loc10_.toUpperCase();
-                     if(_loc10_ == "STRING")
+                     typeAttribute = typeAttribute.toUpperCase();
+                     if(typeAttribute == "STRING")
                      {
-                        param2[_loc9_] = _loc7_;
+                        constants[nameAttribute] = value;
                      }
                      else
                      {
-                        if(_loc10_ == "NUMBER")
+                        if(typeAttribute == "NUMBER")
                         {
-                           param2[_loc9_] = Number(_loc7_);
+                           constants[nameAttribute] = Number(value);
                         }
                         else
                         {
-                           if(_loc10_ == "UINT" || _loc10_ == "INT")
+                           if((typeAttribute == "UINT") || (typeAttribute == "INT"))
                            {
-                              param2[_loc9_] = int(_loc7_);
+                              constants[nameAttribute] = int(value);
                            }
                            else
                            {
-                              if(_loc10_ == "BOOLEAN")
+                              if(typeAttribute == "BOOLEAN")
                               {
-                                 param2[_loc9_] = _loc7_ == "true";
+                                 constants[nameAttribute] = value == "true";
                               }
                               else
                               {
-                                 if(_loc10_ == "ARRAY")
+                                 if(typeAttribute == "ARRAY")
                                  {
-                                    param2[_loc9_] = _loc7_.split(",");
+                                    constants[nameAttribute] = value.split(",");
                                  }
                               }
                            }
@@ -334,112 +331,106 @@ package com.ankamagames.berilia.uiRender
                   }
                   else
                   {
-                     param2[_loc9_] = _loc7_;
+                     constants[nameAttribute] = value;
                   }
-                  LangManager.getInstance().setEntry("local." + _loc9_,_loc7_);
+                  LangManager.getInstance().setEntry("local." + nameAttribute,value);
                }
             }
-            _loc6_ = _loc6_ + 1;
+            i = i + 1;
          }
       }
       
-      protected function parseGraphicElement(param1:XMLNode, param2:XMLNode=null, param3:BasicElement=null) : BasicElement {
-         var _loc4_:XMLNode = null;
-         var _loc7_:* = 0;
-         var _loc8_:String = null;
-         var _loc9_:Class = null;
-         var _loc10_:* = undefined;
-         var _loc11_:Object = null;
-         var _loc12_:String = null;
-         var _loc13_:String = null;
-         var _loc14_:Class = null;
-         var _loc15_:String = null;
-         var _loc5_:Array = param1.childNodes;
-         var _loc6_:int = _loc5_.length;
-         if(!param2)
+      protected function parseGraphicElement(xnNode:XMLNode, parentNode:XMLNode=null, be:BasicElement=null) : BasicElement {
+         var xnCurrentNode:XMLNode = null;
+         var i:* = 0;
+         var j:String = null;
+         var c:Class = null;
+         var val:* = undefined;
+         var classDesc:Object = null;
+         var xmlStr:String = null;
+         var contentstr:String = null;
+         var clazz:Class = null;
+         var xmlStr2:String = null;
+         var xnNodeChildNodes:Array = xnNode.childNodes;
+         var xnNodeChildNodesLength:int = xnNodeChildNodes.length;
+         if(!parentNode)
          {
-            param2 = param1;
+            parentNode = xnNode;
          }
-         if(!param3)
+         if(!be)
          {
-            switch(param2.nodeName)
+            switch(parentNode.nodeName)
             {
                case XmlTagsEnum.TAG_CONTAINER:
-                  param3 = new ContainerElement();
-                  param3.className = getQualifiedClassName(GraphicContainer);
+                  be = new ContainerElement();
+                  be.className = getQualifiedClassName(GraphicContainer);
                   break;
                case XmlTagsEnum.TAG_SCROLLCONTAINER:
-                  param3 = new ScrollContainerElement();
-                  param3.className = getQualifiedClassName(ScrollContainer);
+                  be = new ScrollContainerElement();
+                  be.className = getQualifiedClassName(ScrollContainer);
                   break;
                case XmlTagsEnum.TAG_GRID:
-                  param3 = new GridElement();
-                  param3.className = getQualifiedClassName(Grid);
+                  be = new GridElement();
+                  be.className = getQualifiedClassName(Grid);
                   break;
                case XmlTagsEnum.TAG_COMBOBOX:
-                  param3 = new GridElement();
-                  param3.className = getQualifiedClassName(ComboBox);
+                  be = new GridElement();
+                  be.className = getQualifiedClassName(ComboBox);
                   break;
                case XmlTagsEnum.TAG_INPUTCOMBOBOX:
-                  param3 = new GridElement();
-                  param3.className = getQualifiedClassName(InputComboBox);
+                  be = new GridElement();
+                  be.className = getQualifiedClassName(InputComboBox);
                   break;
                case XmlTagsEnum.TAG_TREE:
-                  param3 = new GridElement();
-                  param3.className = getQualifiedClassName(Tree);
+                  be = new GridElement();
+                  be.className = getQualifiedClassName(Tree);
                   break;
                case XmlTagsEnum.TAG_STATECONTAINER:
-                  param3 = new StateContainerElement();
-                  param3.className = getQualifiedClassName(StateContainer);
+                  be = new StateContainerElement();
+                  be.className = getQualifiedClassName(StateContainer);
                   break;
                case XmlTagsEnum.TAG_BUTTON:
-                  param3 = new ButtonElement();
-                  param3.className = getQualifiedClassName(ButtonContainer);
+                  be = new ButtonElement();
+                  be.className = getQualifiedClassName(ButtonContainer);
                   break;
-               default:
-                  param3 = new ComponentElement();
-                  ComponentElement(param3).className = "com.ankamagames.berilia.components::" + param2.nodeName;
             }
          }
-         for (_loc18_ in param2.attributes)
+         for (_loc18_ in parentNode.attributes)
          {
-            switch(_loc8_)
+            switch(j)
             {
                case XmlAttributesEnum.ATTRIBUTE_NAME:
-                  param3.setName(param2.attributes[_loc8_]);
-                  this._aName[param2.attributes[_loc8_]] = param3;
+                  be.setName(parentNode.attributes[j]);
+                  this._aName[parentNode.attributes[j]] = be;
                   continue;
                case XmlAttributesEnum.ATTRIBUTE_VISIBLE:
-                  param3.properties["visible"] = Boolean(param2.attributes[_loc8_]);
+                  be.properties["visible"] = Boolean(parentNode.attributes[j]);
                   continue;
                case XmlAttributesEnum.ATTRIBUTE_STRATA:
-                  param3.strata = this.getStrataNum(param2.attributes[_loc8_]);
-                  continue;
-               default:
-                  this._log.warn("[" + this._sUrl + "] Unknow attribute \'" + _loc8_ + "\' in " + XmlTagsEnum.TAG_CONTAINER + " tag");
+                  be.strata = this.getStrataNum(parentNode.attributes[j]);
                   continue;
             }
          }
-         _loc7_ = 0;
-         while(_loc7_ < _loc6_)
+         i = 0;
+         while(i < xnNodeChildNodesLength)
          {
-            _loc4_ = _loc5_[_loc7_];
-            switch(_loc4_.nodeName)
+            xnCurrentNode = xnNodeChildNodes[i];
+            switch(xnCurrentNode.nodeName)
             {
                case XmlTagsEnum.TAG_ANCHORS:
-                  param3.anchors = this.parseAnchors(_loc4_);
+                  be.anchors = this.parseAnchors(xnCurrentNode);
                   break;
                case XmlTagsEnum.TAG_SIZE:
-                  param3.size = this.parseSize(_loc4_,true).toSizeElement();
+                  be.size = this.parseSize(xnCurrentNode,true).toSizeElement();
                   break;
                case XmlTagsEnum.TAG_EVENTS:
-                  param3.event = this.parseEvent(_loc4_);
+                  be.event = this.parseEvent(xnCurrentNode);
                   break;
                case XmlTagsEnum.TAG_MINIMALSIZE:
-                  param3.minSize = this.parseSize(_loc4_,false).toSizeElement();
+                  be.minSize = this.parseSize(xnCurrentNode,false).toSizeElement();
                   break;
                case XmlTagsEnum.TAG_MAXIMALSIZE:
-                  param3.maxSize = this.parseSize(_loc4_,false).toSizeElement();
+                  be.maxSize = this.parseSize(xnCurrentNode,false).toSizeElement();
                   break;
                case XmlTagsEnum.TAG_SCROLLCONTAINER:
                case XmlTagsEnum.TAG_CONTAINER:
@@ -447,7 +438,7 @@ package com.ankamagames.berilia.uiRender
                case XmlTagsEnum.TAG_COMBOBOX:
                case XmlTagsEnum.TAG_INPUTCOMBOBOX:
                case XmlTagsEnum.TAG_TREE:
-                  switch(param2.nodeName)
+                  switch(parentNode.nodeName)
                   {
                      case XmlTagsEnum.TAG_CONTAINER:
                      case XmlTagsEnum.TAG_BUTTON:
@@ -457,15 +448,13 @@ package com.ankamagames.berilia.uiRender
                      case XmlTagsEnum.TAG_INPUTCOMBOBOX:
                      case XmlTagsEnum.TAG_TREE:
                      case XmlTagsEnum.TAG_GRID:
-                        ContainerElement(param3).childs.push(this.parseGraphicElement(_loc4_));
+                        ContainerElement(be).childs.push(this.parseGraphicElement(xnCurrentNode));
                         break;
-                     default:
-                        this._log.warn("[" + this._sUrl + "] " + param2.nodeName + " cannot contains " + _loc4_.nodeName);
                   }
                   break;
                case XmlTagsEnum.TAG_STATECONTAINER:
                case XmlTagsEnum.TAG_BUTTON:
-                  switch(param2.nodeName)
+                  switch(parentNode.nodeName)
                   {
                      case XmlTagsEnum.TAG_CONTAINER:
                      case XmlTagsEnum.TAG_STATECONTAINER:
@@ -474,174 +463,87 @@ package com.ankamagames.berilia.uiRender
                      case XmlTagsEnum.TAG_COMBOBOX:
                      case XmlTagsEnum.TAG_INPUTCOMBOBOX:
                      case XmlTagsEnum.TAG_TREE:
-                        ContainerElement(param3).childs.push(this.parseStateContainer(_loc4_,_loc4_.nodeName));
+                        ContainerElement(be).childs.push(this.parseStateContainer(xnCurrentNode,xnCurrentNode.nodeName));
                         break;
-                     default:
-                        this._log.warn("[" + this._sUrl + "] " + param2.nodeName + " cannot contains Button");
                   }
                   break;
-               default:
-                  switch(param2.nodeName)
-                  {
-                     case XmlTagsEnum.TAG_CONTAINER:
-                        _loc9_ = GraphicContainer;
-                        break;
-                     case XmlTagsEnum.TAG_BUTTON:
-                        _loc9_ = ButtonContainer;
-                        break;
-                     case XmlTagsEnum.TAG_STATECONTAINER:
-                        _loc9_ = StateContainer;
-                        break;
-                     case XmlTagsEnum.TAG_SCROLLCONTAINER:
-                        _loc9_ = ScrollContainer;
-                        break;
-                     case XmlTagsEnum.TAG_GRID:
-                        _loc9_ = Grid;
-                        break;
-                     case XmlTagsEnum.TAG_COMBOBOX:
-                        _loc9_ = ComboBox;
-                        break;
-                     case XmlTagsEnum.TAG_INPUTCOMBOBOX:
-                        _loc9_ = InputComboBox;
-                        break;
-                     case XmlTagsEnum.TAG_TREE:
-                        _loc9_ = Tree;
-                        break;
-                  }
-                  _loc11_ = this.getClassDesc(_loc9_);
-                  if(_loc11_[_loc4_.nodeName])
-                  {
-                     if(_loc4_.firstChild)
-                     {
-                        _loc12_ = _loc4_.toString();
-                        _loc13_ = _loc12_.substr(_loc4_.nodeName.length + 2,_loc12_.length - _loc4_.nodeName.length * 2 - 5);
-                        _loc10_ = LangManager.getInstance().replaceKey(_loc13_);
-                        switch(_loc11_[_loc4_.nodeName])
-                        {
-                           case "Boolean":
-                              _loc10_ = !(_loc10_ == "false");
-                              break;
-                           default:
-                              if(_loc10_.charAt(0) == "[" && _loc10_.charAt(_loc10_.length-1) == "]")
-                              {
-                                 break;
-                              }
-                              _loc14_ = getDefinitionByName(_loc11_[_loc4_.nodeName]) as Class;
-                              _loc10_ = new _loc14_(_loc10_);
-                              break;
-                        }
-                        ContainerElement(param3).properties[_loc4_.nodeName] = _loc10_;
-                     }
-                  }
-                  else
-                  {
-                     switch(param2.nodeName)
-                     {
-                        case XmlTagsEnum.TAG_CONTAINER:
-                        case XmlTagsEnum.TAG_BUTTON:
-                        case XmlTagsEnum.TAG_STATECONTAINER:
-                        case XmlTagsEnum.TAG_SCROLLCONTAINER:
-                        case XmlTagsEnum.TAG_GRID:
-                        case XmlTagsEnum.TAG_COMBOBOX:
-                        case XmlTagsEnum.TAG_INPUTCOMBOBOX:
-                        case XmlTagsEnum.TAG_TREE:
-                           if(ApplicationDomain.currentDomain.hasDefinition("com.ankamagames.berilia.components." + _loc4_.nodeName))
-                           {
-                              ContainerElement(param3).childs.push(this.parseGraphicElement(_loc4_));
-                           }
-                           else
-                           {
-                              this._log.warn("[" + this._sUrl + "] " + _loc4_.nodeName + " is unknown component / property on " + param2.nodeName);
-                           }
-                           break;
-                        default:
-                           if(_loc4_.firstChild != null)
-                           {
-                              _loc15_ = _loc4_.toString();
-                              param3.properties[_loc4_.nodeName] = _loc15_.substr(_loc4_.nodeName.length + 2,_loc15_.length - _loc4_.nodeName.length * 2 - 5);
-                           }
-                     }
-                  }
             }
-            _loc7_ = _loc7_ + 1;
+            i = i + 1;
          }
-         if(param3 is ComponentElement)
+         if(be is ComponentElement)
          {
-            this.cleanComponentProperty(ComponentElement(param3));
+            this.cleanComponentProperty(ComponentElement(be));
          }
-         return param3;
+         return be;
       }
       
-      protected function parseStateContainer(param1:XMLNode, param2:String) : * {
-         var _loc3_:XMLNode = null;
-         var _loc6_:* = 0;
-         var _loc7_:StateContainerElement = null;
-         var _loc8_:* = undefined;
-         var _loc9_:String = null;
-         var _loc10_:Array = null;
-         var _loc4_:Array = param1.childNodes;
-         var _loc5_:int = _loc4_.length;
-         if(param2 == XmlTagsEnum.TAG_BUTTON)
+      protected function parseStateContainer(xnNode:XMLNode, elementType:String) : * {
+         var xnCurrentNode:XMLNode = null;
+         var i:* = 0;
+         var stateContainerElement:StateContainerElement = null;
+         var stateConst:* = undefined;
+         var stateType:String = null;
+         var possibilities:Array = null;
+         var xnNodeChildNodes:Array = xnNode.childNodes;
+         var xnNodeChildNodesLength:int = xnNodeChildNodes.length;
+         if(elementType == XmlTagsEnum.TAG_BUTTON)
          {
-            _loc7_ = new ButtonElement();
+            stateContainerElement = new ButtonElement();
          }
-         if(param2 == XmlTagsEnum.TAG_STATECONTAINER)
+         if(elementType == XmlTagsEnum.TAG_STATECONTAINER)
          {
-            _loc7_ = new StateContainerElement();
+            stateContainerElement = new StateContainerElement();
          }
-         _loc7_.className = getQualifiedClassName(ButtonContainer);
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         stateContainerElement.className = getQualifiedClassName(ButtonContainer);
+         i = 0;
+         while(i < xnNodeChildNodesLength)
          {
-            _loc3_ = _loc4_[_loc6_];
-            switch(_loc3_.nodeName)
+            xnCurrentNode = xnNodeChildNodes[i];
+            switch(xnCurrentNode.nodeName)
             {
                case XmlTagsEnum.TAG_COMMON:
-                  this.parseGraphicElement(_loc3_,param1,_loc7_);
+                  this.parseGraphicElement(xnCurrentNode,xnNode,stateContainerElement);
                   break;
                case XmlTagsEnum.TAG_STATE:
-                  _loc9_ = _loc3_.attributes[XmlAttributesEnum.ATTRIBUTE_TYPE];
-                  if(_loc9_)
+                  stateType = xnCurrentNode.attributes[XmlAttributesEnum.ATTRIBUTE_TYPE];
+                  if(stateType)
                   {
-                     if(param2 == XmlTagsEnum.TAG_STATECONTAINER)
+                     if(elementType == XmlTagsEnum.TAG_STATECONTAINER)
                      {
-                        _loc8_ = _loc9_;
+                        stateConst = stateType;
                      }
                      else
                      {
-                        _loc8_ = 9999;
-                        switch(_loc9_)
+                        stateConst = 9999;
+                        switch(stateType)
                         {
                            case StatesEnum.STATE_CLICKED_STRING:
-                              _loc8_ = StatesEnum.STATE_CLICKED;
+                              stateConst = StatesEnum.STATE_CLICKED;
                               break;
                            case StatesEnum.STATE_OVER_STRING:
-                              _loc8_ = StatesEnum.STATE_OVER;
+                              stateConst = StatesEnum.STATE_OVER;
                               break;
                            case StatesEnum.STATE_DISABLED_STRING:
-                              _loc8_ = StatesEnum.STATE_DISABLED;
+                              stateConst = StatesEnum.STATE_DISABLED;
                               break;
                            case StatesEnum.STATE_SELECTED_STRING:
-                              _loc8_ = StatesEnum.STATE_SELECTED;
+                              stateConst = StatesEnum.STATE_SELECTED;
                               break;
                            case StatesEnum.STATE_SELECTED_OVER_STRING:
-                              _loc8_ = StatesEnum.STATE_SELECTED_OVER;
+                              stateConst = StatesEnum.STATE_SELECTED_OVER;
                               break;
                            case StatesEnum.STATE_SELECTED_CLICKED_STRING:
-                              _loc8_ = StatesEnum.STATE_SELECTED_CLICKED;
+                              stateConst = StatesEnum.STATE_SELECTED_CLICKED;
                               break;
-                           default:
-                              _loc10_ = new Array(StatesEnum.STATE_CLICKED_STRING,StatesEnum.STATE_OVER_STRING,StatesEnum.STATE_SELECTED_STRING,StatesEnum.STATE_SELECTED_OVER_STRING,StatesEnum.STATE_SELECTED_CLICKED_STRING,StatesEnum.STATE_DISABLED_STRING);
-                              this._log.warn(_loc9_ + " is not a valid state" + this.suggest(_loc9_,_loc10_));
                         }
                      }
-                     if(_loc8_ != 9999)
+                     if(stateConst != 9999)
                      {
-                        if(!_loc7_.stateChangingProperties[_loc8_])
+                        if(!stateContainerElement.stateChangingProperties[stateConst])
                         {
-                           _loc7_.stateChangingProperties[_loc8_] = new Array();
+                           stateContainerElement.stateChangingProperties[stateConst] = new Array();
                         }
-                        this.parseSetProperties(_loc3_,_loc7_.stateChangingProperties[_loc8_]);
+                        this.parseSetProperties(xnCurrentNode,stateContainerElement.stateChangingProperties[stateConst]);
                      }
                   }
                   else
@@ -649,55 +551,53 @@ package com.ankamagames.berilia.uiRender
                      this._log.warn(XmlTagsEnum.TAG_STATE + " must have attribute [" + XmlAttributesEnum.ATTRIBUTE_TYPE + "]");
                   }
                   break;
-               default:
-                  this._log.warn(param2 + " does not allow " + _loc3_.nodeName + this.suggest(_loc3_.nodeName,[XmlTagsEnum.TAG_COMMON,XmlTagsEnum.TAG_STATE]));
             }
-            _loc6_ = _loc6_ + 1;
+            i = i + 1;
          }
-         return _loc7_;
+         return stateContainerElement;
       }
       
-      protected function parseSetProperties(param1:XMLNode, param2:Object) : void {
-         var _loc3_:XMLNode = null;
-         var _loc6_:* = 0;
-         var _loc7_:String = null;
-         var _loc8_:Array = null;
-         var _loc9_:XMLNode = null;
-         var _loc10_:Array = null;
-         var _loc11_:* = 0;
-         var _loc12_:* = 0;
-         var _loc4_:Array = param1.childNodes;
-         var _loc5_:int = _loc4_.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+      protected function parseSetProperties(xnNode:XMLNode, item:Object) : void {
+         var xnCurrentNode:XMLNode = null;
+         var i:* = 0;
+         var target:String = null;
+         var aProperties:Array = null;
+         var propertyNode:XMLNode = null;
+         var xnCurrentNodeChildNodes:Array = null;
+         var xnCurrentNodeChildNodesLength:* = 0;
+         var j:* = 0;
+         var xnNodeChildNodes:Array = xnNode.childNodes;
+         var xnNodeChildNodesLength:int = xnNodeChildNodes.length;
+         i = 0;
+         while(i < xnNodeChildNodesLength)
          {
-            _loc3_ = _loc4_[_loc6_];
-            if(_loc3_.nodeName == XmlTagsEnum.TAG_SETPROPERTY)
+            xnCurrentNode = xnNodeChildNodes[i];
+            if(xnCurrentNode.nodeName == XmlTagsEnum.TAG_SETPROPERTY)
             {
-               _loc7_ = _loc3_.attributes[XmlAttributesEnum.ATTRIBUTE_TARGET];
-               if(_loc7_)
+               target = xnCurrentNode.attributes[XmlAttributesEnum.ATTRIBUTE_TARGET];
+               if(target)
                {
-                  if(this._aName[_loc7_])
+                  if(this._aName[target])
                   {
-                     if(!param2[_loc7_])
+                     if(!item[target])
                      {
-                        param2[_loc7_] = new Array();
+                        item[target] = new Array();
                      }
-                     _loc8_ = param2[_loc7_];
-                     _loc10_ = _loc3_.childNodes;
-                     _loc11_ = _loc10_.length;
-                     _loc12_ = 0;
-                     while(_loc12_ < _loc11_)
+                     aProperties = item[target];
+                     xnCurrentNodeChildNodes = xnCurrentNode.childNodes;
+                     xnCurrentNodeChildNodesLength = xnCurrentNodeChildNodes.length;
+                     j = 0;
+                     while(j < xnCurrentNodeChildNodesLength)
                      {
-                        _loc9_ = _loc10_[_loc12_];
-                        _loc8_[_loc9_.nodeName] = LangManager.getInstance().replaceKey(_loc9_.firstChild.toString());
-                        _loc12_ = _loc12_ + 1;
+                        propertyNode = xnCurrentNodeChildNodes[j];
+                        aProperties[propertyNode.nodeName] = LangManager.getInstance().replaceKey(propertyNode.firstChild.toString());
+                        j = j + 1;
                      }
-                     this.cleanComponentProperty(this._aName[_loc7_],_loc8_);
+                     this.cleanComponentProperty(this._aName[target],aProperties);
                   }
                   else
                   {
-                     this._log.warn("Unknow reference to \"" + _loc7_ + "\" in " + XmlTagsEnum.TAG_SETPROPERTY);
+                     this._log.warn("Unknow reference to \"" + target + "\" in " + XmlTagsEnum.TAG_SETPROPERTY);
                   }
                }
                else
@@ -707,448 +607,434 @@ package com.ankamagames.berilia.uiRender
             }
             else
             {
-               this._log.warn("Only " + XmlTagsEnum.TAG_SETPROPERTY + " tags are authorized in " + XmlTagsEnum.TAG_STATE + " tags (found " + _loc3_.nodeName + ")");
+               this._log.warn("Only " + XmlTagsEnum.TAG_SETPROPERTY + " tags are authorized in " + XmlTagsEnum.TAG_STATE + " tags (found " + xnCurrentNode.nodeName + ")");
             }
-            _loc6_ = _loc6_ + 1;
+            i = i + 1;
          }
       }
       
-      private function cleanComponentProperty(param1:BasicElement, param2:Array=null) : Boolean {
-         var _loc6_:* = undefined;
-         var _loc7_:Class = null;
-         var _loc8_:String = null;
-         var _loc9_:String = null;
-         var _loc10_:Array = null;
-         var _loc11_:String = null;
-         if(!param2)
+      private function cleanComponentProperty(be:BasicElement, properties:Array=null) : Boolean {
+         var val:* = undefined;
+         var clazz:Class = null;
+         var sProperty:String = null;
+         var key:String = null;
+         var possibilities:Array = null;
+         var propName:String = null;
+         if(!properties)
          {
-            param2 = param1.properties;
+            properties = be.properties;
          }
-         var _loc3_:Class = getDefinitionByName(param1.className) as Class;
-         var _loc4_:Object = this.getClassDesc(_loc3_);
-         var _loc5_:Array = new Array();
-         for (_loc8_ in param2)
+         var cComponent:Class = getDefinitionByName(be.className) as Class;
+         var classProp:Object = this.getClassDesc(cComponent);
+         var aNewProperties:Array = new Array();
+         for (sProperty in properties)
          {
-            if(_loc4_[_loc8_])
+            if(classProp[sProperty])
             {
-               _loc6_ = LangManager.getInstance().replaceKey(param2[_loc8_]);
-               switch(_loc4_[_loc8_])
+               val = LangManager.getInstance().replaceKey(properties[sProperty]);
+               switch(classProp[sProperty])
                {
                   case "Boolean":
-                     _loc6_ = !(_loc6_ == "false");
+                     val = !(val == "false");
                      break;
                   case getQualifiedClassName(Uri):
-                     _loc7_ = getDefinitionByName(_loc4_[_loc8_]) as Class;
-                     _loc6_ = new _loc7_(_loc6_);
+                     clazz = getDefinitionByName(classProp[sProperty]) as Class;
+                     val = new clazz(val);
                      break;
                   case "*":
                      break;
-                  default:
-                     if(_loc6_.charAt(0) == "[" && _loc6_.charAt(_loc6_.length-1) == "]")
-                     {
-                        break;
-                     }
-                     _loc7_ = getDefinitionByName(_loc4_[_loc8_]) as Class;
-                     _loc6_ = new _loc7_(_loc6_);
-                     break;
                }
-               _loc5_[_loc8_] = _loc6_;
+               aNewProperties[sProperty] = val;
             }
             else
             {
-               _loc10_ = new Array();
-               for (_loc11_ in _loc4_)
+               possibilities = new Array();
+               for (propName in classProp)
                {
-                  _loc10_.push(_loc11_);
+                  possibilities.push(propName);
                }
-               this._log.warn("[" + this._sUrl + "]" + _loc8_ + " is unknow for " + param1.className + " component" + this.suggest(_loc8_,_loc10_));
+               this._log.warn("[" + this._sUrl + "]" + sProperty + " is unknow for " + be.className + " component" + this.suggest(sProperty,possibilities));
             }
          }
-         for (_loc9_ in _loc5_)
+         for (key in aNewProperties)
          {
-            param2[_loc9_] = _loc5_[_loc9_];
+            properties[key] = aNewProperties[key];
          }
          return true;
       }
       
-      protected function getClassDesc(param1:Object) : Object {
-         var _loc5_:XML = null;
-         var _loc6_:XML = null;
-         var _loc2_:String = getQualifiedClassName(param1);
-         if(_classDescCache[_loc2_])
+      protected function getClassDesc(o:Object) : Object {
+         var acc:XML = null;
+         var v:XML = null;
+         var cn:String = getQualifiedClassName(o);
+         if(_classDescCache[cn])
          {
-            return _classDescCache[_loc2_];
+            return _classDescCache[cn];
          }
-         var _loc3_:XML = this._describeType(param1);
-         var _loc4_:Object = new Object();
-         for each (_loc5_ in _loc3_..accessor)
+         var xmlClassDef:XML = this._describeType(o);
+         var res:Object = new Object();
+         for each (acc in xmlClassDef..accessor)
          {
-            _loc4_[_loc5_.@name.toString()] = _loc5_.@type.toString();
+            res[acc.@name.toString()] = acc.@type.toString();
          }
-         for each (_loc6_ in _loc3_..variable)
+         for each (v in xmlClassDef..variable)
          {
-            _loc4_[_loc6_.@name.toString()] = _loc6_.@type.toString();
+            res[v.@name.toString()] = v.@type.toString();
          }
-         return _loc4_;
+         return res;
       }
       
-      protected function parseSize(param1:XMLNode, param2:Boolean) : GraphicSize {
-         var _loc3_:XMLNode = null;
-         var _loc6_:* = 0;
-         var _loc8_:String = null;
-         var _loc9_:String = null;
-         if(param1.attributes.length)
+      protected function parseSize(xnNode:XMLNode, bAllowRelativeSize:Boolean) : GraphicSize {
+         var xnCurrentNode:XMLNode = null;
+         var k:* = 0;
+         var posX:String = null;
+         var posY:String = null;
+         if(xnNode.attributes.length)
          {
-            this._log.warn("[" + this._sUrl + "]" + param1.nodeName + " cannot have attribut");
+            this._log.warn("[" + this._sUrl + "]" + xnNode.nodeName + " cannot have attribut");
          }
-         var _loc4_:Array = param1.childNodes;
-         var _loc5_:int = _loc4_.length;
-         var _loc7_:GraphicSize = new GraphicSize();
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var xnNodeChildNodes:Array = xnNode.childNodes;
+         var xnNodeChildNodesLength:int = xnNodeChildNodes.length;
+         var graphicSize:GraphicSize = new GraphicSize();
+         k = 0;
+         while(k < xnNodeChildNodesLength)
          {
-            _loc3_ = _loc4_[_loc6_];
-            if(_loc3_.nodeName == XmlTagsEnum.TAG_RELDIMENSION)
+            xnCurrentNode = xnNodeChildNodes[k];
+            if(xnCurrentNode.nodeName == XmlTagsEnum.TAG_RELDIMENSION)
             {
-               if(!param2)
+               if(!bAllowRelativeSize)
                {
-                  this._log.warn("[" + this._sUrl + "]" + param1.nodeName + " does not allow relative size");
+                  this._log.warn("[" + this._sUrl + "]" + xnNode.nodeName + " does not allow relative size");
                }
                else
                {
-                  _loc8_ = _loc3_.attributes["x"];
-                  if(_loc8_)
+                  posX = xnCurrentNode.attributes["x"];
+                  if(posX)
                   {
-                     _loc7_.setX(Number(LangManager.getInstance().replaceKey(_loc8_)),GraphicSize.SIZE_PRC);
+                     graphicSize.setX(Number(LangManager.getInstance().replaceKey(posX)),GraphicSize.SIZE_PRC);
                   }
-                  _loc9_ = _loc3_.attributes["y"];
-                  if(_loc9_)
+                  posY = xnCurrentNode.attributes["y"];
+                  if(posY)
                   {
-                     _loc7_.setY(Number(LangManager.getInstance().replaceKey(_loc9_)),GraphicSize.SIZE_PRC);
+                     graphicSize.setY(Number(LangManager.getInstance().replaceKey(posY)),GraphicSize.SIZE_PRC);
                   }
                }
             }
-            if(_loc3_.nodeName == XmlTagsEnum.TAG_ABSDIMENSION)
+            if(xnCurrentNode.nodeName == XmlTagsEnum.TAG_ABSDIMENSION)
             {
-               _loc8_ = _loc3_.attributes["x"];
-               if(_loc8_)
+               posX = xnCurrentNode.attributes["x"];
+               if(posX)
                {
-                  _loc7_.setX(int(LangManager.getInstance().replaceKey(_loc8_)),GraphicSize.SIZE_PIXEL);
+                  graphicSize.setX(int(LangManager.getInstance().replaceKey(posX)),GraphicSize.SIZE_PIXEL);
                }
-               _loc9_ = _loc3_.attributes["y"];
-               if(_loc9_)
+               posY = xnCurrentNode.attributes["y"];
+               if(posY)
                {
-                  _loc7_.setY(int(LangManager.getInstance().replaceKey(_loc9_)),GraphicSize.SIZE_PIXEL);
+                  graphicSize.setY(int(LangManager.getInstance().replaceKey(posY)),GraphicSize.SIZE_PIXEL);
                }
             }
-            _loc6_ = _loc6_ + 1;
+            k = k + 1;
          }
-         return _loc7_;
+         return graphicSize;
       }
       
-      protected function parseAnchors(param1:XMLNode) : Array {
-         var _loc2_:XMLNode = null;
-         var _loc5_:* = 0;
-         var _loc6_:* = 0;
-         var _loc7_:XMLNode = null;
-         var _loc9_:GraphicLocation = null;
-         var _loc10_:String = null;
-         var _loc11_:Array = null;
-         var _loc12_:* = 0;
-         if(param1.attributes.length)
+      protected function parseAnchors(xnNode:XMLNode) : Array {
+         var xnCurrentNode:XMLNode = null;
+         var i:* = 0;
+         var k:* = 0;
+         var xnOffsetNode:XMLNode = null;
+         var glPoint:GraphicLocation = null;
+         var j:String = null;
+         var xnCurrentNodeChildNodes:Array = null;
+         var xnCurrentNodeChildNodesLength:* = 0;
+         if(xnNode.attributes.length)
          {
-            this._log.warn("[" + this._sUrl + "]" + param1.nodeName + " cannot have attribut");
+            this._log.warn("[" + this._sUrl + "]" + xnNode.nodeName + " cannot have attribut");
          }
-         var _loc3_:Array = param1.childNodes;
-         var _loc4_:int = _loc3_.length;
-         var _loc8_:Array = new Array();
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var xnNodeChildNodes:Array = xnNode.childNodes;
+         var xnNodeChildNodesLength:int = xnNodeChildNodes.length;
+         var aResult:Array = new Array();
+         i = 0;
+         while(i < xnNodeChildNodesLength)
          {
-            _loc9_ = new GraphicLocation();
-            _loc2_ = _loc3_[_loc5_];
-            if(_loc2_.nodeName == XmlTagsEnum.TAG_ANCHOR)
+            glPoint = new GraphicLocation();
+            xnCurrentNode = xnNodeChildNodes[i];
+            if(xnCurrentNode.nodeName == XmlTagsEnum.TAG_ANCHOR)
             {
-               for (_loc15_ in _loc2_.attributes)
+               for (_loc15_ in xnCurrentNode.attributes)
                {
-                  switch(_loc10_)
+                  switch(j)
                   {
                      case XmlAttributesEnum.ATTRIBUTE_POINT:
-                        if(_loc8_.length != 0)
+                        if(aResult.length != 0)
                         {
                            this._log.error("[" + this._sUrl + "] When using double anchors, you cannot define attribute POINT");
                         }
                         else
                         {
-                           _loc9_.setPoint(_loc2_.attributes[_loc10_]);
+                           glPoint.setPoint(xnCurrentNode.attributes[j]);
                         }
                         continue;
                      case XmlAttributesEnum.ATTRIBUTE_RELATIVEPOINT:
-                        _loc9_.setRelativePoint(_loc2_.attributes[_loc10_]);
+                        glPoint.setRelativePoint(xnCurrentNode.attributes[j]);
                         continue;
                      case XmlAttributesEnum.ATTRIBUTE_RELATIVETO:
-                        _loc9_.setRelativeTo(_loc2_.attributes[_loc10_]);
-                        continue;
-                     default:
-                        this._log.warn("[" + this._sUrl + "]" + param1.nodeName + " cannot have " + _loc10_ + " attribut");
+                        glPoint.setRelativeTo(xnCurrentNode.attributes[j]);
                         continue;
                   }
                }
-               _loc11_ = _loc2_.childNodes;
-               _loc12_ = _loc11_.length;
-               _loc6_ = 0;
-               while(_loc6_ < _loc12_)
+               xnCurrentNodeChildNodes = xnCurrentNode.childNodes;
+               xnCurrentNodeChildNodesLength = xnCurrentNodeChildNodes.length;
+               k = 0;
+               while(k < xnCurrentNodeChildNodesLength)
                {
-                  _loc7_ = _loc11_[_loc6_];
-                  switch(_loc7_.nodeName)
+                  xnOffsetNode = xnCurrentNodeChildNodes[k];
+                  switch(xnOffsetNode.nodeName)
                   {
                      case XmlTagsEnum.TAG_OFFSET:
-                        _loc7_ = _loc7_.firstChild;
+                        xnOffsetNode = xnOffsetNode.firstChild;
                         break;
                      case XmlTagsEnum.TAG_RELDIMENSION:
-                        if(_loc7_.attributes["x"] != null)
+                        if(xnOffsetNode.attributes["x"] != null)
                         {
-                           _loc9_.offsetXType = LocationTypeEnum.LOCATION_TYPE_RELATIVE;
-                           _loc9_.setOffsetX(_loc7_.attributes["x"]);
+                           glPoint.offsetXType = LocationTypeEnum.LOCATION_TYPE_RELATIVE;
+                           glPoint.setOffsetX(xnOffsetNode.attributes["x"]);
                         }
-                        if(_loc7_.attributes["y"] != null)
+                        if(xnOffsetNode.attributes["y"] != null)
                         {
-                           _loc9_.offsetYType = LocationTypeEnum.LOCATION_TYPE_RELATIVE;
-                           _loc9_.setOffsetY(_loc7_.attributes["y"]);
+                           glPoint.offsetYType = LocationTypeEnum.LOCATION_TYPE_RELATIVE;
+                           glPoint.setOffsetY(xnOffsetNode.attributes["y"]);
                         }
                         break;
                      case XmlTagsEnum.TAG_ABSDIMENSION:
-                        if(_loc7_.attributes["x"] != null)
+                        if(xnOffsetNode.attributes["x"] != null)
                         {
-                           _loc9_.offsetXType = LocationTypeEnum.LOCATION_TYPE_ABSOLUTE;
-                           _loc9_.setOffsetX(_loc7_.attributes["x"]);
+                           glPoint.offsetXType = LocationTypeEnum.LOCATION_TYPE_ABSOLUTE;
+                           glPoint.setOffsetX(xnOffsetNode.attributes["x"]);
                         }
-                        if(_loc7_.attributes["y"] != null)
+                        if(xnOffsetNode.attributes["y"] != null)
                         {
-                           _loc9_.offsetYType = LocationTypeEnum.LOCATION_TYPE_ABSOLUTE;
-                           _loc9_.setOffsetY(_loc7_.attributes["y"]);
+                           glPoint.offsetYType = LocationTypeEnum.LOCATION_TYPE_ABSOLUTE;
+                           glPoint.setOffsetY(xnOffsetNode.attributes["y"]);
                         }
                         break;
                   }
-                  _loc6_ = _loc6_ + 1;
+                  k = k + 1;
                }
-               _loc8_.push(_loc9_.toLocationElement());
+               aResult.push(glPoint.toLocationElement());
             }
             else
             {
-               this._log.warn("[" + this._sUrl + "] " + param1.nodeName + " does not allow " + _loc2_.nodeName + " tag");
+               this._log.warn("[" + this._sUrl + "] " + xnNode.nodeName + " does not allow " + xnCurrentNode.nodeName + " tag");
             }
-            _loc5_ = _loc5_ + 1;
+            i = i + 1;
          }
-         return _loc8_.length?_loc8_:null;
+         return aResult.length?aResult:null;
       }
       
-      protected function parseShortcutsEvent(param1:XMLNode) : Array {
-         var _loc2_:XMLNode = null;
-         var _loc5_:* = 0;
-         var _loc6_:String = null;
-         var _loc3_:Array = param1.childNodes;
-         var _loc4_:int = _loc3_.length;
-         var _loc7_:Array = new Array();
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+      protected function parseShortcutsEvent(xnNode:XMLNode) : Array {
+         var xnCurrentNode:XMLNode = null;
+         var k:* = 0;
+         var sShortcutName:String = null;
+         var xnNodeChildNodes:Array = xnNode.childNodes;
+         var xnNodeChildNodesLength:int = xnNodeChildNodes.length;
+         var aResult:Array = new Array();
+         k = 0;
+         while(k < xnNodeChildNodesLength)
          {
-            _loc2_ = _loc3_[_loc5_];
-            _loc6_ = _loc2_.nodeName;
-            if(!BindsManager.getInstance().isRegisteredName(_loc6_))
+            xnCurrentNode = xnNodeChildNodes[k];
+            sShortcutName = xnCurrentNode.nodeName;
+            if(!BindsManager.getInstance().isRegisteredName(sShortcutName))
             {
-               this._log.info("[" + this._sUrl + "] Shortcut " + _loc6_ + " is not defined.");
+               this._log.info("[" + this._sUrl + "] Shortcut " + sShortcutName + " is not defined.");
             }
-            _loc7_.push(_loc6_);
-            _loc5_ = _loc5_ + 1;
+            aResult.push(sShortcutName);
+            k = k + 1;
          }
-         return _loc7_;
+         return aResult;
       }
       
-      private function parseEvent(param1:XMLNode) : Array {
-         var _loc2_:XMLNode = null;
-         var _loc5_:* = 0;
-         var _loc6_:String = null;
-         var _loc8_:Array = null;
-         var _loc3_:Array = param1.childNodes;
-         var _loc4_:int = _loc3_.length;
-         var _loc7_:Array = new Array();
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+      private function parseEvent(xnNode:XMLNode) : Array {
+         var xnCurrentNode:XMLNode = null;
+         var k:* = 0;
+         var sEventClass:String = null;
+         var possiblilities:Array = null;
+         var xnNodeChildNodes:Array = xnNode.childNodes;
+         var xnNodeChildNodesLength:int = xnNodeChildNodes.length;
+         var aResult:Array = new Array();
+         k = 0;
+         while(k < xnNodeChildNodesLength)
          {
-            _loc2_ = _loc3_[_loc5_];
-            _loc6_ = "";
-            switch(_loc2_.nodeName)
+            xnCurrentNode = xnNodeChildNodes[k];
+            sEventClass = "";
+            switch(xnCurrentNode.nodeName)
             {
                case EventEnums.EVENT_ONPRESS:
-                  _loc6_ = EventEnums.EVENT_ONPRESS_MSG;
+                  sEventClass = EventEnums.EVENT_ONPRESS_MSG;
                   break;
                case EventEnums.EVENT_ONRELEASE:
-                  _loc6_ = EventEnums.EVENT_ONRELEASE_MSG;
+                  sEventClass = EventEnums.EVENT_ONRELEASE_MSG;
                   break;
                case EventEnums.EVENT_ONROLLOUT:
-                  _loc6_ = EventEnums.EVENT_ONROLLOUT_MSG;
+                  sEventClass = EventEnums.EVENT_ONROLLOUT_MSG;
                   break;
                case EventEnums.EVENT_ONROLLOVER:
-                  _loc6_ = EventEnums.EVENT_ONROLLOVER_MSG;
+                  sEventClass = EventEnums.EVENT_ONROLLOVER_MSG;
                   break;
                case EventEnums.EVENT_ONRELEASEOUTSIDE:
-                  _loc6_ = EventEnums.EVENT_ONRELEASEOUTSIDE_MSG;
+                  sEventClass = EventEnums.EVENT_ONRELEASEOUTSIDE_MSG;
                   break;
                case EventEnums.EVENT_ONRIGHTCLICK:
-                  _loc6_ = EventEnums.EVENT_ONRIGHTCLICK_MSG;
+                  sEventClass = EventEnums.EVENT_ONRIGHTCLICK_MSG;
                   break;
                case EventEnums.EVENT_ONDOUBLECLICK:
-                  _loc6_ = EventEnums.EVENT_ONDOUBLECLICK_MSG;
+                  sEventClass = EventEnums.EVENT_ONDOUBLECLICK_MSG;
                   break;
                case EventEnums.EVENT_MIDDLECLICK:
-                  _loc6_ = EventEnums.EVENT_MIDDLECLICK_MSG;
+                  sEventClass = EventEnums.EVENT_MIDDLECLICK_MSG;
                   break;
                case EventEnums.EVENT_ONCOLORCHANGE:
-                  _loc6_ = EventEnums.EVENT_ONCOLORCHANGE_MSG;
+                  sEventClass = EventEnums.EVENT_ONCOLORCHANGE_MSG;
                   break;
                case EventEnums.EVENT_ONENTITYREADY:
-                  _loc6_ = EventEnums.EVENT_ONENTITYREADY_MSG;
+                  sEventClass = EventEnums.EVENT_ONENTITYREADY_MSG;
                   break;
                case EventEnums.EVENT_ONSELECTITEM:
-                  _loc6_ = EventEnums.EVENT_ONSELECTITEM_MSG;
+                  sEventClass = EventEnums.EVENT_ONSELECTITEM_MSG;
                   break;
                case EventEnums.EVENT_ONSELECTEMPTYITEM:
-                  _loc6_ = EventEnums.EVENT_ONSELECTEMPTYITEM_MSG;
+                  sEventClass = EventEnums.EVENT_ONSELECTEMPTYITEM_MSG;
                   break;
                case EventEnums.EVENT_ONDROP:
-                  _loc6_ = EventEnums.EVENT_ONDROP_MSG;
+                  sEventClass = EventEnums.EVENT_ONDROP_MSG;
                   break;
                case EventEnums.EVENT_ONCREATETAB:
-                  _loc6_ = EventEnums.EVENT_ONCREATETAB_MSG;
+                  sEventClass = EventEnums.EVENT_ONCREATETAB_MSG;
                   break;
                case EventEnums.EVENT_ONDELETETAB:
-                  _loc6_ = EventEnums.EVENT_ONDELETETAB_MSG;
+                  sEventClass = EventEnums.EVENT_ONDELETETAB_MSG;
                   break;
                case EventEnums.EVENT_ONRENAMETAB:
-                  _loc6_ = EventEnums.EVENT_ONRENAMETAB_MSG;
+                  sEventClass = EventEnums.EVENT_ONRENAMETAB_MSG;
                   break;
                case EventEnums.EVENT_ONITEMROLLOVER:
-                  _loc6_ = EventEnums.EVENT_ONITEMROLLOVER_MSG;
+                  sEventClass = EventEnums.EVENT_ONITEMROLLOVER_MSG;
                   break;
                case EventEnums.EVENT_ONITEMROLLOUT:
-                  _loc6_ = EventEnums.EVENT_ONITEMROLLOUT_MSG;
+                  sEventClass = EventEnums.EVENT_ONITEMROLLOUT_MSG;
                   break;
                case EventEnums.EVENT_ONITEMRIGHTCLICK:
-                  _loc6_ = EventEnums.EVENT_ONITEMRIGHTCLICK_MSG;
+                  sEventClass = EventEnums.EVENT_ONITEMRIGHTCLICK_MSG;
                   break;
                case EventEnums.EVENT_ONWHEEL:
-                  _loc6_ = EventEnums.EVENT_ONWHEEL_MSG;
+                  sEventClass = EventEnums.EVENT_ONWHEEL_MSG;
                   break;
                case EventEnums.EVENT_ONMOUSEUP:
-                  _loc6_ = EventEnums.EVENT_ONMOUSEUP_MSG;
+                  sEventClass = EventEnums.EVENT_ONMOUSEUP_MSG;
                   break;
                case EventEnums.EVENT_ONMAPELEMENTROLLOUT:
-                  _loc6_ = EventEnums.EVENT_ONMAPELEMENTROLLOUT_MSG;
+                  sEventClass = EventEnums.EVENT_ONMAPELEMENTROLLOUT_MSG;
                   break;
                case EventEnums.EVENT_ONMAPELEMENTROLLOVER:
-                  _loc6_ = EventEnums.EVENT_ONMAPELEMENTROLLOVER_MSG;
+                  sEventClass = EventEnums.EVENT_ONMAPELEMENTROLLOVER_MSG;
                   break;
                case EventEnums.EVENT_ONMAPELEMENTRIGHTCLICK:
-                  _loc6_ = EventEnums.EVENT_ONMAPELEMENTRIGHTCLICK_MSG;
+                  sEventClass = EventEnums.EVENT_ONMAPELEMENTRIGHTCLICK_MSG;
                   break;
                case EventEnums.EVENT_ONMAPMOVE:
-                  _loc6_ = EventEnums.EVENT_ONMAPMOVE_MSG;
+                  sEventClass = EventEnums.EVENT_ONMAPMOVE_MSG;
                   break;
                case EventEnums.EVENT_ONMAPROLLOVER:
-                  _loc6_ = EventEnums.EVENT_ONMAPROLLOVER_MSG;
+                  sEventClass = EventEnums.EVENT_ONMAPROLLOVER_MSG;
                   break;
                case EventEnums.EVENT_ONCOMPONENTREADY:
-                  _loc6_ = EventEnums.EVENT_ONCOMPONENTREADY_MSG;
+                  sEventClass = EventEnums.EVENT_ONCOMPONENTREADY_MSG;
                   break;
-               default:
-                  _loc8_ = [EventEnums.EVENT_ONPRESS,EventEnums.EVENT_ONRELEASE,EventEnums.EVENT_ONROLLOUT,EventEnums.EVENT_ONROLLOVER,EventEnums.EVENT_ONRIGHTCLICK,EventEnums.EVENT_ONRELEASEOUTSIDE,EventEnums.EVENT_ONDOUBLECLICK,EventEnums.EVENT_ONCOLORCHANGE,EventEnums.EVENT_ONENTITYREADY,EventEnums.EVENT_ONSELECTITEM,EventEnums.EVENT_ONSELECTEMPTYITEM,EventEnums.EVENT_ONITEMROLLOVER,EventEnums.EVENT_ONITEMROLLOUT,EventEnums.EVENT_ONDROP,EventEnums.EVENT_ONWHEEL,EventEnums.EVENT_ONMOUSEUP,EventEnums.EVENT_ONMAPELEMENTROLLOUT,EventEnums.EVENT_ONMAPELEMENTROLLOVER,EventEnums.EVENT_ONMAPELEMENTRIGHTCLICK,EventEnums.EVENT_ONCREATETAB,EventEnums.EVENT_ONDELETETAB,EventEnums.EVENT_MIDDLECLICK];
-                  this._log.warn("[" + this._sUrl + "] " + _loc2_.nodeName + " is an unknow event name" + this.suggest(_loc2_.nodeName,_loc8_));
             }
-            if(_loc6_.length)
+            if(sEventClass.length)
             {
-               _loc7_.push(_loc6_);
+               aResult.push(sEventClass);
             }
-            _loc5_ = _loc5_ + 1;
+            k = k + 1;
          }
-         return _loc7_;
+         return aResult;
       }
       
-      private function getStrataNum(param1:String) : uint {
-         var _loc2_:Array = null;
-         if(param1 == StrataEnum.STRATA_NAME_LOW)
+      private function getStrataNum(sName:String) : uint {
+         var possiblilities:Array = null;
+         if(sName == StrataEnum.STRATA_NAME_LOW)
          {
             return StrataEnum.STRATA_LOW;
          }
-         if(param1 == StrataEnum.STRATA_NAME_MEDIUM)
+         if(sName == StrataEnum.STRATA_NAME_MEDIUM)
          {
             return StrataEnum.STRATA_MEDIUM;
          }
-         if(param1 == StrataEnum.STRATA_NAME_HIGH)
+         if(sName == StrataEnum.STRATA_NAME_HIGH)
          {
             return StrataEnum.STRATA_HIGH;
          }
-         if(param1 == StrataEnum.STRATA_NAME_TOP)
+         if(sName == StrataEnum.STRATA_NAME_TOP)
          {
             return StrataEnum.STRATA_TOP;
          }
-         if(param1 == StrataEnum.STRATA_NAME_TOOLTIP)
+         if(sName == StrataEnum.STRATA_NAME_TOOLTIP)
          {
             return StrataEnum.STRATA_TOOLTIP;
          }
-         _loc2_ = [StrataEnum.STRATA_NAME_LOW,StrataEnum.STRATA_NAME_MEDIUM,StrataEnum.STRATA_NAME_HIGH,StrataEnum.STRATA_NAME_TOP,StrataEnum.STRATA_NAME_TOOLTIP];
-         this._log.warn("[" + this._sUrl + "] " + param1 + " is an unknow strata name" + this.suggest(param1,_loc2_));
+         possiblilities = [StrataEnum.STRATA_NAME_LOW,StrataEnum.STRATA_NAME_MEDIUM,StrataEnum.STRATA_NAME_HIGH,StrataEnum.STRATA_NAME_TOP,StrataEnum.STRATA_NAME_TOOLTIP];
+         this._log.warn("[" + this._sUrl + "] " + sName + " is an unknow strata name" + this.suggest(sName,possiblilities));
          return StrataEnum.STRATA_MEDIUM;
       }
       
-      private function suggest(param1:String, param2:Array, param3:uint=5, param4:uint=3) : String {
-         var _loc7_:* = NaN;
-         var _loc8_:* = 0;
-         var _loc5_:* = "";
-         var _loc6_:Array = new Array();
-         _loc8_ = 0;
-         while(_loc8_ < param2.length)
+      private function suggest(word:String, aPossibilities:Array, max:uint=5, suggestCount:uint=3) : String {
+         var value:* = NaN;
+         var i:* = 0;
+         var suggest:String = "";
+         var res:Array = new Array();
+         i = 0;
+         while(i < aPossibilities.length)
          {
-            _loc7_ = Levenshtein.distance(param1.toUpperCase(),param2[_loc8_].toUpperCase());
-            if(_loc7_ <= param3)
+            value = Levenshtein.distance(word.toUpperCase(),aPossibilities[i].toUpperCase());
+            if(value <= max)
             {
-               _loc6_.push(
+               res.push(
                   {
-                     "dist":_loc7_,
-                     "word":param2[_loc8_]
+                     "dist":value,
+                     "word":aPossibilities[i]
                   });
             }
-            _loc8_++;
+            i++;
          }
-         if(_loc6_.length)
+         if(res.length)
          {
-            _loc5_ = " (did you mean ";
-            _loc6_.sortOn("dist",Array.NUMERIC);
-            _loc8_ = 0;
-            while(_loc8_ < _loc6_.length-1 && _loc8_ < param4-1)
+            suggest = " (did you mean ";
+            res.sortOn("dist",Array.NUMERIC);
+            i = 0;
+            while((i < res.length - 1) && (i < suggestCount - 1))
             {
-               _loc5_ = _loc5_ + ("\"" + _loc6_[_loc8_].word + "\"" + (_loc8_ < _loc6_.length-1?", ":""));
-               _loc8_++;
+               suggest = suggest + ("\"" + res[i].word + "\"" + (i < res.length - 1?", ":""));
+               i++;
             }
-            if(_loc6_[_loc8_])
+            if(res[i])
             {
-               _loc5_ = _loc5_ + ((_loc8_?"or ":"") + "\"" + _loc6_[_loc8_].word);
+               suggest = suggest + ((i?"or ":"") + "\"" + res[i].word);
             }
-            _loc5_ = _loc5_ + "\" ?)";
+            suggest = suggest + "\" ?)";
          }
-         return _loc5_;
+         return suggest;
       }
       
-      private function onPreProcessCompleted(param1:Event) : void {
+      private function onPreProcessCompleted(event:Event) : void {
          this.mainProcess();
       }
       
-      private function onXmlLoadComplete(param1:ResourceLoadedEvent) : void {
-         this.processXml(param1.resource);
+      private function onXmlLoadComplete(e:ResourceLoadedEvent) : void {
+         this.processXml(e.resource);
       }
       
-      private function onXmlLoadError(param1:ResourceErrorEvent) : void {
-         dispatchEvent(new ParsingErrorEvent(param1.uri.toString(),param1.errorMsg));
+      private function onXmlLoadError(e:ResourceErrorEvent) : void {
+         dispatchEvent(new ParsingErrorEvent(e.uri.toString(),e.errorMsg));
       }
    }
 }

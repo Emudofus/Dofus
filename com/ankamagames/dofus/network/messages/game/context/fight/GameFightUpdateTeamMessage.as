@@ -31,9 +31,9 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 5572;
       }
       
-      public function initGameFightUpdateTeamMessage(param1:uint=0, param2:FightTeamInformations=null) : GameFightUpdateTeamMessage {
-         this.fightId = param1;
-         this.team = param2;
+      public function initGameFightUpdateTeamMessage(fightId:uint=0, team:FightTeamInformations=null) : GameFightUpdateTeamMessage {
+         this.fightId = fightId;
+         this.team = team;
          this._isInitialized = true;
          return this;
       }
@@ -44,39 +44,39 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightUpdateTeamMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightUpdateTeamMessage(output);
       }
       
-      public function serializeAs_GameFightUpdateTeamMessage(param1:IDataOutput) : void {
+      public function serializeAs_GameFightUpdateTeamMessage(output:IDataOutput) : void {
          if(this.fightId < 0)
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
          }
          else
          {
-            param1.writeShort(this.fightId);
-            this.team.serializeAs_FightTeamInformations(param1);
+            output.writeShort(this.fightId);
+            this.team.serializeAs_FightTeamInformations(output);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightUpdateTeamMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightUpdateTeamMessage(input);
       }
       
-      public function deserializeAs_GameFightUpdateTeamMessage(param1:IDataInput) : void {
-         this.fightId = param1.readShort();
+      public function deserializeAs_GameFightUpdateTeamMessage(input:IDataInput) : void {
+         this.fightId = input.readShort();
          if(this.fightId < 0)
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element of GameFightUpdateTeamMessage.fightId.");
@@ -84,7 +84,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          else
          {
             this.team = new FightTeamInformations();
-            this.team.deserialize(param1);
+            this.team.deserialize(input);
             return;
          }
       }

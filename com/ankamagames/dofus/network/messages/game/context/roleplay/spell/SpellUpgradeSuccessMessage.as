@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.spell
          return 1201;
       }
       
-      public function initSpellUpgradeSuccessMessage(param1:int=0, param2:uint=0) : SpellUpgradeSuccessMessage {
-         this.spellId = param1;
-         this.spellLevel = param2;
+      public function initSpellUpgradeSuccessMessage(spellId:int=0, spellLevel:uint=0) : SpellUpgradeSuccessMessage {
+         this.spellId = spellId;
+         this.spellLevel = spellLevel;
          this._isInitialized = true;
          return this;
       }
@@ -42,41 +42,41 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.spell
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_SpellUpgradeSuccessMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SpellUpgradeSuccessMessage(output);
       }
       
-      public function serializeAs_SpellUpgradeSuccessMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.spellId);
-         if(this.spellLevel < 1 || this.spellLevel > 6)
+      public function serializeAs_SpellUpgradeSuccessMessage(output:IDataOutput) : void {
+         output.writeInt(this.spellId);
+         if((this.spellLevel < 1) || (this.spellLevel > 6))
          {
             throw new Error("Forbidden value (" + this.spellLevel + ") on element spellLevel.");
          }
          else
          {
-            param1.writeByte(this.spellLevel);
+            output.writeByte(this.spellLevel);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_SpellUpgradeSuccessMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SpellUpgradeSuccessMessage(input);
       }
       
-      public function deserializeAs_SpellUpgradeSuccessMessage(param1:IDataInput) : void {
-         this.spellId = param1.readInt();
-         this.spellLevel = param1.readByte();
-         if(this.spellLevel < 1 || this.spellLevel > 6)
+      public function deserializeAs_SpellUpgradeSuccessMessage(input:IDataInput) : void {
+         this.spellId = input.readInt();
+         this.spellLevel = input.readByte();
+         if((this.spellLevel < 1) || (this.spellLevel > 6))
          {
             throw new Error("Forbidden value (" + this.spellLevel + ") on element of SpellUpgradeSuccessMessage.spellLevel.");
          }

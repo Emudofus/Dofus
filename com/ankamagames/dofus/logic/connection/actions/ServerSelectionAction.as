@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.connection.actions
          super();
       }
       
-      public static function create(param1:int) : ServerSelectionAction {
-         var _loc2_:ServerSelectionAction = new ServerSelectionAction();
-         _loc2_.serverId = param1;
-         return _loc2_;
+      public static function create(serverId:int) : ServerSelectionAction {
+         var a:ServerSelectionAction = new ServerSelectionAction();
+         a.serverId = serverId;
+         return a;
       }
       
       public var serverId:int;

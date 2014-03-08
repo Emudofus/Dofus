@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.interactive
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.interactive.StatedElement;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,8 +30,8 @@ package com.ankamagames.dofus.network.messages.game.interactive
          return 5716;
       }
       
-      public function initStatedMapUpdateMessage(param1:Vector.<StatedElement>=null) : StatedMapUpdateMessage {
-         this.statedElements = param1;
+      public function initStatedMapUpdateMessage(statedElements:Vector.<StatedElement>=null) : StatedMapUpdateMessage {
+         this.statedElements = statedElements;
          this._isInitialized = true;
          return this;
       }
@@ -41,44 +41,44 @@ package com.ankamagames.dofus.network.messages.game.interactive
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_StatedMapUpdateMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_StatedMapUpdateMessage(output);
       }
       
-      public function serializeAs_StatedMapUpdateMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.statedElements.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.statedElements.length)
+      public function serializeAs_StatedMapUpdateMessage(output:IDataOutput) : void {
+         output.writeShort(this.statedElements.length);
+         var _i1:uint = 0;
+         while(_i1 < this.statedElements.length)
          {
-            (this.statedElements[_loc2_] as StatedElement).serializeAs_StatedElement(param1);
-            _loc2_++;
+            (this.statedElements[_i1] as StatedElement).serializeAs_StatedElement(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_StatedMapUpdateMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_StatedMapUpdateMessage(input);
       }
       
-      public function deserializeAs_StatedMapUpdateMessage(param1:IDataInput) : void {
-         var _loc4_:StatedElement = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_StatedMapUpdateMessage(input:IDataInput) : void {
+         var _item1:StatedElement = null;
+         var _statedElementsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _statedElementsLen)
          {
-            _loc4_ = new StatedElement();
-            _loc4_.deserialize(param1);
-            this.statedElements.push(_loc4_);
-            _loc3_++;
+            _item1 = new StatedElement();
+            _item1.deserialize(input);
+            this.statedElements.push(_item1);
+            _i1++;
          }
       }
    }

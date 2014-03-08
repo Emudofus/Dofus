@@ -83,236 +83,233 @@ package com.ankamagames.dofus.logic.game.common.frames
          return 0;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:OpenSmileysAction = null;
-         var _loc3_:OpenBookAction = null;
-         var _loc4_:OpenTeamSearchAction = null;
-         var _loc5_:OpenArenaAction = null;
-         var _loc6_:IEntity = null;
-         var _loc7_:OpenInventoryAction = null;
-         var _loc8_:CinematicMessage = null;
-         var _loc9_:DisplayNumericalValueMessage = null;
-         var _loc10_:IEntity = null;
-         var _loc11_:uint = 0;
-         var _loc12_:Timer = null;
-         var _loc13_:DelayedSystemMessageDisplayMessage = null;
-         var _loc14_:SystemMessageDisplayMessage = null;
-         var _loc15_:ClientUIOpenedByObjectMessage = null;
-         var _loc16_:ClientUIOpenedMessage = null;
-         var _loc17_:EntityTalkMessage = null;
-         var _loc18_:IDisplayable = null;
-         var _loc19_:String = null;
-         var _loc20_:uint = 0;
-         var _loc21_:Array = null;
-         var _loc22_:uint = 0;
-         var _loc23_:Array = null;
-         var _loc24_:ChatBubble = null;
-         var _loc25_:SubscriptionLimitationMessage = null;
-         var _loc26_:String = null;
-         var _loc27_:SubscriptionZoneMessage = null;
-         var _loc28_:GameFightOptionStateUpdateMessage = null;
-         var _loc29_:uint = 0;
-         var _loc30_:GameFightOptionToggleMessage = null;
-         var _loc31_:uint = 0;
-         var _loc32_:GameFightOptionToggleMessage = null;
-         var _loc33_:uint = 0;
-         var _loc34_:GameFightOptionToggleMessage = null;
-         var _loc35_:uint = 0;
-         var _loc36_:GameFightOptionToggleMessage = null;
-         var _loc37_:RoleplayInteractivesFrame = null;
-         var _loc38_:DelayedSystemMessageDisplayMessage = null;
-         var _loc39_:* = undefined;
+      public function process(msg:Message) : Boolean {
+         var osa:OpenSmileysAction = null;
+         var oba:OpenBookAction = null;
+         var tsa:OpenTeamSearchAction = null;
+         var oaa:OpenArenaAction = null;
+         var playerEntity:IEntity = null;
+         var oia:OpenInventoryAction = null;
+         var cm:CinematicMessage = null;
+         var dnvmsg:DisplayNumericalValueMessage = null;
+         var entity:IEntity = null;
+         var color:uint = 0;
+         var animTimer:Timer = null;
+         var dsmdmsg:DelayedSystemMessageDisplayMessage = null;
+         var smdmsg:SystemMessageDisplayMessage = null;
+         var cuiobomsg:ClientUIOpenedByObjectMessage = null;
+         var cuiomsg:ClientUIOpenedMessage = null;
+         var etmsg:EntityTalkMessage = null;
+         var speakerEntity:IDisplayable = null;
+         var msgContent2:String = null;
+         var textId2:uint = 0;
+         var params:Array = null;
+         var type:uint = 0;
+         var param:Array = null;
+         var bubble:ChatBubble = null;
+         var slmsg:SubscriptionLimitationMessage = null;
+         var text:String = null;
+         var szmsg:SubscriptionZoneMessage = null;
+         var gfosumsg:GameFightOptionStateUpdateMessage = null;
+         var option:uint = 0;
+         var gfotmsg:GameFightOptionToggleMessage = null;
+         var option2:uint = 0;
+         var gfotmsg2:GameFightOptionToggleMessage = null;
+         var option3:uint = 0;
+         var gfotmsg3:GameFightOptionToggleMessage = null;
+         var option4:uint = 0;
+         var gfotmsg4:GameFightOptionToggleMessage = null;
+         var interactiveFrame:RoleplayInteractivesFrame = null;
+         var dsmdmsg2:DelayedSystemMessageDisplayMessage = null;
+         var prm:* = undefined;
          switch(true)
          {
-            case param1 is OpenSmileysAction:
-               _loc2_ = param1 as OpenSmileysAction;
-               KernelEventsManager.getInstance().processCallback(HookList.SmileysStart,_loc2_.type,_loc2_.forceOpen);
+            case msg is OpenSmileysAction:
+               osa = msg as OpenSmileysAction;
+               KernelEventsManager.getInstance().processCallback(HookList.SmileysStart,osa.type,osa.forceOpen);
                return true;
-            case param1 is OpenBookAction:
-               _loc3_ = param1 as OpenBookAction;
-               KernelEventsManager.getInstance().processCallback(HookList.OpenBook,_loc3_.value,_loc3_.param);
+            case msg is OpenBookAction:
+               oba = msg as OpenBookAction;
+               KernelEventsManager.getInstance().processCallback(HookList.OpenBook,oba.value,oba.param);
                return true;
-            case param1 is OpenTeamSearchAction:
-               _loc4_ = param1 as OpenTeamSearchAction;
+            case msg is OpenTeamSearchAction:
+               tsa = msg as OpenTeamSearchAction;
                KernelEventsManager.getInstance().processCallback(TriggerHookList.OpenTeamSearch);
                return true;
-            case param1 is OpenArenaAction:
-               _loc5_ = param1 as OpenArenaAction;
+            case msg is OpenArenaAction:
+               oaa = msg as OpenArenaAction;
                KernelEventsManager.getInstance().processCallback(TriggerHookList.OpenArena);
                return true;
-            case param1 is OpenMapAction:
-               _loc6_ = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
-               if(!_loc6_)
+            case msg is OpenMapAction:
+               playerEntity = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
+               if(!playerEntity)
                {
                   return true;
                }
                TooltipManager.hideAll();
-               KernelEventsManager.getInstance().processCallback(HookList.OpenMap,(param1 as OpenMapAction).conquest);
+               KernelEventsManager.getInstance().processCallback(HookList.OpenMap,(msg as OpenMapAction).conquest);
                return true;
-            case param1 is OpenInventoryAction:
-               _loc7_ = param1 as OpenInventoryAction;
-               KernelEventsManager.getInstance().processCallback(HookList.OpenInventory,_loc7_.behavior);
+            case msg is OpenInventoryAction:
+               oia = msg as OpenInventoryAction;
+               KernelEventsManager.getInstance().processCallback(HookList.OpenInventory,oia.behavior);
                return true;
-            case param1 is CloseInventoryAction:
+            case msg is CloseInventoryAction:
                KernelEventsManager.getInstance().processCallback(HookList.CloseInventory);
                return true;
-            case param1 is OpenMountAction:
+            case msg is OpenMountAction:
                KernelEventsManager.getInstance().processCallback(HookList.OpenMount);
                return true;
-            case param1 is OpenMainMenuAction:
+            case msg is OpenMainMenuAction:
                KernelEventsManager.getInstance().processCallback(HookList.OpenMainMenu);
                return true;
-            case param1 is OpenStatsAction:
+            case msg is OpenStatsAction:
                KernelEventsManager.getInstance().processCallback(HookList.OpenStats,InventoryManager.getInstance().inventory.getView("equipment").content);
                return true;
-            case param1 is CinematicMessage:
-               _loc8_ = param1 as CinematicMessage;
-               KernelEventsManager.getInstance().processCallback(HookList.Cinematic,_loc8_.cinematicId);
+            case msg is CinematicMessage:
+               cm = msg as CinematicMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.Cinematic,cm.cinematicId);
                return true;
-            case param1 is DisplayNumericalValueMessage:
-               _loc9_ = param1 as DisplayNumericalValueMessage;
-               _loc10_ = DofusEntities.getEntity(_loc9_.entityId);
-               _loc11_ = 0;
-               switch(_loc9_.type)
+            case msg is DisplayNumericalValueMessage:
+               dnvmsg = msg as DisplayNumericalValueMessage;
+               entity = DofusEntities.getEntity(dnvmsg.entityId);
+               color = 0;
+               switch(dnvmsg.type)
                {
                   case NumericalValueTypeEnum.NUMERICAL_VALUE_COLLECT:
-                     _loc11_ = 7615756;
-                     _loc37_ = Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame;
-                     if((_loc37_) && (_loc10_) && !((_loc10_ as IAnimated).getAnimation() == AnimationEnum.ANIM_STATIQUE))
+                     color = 7615756;
+                     interactiveFrame = Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame;
+                     if((interactiveFrame) && (entity) && (!((entity as IAnimated).getAnimation() == AnimationEnum.ANIM_STATIQUE)))
                      {
-                        _loc12_ = _loc37_.getInteractiveActionTimer(_loc10_);
+                        animTimer = interactiveFrame.getInteractiveActionTimer(entity);
                      }
-                     if((_loc12_) && (_loc12_.running))
+                     if((animTimer) && (animTimer.running))
                      {
-                        this._dnvmsgs[_loc12_] = _loc9_;
-                        _loc12_.addEventListener(TimerEvent.TIMER,this.onAnimEnd);
+                        this._dnvmsgs[animTimer] = dnvmsg;
+                        animTimer.addEventListener(TimerEvent.TIMER,this.onAnimEnd);
                      }
                      else
                      {
-                        this.displayNumericalValue(_loc10_,_loc9_,_loc11_);
+                        this.displayNumericalValue(entity,dnvmsg,color);
                      }
                      return true;
-                  default:
-                     _log.warn("DisplayNumericalValueMessage with unsupported type : " + _loc9_.type);
-                     return false;
                }
-            case param1 is DelayedSystemMessageDisplayMessage:
-               _loc13_ = param1 as DelayedSystemMessageDisplayMessage;
-               this.systemMessageDisplay(_loc13_);
+            case msg is DelayedSystemMessageDisplayMessage:
+               dsmdmsg = msg as DelayedSystemMessageDisplayMessage;
+               this.systemMessageDisplay(dsmdmsg);
                return true;
-            case param1 is SystemMessageDisplayMessage:
-               _loc14_ = param1 as SystemMessageDisplayMessage;
-               if(_loc14_.hangUp)
+            case msg is SystemMessageDisplayMessage:
+               smdmsg = msg as SystemMessageDisplayMessage;
+               if(smdmsg.hangUp)
                {
-                  _loc38_ = new DelayedSystemMessageDisplayMessage();
-                  _loc38_.initDelayedSystemMessageDisplayMessage(_loc14_.hangUp,_loc14_.msgId,_loc14_.parameters);
-                  DisconnectionHandlerFrame.messagesAfterReset.push(_loc38_);
+                  dsmdmsg2 = new DelayedSystemMessageDisplayMessage();
+                  dsmdmsg2.initDelayedSystemMessageDisplayMessage(smdmsg.hangUp,smdmsg.msgId,smdmsg.parameters);
+                  DisconnectionHandlerFrame.messagesAfterReset.push(dsmdmsg2);
                }
-               this.systemMessageDisplay(_loc14_);
+               this.systemMessageDisplay(smdmsg);
                return true;
-            case param1 is ClientUIOpenedByObjectMessage:
-               _loc15_ = param1 as ClientUIOpenedByObjectMessage;
-               KernelEventsManager.getInstance().processCallback(CustomUiHookList.ClientUIOpened,_loc15_.type,_loc15_.uid);
+            case msg is ClientUIOpenedByObjectMessage:
+               cuiobomsg = msg as ClientUIOpenedByObjectMessage;
+               KernelEventsManager.getInstance().processCallback(CustomUiHookList.ClientUIOpened,cuiobomsg.type,cuiobomsg.uid);
                return true;
-            case param1 is ClientUIOpenedMessage:
-               _loc16_ = param1 as ClientUIOpenedMessage;
-               KernelEventsManager.getInstance().processCallback(CustomUiHookList.ClientUIOpened,_loc16_.type,0);
+            case msg is ClientUIOpenedMessage:
+               cuiomsg = msg as ClientUIOpenedMessage;
+               KernelEventsManager.getInstance().processCallback(CustomUiHookList.ClientUIOpened,cuiomsg.type,0);
                return true;
-            case param1 is EntityTalkMessage:
-               _loc17_ = param1 as EntityTalkMessage;
-               _loc18_ = DofusEntities.getEntity(_loc17_.entityId) as IDisplayable;
-               _loc21_ = new Array();
-               _loc22_ = TextInformationTypeEnum.TEXT_ENTITY_TALK;
-               if(_loc18_ == null)
+            case msg is EntityTalkMessage:
+               etmsg = msg as EntityTalkMessage;
+               speakerEntity = DofusEntities.getEntity(etmsg.entityId) as IDisplayable;
+               params = new Array();
+               type = TextInformationTypeEnum.TEXT_ENTITY_TALK;
+               if(speakerEntity == null)
                {
                   return true;
                }
-               _loc23_ = new Array();
-               for each (_loc39_ in _loc17_.parameters)
+               param = new Array();
+               for each (prm in etmsg.parameters)
                {
-                  _loc23_.push(_loc39_);
+                  param.push(prm);
                }
-               if(InfoMessage.getInfoMessageById(_loc22_ * 10000 + _loc17_.textId))
+               if(InfoMessage.getInfoMessageById(type * 10000 + etmsg.textId))
                {
-                  _loc20_ = InfoMessage.getInfoMessageById(_loc22_ * 10000 + _loc17_.textId).textId;
-                  if(_loc23_ != null)
+                  textId2 = InfoMessage.getInfoMessageById(type * 10000 + etmsg.textId).textId;
+                  if(param != null)
                   {
-                     if((_loc23_[0]) && !(_loc23_[0].indexOf("~") == -1))
+                     if((param[0]) && (!(param[0].indexOf("~") == -1)))
                      {
-                        _loc21_ = _loc23_[0].split("~");
+                        params = param[0].split("~");
                      }
                      else
                      {
-                        _loc21_ = _loc23_;
+                        params = param;
                      }
                   }
                }
                else
                {
-                  _log.error("Texte " + (_loc22_ * 10000 + _loc17_.textId) + " not found.");
-                  _loc19_ = "" + _loc17_.textId;
+                  _log.error("Texte " + (type * 10000 + etmsg.textId) + " not found.");
+                  msgContent2 = "" + etmsg.textId;
                }
-               if(!_loc19_)
+               if(!msgContent2)
                {
-                  _loc19_ = I18n.getText(_loc20_,_loc21_);
+                  msgContent2 = I18n.getText(textId2,params);
                }
-               _loc24_ = new ChatBubble(_loc19_);
-               TooltipManager.show(_loc24_,_loc18_.absoluteBounds,UiModuleManager.getInstance().getModule("Ankama_Tooltips"),true,"entityMsg" + _loc17_.entityId,LocationEnum.POINT_BOTTOMLEFT,LocationEnum.POINT_TOPRIGHT,0,true,null,null);
+               bubble = new ChatBubble(msgContent2);
+               TooltipManager.show(bubble,speakerEntity.absoluteBounds,UiModuleManager.getInstance().getModule("Ankama_Tooltips"),true,"entityMsg" + etmsg.entityId,LocationEnum.POINT_BOTTOMLEFT,LocationEnum.POINT_TOPRIGHT,0,true,null,null);
                return true;
-            case param1 is SubscriptionLimitationMessage:
-               _loc25_ = param1 as SubscriptionLimitationMessage;
-               _log.error("SubscriptionLimitationMessage reason " + _loc25_.reason);
-               _loc26_ = "";
-               switch(_loc25_.reason)
+            case msg is SubscriptionLimitationMessage:
+               slmsg = msg as SubscriptionLimitationMessage;
+               _log.error("SubscriptionLimitationMessage reason " + slmsg.reason);
+               text = "";
+               switch(slmsg.reason)
                {
                   case SubscriptionRequiredEnum.LIMIT_ON_JOB_XP:
-                     _loc26_ = I18n.getUiText("ui.payzone.limitJobXp");
+                     text = I18n.getUiText("ui.payzone.limitJobXp");
                      break;
                   case SubscriptionRequiredEnum.LIMIT_ON_JOB_USE:
-                     _loc26_ = I18n.getUiText("ui.payzone.limitJobXp");
+                     text = I18n.getUiText("ui.payzone.limitJobXp");
                      break;
                   case SubscriptionRequiredEnum.LIMIT_ON_MAP:
-                     _loc26_ = I18n.getUiText("ui.payzone.limit");
+                     text = I18n.getUiText("ui.payzone.limit");
                      break;
                   case SubscriptionRequiredEnum.LIMIT_ON_ITEM:
-                     _loc26_ = I18n.getUiText("ui.payzone.limitItem");
+                     text = I18n.getUiText("ui.payzone.limitItem");
                      break;
                   case SubscriptionRequiredEnum.LIMIT_ON_VENDOR:
-                     _loc26_ = I18n.getUiText("ui.payzone.limitVendor");
+                     text = I18n.getUiText("ui.payzone.limitVendor");
                      break;
                   case SubscriptionRequiredEnum.LIMITED_TO_SUBSCRIBER:
-                  default:
-                     _loc26_ = I18n.getUiText("ui.payzone.limit");
+                     text = I18n.getUiText("ui.payzone.limit");
+                     break;
                }
-               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,_loc26_,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,text,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                KernelEventsManager.getInstance().processCallback(HookList.NonSubscriberPopup);
                return true;
-            case param1 is SubscriptionZoneMessage:
-               _loc27_ = param1 as SubscriptionZoneMessage;
-               _log.error("SubscriptionZoneMessage active " + _loc27_.active);
-               KernelEventsManager.getInstance().processCallback(HookList.SubscriptionZone,_loc27_.active);
+            case msg is SubscriptionZoneMessage:
+               szmsg = msg as SubscriptionZoneMessage;
+               _log.error("SubscriptionZoneMessage active " + szmsg.active);
+               KernelEventsManager.getInstance().processCallback(HookList.SubscriptionZone,szmsg.active);
                return true;
-            case param1 is GameFightOptionStateUpdateMessage:
-               _loc28_ = param1 as GameFightOptionStateUpdateMessage;
-               switch(_loc28_.option)
+            case msg is GameFightOptionStateUpdateMessage:
+               gfosumsg = msg as GameFightOptionStateUpdateMessage;
+               switch(gfosumsg.option)
                {
                   case FightOptionsEnum.FIGHT_OPTION_SET_SECRET:
-                     KernelEventsManager.getInstance().processCallback(HookList.OptionWitnessForbidden,_loc28_.state);
+                     KernelEventsManager.getInstance().processCallback(HookList.OptionWitnessForbidden,gfosumsg.state);
                      break;
                   case FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY:
                      if(Kernel.getWorker().getFrame(FightContextFrame))
                      {
-                        KernelEventsManager.getInstance().processCallback(HookList.OptionLockParty,_loc28_.state);
+                        KernelEventsManager.getInstance().processCallback(HookList.OptionLockParty,gfosumsg.state);
                      }
                      break;
                   case FightOptionsEnum.FIGHT_OPTION_SET_CLOSED:
-                     if(PlayedCharacterManager.getInstance().teamId == _loc28_.teamId)
+                     if(PlayedCharacterManager.getInstance().teamId == gfosumsg.teamId)
                      {
-                        KernelEventsManager.getInstance().processCallback(HookList.OptionLockFight,_loc28_.state);
+                        KernelEventsManager.getInstance().processCallback(HookList.OptionLockFight,gfosumsg.state);
                      }
                      break;
                   case FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP:
-                     KernelEventsManager.getInstance().processCallback(HookList.OptionHelpWanted,_loc28_.state);
+                     KernelEventsManager.getInstance().processCallback(HookList.OptionHelpWanted,gfosumsg.state);
                      break;
                }
                if(Kernel.getWorker().getFrame(RoleplayEntitiesFrame))
@@ -320,32 +317,30 @@ package com.ankamagames.dofus.logic.game.common.frames
                   return false;
                }
                return true;
-            case param1 is ToggleWitnessForbiddenAction:
-               _loc29_ = FightOptionsEnum.FIGHT_OPTION_SET_SECRET;
-               _loc30_ = new GameFightOptionToggleMessage();
-               _loc30_.initGameFightOptionToggleMessage(_loc29_);
-               ConnectionsHandler.getConnection().send(_loc30_);
+            case msg is ToggleWitnessForbiddenAction:
+               option = FightOptionsEnum.FIGHT_OPTION_SET_SECRET;
+               gfotmsg = new GameFightOptionToggleMessage();
+               gfotmsg.initGameFightOptionToggleMessage(option);
+               ConnectionsHandler.getConnection().send(gfotmsg);
                return true;
-            case param1 is ToggleLockPartyAction:
-               _loc31_ = FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY;
-               _loc32_ = new GameFightOptionToggleMessage();
-               _loc32_.initGameFightOptionToggleMessage(_loc31_);
-               ConnectionsHandler.getConnection().send(_loc32_);
+            case msg is ToggleLockPartyAction:
+               option2 = FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY;
+               gfotmsg2 = new GameFightOptionToggleMessage();
+               gfotmsg2.initGameFightOptionToggleMessage(option2);
+               ConnectionsHandler.getConnection().send(gfotmsg2);
                return true;
-            case param1 is ToggleLockFightAction:
-               _loc33_ = FightOptionsEnum.FIGHT_OPTION_SET_CLOSED;
-               _loc34_ = new GameFightOptionToggleMessage();
-               _loc34_.initGameFightOptionToggleMessage(_loc33_);
-               ConnectionsHandler.getConnection().send(_loc34_);
+            case msg is ToggleLockFightAction:
+               option3 = FightOptionsEnum.FIGHT_OPTION_SET_CLOSED;
+               gfotmsg3 = new GameFightOptionToggleMessage();
+               gfotmsg3.initGameFightOptionToggleMessage(option3);
+               ConnectionsHandler.getConnection().send(gfotmsg3);
                return true;
-            case param1 is ToggleHelpWantedAction:
-               _loc35_ = FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP;
-               _loc36_ = new GameFightOptionToggleMessage();
-               _loc36_.initGameFightOptionToggleMessage(_loc35_);
-               ConnectionsHandler.getConnection().send(_loc36_);
+            case msg is ToggleHelpWantedAction:
+               option4 = FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP;
+               gfotmsg4 = new GameFightOptionToggleMessage();
+               gfotmsg4.initGameFightOptionToggleMessage(option4);
+               ConnectionsHandler.getConnection().send(gfotmsg4);
                return true;
-            default:
-               return false;
          }
       }
       
@@ -358,57 +353,57 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      private function onAnimEnd(param1:TimerEvent) : void {
-         param1.currentTarget.removeEventListener(TimerEvent.TIMER,this.onAnimEnd);
-         var _loc2_:DisplayNumericalValueMessage = this._dnvmsgs[param1.currentTarget];
-         this.displayNumericalValue(DofusEntities.getEntity(_loc2_.entityId),_loc2_,7615756,1,1500);
-         delete this._dnvmsgs[[param1.currentTarget]];
+      private function onAnimEnd(pTimerEvent:TimerEvent) : void {
+         pTimerEvent.currentTarget.removeEventListener(TimerEvent.TIMER,this.onAnimEnd);
+         var dnvmsg:DisplayNumericalValueMessage = this._dnvmsgs[pTimerEvent.currentTarget];
+         this.displayNumericalValue(DofusEntities.getEntity(dnvmsg.entityId),dnvmsg,7615756,1,1500);
+         delete this._dnvmsgs[[pTimerEvent.currentTarget]];
       }
       
-      private function displayNumericalValue(param1:IEntity, param2:DisplayNumericalValueMessage, param3:uint, param4:Number=1, param5:uint=2500) : void {
-         this.displayValue(param1,param2.value.toString(),param3,param4,param5);
-         var _loc6_:DisplayNumericalValueWithAgeBonusMessage = param2 as DisplayNumericalValueWithAgeBonusMessage;
-         if(_loc6_)
+      private function displayNumericalValue(pEntity:IEntity, pMsg:DisplayNumericalValueMessage, pColor:uint, pScrollSpeed:Number=1, pScrollDuration:uint=2500) : void {
+         this.displayValue(pEntity,pMsg.value.toString(),pColor,pScrollSpeed,pScrollDuration);
+         var dnvwabmsg:DisplayNumericalValueWithAgeBonusMessage = pMsg as DisplayNumericalValueWithAgeBonusMessage;
+         if(dnvwabmsg)
          {
-            this.displayValue(param1,_loc6_.valueOfBonus.toString(),16733440,param4,param5);
+            this.displayValue(pEntity,dnvwabmsg.valueOfBonus.toString(),16733440,pScrollSpeed,pScrollDuration);
          }
       }
       
-      private function displayValue(param1:IEntity, param2:String, param3:uint, param4:Number, param5:uint) : void {
-         if(!param1)
+      private function displayValue(pEntity:IEntity, pValue:String, pColor:uint, pScrollSpeed:Number, pScrollDuration:uint) : void {
+         if(!pEntity)
          {
             return;
          }
-         CharacteristicContextualManager.getInstance().addStatContextual(param2,param1,new TextFormat("Verdana",24,param3,true),1,param4,param5);
+         CharacteristicContextualManager.getInstance().addStatContextual(pValue,pEntity,new TextFormat("Verdana",24,pColor,true),1,pScrollSpeed,pScrollDuration);
       }
       
-      private function systemMessageDisplay(param1:SystemMessageDisplayMessage) : void {
-         var _loc4_:* = undefined;
-         var _loc5_:String = null;
-         var _loc6_:InfoMessage = null;
-         var _loc7_:uint = 0;
-         var _loc2_:Object = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-         var _loc3_:Array = new Array();
-         for each (_loc4_ in param1.parameters)
+      private function systemMessageDisplay(msg:SystemMessageDisplayMessage) : void {
+         var i:* = undefined;
+         var msgContent:String = null;
+         var message:InfoMessage = null;
+         var textId:uint = 0;
+         var commonMod:Object = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
+         var a:Array = new Array();
+         for each (i in msg.parameters)
          {
-            _loc3_.push(_loc4_);
+            a.push(i);
          }
-         _loc6_ = InfoMessage.getInfoMessageById(40000 + param1.msgId);
-         if(_loc6_)
+         message = InfoMessage.getInfoMessageById(40000 + msg.msgId);
+         if(message)
          {
-            _loc7_ = _loc6_.textId;
-            _loc5_ = I18n.getText(_loc7_);
-            if(_loc5_)
+            textId = message.textId;
+            msgContent = I18n.getText(textId);
+            if(msgContent)
             {
-               _loc5_ = ParamsDecoder.applyParams(_loc5_,_loc3_);
+               msgContent = ParamsDecoder.applyParams(msgContent,a);
             }
          }
          else
          {
-            _log.error("Information message " + (40000 + param1.msgId) + " cannot be found.");
-            _loc5_ = "Information message " + (40000 + param1.msgId) + " cannot be found.";
+            _log.error("Information message " + (40000 + msg.msgId) + " cannot be found.");
+            msgContent = "Information message " + (40000 + msg.msgId) + " cannot be found.";
          }
-         _loc2_.openPopup(I18n.getUiText("ui.popup.warning"),_loc5_,[I18n.getUiText("ui.common.ok")],null,null,null,null,false,true);
+         commonMod.openPopup(I18n.getUiText("ui.popup.warning"),msgContent,[I18n.getUiText("ui.common.ok")],null,null,null,null,false,true);
       }
    }
 }

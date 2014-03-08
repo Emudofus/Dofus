@@ -13,24 +13,24 @@ package com.ankamagames.dofus.logic.game.common.steps
    public class MoveStep extends AbstractSequencable
    {
       
-      public function MoveStep(param1:AnimatedCharacter, param2:Array, param3:IMovementBehavior=null) {
-         var _loc4_:* = 0;
+      public function MoveStep(pEntity:AnimatedCharacter, pArgs:Array, pMovementBehavior:IMovementBehavior=null) {
+         var i:* = 0;
          super();
-         this._entity = param1;
-         this._args = param2;
-         if(param3)
+         this._entity = pEntity;
+         this._args = pArgs;
+         if(pMovementBehavior)
          {
-            this._behavior = param3;
+            this._behavior = pMovementBehavior;
          }
          this._allowDiag = true;
-         while(_loc4_ <= 6)
+         while(i <= 6)
          {
-            if(!this._entity.hasAnimation(AnimationEnum.ANIM_MARCHE,_loc4_) || !this._entity.hasAnimation(AnimationEnum.ANIM_COURSE,_loc4_))
+            if((!this._entity.hasAnimation(AnimationEnum.ANIM_MARCHE,i)) || (!this._entity.hasAnimation(AnimationEnum.ANIM_COURSE,i)))
             {
                this._allowDiag = false;
                break;
             }
-            _loc4_ = _loc4_ + 2;
+            i = i + 2;
          }
          timeout = 20000;
       }
@@ -53,15 +53,15 @@ package com.ankamagames.dofus.logic.game.common.steps
          Pathfinding.findPath(DataMapProvider.getInstance(),this._entity.position,ScriptsUtil.getMapPoint(this._args),this._allowDiag,true,this.onPath);
       }
       
-      private function onPath(param1:MovementPath) : void {
+      private function onPath(pPath:MovementPath) : void {
          if(this._behavior)
          {
             this._entity.movementBehavior = this._behavior;
-            this._behavior.move(this._entity,param1,this.onMovementEnd);
+            this._behavior.move(this._entity,pPath,this.onMovementEnd);
          }
          else
          {
-            this._entity.move(param1,this.onMovementEnd);
+            this._entity.move(pPath,this.onMovementEnd);
          }
       }
       

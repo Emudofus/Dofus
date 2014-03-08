@@ -13,10 +13,10 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightChangeLookStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightChangeLookStep(param1:int, param2:TiphonEntityLook) {
+      public function FightChangeLookStep(fighterId:int, newLook:TiphonEntityLook) {
          super();
-         this._fighterId = param1;
-         this._newLook = param2;
+         this._fighterId = fighterId;
+         this._newLook = newLook;
       }
       
       private var _fighterId:int;
@@ -28,9 +28,9 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc1_:GameContextRefreshEntityLookMessage = new GameContextRefreshEntityLookMessage();
-         _loc1_.initGameContextRefreshEntityLookMessage(this._fighterId,EntityLookAdapter.toNetwork(this._newLook));
-         Kernel.getWorker().getFrame(FightEntitiesFrame).process(_loc1_);
+         var gcrelmsg:GameContextRefreshEntityLookMessage = new GameContextRefreshEntityLookMessage();
+         gcrelmsg.initGameContextRefreshEntityLookMessage(this._fighterId,EntityLookAdapter.toNetwork(this._newLook));
+         Kernel.getWorker().getFrame(FightEntitiesFrame).process(gcrelmsg);
          this._newLook = TiphonUtility.getLookWithoutMount(this._newLook);
          FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_CHANGE_LOOK,[this._fighterId,this._newLook],this._fighterId,castingSpellId);
          executeCallbacks();

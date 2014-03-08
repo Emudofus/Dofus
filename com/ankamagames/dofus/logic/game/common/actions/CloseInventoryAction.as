@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions
       }
       
       public static function create() : CloseInventoryAction {
-         var _loc1_:CloseInventoryAction = new CloseInventoryAction();
-         return _loc1_;
+         var a:CloseInventoryAction = new CloseInventoryAction();
+         return a;
       }
    }
 }

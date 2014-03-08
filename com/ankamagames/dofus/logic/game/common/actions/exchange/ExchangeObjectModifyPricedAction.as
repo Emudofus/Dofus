@@ -9,12 +9,12 @@ package com.ankamagames.dofus.logic.game.common.actions.exchange
          super();
       }
       
-      public static function create(param1:uint, param2:int, param3:int) : ExchangeObjectModifyPricedAction {
-         var _loc4_:ExchangeObjectModifyPricedAction = new ExchangeObjectModifyPricedAction();
-         _loc4_.objectUID = param1;
-         _loc4_.quantity = param2;
-         _loc4_.price = param3;
-         return _loc4_;
+      public static function create(pObjectUID:uint, pQuantity:int, pPrice:int) : ExchangeObjectModifyPricedAction {
+         var a:ExchangeObjectModifyPricedAction = new ExchangeObjectModifyPricedAction();
+         a.objectUID = pObjectUID;
+         a.quantity = pQuantity;
+         a.price = pPrice;
+         return a;
       }
       
       public var objectUID:uint;

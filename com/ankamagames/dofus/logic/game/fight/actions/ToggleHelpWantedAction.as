@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.fight.actions
       }
       
       public static function create() : ToggleHelpWantedAction {
-         var _loc1_:ToggleHelpWantedAction = new ToggleHelpWantedAction();
-         return _loc1_;
+         var a:ToggleHelpWantedAction = new ToggleHelpWantedAction();
+         return a;
       }
    }
 }

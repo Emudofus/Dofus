@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:uint) : NotificationUpdateFlagAction {
-         var _loc2_:NotificationUpdateFlagAction = new NotificationUpdateFlagAction();
-         _loc2_.index = param1;
-         return _loc2_;
+      public static function create(index:uint) : NotificationUpdateFlagAction {
+         var action:NotificationUpdateFlagAction = new NotificationUpdateFlagAction();
+         action.index = index;
+         return action;
       }
       
       public var index:uint;

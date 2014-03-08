@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:String) : PlaySoundAction {
-         var _loc2_:PlaySoundAction = new PlaySoundAction();
-         _loc2_.soundId = param1;
-         return _loc2_;
+      public static function create(pSoundId:String) : PlaySoundAction {
+         var action:PlaySoundAction = new PlaySoundAction();
+         action.soundId = pSoundId;
+         return action;
       }
       
       public var soundId:String;

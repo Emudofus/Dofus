@@ -18,10 +18,10 @@ package com.ankamagames.dofus.datacenter.communication
       
       private static var _log:Logger = Log.getLogger(getQualifiedClassName(InfoMessage));
       
-      public static function getInfoMessageById(param1:uint) : InfoMessage {
-         var _loc2_:* = GameData.getObject(MODULE,param1);
-         var _loc3_:* = GameData.getObject(MODULE,param1) as InfoMessage;
-         return GameData.getObject(MODULE,param1) as InfoMessage;
+      public static function getInfoMessageById(id:uint) : InfoMessage {
+         var t:* = GameData.getObject(MODULE,id);
+         var tt:* = GameData.getObject(MODULE,id) as InfoMessage;
+         return GameData.getObject(MODULE,id) as InfoMessage;
       }
       
       public static function getInfoMessages() : Array {

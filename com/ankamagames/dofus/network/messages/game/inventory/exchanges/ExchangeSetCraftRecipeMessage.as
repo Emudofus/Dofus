@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6389;
       }
       
-      public function initExchangeSetCraftRecipeMessage(param1:uint=0) : ExchangeSetCraftRecipeMessage {
-         this.objectGID = param1;
+      public function initExchangeSetCraftRecipeMessage(objectGID:uint=0) : ExchangeSetCraftRecipeMessage {
+         this.objectGID = objectGID;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeSetCraftRecipeMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeSetCraftRecipeMessage(output);
       }
       
-      public function serializeAs_ExchangeSetCraftRecipeMessage(param1:IDataOutput) : void {
+      public function serializeAs_ExchangeSetCraftRecipeMessage(output:IDataOutput) : void {
          if(this.objectGID < 0)
          {
             throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
          }
          else
          {
-            param1.writeShort(this.objectGID);
+            output.writeShort(this.objectGID);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeSetCraftRecipeMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeSetCraftRecipeMessage(input);
       }
       
-      public function deserializeAs_ExchangeSetCraftRecipeMessage(param1:IDataInput) : void {
-         this.objectGID = param1.readShort();
+      public function deserializeAs_ExchangeSetCraftRecipeMessage(input:IDataInput) : void {
+         this.objectGID = input.readShort();
          if(this.objectGID < 0)
          {
             throw new Error("Forbidden value (" + this.objectGID + ") on element of ExchangeSetCraftRecipeMessage.objectGID.");

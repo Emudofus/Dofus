@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.initialization
          return 6237;
       }
       
-      public function initServerExperienceModificatorMessage(param1:uint=0) : ServerExperienceModificatorMessage {
-         this.experiencePercent = param1;
+      public function initServerExperienceModificatorMessage(experiencePercent:uint=0) : ServerExperienceModificatorMessage {
+         this.experiencePercent = experiencePercent;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.initialization
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ServerExperienceModificatorMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ServerExperienceModificatorMessage(output);
       }
       
-      public function serializeAs_ServerExperienceModificatorMessage(param1:IDataOutput) : void {
+      public function serializeAs_ServerExperienceModificatorMessage(output:IDataOutput) : void {
          if(this.experiencePercent < 0)
          {
             throw new Error("Forbidden value (" + this.experiencePercent + ") on element experiencePercent.");
          }
          else
          {
-            param1.writeShort(this.experiencePercent);
+            output.writeShort(this.experiencePercent);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ServerExperienceModificatorMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ServerExperienceModificatorMessage(input);
       }
       
-      public function deserializeAs_ServerExperienceModificatorMessage(param1:IDataInput) : void {
-         this.experiencePercent = param1.readShort();
+      public function deserializeAs_ServerExperienceModificatorMessage(input:IDataInput) : void {
+         this.experiencePercent = input.readShort();
          if(this.experiencePercent < 0)
          {
             throw new Error("Forbidden value (" + this.experiencePercent + ") on element of ServerExperienceModificatorMessage.experiencePercent.");

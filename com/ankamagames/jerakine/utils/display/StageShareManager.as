@@ -43,8 +43,8 @@ package com.ankamagames.jerakine.utils.display
       
       public static var chromeHeight:uint;
       
-      public static function set rootContainer(param1:DisplayObjectContainer) : void {
-         _rootContainer = param1;
+      public static function set rootContainer(d:DisplayObjectContainer) : void {
+         _rootContainer = d;
       }
       
       public static function get rootContainer() : DisplayObjectContainer {
@@ -56,21 +56,21 @@ package com.ankamagames.jerakine.utils.display
       }
       
       public static function get windowScale() : Number {
-         var _loc1_:* = NaN;
-         var _loc2_:* = NaN;
-         var _loc3_:* = NaN;
+         var stageWidth:* = NaN;
+         var stageHeight:* = NaN;
+         var scale:* = NaN;
          if(AirScanner.hasAir())
          {
-            _loc1_ = (stage.nativeWindow.width - chrome.x) / startWidth;
-            _loc2_ = (stage.nativeWindow.height - chrome.y) / startHeight;
-            _loc3_ = Math.min(_loc1_,_loc2_);
-            return _loc3_;
+            stageWidth = (stage.nativeWindow.width - chrome.x) / startWidth;
+            stageHeight = (stage.nativeWindow.height - chrome.y) / startHeight;
+            scale = Math.min(stageWidth,stageHeight);
+            return scale;
          }
          return Math.min(stage.stageWidth / startWidth,stage.stageHeight / startHeight);
       }
       
-      public static function set stage(param1:Stage) : void {
-         _stage = param1;
+      public static function set stage(value:Stage) : void {
+         _stage = value;
          _startWidth = 1280;
          _startHeight = 1024;
          if(AirScanner.hasAir())
@@ -80,18 +80,18 @@ package com.ankamagames.jerakine.utils.display
       }
       
       public static function testQuality() : void {
-         var _loc1_:String = _stage.quality;
+         var oldQuality:String = _stage.quality;
          _stage.quality = StageQuality.MEDIUM;
          _setQualityIsEnable = _stage.quality.toLowerCase() == StageQuality.MEDIUM;
-         _stage.quality = _loc1_;
+         _stage.quality = oldQuality;
       }
       
-      public static function setFullScreen(param1:Boolean, param2:Boolean=false) : void {
+      public static function setFullScreen(enabled:Boolean, onlyMaximize:Boolean=false) : void {
          if(AirScanner.hasAir())
          {
-            if(param1)
+            if(enabled)
             {
-               if(!param2)
+               if(!onlyMaximize)
                {
                   StageShareManager.stage.displayState = StageDisplayState["FULL_SCREEN_INTERACTIVE"];
                }
@@ -102,7 +102,7 @@ package com.ankamagames.jerakine.utils.display
             }
             else
             {
-               if(!param2)
+               if(!onlyMaximize)
                {
                   StageShareManager.stage.displayState = StageDisplayState.NORMAL;
                }
@@ -134,8 +134,8 @@ package com.ankamagames.jerakine.utils.display
          return _customMouseX;
       }
       
-      public static function set mouseX(param1:int) : void {
-         _customMouseX = param1;
+      public static function set mouseX(v:int) : void {
+         _customMouseX = v;
       }
       
       public static function get mouseY() : int {
@@ -146,8 +146,8 @@ package com.ankamagames.jerakine.utils.display
          return _customMouseY;
       }
       
-      public static function set mouseY(param1:int) : void {
-         _customMouseY = param1;
+      public static function set mouseY(v:int) : void {
+         _customMouseY = v;
       }
       
       public static function get stageOffsetX() : int {
@@ -166,17 +166,17 @@ package com.ankamagames.jerakine.utils.display
          return _rootContainer.scaleY;
       }
       
-      private static function displayStateChangeHandler(param1:NativeWindowDisplayStateEvent) : void {
-         var _loc2_:NativeWindow = null;
-         if(param1.beforeDisplayState == NativeWindowDisplayState.MINIMIZED)
+      private static function displayStateChangeHandler(event:NativeWindowDisplayStateEvent) : void {
+         var nativeWindow:NativeWindow = null;
+         if(event.beforeDisplayState == NativeWindowDisplayState.MINIMIZED)
          {
             if(AirScanner.hasAir())
             {
-               _loc2_ = _stage["nativeWindow"];
-               if(param1.afterDisplayState == NativeWindowDisplayState.NORMAL)
+               nativeWindow = _stage["nativeWindow"];
+               if(event.afterDisplayState == NativeWindowDisplayState.NORMAL)
                {
-                  _loc2_.width = _loc2_.width-1;
-                  _loc2_.width = _loc2_.width + 1;
+                  nativeWindow.width = nativeWindow.width - 1;
+                  nativeWindow.width = nativeWindow.width + 1;
                }
             }
          }
@@ -186,8 +186,8 @@ package com.ankamagames.jerakine.utils.display
          return _chrome;
       }
       
-      public static function set chrome(param1:Point) : void {
-         _chrome = param1;
+      public static function set chrome(value:Point) : void {
+         _chrome = value;
       }
    }
 }

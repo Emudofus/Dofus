@@ -26,9 +26,9 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6176;
       }
       
-      public function initGameActionFightDispellSpellMessage(param1:uint=0, param2:int=0, param3:int=0, param4:uint=0) : GameActionFightDispellSpellMessage {
-         super.initGameActionFightDispellMessage(param1,param2,param3);
-         this.spellId = param4;
+      public function initGameActionFightDispellSpellMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, spellId:uint=0) : GameActionFightDispellSpellMessage {
+         super.initGameActionFightDispellMessage(actionId,sourceId,targetId);
+         this.spellId = spellId;
          this._isInitialized = true;
          return this;
       }
@@ -39,40 +39,40 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameActionFightDispellSpellMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameActionFightDispellSpellMessage(output);
       }
       
-      public function serializeAs_GameActionFightDispellSpellMessage(param1:IDataOutput) : void {
-         super.serializeAs_GameActionFightDispellMessage(param1);
+      public function serializeAs_GameActionFightDispellSpellMessage(output:IDataOutput) : void {
+         super.serializeAs_GameActionFightDispellMessage(output);
          if(this.spellId < 0)
          {
             throw new Error("Forbidden value (" + this.spellId + ") on element spellId.");
          }
          else
          {
-            param1.writeInt(this.spellId);
+            output.writeInt(this.spellId);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameActionFightDispellSpellMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameActionFightDispellSpellMessage(input);
       }
       
-      public function deserializeAs_GameActionFightDispellSpellMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.spellId = param1.readInt();
+      public function deserializeAs_GameActionFightDispellSpellMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.spellId = input.readInt();
          if(this.spellId < 0)
          {
             throw new Error("Forbidden value (" + this.spellId + ") on element of GameActionFightDispellSpellMessage.spellId.");

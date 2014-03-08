@@ -6,10 +6,10 @@ package com.ankamagames.tiphon.events
    public class TiphonEvent extends Event implements ITiphonEvent
    {
       
-      public function TiphonEvent(param1:String, param2:*, param3:Object=null) {
-         super(param1,false,false);
-         this._sprite = param2;
-         this._params = param3;
+      public function TiphonEvent(pType:String, pSprite:*, pParams:Object=null) {
+         super(pType,false,false);
+         this._sprite = pSprite;
+         this._params = pParams;
       }
       
       public static const SOUND_EVENT:String = "Sound";
@@ -58,8 +58,8 @@ package com.ankamagames.tiphon.events
       
       private var _direction:int = -1;
       
-      public function set label(param1:String) : void {
-         this._label = param1;
+      public function set label(pLabel:String) : void {
+         this._label = pLabel;
       }
       
       public function get label() : String {
@@ -90,9 +90,9 @@ package com.ankamagames.tiphon.events
          return this._animationType + "_" + this._direction;
       }
       
-      public function set animationName(param1:String) : void {
-         this._animationType = param1.split("_")[0];
-         this._direction = param1.split("_")[1];
+      public function set animationName(pAnimationName:String) : void {
+         this._animationType = pAnimationName.split("_")[0];
+         this._direction = pAnimationName.split("_")[1];
          if(this._direction == 3)
          {
             this._direction = 1;

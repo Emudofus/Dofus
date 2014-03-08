@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.delay
          return 6153;
       }
       
-      public function initGameRolePlayDelayedActionMessage(param1:int=0, param2:uint=0, param3:Number=0) : GameRolePlayDelayedActionMessage {
-         this.delayedCharacterId = param1;
-         this.delayTypeId = param2;
-         this.delayEndTime = param3;
+      public function initGameRolePlayDelayedActionMessage(delayedCharacterId:int=0, delayTypeId:uint=0, delayEndTime:Number=0) : GameRolePlayDelayedActionMessage {
+         this.delayedCharacterId = delayedCharacterId;
+         this.delayTypeId = delayTypeId;
+         this.delayEndTime = delayEndTime;
          this._isInitialized = true;
          return this;
       }
@@ -46,48 +46,48 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.delay
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameRolePlayDelayedActionMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayDelayedActionMessage(output);
       }
       
-      public function serializeAs_GameRolePlayDelayedActionMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.delayedCharacterId);
-         param1.writeByte(this.delayTypeId);
+      public function serializeAs_GameRolePlayDelayedActionMessage(output:IDataOutput) : void {
+         output.writeInt(this.delayedCharacterId);
+         output.writeByte(this.delayTypeId);
          if(this.delayEndTime < 0)
          {
             throw new Error("Forbidden value (" + this.delayEndTime + ") on element delayEndTime.");
          }
          else
          {
-            param1.writeDouble(this.delayEndTime);
+            output.writeDouble(this.delayEndTime);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameRolePlayDelayedActionMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayDelayedActionMessage(input);
       }
       
-      public function deserializeAs_GameRolePlayDelayedActionMessage(param1:IDataInput) : void {
-         this.delayedCharacterId = param1.readInt();
-         this.delayTypeId = param1.readByte();
+      public function deserializeAs_GameRolePlayDelayedActionMessage(input:IDataInput) : void {
+         this.delayedCharacterId = input.readInt();
+         this.delayTypeId = input.readByte();
          if(this.delayTypeId < 0)
          {
             throw new Error("Forbidden value (" + this.delayTypeId + ") on element of GameRolePlayDelayedActionMessage.delayTypeId.");
          }
          else
          {
-            this.delayEndTime = param1.readDouble();
+            this.delayEndTime = input.readDouble();
             if(this.delayEndTime < 0)
             {
                throw new Error("Forbidden value (" + this.delayEndTime + ") on element of GameRolePlayDelayedActionMessage.delayEndTime.");

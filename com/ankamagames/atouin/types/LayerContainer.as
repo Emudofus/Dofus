@@ -8,10 +8,10 @@ package com.ankamagames.atouin.types
    public class LayerContainer extends Sprite
    {
       
-      public function LayerContainer(param1:int) {
+      public function LayerContainer(nId:int) {
          super();
-         this._nLayerId = param1;
-         name = "layer" + param1;
+         this._nLayerId = nId;
+         name = "layer" + nId;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LayerContainer));
@@ -24,26 +24,26 @@ package com.ankamagames.atouin.types
          return this._nLayerId;
       }
       
-      public function addCell(param1:CellContainer) : void {
-         var _loc2_:CellContainer = null;
-         var _loc3_:uint = 0;
-         var _loc4_:uint = _loc3_;
-         while(_loc4_ < numChildren)
+      public function addCell(cellCtr:CellContainer) : void {
+         var currentCell:CellContainer = null;
+         var startIndex:uint = 0;
+         var i:uint = startIndex;
+         while(i < numChildren)
          {
-            _loc2_ = getChildAt(_loc4_) as CellContainer;
-            if(_loc2_)
+            currentCell = getChildAt(i) as CellContainer;
+            if(currentCell)
             {
-               if(param1.depth < _loc2_.depth)
+               if(cellCtr.depth < currentCell.depth)
                {
-                  this._lastIndexCell = _loc4_;
-                  addChildAt(param1,_loc4_);
+                  this._lastIndexCell = i;
+                  addChildAt(cellCtr,i);
                   return;
                }
             }
-            _loc4_++;
+            i++;
          }
          this._lastIndexCell = numChildren;
-         addChild(param1);
+         addChild(cellCtr);
       }
    }
 }

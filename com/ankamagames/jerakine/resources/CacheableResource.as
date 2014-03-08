@@ -3,10 +3,10 @@ package com.ankamagames.jerakine.resources
    public class CacheableResource extends Object
    {
       
-      public function CacheableResource(param1:uint, param2:*) {
+      public function CacheableResource(type:uint, resource:*) {
          super();
-         this.resourceType = param1;
-         this.resource = param2;
+         this.resourceType = type;
+         this.resource = resource;
       }
       
       public var resource;

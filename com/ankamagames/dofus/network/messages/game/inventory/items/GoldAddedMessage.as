@@ -29,8 +29,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6030;
       }
       
-      public function initGoldAddedMessage(param1:GoldItem=null) : GoldAddedMessage {
-         this.gold = param1;
+      public function initGoldAddedMessage(gold:GoldItem=null) : GoldAddedMessage {
+         this.gold = gold;
          this._isInitialized = true;
          return this;
       }
@@ -40,31 +40,31 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GoldAddedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GoldAddedMessage(output);
       }
       
-      public function serializeAs_GoldAddedMessage(param1:IDataOutput) : void {
-         this.gold.serializeAs_GoldItem(param1);
+      public function serializeAs_GoldAddedMessage(output:IDataOutput) : void {
+         this.gold.serializeAs_GoldItem(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GoldAddedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GoldAddedMessage(input);
       }
       
-      public function deserializeAs_GoldAddedMessage(param1:IDataInput) : void {
+      public function deserializeAs_GoldAddedMessage(input:IDataInput) : void {
          this.gold = new GoldItem();
-         this.gold.deserialize(param1);
+         this.gold.deserialize(input);
       }
    }
 }

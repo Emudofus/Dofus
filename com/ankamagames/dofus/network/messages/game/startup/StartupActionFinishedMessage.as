@@ -32,10 +32,10 @@ package com.ankamagames.dofus.network.messages.game.startup
          return 1304;
       }
       
-      public function initStartupActionFinishedMessage(param1:Boolean=false, param2:uint=0, param3:Boolean=false) : StartupActionFinishedMessage {
-         this.success = param1;
-         this.actionId = param2;
-         this.automaticAction = param3;
+      public function initStartupActionFinishedMessage(success:Boolean=false, actionId:uint=0, automaticAction:Boolean=false) : StartupActionFinishedMessage {
+         this.success = success;
+         this.actionId = actionId;
+         this.automaticAction = automaticAction;
          this._isInitialized = true;
          return this;
       }
@@ -47,45 +47,45 @@ package com.ankamagames.dofus.network.messages.game.startup
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_StartupActionFinishedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_StartupActionFinishedMessage(output);
       }
       
-      public function serializeAs_StartupActionFinishedMessage(param1:IDataOutput) : void {
-         var _loc2_:uint = 0;
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,0,this.success);
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,1,this.automaticAction);
-         param1.writeByte(_loc2_);
+      public function serializeAs_StartupActionFinishedMessage(output:IDataOutput) : void {
+         var _box0:uint = 0;
+         _box0 = BooleanByteWrapper.setFlag(_box0,0,this.success);
+         _box0 = BooleanByteWrapper.setFlag(_box0,1,this.automaticAction);
+         output.writeByte(_box0);
          if(this.actionId < 0)
          {
             throw new Error("Forbidden value (" + this.actionId + ") on element actionId.");
          }
          else
          {
-            param1.writeInt(this.actionId);
+            output.writeInt(this.actionId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_StartupActionFinishedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_StartupActionFinishedMessage(input);
       }
       
-      public function deserializeAs_StartupActionFinishedMessage(param1:IDataInput) : void {
-         var _loc2_:uint = param1.readByte();
-         this.success = BooleanByteWrapper.getFlag(_loc2_,0);
-         this.automaticAction = BooleanByteWrapper.getFlag(_loc2_,1);
-         this.actionId = param1.readInt();
+      public function deserializeAs_StartupActionFinishedMessage(input:IDataInput) : void {
+         var _box0:uint = input.readByte();
+         this.success = BooleanByteWrapper.getFlag(_box0,0);
+         this.automaticAction = BooleanByteWrapper.getFlag(_box0,1);
+         this.actionId = input.readInt();
          if(this.actionId < 0)
          {
             throw new Error("Forbidden value (" + this.actionId + ") on element of StartupActionFinishedMessage.actionId.");

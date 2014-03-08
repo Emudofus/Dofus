@@ -9,13 +9,13 @@ package com.ankamagames.dofus.logic.game.common.actions.mount
          super();
       }
       
-      public static function create(param1:uint, param2:uint, param3:uint, param4:uint) : MountFeedRequestAction {
-         var _loc5_:MountFeedRequestAction = new MountFeedRequestAction();
-         _loc5_.mountId = param1;
-         _loc5_.mountLocation = param2 + 1;
-         _loc5_.mountFoodUid = param3;
-         _loc5_.quantity = param4;
-         return _loc5_;
+      public static function create(mountId:uint, mountLocation:uint, mountFoodUid:uint, quantity:uint) : MountFeedRequestAction {
+         var a:MountFeedRequestAction = new MountFeedRequestAction();
+         a.mountId = mountId;
+         a.mountLocation = mountLocation + 1;
+         a.mountFoodUid = mountFoodUid;
+         a.quantity = quantity;
+         return a;
       }
       
       public var mountId:uint;

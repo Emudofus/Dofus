@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.mount
          super();
       }
       
-      public static function create(param1:uint) : MountSetXpRatioRequestAction {
-         var _loc2_:MountSetXpRatioRequestAction = new MountSetXpRatioRequestAction();
-         _loc2_.xpRatio = param1;
-         return _loc2_;
+      public static function create(xpRatio:uint) : MountSetXpRatioRequestAction {
+         var o:MountSetXpRatioRequestAction = new MountSetXpRatioRequestAction();
+         o.xpRatio = xpRatio;
+         return o;
       }
       
       public var xpRatio:uint;

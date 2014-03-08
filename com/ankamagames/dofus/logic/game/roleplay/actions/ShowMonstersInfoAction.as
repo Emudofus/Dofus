@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(param1:Boolean=true) : ShowMonstersInfoAction {
-         var _loc2_:ShowMonstersInfoAction = new ShowMonstersInfoAction();
-         _loc2_.fromShortcut = param1;
-         return _loc2_;
+      public static function create(pFromShortcut:Boolean=true) : ShowMonstersInfoAction {
+         var a:ShowMonstersInfoAction = new ShowMonstersInfoAction();
+         a.fromShortcut = pFromShortcut;
+         return a;
       }
       
       public var fromShortcut:Boolean;

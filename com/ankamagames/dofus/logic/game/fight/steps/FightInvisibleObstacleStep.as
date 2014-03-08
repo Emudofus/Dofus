@@ -7,10 +7,10 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightInvisibleObstacleStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightInvisibleObstacleStep(param1:int, param2:int) {
+      public function FightInvisibleObstacleStep(fighterId:int, spellLevelId:int) {
          super();
-         this._fighterId = param1;
-         this._spellLevelId = param2;
+         this._fighterId = fighterId;
+         this._spellLevelId = spellLevelId;
       }
       
       private var _fighterId:int;

@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.alliance
          super();
       }
       
-      public static function create(param1:Boolean) : SetEnableAVARequestAction {
-         var _loc2_:SetEnableAVARequestAction = new SetEnableAVARequestAction();
-         _loc2_.enable = param1;
-         return _loc2_;
+      public static function create(enable:Boolean) : SetEnableAVARequestAction {
+         var action:SetEnableAVARequestAction = new SetEnableAVARequestAction();
+         action.enable = enable;
+         return action;
       }
       
       public var enable:Boolean;

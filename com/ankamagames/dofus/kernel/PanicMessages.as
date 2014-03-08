@@ -17,9 +17,7 @@ package com.ankamagames.dofus.kernel
       
       public static const PROTOCOL_TOO_NEW:uint = 5;
       
-      public static function getMessage(param1:uint, param2:Array) : String {
-         var errorId:uint = param1;
-         var args:Array = param2;
+      public static function getMessage(errorId:uint, args:Array) : String {
          var errorMsg:String = "";
          try
          {
@@ -40,8 +38,6 @@ package com.ankamagames.dofus.kernel
                case PROTOCOL_TOO_NEW:
                   errorMsg = "The client protocol version (which is " + args[0] + ") is too new for the server.\n" + "The server can handle clients up to protocol version " + args[1] + ".";
                   break;
-               default:
-                  errorMsg = "Unknown error " + errorId;
             }
          }
          catch(e:Error)

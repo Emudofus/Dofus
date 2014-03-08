@@ -7,28 +7,28 @@ package com.ankamagames.dofus.internalDatacenter.world
    public class WorldPointWrapper extends WorldPoint implements IDataCenter
    {
       
-      public function WorldPointWrapper(param1:uint, param2:Boolean=false, param3:int=0, param4:int=0) {
-         var _loc5_:Object = null;
+      public function WorldPointWrapper(mapid:uint, fixedOutdoor:Boolean=false, outx:int=0, outy:int=0) {
+         var mapInfo:Object = null;
          super();
-         mapId = param1;
+         mapId = mapid;
          setFromMapId();
-         if(param2)
+         if(fixedOutdoor)
          {
-            this._outdoorX = param3;
-            this._outdoorY = param4;
+            this._outdoorX = outx;
+            this._outdoorY = outy;
          }
          else
          {
-            _loc5_ = MapPosition.getMapPositionById(param1);
-            if(!_loc5_)
+            mapInfo = MapPosition.getMapPositionById(mapid);
+            if(!mapInfo)
             {
                this._outdoorX = x;
                this._outdoorY = y;
             }
             else
             {
-               this._outdoorX = _loc5_.posX;
-               this._outdoorY = _loc5_.posY;
+               this._outdoorX = mapInfo.posX;
+               this._outdoorY = mapInfo.posY;
             }
          }
       }
@@ -47,9 +47,9 @@ package com.ankamagames.dofus.internalDatacenter.world
          return this._outdoorY;
       }
       
-      public function setOutdoorCoords(param1:int, param2:int) : void {
-         this._outdoorX = param1;
-         this._outdoorY = param2;
+      public function setOutdoorCoords(x:int, y:int) : void {
+         this._outdoorX = x;
+         this._outdoorY = y;
       }
    }
 }

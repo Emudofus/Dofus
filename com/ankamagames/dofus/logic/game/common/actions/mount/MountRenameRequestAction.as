@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.mount
          super();
       }
       
-      public static function create(param1:String, param2:Number) : MountRenameRequestAction {
-         var _loc3_:MountRenameRequestAction = new MountRenameRequestAction();
-         _loc3_.newName = param1;
-         _loc3_.mountId = param2;
-         return _loc3_;
+      public static function create(newName:String, mountId:Number) : MountRenameRequestAction {
+         var o:MountRenameRequestAction = new MountRenameRequestAction();
+         o.newName = newName;
+         o.mountId = mountId;
+         return o;
       }
       
       public var newName:String;

@@ -6,8 +6,8 @@ package com.ankamagames.tubul.events
    public class FadeEvent extends Event
    {
       
-      public function FadeEvent(param1:String, param2:Boolean=false, param3:Boolean=false) {
-         super(param1,param2,param3);
+      public function FadeEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
       }
       
       public static const COMPLETE:String = "complete";
@@ -15,9 +15,9 @@ package com.ankamagames.tubul.events
       public var soundSource:ISoundController;
       
       override public function clone() : Event {
-         var _loc1_:FadeEvent = new FadeEvent(type,bubbles,cancelable);
-         _loc1_.soundSource = this.soundSource;
-         return _loc1_;
+         var fe:FadeEvent = new FadeEvent(type,bubbles,cancelable);
+         fe.soundSource = this.soundSource;
+         return fe;
       }
    }
 }

@@ -5,9 +5,9 @@ package com.ankamagames.berilia.components.messages
    public class TextClickMessage extends ComponentMessage
    {
       
-      public function TextClickMessage(param1:InteractiveObject, param2:String) {
-         this._textEvent = param2;
-         super(param1);
+      public function TextClickMessage(target:InteractiveObject, textEvent:String) {
+         this._textEvent = textEvent;
+         super(target);
       }
       
       private var _textEvent:String;

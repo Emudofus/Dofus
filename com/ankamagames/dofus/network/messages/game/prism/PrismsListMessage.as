@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.prism
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.prism.PrismSubareaEmptyInfo;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,8 +31,8 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 6440;
       }
       
-      public function initPrismsListMessage(param1:Vector.<PrismSubareaEmptyInfo>=null) : PrismsListMessage {
-         this.prisms = param1;
+      public function initPrismsListMessage(prisms:Vector.<PrismSubareaEmptyInfo>=null) : PrismsListMessage {
+         this.prisms = prisms;
          this._isInitialized = true;
          return this;
       }
@@ -42,47 +42,47 @@ package com.ankamagames.dofus.network.messages.game.prism
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PrismsListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismsListMessage(output);
       }
       
-      public function serializeAs_PrismsListMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.prisms.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.prisms.length)
+      public function serializeAs_PrismsListMessage(output:IDataOutput) : void {
+         output.writeShort(this.prisms.length);
+         var _i1:uint = 0;
+         while(_i1 < this.prisms.length)
          {
-            param1.writeShort((this.prisms[_loc2_] as PrismSubareaEmptyInfo).getTypeId());
-            (this.prisms[_loc2_] as PrismSubareaEmptyInfo).serialize(param1);
-            _loc2_++;
+            output.writeShort((this.prisms[_i1] as PrismSubareaEmptyInfo).getTypeId());
+            (this.prisms[_i1] as PrismSubareaEmptyInfo).serialize(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PrismsListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismsListMessage(input);
       }
       
-      public function deserializeAs_PrismsListMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         var _loc5_:PrismSubareaEmptyInfo = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_PrismsListMessage(input:IDataInput) : void {
+         var _id1:uint = 0;
+         var _item1:PrismSubareaEmptyInfo = null;
+         var _prismsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _prismsLen)
          {
-            _loc4_ = param1.readUnsignedShort();
-            _loc5_ = ProtocolTypeManager.getInstance(PrismSubareaEmptyInfo,_loc4_);
-            _loc5_.deserialize(param1);
-            this.prisms.push(_loc5_);
-            _loc3_++;
+            _id1 = input.readUnsignedShort();
+            _item1 = ProtocolTypeManager.getInstance(PrismSubareaEmptyInfo,_id1);
+            _item1.deserialize(input);
+            this.prisms.push(_item1);
+            _i1++;
          }
       }
    }

@@ -19,20 +19,20 @@ package com.ankamagames.dofus.uiApi
       
       private var _module:UiModule;
       
-      public function set module(param1:UiModule) : void {
-         this._module = param1;
+      public function set module(value:UiModule) : void {
+         this._module = value;
       }
       
       public function destroy() : void {
          this._module = null;
       }
       
-      public function getDocument(param1:uint) : Object {
-         return Document.getDocumentById(param1);
+      public function getDocument(pDocId:uint) : Object {
+         return Document.getDocumentById(pDocId);
       }
       
-      public function getType(param1:uint) : uint {
-         return Document.getDocumentById(param1).typeId;
+      public function getType(pDocId:uint) : uint {
+         return Document.getDocumentById(pDocId).typeId;
       }
    }
 }

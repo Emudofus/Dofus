@@ -7,15 +7,15 @@ package com.ankamagames.jerakine.utils.display
          super();
       }
       
-      public static function angleToOrientation(param1:Number) : uint {
-         var _loc2_:uint = 0;
+      public static function angleToOrientation(radianAngle:Number) : uint {
+         var orientation:uint = 0;
          switch(null)
          {
-            case param1 > -(Math.PI / 8) && param1 <= Math.PI / 8:
-               _loc2_ = 0;
+            case radianAngle > -(Math.PI / 8) && radianAngle <= Math.PI / 8:
+               orientation = 0;
                break;
          }
-         return _loc2_;
+         return orientation;
       }
    }
 }

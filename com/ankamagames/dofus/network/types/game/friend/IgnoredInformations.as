@@ -17,8 +17,8 @@ package com.ankamagames.dofus.network.types.game.friend
          return 106;
       }
       
-      public function initIgnoredInformations(param1:uint=0, param2:String="") : IgnoredInformations {
-         super.initAbstractContactInformations(param1,param2);
+      public function initIgnoredInformations(accountId:uint=0, accountName:String="") : IgnoredInformations {
+         super.initAbstractContactInformations(accountId,accountName);
          return this;
       }
       
@@ -26,20 +26,20 @@ package com.ankamagames.dofus.network.types.game.friend
          super.reset();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_IgnoredInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_IgnoredInformations(output);
       }
       
-      public function serializeAs_IgnoredInformations(param1:IDataOutput) : void {
-         super.serializeAs_AbstractContactInformations(param1);
+      public function serializeAs_IgnoredInformations(output:IDataOutput) : void {
+         super.serializeAs_AbstractContactInformations(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_IgnoredInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_IgnoredInformations(input);
       }
       
-      public function deserializeAs_IgnoredInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_IgnoredInformations(input:IDataInput) : void {
+         super.deserialize(input);
       }
    }
 }

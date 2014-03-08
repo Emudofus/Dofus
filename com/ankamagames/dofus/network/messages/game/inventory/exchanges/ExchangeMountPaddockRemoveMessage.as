@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6050;
       }
       
-      public function initExchangeMountPaddockRemoveMessage(param1:Number=0) : ExchangeMountPaddockRemoveMessage {
-         this.mountId = param1;
+      public function initExchangeMountPaddockRemoveMessage(mountId:Number=0) : ExchangeMountPaddockRemoveMessage {
+         this.mountId = mountId;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeMountPaddockRemoveMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeMountPaddockRemoveMessage(output);
       }
       
-      public function serializeAs_ExchangeMountPaddockRemoveMessage(param1:IDataOutput) : void {
-         param1.writeDouble(this.mountId);
+      public function serializeAs_ExchangeMountPaddockRemoveMessage(output:IDataOutput) : void {
+         output.writeDouble(this.mountId);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeMountPaddockRemoveMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeMountPaddockRemoveMessage(input);
       }
       
-      public function deserializeAs_ExchangeMountPaddockRemoveMessage(param1:IDataInput) : void {
-         this.mountId = param1.readDouble();
+      public function deserializeAs_ExchangeMountPaddockRemoveMessage(input:IDataInput) : void {
+         this.mountId = input.readDouble();
       }
    }
 }

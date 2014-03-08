@@ -29,52 +29,52 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
       
       private var _fakepos:int = -1;
       
-      override public function processInputMessage(param1:Message, param2:String) : Boolean {
-         var _loc3_:IEntity = null;
-         var _loc4_:uint = 0;
-         var _loc5_:CellClickMessage = null;
+      override public function processInputMessage(pMsgToProcess:Message, pMode:String) : Boolean {
+         var entity:IEntity = null;
+         var tmpCellId:uint = 0;
+         var ccm:CellClickMessage = null;
          canBeStacked = false;
          if(this._abstractEntitiesFrame == null)
          {
             this._abstractEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
          }
-         if((param1 is CellClickMessage || param1 is EntityClickMessage) && !PlayedCharacterManager.getInstance().isFighting && param2 == type)
+         if(((pMsgToProcess is CellClickMessage) || (pMsgToProcess is EntityClickMessage)) && (!PlayedCharacterManager.getInstance().isFighting) && (pMode == type))
          {
-            _loc3_ = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
-            if(param1 is CellClickMessage)
+            entity = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
+            if(pMsgToProcess is CellClickMessage)
             {
-               _loc4_ = (param1 as CellClickMessage).cellId;
+               tmpCellId = (pMsgToProcess as CellClickMessage).cellId;
             }
             else
             {
-               if(param1 is EntityClickMessage && this._abstractEntitiesFrame.getEntityInfos((param1 as EntityClickMessage).entity.id) is GameRolePlayGroupMonsterInformations)
+               if((pMsgToProcess is EntityClickMessage) && (this._abstractEntitiesFrame.getEntityInfos((pMsgToProcess as EntityClickMessage).entity.id) is GameRolePlayGroupMonsterInformations))
                {
-                  _loc4_ = (param1 as EntityClickMessage).entity.position.cellId;
+                  tmpCellId = (pMsgToProcess as EntityClickMessage).entity.position.cellId;
                }
                else
                {
                   return false;
                }
             }
-            if(!(_loc3_ == null) && !(_loc3_.position.cellId == _loc4_))
+            if((!(entity == null)) && (!(entity.position.cellId == tmpCellId)))
             {
-               pendingMessage = param1;
+               pendingMessage = pMsgToProcess;
                canBeStacked = true;
                isAvailableToStart = true;
-               if(param1 is CellClickMessage)
+               if(pMsgToProcess is CellClickMessage)
                {
-                  _loc5_ = param1 as CellClickMessage;
-                  position = _loc5_.cell;
+                  ccm = pMsgToProcess as CellClickMessage;
+                  position = ccm.cell;
                   if(!position)
                   {
-                     position = MapPoint.fromCellId(_loc5_.cellId);
+                     position = MapPoint.fromCellId(ccm.cellId);
                   }
                }
                else
                {
-                  if(param1 is EntityClickMessage)
+                  if(pMsgToProcess is EntityClickMessage)
                   {
-                     position = (param1 as EntityClickMessage).entity.position;
+                     position = (pMsgToProcess as EntityClickMessage).entity.position;
                   }
                }
                return true;
@@ -82,40 +82,40 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          }
          else
          {
-            if(param1 is CellClickMessage && !PlayedCharacterManager.getInstance().isFighting && param2 == ALWAYS)
+            if((pMsgToProcess is CellClickMessage) && (!PlayedCharacterManager.getInstance().isFighting) && (pMode == ALWAYS))
             {
-               this._fakepos = (param1 as CellClickMessage).cellId;
+               this._fakepos = (pMsgToProcess as CellClickMessage).cellId;
                return true;
             }
          }
          return false;
       }
       
-      override public function processOutputMessage(param1:Message, param2:String) : Boolean {
-         var _loc3_:IEntity = null;
-         if(param1 is CellClickMessage && param2 == ALWAYS)
+      override public function processOutputMessage(pMsgToProcess:Message, pMode:String) : Boolean {
+         var entity:IEntity = null;
+         if((pMsgToProcess is CellClickMessage) && (pMode == ALWAYS))
          {
             isAvailableToStart = false;
          }
          else
          {
-            if(param1 is CharacterMovementStoppedMessage || param1 is EntityMovementStoppedMessage)
+            if((pMsgToProcess is CharacterMovementStoppedMessage) || (pMsgToProcess is EntityMovementStoppedMessage))
             {
                this._fakepos = -1;
-               _loc3_ = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
-               if(!(_loc3_ == null) && _loc3_.position.cellId == position.cellId)
+               entity = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
+               if((!(entity == null)) && (entity.position.cellId == position.cellId))
                {
                   this._fakepos = -1;
                   actionStarted = true;
                   return true;
                }
-               this._fakepos = _loc3_.position.cellId;
+               this._fakepos = entity.position.cellId;
             }
          }
          return false;
       }
       
-      override public function checkAvailability(param1:Message) : void {
+      override public function checkAvailability(pMsgToProcess:Message) : void {
          if(PlayedCharacterManager.getInstance().isFighting)
          {
             isAvailableToStart = false;
@@ -127,11 +127,11 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
       }
       
       override public function copy() : AbstractBehavior {
-         var _loc1_:MoveBehavior = new MoveBehavior();
-         _loc1_.pendingMessage = this.pendingMessage;
-         _loc1_.position = this.position;
-         _loc1_.type = this.type;
-         return _loc1_;
+         var cp:MoveBehavior = new MoveBehavior();
+         cp.pendingMessage = this.pendingMessage;
+         cp.position = this.position;
+         cp.type = this.type;
+         return cp;
       }
       
       override public function get needToWait() : Boolean {
@@ -139,9 +139,9 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
       }
       
       override public function getFakePosition() : MapPoint {
-         var _loc1_:MapPoint = new MapPoint();
-         _loc1_.cellId = this._fakepos;
-         return _loc1_;
+         var mp:MapPoint = new MapPoint();
+         mp.cellId = this._fakepos;
+         return mp;
       }
    }
 }

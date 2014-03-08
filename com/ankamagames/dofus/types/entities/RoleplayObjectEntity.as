@@ -18,11 +18,11 @@ package com.ankamagames.dofus.types.entities
    public class RoleplayObjectEntity extends Sprite implements IInteractive, IDisplayable
    {
       
-      public function RoleplayObjectEntity(param1:int, param2:MapPoint) {
+      public function RoleplayObjectEntity(pId:int, pPosition:MapPoint) {
          super();
          this._displayBehavior = AtouinDisplayBehavior.getInstance();
          this.id = EntitiesManager.getInstance().getFreeEntityId();
-         this.position = param2;
+         this.position = pPosition;
          mouseChildren = false;
       }
       
@@ -40,16 +40,16 @@ package com.ankamagames.dofus.types.entities
          return this._id;
       }
       
-      public function set id(param1:int) : void {
-         this._id = param1;
+      public function set id(nValue:int) : void {
+         this._id = nValue;
       }
       
       public function get position() : MapPoint {
          return this._position;
       }
       
-      public function set position(param1:MapPoint) : void {
-         this._position = param1;
+      public function set position(oValue:MapPoint) : void {
+         this._position = oValue;
       }
       
       public function get displayed() : Boolean {
@@ -60,8 +60,8 @@ package com.ankamagames.dofus.types.entities
          return this._displayBehavior;
       }
       
-      public function set displayBehaviors(param1:IDisplayBehavior) : void {
-         this._displayBehavior = param1;
+      public function set displayBehaviors(oValue:IDisplayBehavior) : void {
+         this._displayBehavior = oValue;
       }
       
       public function get absoluteBounds() : IRectangle {
@@ -80,8 +80,8 @@ package com.ankamagames.dofus.types.entities
          return InteractionsEnum.CLICK | InteractionsEnum.OUT | InteractionsEnum.OVER;
       }
       
-      public function display(param1:uint=10) : void {
-         this._displayBehavior.display(this,param1);
+      public function display(strata:uint=10) : void {
+         this._displayBehavior.display(this,strata);
          this._displayed = true;
       }
       

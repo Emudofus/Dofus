@@ -5,11 +5,11 @@ package com.somerandomdude.colortoolkit.spaces
    public class HSL extends CoreColor implements IColorSpace
    {
       
-      public function HSL(param1:Number=0, param2:Number=0, param3:Number=0) {
+      public function HSL(hue:Number=0, saturation:Number=0, lightness:Number=0) {
          super();
-         this._hue = Math.min(360,Math.max(param1,0));
-         this._saturation = Math.min(100,Math.max(param2,0));
-         this._lightness = Math.min(100,Math.max(param3,0));
+         this._hue = Math.min(360,Math.max(hue,0));
+         this._saturation = Math.min(100,Math.max(saturation,0));
+         this._lightness = Math.min(100,Math.max(lightness,0));
          this._color = this.generateColorFromHSL(this._hue,this._saturation,this._lightness);
       }
       
@@ -23,8 +23,8 @@ package com.somerandomdude.colortoolkit.spaces
          return this._hue;
       }
       
-      public function set hue(param1:Number) : void {
-         this._hue = Math.min(360,Math.max(param1,0));
+      public function set hue(value:Number) : void {
+         this._hue = Math.min(360,Math.max(value,0));
          this._color = this.generateColorFromHSL(this._hue,this._saturation,this._lightness);
       }
       
@@ -32,8 +32,8 @@ package com.somerandomdude.colortoolkit.spaces
          return this._saturation;
       }
       
-      public function set saturation(param1:Number) : void {
-         this._saturation = Math.min(100,Math.max(param1,0));
+      public function set saturation(value:Number) : void {
+         this._saturation = Math.min(100,Math.max(value,0));
          this._color = this.generateColorFromHSL(this._hue,this._saturation,this._lightness);
       }
       
@@ -41,8 +41,8 @@ package com.somerandomdude.colortoolkit.spaces
          return this._lightness;
       }
       
-      public function set lightness(param1:Number) : void {
-         this._lightness = Math.min(100,Math.max(param1,0));
+      public function set lightness(value:Number) : void {
+         this._lightness = Math.min(100,Math.max(value,0));
          this._color = this.generateColorFromHSL(this._hue,this._saturation,this._lightness);
       }
       
@@ -50,101 +50,98 @@ package com.somerandomdude.colortoolkit.spaces
          return this._color;
       }
       
-      public function set color(param1:Number) : void {
-         this._color = param1;
-         var _loc2_:HSL = this.generateColorFromHex(param1);
-         this._hue = _loc2_.hue;
-         this._saturation = _loc2_.saturation;
-         this._lightness = _loc2_.lightness;
+      public function set color(value:Number) : void {
+         this._color = value;
+         var hsl:HSL = this.generateColorFromHex(value);
+         this._hue = hsl.hue;
+         this._saturation = hsl.saturation;
+         this._lightness = hsl.lightness;
       }
       
       public function clone() : IColorSpace {
          return new HSL(this._hue,this._saturation,this._lightness);
       }
       
-      private function generateColorFromHex(param1:int) : HSL {
-         var _loc7_:* = NaN;
-         var _loc8_:* = NaN;
-         var _loc9_:* = NaN;
-         var _loc10_:* = NaN;
-         var _loc2_:Number = param1 >> 16 & 255;
-         var _loc3_:Number = param1 >> 8 & 255;
-         var _loc4_:Number = param1 & 255;
-         _loc2_ = _loc2_ / 255;
-         _loc3_ = _loc3_ / 255;
-         _loc4_ = _loc4_ / 255;
-         var _loc5_:Number = Math.max(_loc2_,_loc3_,_loc4_);
-         var _loc6_:Number = Math.min(_loc2_,_loc3_,_loc4_);
-         _loc7_ = _loc8_ = _loc9_ = (_loc5_ + _loc6_) / 2;
-         if(_loc5_ == _loc6_)
+      private function generateColorFromHex(color:int) : HSL {
+         var h:* = NaN;
+         var s:* = NaN;
+         var l:* = NaN;
+         var d:* = NaN;
+         var r:Number = color >> 16 & 255;
+         var g:Number = color >> 8 & 255;
+         var b:Number = color & 255;
+         r = r / 255;
+         g = g / 255;
+         b = b / 255;
+         var max:Number = Math.max(r,g,b);
+         var min:Number = Math.min(r,g,b);
+         h = s = l = (max + min) / 2;
+         if(max == min)
          {
-            _loc7_ = _loc8_ = 0;
+            h = s = 0;
          }
          else
          {
-            _loc10_ = _loc5_ - _loc6_;
-            _loc8_ = _loc9_ > 0.5?_loc10_ / (2 - _loc5_ - _loc6_):_loc10_ / (_loc5_ + _loc6_);
-            switch(_loc5_)
+            d = max - min;
+            s = l > 0.5?d / (2 - max - min):d / (max + min);
+            switch(max)
             {
-               case _loc2_:
-                  _loc7_ = (_loc3_ - _loc4_) / _loc10_ + (_loc3_ < _loc4_?6:0);
+               case r:
+                  h = (g - b) / d + (g < b?6:0);
                   break;
-               case _loc3_:
-                  _loc7_ = (_loc4_ - _loc2_) / _loc10_ + 2;
+               case g:
+                  h = (b - r) / d + 2;
                   break;
-               case _loc4_:
-                  _loc7_ = (_loc2_ - _loc3_) / _loc10_ + 4;
+               case b:
+                  h = (r - g) / d + 4;
                   break;
             }
-            _loc7_ = _loc7_ / 6;
+            h = h / 6;
          }
-         _loc7_ = Math.round(_loc7_ * 360);
-         _loc8_ = Math.round(_loc8_ * 100);
-         _loc9_ = Math.round(_loc9_ * 100);
-         return new HSL(_loc7_,_loc8_,_loc9_);
+         h = Math.round(h * 360);
+         s = Math.round(s * 100);
+         l = Math.round(l * 100);
+         return new HSL(h,s,l);
       }
       
-      private function generateColorFromHSL(param1:Number, param2:Number, param3:Number) : int {
+      private function generateColorFromHSL(hue:Number, saturation:Number, lightness:Number) : int {
          var r:Number = NaN;
          var g:Number = NaN;
          var b:Number = NaN;
          var q:Number = NaN;
          var p:Number = NaN;
-         var hue:Number = param1;
-         var saturation:Number = param2;
-         var lightness:Number = param3;
-         hue = hue / 360;
-         saturation = saturation / 100;
-         lightness = lightness / 100;
+         var hue:Number = hue / 360;
+         var saturation:Number = saturation / 100;
+         var lightness:Number = lightness / 100;
          if(saturation == 0)
          {
             r = g = b = lightness;
          }
          else
          {
-            hue2rgb = function(param1:Number, param2:Number, param3:Number):Number
+            hue2rgb = function(p:Number, q:Number, t:Number):Number
             {
-               if(param3 < 0)
+               if(t < 0)
                {
-                  param3 = param3 + 1;
+                  t = t + 1;
                }
-               if(param3 > 1)
+               if(t > 1)
                {
-                  param3--;
+                  t = t - 1;
                }
-               if(param3 < 1 / 6)
+               if(t < 1 / 6)
                {
-                  return param1 + (param2 - param1) * 6 * param3;
+                  return p + (q - p) * 6 * t;
                }
-               if(param3 < 1 / 2)
+               if(t < 1 / 2)
                {
-                  return param2;
+                  return q;
                }
-               if(param3 < 2 / 3)
+               if(t < 2 / 3)
                {
-                  return param1 + (param2 - param1) * (2 / 3 - param3) * 6;
+                  return p + (q - p) * (2 / 3 - t) * 6;
                }
-               return param1;
+               return p;
             };
             q = lightness < 0.5?lightness * (1 + saturation):lightness + saturation - lightness * saturation;
             p = 2 * lightness - q;

@@ -9,15 +9,15 @@ package com.ankamagames.dofus.logic.game.roleplay.types
    public class GameContextPaddockItemInformations extends GameRolePlayActorInformations
    {
       
-      public function GameContextPaddockItemInformations(param1:int, param2:TiphonEntityLook, param3:uint, param4:ItemDurability, param5:Item) {
+      public function GameContextPaddockItemInformations(contextualId:int, look:TiphonEntityLook, cellId:uint, durability:ItemDurability, item:Item) {
          super();
-         this.contextualId = param1;
-         this._durability = param4;
-         this._name = param5.name;
-         this._item = param5;
-         this.look = EntityLookAdapter.toNetwork(param2);
+         this.contextualId = contextualId;
+         this._durability = durability;
+         this._name = item.name;
+         this._item = item;
+         this.look = EntityLookAdapter.toNetwork(look);
          disposition.direction = 1;
-         disposition.cellId = param3;
+         disposition.cellId = cellId;
       }
       
       private var _durability:ItemDurability;

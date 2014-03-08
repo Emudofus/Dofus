@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.party
          super();
       }
       
-      public static function create(param1:uint, param2:Boolean) : ArenaFightAnswerAction {
-         var _loc3_:ArenaFightAnswerAction = new ArenaFightAnswerAction();
-         _loc3_.fightId = param1;
-         _loc3_.accept = param2;
-         return _loc3_;
+      public static function create(fightId:uint, accept:Boolean) : ArenaFightAnswerAction {
+         var a:ArenaFightAnswerAction = new ArenaFightAnswerAction();
+         a.fightId = fightId;
+         a.accept = accept;
+         return a;
       }
       
       public var fightId:uint;

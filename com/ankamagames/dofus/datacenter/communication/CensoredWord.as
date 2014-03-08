@@ -17,8 +17,8 @@ package com.ankamagames.dofus.datacenter.communication
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CensoredWord));
       
-      public static function getCensoredWordById(param1:int) : CensoredWord {
-         return GameData.getObject(MODULE,param1) as CensoredWord;
+      public static function getCensoredWordById(id:int) : CensoredWord {
+         return GameData.getObject(MODULE,id) as CensoredWord;
       }
       
       public static function getCensoredWords() : Array {

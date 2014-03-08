@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.actions.sequence
          return 956;
       }
       
-      public function initSequenceEndMessage(param1:uint=0, param2:int=0, param3:int=0) : SequenceEndMessage {
-         this.actionId = param1;
-         this.authorId = param2;
-         this.sequenceType = param3;
+      public function initSequenceEndMessage(actionId:uint=0, authorId:int=0, sequenceType:int=0) : SequenceEndMessage {
+         this.actionId = actionId;
+         this.authorId = authorId;
+         this.sequenceType = sequenceType;
          this._isInitialized = true;
          return this;
       }
@@ -46,48 +46,48 @@ package com.ankamagames.dofus.network.messages.game.actions.sequence
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_SequenceEndMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SequenceEndMessage(output);
       }
       
-      public function serializeAs_SequenceEndMessage(param1:IDataOutput) : void {
+      public function serializeAs_SequenceEndMessage(output:IDataOutput) : void {
          if(this.actionId < 0)
          {
             throw new Error("Forbidden value (" + this.actionId + ") on element actionId.");
          }
          else
          {
-            param1.writeShort(this.actionId);
-            param1.writeInt(this.authorId);
-            param1.writeByte(this.sequenceType);
+            output.writeShort(this.actionId);
+            output.writeInt(this.authorId);
+            output.writeByte(this.sequenceType);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_SequenceEndMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SequenceEndMessage(input);
       }
       
-      public function deserializeAs_SequenceEndMessage(param1:IDataInput) : void {
-         this.actionId = param1.readShort();
+      public function deserializeAs_SequenceEndMessage(input:IDataInput) : void {
+         this.actionId = input.readShort();
          if(this.actionId < 0)
          {
             throw new Error("Forbidden value (" + this.actionId + ") on element of SequenceEndMessage.actionId.");
          }
          else
          {
-            this.authorId = param1.readInt();
-            this.sequenceType = param1.readByte();
+            this.authorId = input.readInt();
+            this.sequenceType = input.readByte();
             return;
          }
       }

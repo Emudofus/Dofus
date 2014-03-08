@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 5844;
       }
       
-      public function initPrismInfoJoinLeaveRequestMessage(param1:Boolean=false) : PrismInfoJoinLeaveRequestMessage {
-         this.join = param1;
+      public function initPrismInfoJoinLeaveRequestMessage(join:Boolean=false) : PrismInfoJoinLeaveRequestMessage {
+         this.join = join;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.prism
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PrismInfoJoinLeaveRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismInfoJoinLeaveRequestMessage(output);
       }
       
-      public function serializeAs_PrismInfoJoinLeaveRequestMessage(param1:IDataOutput) : void {
-         param1.writeBoolean(this.join);
+      public function serializeAs_PrismInfoJoinLeaveRequestMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.join);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PrismInfoJoinLeaveRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismInfoJoinLeaveRequestMessage(input);
       }
       
-      public function deserializeAs_PrismInfoJoinLeaveRequestMessage(param1:IDataInput) : void {
-         this.join = param1.readBoolean();
+      public function deserializeAs_PrismInfoJoinLeaveRequestMessage(input:IDataInput) : void {
+         this.join = input.readBoolean();
       }
    }
 }

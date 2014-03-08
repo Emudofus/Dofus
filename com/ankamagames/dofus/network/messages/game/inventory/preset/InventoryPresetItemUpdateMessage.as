@@ -31,9 +31,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          return 6168;
       }
       
-      public function initInventoryPresetItemUpdateMessage(param1:uint=0, param2:PresetItem=null) : InventoryPresetItemUpdateMessage {
-         this.presetId = param1;
-         this.presetItem = param2;
+      public function initInventoryPresetItemUpdateMessage(presetId:uint=0, presetItem:PresetItem=null) : InventoryPresetItemUpdateMessage {
+         this.presetId = presetId;
+         this.presetItem = presetItem;
          this._isInitialized = true;
          return this;
       }
@@ -44,39 +44,39 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_InventoryPresetItemUpdateMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_InventoryPresetItemUpdateMessage(output);
       }
       
-      public function serializeAs_InventoryPresetItemUpdateMessage(param1:IDataOutput) : void {
+      public function serializeAs_InventoryPresetItemUpdateMessage(output:IDataOutput) : void {
          if(this.presetId < 0)
          {
             throw new Error("Forbidden value (" + this.presetId + ") on element presetId.");
          }
          else
          {
-            param1.writeByte(this.presetId);
-            this.presetItem.serializeAs_PresetItem(param1);
+            output.writeByte(this.presetId);
+            this.presetItem.serializeAs_PresetItem(output);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_InventoryPresetItemUpdateMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_InventoryPresetItemUpdateMessage(input);
       }
       
-      public function deserializeAs_InventoryPresetItemUpdateMessage(param1:IDataInput) : void {
-         this.presetId = param1.readByte();
+      public function deserializeAs_InventoryPresetItemUpdateMessage(input:IDataInput) : void {
+         this.presetId = input.readByte();
          if(this.presetId < 0)
          {
             throw new Error("Forbidden value (" + this.presetId + ") on element of InventoryPresetItemUpdateMessage.presetId.");
@@ -84,7 +84,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          else
          {
             this.presetItem = new PresetItem();
-            this.presetItem.deserialize(param1);
+            this.presetItem.deserialize(input);
             return;
          }
       }

@@ -31,9 +31,9 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5720;
       }
       
-      public function initGuildFightPlayersHelpersJoinMessage(param1:Number=0, param2:CharacterMinimalPlusLookInformations=null) : GuildFightPlayersHelpersJoinMessage {
-         this.fightId = param1;
-         this.playerInfo = param2;
+      public function initGuildFightPlayersHelpersJoinMessage(fightId:Number=0, playerInfo:CharacterMinimalPlusLookInformations=null) : GuildFightPlayersHelpersJoinMessage {
+         this.fightId = fightId;
+         this.playerInfo = playerInfo;
          this._isInitialized = true;
          return this;
       }
@@ -44,39 +44,39 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildFightPlayersHelpersJoinMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildFightPlayersHelpersJoinMessage(output);
       }
       
-      public function serializeAs_GuildFightPlayersHelpersJoinMessage(param1:IDataOutput) : void {
+      public function serializeAs_GuildFightPlayersHelpersJoinMessage(output:IDataOutput) : void {
          if(this.fightId < 0)
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
          }
          else
          {
-            param1.writeDouble(this.fightId);
-            this.playerInfo.serializeAs_CharacterMinimalPlusLookInformations(param1);
+            output.writeDouble(this.fightId);
+            this.playerInfo.serializeAs_CharacterMinimalPlusLookInformations(output);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildFightPlayersHelpersJoinMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildFightPlayersHelpersJoinMessage(input);
       }
       
-      public function deserializeAs_GuildFightPlayersHelpersJoinMessage(param1:IDataInput) : void {
-         this.fightId = param1.readDouble();
+      public function deserializeAs_GuildFightPlayersHelpersJoinMessage(input:IDataInput) : void {
+         this.fightId = input.readDouble();
          if(this.fightId < 0)
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element of GuildFightPlayersHelpersJoinMessage.fightId.");
@@ -84,7 +84,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          else
          {
             this.playerInfo = new CharacterMinimalPlusLookInformations();
-            this.playerInfo.deserialize(param1);
+            this.playerInfo.deserialize(input);
             return;
          }
       }

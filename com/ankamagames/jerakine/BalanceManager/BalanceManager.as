@@ -1,21 +1,21 @@
 package com.ankamagames.jerakine.BalanceManager
 {
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.BalanceManager.type.BalancedObject;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.BalanceManager.events.BalanceEvent;
    
    public class BalanceManager extends Object
    {
       
-      public function BalanceManager(param1:Array=null) {
-         var _loc2_:Object = null;
+      public function BalanceManager(pItems:Array=null) {
+         var item:Object = null;
          super();
          this.init();
-         if(param1 != null)
+         if(pItems != null)
          {
-            for each (_loc2_ in param1)
+            for each (item in pItems)
             {
-               this.addItem(_loc2_);
+               this.addItem(item);
             }
          }
       }
@@ -28,33 +28,33 @@ package com.ankamagames.jerakine.BalanceManager
          return this._nbCall;
       }
       
-      public function getItemNbCall(param1:Object) : int {
-         var _loc2_:BalancedObject = null;
-         for each (_loc2_ in this._balancedObjects)
+      public function getItemNbCall(pItem:Object) : int {
+         var obt:BalancedObject = null;
+         for each (obt in this._balancedObjects)
          {
-            if(param1 == _loc2_.item)
+            if(pItem == obt.item)
             {
-               return _loc2_.nbCall;
+               return obt.nbCall;
             }
          }
          return -1;
       }
       
-      public function setItemBalance(param1:Object, param2:uint) : void {
-         var _loc3_:BalancedObject = null;
-         for each (_loc3_ in this._balancedObjects)
+      public function setItemBalance(pItem:Object, pNewBalance:uint) : void {
+         var bo:BalancedObject = null;
+         for each (bo in this._balancedObjects)
          {
-            if(param1 == _loc3_.item)
+            if(pItem == bo.item)
             {
-               _loc3_.nbCall = param2;
+               bo.nbCall = pNewBalance;
                return;
             }
          }
       }
       
-      public function addItem(param1:Object, param2:Boolean=false) : void {
-         this._balancedObjects.push(new BalancedObject(param1));
-         if(param2)
+      public function addItem(pItem:Object, pReset:Boolean=false) : void {
+         this._balancedObjects.push(new BalancedObject(pItem));
+         if(pReset)
          {
             this._nbCall = 0;
             this.resetBalance();
@@ -62,106 +62,106 @@ package com.ankamagames.jerakine.BalanceManager
          this.balanceItems();
       }
       
-      public function addItemWithBalance(param1:Object, param2:uint) : void {
-         var _loc3_:BalancedObject = new BalancedObject(param1);
-         _loc3_.nbCall = param2;
-         this._balancedObjects.push(_loc3_);
-         this._nbCall = this._nbCall + param2;
+      public function addItemWithBalance(pItem:Object, pBalance:uint) : void {
+         var newBO:BalancedObject = new BalancedObject(pItem);
+         newBO.nbCall = pBalance;
+         this._balancedObjects.push(newBO);
+         this._nbCall = this._nbCall + pBalance;
          this.balanceItems();
       }
       
       public function callItem() : Object {
-         var _loc4_:BalancedObject = null;
-         var _loc1_:uint = Math.random() * 10000;
-         var _loc2_:uint = 0;
-         var _loc3_:Object = null;
+         var objetEnCours:BalancedObject = null;
+         var random:uint = Math.random() * 10000;
+         var itemIndex:uint = 0;
+         var objectToReturn:Object = null;
          if(this._balancedObjects.length == 0)
          {
-            return _loc3_;
+            return objectToReturn;
          }
-         _loc4_ = this._balancedObjects[0] as BalancedObject;
-         if(_loc1_ < _loc4_.chanceToBeCall * 100)
+         objetEnCours = this._balancedObjects[0] as BalancedObject;
+         if(random < objetEnCours.chanceToBeCall * 100)
          {
-            _loc4_.increment();
-            _loc3_ = _loc4_.item;
+            objetEnCours.increment();
+            objectToReturn = objetEnCours.item;
          }
-         _loc2_++;
-         var _loc5_:Number = _loc4_.chanceToBeCall * 100;
-         while(_loc2_ < this._balancedObjects.length)
+         itemIndex++;
+         var total:Number = objetEnCours.chanceToBeCall * 100;
+         while(itemIndex < this._balancedObjects.length)
          {
-            _loc4_ = this._balancedObjects[_loc2_] as BalancedObject;
-            if(_loc3_ == null)
+            objetEnCours = this._balancedObjects[itemIndex] as BalancedObject;
+            if(objectToReturn == null)
             {
-               if(this._balancedObjects.length == _loc2_ + 1)
+               if(this._balancedObjects.length == itemIndex + 1)
                {
-                  _loc4_.increment();
-                  _loc3_ = _loc4_.item;
+                  objetEnCours.increment();
+                  objectToReturn = objetEnCours.item;
                }
                else
                {
-                  if(_loc1_ > _loc5_ && _loc1_ < _loc5_ + _loc4_.chanceToBeCall * 100)
+                  if((random > total) && (random < total + objetEnCours.chanceToBeCall * 100))
                   {
-                     _loc4_.increment();
-                     _loc3_ = _loc4_.item;
+                     objetEnCours.increment();
+                     objectToReturn = objetEnCours.item;
                   }
-                  _loc5_ = _loc5_ + _loc4_.chanceToBeCall * 100;
+                  total = total + objetEnCours.chanceToBeCall * 100;
                }
             }
-            _loc2_++;
+            itemIndex++;
          }
          this._nbCall++;
          this.balanceItems();
-         return _loc3_;
+         return objectToReturn;
       }
       
-      public function removeItem(param1:Object) : void {
-         var _loc2_:BalancedObject = null;
-         for each (_loc2_ in this._balancedObjects)
+      public function removeItem(pItem:Object) : void {
+         var bo:BalancedObject = null;
+         for each (bo in this._balancedObjects)
          {
-            if(_loc2_.item == param1)
+            if(bo.item == pItem)
             {
-               this._balancedObjects.splice(this._balancedObjects.indexOf(_loc2_),1);
+               this._balancedObjects.splice(this._balancedObjects.indexOf(bo),1);
             }
          }
          this.balanceItems();
       }
       
       public function reset() : void {
-         var _loc1_:BalancedObject = null;
-         for each (_loc1_ in this._balancedObjects)
+         var bo:BalancedObject = null;
+         for each (bo in this._balancedObjects)
          {
-            this.setItemBalance(_loc1_.item,0);
+            this.setItemBalance(bo.item,0);
          }
          this.balanceItems();
       }
       
       private function balanceItems() : void {
-         var _loc1_:BalancedObject = null;
-         var _loc2_:BalancedObject = null;
-         var _loc3_:* = NaN;
-         var _loc4_:BalancedObject = null;
-         var _loc5_:BalancedObject = null;
+         var objectToCall:BalancedObject = null;
+         var objectToCall2:BalancedObject = null;
+         var temp:* = NaN;
+         var objectToCall3:BalancedObject = null;
+         var objectToCall4:BalancedObject = null;
          if(this._nbCall == 0)
          {
-            for each (_loc1_ in this._balancedObjects)
+            for each (objectToCall in this._balancedObjects)
             {
-               _loc1_.chanceToBeCall = 1 / this._balancedObjects.length * 100;
+               objectToCall.chanceToBeCall = 1 / this._balancedObjects.length * 100;
             }
          }
          else
          {
-            for each (_loc2_ in this._balancedObjects)
+            for each (objectToCall2 in this._balancedObjects)
             {
-               _loc2_.chanceToBeNonCall = (_loc2_.nbCall + 1) / (this._nbCall + this._balancedObjects.length) * 100;
+               objectToCall2.chanceToBeNonCall = (objectToCall2.nbCall + 1) / (this._nbCall + this._balancedObjects.length) * 100;
             }
-            _loc3_ = 0;
-            for each (_loc4_ in this._balancedObjects)
+            temp = 0;
+            for each (objectToCall3 in this._balancedObjects)
             {
-               _loc3_ = _loc3_ + 1 / _loc4_.chanceToBeNonCall;
+               temp = temp + 1 / objectToCall3.chanceToBeNonCall;
             }
-            for each (_loc5_ in this._balancedObjects)
+            for each (objectToCall4 in this._balancedObjects)
             {
-               _loc5_.chanceToBeCall = 1 / _loc5_.chanceToBeNonCall / _loc3_ * 100;
+               objectToCall4.chanceToBeCall = 1 / objectToCall4.chanceToBeNonCall / temp * 100;
             }
          }
       }
@@ -171,15 +171,15 @@ package com.ankamagames.jerakine.BalanceManager
       }
       
       private function resetBalance() : void {
-         var _loc1_:BalancedObject = null;
-         for each (_loc1_ in this._balancedObjects)
+         var bo:BalancedObject = null;
+         for each (bo in this._balancedObjects)
          {
-            _loc1_.nbCall = 0;
+            bo.nbCall = 0;
          }
       }
       
-      private function onBalanceUpdate(param1:BalanceEvent) : void {
-         this._nbCall = this._nbCall + (param1.newBalance - param1.previousBalance);
+      private function onBalanceUpdate(pEvent:BalanceEvent) : void {
+         this._nbCall = this._nbCall + (pEvent.newBalance - pEvent.previousBalance);
       }
    }
 }

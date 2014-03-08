@@ -21,12 +21,12 @@ package com.ankamagames.dofus.kernel.updaterv2.messages.impl
       
       private var _project:String;
       
-      public function deserialize(param1:Object) : void {
-         this._needRestart = param1["needRestart"];
-         this._needUpdate = param1["needUpdate"];
-         this._newVersion = param1["newVersion"];
-         this._previousVersion = param1["previousVersion"];
-         this._project = param1["project"];
+      public function deserialize(data:Object) : void {
+         this._needRestart = data["needRestart"];
+         this._needUpdate = data["needUpdate"];
+         this._newVersion = data["newVersion"];
+         this._previousVersion = data["previousVersion"];
+         this._project = data["project"];
       }
       
       public function get error() : ErrorMessage {

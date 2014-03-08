@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          return 6210;
       }
       
-      public function initInventoryPresetItemUpdateRequestMessage(param1:uint=0, param2:uint=63, param3:uint=0) : InventoryPresetItemUpdateRequestMessage {
-         this.presetId = param1;
-         this.position = param2;
-         this.objUid = param3;
+      public function initInventoryPresetItemUpdateRequestMessage(presetId:uint=0, position:uint=63, objUid:uint=0) : InventoryPresetItemUpdateRequestMessage {
+         this.presetId = presetId;
+         this.position = position;
+         this.objUid = objUid;
          this._isInitialized = true;
          return this;
       }
@@ -46,61 +46,61 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_InventoryPresetItemUpdateRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_InventoryPresetItemUpdateRequestMessage(output);
       }
       
-      public function serializeAs_InventoryPresetItemUpdateRequestMessage(param1:IDataOutput) : void {
+      public function serializeAs_InventoryPresetItemUpdateRequestMessage(output:IDataOutput) : void {
          if(this.presetId < 0)
          {
             throw new Error("Forbidden value (" + this.presetId + ") on element presetId.");
          }
          else
          {
-            param1.writeByte(this.presetId);
-            param1.writeByte(this.position);
+            output.writeByte(this.presetId);
+            output.writeByte(this.position);
             if(this.objUid < 0)
             {
                throw new Error("Forbidden value (" + this.objUid + ") on element objUid.");
             }
             else
             {
-               param1.writeInt(this.objUid);
+               output.writeInt(this.objUid);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_InventoryPresetItemUpdateRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_InventoryPresetItemUpdateRequestMessage(input);
       }
       
-      public function deserializeAs_InventoryPresetItemUpdateRequestMessage(param1:IDataInput) : void {
-         this.presetId = param1.readByte();
+      public function deserializeAs_InventoryPresetItemUpdateRequestMessage(input:IDataInput) : void {
+         this.presetId = input.readByte();
          if(this.presetId < 0)
          {
             throw new Error("Forbidden value (" + this.presetId + ") on element of InventoryPresetItemUpdateRequestMessage.presetId.");
          }
          else
          {
-            this.position = param1.readUnsignedByte();
-            if(this.position < 0 || this.position > 255)
+            this.position = input.readUnsignedByte();
+            if((this.position < 0) || (this.position > 255))
             {
                throw new Error("Forbidden value (" + this.position + ") on element of InventoryPresetItemUpdateRequestMessage.position.");
             }
             else
             {
-               this.objUid = param1.readInt();
+               this.objUid = input.readInt();
                if(this.objUid < 0)
                {
                   throw new Error("Forbidden value (" + this.objUid + ") on element of InventoryPresetItemUpdateRequestMessage.objUid.");

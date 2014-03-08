@@ -9,12 +9,12 @@ package com.ankamagames.dofus.logic.game.roleplay.actions.preset
          super();
       }
       
-      public static function create(param1:uint, param2:uint, param3:Boolean) : InventoryPresetSaveAction {
-         var _loc4_:InventoryPresetSaveAction = new InventoryPresetSaveAction();
-         _loc4_.presetId = param1;
-         _loc4_.symbolId = param2;
-         _loc4_.saveEquipment = param3;
-         return _loc4_;
+      public static function create(presetId:uint, symbolId:uint, saveEquipment:Boolean) : InventoryPresetSaveAction {
+         var a:InventoryPresetSaveAction = new InventoryPresetSaveAction();
+         a.presetId = presetId;
+         a.symbolId = symbolId;
+         a.saveEquipment = saveEquipment;
+         return a;
       }
       
       public var presetId:uint;

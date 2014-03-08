@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.craft
       }
       
       public static function create() : ExchangeReplayStopAction {
-         var _loc1_:ExchangeReplayStopAction = new ExchangeReplayStopAction();
-         return _loc1_;
+         var action:ExchangeReplayStopAction = new ExchangeReplayStopAction();
+         return action;
       }
    }
 }

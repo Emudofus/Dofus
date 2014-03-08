@@ -2,7 +2,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,10 +33,10 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          return 6163;
       }
       
-      public function initInventoryPresetUseResultMessage(param1:uint=0, param2:uint=3, param3:Vector.<uint>=null) : InventoryPresetUseResultMessage {
-         this.presetId = param1;
-         this.code = param2;
-         this.unlinkedPosition = param3;
+      public function initInventoryPresetUseResultMessage(presetId:uint=0, code:uint=3, unlinkedPosition:Vector.<uint>=null) : InventoryPresetUseResultMessage {
+         this.presetId = presetId;
+         this.code = code;
+         this.unlinkedPosition = unlinkedPosition;
          this._isInitialized = true;
          return this;
       }
@@ -48,73 +48,73 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_InventoryPresetUseResultMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_InventoryPresetUseResultMessage(output);
       }
       
-      public function serializeAs_InventoryPresetUseResultMessage(param1:IDataOutput) : void {
+      public function serializeAs_InventoryPresetUseResultMessage(output:IDataOutput) : void {
          if(this.presetId < 0)
          {
             throw new Error("Forbidden value (" + this.presetId + ") on element presetId.");
          }
          else
          {
-            param1.writeByte(this.presetId);
-            param1.writeByte(this.code);
-            param1.writeShort(this.unlinkedPosition.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.unlinkedPosition.length)
+            output.writeByte(this.presetId);
+            output.writeByte(this.code);
+            output.writeShort(this.unlinkedPosition.length);
+            _i3 = 0;
+            while(_i3 < this.unlinkedPosition.length)
             {
-               param1.writeByte(this.unlinkedPosition[_loc2_]);
-               _loc2_++;
+               output.writeByte(this.unlinkedPosition[_i3]);
+               _i3++;
             }
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_InventoryPresetUseResultMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_InventoryPresetUseResultMessage(input);
       }
       
-      public function deserializeAs_InventoryPresetUseResultMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         this.presetId = param1.readByte();
+      public function deserializeAs_InventoryPresetUseResultMessage(input:IDataInput) : void {
+         var _val3:uint = 0;
+         this.presetId = input.readByte();
          if(this.presetId < 0)
          {
             throw new Error("Forbidden value (" + this.presetId + ") on element of InventoryPresetUseResultMessage.presetId.");
          }
          else
          {
-            this.code = param1.readByte();
+            this.code = input.readByte();
             if(this.code < 0)
             {
                throw new Error("Forbidden value (" + this.code + ") on element of InventoryPresetUseResultMessage.code.");
             }
             else
             {
-               _loc2_ = param1.readUnsignedShort();
-               _loc3_ = 0;
-               while(_loc3_ < _loc2_)
+               _unlinkedPositionLen = input.readUnsignedShort();
+               _i3 = 0;
+               while(_i3 < _unlinkedPositionLen)
                {
-                  _loc4_ = param1.readUnsignedByte();
-                  if(_loc4_ < 0 || _loc4_ > 255)
+                  _val3 = input.readUnsignedByte();
+                  if((_val3 < 0) || (_val3 > 255))
                   {
-                     throw new Error("Forbidden value (" + _loc4_ + ") on elements of unlinkedPosition.");
+                     throw new Error("Forbidden value (" + _val3 + ") on elements of unlinkedPosition.");
                   }
                   else
                   {
-                     this.unlinkedPosition.push(_loc4_);
-                     _loc3_++;
+                     this.unlinkedPosition.push(_val3);
+                     _i3++;
                      continue;
                   }
                }

@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.approach
          return 110;
       }
       
-      public function initAuthenticationTicketMessage(param1:String="", param2:String="") : AuthenticationTicketMessage {
-         this.lang = param1;
-         this.ticket = param2;
+      public function initAuthenticationTicketMessage(lang:String="", ticket:String="") : AuthenticationTicketMessage {
+         this.lang = lang;
+         this.ticket = ticket;
          this._isInitialized = true;
          return this;
       }
@@ -42,32 +42,32 @@ package com.ankamagames.dofus.network.messages.game.approach
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AuthenticationTicketMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AuthenticationTicketMessage(output);
       }
       
-      public function serializeAs_AuthenticationTicketMessage(param1:IDataOutput) : void {
-         param1.writeUTF(this.lang);
-         param1.writeUTF(this.ticket);
+      public function serializeAs_AuthenticationTicketMessage(output:IDataOutput) : void {
+         output.writeUTF(this.lang);
+         output.writeUTF(this.ticket);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AuthenticationTicketMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AuthenticationTicketMessage(input);
       }
       
-      public function deserializeAs_AuthenticationTicketMessage(param1:IDataInput) : void {
-         this.lang = param1.readUTF();
-         this.ticket = param1.readUTF();
+      public function deserializeAs_AuthenticationTicketMessage(input:IDataInput) : void {
+         this.lang = input.readUTF();
+         this.ticket = input.readUTF();
       }
    }
 }

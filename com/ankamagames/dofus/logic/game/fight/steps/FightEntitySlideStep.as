@@ -16,13 +16,13 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightEntitySlideStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightEntitySlideStep(param1:int, param2:MapPoint, param3:MapPoint) {
+      public function FightEntitySlideStep(fighterId:int, startCell:MapPoint, endCell:MapPoint) {
          super();
-         this._fighterId = param1;
-         this._startCell = param2;
-         this._endCell = param3;
-         var _loc4_:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(param1) as GameFightFighterInformations;
-         _loc4_.disposition.cellId = param3.cellId;
+         this._fighterId = fighterId;
+         this._startCell = startCell;
+         this._endCell = endCell;
+         var infos:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(fighterId) as GameFightFighterInformations;
+         infos.disposition.cellId = endCell.cellId;
       }
       
       private var _fighterId:int;
@@ -36,27 +36,27 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc2_:GameFightFighterInformations = null;
-         var _loc3_:MovementPath = null;
-         var _loc1_:IMovable = DofusEntities.getEntity(this._fighterId) as IMovable;
-         if(_loc1_)
+         var fighterInfos:GameFightFighterInformations = null;
+         var path:MovementPath = null;
+         var entity:IMovable = DofusEntities.getEntity(this._fighterId) as IMovable;
+         if(entity)
          {
-            if(!_loc1_.position.equals(this._startCell))
+            if(!entity.position.equals(this._startCell))
             {
-               _log.warn("We were ordered to slide " + this._fighterId + " from " + this._startCell.cellId + ", but this fighter is on " + _loc1_.position.cellId + ".");
+               _log.warn("We were ordered to slide " + this._fighterId + " from " + this._startCell.cellId + ", but this fighter is on " + entity.position.cellId + ".");
             }
-            if(_loc1_ is AnimatedCharacter)
+            if(entity is AnimatedCharacter)
             {
-               (_loc1_ as AnimatedCharacter).slideOnNextMove = true;
+               (entity as AnimatedCharacter).slideOnNextMove = true;
             }
-            _loc2_ = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterId) as GameFightFighterInformations;
-            _loc2_.disposition.cellId = this._endCell.cellId;
-            _loc3_ = new MovementPath();
-            _loc3_.start = _loc1_.position;
-            _loc3_.end = this._endCell;
-            _loc3_.addPoint(new PathElement(_loc1_.position,_loc3_.start.orientationTo(_loc3_.end)));
-            _loc3_.fill();
-            _loc1_.move(_loc3_,this.slideFinished);
+            fighterInfos = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterId) as GameFightFighterInformations;
+            fighterInfos.disposition.cellId = this._endCell.cellId;
+            path = new MovementPath();
+            path.start = entity.position;
+            path.end = this._endCell;
+            path.addPoint(new PathElement(entity.position,path.start.orientationTo(path.end)));
+            path.fill();
+            entity.move(path,this.slideFinished);
          }
          else
          {

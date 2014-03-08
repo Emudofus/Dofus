@@ -25,14 +25,14 @@ package com.ankamagames.dofus.logic.game.fight.frames
          return Priority.HIGHEST;
       }
       
-      public function set currentFrame(param1:Frame) : void {
-         this._currentFrame = param1;
+      public function set currentFrame(f:Frame) : void {
+         this._currentFrame = f;
       }
       
-      public function process(param1:Message) : Boolean {
+      public function process(msg:Message) : Boolean {
          if(this._currentFrame)
          {
-            return this._currentFrame.process(param1);
+            return this._currentFrame.process(msg);
          }
          return false;
       }

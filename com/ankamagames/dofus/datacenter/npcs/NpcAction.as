@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.npcs
       
       public static const MODULE:String = "NpcActions";
       
-      public static function getNpcActionById(param1:int) : NpcAction {
-         return GameData.getObject(MODULE,param1) as NpcAction;
+      public static function getNpcActionById(id:int) : NpcAction {
+         return GameData.getObject(MODULE,id) as NpcAction;
       }
       
       public static function getNpcActions() : Array {

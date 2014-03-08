@@ -8,29 +8,29 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class MaxRankCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function MaxRankCriterion(param1:String) {
-         super(param1);
+      public function MaxRankCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get text() : String {
-         var _loc1_:String = String(_criterionValue);
-         var _loc2_:String = I18n.getUiText("ui.common.pvpMaxRank");
-         var _loc3_:* = ">";
+         var readableCriterionValue:String = String(_criterionValue);
+         var readableCriterionRef:String = I18n.getUiText("ui.common.pvpMaxRank");
+         var readableOperator:String = ">";
          if(_operator.text == ItemCriterionOperator.DIFFERENT)
          {
-            _loc3_ = I18n.getUiText("ui.common.differentFrom") + " >";
+            readableOperator = I18n.getUiText("ui.common.differentFrom") + " >";
          }
-         return _loc2_ + " " + _loc3_ + " " + _loc1_;
+         return readableCriterionRef + " " + readableOperator + " " + readableCriterionValue;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:MaxRankCriterion = new MaxRankCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:MaxRankCriterion = new MaxRankCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {
-         var _loc1_:PartyManagementFrame = Kernel.getWorker().getFrame(PartyManagementFrame) as PartyManagementFrame;
-         return _loc1_.arenaRanks[1];
+         var frame:PartyManagementFrame = Kernel.getWorker().getFrame(PartyManagementFrame) as PartyManagementFrame;
+         return frame.arenaRanks[1];
       }
    }
 }

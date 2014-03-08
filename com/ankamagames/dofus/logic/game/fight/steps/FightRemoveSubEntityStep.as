@@ -8,11 +8,11 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightRemoveSubEntityStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightRemoveSubEntityStep(param1:int, param2:uint, param3:uint) {
+      public function FightRemoveSubEntityStep(fighterId:int, category:uint, slot:uint) {
          super();
-         this._fighterId = param1;
-         this._category = param2;
-         this._slot = param3;
+         this._fighterId = fighterId;
+         this._category = category;
+         this._slot = slot;
       }
       
       private var _fighterId:int;
@@ -26,10 +26,10 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc1_:IEntity = DofusEntities.getEntity(this._fighterId);
-         if((_loc1_) && _loc1_ is TiphonSprite)
+         var parentEntity:IEntity = DofusEntities.getEntity(this._fighterId);
+         if((parentEntity) && (parentEntity is TiphonSprite))
          {
-            (_loc1_ as TiphonSprite).look.removeSubEntity(this._category,this._slot);
+            (parentEntity as TiphonSprite).look.removeSubEntity(this._category,this._slot);
          }
          else
          {

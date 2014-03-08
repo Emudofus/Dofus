@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.chat
          super();
       }
       
-      public static function create(param1:Array) : ClearChatAction {
-         var _loc2_:ClearChatAction = new ClearChatAction();
-         _loc2_.channel = param1;
-         return _loc2_;
+      public static function create(channel:Array) : ClearChatAction {
+         var a:ClearChatAction = new ClearChatAction();
+         a.channel = channel;
+         return a;
       }
       
       public var channel:Array;

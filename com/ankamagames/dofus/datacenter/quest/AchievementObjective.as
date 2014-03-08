@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.quest
       
       public static const MODULE:String = "AchievementObjectives";
       
-      public static function getAchievementObjectiveById(param1:int) : AchievementObjective {
-         return GameData.getObject(MODULE,param1) as AchievementObjective;
+      public static function getAchievementObjectiveById(id:int) : AchievementObjective {
+         return GameData.getObject(MODULE,id) as AchievementObjective;
       }
       
       public static function getAchievementObjectives() : Array {

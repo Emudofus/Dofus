@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.chat.smiley
          return 6196;
       }
       
-      public function initMoodSmileyResultMessage(param1:uint=1, param2:int=0) : MoodSmileyResultMessage {
-         this.resultCode = param1;
-         this.smileyId = param2;
+      public function initMoodSmileyResultMessage(resultCode:uint=1, smileyId:int=0) : MoodSmileyResultMessage {
+         this.resultCode = resultCode;
+         this.smileyId = smileyId;
          this._isInitialized = true;
          return this;
       }
@@ -42,38 +42,38 @@ package com.ankamagames.dofus.network.messages.game.chat.smiley
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MoodSmileyResultMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MoodSmileyResultMessage(output);
       }
       
-      public function serializeAs_MoodSmileyResultMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.resultCode);
-         param1.writeByte(this.smileyId);
+      public function serializeAs_MoodSmileyResultMessage(output:IDataOutput) : void {
+         output.writeByte(this.resultCode);
+         output.writeByte(this.smileyId);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MoodSmileyResultMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MoodSmileyResultMessage(input);
       }
       
-      public function deserializeAs_MoodSmileyResultMessage(param1:IDataInput) : void {
-         this.resultCode = param1.readByte();
+      public function deserializeAs_MoodSmileyResultMessage(input:IDataInput) : void {
+         this.resultCode = input.readByte();
          if(this.resultCode < 0)
          {
             throw new Error("Forbidden value (" + this.resultCode + ") on element of MoodSmileyResultMessage.resultCode.");
          }
          else
          {
-            this.smileyId = param1.readByte();
+            this.smileyId = input.readByte();
             return;
          }
       }

@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 455;
       }
       
-      public function initGameFightFighterMonsterLightInformations(param1:int=0, param2:uint=0, param3:int=0, param4:Boolean=false, param5:Boolean=false, param6:uint=0) : GameFightFighterMonsterLightInformations {
-         super.initGameFightFighterLightInformations(param1,param2,param3,param4,param5);
-         this.creatureGenericId = param6;
+      public function initGameFightFighterMonsterLightInformations(id:int=0, level:uint=0, breed:int=0, sex:Boolean=false, alive:Boolean=false, creatureGenericId:uint=0) : GameFightFighterMonsterLightInformations {
+         super.initGameFightFighterLightInformations(id,level,breed,sex,alive);
+         this.creatureGenericId = creatureGenericId;
          return this;
       }
       
@@ -30,30 +30,30 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.creatureGenericId = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightFighterMonsterLightInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightFighterMonsterLightInformations(output);
       }
       
-      public function serializeAs_GameFightFighterMonsterLightInformations(param1:IDataOutput) : void {
-         super.serializeAs_GameFightFighterLightInformations(param1);
+      public function serializeAs_GameFightFighterMonsterLightInformations(output:IDataOutput) : void {
+         super.serializeAs_GameFightFighterLightInformations(output);
          if(this.creatureGenericId < 0)
          {
             throw new Error("Forbidden value (" + this.creatureGenericId + ") on element creatureGenericId.");
          }
          else
          {
-            param1.writeShort(this.creatureGenericId);
+            output.writeShort(this.creatureGenericId);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightFighterMonsterLightInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightFighterMonsterLightInformations(input);
       }
       
-      public function deserializeAs_GameFightFighterMonsterLightInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.creatureGenericId = param1.readShort();
+      public function deserializeAs_GameFightFighterMonsterLightInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.creatureGenericId = input.readShort();
          if(this.creatureGenericId < 0)
          {
             throw new Error("Forbidden value (" + this.creatureGenericId + ") on element of GameFightFighterMonsterLightInformations.creatureGenericId.");

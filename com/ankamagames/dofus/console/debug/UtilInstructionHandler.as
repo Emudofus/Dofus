@@ -33,78 +33,78 @@ package com.ankamagames.dofus.console.debug
       
       private const _validArgs0:Dictionary = this.validArgs();
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         var _loc4_:Array = null;
-         var _loc5_:String = null;
-         var _loc6_:Vector.<Object> = null;
-         var _loc7_:Monster = null;
-         var _loc8_:String = null;
-         var _loc9_:Vector.<Object> = null;
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var matchMonsters:Array = null;
+         var monsterFilter:String = null;
+         var monsters:Vector.<Object> = null;
+         var currentMonster:Monster = null;
+         var spellFilter:String = null;
+         var matchSpells:Vector.<Object> = null;
+         switch(cmd)
          {
             case "enablereport":
-               this.enablereport(param1,param2,param3);
+               this.enablereport(console,cmd,args);
                break;
             case "savereport":
                ErrorManager.addError("Console report",new EmptyError());
                break;
             case "enablelogs":
-               this.enableLogs(param1,param2,param3);
+               this.enableLogs(console,cmd,args);
                break;
             case "info":
-               this.info(param1,param2,param3);
+               this.info(console,cmd,args);
                break;
             case "search":
-               this.search(param1,param2,param3);
+               this.search(console,cmd,args);
                break;
             case "searchmonster":
-               if(param3.length < 1)
+               if(args.length < 1)
                {
-                  param1.output(param2 + " needs an argument to search for");
+                  console.output(cmd + " needs an argument to search for");
                   break;
                }
-               _loc4_ = new Array();
-               _loc5_ = StringUtils.noAccent(param3.join(" ").toLowerCase());
-               _loc6_ = GameDataQuery.returnInstance(Monster,GameDataQuery.queryString(Monster,"name",_loc5_));
-               for each (_loc7_ in _loc6_)
+               matchMonsters = new Array();
+               monsterFilter = StringUtils.noAccent(args.join(" ").toLowerCase());
+               monsters = GameDataQuery.returnInstance(Monster,GameDataQuery.queryString(Monster,"name",monsterFilter));
+               for each (currentMonster in monsters)
                {
-                  _loc4_.push("\t" + _loc7_.name + " (id : " + _loc7_.id + ")");
+                  matchMonsters.push("\t" + currentMonster.name + " (id : " + currentMonster.id + ")");
                }
-               _loc4_.sort(Array.CASEINSENSITIVE);
-               param1.output(_loc4_.join("\n"));
-               param1.output("\tRESULT : " + _loc4_.length + " monsters found");
+               matchMonsters.sort(Array.CASEINSENSITIVE);
+               console.output(matchMonsters.join("\n"));
+               console.output("\tRESULT : " + matchMonsters.length + " monsters found");
                break;
             case "searchspell":
-               if(param3.length < 1)
+               if(args.length < 1)
                {
-                  param1.output(param2 + " needs an argument to search for");
+                  console.output(cmd + " needs an argument to search for");
                   break;
                }
-               _loc8_ = StringUtils.noAccent(param3.join(" ").toLowerCase());
-               _loc9_ = GameDataQuery.returnInstance(Spell,GameDataQuery.queryString(Spell,"name",_loc8_));
-               _loc9_.sort(Array.CASEINSENSITIVE);
-               param1.output(_loc9_.join("\n"));
-               param1.output("\tRESULT : " + _loc9_.length + " spells found");
+               spellFilter = StringUtils.noAccent(args.join(" ").toLowerCase());
+               matchSpells = GameDataQuery.returnInstance(Spell,GameDataQuery.queryString(Spell,"name",spellFilter));
+               matchSpells.sort(Array.CASEINSENSITIVE);
+               console.output(matchSpells.join("\n"));
+               console.output("\tRESULT : " + matchSpells.length + " spells found");
                break;
             case "loadpacket":
-               if(param3.length < 1)
+               if(args.length < 1)
                {
-                  param1.output(param2 + " needs an uri argument");
+                  console.output(cmd + " needs an uri argument");
                   break;
                }
-               ConnectionsHandler.getHttpConnection().request(new Uri(param3[0],false));
+               ConnectionsHandler.getHttpConnection().request(new Uri(args[0],false));
                break;
             case "reccordpacket":
                if(!this._reccordPacketFrame)
                {
-                  param1.output("Start network reccording");
+                  console.output("Start network reccording");
                   this._reccordPacketFrame = new ReccordNetworkPacketFrame();
                   Kernel.getWorker().addFrame(this._reccordPacketFrame);
                }
                else
                {
-                  param1.output("Stop network reccording");
-                  param1.output(this._reccordPacketFrame.reccordedMessageCount + " packet(s) reccorded");
+                  console.output("Stop network reccording");
+                  console.output(this._reccordPacketFrame.reccordedMessageCount + " packet(s) reccorded");
                   Kernel.getWorker().removeFrame(this._reccordPacketFrame);
                   this._reccordPacketFrame = null;
                }
@@ -114,8 +114,8 @@ package com.ankamagames.dofus.console.debug
       
       private var _reccordPacketFrame:ReccordNetworkPacketFrame;
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "enablelogs":
                return "Enable / Disable logs, param : [true/false]";
@@ -135,68 +135,66 @@ package com.ankamagames.dofus.console.debug
                return "Load a remote file containing network(s) packets";
             case "reccordpacket":
                return "Reccord network(s) packets into a file (usefull with /loadpacket command)";
-            default:
-               return "Unknown command \'" + param1 + "\'.";
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
-         var _loc5_:String = null;
-         var _loc6_:String = null;
-         var _loc7_:String = null;
-         var _loc4_:Array = new Array();
-         switch(param1)
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+         var infoClassName:String = null;
+         var searchClassName:String = null;
+         var arg0:String = null;
+         var possibilities:Array = new Array();
+         switch(cmd)
          {
             case "enablelogs":
-               if(param2 == 0)
+               if(paramIndex == 0)
                {
-                  _loc4_.push("true");
-                  _loc4_.push("false");
+                  possibilities.push("true");
+                  possibilities.push("false");
                }
                break;
             case "info":
-               if(param2 == 0)
+               if(paramIndex == 0)
                {
-                  for (_loc5_ in this._validArgs0)
+                  for (infoClassName in this._validArgs0)
                   {
-                     _loc4_.push(_loc5_);
+                     possibilities.push(infoClassName);
                   }
                }
                break;
             case "search":
-               if(param2 == 0)
+               if(paramIndex == 0)
                {
-                  for (_loc6_ in this._validArgs0)
+                  for (searchClassName in this._validArgs0)
                   {
-                     _loc4_.push(_loc6_);
+                     possibilities.push(searchClassName);
                   }
                }
                else
                {
-                  if(param2 == 1)
+                  if(paramIndex == 1)
                   {
-                     _loc7_ = this._validArgs0[String(param3[0]).toLowerCase()];
-                     if(_loc7_)
+                     arg0 = this._validArgs0[String(currentParams[0]).toLowerCase()];
+                     if(arg0)
                      {
-                        _loc4_ = this.getSimpleVariablesAndAccessors(_loc7_);
+                        possibilities = this.getSimpleVariablesAndAccessors(arg0);
                      }
                   }
                }
                break;
          }
-         return _loc4_;
+         return possibilities;
       }
       
-      private function enablereport(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         if(param3.length == 0)
+      private function enablereport(console:ConsoleHandler, cmd:String, args:Array) : void {
+         if(args.length == 0)
          {
             DofusErrorHandler.manualActivation = !DofusErrorHandler.manualActivation;
          }
          else
          {
-            if(param3.length == 1)
+            if(args.length == 1)
             {
-               switch(param3[0])
+               switch(args[0])
                {
                   case "true":
                      DofusErrorHandler.manualActivation = true;
@@ -207,296 +205,291 @@ package com.ankamagames.dofus.console.debug
                   case "":
                      DofusErrorHandler.manualActivation = !DofusErrorHandler.manualActivation;
                      break;
-                  default:
-                     param1.output("Bad arg. Argument must be true, false, or null");
-                     return;
                }
             }
             else
             {
-               param1.output(param2 + "requires 0 or 1 argument.");
+               console.output(cmd + "requires 0 or 1 argument.");
                return;
             }
          }
-         param1.output("\tReport have been " + (DofusErrorHandler.manualActivation?"enabled":"disabled") + ". Dofus need to restart.");
+         console.output("\tReport have been " + (DofusErrorHandler.manualActivation?"enabled":"disabled") + ". Dofus need to restart.");
       }
       
-      private function enableLogs(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         if(param3.length == 0)
+      private function enableLogs(console:ConsoleHandler, cmd:String, args:Array) : void {
+         if(args.length == 0)
          {
             SOSTarget.enabled = !SOSTarget.enabled;
-            param1.output("\tSOS logs have been " + (SOSTarget.enabled?"enabled":"disabled") + ".");
+            console.output("\tSOS logs have been " + (SOSTarget.enabled?"enabled":"disabled") + ".");
          }
          else
          {
-            if(param3.length == 1)
+            if(args.length == 1)
             {
-               switch(param3[0])
+               switch(args[0])
                {
                   case "true":
                      SOSTarget.enabled = true;
-                     param1.output("\tSOS logs have been enabled.");
+                     console.output("\tSOS logs have been enabled.");
                      break;
                   case "false":
                      SOSTarget.enabled = false;
-                     param1.output("\tSOS logs have been disabled.");
+                     console.output("\tSOS logs have been disabled.");
                      break;
                   case "":
                      SOSTarget.enabled = !SOSTarget.enabled;
-                     param1.output("\tSOS logs have been " + (SOSTarget.enabled?"enabled":"disabled") + ".");
+                     console.output("\tSOS logs have been " + (SOSTarget.enabled?"enabled":"disabled") + ".");
                      break;
-                  default:
-                     param1.output("Bad arg. Argument must be true, false, or null");
                }
             }
             else
             {
-               param1.output(param2 + "requires 0 or 1 argument.");
+               console.output(cmd + "requires 0 or 1 argument.");
             }
          }
       }
       
-      private function info(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         var _loc4_:String = null;
-         var _loc5_:String = null;
-         var _loc6_:* = 0;
-         var _loc7_:Object = null;
-         var _loc8_:String = null;
-         var _loc9_:Array = null;
-         var _loc11_:* = false;
-         var _loc12_:String = null;
-         var _loc13_:Object = null;
-         var _loc14_:* = 0;
-         var _loc10_:* = "";
-         if(param3.length != 2)
+      private function info(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var iDataCenter:String = null;
+         var className:String = null;
+         var id:* = 0;
+         var object:Object = null;
+         var idFunction:String = null;
+         var varAndAccess:Array = null;
+         var hasNameField:* = false;
+         var property:String = null;
+         var currentObject:Object = null;
+         var size:* = 0;
+         var result:String = "";
+         if(args.length != 2)
          {
-            param1.output(param2 + " needs 2 args.");
+            console.output(cmd + " needs 2 args.");
             return;
          }
-         _loc4_ = param3[0];
-         _loc5_ = this._validArgs0[_loc4_.toLowerCase()];
-         _loc6_ = int(param3[1]);
-         if(_loc5_)
+         iDataCenter = args[0];
+         className = this._validArgs0[iDataCenter.toLowerCase()];
+         id = int(args[1]);
+         if(className)
          {
-            _loc7_ = getDefinitionByName(_loc5_);
-            _loc8_ = this.getIdFunction(_loc5_);
-            if(_loc8_ == null)
+            object = getDefinitionByName(className);
+            idFunction = this.getIdFunction(className);
+            if(idFunction == null)
             {
-               param1.output("WARN : " + _loc4_ + " has no getById function !");
+               console.output("WARN : " + iDataCenter + " has no getById function !");
                return;
             }
-            _loc7_ = _loc7_[_loc8_](_loc6_);
-            if(_loc7_ == null)
+            object = object[idFunction](id);
+            if(object == null)
             {
-               param1.output(_loc4_ + " " + _loc6_ + " does not exist.");
+               console.output(iDataCenter + " " + id + " does not exist.");
                return;
             }
-            _loc11_ = _loc7_.hasOwnProperty("name");
-            _loc9_ = this.getSimpleVariablesAndAccessors(_loc5_,true);
-            _loc9_.sort(Array.CASEINSENSITIVE);
-            for each (_loc12_ in _loc9_)
+            hasNameField = object.hasOwnProperty("name");
+            varAndAccess = this.getSimpleVariablesAndAccessors(className,true);
+            varAndAccess.sort(Array.CASEINSENSITIVE);
+            for each (property in varAndAccess)
             {
-               _loc13_ = _loc7_[_loc12_];
-               if(!_loc13_)
+               currentObject = object[property];
+               if(!currentObject)
                {
-                  _loc10_ = _loc10_ + ("\t" + _loc12_ + " : null\n");
+                  result = result + ("\t" + property + " : null\n");
                }
                else
                {
-                  if(_loc13_ is Number || _loc13_ is String)
+                  if((currentObject is Number) || (currentObject is String))
                   {
-                     _loc10_ = _loc10_ + ("\t" + _loc12_ + " : " + _loc13_.toString() + "\n");
+                     result = result + ("\t" + property + " : " + currentObject.toString() + "\n");
                   }
                   else
                   {
-                     _loc14_ = _loc13_.length;
-                     if(_loc14_ > 30)
+                     size = currentObject.length;
+                     if(size > 30)
                      {
-                        _loc13_ = _loc13_.slice(0,30);
-                        _loc10_ = _loc10_ + ("\t" + _loc12_ + "(" + _loc14_ + " element(s)) : " + _loc13_.toString() + ", ...\n");
+                        currentObject = currentObject.slice(0,30);
+                        result = result + ("\t" + property + "(" + size + " element(s)) : " + currentObject.toString() + ", ...\n");
                      }
                      else
                      {
-                        _loc10_ = _loc10_ + ("\t" + _loc12_ + "(" + _loc14_ + " element(s)) : " + _loc13_.toString() + "\n");
+                        result = result + ("\t" + property + "(" + size + " element(s)) : " + currentObject.toString() + "\n");
                      }
                   }
                }
             }
-            _loc10_ = StringUtils.cleanString(_loc10_);
-            _loc10_ = "\t<b>" + (_loc11_?_loc7_.name:"") + " (id : " + _loc7_.id + ")</b>\n" + _loc10_;
-            param1.output(_loc10_);
+            result = StringUtils.cleanString(result);
+            result = "\t<b>" + (hasNameField?object.name:"") + " (id : " + object.id + ")</b>\n" + result;
+            console.output(result);
          }
          else
          {
-            param1.output("Bad args. Can\'t search in \'" + _loc4_ + "\'");
+            console.output("Bad args. Can\'t search in \'" + iDataCenter + "\'");
          }
       }
       
-      private function search(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         var _loc4_:String = null;
-         var _loc5_:String = null;
-         var _loc6_:String = null;
-         var _loc7_:Array = null;
-         var _loc8_:String = null;
-         var _loc9_:Object = null;
-         var _loc10_:* = false;
-         var _loc11_:Object = null;
-         var _loc12_:String = null;
-         var _loc13_:Array = null;
-         var _loc14_:Array = null;
-         if(param3.length < 3)
+      private function search(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var iDataCenter:String = null;
+         var member:String = null;
+         var filter:String = null;
+         var validArgs1:Array = null;
+         var className:String = null;
+         var currentObject:Object = null;
+         var hasNameField:* = false;
+         var object:Object = null;
+         var listingFunction:String = null;
+         var results:Array = null;
+         var matchSearch:Array = null;
+         if(args.length < 3)
          {
-            param1.output(param2 + " needs 3 arguments");
+            console.output(cmd + " needs 3 arguments");
             return;
          }
-         _loc4_ = String(param3.shift());
-         _loc5_ = String(param3.shift());
-         _loc6_ = param3.join(" ").toLowerCase();
-         _loc8_ = this._validArgs0[_loc4_.toLowerCase()];
-         if(_loc8_)
+         iDataCenter = String(args.shift());
+         member = String(args.shift());
+         filter = args.join(" ").toLowerCase();
+         className = this._validArgs0[iDataCenter.toLowerCase()];
+         if(className)
          {
-            _loc7_ = this.getSimpleVariablesAndAccessors(_loc8_);
-            if(_loc7_.indexOf(_loc5_) != -1)
+            validArgs1 = this.getSimpleVariablesAndAccessors(className);
+            if(validArgs1.indexOf(member) != -1)
             {
-               _loc11_ = getDefinitionByName(_loc8_);
-               _loc12_ = this.getListingFunction(_loc8_);
-               if(_loc12_ == null)
+               object = getDefinitionByName(className);
+               listingFunction = this.getListingFunction(className);
+               if(listingFunction == null)
                {
-                  param1.output("WARN : \'" + _loc4_ + "\' has no listing function !");
+                  console.output("WARN : \'" + iDataCenter + "\' has no listing function !");
                   return;
                }
-               _loc13_ = _loc11_[_loc12_]();
-               _loc14_ = new Array();
-               if(_loc13_.length == 0)
+               results = object[listingFunction]();
+               matchSearch = new Array();
+               if(results.length == 0)
                {
-                  param1.output("No object found");
+                  console.output("No object found");
                   return;
                }
-               if(_loc13_[0][_loc5_] is Number)
+               if(results[0][member] is Number)
                {
-                  if(isNaN(Number(_loc6_)))
+                  if(isNaN(Number(filter)))
                   {
-                     param1.output("Bad filter. Attribute \'" + _loc5_ + "\' is a Number. Use a Number filter.");
+                     console.output("Bad filter. Attribute \'" + member + "\' is a Number. Use a Number filter.");
                      return;
                   }
-                  for each (_loc9_ in _loc13_)
+                  for each (currentObject in results)
                   {
-                     if(_loc9_)
+                     if(currentObject)
                      {
-                        _loc10_ = _loc9_.hasOwnProperty("name");
-                        if(_loc9_[_loc5_] == Number(_loc6_))
+                        hasNameField = currentObject.hasOwnProperty("name");
+                        if(currentObject[member] == Number(filter))
                         {
-                           _loc14_.push("\t" + (_loc10_?_loc9_["name"]:"") + " (id : " + _loc9_["id"] + ")");
+                           matchSearch.push("\t" + (hasNameField?currentObject["name"]:"") + " (id : " + currentObject["id"] + ")");
                         }
                      }
                   }
                }
                else
                {
-                  if(_loc13_[0][_loc5_] is String)
+                  if(results[0][member] is String)
                   {
-                     for each (_loc9_ in _loc13_)
+                     for each (currentObject in results)
                      {
-                        if(_loc9_)
+                        if(currentObject)
                         {
-                           _loc10_ = _loc9_.hasOwnProperty("name");
-                           if(StringUtils.noAccent(String(_loc9_[_loc5_])).toLowerCase().indexOf(StringUtils.noAccent(_loc6_)) != -1)
+                           hasNameField = currentObject.hasOwnProperty("name");
+                           if(StringUtils.noAccent(String(currentObject[member])).toLowerCase().indexOf(StringUtils.noAccent(filter)) != -1)
                            {
-                              _loc14_.push("\t" + (_loc10_?_loc9_["name"]:"") + " (id : " + _loc9_["id"] + ")");
+                              matchSearch.push("\t" + (hasNameField?currentObject["name"]:"") + " (id : " + currentObject["id"] + ")");
                            }
                         }
                      }
                   }
                }
-               _loc14_.sort(Array.CASEINSENSITIVE);
-               param1.output(_loc14_.join("\n"));
-               param1.output("\tRESULT : " + _loc14_.length + " objects found");
+               matchSearch.sort(Array.CASEINSENSITIVE);
+               console.output(matchSearch.join("\n"));
+               console.output("\tRESULT : " + matchSearch.length + " objects found");
             }
             else
             {
-               param1.output("Bad args. Attribute \'" + _loc5_ + "\' does not exist in \'" + _loc4_ + "\' (Case sensitive)");
+               console.output("Bad args. Attribute \'" + member + "\' does not exist in \'" + iDataCenter + "\' (Case sensitive)");
             }
          }
          else
          {
-            param1.output("Bad args. Can\'t search in \'" + _loc4_ + "\'");
+            console.output("Bad args. Can\'t search in \'" + iDataCenter + "\'");
          }
       }
       
       private function validArgs() : Dictionary {
-         var _loc3_:XML = null;
-         var _loc4_:Array = null;
-         var _loc1_:Dictionary = new Dictionary();
-         var _loc2_:XML = describeType(GameDataList);
-         for each (_loc3_ in _loc2_..constant)
+         var subXML:XML = null;
+         var varAndAccessors:Array = null;
+         var dico:Dictionary = new Dictionary();
+         var xml:XML = describeType(GameDataList);
+         for each (subXML in xml..constant)
          {
-            _loc4_ = this.getSimpleVariablesAndAccessors(String(_loc3_.@type));
-            if(_loc4_.indexOf("id") != -1)
+            varAndAccessors = this.getSimpleVariablesAndAccessors(String(subXML.@type));
+            if(varAndAccessors.indexOf("id") != -1)
             {
-               _loc1_[String(_loc3_.@name).toLowerCase()] = String(_loc3_.@type);
+               dico[String(subXML.@name).toLowerCase()] = String(subXML.@type);
             }
          }
-         return _loc1_;
+         return dico;
       }
       
-      private function getSimpleVariablesAndAccessors(param1:String, param2:Boolean=false) : Array {
-         var _loc5_:String = null;
-         var _loc6_:XML = null;
-         var _loc3_:Array = new Array();
-         var _loc4_:XML = describeType(getDefinitionByName(param1));
-         for each (_loc6_ in _loc4_..variable)
+      private function getSimpleVariablesAndAccessors(clazz:String, addVectors:Boolean=false) : Array {
+         var type:String = null;
+         var currentXML:XML = null;
+         var result:Array = new Array();
+         var xml:XML = describeType(getDefinitionByName(clazz));
+         for each (currentXML in xml..variable)
          {
-            _loc5_ = String(_loc6_.@type);
-            if(_loc5_ == "int" || _loc5_ == "uint" || _loc5_ == "Number" || _loc5_ == "String")
+            type = String(currentXML.@type);
+            if((type == "int") || (type == "uint") || (type == "Number") || (type == "String"))
             {
-               _loc3_.push(String(_loc6_.@name));
+               result.push(String(currentXML.@name));
             }
-            if(param2)
+            if(addVectors)
             {
-               if(!(_loc5_.indexOf("Vector.<int>") == -1) || !(_loc5_.indexOf("Vector.<uint>") == -1) || !(_loc5_.indexOf("Vector.<Number>") == -1) || !(_loc5_.indexOf("Vector.<String>") == -1))
+               if((!(type.indexOf("Vector.<int>") == -1)) || (!(type.indexOf("Vector.<uint>") == -1)) || (!(type.indexOf("Vector.<Number>") == -1)) || (!(type.indexOf("Vector.<String>") == -1)))
                {
-                  if(_loc5_.split("Vector").length == 2)
+                  if(type.split("Vector").length == 2)
                   {
-                     _loc3_.push(String(_loc6_.@name));
+                     result.push(String(currentXML.@name));
                   }
                }
             }
          }
-         for each (_loc6_ in _loc4_..accessor)
+         for each (currentXML in xml..accessor)
          {
-            _loc5_ = String(_loc6_.@type);
-            if(_loc5_ == "int" || _loc5_ == "uint" || _loc5_ == "Number" || _loc5_ == "String")
+            type = String(currentXML.@type);
+            if((type == "int") || (type == "uint") || (type == "Number") || (type == "String"))
             {
-               _loc3_.push(String(_loc6_.@name));
+               result.push(String(currentXML.@name));
             }
-            if(param2)
+            if(addVectors)
             {
-               if(!(_loc5_.indexOf("Vector.<int>") == -1) || !(_loc5_.indexOf("Vector.<uint>") == -1) || !(_loc5_.indexOf("Vector.<Number>") == -1) || !(_loc5_.indexOf("Vector.<String>") == -1))
+               if((!(type.indexOf("Vector.<int>") == -1)) || (!(type.indexOf("Vector.<uint>") == -1)) || (!(type.indexOf("Vector.<Number>") == -1)) || (!(type.indexOf("Vector.<String>") == -1)))
                {
-                  if(_loc5_.split("Vector").length == 2)
+                  if(type.split("Vector").length == 2)
                   {
-                     _loc3_.push(String(_loc6_.@name));
+                     result.push(String(currentXML.@name));
                   }
                }
             }
          }
-         return _loc3_;
+         return result;
       }
       
-      private function getIdFunction(param1:String) : String {
-         var _loc3_:XML = null;
-         var _loc4_:String = null;
-         var _loc2_:XML = describeType(getDefinitionByName(param1));
-         for each (_loc3_ in _loc2_..method)
+      private function getIdFunction(clazz:String) : String {
+         var subXML:XML = null;
+         var parameterType:String = null;
+         var xml:XML = describeType(getDefinitionByName(clazz));
+         for each (subXML in xml..method)
          {
-            if(_loc3_.@returnType == param1 && XMLList(_loc3_.parameter).length() == 1)
+            if((subXML.@returnType == clazz) && (XMLList(subXML.parameter).length() == 1))
             {
-               _loc4_ = String(XMLList(_loc3_.parameter)[0].@type);
-               if(_loc4_ == "int" || _loc4_ == "uint")
+               parameterType = String(XMLList(subXML.parameter)[0].@type);
+               if((parameterType == "int") || (parameterType == "uint"))
                {
-                  if(String(_loc3_.@name).indexOf("ById") != -1)
+                  if(String(subXML.@name).indexOf("ById") != -1)
                   {
-                     return String(_loc3_.@name);
+                     return String(subXML.@name);
                   }
                }
             }
@@ -504,14 +497,14 @@ package com.ankamagames.dofus.console.debug
          return null;
       }
       
-      private function getListingFunction(param1:String) : String {
-         var _loc3_:XML = null;
-         var _loc2_:XML = describeType(getDefinitionByName(param1));
-         for each (_loc3_ in _loc2_..method)
+      private function getListingFunction(clazz:String) : String {
+         var subXML:XML = null;
+         var xml:XML = describeType(getDefinitionByName(clazz));
+         for each (subXML in xml..method)
          {
-            if(_loc3_.@returnType == "Array" && XMLList(_loc3_.parameter).length() == 0)
+            if((subXML.@returnType == "Array") && (XMLList(subXML.parameter).length() == 0))
             {
-               return String(_loc3_.@name);
+               return String(subXML.@name);
             }
          }
          return null;

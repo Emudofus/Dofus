@@ -5,11 +5,11 @@ package com.somerandomdude.colortoolkit.spaces
    public class Lab extends CoreColor implements IColorSpace
    {
       
-      public function Lab(param1:Number=0, param2:Number=0, param3:Number=0) {
+      public function Lab(lightness:Number=0, a:Number=0, b:Number=0) {
          super();
-         this._lightness = param1;
-         this._a = param2;
-         this._b = param3;
+         this._lightness = lightness;
+         this._a = a;
+         this._b = b;
          this._color = this.generateColorFromLab(this._lightness,this._a,this._b);
       }
       
@@ -23,20 +23,20 @@ package com.somerandomdude.colortoolkit.spaces
          return this._color;
       }
       
-      public function set color(param1:int) : void {
-         this._color = param1;
-         var _loc2_:Lab = this.generateLabFromHex(param1);
-         this._lightness = _loc2_.lightness;
-         this._a = _loc2_.a;
-         this._b = _loc2_.b;
+      public function set color(value:int) : void {
+         this._color = value;
+         var lab:Lab = this.generateLabFromHex(value);
+         this._lightness = lab.lightness;
+         this._a = lab.a;
+         this._b = lab.b;
       }
       
       public function get lightness() : Number {
          return this._lightness;
       }
       
-      public function set lightness(param1:Number) : void {
-         this._lightness = param1;
+      public function set lightness(value:Number) : void {
+         this._lightness = value;
          this._color = this.generateColorFromLab(this._lightness,this._a,this._b);
       }
       
@@ -44,8 +44,8 @@ package com.somerandomdude.colortoolkit.spaces
          return this._a;
       }
       
-      public function set a(param1:Number) : void {
-         this._a = param1;
+      public function set a(value:Number) : void {
+         this._a = value;
          this._color = this.generateColorFromLab(this._lightness,this._a,this._b);
       }
       
@@ -53,8 +53,8 @@ package com.somerandomdude.colortoolkit.spaces
          return this._b;
       }
       
-      public function set b(param1:Number) : void {
-         this._b = param1;
+      public function set b(value:Number) : void {
+         this._b = value;
          this._color = this.generateColorFromLab(this._lightness,this._a,this._b);
       }
       
@@ -62,75 +62,75 @@ package com.somerandomdude.colortoolkit.spaces
          return new Lab(this._lightness,this._a,this._b);
       }
       
-      private function generateColorFromLab(param1:Number, param2:Number, param3:Number) : int {
-         var _loc4_:Number = 95.047;
-         var _loc5_:Number = 100;
-         var _loc6_:Number = 108.883;
-         var _loc7_:Number = (param1 + 16) / 116;
-         var _loc8_:Number = param2 / 500 + _loc7_;
-         var _loc9_:Number = _loc7_ - param3 / 200;
-         if(Math.pow(_loc7_,3) > 0.008856)
+      private function generateColorFromLab(lightness:Number, a:Number, b:Number) : int {
+         var REF_X:Number = 95.047;
+         var REF_Y:Number = 100;
+         var REF_Z:Number = 108.883;
+         var y:Number = (lightness + 16) / 116;
+         var x:Number = a / 500 + y;
+         var z:Number = y - b / 200;
+         if(Math.pow(y,3) > 0.008856)
          {
-            _loc7_ = Math.pow(_loc7_,3);
+            y = Math.pow(y,3);
          }
          else
          {
-            _loc7_ = (_loc7_ - 16 / 116) / 7.787;
+            y = (y - 16 / 116) / 7.787;
          }
-         if(Math.pow(_loc8_,3) > 0.008856)
+         if(Math.pow(x,3) > 0.008856)
          {
-            _loc8_ = Math.pow(_loc8_,3);
+            x = Math.pow(x,3);
          }
          else
          {
-            _loc8_ = (_loc8_ - 16 / 116) / 7.787;
+            x = (x - 16 / 116) / 7.787;
          }
-         if(Math.pow(_loc9_,3) > 0.008856)
+         if(Math.pow(z,3) > 0.008856)
          {
-            _loc9_ = Math.pow(_loc9_,3);
+            z = Math.pow(z,3);
          }
          else
          {
-            _loc9_ = (_loc9_ - 16 / 116) / 7.787;
+            z = (z - 16 / 116) / 7.787;
          }
-         var _loc10_:XYZ = new XYZ(_loc4_ * _loc8_,_loc5_ * _loc7_,_loc6_ * _loc9_);
-         return _loc10_.color;
+         var xyz:XYZ = new XYZ(REF_X * x,REF_Y * y,REF_Z * z);
+         return xyz.color;
       }
       
-      private function generateLabFromHex(param1:int) : Lab {
-         var _loc2_:XYZ = new XYZ();
-         _loc2_.color = param1;
-         var _loc3_:Number = 95.047;
-         var _loc4_:Number = 100;
-         var _loc5_:Number = 108.883;
-         var _loc6_:Number = _loc2_.x / _loc3_;
-         var _loc7_:Number = _loc2_.y / _loc4_;
-         var _loc8_:Number = _loc2_.z / _loc5_;
-         if(_loc6_ > 0.008856)
+      private function generateLabFromHex(color:int) : Lab {
+         var xyz:XYZ = new XYZ();
+         xyz.color = color;
+         var REF_X:Number = 95.047;
+         var REF_Y:Number = 100;
+         var REF_Z:Number = 108.883;
+         var x:Number = xyz.x / REF_X;
+         var y:Number = xyz.y / REF_Y;
+         var z:Number = xyz.z / REF_Z;
+         if(x > 0.008856)
          {
-            _loc6_ = Math.pow(_loc6_,1 / 3);
+            x = Math.pow(x,1 / 3);
          }
          else
          {
-            _loc6_ = 7.787 * _loc6_ + 16 / 116;
+            x = 7.787 * x + 16 / 116;
          }
-         if(_loc7_ > 0.008856)
+         if(y > 0.008856)
          {
-            _loc7_ = Math.pow(_loc7_,1 / 3);
+            y = Math.pow(y,1 / 3);
          }
          else
          {
-            _loc7_ = 7.787 * _loc7_ + 16 / 116;
+            y = 7.787 * y + 16 / 116;
          }
-         if(_loc8_ > 0.008856)
+         if(z > 0.008856)
          {
-            _loc8_ = Math.pow(_loc8_,1 / 3);
+            z = Math.pow(z,1 / 3);
          }
          else
          {
-            _loc8_ = 7.787 * _loc8_ + 16 / 116;
+            z = 7.787 * z + 16 / 116;
          }
-         return new Lab(116 * _loc7_ - 16,500 * (_loc6_ - _loc7_),200 * (_loc7_ - _loc8_));
+         return new Lab(116 * y - 16,500 * (x - y),200 * (y - z));
       }
    }
 }

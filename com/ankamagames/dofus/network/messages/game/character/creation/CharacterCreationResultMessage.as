@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.character.creation
          return 161;
       }
       
-      public function initCharacterCreationResultMessage(param1:uint=1) : CharacterCreationResultMessage {
-         this.result = param1;
+      public function initCharacterCreationResultMessage(result:uint=1) : CharacterCreationResultMessage {
+         this.result = result;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.character.creation
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CharacterCreationResultMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterCreationResultMessage(output);
       }
       
-      public function serializeAs_CharacterCreationResultMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.result);
+      public function serializeAs_CharacterCreationResultMessage(output:IDataOutput) : void {
+         output.writeByte(this.result);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CharacterCreationResultMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterCreationResultMessage(input);
       }
       
-      public function deserializeAs_CharacterCreationResultMessage(param1:IDataInput) : void {
-         this.result = param1.readByte();
+      public function deserializeAs_CharacterCreationResultMessage(input:IDataInput) : void {
+         this.result = input.readByte();
          if(this.result < 0)
          {
             throw new Error("Forbidden value (" + this.result + ") on element of CharacterCreationResultMessage.result.");

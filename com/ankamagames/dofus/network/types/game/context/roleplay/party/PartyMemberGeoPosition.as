@@ -27,12 +27,12 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
          return 378;
       }
       
-      public function initPartyMemberGeoPosition(param1:uint=0, param2:int=0, param3:int=0, param4:int=0, param5:uint=0) : PartyMemberGeoPosition {
-         this.memberId = param1;
-         this.worldX = param2;
-         this.worldY = param3;
-         this.mapId = param4;
-         this.subAreaId = param5;
+      public function initPartyMemberGeoPosition(memberId:uint=0, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0) : PartyMemberGeoPosition {
+         this.memberId = memberId;
+         this.worldX = worldX;
+         this.worldY = worldY;
+         this.mapId = mapId;
+         this.subAreaId = subAreaId;
          return this;
       }
       
@@ -44,40 +44,40 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
          this.subAreaId = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PartyMemberGeoPosition(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartyMemberGeoPosition(output);
       }
       
-      public function serializeAs_PartyMemberGeoPosition(param1:IDataOutput) : void {
+      public function serializeAs_PartyMemberGeoPosition(output:IDataOutput) : void {
          if(this.memberId < 0)
          {
             throw new Error("Forbidden value (" + this.memberId + ") on element memberId.");
          }
          else
          {
-            param1.writeInt(this.memberId);
-            if(this.worldX < -255 || this.worldX > 255)
+            output.writeInt(this.memberId);
+            if((this.worldX < -255) || (this.worldX > 255))
             {
                throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
             }
             else
             {
-               param1.writeShort(this.worldX);
-               if(this.worldY < -255 || this.worldY > 255)
+               output.writeShort(this.worldX);
+               if((this.worldY < -255) || (this.worldY > 255))
                {
                   throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
                }
                else
                {
-                  param1.writeShort(this.worldY);
-                  param1.writeInt(this.mapId);
+                  output.writeShort(this.worldY);
+                  output.writeInt(this.mapId);
                   if(this.subAreaId < 0)
                   {
                      throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
                   }
                   else
                   {
-                     param1.writeShort(this.subAreaId);
+                     output.writeShort(this.subAreaId);
                      return;
                   }
                }
@@ -85,34 +85,34 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PartyMemberGeoPosition(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartyMemberGeoPosition(input);
       }
       
-      public function deserializeAs_PartyMemberGeoPosition(param1:IDataInput) : void {
-         this.memberId = param1.readInt();
+      public function deserializeAs_PartyMemberGeoPosition(input:IDataInput) : void {
+         this.memberId = input.readInt();
          if(this.memberId < 0)
          {
             throw new Error("Forbidden value (" + this.memberId + ") on element of PartyMemberGeoPosition.memberId.");
          }
          else
          {
-            this.worldX = param1.readShort();
-            if(this.worldX < -255 || this.worldX > 255)
+            this.worldX = input.readShort();
+            if((this.worldX < -255) || (this.worldX > 255))
             {
                throw new Error("Forbidden value (" + this.worldX + ") on element of PartyMemberGeoPosition.worldX.");
             }
             else
             {
-               this.worldY = param1.readShort();
-               if(this.worldY < -255 || this.worldY > 255)
+               this.worldY = input.readShort();
+               if((this.worldY < -255) || (this.worldY > 255))
                {
                   throw new Error("Forbidden value (" + this.worldY + ") on element of PartyMemberGeoPosition.worldY.");
                }
                else
                {
-                  this.mapId = param1.readInt();
-                  this.subAreaId = param1.readShort();
+                  this.mapId = input.readInt();
+                  this.subAreaId = input.readShort();
                   if(this.subAreaId < 0)
                   {
                      throw new Error("Forbidden value (" + this.subAreaId + ") on element of PartyMemberGeoPosition.subAreaId.");

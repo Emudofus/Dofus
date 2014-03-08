@@ -26,8 +26,8 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          return AnimationModifierPriority.HIGH;
       }
       
-      public function getModifiedAnimation(param1:String, param2:TiphonEntityLook) : String {
-         switch(param1)
+      public function getModifiedAnimation(animation:String, look:TiphonEntityLook) : String {
+         switch(animation)
          {
             case AnimationEnum.ANIM_STATIQUE:
                return AnimationEnum.ANIM_STATIQUE_CARRYING;
@@ -41,8 +41,6 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                return AnimationEnum.ANIM_MORT_CARRYING;
             case AnimationEnum.ANIM_TACLE:
                return AnimationEnum.ANIM_TACLE_CARRYING;
-            default:
-               return param1;
          }
       }
    }

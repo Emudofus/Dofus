@@ -11,7 +11,6 @@ package com.ankamagames.dofus.types.entities
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.atouin.AtouinConstants;
    import com.ankamagames.jerakine.types.positions.MapPoint;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.entities.behaviours.IMovementBehavior;
    import com.ankamagames.jerakine.entities.behaviours.IDisplayBehavior;
    import flash.display.Bitmap;
@@ -39,6 +38,7 @@ package com.ankamagames.dofus.types.entities
    import com.ankamagames.atouin.Atouin;
    import com.ankamagames.jerakine.pathfinding.Pathfinding;
    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.network.types.game.look.EntityLook;
    import com.ankamagames.dofus.misc.EntityLookAdapter;
    import flash.display.BitmapData;
@@ -57,18 +57,18 @@ package com.ankamagames.dofus.types.entities
    public class AnimatedCharacter extends TiphonSprite implements IEntity, IMovable, IDisplayable, IAnimated, IInteractive, IRectangle, IObstacle, ITransparency, ICustomUnicNameGetter
    {
       
-      public function AnimatedCharacter(param1:int, param2:TiphonEntityLook, param3:AnimatedCharacter=null) {
-         super(param2);
-         this._name = "entity::" + param1;
+      public function AnimatedCharacter(nId:int, look:TiphonEntityLook, followed:AnimatedCharacter=null) {
+         super(look);
+         this._name = "entity::" + nId;
          this._displayBehavior = AtouinDisplayBehavior.getInstance();
          this._movementBehavior = WalkingMovementBehavior.getInstance();
          addEventListener(TiphonEvent.RENDER_SUCCEED,this.onFirstRender);
          addEventListener(TiphonEvent.RENDER_FAILED,this.onFirstError);
          setAnimationAndDirection(AnimationEnum.ANIM_STATIQUE,DirectionsEnum.DOWN_RIGHT);
-         this.id = param1;
-         name = "AnimatedCharacter" + param1;
+         this.id = nId;
+         name = "AnimatedCharacter" + nId;
          this._followers = new Vector.<IMovable>();
-         this._followed = param3;
+         this._followed = followed;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AnimatedCharacter));
@@ -113,8 +113,8 @@ package com.ankamagames.dofus.types.entities
          return this._id;
       }
       
-      public function set id(param1:int) : void {
-         this._id = param1;
+      public function set id(nValue:int) : void {
+         this._id = nValue;
       }
       
       public function get customUnicName() : String {
@@ -125,16 +125,16 @@ package com.ankamagames.dofus.types.entities
          return this._position;
       }
       
-      public function set position(param1:MapPoint) : void {
-         this._position = param1;
+      public function set position(oValue:MapPoint) : void {
+         this._position = oValue;
       }
       
       public function get movementBehavior() : IMovementBehavior {
          return this._movementBehavior;
       }
       
-      public function set movementBehavior(param1:IMovementBehavior) : void {
-         this._movementBehavior = param1;
+      public function set movementBehavior(oValue:IMovementBehavior) : void {
+         this._movementBehavior = oValue;
       }
       
       public function get followed() : AnimatedCharacter {
@@ -145,8 +145,8 @@ package com.ankamagames.dofus.types.entities
          return this._displayBehavior;
       }
       
-      public function set displayBehaviors(param1:IDisplayBehavior) : void {
-         this._displayBehavior = param1;
+      public function set displayBehaviors(oValue:IDisplayBehavior) : void {
+         this._displayBehavior = oValue;
       }
       
       public function get displayed() : Boolean {
@@ -177,17 +177,17 @@ package com.ankamagames.dofus.types.entities
          return this._visibleAura;
       }
       
-      public function set visibleAura(param1:Boolean) : void {
-         var _loc2_:String = null;
-         if(this._visibleAura == param1)
+      public function set visibleAura(visible:Boolean) : void {
+         var currentAnimation:String = null;
+         if(this._visibleAura == visible)
          {
             return;
          }
-         this._visibleAura = param1;
-         if(param1)
+         this._visibleAura = visible;
+         if(visible)
          {
-            _loc2_ = getAnimation();
-            if((this._auraEntity) && (_loc2_) && !(_loc2_.indexOf("AnimStatique") == -1))
+            currentAnimation = getAnimation();
+            if((this._auraEntity) && (currentAnimation) && (!(currentAnimation.indexOf("AnimStatique") == -1)))
             {
                this.addSubEntity(this._auraEntity,SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND,0);
                this._auraEntity.restartAnimation(0);
@@ -206,7 +206,7 @@ package com.ankamagames.dofus.types.entities
       }
       
       public function get hasAura() : Boolean {
-         if(!(this._auraEntity == null) || !(getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND,0) == null))
+         if((!(this._auraEntity == null)) || (!(getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND,0) == null)))
          {
             return true;
          }
@@ -217,28 +217,28 @@ package com.ankamagames.dofus.types.entities
          return this._transparencyAllowed;
       }
       
-      public function set transparencyAllowed(param1:Boolean) : void {
-         this._transparencyAllowed = param1;
+      public function set transparencyAllowed(allowed:Boolean) : void {
+         this._transparencyAllowed = allowed;
       }
       
       public var slideOnNextMove:Boolean;
       
-      private function onFirstError(param1:TiphonEvent) : void {
+      private function onFirstError(e:TiphonEvent) : void {
          removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onFirstRender);
          removeEventListener(TiphonEvent.RENDER_FAILED,this.onFirstError);
-         var _loc2_:Array = getAvaibleDirection(AnimationEnum.ANIM_STATIQUE);
-         var _loc3_:uint = DirectionsEnum.DOWN_RIGHT;
-         while(_loc3_ < DirectionsEnum.DOWN_RIGHT + 7)
+         var dirList:Array = getAvaibleDirection(AnimationEnum.ANIM_STATIQUE);
+         var dir:uint = DirectionsEnum.DOWN_RIGHT;
+         while(dir < DirectionsEnum.DOWN_RIGHT + 7)
          {
-            if(_loc2_[_loc3_ % 8])
+            if(dirList[dir % 8])
             {
-               setAnimationAndDirection(AnimationEnum.ANIM_STATIQUE,_loc3_ % 8);
+               setAnimationAndDirection(AnimationEnum.ANIM_STATIQUE,dir % 8);
             }
-            _loc3_++;
+            dir++;
          }
       }
       
-      private function onFirstRender(param1:TiphonEvent) : void {
+      private function onFirstRender(e:TiphonEvent) : void {
          removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onFirstRender);
          removeEventListener(TiphonEvent.RENDER_FAILED,this.onFirstError);
       }
@@ -247,30 +247,30 @@ package com.ankamagames.dofus.types.entities
          return this._canSeeThrough;
       }
       
-      public function setCanSeeThrough(param1:Boolean) : void {
-         this._canSeeThrough = param1;
+      public function setCanSeeThrough(value:Boolean) : void {
+         this._canSeeThrough = value;
       }
       
-      public function move(param1:MovementPath, param2:Function=null) : void {
-         var _loc6_:IMovable = null;
-         var _loc7_:GameContextActorInformations = null;
-         var _loc8_:* = false;
-         var _loc9_:Array = null;
-         var _loc10_:RoleplayContextFrame = null;
-         var _loc11_:Vector.<InteractiveElement> = null;
-         var _loc12_:InteractiveElement = null;
-         var _loc13_:* = 0;
-         var _loc14_:MapPoint = null;
-         var _loc15_:uint = 0;
-         var _loc16_:Array = null;
-         var _loc17_:uint = 0;
-         var _loc18_:* = false;
-         if(!param1.start.equals(this.position))
+      public function move(path:MovementPath, callback:Function=null) : void {
+         var follower:IMovable = null;
+         var infos:GameContextActorInformations = null;
+         var isCreatureMode:* = false;
+         var forbidenCellsId:Array = null;
+         var rpContextFrame:RoleplayContextFrame = null;
+         var ies:Vector.<InteractiveElement> = null;
+         var ie:InteractiveElement = null;
+         var iePos:* = 0;
+         var followerPoint:MapPoint = null;
+         var tryCount:uint = 0;
+         var avaibleDirection:Array = null;
+         var avaibleDirectionCount:uint = 0;
+         var b:* = false;
+         if(!path.start.equals(this.position))
          {
-            _log.warn("Unsynchronized position for entity " + this.id + ", jumping from " + this.position + " to " + param1.start + ".");
-            this.jump(param1.start);
+            _log.warn("Unsynchronized position for entity " + this.id + ", jumping from " + this.position + " to " + path.start + ".");
+            this.jump(path.start);
          }
-         var _loc3_:uint = param1.path.length + 1;
+         var distance:uint = path.path.length + 1;
          this._movementBehavior = null;
          if(this.slideOnNextMove)
          {
@@ -281,17 +281,17 @@ package com.ankamagames.dofus.types.entities
          {
             if(Kernel.getWorker().contains(RoleplayEntitiesFrame))
             {
-               _loc7_ = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).getEntityInfos(this.id);
-               if(_loc7_ is GameRolePlayHumanoidInformations)
+               infos = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).getEntityInfos(this.id);
+               if(infos is GameRolePlayHumanoidInformations)
                {
-                  if((_loc7_ as GameRolePlayHumanoidInformations).humanoidInfo.restrictions.cantRun)
+                  if((infos as GameRolePlayHumanoidInformations).humanoidInfo.restrictions.cantRun)
                   {
                      this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
                   }
                }
                else
                {
-                  if(_loc7_ is GameRolePlayGroupMonsterInformations)
+                  if(infos is GameRolePlayGroupMonsterInformations)
                   {
                      this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
                   }
@@ -299,14 +299,14 @@ package com.ankamagames.dofus.types.entities
             }
             if(!this._movementBehavior)
             {
-               if(_loc3_ > 3)
+               if(distance > 3)
                {
-                  _loc8_ = false;
+                  isCreatureMode = false;
                   if(Kernel.getWorker().contains(RoleplayEntitiesFrame))
                   {
-                     _loc8_ = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).isCreatureMode;
+                     isCreatureMode = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).isCreatureMode;
                   }
-                  if(!_loc8_ && (this.isMounted()))
+                  if((!isCreatureMode) && (this.isMounted()))
                   {
                      this._movementBehavior = MountedMovementBehavior.getInstance();
                   }
@@ -317,7 +317,7 @@ package com.ankamagames.dofus.types.entities
                }
                else
                {
-                  if(_loc3_ > 0)
+                  if(distance > 0)
                   {
                      this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
                   }
@@ -328,136 +328,136 @@ package com.ankamagames.dofus.types.entities
                }
             }
          }
-         var _loc4_:int = this.getDirection();
-         var _loc5_:IDataMapProvider = DataMapProvider.getInstance();
+         var followerDirection:int = this.getDirection();
+         var mapData:IDataMapProvider = DataMapProvider.getInstance();
          if(this._followers.length > 0)
          {
-            _loc9_ = new Array();
-            _loc10_ = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-            if(_loc10_ != null)
+            forbidenCellsId = new Array();
+            rpContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+            if(rpContextFrame != null)
             {
-               _loc11_ = _loc10_.entitiesFrame.interactiveElements;
-               for each (_loc12_ in _loc11_)
+               ies = rpContextFrame.entitiesFrame.interactiveElements;
+               for each (ie in ies)
                {
-                  _loc13_ = Atouin.getInstance().getIdentifiedElementPosition(_loc12_.elementId).cellId;
-                  _loc9_.push(_loc13_);
+                  iePos = Atouin.getInstance().getIdentifiedElementPosition(ie.elementId).cellId;
+                  forbidenCellsId.push(iePos);
                }
             }
          }
-         for each (_loc6_ in this._followers)
+         for each (follower in this._followers)
          {
-            _loc14_ = null;
-            _loc15_ = 0;
+            followerPoint = null;
+            tryCount = 0;
             do
             {
-                  _loc14_ = param1.end.getNearestFreeCellInDirection(_loc4_,_loc5_,false,false,_loc9_);
-                  _loc4_++;
-                  _loc4_ = _loc4_ % 8;
-               }while(!_loc14_ && ++_loc15_ < 8);
+                  followerPoint = path.end.getNearestFreeCellInDirection(followerDirection,mapData,false,false,forbidenCellsId);
+                  followerDirection++;
+                  followerDirection = followerDirection % 8;
+               }while((!followerPoint) && (++tryCount < 8));
                
-               if(_loc14_)
+               if(followerPoint)
                {
-                  _loc16_ = [];
-                  if(_loc6_ is TiphonSprite)
+                  avaibleDirection = [];
+                  if(follower is TiphonSprite)
                   {
-                     _loc16_ = TiphonSprite(_loc6_).getAvaibleDirection();
+                     avaibleDirection = TiphonSprite(follower).getAvaibleDirection();
                   }
-                  _loc17_ = 0;
-                  for each (_loc18_ in _loc16_)
+                  avaibleDirectionCount = 0;
+                  for each (b in avaibleDirection)
                   {
-                     if(_loc18_)
+                     if(b)
                      {
-                        _loc17_++;
+                        avaibleDirectionCount++;
                      }
                   }
-                  if((_loc16_[1]) && !_loc16_[3])
+                  if((avaibleDirection[1]) && (!avaibleDirection[3]))
                   {
-                     _loc17_++;
+                     avaibleDirectionCount++;
                   }
-                  if(!_loc16_[1] && (_loc16_[3]))
+                  if((!avaibleDirection[1]) && (avaibleDirection[3]))
                   {
-                     _loc17_++;
+                     avaibleDirectionCount++;
                   }
-                  if((_loc16_[7]) && !_loc16_[5])
+                  if((avaibleDirection[7]) && (!avaibleDirection[5]))
                   {
-                     _loc17_++;
+                     avaibleDirectionCount++;
                   }
-                  if(!_loc16_[7] && (_loc16_[5]))
+                  if((!avaibleDirection[7]) && (avaibleDirection[5]))
                   {
-                     _loc17_++;
+                     avaibleDirectionCount++;
                   }
-                  if(!_loc16_[0] && (_loc16_[4]))
+                  if((!avaibleDirection[0]) && (avaibleDirection[4]))
                   {
-                     _loc17_++;
+                     avaibleDirectionCount++;
                   }
-                  if((_loc16_[0]) && !_loc16_[4])
+                  if((avaibleDirection[0]) && (!avaibleDirection[4]))
                   {
-                     _loc17_++;
+                     avaibleDirectionCount++;
                   }
-                  Pathfinding.findPath(_loc5_,_loc6_.position,_loc14_,!(_loc17_ < 8),true,this.processMove,new Array(_loc6_,_loc14_));
+                  Pathfinding.findPath(mapData,follower.position,followerPoint,!(avaibleDirectionCount < 8),true,this.processMove,new Array(follower,followerPoint));
                }
                else
                {
                   _log.warn("Unable to get a proper destination for the follower.");
                }
             }
-            this._movementBehavior.move(this,param1,param2);
+            this._movementBehavior.move(this,path,callback);
          }
          
-         private function processMove(param1:MovementPath, param2:Array) : void {
-            var _loc4_:MapPoint = null;
-            var _loc3_:IMovable = param2[0];
-            if((param1) && param1.path.length > 0)
+         private function processMove(followPath:MovementPath, args:Array) : void {
+            var followerPoint:MapPoint = null;
+            var follower:IMovable = args[0];
+            if((followPath) && (followPath.path.length > 0))
             {
-               _loc3_.movementBehavior = this._movementBehavior;
-               _loc3_.move(param1);
+               follower.movementBehavior = this._movementBehavior;
+               follower.move(followPath);
             }
             else
             {
-               _loc4_ = param2[1];
-               _log.warn("There was no path from " + _loc3_.position + " to " + _loc4_ + " for a follower. Jumping !");
-               _loc3_.jump(_loc4_);
+               followerPoint = args[1];
+               _log.warn("There was no path from " + follower.position + " to " + followerPoint + " for a follower. Jumping !");
+               follower.jump(followerPoint);
             }
          }
          
-         public function jump(param1:MapPoint) : void {
-            var _loc2_:IMovable = null;
-            var _loc3_:IDataMapProvider = null;
-            var _loc4_:MapPoint = null;
-            this._movementBehavior.jump(this,param1);
-            for each (_loc2_ in this._followers)
+         public function jump(newPosition:MapPoint) : void {
+            var fol:IMovable = null;
+            var mdp:IDataMapProvider = null;
+            var mp:MapPoint = null;
+            this._movementBehavior.jump(this,newPosition);
+            for each (fol in this._followers)
             {
-               _loc3_ = DataMapProvider.getInstance();
-               _loc4_ = this.position.getNearestFreeCell(_loc3_,false);
-               if(!_loc4_)
+               mdp = DataMapProvider.getInstance();
+               mp = this.position.getNearestFreeCell(mdp,false);
+               if(!mp)
                {
-                  _loc4_ = this.position.getNearestFreeCell(_loc3_,true);
-                  if(!_loc4_)
+                  mp = this.position.getNearestFreeCell(mdp,true);
+                  if(!mp)
                   {
                      return;
                   }
                }
-               _loc2_.jump(_loc4_);
+               fol.jump(mp);
             }
          }
          
-         public function stop(param1:Boolean=false) : void {
-            var _loc2_:IMovable = null;
-            this._movementBehavior.stop(this,param1);
-            for each (_loc2_ in this._followers)
+         public function stop(forceStop:Boolean=false) : void {
+            var fol:IMovable = null;
+            this._movementBehavior.stop(this,forceStop);
+            for each (fol in this._followers)
             {
-               _loc2_.stop(param1);
+               fol.stop(forceStop);
             }
          }
          
-         public function display(param1:uint=10) : void {
-            this._displayBehavior.display(this,param1);
+         public function display(strata:uint=10) : void {
+            this._displayBehavior.display(this,strata);
             this._displayed = true;
          }
          
          public function remove() : void {
-            var _loc1_:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-            if((_loc1_) && (_loc1_.justSwitchingCreaturesFightMode))
+            var fef:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+            if((fef) && (fef.justSwitchingCreaturesFightMode))
             {
                this.dispatchEvent(new TiphonEvent(TiphonEvent.ANIMATION_DESTROY,this));
             }
@@ -482,97 +482,97 @@ package com.ankamagames.dofus.types.entities
          }
          
          public function removeAllFollowers() : void {
-            var _loc3_:IMovable = null;
-            var _loc4_:IDisplayable = null;
-            var _loc5_:TiphonSprite = null;
-            var _loc1_:int = this._followers.length;
-            var _loc2_:* = 0;
-            while(_loc2_ < _loc1_)
+            var iFollower:IMovable = null;
+            var dfollower:IDisplayable = null;
+            var sprite:TiphonSprite = null;
+            var num:int = this._followers.length;
+            var i:int = 0;
+            while(i < num)
             {
-               _loc3_ = this._followers[_loc2_];
-               _loc4_ = _loc3_ as IDisplayable;
-               if(_loc4_)
+               iFollower = this._followers[i];
+               dfollower = iFollower as IDisplayable;
+               if(dfollower)
                {
-                  _loc4_.remove();
+                  dfollower.remove();
                }
-               _loc5_ = _loc3_ as TiphonSprite;
-               if(_loc5_)
+               sprite = iFollower as TiphonSprite;
+               if(sprite)
                {
-                  _loc5_.destroy();
+                  sprite.destroy();
                }
-               _loc2_++;
+               i++;
             }
             this._followers = new Vector.<IMovable>();
          }
          
-         public function addFollower(param1:IMovable, param2:Boolean=false) : void {
-            var _loc5_:IDisplayable = null;
-            this._followers.push(param1);
-            var _loc3_:IDataMapProvider = DataMapProvider.getInstance();
-            var _loc4_:MapPoint = this.position.getNearestFreeCell(_loc3_,false);
-            if(!_loc4_)
+         public function addFollower(follower:IMovable, instantSync:Boolean=false) : void {
+            var dfollower:IDisplayable = null;
+            this._followers.push(follower);
+            var mdp:IDataMapProvider = DataMapProvider.getInstance();
+            var mp:MapPoint = this.position.getNearestFreeCell(mdp,false);
+            if(!mp)
             {
-               _loc4_ = this.position.getNearestFreeCell(_loc3_,true);
-               if(!_loc4_)
+               mp = this.position.getNearestFreeCell(mdp,true);
+               if(!mp)
                {
                   return;
                }
             }
-            if(param1.position == null)
+            if(follower.position == null)
             {
-               param1.position = _loc4_;
+               follower.position = mp;
             }
-            if(param1 is IDisplayable)
+            if(follower is IDisplayable)
             {
-               _loc5_ = param1 as IDisplayable;
-               if((this._displayed) && !_loc5_.displayed)
+               dfollower = follower as IDisplayable;
+               if((this._displayed) && (!dfollower.displayed))
                {
-                  _loc5_.display();
+                  dfollower.display();
                }
                else
                {
-                  if(!this._displayed && (_loc5_.displayed))
+                  if((!this._displayed) && (dfollower.displayed))
                   {
-                     _loc5_.remove();
+                     dfollower.remove();
                   }
                }
             }
-            if(_loc4_.equals(param1.position))
+            if(mp.equals(follower.position))
             {
                return;
             }
-            if(param2)
+            if(instantSync)
             {
-               param1.jump(_loc4_);
+               follower.jump(mp);
             }
             else
             {
-               param1.move(Pathfinding.findPath(_loc3_,param1.position,_loc4_,false,false));
+               follower.move(Pathfinding.findPath(mdp,follower.position,mp,false,false));
             }
          }
          
-         public function followersEqual(param1:Vector.<EntityLook>) : Boolean {
-            var _loc2_:* = 0;
-            if(!param1)
+         public function followersEqual(pEntityLooks:Vector.<EntityLook>) : Boolean {
+            var i:* = 0;
+            if(!pEntityLooks)
             {
                return false;
             }
-            var _loc3_:int = param1.length;
-            var _loc4_:* = 0;
-            if(this._followers.length != _loc3_)
+            var nbLooks:int = pEntityLooks.length;
+            var nbEqual:int = 0;
+            if(this._followers.length != nbLooks)
             {
                return false;
             }
-            _loc2_ = 0;
-            while(_loc2_ < _loc3_)
+            i = 0;
+            while(i < nbLooks)
             {
-               if((this._followers[_loc2_] as AnimatedCharacter).look.equals(EntityLookAdapter.fromNetwork(param1[_loc2_])))
+               if((this._followers[i] as AnimatedCharacter).look.equals(EntityLookAdapter.fromNetwork(pEntityLooks[i])))
                {
-                  _loc4_++;
+                  nbEqual++;
                }
-               _loc2_++;
+               i++;
             }
-            if(_loc4_ != _loc3_)
+            if(nbEqual != nbLooks)
             {
                return false;
             }
@@ -580,37 +580,37 @@ package com.ankamagames.dofus.types.entities
          }
          
          public function isMounted() : Boolean {
-            var _loc1_:Array = this.look.getSubEntities(true);
-            if(!_loc1_)
+            var subEntities:Array = this.look.getSubEntities(true);
+            if(!subEntities)
             {
                return false;
             }
-            var _loc2_:Array = _loc1_[SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER];
-            if(!_loc2_ || _loc2_.length == 0)
+            var mountedEntities:Array = subEntities[SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER];
+            if((!mountedEntities) || (mountedEntities.length == 0))
             {
                return false;
             }
             return true;
          }
          
-         public function highLightCharacterAndFollower(param1:Boolean) : void {
-            var _loc5_:AnimatedCharacter = null;
-            var _loc2_:AnimatedCharacter = this.getRootEntity();
-            var _loc3_:int = _loc2_._followers.length;
-            var _loc4_:* = -1;
-            while(++_loc4_ < _loc3_)
+         public function highLightCharacterAndFollower(value:Boolean) : void {
+            var entity:AnimatedCharacter = null;
+            var rootEntity:AnimatedCharacter = this.getRootEntity();
+            var num:int = rootEntity._followers.length;
+            var i:int = -1;
+            while(++i < num)
             {
-               _loc5_ = _loc2_._followers[_loc4_] as AnimatedCharacter;
-               if(_loc5_)
+               entity = rootEntity._followers[i] as AnimatedCharacter;
+               if(entity)
                {
-                  _loc5_.highLight(param1);
+                  entity.highLight(value);
                }
             }
-            this.highLight(param1);
+            this.highLight(value);
          }
          
-         public function highLight(param1:Boolean) : void {
-            if(param1)
+         public function highLight(value:Boolean) : void {
+            if(value)
             {
                transform.colorTransform = LUMINOSITY_TRANSFORM;
             }
@@ -627,18 +627,18 @@ package com.ankamagames.dofus.types.entities
             }
          }
          
-         public function showBitmapAlpha(param1:Number) : void {
-            var _loc2_:BitmapData = null;
-            var _loc3_:Sprite = null;
+         public function showBitmapAlpha(alphaValue:Number) : void {
+            var bmpdt:BitmapData = null;
+            var newCellSprite:Sprite = null;
             if(this._bmpAlpha == null)
             {
-               _loc2_ = new BitmapData(width,height,true,16711680);
-               _loc2_.draw(this.bitmapData);
-               this._bmpAlpha = new Bitmap(_loc2_);
-               this._bmpAlpha.alpha = param1;
-               _loc3_ = InteractiveCellManager.getInstance().getCell(this.position.cellId);
-               this._bmpAlpha.x = _loc3_.x + _loc3_.width / 2 - this.width / 2;
-               this._bmpAlpha.y = _loc3_.y + _loc3_.height - this.height;
+               bmpdt = new BitmapData(width,height,true,16711680);
+               bmpdt.draw(this.bitmapData);
+               this._bmpAlpha = new Bitmap(bmpdt);
+               this._bmpAlpha.alpha = alphaValue;
+               newCellSprite = InteractiveCellManager.getInstance().getCell(this.position.cellId);
+               this._bmpAlpha.x = newCellSprite.x + newCellSprite.width / 2 - this.width / 2;
+               this._bmpAlpha.y = newCellSprite.y + newCellSprite.height - this.height;
                this.parent.addChild(this._bmpAlpha);
                visible = false;
             }
@@ -646,39 +646,39 @@ package com.ankamagames.dofus.types.entities
          
          public function hideBitmapAlpha() : void {
             visible = true;
-            if(!(this._bmpAlpha == null) && (StageShareManager.stage.contains(this._bmpAlpha)))
+            if((!(this._bmpAlpha == null)) && (StageShareManager.stage.contains(this._bmpAlpha)))
             {
                this.parent.removeChild(this._bmpAlpha);
                this._bmpAlpha = null;
             }
          }
          
-         override public function addSubEntity(param1:DisplayObject, param2:uint, param3:uint) : void {
-            if(param2 == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND && param3 == 0 && !this._visibleAura)
+         override public function addSubEntity(entity:DisplayObject, category:uint, slot:uint) : void {
+            if((category == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND) && (slot == 0) && (!this._visibleAura))
             {
-               this._auraEntity = param1 as TiphonSprite;
+               this._auraEntity = entity as TiphonSprite;
                return;
             }
-            super.addSubEntity(param1,param2,param3);
+            super.addSubEntity(entity,category,slot);
          }
          
-         override protected function onAdded(param1:Event) : void {
-            var _loc4_:String = null;
-            var _loc5_:Vector.<SoundAnimation> = null;
-            var _loc6_:SoundAnimation = null;
-            var _loc7_:String = null;
-            super.onAdded(param1);
-            var _loc2_:TiphonAnimation = param1.target as TiphonAnimation;
-            var _loc3_:SoundBones = SoundBones.getSoundBonesById(look.getBone());
-            if(_loc3_)
+         override protected function onAdded(e:Event) : void {
+            var name:String = null;
+            var vsa:Vector.<SoundAnimation> = null;
+            var sa:SoundAnimation = null;
+            var dataSoundLabel:String = null;
+            super.onAdded(e);
+            var animation:TiphonAnimation = e.target as TiphonAnimation;
+            var soundBones:SoundBones = SoundBones.getSoundBonesById(look.getBone());
+            if(soundBones)
             {
-               _loc4_ = getQualifiedClassName(_loc2_);
-               _loc5_ = _loc3_.getSoundAnimations(_loc4_);
-               _loc2_.spriteHandler.tiphonEventManager.removeEvents(TiphonEventsManager.BALISE_SOUND,_loc4_);
-               for each (_loc6_ in _loc5_)
+               name = getQualifiedClassName(animation);
+               vsa = soundBones.getSoundAnimations(name);
+               animation.spriteHandler.tiphonEventManager.removeEvents(TiphonEventsManager.BALISE_SOUND,name);
+               for each (sa in vsa)
                {
-                  _loc7_ = TiphonEventsManager.BALISE_DATASOUND + TiphonEventsManager.BALISE_PARAM_BEGIN + (!(_loc6_.label == null) && !(_loc6_.label == "null")?_loc6_.label:"") + TiphonEventsManager.BALISE_PARAM_END;
-                  _loc2_.spriteHandler.tiphonEventManager.addEvent(_loc7_,_loc6_.startFrame,_loc4_);
+                  dataSoundLabel = TiphonEventsManager.BALISE_DATASOUND + TiphonEventsManager.BALISE_PARAM_BEGIN + ((!(sa.label == null)) && (!(sa.label == "null"))?sa.label:"") + TiphonEventsManager.BALISE_PARAM_END;
+                  animation.spriteHandler.tiphonEventManager.addEvent(dataSoundLabel,sa.startFrame,name);
                }
             }
          }

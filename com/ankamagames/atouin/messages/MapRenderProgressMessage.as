@@ -3,9 +3,9 @@ package com.ankamagames.atouin.messages
    public class MapRenderProgressMessage extends MapMessage
    {
       
-      public function MapRenderProgressMessage(param1:Number) {
+      public function MapRenderProgressMessage(percent:Number) {
          super();
-         this._percent = param1;
+         this._percent = percent;
       }
       
       private var _percent:Number = 0;

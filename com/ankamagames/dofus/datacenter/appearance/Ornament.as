@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.appearance
       
       public static const MODULE:String = "Ornaments";
       
-      public static function getOrnamentById(param1:int) : Ornament {
-         return GameData.getObject(MODULE,param1) as Ornament;
+      public static function getOrnamentById(id:int) : Ornament {
+         return GameData.getObject(MODULE,id) as Ornament;
       }
       
       public static function getAllOrnaments() : Array {

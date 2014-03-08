@@ -9,27 +9,27 @@ package com.ankamagames.dofus.datacenter.items
          super();
       }
       
-      public static function getWeaponById(param1:int) : Weapon {
-         var _loc2_:Item = Item.getItemById(param1);
-         if((_loc2_) && (_loc2_.isWeapon))
+      public static function getWeaponById(weaponId:int) : Weapon {
+         var item:Item = Item.getItemById(weaponId);
+         if((item) && (item.isWeapon))
          {
-            return Weapon(_loc2_);
+            return Weapon(item);
          }
          return null;
       }
       
       public static function getWeapons() : Array {
-         var _loc3_:Item = null;
-         var _loc1_:Array = Item.getItems();
-         var _loc2_:Array = new Array();
-         for each (_loc3_ in _loc1_)
+         var item:Item = null;
+         var items:Array = Item.getItems();
+         var result:Array = new Array();
+         for each (item in items)
          {
-            if(_loc3_.isWeapon)
+            if(item.isWeapon)
             {
-               _loc2_.push(_loc3_);
+               result.push(item);
             }
          }
-         return _loc2_;
+         return result;
       }
       
       public var apCost:int;
@@ -56,18 +56,18 @@ package com.ankamagames.dofus.datacenter.items
          return true;
       }
       
-      override public function copy(param1:Item, param2:Item) : void {
-         super.copy(param1,param2);
-         Object(param2).apCost = Object(param1).apCost;
-         Object(param2).minRange = Object(param1).minRange;
-         Object(param2).range = Object(param1).range;
-         Object(param2).maxCastPerTurn = Object(param1).maxCastPerTurn;
-         Object(param2).castInLine = Object(param1).castInLine;
-         Object(param2).castInDiagonal = Object(param1).castInDiagonal;
-         Object(param2).castTestLos = Object(param1).castTestLos;
-         Object(param2).criticalHitProbability = Object(param1).criticalHitProbability;
-         Object(param2).criticalHitBonus = Object(param1).criticalHitBonus;
-         Object(param2).criticalFailureProbability = Object(param1).criticalFailureProbability;
+      override public function copy(from:Item, to:Item) : void {
+         super.copy(from,to);
+         Object(to).apCost = Object(from).apCost;
+         Object(to).minRange = Object(from).minRange;
+         Object(to).range = Object(from).range;
+         Object(to).maxCastPerTurn = Object(from).maxCastPerTurn;
+         Object(to).castInLine = Object(from).castInLine;
+         Object(to).castInDiagonal = Object(from).castInDiagonal;
+         Object(to).castTestLos = Object(from).castTestLos;
+         Object(to).criticalHitProbability = Object(from).criticalHitProbability;
+         Object(to).criticalHitBonus = Object(from).criticalHitBonus;
+         Object(to).criticalFailureProbability = Object(from).criticalFailureProbability;
       }
    }
 }

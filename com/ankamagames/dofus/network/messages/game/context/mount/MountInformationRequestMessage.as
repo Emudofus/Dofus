@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5972;
       }
       
-      public function initMountInformationRequestMessage(param1:Number=0, param2:Number=0) : MountInformationRequestMessage {
-         this.id = param1;
-         this.time = param2;
+      public function initMountInformationRequestMessage(id:Number=0, time:Number=0) : MountInformationRequestMessage {
+         this.id = id;
+         this.time = time;
          this._isInitialized = true;
          return this;
       }
@@ -42,32 +42,32 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MountInformationRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MountInformationRequestMessage(output);
       }
       
-      public function serializeAs_MountInformationRequestMessage(param1:IDataOutput) : void {
-         param1.writeDouble(this.id);
-         param1.writeDouble(this.time);
+      public function serializeAs_MountInformationRequestMessage(output:IDataOutput) : void {
+         output.writeDouble(this.id);
+         output.writeDouble(this.time);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MountInformationRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MountInformationRequestMessage(input);
       }
       
-      public function deserializeAs_MountInformationRequestMessage(param1:IDataInput) : void {
-         this.id = param1.readDouble();
-         this.time = param1.readDouble();
+      public function deserializeAs_MountInformationRequestMessage(input:IDataInput) : void {
+         this.id = input.readDouble();
+         this.time = input.readDouble();
       }
    }
 }

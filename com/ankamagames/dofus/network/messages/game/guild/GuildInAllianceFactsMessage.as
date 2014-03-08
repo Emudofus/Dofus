@@ -31,9 +31,9 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6422;
       }
       
-      public function initGuildInAllianceFactsMessage(param1:GuildFactSheetInformations=null, param2:uint=0, param3:uint=0, param4:Boolean=false, param5:Vector.<CharacterMinimalInformations>=null, param6:BasicNamedAllianceInformations=null) : GuildInAllianceFactsMessage {
-         super.initGuildFactsMessage(param1,param2,param3,param4,param5);
-         this.allianceInfos = param6;
+      public function initGuildInAllianceFactsMessage(infos:GuildFactSheetInformations=null, creationDate:uint=0, nbTaxCollectors:uint=0, enabled:Boolean=false, members:Vector.<CharacterMinimalInformations>=null, allianceInfos:BasicNamedAllianceInformations=null) : GuildInAllianceFactsMessage {
+         super.initGuildFactsMessage(infos,creationDate,nbTaxCollectors,enabled,members);
+         this.allianceInfos = allianceInfos;
          this._isInitialized = true;
          return this;
       }
@@ -44,33 +44,33 @@ package com.ankamagames.dofus.network.messages.game.guild
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GuildInAllianceFactsMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildInAllianceFactsMessage(output);
       }
       
-      public function serializeAs_GuildInAllianceFactsMessage(param1:IDataOutput) : void {
-         super.serializeAs_GuildFactsMessage(param1);
-         this.allianceInfos.serializeAs_BasicNamedAllianceInformations(param1);
+      public function serializeAs_GuildInAllianceFactsMessage(output:IDataOutput) : void {
+         super.serializeAs_GuildFactsMessage(output);
+         this.allianceInfos.serializeAs_BasicNamedAllianceInformations(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GuildInAllianceFactsMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildInAllianceFactsMessage(input);
       }
       
-      public function deserializeAs_GuildInAllianceFactsMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_GuildInAllianceFactsMessage(input:IDataInput) : void {
+         super.deserialize(input);
          this.allianceInfos = new BasicNamedAllianceInformations();
-         this.allianceInfos.deserialize(param1);
+         this.allianceInfos.deserialize(input);
       }
    }
 }

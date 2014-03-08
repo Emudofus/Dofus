@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.script
          return 6053;
       }
       
-      public function initCinematicMessage(param1:uint=0) : CinematicMessage {
-         this.cinematicId = param1;
+      public function initCinematicMessage(cinematicId:uint=0) : CinematicMessage {
+         this.cinematicId = cinematicId;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.script
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CinematicMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CinematicMessage(output);
       }
       
-      public function serializeAs_CinematicMessage(param1:IDataOutput) : void {
+      public function serializeAs_CinematicMessage(output:IDataOutput) : void {
          if(this.cinematicId < 0)
          {
             throw new Error("Forbidden value (" + this.cinematicId + ") on element cinematicId.");
          }
          else
          {
-            param1.writeShort(this.cinematicId);
+            output.writeShort(this.cinematicId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CinematicMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CinematicMessage(input);
       }
       
-      public function deserializeAs_CinematicMessage(param1:IDataInput) : void {
-         this.cinematicId = param1.readShort();
+      public function deserializeAs_CinematicMessage(input:IDataInput) : void {
+         this.cinematicId = input.readShort();
          if(this.cinematicId < 0)
          {
             throw new Error("Forbidden value (" + this.cinematicId + ") on element of CinematicMessage.cinematicId.");

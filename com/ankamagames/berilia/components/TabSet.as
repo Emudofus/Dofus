@@ -104,121 +104,121 @@ package com.ankamagames.berilia.components
          return this._nWidthTab;
       }
       
-      public function set widthTab(param1:int) : void {
-         this._nWidthTab = param1;
+      public function set widthTab(i:int) : void {
+         this._nWidthTab = i;
       }
       
       public function get widthLabel() : int {
          return this._nWidthLabel;
       }
       
-      public function set widthLabel(param1:int) : void {
-         this._nWidthLabel = param1;
+      public function set widthLabel(i:int) : void {
+         this._nWidthLabel = i;
       }
       
       public function get heightLabel() : int {
          return this._nHeightLabel;
       }
       
-      public function set heightLabel(param1:int) : void {
-         this._nHeightLabel = param1;
+      public function set heightLabel(i:int) : void {
+         this._nHeightLabel = i;
       }
       
       public function get widthPlusTab() : int {
          return this._nWidthPlusTab;
       }
       
-      public function set widthPlusTab(param1:int) : void {
-         this._nWidthPlusTab = param1;
+      public function set widthPlusTab(i:int) : void {
+         this._nWidthPlusTab = i;
       }
       
       public function get tabUri() : Uri {
          return this._sBgTextureUri;
       }
       
-      public function set tabUri(param1:Uri) : void {
-         this._sBgTextureUri = param1;
+      public function set tabUri(s:Uri) : void {
+         this._sBgTextureUri = s;
       }
       
       public function get closeUri() : Uri {
          return this._sCloseTextureUri;
       }
       
-      public function set closeUri(param1:Uri) : void {
-         this._sCloseTextureUri = param1;
+      public function set closeUri(s:Uri) : void {
+         this._sCloseTextureUri = s;
       }
       
       public function get plusUri() : Uri {
          return this._sPlusTextureUri;
       }
       
-      public function set plusUri(param1:Uri) : void {
-         this._sPlusTextureUri = param1;
+      public function set plusUri(s:Uri) : void {
+         this._sPlusTextureUri = s;
       }
       
       public function get cssUri() : Uri {
          return this._sTabCss;
       }
       
-      public function set cssUri(param1:Uri) : void {
-         this._sTabCss = param1;
+      public function set cssUri(s:Uri) : void {
+         this._sTabCss = s;
       }
       
       public function get xClose() : int {
          return this._nXCloseTab;
       }
       
-      public function set xClose(param1:int) : void {
-         this._nXCloseTab = param1;
+      public function set xClose(i:int) : void {
+         this._nXCloseTab = i;
       }
       
       public function get yClose() : int {
          return this._nYCloseTab;
       }
       
-      public function set yClose(param1:int) : void {
-         this._nYCloseTab = param1;
+      public function set yClose(i:int) : void {
+         this._nYCloseTab = i;
       }
       
       public function get xLabel() : int {
          return this._nXLabelTab;
       }
       
-      public function set xLabel(param1:int) : void {
-         this._nXLabelTab = param1;
+      public function set xLabel(i:int) : void {
+         this._nXLabelTab = i;
       }
       
       public function get yLabel() : int {
          return this._nYLabelTab;
       }
       
-      public function set yLabel(param1:int) : void {
-         this._nYLabelTab = param1;
+      public function set yLabel(i:int) : void {
+         this._nYLabelTab = i;
       }
       
       public function get xPlus() : int {
          return this._nXPlusTab;
       }
       
-      public function set xPlus(param1:int) : void {
-         this._nXPlusTab = param1;
+      public function set xPlus(i:int) : void {
+         this._nXPlusTab = i;
       }
       
       public function get yPlus() : int {
          return this._nYPlusTab;
       }
       
-      public function set yPlus(param1:int) : void {
-         this._nYPlusTab = param1;
+      public function set yPlus(i:int) : void {
+         this._nYPlusTab = i;
       }
       
       public function get length() : int {
          return this._nNbTabs;
       }
       
-      public function set length(param1:int) : void {
-         this._nNbTabsRequired = param1;
-         if((this._btnPlus) && this._nNbTabsRequired >= 1)
+      public function set length(i:int) : void {
+         this._nNbTabsRequired = i;
+         if((this._btnPlus) && (this._nNbTabsRequired >= 1))
          {
             if(this._nNbTabsRequired > this._nNbTabs)
             {
@@ -241,29 +241,29 @@ package com.ankamagames.berilia.components
          return this._tabCtr;
       }
       
-      public function set tabCtr(param1:GraphicContainer) : void {
-         this._tabCtr = param1;
+      public function set tabCtr(ctr:GraphicContainer) : void {
+         this._tabCtr = ctr;
       }
       
       public function get selectedTab() : int {
          return this._nSelected;
       }
       
-      public function set selectedTab(param1:int) : void {
-         if(!this._aCtrs[param1])
+      public function set selectedTab(i:int) : void {
+         if(!this._aCtrs[i])
          {
-            if(param1 < 0)
+            if(i < 0)
             {
-               this.selectedTab = ++param1;
+               this.selectedTab = ++i;
             }
             else
             {
-               this.selectedTab = --param1;
+               this.selectedTab = --i;
             }
          }
          this._nPreviousSelected = this._nSelected;
-         this._nSelected = param1;
-         if(!(this._nPreviousSelected == -1) && (this._aCtrs[this._nPreviousSelected]))
+         this._nSelected = i;
+         if((!(this._nPreviousSelected == -1)) && (this._aCtrs[this._nPreviousSelected]))
          {
             this._aCtrs[this._nPreviousSelected].selected = false;
             this._aCloses[this._nPreviousSelected].visible = false;
@@ -282,17 +282,17 @@ package com.ankamagames.berilia.components
       }
       
       public function get lastTab() : int {
-         return this._nNbTabs-1;
+         return this._nNbTabs - 1;
       }
       
-      public function set dataProvider(param1:*) : void {
-         if(!this.isIterable(param1))
+      public function set dataProvider(data:*) : void {
+         if(!this.isIterable(data))
          {
             throw new ArgumentError("dataProvider must be either Array or Vector.");
          }
          else
          {
-            this._aTabsList = param1;
+            this._aTabsList = data;
             this.finalize();
             return;
          }
@@ -306,13 +306,13 @@ package com.ankamagames.berilia.components
          return this._finalized;
       }
       
-      public function set finalized(param1:Boolean) : void {
-         this._finalized = param1;
+      public function set finalized(b:Boolean) : void {
+         this._finalized = b;
       }
       
       public function finalize() : void {
          this._uiClass = getUi();
-         if((this._aTabsList) && this._aTabsList.length > 0)
+         if((this._aTabsList) && (this._aTabsList.length > 0))
          {
             this._nNbTabs = this._aTabsList.length;
             if(this._nNbTabs > 0)
@@ -343,35 +343,35 @@ package com.ankamagames.berilia.components
          super.remove();
       }
       
-      public function highlight(param1:uint, param2:Boolean=true) : void {
-         if(param2)
+      public function highlight(tabId:uint, show:Boolean=true) : void {
+         if(show)
          {
-            this._aLbls[param1].cssClass = "highlighted";
+            this._aLbls[tabId].cssClass = "highlighted";
          }
          else
          {
-            this._aLbls[param1].cssClass = "p";
+            this._aLbls[tabId].cssClass = "p";
          }
       }
       
-      public function renameTab(param1:uint, param2:String=null) : void {
+      public function renameTab(tabId:uint, name:String=null) : void {
          this._aInputs[this._nSelected].text = "";
-         this._aLbls[param1].caretIndex = 0;
-         if(param1 >= this._nCurrentMaxIndex)
+         this._aLbls[tabId].caretIndex = 0;
+         if(tabId >= this._nCurrentMaxIndex)
          {
             return;
          }
-         if(this._aCtrs[param1].selected)
+         if(this._aCtrs[tabId].selected)
          {
-            this._aCtrs[param1].selected = false;
-            this._aLbls[param1].text = param2;
-            this._aCtrs[param1].reset();
-            this._aCtrs[param1].selected = true;
+            this._aCtrs[tabId].selected = false;
+            this._aLbls[tabId].text = name;
+            this._aCtrs[tabId].reset();
+            this._aCtrs[tabId].selected = true;
          }
          else
          {
-            this._aLbls[param1].text = param2;
-            this._aCtrs[param1].reset();
+            this._aLbls[tabId].text = name;
+            this._aCtrs[tabId].reset();
          }
       }
       
@@ -383,85 +383,85 @@ package com.ankamagames.berilia.components
       }
       
       private function addTab() : void {
-         var _loc1_:ButtonContainer = new ButtonContainer();
-         _loc1_.soundId = "16009";
-         _loc1_.width = this._nWidthTab;
-         _loc1_.height = __height;
-         _loc1_.name = "btn_tab" + this._nCurrentMaxIndex;
-         var _loc2_:Texture = new Texture();
-         _loc2_.width = this._nWidthTab;
-         _loc2_.height = __height;
-         _loc2_.autoGrid = true;
-         _loc2_.uri = this._sBgTextureUri;
-         _loc2_.name = "tx_bgTab" + this._nCurrentMaxIndex;
-         _loc2_.finalize();
-         var _loc3_:Label = new Label();
-         _loc3_.width = this._nWidthLabel;
-         _loc3_.height = this._nHeightLabel;
-         _loc3_.x = this._nXLabelTab;
-         _loc3_.y = this._nYLabelTab;
-         _loc3_.css = this._sTabCss;
-         _loc3_.cssClass = "p";
-         _loc3_.name = "lbl_tab" + this._nCurrentMaxIndex;
-         _loc3_.text = "tab " + (this._nCurrentMaxIndex + 1);
-         var _loc4_:Input = new Input();
-         _loc4_.width = this._nWidthLabel;
-         _loc4_.height = this._nHeightLabel;
-         _loc4_.x = this._nXLabelTab;
-         _loc4_.y = this._nYLabelTab;
-         _loc4_.css = this._sTabCss;
-         _loc4_.cssClass = "p";
-         _loc4_.name = "inp_tab" + this._nCurrentMaxIndex;
-         _loc1_.addChild(_loc2_);
-         _loc1_.addChild(_loc3_);
-         _loc1_.addChild(_loc4_);
-         getUi().registerId(_loc1_.name,new GraphicElement(_loc1_,new Array(),_loc1_.name));
-         getUi().registerId(_loc2_.name,new GraphicElement(_loc2_,new Array(),_loc2_.name));
-         getUi().registerId(_loc3_.name,new GraphicElement(_loc3_,new Array(),_loc3_.name));
-         getUi().registerId(_loc4_.name,new GraphicElement(_loc4_,new Array(),_loc4_.name));
-         var _loc5_:Array = new Array();
-         _loc5_[StatesEnum.STATE_OVER] = new Array();
-         _loc5_[StatesEnum.STATE_OVER][_loc2_.name] = new Array();
-         _loc5_[StatesEnum.STATE_OVER][_loc2_.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
-         _loc5_[StatesEnum.STATE_CLICKED] = new Array();
-         _loc5_[StatesEnum.STATE_CLICKED][_loc2_.name] = new Array();
-         _loc5_[StatesEnum.STATE_CLICKED][_loc2_.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
-         _loc5_[StatesEnum.STATE_SELECTED] = new Array();
-         _loc5_[StatesEnum.STATE_SELECTED][_loc2_.name] = new Array();
-         _loc5_[StatesEnum.STATE_SELECTED][_loc2_.name]["gotoAndStop"] = StatesEnum.STATE_SELECTED_STRING.toLocaleLowerCase();
-         _loc5_[StatesEnum.STATE_SELECTED][_loc3_.name] = new Array();
-         _loc5_[StatesEnum.STATE_SELECTED][_loc3_.name]["cssClass"] = "selected";
-         _loc1_.changingStateData = _loc5_;
-         _loc1_.finalize();
-         var _loc6_:ButtonContainer = new ButtonContainer();
-         _loc6_.x = this._nXCloseTab;
-         _loc6_.y = this._nYCloseTab;
-         _loc6_.width = this._nWidthPlusTab;
-         _loc6_.height = __height;
-         _loc6_.name = "btn_closeTab" + this._nCurrentMaxIndex;
-         var _loc7_:Texture = new Texture();
-         _loc7_.uri = this._sCloseTextureUri;
-         _loc7_.name = "tx_closeTab" + this._nCurrentMaxIndex;
-         _loc7_.finalize();
-         _loc6_.addChild(_loc7_);
-         getUi().registerId(_loc6_.name,new GraphicElement(_loc6_,new Array(),_loc6_.name));
-         getUi().registerId(_loc7_.name,new GraphicElement(_loc7_,new Array(),_loc7_.name));
-         var _loc8_:Array = new Array();
-         _loc8_[StatesEnum.STATE_OVER] = new Array();
-         _loc8_[StatesEnum.STATE_OVER][_loc7_.name] = new Array();
-         _loc8_[StatesEnum.STATE_OVER][_loc7_.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
-         _loc8_[StatesEnum.STATE_CLICKED] = new Array();
-         _loc8_[StatesEnum.STATE_CLICKED][_loc7_.name] = new Array();
-         _loc8_[StatesEnum.STATE_CLICKED][_loc7_.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
-         _loc6_.changingStateData = _loc8_;
-         _loc6_.finalize();
-         _loc6_.visible = false;
-         this._tabCtr.addChild(_loc1_);
-         this._tabCtr.addChild(_loc6_);
-         this._aCtrs[this._nNbTabs] = _loc1_;
-         this._aCloses[this._nNbTabs] = _loc6_;
-         this._aLbls[this._nNbTabs] = _loc3_;
-         this._aInputs[this._nNbTabs] = _loc4_;
+         var btn:ButtonContainer = new ButtonContainer();
+         btn.soundId = "16009";
+         btn.width = this._nWidthTab;
+         btn.height = __height;
+         btn.name = "btn_tab" + this._nCurrentMaxIndex;
+         var texBg:Texture = new Texture();
+         texBg.width = this._nWidthTab;
+         texBg.height = __height;
+         texBg.autoGrid = true;
+         texBg.uri = this._sBgTextureUri;
+         texBg.name = "tx_bgTab" + this._nCurrentMaxIndex;
+         texBg.finalize();
+         var lbl:Label = new Label();
+         lbl.width = this._nWidthLabel;
+         lbl.height = this._nHeightLabel;
+         lbl.x = this._nXLabelTab;
+         lbl.y = this._nYLabelTab;
+         lbl.css = this._sTabCss;
+         lbl.cssClass = "p";
+         lbl.name = "lbl_tab" + this._nCurrentMaxIndex;
+         lbl.text = "tab " + (this._nCurrentMaxIndex + 1);
+         var inp:Input = new Input();
+         inp.width = this._nWidthLabel;
+         inp.height = this._nHeightLabel;
+         inp.x = this._nXLabelTab;
+         inp.y = this._nYLabelTab;
+         inp.css = this._sTabCss;
+         inp.cssClass = "p";
+         inp.name = "inp_tab" + this._nCurrentMaxIndex;
+         btn.addChild(texBg);
+         btn.addChild(lbl);
+         btn.addChild(inp);
+         getUi().registerId(btn.name,new GraphicElement(btn,new Array(),btn.name));
+         getUi().registerId(texBg.name,new GraphicElement(texBg,new Array(),texBg.name));
+         getUi().registerId(lbl.name,new GraphicElement(lbl,new Array(),lbl.name));
+         getUi().registerId(inp.name,new GraphicElement(inp,new Array(),inp.name));
+         var stateChangingProperties:Array = new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER] = new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER][texBg.name] = new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER][texBg.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
+         stateChangingProperties[StatesEnum.STATE_CLICKED] = new Array();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][texBg.name] = new Array();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][texBg.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
+         stateChangingProperties[StatesEnum.STATE_SELECTED] = new Array();
+         stateChangingProperties[StatesEnum.STATE_SELECTED][texBg.name] = new Array();
+         stateChangingProperties[StatesEnum.STATE_SELECTED][texBg.name]["gotoAndStop"] = StatesEnum.STATE_SELECTED_STRING.toLocaleLowerCase();
+         stateChangingProperties[StatesEnum.STATE_SELECTED][lbl.name] = new Array();
+         stateChangingProperties[StatesEnum.STATE_SELECTED][lbl.name]["cssClass"] = "selected";
+         btn.changingStateData = stateChangingProperties;
+         btn.finalize();
+         var btnClose:ButtonContainer = new ButtonContainer();
+         btnClose.x = this._nXCloseTab;
+         btnClose.y = this._nYCloseTab;
+         btnClose.width = this._nWidthPlusTab;
+         btnClose.height = __height;
+         btnClose.name = "btn_closeTab" + this._nCurrentMaxIndex;
+         var texClose:Texture = new Texture();
+         texClose.uri = this._sCloseTextureUri;
+         texClose.name = "tx_closeTab" + this._nCurrentMaxIndex;
+         texClose.finalize();
+         btnClose.addChild(texClose);
+         getUi().registerId(btnClose.name,new GraphicElement(btnClose,new Array(),btnClose.name));
+         getUi().registerId(texClose.name,new GraphicElement(texClose,new Array(),texClose.name));
+         var stateChangingPropertiesClose:Array = new Array();
+         stateChangingPropertiesClose[StatesEnum.STATE_OVER] = new Array();
+         stateChangingPropertiesClose[StatesEnum.STATE_OVER][texClose.name] = new Array();
+         stateChangingPropertiesClose[StatesEnum.STATE_OVER][texClose.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
+         stateChangingPropertiesClose[StatesEnum.STATE_CLICKED] = new Array();
+         stateChangingPropertiesClose[StatesEnum.STATE_CLICKED][texClose.name] = new Array();
+         stateChangingPropertiesClose[StatesEnum.STATE_CLICKED][texClose.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
+         btnClose.changingStateData = stateChangingPropertiesClose;
+         btnClose.finalize();
+         btnClose.visible = false;
+         this._tabCtr.addChild(btn);
+         this._tabCtr.addChild(btnClose);
+         this._aCtrs[this._nNbTabs] = btn;
+         this._aCloses[this._nNbTabs] = btnClose;
+         this._aLbls[this._nNbTabs] = lbl;
+         this._aInputs[this._nNbTabs] = inp;
          this._nTotalWidth = this._nTotalWidth + this._nWidthTab;
          this._nCurrentMaxIndex++;
          this.replaceTab();
@@ -473,52 +473,52 @@ package com.ankamagames.berilia.components
          this._btnPlus.width = this._nWidthPlusTab;
          this._btnPlus.height = __height;
          this._btnPlus.name = "btn_plus";
-         var _loc1_:Texture = new Texture();
-         _loc1_.width = this._nWidthPlusTab;
-         _loc1_.height = __height;
-         _loc1_.autoGrid = true;
-         _loc1_.uri = this._sBgTextureUri;
-         _loc1_.name = "tx_bgPlus";
-         _loc1_.finalize();
-         var _loc2_:Texture = new Texture();
-         _loc2_.x = this._nXPlusTab;
-         _loc2_.y = this._nYPlusTab;
-         _loc2_.uri = this._sPlusTextureUri;
-         _loc2_.name = "tx_plus";
-         _loc2_.finalize();
-         this._btnPlus.addChild(_loc1_);
-         this._btnPlus.addChild(_loc2_);
+         var texBgPlus:Texture = new Texture();
+         texBgPlus.width = this._nWidthPlusTab;
+         texBgPlus.height = __height;
+         texBgPlus.autoGrid = true;
+         texBgPlus.uri = this._sBgTextureUri;
+         texBgPlus.name = "tx_bgPlus";
+         texBgPlus.finalize();
+         var texPlus:Texture = new Texture();
+         texPlus.x = this._nXPlusTab;
+         texPlus.y = this._nYPlusTab;
+         texPlus.uri = this._sPlusTextureUri;
+         texPlus.name = "tx_plus";
+         texPlus.finalize();
+         this._btnPlus.addChild(texBgPlus);
+         this._btnPlus.addChild(texPlus);
          getUi().registerId(this._btnPlus.name,new GraphicElement(this._btnPlus,new Array(),this._btnPlus.name));
-         getUi().registerId(_loc1_.name,new GraphicElement(_loc1_,new Array(),_loc1_.name));
-         getUi().registerId(_loc2_.name,new GraphicElement(_loc2_,new Array(),_loc2_.name));
+         getUi().registerId(texBgPlus.name,new GraphicElement(texBgPlus,new Array(),texBgPlus.name));
+         getUi().registerId(texPlus.name,new GraphicElement(texPlus,new Array(),texPlus.name));
          addChild(this._btnPlus);
-         var _loc3_:Array = new Array();
-         _loc3_[StatesEnum.STATE_OVER] = new Array();
-         _loc3_[StatesEnum.STATE_OVER][_loc1_.name] = new Array();
-         _loc3_[StatesEnum.STATE_OVER][_loc1_.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
-         _loc3_[StatesEnum.STATE_OVER][_loc2_.name] = new Array();
-         _loc3_[StatesEnum.STATE_OVER][_loc2_.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
-         _loc3_[StatesEnum.STATE_CLICKED] = new Array();
-         _loc3_[StatesEnum.STATE_CLICKED][_loc1_.name] = new Array();
-         _loc3_[StatesEnum.STATE_CLICKED][_loc1_.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
-         _loc3_[StatesEnum.STATE_CLICKED][_loc2_.name] = new Array();
-         _loc3_[StatesEnum.STATE_CLICKED][_loc2_.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
-         this._btnPlus.changingStateData = _loc3_;
+         var stateChangingProperties:Array = new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER] = new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER][texBgPlus.name] = new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER][texBgPlus.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
+         stateChangingProperties[StatesEnum.STATE_OVER][texPlus.name] = new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER][texPlus.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
+         stateChangingProperties[StatesEnum.STATE_CLICKED] = new Array();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][texBgPlus.name] = new Array();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][texBgPlus.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][texPlus.name] = new Array();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][texPlus.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
+         this._btnPlus.changingStateData = stateChangingProperties;
          this._btnPlus.finalize();
          this._nTotalWidth = this._nTotalWidth + this._nWidthPlusTab;
       }
       
       private function removeTab() : void {
-         var _loc1_:* = 0;
+         var indexAlmostRemoved:* = 0;
          if(this._nNbTabs > 1)
          {
-            _loc1_ = this._nSelected;
-            this._nPreviousSelected = _loc1_-1;
-            this.removeContainerContent(this._aCtrs[_loc1_]);
-            this._aCtrs.splice(_loc1_,1);
-            this.removeContainerContent(this._aCloses[_loc1_]);
-            this._aCloses.splice(_loc1_,1);
-            this._aLbls.splice(_loc1_,1);
+            indexAlmostRemoved = this._nSelected;
+            this._nPreviousSelected = indexAlmostRemoved - 1;
+            this.removeContainerContent(this._aCtrs[indexAlmostRemoved]);
+            this._aCtrs.splice(indexAlmostRemoved,1);
+            this.removeContainerContent(this._aCloses[indexAlmostRemoved]);
+            this._aCloses.splice(indexAlmostRemoved,1);
+            this._aLbls.splice(indexAlmostRemoved,1);
             this._nTotalWidth = this._nTotalWidth - this._nWidthTab;
             this.replaceTab();
             this.selectedTab = this._nPreviousSelected;
@@ -526,20 +526,20 @@ package com.ankamagames.berilia.components
       }
       
       private function replaceTab() : void {
-         var _loc2_:* = undefined;
-         var _loc1_:* = 0;
-         for (_loc2_ in this._aCtrs)
+         var index:* = undefined;
+         var currentPos:int = 0;
+         for (index in this._aCtrs)
          {
-            this._aCtrs[_loc2_].state = 0;
-            this._aCtrs[_loc2_].x = _loc1_;
-            this._aCloses[_loc2_].x = _loc1_ + this._nXCloseTab;
-            this._aCtrs[_loc2_].reset();
-            _loc1_ = _loc1_ + this._aCtrs[_loc2_].width;
+            this._aCtrs[index].state = 0;
+            this._aCtrs[index].x = currentPos;
+            this._aCloses[index].x = currentPos + this._nXCloseTab;
+            this._aCtrs[index].reset();
+            currentPos = currentPos + this._aCtrs[index].width;
          }
-         this._btnPlus.x = _loc1_;
+         this._btnPlus.x = currentPos;
          if(this._nSelected == -1)
          {
-            this.selectedTab = _loc2_;
+            this.selectedTab = index;
          }
          this._nNbTabs = this._aCtrs.length;
          if(this._nTotalWidth + this._nWidthTab < __width)
@@ -552,93 +552,74 @@ package com.ankamagames.berilia.components
          }
       }
       
-      private function isIterable(param1:*) : Boolean {
-         if(param1 is Array)
+      private function isIterable(obj:*) : Boolean {
+         if(obj is Array)
          {
             return true;
          }
-         if(!(param1["length"] == null) && !(param1["length"] == 0) && !isNaN(param1["length"]) && !(param1[0] == null) && !(param1 is String))
+         if((!(obj["length"] == null)) && (!(obj["length"] == 0)) && (!isNaN(obj["length"])) && (!(obj[0] == null)) && (!(obj is String)))
          {
             return true;
          }
          return false;
       }
       
-      private function removeContainerContent(param1:GraphicContainer) : void {
-         param1.remove();
+      private function removeContainerContent(target:GraphicContainer) : void {
+         target.remove();
       }
       
-      private function switchToEdition(param1:Boolean) : void {
-         this._bNameEdition = param1;
-         if(param1)
+      private function switchToEdition(value:Boolean) : void {
+         this._bNameEdition = value;
+         if(value)
          {
             this._aInputs[this._nSelected].text = this._aLbls[this._nSelected].text;
             this._aInputs[this._nSelected].focus();
             this._aInputs[this._nSelected].setSelection(0,this._aInputs[this._nSelected].text.length);
          }
-         this._aInputs[this._nSelected].disabled = !param1;
-         this._aInputs[this._nSelected].visible = param1;
-         this._aLbls[this._nSelected].visible = !param1;
+         this._aInputs[this._nSelected].disabled = !value;
+         this._aInputs[this._nSelected].visible = value;
+         this._aLbls[this._nSelected].visible = !value;
       }
       
-      override public function process(param1:Message) : Boolean {
-         var _loc2_:MouseClickMessage = null;
-         var _loc3_:MouseRightClickMessage = null;
-         var _loc4_:KeyboardKeyUpMessage = null;
-         var _loc5_:String = null;
-         var _loc6_:* = undefined;
-         var _loc7_:String = null;
+      override public function process(msg:Message) : Boolean {
+         var mcm:MouseClickMessage = null;
+         var mrcm:MouseRightClickMessage = null;
+         var kkum:KeyboardKeyUpMessage = null;
+         var name:String = null;
+         var i:* = undefined;
+         var nameEdition:String = null;
          switch(true)
          {
-            case param1 is MouseClickMessage:
-               _loc2_ = param1 as MouseClickMessage;
+            case msg is MouseClickMessage:
+               mcm = msg as MouseClickMessage;
                if(this._bNameEdition)
                {
                   this._bNameEdition = false;
-                  _loc5_ = this._aInputs[this._nSelected].text;
-                  this.renameTab(this._nSelected,_loc5_);
+                  name = this._aInputs[this._nSelected].text;
+                  this.renameTab(this._nSelected,name);
                   if(UIEventManager.getInstance().isRegisteredInstance(this,RenameTabMessage))
                   {
-                     Berilia.getInstance().handler.process(new RenameTabMessage(this,this._nSelected,_loc5_));
+                     Berilia.getInstance().handler.process(new RenameTabMessage(this,this._nSelected,name));
                   }
                }
-               switch(_loc2_.target.name)
+               switch(mcm.target.name)
                {
                   case this._btnPlus.name:
                      if(this._nTotalWidth + this._nWidthTab < __width)
                      {
                         this.addTab();
-                        this.selectedTab = this._nNbTabs-1;
+                        this.selectedTab = this._nNbTabs - 1;
                         if(UIEventManager.getInstance().isRegisteredInstance(this,CreateTabMessage))
                         {
                            Berilia.getInstance().handler.process(new CreateTabMessage(this));
                         }
                      }
                      break;
-                  default:
-                     for (_loc6_ in this._aCtrs)
-                     {
-                        if(_loc2_.target == this._aCtrs[_loc6_])
-                        {
-                           this.selectedTab = _loc6_;
-                        }
-                     }
-                     if(_loc2_.target == this._aCloses[this._nSelected])
-                     {
-                        if(this._nNbTabs > 1)
-                        {
-                           if(UIEventManager.getInstance().isRegisteredInstance(this,DeleteTabMessage))
-                           {
-                              Berilia.getInstance().handler.process(new DeleteTabMessage(this,this._nSelected));
-                           }
-                           this.removeTab();
-                        }
-                     }
                }
                break;
-            case param1 is MouseRightClickMessage:
-               _loc3_ = param1 as MouseRightClickMessage;
-               if(_loc3_.target == this._aCtrs[this._nSelected] && !this._bNameEdition)
+            case msg is MouseRightClickMessage:
+               mrcm = msg as MouseRightClickMessage;
+               if((mrcm.target == this._aCtrs[this._nSelected]) && (!this._bNameEdition))
                {
                   this.switchToEdition(true);
                }
@@ -650,23 +631,23 @@ package com.ankamagames.berilia.components
                   }
                }
                break;
-            case param1 is KeyboardKeyUpMessage:
-               _loc4_ = param1 as KeyboardKeyUpMessage;
+            case msg is KeyboardKeyUpMessage:
+               kkum = msg as KeyboardKeyUpMessage;
                if(this._bNameEdition)
                {
-                  if(_loc4_.keyboardEvent.keyCode == Keyboard.ENTER)
+                  if(kkum.keyboardEvent.keyCode == Keyboard.ENTER)
                   {
                      this._bNameEdition = false;
-                     _loc7_ = this._aInputs[this._nSelected].text;
-                     this.renameTab(this._nSelected,_loc7_);
+                     nameEdition = this._aInputs[this._nSelected].text;
+                     this.renameTab(this._nSelected,nameEdition);
                      if(UIEventManager.getInstance().isRegisteredInstance(this,RenameTabMessage))
                      {
-                        Berilia.getInstance().handler.process(new RenameTabMessage(this,this._nSelected,_loc7_));
+                        Berilia.getInstance().handler.process(new RenameTabMessage(this,this._nSelected,nameEdition));
                      }
                   }
                   else
                   {
-                     if(_loc4_.keyboardEvent.keyCode == Keyboard.ESCAPE)
+                     if(kkum.keyboardEvent.keyCode == Keyboard.ESCAPE)
                      {
                         this.switchToEdition(false);
                      }

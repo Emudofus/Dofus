@@ -29,8 +29,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 5651;
       }
       
-      public function initJobCrafterDirectoryAddMessage(param1:JobCrafterDirectoryListEntry=null) : JobCrafterDirectoryAddMessage {
-         this.listEntry = param1;
+      public function initJobCrafterDirectoryAddMessage(listEntry:JobCrafterDirectoryListEntry=null) : JobCrafterDirectoryAddMessage {
+         this.listEntry = listEntry;
          this._isInitialized = true;
          return this;
       }
@@ -40,31 +40,31 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_JobCrafterDirectoryAddMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_JobCrafterDirectoryAddMessage(output);
       }
       
-      public function serializeAs_JobCrafterDirectoryAddMessage(param1:IDataOutput) : void {
-         this.listEntry.serializeAs_JobCrafterDirectoryListEntry(param1);
+      public function serializeAs_JobCrafterDirectoryAddMessage(output:IDataOutput) : void {
+         this.listEntry.serializeAs_JobCrafterDirectoryListEntry(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_JobCrafterDirectoryAddMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_JobCrafterDirectoryAddMessage(input);
       }
       
-      public function deserializeAs_JobCrafterDirectoryAddMessage(param1:IDataInput) : void {
+      public function deserializeAs_JobCrafterDirectoryAddMessage(input:IDataInput) : void {
          this.listEntry = new JobCrafterDirectoryListEntry();
-         this.listEntry.deserialize(param1);
+         this.listEntry.deserialize(input);
       }
    }
 }

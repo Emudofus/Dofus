@@ -16,15 +16,15 @@ package com.ankamagames.dofus.misc.utils
    public class RpcServiceManager extends EventDispatcher
    {
       
-      public function RpcServiceManager(param1:String="", param2:String="") {
+      public function RpcServiceManager(pServiceName:String="", pType:String="") {
          super();
-         if(param1 != "")
+         if(pServiceName != "")
          {
-            this.service = param1;
+            this.service = pServiceName;
          }
-         if(param2 != "")
+         if(pType != "")
          {
-            this.type = param2;
+            this.type = pType;
          }
       }
       
@@ -46,20 +46,20 @@ package com.ankamagames.dofus.misc.utils
       
       private var _type:String;
       
-      private function onComplete(param1:Event) : void {
-         var _loc2_:* = true;
+      private function onComplete(pEvt:Event) : void {
+         var value:Boolean = true;
          if(this._type == "json")
          {
-            _loc2_ = this.formateJsonResult(param1.currentTarget.data);
+            value = this.formateJsonResult(pEvt.currentTarget.data);
          }
          else
          {
-            _loc2_ = false;
+            value = false;
          }
-         if(_loc2_)
+         if(value)
          {
             dispatchEvent(new RpcEvent(RpcEvent.EVENT_DATA,this._method,this._result));
-            dispatchEvent(param1);
+            dispatchEvent(pEvt);
          }
          else
          {
@@ -68,9 +68,8 @@ package com.ankamagames.dofus.misc.utils
          }
       }
       
-      private function formateJsonResult(param1:String) : Boolean {
+      private function formateJsonResult(data:String) : Boolean {
          var de:Object = null;
-         var data:String = param1;
          try
          {
             de = com.ankamagames.jerakine.json.JSON.decode(data);
@@ -91,33 +90,31 @@ package com.ankamagames.dofus.misc.utils
             {
                case "string":
                case "number":
-                  _log.error("ERROR RPC SERVICE: " + de.error + (de.type != null?", " + de.type:"") + (de.message != null?", " + de.message:""));
+                  _log.error("ERROR RPC SERVICE: " + de.error + (!(de.type == null)?", " + de.type:"") + (!(de.message == null)?", " + de.message:""));
                   break;
                case "object":
-                  _log.error((de.error.type != null?de.error.type:de.error.code) + " -> " + de.error.message);
+                  _log.error((!(de.error.type == null)?de.error.type:de.error.code) + " -> " + de.error.message);
                   break;
-               default:
-                  _log.error("ERROR RPC SERVICE: " + de.error);
             }
             return false;
          }
          this._result = de.result;
-         return this._result is Boolean && (this._result) || !(!(this._result is Boolean) && !(this._result.success == null) && this._result.success == false);
+         return (this._result is Boolean) && (this._result) || (!((!(this._result is Boolean)) && (!(this._result.success == null)) && (this._result.success == false)));
       }
       
-      private function createRpcObject(param1:String) : Object {
-         var _loc2_:Object = new Object();
+      private function createRpcObject(method:String) : Object {
+         var rpcObject:Object = new Object();
          switch(this._type)
          {
             case "json":
-               _loc2_.method = param1;
-               _loc2_.params = this._params;
-               _loc2_.id = 1;
+               rpcObject.method = method;
+               rpcObject.params = this._params;
+               rpcObject.id = 1;
                break;
             case "xml":
                break;
          }
-         return _loc2_;
+         return rpcObject;
       }
       
       public function destroy() : void {
@@ -141,29 +138,29 @@ package com.ankamagames.dofus.misc.utils
          return this._result;
       }
       
-      public function getResultData(param1:String) : * {
+      public function getResultData(name:String) : * {
          if(this._result == null)
          {
             return null;
          }
-         return this._result[param1];
+         return this._result[name];
       }
       
-      public function callMethod(param1:String, param2:*) : void {
-         var _loc3_:Object = null;
-         this._method = param1;
-         this._params = param2;
-         if(this._request == null || this._loader == null)
+      public function callMethod(name:String, params:*) : void {
+         var obj:Object = null;
+         this._method = name;
+         this._params = params;
+         if((this._request == null) || (this._loader == null))
          {
             throw new Error("there is no data to handle ...");
          }
          else
          {
-            _loc3_ = this.createRpcObject(param1);
+            obj = this.createRpcObject(name);
             switch(this._type)
             {
                case "json":
-                  this._request.data = com.ankamagames.jerakine.json.JSON.encode(_loc3_);
+                  this._request.data = com.ankamagames.jerakine.json.JSON.encode(obj);
                   break;
                case "xml":
                   throw new Error("Not implemented yet");
@@ -174,9 +171,9 @@ package com.ankamagames.dofus.misc.utils
          }
       }
       
-      public function set type(param1:String) : void {
-         var param1:String = param1.toLowerCase();
-         switch(param1)
+      public function set type(val:String) : void {
+         var val:String = val.toLowerCase();
+         switch(val)
          {
             case "json":
             case "jsonrpc":
@@ -184,24 +181,24 @@ package com.ankamagames.dofus.misc.utils
                break;
             case "xmlrpc":
             case "xml":
-            default:
                this._type = "xml";
+               break;
          }
       }
       
-      public function set service(param1:String) : void {
-         this._service = param1;
-         this._request = new URLRequest(param1);
+      public function set service(val:String) : void {
+         this._service = val;
+         this._request = new URLRequest(val);
          this._loader = new URLLoader();
          this._loader.addEventListener(Event.COMPLETE,this.onComplete);
          this._loader.addEventListener(IOErrorEvent.IO_ERROR,this.onError);
          this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onError);
       }
       
-      private function onError(param1:Event) : void {
-         if(hasEventListener(param1.type))
+      private function onError(pEvt:Event) : void {
+         if(hasEventListener(pEvt.type))
          {
-            dispatchEvent(param1);
+            dispatchEvent(pEvt);
          }
          dispatchEvent(new RpcEvent(RpcEvent.EVENT_ERROR,this._method,null));
       }

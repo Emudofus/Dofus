@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.authorized
          return 75;
       }
       
-      public function initConsoleMessage(param1:uint=0, param2:String="") : ConsoleMessage {
-         this.type = param1;
-         this.content = param2;
+      public function initConsoleMessage(type:uint=0, content:String="") : ConsoleMessage {
+         this.type = type;
+         this.content = content;
          this._isInitialized = true;
          return this;
       }
@@ -42,38 +42,38 @@ package com.ankamagames.dofus.network.messages.authorized
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ConsoleMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ConsoleMessage(output);
       }
       
-      public function serializeAs_ConsoleMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.type);
-         param1.writeUTF(this.content);
+      public function serializeAs_ConsoleMessage(output:IDataOutput) : void {
+         output.writeByte(this.type);
+         output.writeUTF(this.content);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ConsoleMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ConsoleMessage(input);
       }
       
-      public function deserializeAs_ConsoleMessage(param1:IDataInput) : void {
-         this.type = param1.readByte();
+      public function deserializeAs_ConsoleMessage(input:IDataInput) : void {
+         this.type = input.readByte();
          if(this.type < 0)
          {
             throw new Error("Forbidden value (" + this.type + ") on element of ConsoleMessage.type.");
          }
          else
          {
-            this.content = param1.readUTF();
+            this.content = input.readUTF();
             return;
          }
       }

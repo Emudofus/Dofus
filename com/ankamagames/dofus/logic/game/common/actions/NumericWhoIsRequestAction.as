@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:uint) : NumericWhoIsRequestAction {
-         var _loc2_:NumericWhoIsRequestAction = new NumericWhoIsRequestAction();
-         _loc2_.playerId = param1;
-         return _loc2_;
+      public static function create(playerId:uint) : NumericWhoIsRequestAction {
+         var a:NumericWhoIsRequestAction = new NumericWhoIsRequestAction();
+         a.playerId = playerId;
+         return a;
       }
       
       public var playerId:uint;

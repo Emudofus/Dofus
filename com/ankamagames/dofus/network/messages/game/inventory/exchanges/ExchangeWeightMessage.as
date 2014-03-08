@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5793;
       }
       
-      public function initExchangeWeightMessage(param1:uint=0, param2:uint=0) : ExchangeWeightMessage {
-         this.currentWeight = param1;
-         this.maxWeight = param2;
+      public function initExchangeWeightMessage(currentWeight:uint=0, maxWeight:uint=0) : ExchangeWeightMessage {
+         this.currentWeight = currentWeight;
+         this.maxWeight = maxWeight;
          this._isInitialized = true;
          return this;
       }
@@ -42,53 +42,53 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeWeightMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeWeightMessage(output);
       }
       
-      public function serializeAs_ExchangeWeightMessage(param1:IDataOutput) : void {
+      public function serializeAs_ExchangeWeightMessage(output:IDataOutput) : void {
          if(this.currentWeight < 0)
          {
             throw new Error("Forbidden value (" + this.currentWeight + ") on element currentWeight.");
          }
          else
          {
-            param1.writeInt(this.currentWeight);
+            output.writeInt(this.currentWeight);
             if(this.maxWeight < 0)
             {
                throw new Error("Forbidden value (" + this.maxWeight + ") on element maxWeight.");
             }
             else
             {
-               param1.writeInt(this.maxWeight);
+               output.writeInt(this.maxWeight);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeWeightMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeWeightMessage(input);
       }
       
-      public function deserializeAs_ExchangeWeightMessage(param1:IDataInput) : void {
-         this.currentWeight = param1.readInt();
+      public function deserializeAs_ExchangeWeightMessage(input:IDataInput) : void {
+         this.currentWeight = input.readInt();
          if(this.currentWeight < 0)
          {
             throw new Error("Forbidden value (" + this.currentWeight + ") on element of ExchangeWeightMessage.currentWeight.");
          }
          else
          {
-            this.maxWeight = param1.readInt();
+            this.maxWeight = input.readInt();
             if(this.maxWeight < 0)
             {
                throw new Error("Forbidden value (" + this.maxWeight + ") on element of ExchangeWeightMessage.maxWeight.");

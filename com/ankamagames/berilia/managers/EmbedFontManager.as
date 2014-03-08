@@ -58,35 +58,35 @@ package com.ankamagames.berilia.managers
       
       private var _loader:IResourceLoader;
       
-      public function initialize(param1:Array) : void {
+      public function initialize(fontList:Array) : void {
          if(this._loadingFonts == null)
          {
             this._loadingFonts = new Array();
          }
-         this._loadingFonts = this._loadingFonts.concat(param1);
+         this._loadingFonts = this._loadingFonts.concat(fontList);
          this.loadFonts();
       }
       
-      public function isEmbed(param1:String) : Boolean {
-         return this._aFonts[param1] == true;
+      public function isEmbed(fontName:String) : Boolean {
+         return this._aFonts[fontName] == true;
       }
       
-      public function getFont(param1:String) : Font {
-         var _loc2_:Array = Font.enumerateFonts();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_.length)
+      public function getFont(fontName:String) : Font {
+         var aFonts:Array = Font.enumerateFonts();
+         var i:uint = 0;
+         while(i < aFonts.length)
          {
-            if(Font(_loc2_[_loc3_]).fontName.toUpperCase() == param1.toUpperCase())
+            if(Font(aFonts[i]).fontName.toUpperCase() == fontName.toUpperCase())
             {
-               return _loc2_[_loc3_];
+               return aFonts[i];
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }
       
       private function loadFonts() : void {
-         var _loc2_:String = null;
+         var font:String = null;
          if(this._currentlyLoading != null)
          {
             return;
@@ -96,46 +96,46 @@ package com.ankamagames.berilia.managers
             dispatchEvent(new Event(Event.COMPLETE));
             return;
          }
-         var _loc1_:Array = new Array();
-         for each (_loc2_ in this._loadingFonts)
+         var aQueue:Array = new Array();
+         for each (font in this._loadingFonts)
          {
-            _loc1_.push(new Uri(_loc2_));
+            aQueue.push(new Uri(font));
          }
          this._loadingFonts = null;
-         this._loader.load(_loc1_);
+         this._loader.load(aQueue);
       }
       
-      private function onComplete(param1:ResourceLoadedEvent) : void {
-         var _loc3_:Array = null;
-         var _loc4_:* = 0;
-         var _loc2_:Class = Swl(param1.resource).getDefinition(FileUtils.getFileStartName(param1.uri.uri)) as Class;
-         this._aFonts[FileUtils.getFileStartName(param1.uri.uri)] = true;
-         if(_loc2_["EMBED_FONT"])
+      private function onComplete(e:ResourceLoadedEvent) : void {
+         var fontsList:Array = null;
+         var i:* = 0;
+         var fontClass:Class = Swl(e.resource).getDefinition(FileUtils.getFileStartName(e.uri.uri)) as Class;
+         this._aFonts[FileUtils.getFileStartName(e.uri.uri)] = true;
+         if(fontClass["EMBED_FONT"])
          {
-            Font.registerFont(_loc2_["EMBED_FONT"]);
+            Font.registerFont(fontClass["EMBED_FONT"]);
          }
          else
          {
-            _loc3_ = _loc2_["FONTS_LIST"];
-            if(_loc3_)
+            fontsList = fontClass["FONTS_LIST"];
+            if(fontsList)
             {
-               _loc4_ = 0;
-               while(_loc4_ < _loc3_.length)
+               i = 0;
+               while(i < fontsList.length)
                {
-                  Font.registerFont(_loc3_[_loc4_]);
-                  _loc4_++;
+                  Font.registerFont(fontsList[i]);
+                  i++;
                }
             }
          }
          this._currentlyLoading = null;
       }
       
-      private function onAllFontLoaded(param1:ResourceLoaderProgressEvent) : void {
+      private function onAllFontLoaded(e:ResourceLoaderProgressEvent) : void {
          dispatchEvent(new Event(Event.COMPLETE));
       }
       
-      private function onError(param1:ResourceErrorEvent) : void {
-         _log.error("Unabled to load a font : " + param1.uri);
+      private function onError(e:ResourceErrorEvent) : void {
+         _log.error("Unabled to load a font : " + e.uri);
       }
    }
 }

@@ -9,12 +9,12 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(param1:uint, param2:int=1, param3:Boolean=false) : ObjectUseAction {
-         var _loc4_:ObjectUseAction = new ObjectUseAction();
-         _loc4_.objectUID = param1;
-         _loc4_.quantity = param2;
-         _loc4_.useOnCell = param3;
-         return _loc4_;
+      public static function create(objectUID:uint, quantity:int=1, useOnCell:Boolean=false) : ObjectUseAction {
+         var a:ObjectUseAction = new ObjectUseAction();
+         a.objectUID = objectUID;
+         a.quantity = quantity;
+         a.useOnCell = useOnCell;
+         return a;
       }
       
       public var objectUID:uint;

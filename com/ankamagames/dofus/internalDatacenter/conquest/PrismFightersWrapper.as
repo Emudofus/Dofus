@@ -12,14 +12,14 @@ package com.ankamagames.dofus.internalDatacenter.conquest
          super();
       }
       
-      public static function create(param1:CharacterMinimalPlusLookInformations) : PrismFightersWrapper {
-         var _loc2_:PrismFightersWrapper = new PrismFightersWrapper();
-         _loc2_.playerCharactersInformations = param1;
-         if(param1.entityLook != null)
+      public static function create(pFightersInformations:CharacterMinimalPlusLookInformations) : PrismFightersWrapper {
+         var item:PrismFightersWrapper = new PrismFightersWrapper();
+         item.playerCharactersInformations = pFightersInformations;
+         if(pFightersInformations.entityLook != null)
          {
-            _loc2_.entityLook = EntityLookAdapter.getRiderLook(param1.entityLook);
+            item.entityLook = EntityLookAdapter.getRiderLook(pFightersInformations.entityLook);
          }
-         return _loc2_;
+         return item;
       }
       
       public var playerCharactersInformations:CharacterMinimalPlusLookInformations;

@@ -25,17 +25,17 @@ package com.ankamagames.jerakine.logger.targets
       
       public static var serverPort:int = 4444;
       
-      private static function send(param1:int, param2:String) : void {
-         var _loc3_:LoggerHistoryElement = null;
+      private static function send(level:int, message:String) : void {
+         var he:LoggerHistoryElement = null;
          if(_socket.connected)
          {
-            if(param1 != LogLevel.COMMANDS)
+            if(level != LogLevel.COMMANDS)
             {
-               _socket.send("!SOS<showMessage key=\"" + getKeyName(param1) + "\"><![CDATA[" + param2 + "]]></showMessage>");
+               _socket.send("!SOS<showMessage key=\"" + getKeyName(level) + "\"><![CDATA[" + message + "]]></showMessage>");
             }
             else
             {
-               _socket.send("!SOS<" + param2 + "/>");
+               _socket.send("!SOS<" + message + "/>");
             }
          }
          else
@@ -51,13 +51,13 @@ package com.ankamagames.jerakine.logger.targets
                _socket.connect(serverHost,serverPort);
                _connecting = true;
             }
-            _loc3_ = new LoggerHistoryElement(param1,param2);
-            _history.push(_loc3_);
+            he = new LoggerHistoryElement(level,message);
+            _history.push(he);
          }
       }
       
-      private static function getKeyName(param1:int) : String {
-         switch(param1)
+      private static function getKeyName(level:int) : String {
+         switch(level)
          {
             case LogLevel.TRACE:
                return "trace";
@@ -71,22 +71,20 @@ package com.ankamagames.jerakine.logger.targets
                return "error";
             case LogLevel.FATAL:
                return "fatal";
-            default:
-               return "severe";
          }
       }
       
-      private static function onSocket(param1:Event) : void {
-         var _loc2_:LoggerHistoryElement = null;
+      private static function onSocket(e:Event) : void {
+         var o:LoggerHistoryElement = null;
          _connecting = false;
-         for each (_loc2_ in _history)
+         for each (o in _history)
          {
-            send(_loc2_.level,_loc2_.message);
+            send(o.level,o.message);
          }
          _history = new Array();
       }
       
-      private static function onSocketError(param1:Event) : void {
+      private static function onSocketError(e:Event) : void {
          _connecting = false;
       }
       
@@ -98,32 +96,32 @@ package com.ankamagames.jerakine.logger.targets
          return _connecting;
       }
       
-      override public function logEvent(param1:LogEvent) : void {
-         var _loc2_:String = null;
-         if((enabled) && param1 is TextLogEvent)
+      override public function logEvent(event:LogEvent) : void {
+         var msg:String = null;
+         if((enabled) && (event is TextLogEvent))
          {
-            _loc2_ = param1.message;
-            if(param1.level == LogLevel.COMMANDS)
+            msg = event.message;
+            if(event.level == LogLevel.COMMANDS)
             {
-               switch(_loc2_)
+               switch(msg)
                {
                   case "clear":
-                     _loc2_ = "<clear/>";
+                     msg = "<clear/>";
                      break;
                }
             }
-            send(param1.level,param1.message);
+            send(event.level,event.message);
          }
       }
       
-      public function configure(param1:XML) : void {
-         if(param1..server.@host != undefined)
+      public function configure(config:XML) : void {
+         if(config..server.@host != undefined)
          {
-            serverHost = String(param1..server.@host);
+            serverHost = String(config..server.@host);
          }
-         if(param1..server.@port != undefined)
+         if(config..server.@port != undefined)
          {
-            serverPort = int(param1..server.@port);
+            serverPort = int(config..server.@port);
          }
       }
    }

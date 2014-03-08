@@ -20,9 +20,9 @@ package com.ankamagames.dofus.network.types.game.character.choice
          return 399;
       }
       
-      public function initCharacterToRelookInformation(param1:uint=0, param2:uint=0) : CharacterToRelookInformation {
-         super.initAbstractCharacterInformation(param1);
-         this.cosmeticId = param2;
+      public function initCharacterToRelookInformation(id:uint=0, cosmeticId:uint=0) : CharacterToRelookInformation {
+         super.initAbstractCharacterInformation(id);
+         this.cosmeticId = cosmeticId;
          return this;
       }
       
@@ -31,30 +31,30 @@ package com.ankamagames.dofus.network.types.game.character.choice
          this.cosmeticId = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CharacterToRelookInformation(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterToRelookInformation(output);
       }
       
-      public function serializeAs_CharacterToRelookInformation(param1:IDataOutput) : void {
-         super.serializeAs_AbstractCharacterInformation(param1);
+      public function serializeAs_CharacterToRelookInformation(output:IDataOutput) : void {
+         super.serializeAs_AbstractCharacterInformation(output);
          if(this.cosmeticId < 0)
          {
             throw new Error("Forbidden value (" + this.cosmeticId + ") on element cosmeticId.");
          }
          else
          {
-            param1.writeInt(this.cosmeticId);
+            output.writeInt(this.cosmeticId);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CharacterToRelookInformation(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterToRelookInformation(input);
       }
       
-      public function deserializeAs_CharacterToRelookInformation(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.cosmeticId = param1.readInt();
+      public function deserializeAs_CharacterToRelookInformation(input:IDataInput) : void {
+         super.deserialize(input);
+         this.cosmeticId = input.readInt();
          if(this.cosmeticId < 0)
          {
             throw new Error("Forbidden value (" + this.cosmeticId + ") on element of CharacterToRelookInformation.cosmeticId.");

@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3009;
       }
       
-      public function initInventoryWeightMessage(param1:uint=0, param2:uint=0) : InventoryWeightMessage {
-         this.weight = param1;
-         this.weightMax = param2;
+      public function initInventoryWeightMessage(weight:uint=0, weightMax:uint=0) : InventoryWeightMessage {
+         this.weight = weight;
+         this.weightMax = weightMax;
          this._isInitialized = true;
          return this;
       }
@@ -42,53 +42,53 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_InventoryWeightMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_InventoryWeightMessage(output);
       }
       
-      public function serializeAs_InventoryWeightMessage(param1:IDataOutput) : void {
+      public function serializeAs_InventoryWeightMessage(output:IDataOutput) : void {
          if(this.weight < 0)
          {
             throw new Error("Forbidden value (" + this.weight + ") on element weight.");
          }
          else
          {
-            param1.writeInt(this.weight);
+            output.writeInt(this.weight);
             if(this.weightMax < 0)
             {
                throw new Error("Forbidden value (" + this.weightMax + ") on element weightMax.");
             }
             else
             {
-               param1.writeInt(this.weightMax);
+               output.writeInt(this.weightMax);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_InventoryWeightMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_InventoryWeightMessage(input);
       }
       
-      public function deserializeAs_InventoryWeightMessage(param1:IDataInput) : void {
-         this.weight = param1.readInt();
+      public function deserializeAs_InventoryWeightMessage(input:IDataInput) : void {
+         this.weight = input.readInt();
          if(this.weight < 0)
          {
             throw new Error("Forbidden value (" + this.weight + ") on element of InventoryWeightMessage.weight.");
          }
          else
          {
-            this.weightMax = param1.readInt();
+            this.weightMax = input.readInt();
             if(this.weightMax < 0)
             {
                throw new Error("Forbidden value (" + this.weightMax + ") on element of InventoryWeightMessage.weightMax.");

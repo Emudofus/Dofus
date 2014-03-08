@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.bid
       }
       
       public static function create() : BidSwitchToSellerModeAction {
-         var _loc1_:BidSwitchToSellerModeAction = new BidSwitchToSellerModeAction();
-         return _loc1_;
+         var a:BidSwitchToSellerModeAction = new BidSwitchToSellerModeAction();
+         return a;
       }
    }
 }

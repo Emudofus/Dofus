@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.fight.actions
          super();
       }
       
-      public static function create(param1:uint) : GameContextKickAction {
-         var _loc2_:GameContextKickAction = new GameContextKickAction();
-         _loc2_.targetId = param1;
-         return _loc2_;
+      public static function create(targetId:uint) : GameContextKickAction {
+         var a:GameContextKickAction = new GameContextKickAction();
+         a.targetId = targetId;
+         return a;
       }
       
       public var targetId:uint;

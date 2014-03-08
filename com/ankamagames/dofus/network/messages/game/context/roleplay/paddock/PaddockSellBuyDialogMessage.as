@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
          return 6018;
       }
       
-      public function initPaddockSellBuyDialogMessage(param1:Boolean=false, param2:uint=0, param3:uint=0) : PaddockSellBuyDialogMessage {
-         this.bsell = param1;
-         this.ownerId = param2;
-         this.price = param3;
+      public function initPaddockSellBuyDialogMessage(bsell:Boolean=false, ownerId:uint=0, price:uint=0) : PaddockSellBuyDialogMessage {
+         this.bsell = bsell;
+         this.ownerId = ownerId;
+         this.price = price;
          this._isInitialized = true;
          return this;
       }
@@ -46,55 +46,55 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PaddockSellBuyDialogMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PaddockSellBuyDialogMessage(output);
       }
       
-      public function serializeAs_PaddockSellBuyDialogMessage(param1:IDataOutput) : void {
-         param1.writeBoolean(this.bsell);
+      public function serializeAs_PaddockSellBuyDialogMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.bsell);
          if(this.ownerId < 0)
          {
             throw new Error("Forbidden value (" + this.ownerId + ") on element ownerId.");
          }
          else
          {
-            param1.writeInt(this.ownerId);
+            output.writeInt(this.ownerId);
             if(this.price < 0)
             {
                throw new Error("Forbidden value (" + this.price + ") on element price.");
             }
             else
             {
-               param1.writeInt(this.price);
+               output.writeInt(this.price);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PaddockSellBuyDialogMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PaddockSellBuyDialogMessage(input);
       }
       
-      public function deserializeAs_PaddockSellBuyDialogMessage(param1:IDataInput) : void {
-         this.bsell = param1.readBoolean();
-         this.ownerId = param1.readInt();
+      public function deserializeAs_PaddockSellBuyDialogMessage(input:IDataInput) : void {
+         this.bsell = input.readBoolean();
+         this.ownerId = input.readInt();
          if(this.ownerId < 0)
          {
             throw new Error("Forbidden value (" + this.ownerId + ") on element of PaddockSellBuyDialogMessage.ownerId.");
          }
          else
          {
-            this.price = param1.readInt();
+            this.price = input.readInt();
             if(this.price < 0)
             {
                throw new Error("Forbidden value (" + this.price + ") on element of PaddockSellBuyDialogMessage.price.");

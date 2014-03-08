@@ -87,32 +87,32 @@ package com.ankamagames.berilia.managers
       
       private var _lastRenderStart:uint;
       
-      public function loadUi(param1:UiData, param2:UiRootContainer, param3:*=null, param4:Boolean=true) : void {
-         var _loc5_:PoolableUiRenderer = null;
-         var _loc6_:String = param1.file;
-         if(!_loc6_)
+      public function loadUi(uiData:UiData, spContainer:UiRootContainer, oProperties:*=null, checkCache:Boolean=true) : void {
+         var uiRenderer:PoolableUiRenderer = null;
+         var sId:String = uiData.file;
+         if(!sId)
          {
-            _loc6_ = param1.name;
+            sId = uiData.name;
          }
          if(BeriliaConstants.USE_UI_CACHE)
          {
-            if(param1.module is PreCompiledUiModule)
+            if(uiData.module is PreCompiledUiModule)
             {
-               this._aCache[_loc6_] = PreCompiledUiModule(param1.module).getDefinition(param1);
+               this._aCache[sId] = PreCompiledUiModule(uiData.module).getDefinition(uiData);
             }
-            if(!(this._aCache[_loc6_] == null) && (this._aCache[_loc6_].useCache))
+            if((!(this._aCache[sId] == null)) && (this._aCache[sId].useCache))
             {
                this._lastRenderStart = getTimer();
-               _loc5_ = PoolsManager.getInstance().getUiRendererPool().checkOut() as PoolableUiRenderer;
-               _loc5_.addEventListener(Event.COMPLETE,this.onUiRender);
-               _loc5_.fromCache = true;
-               _loc5_.script = param1.uiClass;
-               _loc5_.uiRender(this._aCache[_loc6_],this._aCache[_loc6_].name,param2,param3);
+               uiRenderer = PoolsManager.getInstance().getUiRendererPool().checkOut() as PoolableUiRenderer;
+               uiRenderer.addEventListener(Event.COMPLETE,this.onUiRender);
+               uiRenderer.fromCache = true;
+               uiRenderer.script = uiData.uiClass;
+               uiRenderer.uiRender(this._aCache[sId],this._aCache[sId].name,spContainer,oProperties);
                return;
             }
-            if((this._aRendering[_loc6_]) && (!this._aCache[_loc6_]) && (param4))
+            if((this._aRendering[sId]) && (!this._aCache[sId]) && (checkCache))
             {
-               this._aRendering[_loc6_].push(new RenderQueueItem(param1,param2,param3));
+               this._aRendering[sId].push(new RenderQueueItem(uiData,spContainer,oProperties));
                return;
             }
          }
@@ -120,27 +120,27 @@ package com.ankamagames.berilia.managers
          {
             this._aCache = new Array();
          }
-         if(((!this._aCache[_loc6_]) || (this._aCache[_loc6_] && this._aCache[_loc6_].useCache)) && (param4))
+         if(((!this._aCache[sId]) || (this._aCache[sId] && this._aCache[sId].useCache)) && (checkCache))
          {
-            this._aRendering[_loc6_] = new Array();
+            this._aRendering[sId] = new Array();
          }
-         if(param1.file)
+         if(uiData.file)
          {
             this._lastRenderStart = getTimer();
-            _loc5_ = PoolsManager.getInstance().getUiRendererPool().checkOut() as PoolableUiRenderer;
-            _loc5_.addEventListener(Event.COMPLETE,this.onUiRender);
-            _loc5_.script = param1.uiClass;
-            _loc5_.fileRender(param1.file,_loc6_,param2,param3);
+            uiRenderer = PoolsManager.getInstance().getUiRendererPool().checkOut() as PoolableUiRenderer;
+            uiRenderer.addEventListener(Event.COMPLETE,this.onUiRender);
+            uiRenderer.script = uiData.uiClass;
+            uiRenderer.fileRender(uiData.file,sId,spContainer,oProperties);
          }
          else
          {
-            if(param1.xml)
+            if(uiData.xml)
             {
                this._lastRenderStart = getTimer();
-               _loc5_ = PoolsManager.getInstance().getUiRendererPool().checkOut() as PoolableUiRenderer;
-               _loc5_.addEventListener(Event.COMPLETE,this.onUiRender);
-               _loc5_.script = param1.uiClass;
-               _loc5_.xmlRender(param1.xml,_loc6_,param2,param3);
+               uiRenderer = PoolsManager.getInstance().getUiRendererPool().checkOut() as PoolableUiRenderer;
+               uiRenderer.addEventListener(Event.COMPLETE,this.onUiRender);
+               uiRenderer.script = uiData.uiClass;
+               uiRenderer.xmlRender(uiData.xml,sId,spContainer,oProperties);
             }
          }
       }
@@ -153,73 +153,73 @@ package com.ankamagames.berilia.managers
          StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_DEFINITION,DATASTORE_CATEGORY_CACHE,this._aCache);
       }
       
-      public function clearCacheFromId(param1:String) : void {
-         delete this._aCache[[param1]];
-         delete this._aVersion[[param1]];
+      public function clearCacheFromId(id:String) : void {
+         delete this._aCache[[id]];
+         delete this._aVersion[[id]];
          StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_VERSION,DATASTORE_CATEGORY_VERSION,this._aVersion);
          StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_DEFINITION,DATASTORE_CATEGORY_CACHE,this._aCache);
       }
       
-      public function getUiDefinition(param1:String) : UiDefinition {
-         return this._aCache[param1];
+      public function getUiDefinition(uiId:String) : UiDefinition {
+         return this._aCache[uiId];
       }
       
       public function updateCachedUiDefinition() : void {
          StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_DEFINITION,DATASTORE_CATEGORY_CACHE,this._aCache);
       }
       
-      public function getUiVersion(param1:String) : String {
-         return this._aVersion[param1];
+      public function getUiVersion(id:String) : String {
+         return this._aVersion[id];
       }
       
-      public function setUiVersion(param1:String, param2:String) : void {
-         this._aVersion[param1] = param2;
+      public function setUiVersion(id:String, version:String) : void {
+         this._aVersion[id] = version;
          StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_VERSION,DATASTORE_CATEGORY_VERSION,this._aVersion);
       }
       
-      public function setUiDefinition(param1:UiDefinition) : void {
-         this._aCache[param1.name] = param1;
+      public function setUiDefinition(uiDefinition:UiDefinition) : void {
+         this._aCache[uiDefinition.name] = uiDefinition;
          StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_DEFINITION,DATASTORE_CATEGORY_CACHE,this._aCache);
       }
       
-      public function cancelRender(param1:UiData) : void {
-         if(param1)
+      public function cancelRender(uiData:UiData) : void {
+         if(uiData)
          {
-            delete this._aRendering[[param1.file]];
+            delete this._aRendering[[uiData.file]];
          }
       }
       
-      private function processWaitingUi(param1:String, param2:Boolean=true) : void {
-         var _loc3_:RenderQueueItem = null;
-         if(!this._aRendering[param1])
+      private function processWaitingUi(sId:String, checkCache:Boolean=true) : void {
+         var currentUi:RenderQueueItem = null;
+         if(!this._aRendering[sId])
          {
             return;
          }
-         while((this._aRendering[param1]) && (this._aRendering[param1].length))
+         while((this._aRendering[sId]) && (this._aRendering[sId].length))
          {
-            _loc3_ = this._aRendering[param1].shift();
+            currentUi = this._aRendering[sId].shift();
             this._lastRenderStart = getTimer();
-            this.loadUi(_loc3_.uiData,_loc3_.container,_loc3_.properties,param2);
+            this.loadUi(currentUi.uiData,currentUi.container,currentUi.properties,checkCache);
          }
-         delete this._aRendering[[param1]];
+         delete this._aRendering[[sId]];
       }
       
-      private function onUiRender(param1:UiRenderEvent) : void {
-         var _loc2_:UiDefinition = param1.uiRenderer.uiDefinition;
-         if((((!(param1.uiTarget.uiData.module is PreCompiledUiModule)) && (_loc2_)) && (_loc2_.useCache)) && (!this._aCache[_loc2_.name]) && (BeriliaConstants.USE_UI_CACHE))
+      private function onUiRender(e:UiRenderEvent) : void {
+         var uiDef:UiDefinition = e.uiRenderer.uiDefinition;
+         if((((!(e.uiTarget.uiData.module is PreCompiledUiModule)) && (uiDef)) && (uiDef.useCache)) && (!this._aCache[uiDef.name]) && (BeriliaConstants.USE_UI_CACHE))
          {
-            this._aCache[_loc2_.name] = _loc2_;
+            this._aCache[uiDef.name] = uiDef;
             StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_DEFINITION,DATASTORE_CATEGORY_CACHE,this._aCache);
          }
-         if(_loc2_)
+         if(uiDef)
          {
-            _log.info(_loc2_.name + " rendered in " + (getTimer() - this._lastRenderStart) + " ms (parsing: " + param1.uiRenderer.parsingTime + " ms, build: " + param1.uiRenderer.buildTime + " ms, script:" + param1.uiRenderer.scriptTime + " ms )");
+            _log.info(uiDef.name + " rendered in " + (getTimer() - this._lastRenderStart) + " ms (parsing: " + e.uiRenderer.parsingTime + " ms, build: " + e.uiRenderer.buildTime + " ms, script:" + e.uiRenderer.scriptTime + " ms )");
          }
-         PoolsManager.getInstance().getUiRendererPool().checkIn(param1.uiRenderer as PoolableUiRenderer);
-         dispatchEvent(new UiRenderEvent(UiRenderEvent.UIRenderComplete,param1.bubbles,param1.cancelable,param1.uiTarget,param1.uiRenderer));
-         if(_loc2_)
+         PoolsManager.getInstance().getUiRendererPool().checkIn(e.uiRenderer as PoolableUiRenderer);
+         dispatchEvent(new UiRenderEvent(UiRenderEvent.UIRenderComplete,e.bubbles,e.cancelable,e.uiTarget,e.uiRenderer));
+         if(uiDef)
          {
-            this.processWaitingUi(_loc2_.name,_loc2_.useCache);
+            this.processWaitingUi(uiDef.name,uiDef.useCache);
          }
       }
    }
@@ -231,11 +231,11 @@ import com.ankamagames.berilia.managers.UiRenderManager;
 class RenderQueueItem extends Object
 {
    
-   function RenderQueueItem(param1:UiData, param2:UiRootContainer, param3:*) {
+   function RenderQueueItem(uiData:UiData, cont:UiRootContainer, prop:*) {
       super();
-      this.container = param2;
-      this.properties = param3;
-      this.uiData = param1;
+      this.container = cont;
+      this.properties = prop;
+      this.uiData = uiData;
       UiRenderManager.MEMORY_LOG[this] = 1;
    }
    

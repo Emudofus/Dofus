@@ -16,24 +16,24 @@ package com.ankamagames.jerakine.utils.system
    public class SystemPopupUI extends Sprite
    {
       
-      public function SystemPopupUI(param1:String) {
+      public function SystemPopupUI(id:String) {
          super();
-         if(_popupRef[param1])
+         if(_popupRef[id])
          {
-            throw new ArgumentError("A SystemPopupUI called \'" + param1 + "\' already exist, call destroy() before.");
+            throw new ArgumentError("A SystemPopupUI called \'" + id + "\' already exist, call destroy() before.");
          }
          else
          {
-            _popupRef[param1] = this;
-            this._id = param1;
+            _popupRef[id] = this;
+            this._id = id;
             return;
          }
       }
       
       private static const _popupRef:Dictionary = new Dictionary();
       
-      public static function get(param1:String) : SystemPopupUI {
-         return _popupRef[param1];
+      public static function get(id:String) : SystemPopupUI {
+         return _popupRef[id];
       }
       
       private var _title:String;
@@ -83,12 +83,12 @@ package com.ankamagames.jerakine.utils.system
          return this._modal;
       }
       
-      public function set modal(param1:Boolean) : void {
-         if(param1 != this._modal)
+      public function set modal(value:Boolean) : void {
+         if(value != this._modal)
          {
-            this._modal = param1;
+            this._modal = value;
             graphics.clear();
-            if(param1)
+            if(value)
             {
                graphics.beginFill(16777215,0.7);
                graphics.drawRect(0,0,StageShareManager.startWidth,StageShareManager.startHeight);
@@ -100,8 +100,8 @@ package com.ankamagames.jerakine.utils.system
          return this._buttons;
       }
       
-      public function set buttons(param1:Array) : void {
-         this._buttons = param1;
+      public function set buttons(value:Array) : void {
+         this._buttons = value;
          this.buildUI();
       }
       
@@ -109,8 +109,8 @@ package com.ankamagames.jerakine.utils.system
          return this._content;
       }
       
-      public function set content(param1:String) : void {
-         this._content = param1;
+      public function set content(value:String) : void {
+         this._content = value;
          this.buildUI();
       }
       
@@ -118,18 +118,18 @@ package com.ankamagames.jerakine.utils.system
          return this._title;
       }
       
-      public function set title(param1:String) : void {
-         this._title = param1;
+      public function set title(value:String) : void {
+         this._title = value;
          this.buildUI();
       }
       
-      override public function set width(param1:Number) : void {
-         this._window_width = param1;
+      override public function set width(value:Number) : void {
+         this._window_width = value;
          this.buildUI();
       }
       
-      public function set centerContent(param1:Boolean) : void {
-         this._centerContent = param1;
+      public function set centerContent(b:Boolean) : void {
+         this._centerContent = b;
          this.buildUI();
       }
       
@@ -137,12 +137,12 @@ package com.ankamagames.jerakine.utils.system
          return this._centerContent;
       }
       
-      private function buildUI(param1:Boolean=false) : void {
-         var _loc3_:* = undefined;
-         var _loc4_:Sprite = null;
-         var _loc5_:Object = null;
-         var _loc6_:DisplayObject = null;
-         if(!this._title || !this._content)
+      private function buildUI(destroy:Boolean=false) : void {
+         var oldBtn:* = undefined;
+         var btnContainer:Sprite = null;
+         var b:Object = null;
+         var btn:DisplayObject = null;
+         if((!this._title) || (!this._content))
          {
             return;
          }
@@ -152,15 +152,15 @@ package com.ankamagames.jerakine.utils.system
          }
          if(this._callBacks)
          {
-            for (_loc3_ in this._callBacks)
+            for (oldBtn in this._callBacks)
             {
-               Sprite(_loc3_).removeEventListener(MouseEvent.MOUSE_OVER,this.onBtnMouseOver);
-               Sprite(_loc3_).removeEventListener(MouseEvent.MOUSE_OUT,this.onBtnMouseOut);
-               Sprite(_loc3_).removeEventListener(MouseEvent.CLICK,this.onBtnClick);
+               Sprite(oldBtn).removeEventListener(MouseEvent.MOUSE_OVER,this.onBtnMouseOver);
+               Sprite(oldBtn).removeEventListener(MouseEvent.MOUSE_OUT,this.onBtnMouseOut);
+               Sprite(oldBtn).removeEventListener(MouseEvent.CLICK,this.onBtnClick);
             }
          }
          this._callBacks = new Dictionary();
-         if(param1)
+         if(destroy)
          {
             return;
          }
@@ -170,14 +170,14 @@ package com.ankamagames.jerakine.utils.system
          this._titleTf.selectable = false;
          this._titleTf.autoSize = TextFieldAutoSize.LEFT;
          this._titleTf.height = 20;
-         var _loc2_:TextFormat = new TextFormat("Verdana",16,this._style_font_color,true);
-         this._titleTf.defaultTextFormat = _loc2_;
+         var tf:TextFormat = new TextFormat("Verdana",16,this._style_font_color,true);
+         this._titleTf.defaultTextFormat = tf;
          this._titleTf.text = this._title;
          this._mainContainer.addChild(this._titleTf);
          this._contentTf = new TextField();
          this._contentTf.width = this._window_width;
-         _loc2_ = new TextFormat("Verdana",14,this._style_font_color,null,null,null,null,null,this._centerContent?TextFormatAlign.CENTER:TextFormatAlign.LEFT);
-         this._contentTf.defaultTextFormat = _loc2_;
+         tf = new TextFormat("Verdana",14,this._style_font_color,null,null,null,null,null,this._centerContent?TextFormatAlign.CENTER:TextFormatAlign.LEFT);
+         this._contentTf.defaultTextFormat = tf;
          this._contentTf.wordWrap = true;
          this._contentTf.multiline = true;
          this._contentTf.text = this._content;
@@ -186,17 +186,17 @@ package com.ankamagames.jerakine.utils.system
          this._mainContainer.addChild(this._contentTf);
          if((this._buttons) && (this._buttons.length))
          {
-            _loc4_ = new Sprite();
-            for each (_loc5_ in this._buttons)
+            btnContainer = new Sprite();
+            for each (b in this._buttons)
             {
-               _loc6_ = this.createButton(_loc5_.label);
-               this._callBacks[_loc6_] = _loc5_.callback;
-               _loc6_.x = _loc4_.width?_loc4_.width + 10:0;
-               _loc4_.addChild(_loc6_);
+               btn = this.createButton(b.label);
+               this._callBacks[btn] = b.callback;
+               btn.x = btnContainer.width?btnContainer.width + 10:0;
+               btnContainer.addChild(btn);
             }
-            _loc4_.y = this._contentTf.y + this._contentTf.height + 10;
-            _loc4_.x = (this._mainContainer.width - _loc4_.width) / 2;
-            this._mainContainer.addChild(_loc4_);
+            btnContainer.y = this._contentTf.y + this._contentTf.height + 10;
+            btnContainer.x = (this._mainContainer.width - btnContainer.width) / 2;
+            this._mainContainer.addChild(btnContainer);
          }
          this._mainContainer.graphics.lineStyle(1,this._style_border_color);
          this._mainContainer.graphics.beginFill(this._style_bg_color);
@@ -208,51 +208,51 @@ package com.ankamagames.jerakine.utils.system
          this._mainContainer.filters = [new DropShadowFilter(1,45,0,0.5,10,10,1,3)];
       }
       
-      private function createButton(param1:String) : DisplayObject {
-         var _loc2_:Sprite = new Sprite();
-         var _loc3_:TextField = new TextField();
-         var _loc4_:TextFormat = new TextFormat("Verdana",12,this._style_font_color,true,null,null,null,null,TextFormatAlign.CENTER);
-         _loc3_.defaultTextFormat = _loc4_;
-         _loc3_.text = param1;
-         _loc3_.height = 20;
-         _loc3_.width = _loc3_.textWidth < 50?50:_loc3_.textWidth + 10;
-         _loc3_.selectable = false;
-         _loc3_.mouseEnabled = false;
-         _loc2_.addChild(_loc3_);
-         _loc2_.graphics.lineStyle(1,this._style_border_color + 1118481);
-         _loc2_.graphics.beginFill(this._style_title_color + 1118481);
-         _loc2_.graphics.drawRoundRect(-2,-2,_loc3_.width + 5,25,2,2);
-         _loc2_.addEventListener(MouseEvent.MOUSE_OVER,this.onBtnMouseOver);
-         _loc2_.addEventListener(MouseEvent.MOUSE_OUT,this.onBtnMouseOut);
-         _loc2_.addEventListener(MouseEvent.CLICK,this.onBtnClick);
-         _loc2_.buttonMode = true;
-         return _loc2_;
+      private function createButton(text:String) : DisplayObject {
+         var btn:Sprite = new Sprite();
+         var btnText:TextField = new TextField();
+         var tf:TextFormat = new TextFormat("Verdana",12,this._style_font_color,true,null,null,null,null,TextFormatAlign.CENTER);
+         btnText.defaultTextFormat = tf;
+         btnText.text = text;
+         btnText.height = 20;
+         btnText.width = btnText.textWidth < 50?50:btnText.textWidth + 10;
+         btnText.selectable = false;
+         btnText.mouseEnabled = false;
+         btn.addChild(btnText);
+         btn.graphics.lineStyle(1,this._style_border_color + 1118481);
+         btn.graphics.beginFill(this._style_title_color + 1118481);
+         btn.graphics.drawRoundRect(-2,-2,btnText.width + 5,25,2,2);
+         btn.addEventListener(MouseEvent.MOUSE_OVER,this.onBtnMouseOver);
+         btn.addEventListener(MouseEvent.MOUSE_OUT,this.onBtnMouseOut);
+         btn.addEventListener(MouseEvent.CLICK,this.onBtnClick);
+         btn.buttonMode = true;
+         return btn;
       }
       
-      private function onBtnMouseOver(param1:Event) : void {
-         var _loc2_:Sprite = param1.target as Sprite;
-         _loc2_.graphics.lineStyle(1,this._style_border_color);
-         _loc2_.graphics.beginFill(this._style_title_color);
-         _loc2_.graphics.drawRoundRect(-2,-2,_loc2_.width-1,25,2,2);
+      private function onBtnMouseOver(e:Event) : void {
+         var btn:Sprite = e.target as Sprite;
+         btn.graphics.lineStyle(1,this._style_border_color);
+         btn.graphics.beginFill(this._style_title_color);
+         btn.graphics.drawRoundRect(-2,-2,btn.width - 1,25,2,2);
       }
       
-      private function onBtnMouseOut(param1:Event) : void {
-         var _loc2_:Sprite = param1.target as Sprite;
-         _loc2_.graphics.lineStyle(1,this._style_border_color + 1118481);
-         _loc2_.graphics.beginFill(this._style_title_color + 1118481);
-         _loc2_.graphics.drawRoundRect(-2,-2,_loc2_.width-1,25,2,2);
+      private function onBtnMouseOut(e:Event) : void {
+         var btn:Sprite = e.target as Sprite;
+         btn.graphics.lineStyle(1,this._style_border_color + 1118481);
+         btn.graphics.beginFill(this._style_title_color + 1118481);
+         btn.graphics.drawRoundRect(-2,-2,btn.width - 1,25,2,2);
       }
       
-      private function onBtnClick(param1:Event) : void {
-         if(this._callBacks[param1.target] is Function)
+      private function onBtnClick(e:Event) : void {
+         if(this._callBacks[e.target] is Function)
          {
-            this._callBacks[param1.target]();
+            this._callBacks[e.target]();
          }
          else
          {
-            if(this._callBacks[param1.target] is Callback)
+            if(this._callBacks[e.target] is Callback)
             {
-               Callback(this._callBacks[param1.target]).exec();
+               Callback(this._callBacks[e.target]).exec();
             }
          }
          this.destroy();

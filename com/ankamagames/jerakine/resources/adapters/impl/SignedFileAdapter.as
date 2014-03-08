@@ -16,12 +16,12 @@ package com.ankamagames.jerakine.resources.adapters.impl
    public class SignedFileAdapter extends AbstractUrlLoaderAdapter implements IAdapter
    {
       
-      public function SignedFileAdapter(param1:SignatureKey=null, param2:Boolean=false) {
+      public function SignedFileAdapter(signatureKey:SignatureKey=null, rawContent:Boolean=false) {
          super();
-         this._rawContent = param2;
-         if(param1)
+         this._rawContent = rawContent;
+         if(signatureKey)
          {
-            this._signatureKey = param1;
+            this._signatureKey = signatureKey;
          }
          else
          {
@@ -39,8 +39,8 @@ package com.ankamagames.jerakine.resources.adapters.impl
       
       private static var _defaultSignatureKey:SignatureKey;
       
-      public static function set defaultSignatureKey(param1:SignatureKey) : void {
-         _defaultSignatureKey = param1;
+      public static function set defaultSignatureKey(v:SignatureKey) : void {
+         _defaultSignatureKey = v;
       }
       
       public static function get defaultSignatureKey() : SignatureKey {
@@ -57,14 +57,14 @@ package com.ankamagames.jerakine.resources.adapters.impl
       
       private var _rawContent:Boolean;
       
-      override public function loadDirectly(param1:Uri, param2:String, param3:IResourceObserver, param4:Boolean) : void {
-         this._uri = param1;
-         super.loadDirectly(param1,param2,param3,param4);
+      override public function loadDirectly(uri:Uri, path:String, observer:IResourceObserver, dispatchProgress:Boolean) : void {
+         this._uri = uri;
+         super.loadDirectly(uri,path,observer,dispatchProgress);
       }
       
-      override public function loadFromData(param1:Uri, param2:ByteArray, param3:IResourceObserver, param4:Boolean) : void {
-         this._uri = param1;
-         super.loadFromData(param1,param2,param3,param4);
+      override public function loadFromData(uri:Uri, data:ByteArray, observer:IResourceObserver, dispatchProgress:Boolean) : void {
+         this._uri = uri;
+         super.loadFromData(uri,data,observer,dispatchProgress);
       }
       
       override public function free() : void {
@@ -74,7 +74,7 @@ package com.ankamagames.jerakine.resources.adapters.impl
          super.free();
       }
       
-      override protected function getResource(param1:String, param2:*) : * {
+      override protected function getResource(dataFormat:String, data:*) : * {
          return this._resource;
       }
       
@@ -82,9 +82,7 @@ package com.ankamagames.jerakine.resources.adapters.impl
          return ResourceType.RESOURCE_SIGNED_FILE;
       }
       
-      override protected function process(param1:String, param2:*) : void {
-         var dataFormat:String = param1;
-         var data:* = param2;
+      override protected function process(dataFormat:String, data:*) : void {
          var sig:Signature = new Signature(this._signatureKey);
          var content:ByteArray = new ByteArray();
          try
@@ -99,7 +97,7 @@ package com.ankamagames.jerakine.resources.adapters.impl
          {
             dispatchFailure("Invalid signature : " + e.message,ResourceErrorCode.INVALID_SIGNATURE);
          }
-         var contentUri:Uri = new Uri(this._uri.path.substr(0,this._uri.path.length-1));
+         var contentUri:Uri = new Uri(this._uri.path.substr(0,this._uri.path.length - 1));
          var contentAdapter:IAdapter = AdapterFactory.getAdapter(contentUri);
          if(!contentAdapter)
          {
@@ -124,13 +122,13 @@ package com.ankamagames.jerakine.resources.adapters.impl
          return URLLoaderDataFormat.BINARY;
       }
       
-      private function onContentLoad(param1:Uri, param2:uint, param3:*) : void {
-         this._resource = param3;
-         dispatchSuccess(ResourceType.getName(param2),param3);
+      private function onContentLoad(uri:Uri, resourceType:uint, resource:*) : void {
+         this._resource = resource;
+         dispatchSuccess(ResourceType.getName(resourceType),resource);
       }
       
-      private function onContentLoadFailed(param1:Uri, param2:String, param3:uint) : void {
-         dispatchFailure(param2,param3);
+      private function onContentLoadFailed(uri:Uri, errorMsg:String, errorCode:uint) : void {
+         dispatchFailure(errorMsg,errorCode);
       }
    }
 }

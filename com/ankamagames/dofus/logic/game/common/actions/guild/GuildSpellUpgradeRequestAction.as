@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.guild
          super();
       }
       
-      public static function create(param1:uint) : GuildSpellUpgradeRequestAction {
-         var _loc2_:GuildSpellUpgradeRequestAction = new GuildSpellUpgradeRequestAction();
-         _loc2_.spellId = param1;
-         return _loc2_;
+      public static function create(pSpellId:uint) : GuildSpellUpgradeRequestAction {
+         var action:GuildSpellUpgradeRequestAction = new GuildSpellUpgradeRequestAction();
+         action.spellId = pSpellId;
+         return action;
       }
       
       public var spellId:uint;

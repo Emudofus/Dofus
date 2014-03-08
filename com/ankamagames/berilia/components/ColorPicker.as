@@ -92,16 +92,16 @@ package com.ankamagames.berilia.components
       
       private var _bFinalized:Boolean = false;
       
-      override public function set width(param1:Number) : void {
-         this._nWidth = param1;
+      override public function set width(nW:Number) : void {
+         this._nWidth = nW;
          if(this.finalized)
          {
             this.updatePicker();
          }
       }
       
-      override public function set height(param1:Number) : void {
-         this._nHeight = param1;
+      override public function set height(nH:Number) : void {
+         this._nHeight = nH;
          this._nSliderY = int(this._nHeight / 2);
          if(this.finalized)
          {
@@ -109,26 +109,26 @@ package com.ankamagames.berilia.components
          }
       }
       
-      public function set sliderTexture(param1:Uri) : void {
+      public function set sliderTexture(uri:Uri) : void {
          this._texCursorSlider = new Texture();
          this._texCursorSlider.x = 0;
          this._texCursorSlider.y = 0;
          this._texCursorSlider.width = 20;
          this._texCursorSlider.height = 16;
-         this._texCursorSlider.uri = param1;
+         this._texCursorSlider.uri = uri;
       }
       
       public function get sliderTexture() : Uri {
          return this._texCursorSlider.uri;
       }
       
-      public function set gradientTexture(param1:Uri) : void {
+      public function set gradientTexture(uri:Uri) : void {
          this._texCursorGradient = new Texture();
          this._texCursorGradient.x = 0;
          this._texCursorGradient.y = 0;
          this._texCursorGradient.width = 16;
          this._texCursorGradient.height = 16;
-         this._texCursorGradient.uri = param1;
+         this._texCursorGradient.uri = uri;
       }
       
       public function get gradientTexture() : Uri {
@@ -139,8 +139,8 @@ package com.ankamagames.berilia.components
          return this._nColor;
       }
       
-      public function set color(param1:uint) : void {
-         this._nColor = param1;
+      public function set color(nValue:uint) : void {
+         this._nColor = nValue;
          this._bFixedColor = true;
          this.getCurrentPos();
       }
@@ -149,8 +149,8 @@ package com.ankamagames.berilia.components
          return this._bFinalized;
       }
       
-      public function set finalized(param1:Boolean) : void {
-         this._bFinalized = param1;
+      public function set finalized(b:Boolean) : void {
+         this._bFinalized = b;
       }
       
       public function finalize() : void {
@@ -199,11 +199,11 @@ package com.ankamagames.berilia.components
       }
       
       public function updatePicker() : void {
-         var _loc1_:Object = ColorUtils.rgb2hsl(this._nColor);
-         this._texCursorGradient.x = _loc1_.h * this._nGradientWidth - this._texCursorGradient.width / 2;
-         this._texCursorGradient.y = _loc1_.s * this._nHeight - this._texCursorGradient.height / 2;
+         var hsl:Object = ColorUtils.rgb2hsl(this._nColor);
+         this._texCursorGradient.x = hsl.h * this._nGradientWidth - this._texCursorGradient.width / 2;
+         this._texCursorGradient.y = hsl.s * this._nHeight - this._texCursorGradient.height / 2;
          this._texCursorSlider.x = this._sprSliderSup.x;
-         this._texCursorSlider.y = _loc1_.l * this._nHeight - this._texCursorSlider.height / 2;
+         this._texCursorSlider.y = hsl.l * this._nHeight - this._texCursorSlider.height / 2;
          addChild(this._texCursorGradient);
          addChild(this._texCursorSlider);
          this.updateSlider();
@@ -223,79 +223,79 @@ package com.ankamagames.berilia.components
       }
       
       public function getGradientColor() : uint {
-         var _loc1_:* = NaN;
-         var _loc2_:* = NaN;
-         var _loc3_:* = NaN;
-         var _loc4_:* = NaN;
-         var _loc5_:* = NaN;
-         var _loc6_:* = NaN;
-         var _loc7_:* = NaN;
-         var _loc8_:* = NaN;
-         var _loc9_:* = NaN;
-         var _loc10_:* = NaN;
-         var _loc11_:* = NaN;
-         var _loc12_:* = NaN;
-         var _loc13_:* = NaN;
+         var colorPoint1:* = NaN;
+         var colorPoint2:* = NaN;
+         var r1:* = NaN;
+         var g1:* = NaN;
+         var b1:* = NaN;
+         var r2:* = NaN;
+         var g2:* = NaN;
+         var b2:* = NaN;
+         var c1:* = NaN;
+         var c2:* = NaN;
+         var r:* = NaN;
+         var g:* = NaN;
+         var b:* = NaN;
          if(this._nGradientX >= this._nGradientWidth)
          {
-            this._nGradientX = this._nGradientWidth-1;
+            this._nGradientX = this._nGradientWidth - 1;
          }
-         _loc1_ = this._nGradientX / this._nGradientWidth;
-         var _loc14_:Number = Math.floor(_loc1_ * (this._aRatiosHue.length-1));
-         _loc1_ = _loc1_ * 255;
-         _loc2_ = 255 - (this._aRatiosHue[_loc14_ + 1] - _loc1_) / (this._aRatiosHue[_loc14_ + 1] - this._aRatiosHue[_loc14_]) * 255;
-         _loc9_ = this._aColorsHue[_loc14_];
-         _loc10_ = this._aColorsHue[_loc14_ + 1];
-         _loc3_ = _loc9_ & 16711680;
-         _loc4_ = _loc9_ & 65280;
-         _loc5_ = _loc9_ & 255;
-         _loc6_ = _loc10_ & 16711680;
-         _loc7_ = _loc10_ & 65280;
-         _loc8_ = _loc10_ & 255;
-         if(_loc3_ != _loc6_)
+         colorPoint1 = this._nGradientX / this._nGradientWidth;
+         var i:Number = Math.floor(colorPoint1 * (this._aRatiosHue.length - 1));
+         colorPoint1 = colorPoint1 * 255;
+         colorPoint2 = 255 - (this._aRatiosHue[i + 1] - colorPoint1) / (this._aRatiosHue[i + 1] - this._aRatiosHue[i]) * 255;
+         c1 = this._aColorsHue[i];
+         c2 = this._aColorsHue[i + 1];
+         r1 = c1 & 16711680;
+         g1 = c1 & 65280;
+         b1 = c1 & 255;
+         r2 = c2 & 16711680;
+         g2 = c2 & 65280;
+         b2 = c2 & 255;
+         if(r1 != r2)
          {
-            _loc11_ = Math.round(_loc3_ > _loc6_?255 - _loc2_:_loc2_);
+            r = Math.round(r1 > r2?255 - colorPoint2:colorPoint2);
          }
          else
          {
-            _loc11_ = _loc3_ >> 16;
+            r = r1 >> 16;
          }
-         if(_loc4_ != _loc7_)
+         if(g1 != g2)
          {
-            _loc12_ = Math.round(_loc4_ > _loc7_?255 - _loc2_:_loc2_);
+            g = Math.round(g1 > g2?255 - colorPoint2:colorPoint2);
          }
          else
          {
-            _loc12_ = _loc4_ >> 8;
+            g = g1 >> 8;
          }
-         if(_loc5_ != _loc8_)
+         if(b1 != b2)
          {
-            _loc13_ = Math.round(_loc5_ > _loc8_?255 - _loc2_:_loc2_);
+            b = Math.round(b1 > b2?255 - colorPoint2:colorPoint2);
          }
          else
          {
-            _loc13_ = _loc5_;
+            b = b1;
          }
-         _loc1_ = this._nGradientY / this._nHeight * 255;
-         _loc11_ = _loc11_ + (127 - _loc11_) * _loc1_ / 255;
-         _loc12_ = _loc12_ + (127 - _loc12_) * _loc1_ / 255;
-         _loc13_ = _loc13_ + (127 - _loc13_) * _loc1_ / 255;
-         this._nGradientColor = Math.round((_loc11_ << 16) + (_loc12_ << 8) + _loc13_);
+         colorPoint1 = this._nGradientY / this._nHeight * 255;
+         r = r + (127 - r) * colorPoint1 / 255;
+         g = g + (127 - g) * colorPoint1 / 255;
+         b = b + (127 - b) * colorPoint1 / 255;
+         this._nGradientColor = Math.round((r << 16) + (g << 8) + b);
          return this._nGradientColor;
       }
       
       public function updateSlider() : void {
-         var _loc1_:uint = this.getGradientColor();
-         this._sprSliderInf.graphics.beginFill(_loc1_);
+         var gColor:uint = this.getGradientColor();
+         this._sprSliderInf.graphics.beginFill(gColor);
          this._sprSliderInf.graphics.drawRect(0,0,this._nSliderWidth,this._nHeight);
          this._sprSliderInf.graphics.endFill();
       }
       
       private function getCurrentPos() : void {
-         var _loc1_:Object = ColorUtils.rgb2hsl(this._nColor);
-         this._texCursorGradient.x = _loc1_.h * this._nGradientWidth - this._texCursorGradient.width / 2;
-         this._texCursorGradient.y = _loc1_.s * this._nHeight - this._texCursorGradient.height / 2;
-         this._texCursorSlider.y = _loc1_.l * this._nHeight - this._texCursorSlider.height / 2;
+         var hsl:Object = ColorUtils.rgb2hsl(this._nColor);
+         this._texCursorGradient.x = hsl.h * this._nGradientWidth - this._texCursorGradient.width / 2;
+         this._texCursorGradient.y = hsl.s * this._nHeight - this._texCursorGradient.height / 2;
+         this._texCursorSlider.y = hsl.l * this._nHeight - this._texCursorSlider.height / 2;
          this._nGradientX = this._texCursorGradient.x + this._texCursorGradient.width / 2;
          this._nGradientY = this._texCursorGradient.y + this._texCursorGradient.height / 2;
          this._nSliderY = this._texCursorSlider.y + this._texCursorSlider.height / 2;
@@ -304,45 +304,45 @@ package com.ankamagames.berilia.components
       }
       
       private function getCurrentColor() : uint {
-         var _loc1_:* = NaN;
-         var _loc2_:* = NaN;
-         var _loc3_:* = NaN;
-         var _loc4_:* = NaN;
-         var _loc5_:* = NaN;
-         var _loc6_:* = NaN;
-         var _loc7_:* = NaN;
+         var colorPoint:* = NaN;
+         var r1:* = NaN;
+         var g1:* = NaN;
+         var b1:* = NaN;
+         var r2:* = NaN;
+         var g2:* = NaN;
+         var b2:* = NaN;
          if(!this._bFixedColor)
          {
             this.getGradientColor();
-            _loc1_ = 255 - this._nSliderY / this._nHeight * 510;
-            _loc2_ = (this._nGradientColor & 16711680) >> 16;
-            _loc3_ = (this._nGradientColor & 65280) >> 8;
-            _loc4_ = this._nGradientColor & 255;
-            if(_loc1_ >= 0)
+            colorPoint = 255 - this._nSliderY / this._nHeight * 510;
+            r1 = (this._nGradientColor & 16711680) >> 16;
+            g1 = (this._nGradientColor & 65280) >> 8;
+            b1 = this._nGradientColor & 255;
+            if(colorPoint >= 0)
             {
-               _loc5_ = _loc1_ * (255 - _loc2_) / 255 + _loc2_;
-               _loc6_ = _loc1_ * (255 - _loc3_) / 255 + _loc3_;
-               _loc7_ = _loc1_ * (255 - _loc4_) / 255 + _loc4_;
+               r2 = colorPoint * (255 - r1) / 255 + r1;
+               g2 = colorPoint * (255 - g1) / 255 + g1;
+               b2 = colorPoint * (255 - b1) / 255 + b1;
             }
             else
             {
-               _loc1_ = _loc1_ * -1;
-               _loc5_ = Math.round(_loc2_ - _loc2_ * _loc1_ / 255);
-               _loc6_ = Math.round(_loc3_ - _loc3_ * _loc1_ / 255);
-               _loc7_ = Math.round(_loc4_ - _loc4_ * _loc1_ / 255);
+               colorPoint = colorPoint * -1;
+               r2 = Math.round(r1 - r1 * colorPoint / 255);
+               g2 = Math.round(g1 - g1 * colorPoint / 255);
+               b2 = Math.round(b1 - b1 * colorPoint / 255);
             }
-            this._nColor = Math.round((_loc5_ << 16) + (_loc6_ << 8) + _loc7_);
+            this._nColor = Math.round((r2 << 16) + (g2 << 8) + b2);
          }
          Berilia.getInstance().handler.process(new ColorChangeMessage(InteractiveObject(this)));
          return this._nColor;
       }
       
-      override public function process(param1:Message) : Boolean {
+      override public function process(msg:Message) : Boolean {
          switch(true)
          {
-            case param1 is MouseDownMessage:
+            case msg is MouseDownMessage:
                this._bFixedColor = false;
-               switch(MouseDownMessage(param1).target)
+               switch(MouseDownMessage(msg).target)
                {
                   case this._sprGradient:
                   case this._texCursorGradient:
@@ -365,8 +365,8 @@ package com.ankamagames.berilia.components
                      break;
                }
                return true;
-            case param1 is MouseUpMessage:
-               switch(MouseUpMessage(param1).target)
+            case msg is MouseUpMessage:
+               switch(MouseUpMessage(msg).target)
                {
                   case this._sprGradient:
                   case this._texCursorGradient:
@@ -385,8 +385,8 @@ package com.ankamagames.berilia.components
                      break;
                }
                return true;
-            case param1 is MouseReleaseOutsideMessage:
-               switch(MouseReleaseOutsideMessage(param1).target)
+            case msg is MouseReleaseOutsideMessage:
+               switch(MouseReleaseOutsideMessage(msg).target)
                {
                   case this._sprGradient:
                   case this._texCursorGradient:
@@ -405,13 +405,11 @@ package com.ankamagames.berilia.components
                      break;
                }
                return true;
-            default:
-               return false;
          }
       }
       
-      private function onMoveGradientCursor(param1:Event) : void {
-         if(!(this._nGradientX == mouseX) || !(this._nGradientY == mouseY))
+      private function onMoveGradientCursor(e:Event) : void {
+         if((!(this._nGradientX == mouseX)) || (!(this._nGradientY == mouseY)))
          {
             this._nGradientX = mouseX;
             if(this._nGradientX < 0)
@@ -436,7 +434,7 @@ package com.ankamagames.berilia.components
          }
       }
       
-      private function onMoveSliderCursor(param1:Event) : void {
+      private function onMoveSliderCursor(e:Event) : void {
          if(this._nSliderY != mouseY)
          {
             this._nSliderY = mouseY;
@@ -452,7 +450,7 @@ package com.ankamagames.berilia.components
          }
       }
       
-      private function onTextureSliderLoaded(param1:Event) : void {
+      private function onTextureSliderLoaded(e:Event) : void {
          this._nLoadedSum++;
          this._texCursorSlider.removeEventListener(Event.COMPLETE,this.onTextureSliderLoaded);
          if(this._nLoadedSum >= 2)
@@ -461,7 +459,7 @@ package com.ankamagames.berilia.components
          }
       }
       
-      private function onTextureGradientLoaded(param1:Event) : void {
+      private function onTextureGradientLoaded(e:Event) : void {
          this._nLoadedSum++;
          this._texCursorGradient.removeEventListener(Event.COMPLETE,this.onTextureGradientLoaded);
          if(this._nLoadedSum >= 2)

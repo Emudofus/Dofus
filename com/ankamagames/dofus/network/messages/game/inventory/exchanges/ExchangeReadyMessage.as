@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5511;
       }
       
-      public function initExchangeReadyMessage(param1:Boolean=false, param2:uint=0) : ExchangeReadyMessage {
-         this.ready = param1;
-         this.step = param2;
+      public function initExchangeReadyMessage(ready:Boolean=false, step:uint=0) : ExchangeReadyMessage {
+         this.ready = ready;
+         this.step = step;
          this._isInitialized = true;
          return this;
       }
@@ -42,40 +42,40 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeReadyMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeReadyMessage(output);
       }
       
-      public function serializeAs_ExchangeReadyMessage(param1:IDataOutput) : void {
-         param1.writeBoolean(this.ready);
+      public function serializeAs_ExchangeReadyMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.ready);
          if(this.step < 0)
          {
             throw new Error("Forbidden value (" + this.step + ") on element step.");
          }
          else
          {
-            param1.writeShort(this.step);
+            output.writeShort(this.step);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeReadyMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeReadyMessage(input);
       }
       
-      public function deserializeAs_ExchangeReadyMessage(param1:IDataInput) : void {
-         this.ready = param1.readBoolean();
-         this.step = param1.readShort();
+      public function deserializeAs_ExchangeReadyMessage(input:IDataInput) : void {
+         this.ready = input.readBoolean();
+         this.step = input.readShort();
          if(this.step < 0)
          {
             throw new Error("Forbidden value (" + this.step + ") on element of ExchangeReadyMessage.step.");

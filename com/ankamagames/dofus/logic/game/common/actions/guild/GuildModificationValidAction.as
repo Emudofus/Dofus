@@ -9,14 +9,14 @@ package com.ankamagames.dofus.logic.game.common.actions.guild
          super();
       }
       
-      public static function create(param1:String, param2:uint, param3:uint, param4:uint, param5:uint) : GuildModificationValidAction {
-         var _loc6_:GuildModificationValidAction = new GuildModificationValidAction();
-         _loc6_.guildName = param1;
-         _loc6_.upEmblemId = param2;
-         _loc6_.upColorEmblem = param3;
-         _loc6_.backEmblemId = param4;
-         _loc6_.backColorEmblem = param5;
-         return _loc6_;
+      public static function create(pGuildName:String, pUpEmblemId:uint, pUpColorEmblem:uint, pBackEmblemId:uint, pBackColorEmblem:uint) : GuildModificationValidAction {
+         var action:GuildModificationValidAction = new GuildModificationValidAction();
+         action.guildName = pGuildName;
+         action.upEmblemId = pUpEmblemId;
+         action.upColorEmblem = pUpColorEmblem;
+         action.backEmblemId = pBackEmblemId;
+         action.backColorEmblem = pBackColorEmblem;
+         return action;
       }
       
       public var guildName:String;

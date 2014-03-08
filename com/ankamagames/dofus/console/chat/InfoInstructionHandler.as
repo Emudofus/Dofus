@@ -21,55 +21,55 @@ package com.ankamagames.dofus.console.chat
          super();
       }
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         var _loc4_:String = null;
-         var _loc5_:BasicWhoAmIRequestMessage = null;
-         var _loc6_:String = null;
-         var _loc7_:String = null;
-         var _loc8_:String = null;
-         var _loc9_:Date = null;
-         var _loc10_:BasicWhoIsRequestMessage = null;
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var search:String = null;
+         var bwai:BasicWhoAmIRequestMessage = null;
+         var currentMap:String = null;
+         var mapId:String = null;
+         var currentCell:String = null;
+         var date:Date = null;
+         var bwrm:BasicWhoIsRequestMessage = null;
+         switch(cmd)
          {
             case "whois":
-               if(param3.length == 0)
+               if(args.length == 0)
                {
                   return;
                }
-               _loc4_ = param3.shift();
-               if(_loc4_.length >= 1 && _loc4_.length <= ProtocolConstantsEnum.MAX_PLAYER_OR_ACCOUNT_NAME_LEN)
+               search = args.shift();
+               if((search.length >= 1) && (search.length <= ProtocolConstantsEnum.MAX_PLAYER_OR_ACCOUNT_NAME_LEN))
                {
-                  _loc10_ = new BasicWhoIsRequestMessage();
-                  _loc10_.initBasicWhoIsRequestMessage(true,_loc4_);
-                  ConnectionsHandler.getConnection().send(_loc10_);
+                  bwrm = new BasicWhoIsRequestMessage();
+                  bwrm.initBasicWhoIsRequestMessage(true,search);
+                  ConnectionsHandler.getConnection().send(bwrm);
                }
                break;
             case "version":
-               param1.output(this.getVersion());
+               console.output(this.getVersion());
                break;
             case "ver":
-               param1.output(this.getVersion());
+               console.output(this.getVersion());
                break;
             case "about":
-               param1.output(this.getVersion());
+               console.output(this.getVersion());
                break;
             case "whoami":
-               _loc5_ = new BasicWhoAmIRequestMessage();
-               _loc5_.initBasicWhoAmIRequestMessage(true);
-               ConnectionsHandler.getConnection().send(_loc5_);
+               bwai = new BasicWhoAmIRequestMessage();
+               bwai.initBasicWhoAmIRequestMessage(true);
+               ConnectionsHandler.getConnection().send(bwai);
                break;
             case "mapid":
-               _loc6_ = MapDisplayManager.getInstance().currentMapPoint.x + "/" + MapDisplayManager.getInstance().currentMapPoint.y;
-               _loc7_ = MapDisplayManager.getInstance().currentMapPoint.mapId.toString();
-               param1.output(I18n.getUiText("ui.chat.console.currentMap",[PlayedCharacterManager.getInstance().currentMap.outdoorX + "/" + PlayedCharacterManager.getInstance().currentMap.outdoorY + ", " + _loc6_,_loc7_]));
+               currentMap = MapDisplayManager.getInstance().currentMapPoint.x + "/" + MapDisplayManager.getInstance().currentMapPoint.y;
+               mapId = MapDisplayManager.getInstance().currentMapPoint.mapId.toString();
+               console.output(I18n.getUiText("ui.chat.console.currentMap",[PlayedCharacterManager.getInstance().currentMap.outdoorX + "/" + PlayedCharacterManager.getInstance().currentMap.outdoorY + ", " + currentMap,mapId]));
                break;
             case "cellid":
-               _loc8_ = EntitiesManager.getInstance().getEntity(PlayedCharacterManager.getInstance().id).position.cellId.toString();
-               param1.output(I18n.getUiText("ui.console.chat.currentCell",[_loc8_]));
+               currentCell = EntitiesManager.getInstance().getEntity(PlayedCharacterManager.getInstance().id).position.cellId.toString();
+               console.output(I18n.getUiText("ui.console.chat.currentCell",[currentCell]));
                break;
             case "time":
-               _loc9_ = new Date();
-               param1.output(TimeManager.getInstance().formatDateIG(0) + " - " + TimeManager.getInstance().formatClock(0,false));
+               date = new Date();
+               console.output(TimeManager.getInstance().formatDateIG(0) + " - " + TimeManager.getInstance().formatClock(0,false));
                break;
          }
       }
@@ -78,8 +78,8 @@ package com.ankamagames.dofus.console.chat
          return "----------------------------------------------\n" + "DOFUS CLIENT v " + BuildInfos.BUILD_VERSION + "\n" + "(c) ANKAMA GAMES (" + BuildInfos.BUILD_DATE + ") \n" + "Flash player " + Capabilities.version + "\n----------------------------------------------";
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "version":
                return I18n.getUiText("ui.chat.console.help.version");
@@ -97,12 +97,10 @@ package com.ankamagames.dofus.console.chat
                return I18n.getUiText("ui.chat.console.help.mapid");
             case "time":
                return I18n.getUiText("ui.chat.console.help.time");
-            default:
-               return I18n.getUiText("ui.chat.console.noHelp",[param1]);
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return [];
       }
    }

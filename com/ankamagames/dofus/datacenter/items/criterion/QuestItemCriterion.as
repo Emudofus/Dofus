@@ -11,49 +11,68 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class QuestItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function QuestItemCriterion(param1:String) {
-         super(param1);
+      public function QuestItemCriterion(pCriterion:String) {
+         super(pCriterion);
          this._questId = _criterionValue;
       }
       
       private var _questId:uint;
       
       override public function get text() : String {
-         var _loc1_:* = "";
-         var _loc2_:Quest = Quest.getQuestById(this._questId);
-         if(!_loc2_)
+         var readableCriterion:String = "";
+         var quest:Quest = Quest.getQuestById(this._questId);
+         if(!quest)
          {
-            return _loc1_;
+            return readableCriterion;
          }
-         var _loc3_:String = _loc2_.name;
-         var _loc4_:String = _serverCriterionForm.slice(0,2);
-         switch(_loc4_)
+         var readableCriterionValue:String = quest.name;
+         var s:String = _serverCriterionForm.slice(0,2);
+         switch(s)
          {
             case "Qa":
-               _loc1_ = I18n.getUiText("ui.grimoire.quest.active",[_loc3_]);
+               readableCriterion = I18n.getUiText("ui.grimoire.quest.active",[readableCriterionValue]);
                break;
             case "Qc":
-               _loc1_ = I18n.getUiText("ui.grimoire.quest.startable",[_loc3_]);
+               readableCriterion = I18n.getUiText("ui.grimoire.quest.startable",[readableCriterionValue]);
                break;
             case "Qf":
-               _loc1_ = I18n.getUiText("ui.grimoire.quest.done",[_loc3_]);
-               break loop0;
+               readableCriterion = I18n.getUiText("ui.grimoire.quest.done",[readableCriterionValue]);
+               break;
          }
-         return _loc1_;
+         return readableCriterion;
       }
       
       override public function get isRespected() : Boolean {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var questA:QuestActiveInformations = null;
+         var quest:Quest = Quest.getQuestById(this._questId);
+         if(!quest)
+         {
+            return false;
+         }
+         var questFrame:QuestFrame = Kernel.getWorker().getFrame(QuestFrame) as QuestFrame;
+         var s:String = _serverCriterionForm.slice(0,2);
+         switch(s)
+         {
+            case "Qa":
+               for each (questA in questFrame.getActiveQuests())
+               {
+                  if(questA.questId == this._questId)
+                  {
+                     return true;
+                  }
+               }
+               break;
+            case "Qc":
+               return true;
+            case "Qf":
+               return !(questFrame.getCompletedQuests().indexOf(this._questId) == -1);
+         }
+         return false;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:QuestItemCriterion = new QuestItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:QuestItemCriterion = new QuestItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {

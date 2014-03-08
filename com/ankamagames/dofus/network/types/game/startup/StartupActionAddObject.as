@@ -1,8 +1,8 @@
 package com.ankamagames.dofus.network.types.game.startup
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItemInformationWithQuantity;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -32,13 +32,13 @@ package com.ankamagames.dofus.network.types.game.startup
          return 52;
       }
       
-      public function initStartupActionAddObject(param1:uint=0, param2:String="", param3:String="", param4:String="", param5:String="", param6:Vector.<ObjectItemInformationWithQuantity>=null) : StartupActionAddObject {
-         this.uid = param1;
-         this.title = param2;
-         this.text = param3;
-         this.descUrl = param4;
-         this.pictureUrl = param5;
-         this.items = param6;
+      public function initStartupActionAddObject(uid:uint=0, title:String="", text:String="", descUrl:String="", pictureUrl:String="", items:Vector.<ObjectItemInformationWithQuantity>=null) : StartupActionAddObject {
+         this.uid = uid;
+         this.title = title;
+         this.text = text;
+         this.descUrl = descUrl;
+         this.pictureUrl = pictureUrl;
+         this.items = items;
          return this;
       }
       
@@ -51,58 +51,58 @@ package com.ankamagames.dofus.network.types.game.startup
          this.items = new Vector.<ObjectItemInformationWithQuantity>();
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_StartupActionAddObject(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_StartupActionAddObject(output);
       }
       
-      public function serializeAs_StartupActionAddObject(param1:IDataOutput) : void {
+      public function serializeAs_StartupActionAddObject(output:IDataOutput) : void {
          if(this.uid < 0)
          {
             throw new Error("Forbidden value (" + this.uid + ") on element uid.");
          }
          else
          {
-            param1.writeInt(this.uid);
-            param1.writeUTF(this.title);
-            param1.writeUTF(this.text);
-            param1.writeUTF(this.descUrl);
-            param1.writeUTF(this.pictureUrl);
-            param1.writeShort(this.items.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.items.length)
+            output.writeInt(this.uid);
+            output.writeUTF(this.title);
+            output.writeUTF(this.text);
+            output.writeUTF(this.descUrl);
+            output.writeUTF(this.pictureUrl);
+            output.writeShort(this.items.length);
+            _i6 = 0;
+            while(_i6 < this.items.length)
             {
-               (this.items[_loc2_] as ObjectItemInformationWithQuantity).serializeAs_ObjectItemInformationWithQuantity(param1);
-               _loc2_++;
+               (this.items[_i6] as ObjectItemInformationWithQuantity).serializeAs_ObjectItemInformationWithQuantity(output);
+               _i6++;
             }
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_StartupActionAddObject(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_StartupActionAddObject(input);
       }
       
-      public function deserializeAs_StartupActionAddObject(param1:IDataInput) : void {
-         var _loc4_:ObjectItemInformationWithQuantity = null;
-         this.uid = param1.readInt();
+      public function deserializeAs_StartupActionAddObject(input:IDataInput) : void {
+         var _item6:ObjectItemInformationWithQuantity = null;
+         this.uid = input.readInt();
          if(this.uid < 0)
          {
             throw new Error("Forbidden value (" + this.uid + ") on element of StartupActionAddObject.uid.");
          }
          else
          {
-            this.title = param1.readUTF();
-            this.text = param1.readUTF();
-            this.descUrl = param1.readUTF();
-            this.pictureUrl = param1.readUTF();
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            this.title = input.readUTF();
+            this.text = input.readUTF();
+            this.descUrl = input.readUTF();
+            this.pictureUrl = input.readUTF();
+            _itemsLen = input.readUnsignedShort();
+            _i6 = 0;
+            while(_i6 < _itemsLen)
             {
-               _loc4_ = new ObjectItemInformationWithQuantity();
-               _loc4_.deserialize(param1);
-               this.items.push(_loc4_);
-               _loc3_++;
+               _item6 = new ObjectItemInformationWithQuantity();
+               _item6.deserialize(input);
+               this.items.push(_item6);
+               _i6++;
             }
             return;
          }

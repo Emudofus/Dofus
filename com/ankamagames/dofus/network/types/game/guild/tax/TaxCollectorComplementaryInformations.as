@@ -24,16 +24,16 @@ package com.ankamagames.dofus.network.types.game.guild.tax
       public function reset() : void {
       }
       
-      public function serialize(param1:IDataOutput) : void {
+      public function serialize(output:IDataOutput) : void {
       }
       
-      public function serializeAs_TaxCollectorComplementaryInformations(param1:IDataOutput) : void {
+      public function serializeAs_TaxCollectorComplementaryInformations(output:IDataOutput) : void {
       }
       
-      public function deserialize(param1:IDataInput) : void {
+      public function deserialize(input:IDataInput) : void {
       }
       
-      public function deserializeAs_TaxCollectorComplementaryInformations(param1:IDataInput) : void {
+      public function deserializeAs_TaxCollectorComplementaryInformations(input:IDataInput) : void {
       }
    }
 }

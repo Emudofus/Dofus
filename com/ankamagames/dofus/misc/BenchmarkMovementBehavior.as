@@ -50,40 +50,40 @@ package com.ankamagames.dofus.misc
       }
       
       public static function getRandomCell() : MapPoint {
-         var _loc1_:uint = 40;
-         var _loc2_:MapPoint = MapPoint.fromCellId(Math.floor(Math.random() * AtouinConstants.MAP_CELLS_COUNT));
-         while(!MapPoint.isInMap(_loc2_.x,_loc2_.y) && (--_loc1_))
+         var count:uint = 40;
+         var mapPoint:MapPoint = MapPoint.fromCellId(Math.floor(Math.random() * AtouinConstants.MAP_CELLS_COUNT));
+         while((!MapPoint.isInMap(mapPoint.x,mapPoint.y)) && (--count))
          {
-            _loc2_ = MapPoint.fromCellId(Math.floor(Math.random() * AtouinConstants.MAP_CELLS_COUNT));
+            mapPoint = MapPoint.fromCellId(Math.floor(Math.random() * AtouinConstants.MAP_CELLS_COUNT));
          }
-         return _loc2_;
+         return mapPoint;
       }
       
-      public static function getRandomPath(param1:IMovable) : MovementPath {
-         var _loc6_:* = 0;
-         var _loc2_:MovementPath = new MovementPath();
-         _loc2_.start = param1.position;
-         var _loc3_:Array = new Array();
-         var _loc4_:* = -1;
-         while(_loc4_ < 2)
+      public static function getRandomPath(entity:IMovable) : MovementPath {
+         var j:* = 0;
+         var movementPath:MovementPath = new MovementPath();
+         movementPath.start = entity.position;
+         var freeCells:Array = new Array();
+         var i:int = -1;
+         while(i < 2)
          {
-            _loc6_ = -1;
-            while(_loc6_ < 2)
+            j = -1;
+            while(j < 2)
             {
-               if((MapPoint.isInMap(_loc2_.start.x + _loc4_,_loc2_.start.y + _loc6_)) && (!(_loc4_ == 0) || !(_loc6_ == 0)) && (DataMapProvider.getInstance().pointMov(_loc2_.start.x + _loc4_,_loc2_.start.y + _loc6_)))
+               if((MapPoint.isInMap(movementPath.start.x + i,movementPath.start.y + j)) && ((!(i == 0)) || (!(j == 0))) && (DataMapProvider.getInstance().pointMov(movementPath.start.x + i,movementPath.start.y + j)))
                {
-                  _loc3_.push(MapPoint.fromCoords(_loc2_.start.x + _loc4_,_loc2_.start.y + _loc6_));
+                  freeCells.push(MapPoint.fromCoords(movementPath.start.x + i,movementPath.start.y + j));
                }
-               _loc6_++;
+               j++;
             }
-            _loc4_++;
+            i++;
          }
-         _loc2_.end = _loc3_[Math.floor(Math.random() * _loc3_.length)];
-         var _loc5_:PathElement = new PathElement();
-         _loc5_.step = _loc2_.start;
-         _loc5_.orientation = _loc2_.start.orientationTo(_loc2_.end);
-         _loc2_.addPoint(_loc5_);
-         return _loc2_;
+         movementPath.end = freeCells[Math.floor(Math.random() * freeCells.length)];
+         var pathElement:PathElement = new PathElement();
+         pathElement.step = movementPath.start;
+         pathElement.orientation = movementPath.start.orientationTo(movementPath.end);
+         movementPath.addPoint(pathElement);
+         return movementPath;
       }
       
       override protected function getLinearVelocity() : Number {
@@ -102,17 +102,17 @@ package com.ankamagames.dofus.misc
          return RUN_ANIMATION;
       }
       
-      override protected function stopMovement(param1:IMovable) : void {
-         super.stopMovement(param1);
-         var _loc2_:MovementPath = getRandomPath(param1);
-         if(_loc2_.path.length > 0)
+      override protected function stopMovement(entity:IMovable) : void {
+         super.stopMovement(entity);
+         var path:MovementPath = getRandomPath(entity);
+         if(path.path.length > 0)
          {
-            param1.move(_loc2_);
+            entity.move(path);
          }
          else
          {
-            stop(param1,true);
-            AnimatedCharacter(param1).remove();
+            stop(entity,true);
+            AnimatedCharacter(entity).remove();
          }
       }
    }

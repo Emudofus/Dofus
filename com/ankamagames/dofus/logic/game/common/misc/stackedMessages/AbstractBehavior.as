@@ -25,16 +25,16 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
       
       public static const ALWAYS:String = "always";
       
-      public static function createFake(param1:String, param2:Array=null) : AbstractBehavior {
-         var _loc3_:AbstractBehavior = null;
-         switch(param1)
+      public static function createFake(type:String, params:Array=null) : AbstractBehavior {
+         var behavior:AbstractBehavior = null;
+         switch(type)
          {
             case StackActionEnum.MOVE:
-               _loc3_ = new MoveBehavior();
-               _loc3_.position = param2[0];
+               behavior = new MoveBehavior();
+               behavior.position = params[0];
                break;
          }
-         return _loc3_;
+         return behavior;
       }
       
       public var type:String;
@@ -55,11 +55,11 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
       
       public var pendingMessage:Message;
       
-      public function processInputMessage(param1:Message, param2:String) : Boolean {
+      public function processInputMessage(pMsgToProcess:Message, pMode:String) : Boolean {
          throw new AbstractMethodCallError();
       }
       
-      public function processOutputMessage(param1:Message, param2:String) : Boolean {
+      public function processOutputMessage(pMsgToProcess:Message, pMode:String) : Boolean {
          throw new AbstractMethodCallError();
       }
       
@@ -68,7 +68,7 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          this.pendingMessage = null;
       }
       
-      public function isAvailableToProcess(param1:Message) : Boolean {
+      public function isAvailableToProcess(pMsg:Message) : Boolean {
          return true;
       }
       
@@ -76,7 +76,7 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          throw new AbstractMethodCallError();
       }
       
-      public function checkAvailability(param1:Message) : void {
+      public function checkAvailability(pMsgToProcess:Message) : void {
       }
       
       public function reset() : void {
@@ -92,7 +92,7 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          this.sprite = null;
       }
       
-      public function isMessageCatchable(param1:Message) : Boolean {
+      public function isMessageCatchable(pMsg:Message) : Boolean {
          return false;
       }
       

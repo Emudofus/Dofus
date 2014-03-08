@@ -5,10 +5,10 @@ package com.ankamagames.berilia.components.messages
    public class MapRollOverMessage extends ComponentMessage
    {
       
-      public function MapRollOverMessage(param1:InteractiveObject, param2:int, param3:int) {
-         super(param1);
-         this._x = param2;
-         this._y = param3;
+      public function MapRollOverMessage(target:InteractiveObject, x:int, y:int) {
+         super(target);
+         this._x = x;
+         this._y = y;
       }
       
       private var _x:int;

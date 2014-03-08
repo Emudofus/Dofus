@@ -1,7 +1,7 @@
 package com.ankamagames.dofus.network.messages.game.character.choice
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -28,9 +28,9 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 6075;
       }
       
-      public function initCharacterSelectionWithRecolorMessage(param1:int=0, param2:Vector.<int>=null) : CharacterSelectionWithRecolorMessage {
-         super.initCharacterSelectionMessage(param1);
-         this.indexedColor = param2;
+      public function initCharacterSelectionWithRecolorMessage(id:int=0, indexedColor:Vector.<int>=null) : CharacterSelectionWithRecolorMessage {
+         super.initCharacterSelectionMessage(id);
+         this.indexedColor = indexedColor;
          this._isInitialized = true;
          return this;
       }
@@ -41,45 +41,45 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CharacterSelectionWithRecolorMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterSelectionWithRecolorMessage(output);
       }
       
-      public function serializeAs_CharacterSelectionWithRecolorMessage(param1:IDataOutput) : void {
-         super.serializeAs_CharacterSelectionMessage(param1);
-         param1.writeShort(this.indexedColor.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.indexedColor.length)
+      public function serializeAs_CharacterSelectionWithRecolorMessage(output:IDataOutput) : void {
+         super.serializeAs_CharacterSelectionMessage(output);
+         output.writeShort(this.indexedColor.length);
+         var _i1:uint = 0;
+         while(_i1 < this.indexedColor.length)
          {
-            param1.writeInt(this.indexedColor[_loc2_]);
-            _loc2_++;
+            output.writeInt(this.indexedColor[_i1]);
+            _i1++;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CharacterSelectionWithRecolorMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterSelectionWithRecolorMessage(input);
       }
       
-      public function deserializeAs_CharacterSelectionWithRecolorMessage(param1:IDataInput) : void {
-         var _loc4_:* = 0;
-         super.deserialize(param1);
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_CharacterSelectionWithRecolorMessage(input:IDataInput) : void {
+         var _val1:* = 0;
+         super.deserialize(input);
+         var _indexedColorLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _indexedColorLen)
          {
-            _loc4_ = param1.readInt();
-            this.indexedColor.push(_loc4_);
-            _loc3_++;
+            _val1 = input.readInt();
+            this.indexedColor.push(_val1);
+            _i1++;
          }
       }
    }

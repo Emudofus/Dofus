@@ -25,69 +25,67 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          return AnimationModifierPriority.NORMAL;
       }
       
-      public function getModifiedAnimation(param1:String, param2:TiphonEntityLook) : String {
-         var _loc3_:Swl = null;
-         var _loc4_:Array = null;
-         var _loc5_:String = null;
-         var _loc6_:String = null;
-         var _loc7_:* = 0;
-         var _loc8_:* = 0;
-         var _loc9_:String = null;
-         switch(param1)
+      public function getModifiedAnimation(pAnimation:String, pLook:TiphonEntityLook) : String {
+         var lib:Swl = null;
+         var statics:Array = null;
+         var anim:String = null;
+         var animName:String = null;
+         var random:* = 0;
+         var skinId:* = 0;
+         var animDeathName:String = null;
+         switch(pAnimation)
          {
             case AnimationEnum.ANIM_STATIQUE:
-               if(param2.getBone() == 1)
+               if(pLook.getBone() == 1)
                {
                   if(this.randomStatique)
                   {
-                     _loc3_ = Tiphon.skullLibrary.getResourceById(param2.getBone(),AnimationEnum.ANIM_STATIQUE);
-                     _loc4_ = new Array();
-                     if(_loc3_)
+                     lib = Tiphon.skullLibrary.getResourceById(pLook.getBone(),AnimationEnum.ANIM_STATIQUE);
+                     statics = new Array();
+                     if(lib)
                      {
-                        for each (_loc5_ in _loc3_.getDefinitions())
+                        for each (anim in lib.getDefinitions())
                         {
-                           if(_loc5_.indexOf(AnimationEnum.ANIM_STATIQUE + param2.firstSkin.toString()) == 0)
+                           if(anim.indexOf(AnimationEnum.ANIM_STATIQUE + pLook.firstSkin.toString()) == 0)
                            {
-                              _loc6_ = _loc5_.split("_")[0];
-                              if(_loc4_.indexOf(_loc6_) == -1)
+                              animName = anim.split("_")[0];
+                              if(statics.indexOf(animName) == -1)
                               {
-                                 _loc4_.push(_loc6_);
+                                 statics.push(animName);
                               }
                            }
                         }
                      }
                      else
                      {
-                        _loc4_.push(AnimationEnum.ANIM_STATIQUE + param2.firstSkin.toString());
+                        statics.push(AnimationEnum.ANIM_STATIQUE + pLook.firstSkin.toString());
                      }
-                     if(_loc4_.length > 1)
+                     if(statics.length > 1)
                      {
-                        _loc7_ = Math.floor(Math.random() * _loc4_.length);
-                        return _loc4_[_loc7_];
+                        random = Math.floor(Math.random() * statics.length);
+                        return statics[random];
                      }
-                     return _loc4_[0];
+                     return statics[0];
                   }
-                  _loc8_ = param2.firstSkin;
-                  if(_loc8_ == 1114 || _loc8_ == 1115 || _loc8_ == 1402 || _loc8_ == 1463 || _loc8_ == param2.defaultSkin)
+                  skinId = pLook.firstSkin;
+                  if((skinId == 1114) || (skinId == 1115) || (skinId == 1402) || (skinId == 1463) || (skinId == pLook.defaultSkin))
                   {
                      return AnimationEnum.ANIM_STATIQUE;
                   }
-                  return AnimationEnum.ANIM_STATIQUE + param2.firstSkin.toString();
+                  return AnimationEnum.ANIM_STATIQUE + pLook.firstSkin.toString();
                }
-               return param1;
+               return pAnimation;
             case AnimationEnum.ANIM_MORT:
-               if(param2.getBone() == 1)
+               if(pLook.getBone() == 1)
                {
-                  _loc9_ = AnimationEnum.ANIM_MORT + param2.firstSkin.toString();
-                  _loc3_ = Tiphon.skullLibrary.getResourceById(param2.getBone(),_loc9_);
-                  if(_loc3_)
+                  animDeathName = AnimationEnum.ANIM_MORT + pLook.firstSkin.toString();
+                  lib = Tiphon.skullLibrary.getResourceById(pLook.getBone(),animDeathName);
+                  if(lib)
                   {
-                     return _loc9_;
+                     return animDeathName;
                   }
                }
-               return param1;
-            default:
-               return param1;
+               return pAnimation;
          }
       }
    }

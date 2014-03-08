@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.fight.actions
       }
       
       public static function create() : ToggleWitnessForbiddenAction {
-         var _loc1_:ToggleWitnessForbiddenAction = new ToggleWitnessForbiddenAction();
-         return _loc1_;
+         var a:ToggleWitnessForbiddenAction = new ToggleWitnessForbiddenAction();
+         return a;
       }
    }
 }

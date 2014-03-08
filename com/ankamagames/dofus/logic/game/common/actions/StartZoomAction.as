@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:uint, param2:Number) : StartZoomAction {
-         var _loc3_:StartZoomAction = new StartZoomAction();
-         _loc3_.playerId = param1;
-         _loc3_.value = param2;
-         return _loc3_;
+      public static function create(playerId:uint, value:Number) : StartZoomAction {
+         var action:StartZoomAction = new StartZoomAction();
+         action.playerId = playerId;
+         action.value = value;
+         return action;
       }
       
       public var playerId:uint;

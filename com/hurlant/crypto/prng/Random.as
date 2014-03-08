@@ -10,22 +10,22 @@ package com.hurlant.crypto.prng
    public class Random extends Object
    {
       
-      public function Random(param1:Class=null) {
-         var _loc2_:uint = 0;
+      public function Random(prng:Class=null) {
+         var t:uint = 0;
          super();
-         if(param1 == null)
+         if(prng == null)
          {
-            param1 = ARC4;
+            prng = ARC4;
          }
-         this.state = new param1() as IPRNG;
+         this.state = new prng() as IPRNG;
          this.psize = this.state.getPoolSize();
          this.pool = new ByteArray();
          this.pptr = 0;
          while(this.pptr < this.psize)
          {
-            _loc2_ = 65536 * Math.random();
-            this.pool[this.pptr++] = _loc2_ >>> 8;
-            this.pool[this.pptr++] = _loc2_ & 255;
+            t = 65536 * Math.random();
+            this.pool[this.pptr++] = t >>> 8;
+            this.pool[this.pptr++] = t & 255;
          }
          this.pptr = 0;
          this.seed();
@@ -43,45 +43,44 @@ package com.hurlant.crypto.prng
       
       private var seeded:Boolean = false;
       
-      public function seed(param1:int=0) : void {
-         if(param1 == 0)
+      public function seed(x:int=0) : void {
+         if(x == 0)
          {
-            param1 = new Date().getTime();
+            x = new Date().getTime();
          }
-         var _loc2_:* = this.pptr++;
-         this.pool[_loc2_] = this.pool[_loc2_] ^ param1 & 255;
-         this.pool[this.pptr++] = this.pool[_loc3_] ^ param1 >> 8 & 255;
-         this.pool[this.pptr++] = this.pool[this.pptr++] ^ param1 >> 16 & 255;
-         this.pool[this.pptr++] = this.pool[this.pptr++] ^ param1 >> 24 & 255;
+         this.pool[_loc2_] = this.pool[_loc2_] ^ x & 255;
+         this.pool[this.pptr++] = this.pool[_loc3_] ^ x >> 8 & 255;
+         this.pool[this.pptr++] = this.pool[_loc4_] ^ x >> 16 & 255;
+         this.pool[this.pptr++] = this.pool[_loc5_] ^ x >> 24 & 255;
          this.pptr = this.pptr % this.psize;
          this.seeded = true;
       }
       
       public function autoSeed() : void {
-         var _loc3_:Font = null;
-         var _loc1_:ByteArray = new ByteArray();
-         _loc1_.writeUnsignedInt(System.totalMemory);
-         _loc1_.writeUTF(Capabilities.serverString);
-         _loc1_.writeUnsignedInt(getTimer());
-         _loc1_.writeUnsignedInt(new Date().getTime());
-         var _loc2_:Array = Font.enumerateFonts(true);
-         for each (_loc3_ in _loc2_)
+         var f:Font = null;
+         var b:ByteArray = new ByteArray();
+         b.writeUnsignedInt(System.totalMemory);
+         b.writeUTF(Capabilities.serverString);
+         b.writeUnsignedInt(getTimer());
+         b.writeUnsignedInt(new Date().getTime());
+         var a:Array = Font.enumerateFonts(true);
+         for each (f in a)
          {
-            _loc1_.writeUTF(_loc3_.fontName);
-            _loc1_.writeUTF(_loc3_.fontStyle);
-            _loc1_.writeUTF(_loc3_.fontType);
+            b.writeUTF(f.fontName);
+            b.writeUTF(f.fontStyle);
+            b.writeUTF(f.fontType);
          }
-         _loc1_.position = 0;
-         while(_loc1_.bytesAvailable >= 4)
+         b.position = 0;
+         while(b.bytesAvailable >= 4)
          {
-            this.seed(_loc1_.readUnsignedInt());
+            this.seed(b.readUnsignedInt());
          }
       }
       
-      public function nextBytes(param1:ByteArray, param2:int) : void {
-         while(param2--)
+      public function nextBytes(buffer:ByteArray, length:int) : void {
+         while(length--)
          {
-            param1.writeByte(this.nextByte());
+            buffer.writeByte(this.nextByte());
          }
       }
       
@@ -101,11 +100,11 @@ package com.hurlant.crypto.prng
       }
       
       public function dispose() : void {
-         var _loc1_:uint = 0;
-         while(_loc1_ < this.pool.length)
+         var i:uint = 0;
+         while(i < this.pool.length)
          {
-            this.pool[_loc1_] = Math.random() * 256;
-            _loc1_++;
+            this.pool[i] = Math.random() * 256;
+            i++;
          }
          this.pool.length = 0;
          this.pool = null;

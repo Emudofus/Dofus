@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.types.game.prism
 {
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.fight.ProtectedEntityWaitingForHelpInfo;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
@@ -32,11 +32,11 @@ package com.ankamagames.dofus.network.types.game.prism
          return 443;
       }
       
-      public function initPrismFightersInformation(param1:uint=0, param2:ProtectedEntityWaitingForHelpInfo=null, param3:Vector.<CharacterMinimalPlusLookInformations>=null, param4:Vector.<CharacterMinimalPlusLookInformations>=null) : PrismFightersInformation {
-         this.subAreaId = param1;
-         this.waitingForHelpInfo = param2;
-         this.allyCharactersInformations = param3;
-         this.enemyCharactersInformations = param4;
+      public function initPrismFightersInformation(subAreaId:uint=0, waitingForHelpInfo:ProtectedEntityWaitingForHelpInfo=null, allyCharactersInformations:Vector.<CharacterMinimalPlusLookInformations>=null, enemyCharactersInformations:Vector.<CharacterMinimalPlusLookInformations>=null) : PrismFightersInformation {
+         this.subAreaId = subAreaId;
+         this.waitingForHelpInfo = waitingForHelpInfo;
+         this.allyCharactersInformations = allyCharactersInformations;
+         this.enemyCharactersInformations = enemyCharactersInformations;
          return this;
       }
       
@@ -46,49 +46,49 @@ package com.ankamagames.dofus.network.types.game.prism
          this.enemyCharactersInformations = new Vector.<CharacterMinimalPlusLookInformations>();
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PrismFightersInformation(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismFightersInformation(output);
       }
       
-      public function serializeAs_PrismFightersInformation(param1:IDataOutput) : void {
+      public function serializeAs_PrismFightersInformation(output:IDataOutput) : void {
          if(this.subAreaId < 0)
          {
             throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
          }
          else
          {
-            param1.writeShort(this.subAreaId);
-            this.waitingForHelpInfo.serializeAs_ProtectedEntityWaitingForHelpInfo(param1);
-            param1.writeShort(this.allyCharactersInformations.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.allyCharactersInformations.length)
+            output.writeShort(this.subAreaId);
+            this.waitingForHelpInfo.serializeAs_ProtectedEntityWaitingForHelpInfo(output);
+            output.writeShort(this.allyCharactersInformations.length);
+            _i3 = 0;
+            while(_i3 < this.allyCharactersInformations.length)
             {
-               param1.writeShort((this.allyCharactersInformations[_loc2_] as CharacterMinimalPlusLookInformations).getTypeId());
-               (this.allyCharactersInformations[_loc2_] as CharacterMinimalPlusLookInformations).serialize(param1);
-               _loc2_++;
+               output.writeShort((this.allyCharactersInformations[_i3] as CharacterMinimalPlusLookInformations).getTypeId());
+               (this.allyCharactersInformations[_i3] as CharacterMinimalPlusLookInformations).serialize(output);
+               _i3++;
             }
-            param1.writeShort(this.enemyCharactersInformations.length);
-            _loc3_ = 0;
-            while(_loc3_ < this.enemyCharactersInformations.length)
+            output.writeShort(this.enemyCharactersInformations.length);
+            _i4 = 0;
+            while(_i4 < this.enemyCharactersInformations.length)
             {
-               param1.writeShort((this.enemyCharactersInformations[_loc3_] as CharacterMinimalPlusLookInformations).getTypeId());
-               (this.enemyCharactersInformations[_loc3_] as CharacterMinimalPlusLookInformations).serialize(param1);
-               _loc3_++;
+               output.writeShort((this.enemyCharactersInformations[_i4] as CharacterMinimalPlusLookInformations).getTypeId());
+               (this.enemyCharactersInformations[_i4] as CharacterMinimalPlusLookInformations).serialize(output);
+               _i4++;
             }
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PrismFightersInformation(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismFightersInformation(input);
       }
       
-      public function deserializeAs_PrismFightersInformation(param1:IDataInput) : void {
-         var _loc6_:uint = 0;
-         var _loc7_:CharacterMinimalPlusLookInformations = null;
-         var _loc8_:uint = 0;
-         var _loc9_:CharacterMinimalPlusLookInformations = null;
-         this.subAreaId = param1.readShort();
+      public function deserializeAs_PrismFightersInformation(input:IDataInput) : void {
+         var _id3:uint = 0;
+         var _item3:CharacterMinimalPlusLookInformations = null;
+         var _id4:uint = 0;
+         var _item4:CharacterMinimalPlusLookInformations = null;
+         this.subAreaId = input.readShort();
          if(this.subAreaId < 0)
          {
             throw new Error("Forbidden value (" + this.subAreaId + ") on element of PrismFightersInformation.subAreaId.");
@@ -96,26 +96,26 @@ package com.ankamagames.dofus.network.types.game.prism
          else
          {
             this.waitingForHelpInfo = new ProtectedEntityWaitingForHelpInfo();
-            this.waitingForHelpInfo.deserialize(param1);
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            this.waitingForHelpInfo.deserialize(input);
+            _allyCharactersInformationsLen = input.readUnsignedShort();
+            _i3 = 0;
+            while(_i3 < _allyCharactersInformationsLen)
             {
-               _loc6_ = param1.readUnsignedShort();
-               _loc7_ = ProtocolTypeManager.getInstance(CharacterMinimalPlusLookInformations,_loc6_);
-               _loc7_.deserialize(param1);
-               this.allyCharactersInformations.push(_loc7_);
-               _loc3_++;
+               _id3 = input.readUnsignedShort();
+               _item3 = ProtocolTypeManager.getInstance(CharacterMinimalPlusLookInformations,_id3);
+               _item3.deserialize(input);
+               this.allyCharactersInformations.push(_item3);
+               _i3++;
             }
-            _loc4_ = param1.readUnsignedShort();
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            _enemyCharactersInformationsLen = input.readUnsignedShort();
+            _i4 = 0;
+            while(_i4 < _enemyCharactersInformationsLen)
             {
-               _loc8_ = param1.readUnsignedShort();
-               _loc9_ = ProtocolTypeManager.getInstance(CharacterMinimalPlusLookInformations,_loc8_);
-               _loc9_.deserialize(param1);
-               this.enemyCharactersInformations.push(_loc9_);
-               _loc5_++;
+               _id4 = input.readUnsignedShort();
+               _item4 = ProtocolTypeManager.getInstance(CharacterMinimalPlusLookInformations,_id4);
+               _item4.deserialize(input);
+               this.enemyCharactersInformations.push(_item4);
+               _i4++;
             }
             return;
          }

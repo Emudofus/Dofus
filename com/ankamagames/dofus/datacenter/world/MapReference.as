@@ -12,9 +12,9 @@ package com.ankamagames.dofus.datacenter.world
       
       public static const MODULE:String = "MapReferences";
       
-      public static function getMapReferenceById(param1:int) : MapReference {
-         var _loc2_:Object = GameData.getObject(MODULE,param1);
-         return GameData.getObject(MODULE,param1) as MapReference;
+      public static function getMapReferenceById(id:int) : MapReference {
+         var gd:Object = GameData.getObject(MODULE,id);
+         return GameData.getObject(MODULE,id) as MapReference;
       }
       
       public static function getAllMapReference() : Array {

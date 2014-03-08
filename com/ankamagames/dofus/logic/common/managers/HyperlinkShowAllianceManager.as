@@ -18,25 +18,25 @@ package com.ankamagames.dofus.logic.common.managers
          super();
       }
       
-      public static function showAlliance(param1:uint) : void {
-         var _loc2_:AllianceFactsRequestMessage = new AllianceFactsRequestMessage();
-         _loc2_.initAllianceFactsRequestMessage(param1);
-         ConnectionsHandler.getConnection().send(_loc2_);
+      public static function showAlliance(allianceId:uint) : void {
+         var afrmsg:AllianceFactsRequestMessage = new AllianceFactsRequestMessage();
+         afrmsg.initAllianceFactsRequestMessage(allianceId);
+         ConnectionsHandler.getConnection().send(afrmsg);
       }
       
-      public static function getAllianceName(param1:uint) : String {
-         var _loc2_:AllianceWrapper = AllianceFrame.getInstance().getAllianceById(param1);
-         if(_loc2_)
+      public static function getAllianceName(allianceId:uint) : String {
+         var alliance:AllianceWrapper = AllianceFrame.getInstance().getAllianceById(allianceId);
+         if(alliance)
          {
-            return "[" + _loc2_.allianceTag + "]";
+            return "[" + alliance.allianceTag + "]";
          }
-         return "[" + I18n.getUiText("ui.common.alliance") + " " + param1 + "]";
+         return "[" + I18n.getUiText("ui.common.alliance") + " " + allianceId + "]";
       }
       
-      public static function rollOver(param1:int, param2:int, param3:uint) : void {
-         var _loc4_:Rectangle = new Rectangle(param1,param2,10,10);
-         var _loc5_:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.recipe"));
-         TooltipManager.show(_loc5_,_loc4_,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
+      public static function rollOver(pX:int, pY:int, allianceId:uint) : void {
+         var target:Rectangle = new Rectangle(pX,pY,10,10);
+         var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.recipe"));
+         TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
       }
    }
 }

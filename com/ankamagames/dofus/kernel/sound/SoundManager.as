@@ -91,8 +91,8 @@ package com.ankamagames.dofus.kernel.sound
          }
       }
       
-      public function setDisplayOptions(param1:TubulOptions) : void {
-         this._tuOptions = param1;
+      public function setDisplayOptions(pOptions:TubulOptions) : void {
+         this._tuOptions = pOptions;
          this._tuOptions.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
          this.setSoundOptions();
       }
@@ -101,83 +101,86 @@ package com.ankamagames.dofus.kernel.sound
          this.manager.soundDirectoryExist = true;
       }
       
-      public function setMusicVolume(param1:Number) : void {
+      public function setMusicVolume(pVolume:Number) : void {
          if(!this.manager.soundIsActivate)
          {
             return;
          }
-         this.manager.setBusVolume(TubulSoundConfiguration.BUS_MUSIC_ID,param1);
-         this.manager.setBusVolume(TubulSoundConfiguration.BUS_FIGHT_MUSIC_ID,param1);
+         this.manager.setBusVolume(TubulSoundConfiguration.BUS_MUSIC_ID,pVolume);
+         this.manager.setBusVolume(TubulSoundConfiguration.BUS_FIGHT_MUSIC_ID,pVolume);
       }
       
-      public function setSoundVolume(param1:Number) : void {
+      public function setSoundVolume(pVolume:Number) : void {
          if(!this.manager.soundIsActivate)
          {
             return;
          }
-         this.manager.setBusVolume(TubulSoundConfiguration.BUS_UI_ID,param1);
+         this.manager.setBusVolume(TubulSoundConfiguration.BUS_UI_ID,pVolume);
       }
       
-      public function setAmbienceVolume(param1:Number) : void {
+      public function setAmbienceVolume(pVolume:Number) : void {
          if(!this.manager.soundIsActivate)
          {
             return;
          }
-         this.manager.setBusVolume(TubulSoundConfiguration.BUS_AMBIENT_2D_ID,param1);
-         this.manager.setBusVolume(TubulSoundConfiguration.BUS_AMBIENT_3D_ID,param1);
-         this.manager.setBusVolume(TubulSoundConfiguration.BUS_BARKS_ID,param1);
-         this.manager.setBusVolume(TubulSoundConfiguration.BUS_FIGHT_ID,param1);
-         this.manager.setBusVolume(TubulSoundConfiguration.BUS_GFX_ID,param1);
-         this.manager.setBusVolume(TubulSoundConfiguration.BUS_NPC_FOLEYS_ID,param1);
-         this.manager.setBusVolume(TubulSoundConfiguration.BUS_SFX_ID,param1);
+         this.manager.setBusVolume(TubulSoundConfiguration.BUS_AMBIENT_2D_ID,pVolume);
+         this.manager.setBusVolume(TubulSoundConfiguration.BUS_AMBIENT_3D_ID,pVolume);
+         this.manager.setBusVolume(TubulSoundConfiguration.BUS_BARKS_ID,pVolume);
+         this.manager.setBusVolume(TubulSoundConfiguration.BUS_FIGHT_ID,pVolume);
+         this.manager.setBusVolume(TubulSoundConfiguration.BUS_GFX_ID,pVolume);
+         this.manager.setBusVolume(TubulSoundConfiguration.BUS_NPC_FOLEYS_ID,pVolume);
+         this.manager.setBusVolume(TubulSoundConfiguration.BUS_SFX_ID,pVolume);
       }
       
-      private function onPropertyChanged(param1:PropertyChangeEvent) : void {
-         switch(param1.propertyName)
+      private function onPropertyChanged(e:PropertyChangeEvent) : void {
+         switch(e.propertyName)
          {
             case "muteMusic":
-               this.setMusicVolume(param1.propertyValue?0:this._tuOptions.volumeMusic);
+               this.setMusicVolume(e.propertyValue?0:this._tuOptions.volumeMusic);
                break;
             case "muteSound":
-               this.setSoundVolume(param1.propertyValue?0:this._tuOptions.volumeSound);
+               this.setSoundVolume(e.propertyValue?0:this._tuOptions.volumeSound);
                break;
             case "muteAmbientSound":
-               this.setAmbienceVolume(param1.propertyValue?0:this._tuOptions.volumeAmbientSound);
+               this.setAmbienceVolume(e.propertyValue?0:this._tuOptions.volumeAmbientSound);
                break;
             case "volumeMusic":
                if(this._tuOptions.muteMusic == false)
                {
-                  this.setMusicVolume(param1.propertyValue);
+                  this.setMusicVolume(e.propertyValue);
                }
                break;
             case "volumeSound":
                if(this._tuOptions.muteSound == false)
                {
-                  this.setSoundVolume(param1.propertyValue);
+                  this.setSoundVolume(e.propertyValue);
                }
                break;
             case "volumeAmbientSound":
                if(this._tuOptions.muteAmbientSound == false)
                {
-                  this.setAmbienceVolume(param1.propertyValue);
+                  this.setAmbienceVolume(e.propertyValue);
                }
                break;
             case "tubulIsDesactivated":
-               if(param1.propertyValue == true)
+               if(e.propertyValue == true)
                {
                   this.manager.deactivateSound();
                }
-               if(param1.propertyValue == false)
+               if(e.propertyValue == false)
                {
                   this.manager.activateSound();
                }
                break;
             case "playSoundForGuildMessage":
+               trace("playSoundForGuildMessage : " + e.propertyValue);
                break;
             case "playSoundAtTurnStart":
+               trace("playSoundAtTurnStart : " + e.propertyValue);
                break;
             case "infiniteLoopMusics":
-               RegConnectionManager.getInstance().send(ProtocolEnum.OPTION_MUSIC_LOOP_VALUE_CHANGED,param1.propertyValue);
+               trace("infiniteLoopMusics : " + e.propertyValue);
+               RegConnectionManager.getInstance().send(ProtocolEnum.OPTION_MUSIC_LOOP_VALUE_CHANGED,e.propertyValue);
                break;
          }
       }

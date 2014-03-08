@@ -25,130 +25,130 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          super();
       }
       
-      public static function getTackle(param1:GameFightFighterInformations, param2:MapPoint) : Number {
-         var _loc4_:* = 0;
-         var _loc5_:* = 0;
-         var _loc6_:CharacterCharacteristicsInformations = null;
-         var _loc7_:* = 0;
-         var _loc8_:Array = null;
-         var _loc9_:* = NaN;
-         var _loc10_:IEntity = null;
-         var _loc11_:GameFightFighterInformations = null;
-         var _loc12_:* = 0;
-         var _loc13_:* = NaN;
-         var _loc3_:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+      public static function getTackle(playerInfos:GameFightFighterInformations, position:MapPoint) : Number {
+         var x:* = 0;
+         var y:* = 0;
+         var characteristics:CharacterCharacteristicsInformations = null;
+         var evade:* = 0;
+         var entities:Array = null;
+         var evadePercent:* = NaN;
+         var entity:IEntity = null;
+         var infos:GameFightFighterInformations = null;
+         var tackle:* = 0;
+         var mod:* = NaN;
+         var entitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
          if(Constants.DETERMINIST_TACKLE)
          {
-            if(!canBeTackled(param1,param2))
+            if(!canBeTackled(playerInfos,position))
             {
                return 1;
             }
-            _loc4_ = param2.x;
-            _loc5_ = param2.y;
-            _loc6_ = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
-            _loc7_ = param1.stats.tackleEvade;
-            if(_loc7_ < 0)
+            x = position.x;
+            y = position.y;
+            characteristics = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
+            evade = playerInfos.stats.tackleEvade;
+            if(evade < 0)
             {
-               _loc7_ = 0;
+               evade = 0;
             }
-            _loc8_ = new Array();
-            if(MapPoint.isInMap(_loc4_-1,_loc5_))
+            entities = new Array();
+            if(MapPoint.isInMap(x - 1,y))
             {
-               _loc8_.push(getTacklerOnCell(MapPoint.fromCoords(_loc4_-1,_loc5_).cellId));
+               entities.push(getTacklerOnCell(MapPoint.fromCoords(x - 1,y).cellId));
             }
-            if(MapPoint.isInMap(_loc4_ + 1,_loc5_))
+            if(MapPoint.isInMap(x + 1,y))
             {
-               _loc8_.push(getTacklerOnCell(MapPoint.fromCoords(_loc4_ + 1,_loc5_).cellId));
+               entities.push(getTacklerOnCell(MapPoint.fromCoords(x + 1,y).cellId));
             }
-            if(MapPoint.isInMap(_loc4_,_loc5_-1))
+            if(MapPoint.isInMap(x,y - 1))
             {
-               _loc8_.push(getTacklerOnCell(MapPoint.fromCoords(_loc4_,_loc5_-1).cellId));
+               entities.push(getTacklerOnCell(MapPoint.fromCoords(x,y - 1).cellId));
             }
-            if(MapPoint.isInMap(_loc4_,_loc5_ + 1))
+            if(MapPoint.isInMap(x,y + 1))
             {
-               _loc8_.push(getTacklerOnCell(MapPoint.fromCoords(_loc4_,_loc5_ + 1).cellId));
+               entities.push(getTacklerOnCell(MapPoint.fromCoords(x,y + 1).cellId));
             }
-            _loc9_ = 1;
-            for each (_loc10_ in _loc8_)
+            evadePercent = 1;
+            for each (entity in entities)
             {
-               if(_loc10_)
+               if(entity)
                {
-                  _loc11_ = _loc3_.getEntityInfos(_loc10_.id) as GameFightFighterInformations;
-                  if(canBeTackler(_loc11_,param1))
+                  infos = entitiesFrame.getEntityInfos(entity.id) as GameFightFighterInformations;
+                  if(canBeTackler(infos,playerInfos))
                   {
-                     _loc12_ = _loc11_.stats.tackleBlock;
-                     if(_loc12_ < 0)
+                     tackle = infos.stats.tackleBlock;
+                     if(tackle < 0)
                      {
-                        _loc12_ = 0;
+                        tackle = 0;
                      }
-                     _loc13_ = (_loc7_ + 2) / (_loc12_ + 2) / 2;
-                     if(_loc13_ < 1)
+                     mod = (evade + 2) / (tackle + 2) / 2;
+                     if(mod < 1)
                      {
-                        _loc9_ = _loc9_ * _loc13_;
+                        evadePercent = evadePercent * mod;
                      }
                   }
                }
             }
-            return _loc9_;
+            return evadePercent;
          }
          return 1;
       }
       
-      public static function getTackleForFighter(param1:GameFightFighterInformations, param2:GameFightFighterInformations) : Number {
+      public static function getTackleForFighter(tackler:GameFightFighterInformations, tackled:GameFightFighterInformations) : Number {
          if(!Constants.DETERMINIST_TACKLE)
          {
             return 1;
          }
-         if(!canBeTackled(param2))
+         if(!canBeTackled(tackled))
          {
             return 1;
          }
-         if(!canBeTackler(param1,param2))
+         if(!canBeTackler(tackler,tackled))
          {
             return 1;
          }
-         var _loc3_:int = param2.stats.tackleEvade;
-         if(_loc3_ < 0)
+         var evade:int = tackled.stats.tackleEvade;
+         if(evade < 0)
          {
-            _loc3_ = 0;
+            evade = 0;
          }
-         var _loc4_:int = param1.stats.tackleBlock;
-         if(_loc4_ < 0)
+         var tackle:int = tackler.stats.tackleBlock;
+         if(tackle < 0)
          {
-            _loc4_ = 0;
+            tackle = 0;
          }
-         return (_loc3_ + 2) / (_loc4_ + 2) / 2;
+         return (evade + 2) / (tackle + 2) / 2;
       }
       
-      public static function getTacklerOnCell(param1:int) : AnimatedCharacter {
-         var _loc4_:AnimatedCharacter = null;
-         var _loc5_:GameFightFighterInformations = null;
-         var _loc2_:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-         var _loc3_:Array = EntitiesManager.getInstance().getEntitiesOnCell(param1,AnimatedCharacter);
-         for each (_loc4_ in _loc3_)
+      public static function getTacklerOnCell(cellId:int) : AnimatedCharacter {
+         var entity:AnimatedCharacter = null;
+         var infos:GameFightFighterInformations = null;
+         var entitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         var entities:Array = EntitiesManager.getInstance().getEntitiesOnCell(cellId,AnimatedCharacter);
+         for each (entity in entities)
          {
-            _loc5_ = _loc2_.getEntityInfos(_loc4_.id) as GameFightFighterInformations;
-            if(_loc5_.disposition is FightEntityDispositionInformations)
+            infos = entitiesFrame.getEntityInfos(entity.id) as GameFightFighterInformations;
+            if(infos.disposition is FightEntityDispositionInformations)
             {
-               if(!FightersStateManager.getInstance().hasState(_loc4_.id,8))
+               if(!FightersStateManager.getInstance().hasState(entity.id,8))
                {
-                  return _loc4_;
+                  return entity;
                }
             }
          }
          return null;
       }
       
-      public static function canBeTackled(param1:GameFightFighterInformations, param2:MapPoint=null) : Boolean {
-         var _loc3_:FightEntityDispositionInformations = null;
-         if((FightersStateManager.getInstance().hasState(param1.contextualId,96)) || (FightersStateManager.getInstance().hasState(param1.contextualId,6)) || param1.stats.invisibilityState == GameActionFightInvisibilityStateEnum.INVISIBLE || param1.stats.invisibilityState == GameActionFightInvisibilityStateEnum.DETECTED)
+      public static function canBeTackled(fighter:GameFightFighterInformations, position:MapPoint=null) : Boolean {
+         var fedi:FightEntityDispositionInformations = null;
+         if((FightersStateManager.getInstance().hasState(fighter.contextualId,96)) || (FightersStateManager.getInstance().hasState(fighter.contextualId,6)) || (fighter.stats.invisibilityState == GameActionFightInvisibilityStateEnum.INVISIBLE) || (fighter.stats.invisibilityState == GameActionFightInvisibilityStateEnum.DETECTED))
          {
             return false;
          }
-         if(param1.disposition is FightEntityDispositionInformations)
+         if(fighter.disposition is FightEntityDispositionInformations)
          {
-            _loc3_ = param1.disposition as FightEntityDispositionInformations;
-            if((_loc3_.carryingCharacterId) && (!param2 || param1.disposition.cellId == param2.cellId))
+            fedi = fighter.disposition as FightEntityDispositionInformations;
+            if((fedi.carryingCharacterId) && ((!position) || (fighter.disposition.cellId == position.cellId)))
             {
                return false;
             }
@@ -156,72 +156,72 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          return true;
       }
       
-      public static function canBeTackler(param1:GameFightFighterInformations, param2:GameFightFighterInformations) : Boolean {
-         var _loc5_:Monster = null;
-         if((FightersStateManager.getInstance().hasState(param1.contextualId,8)) || (FightersStateManager.getInstance().hasState(param1.contextualId,6)) || (FightersStateManager.getInstance().hasState(param1.contextualId,95)) || param1.stats.invisibilityState == GameActionFightInvisibilityStateEnum.INVISIBLE || param1.stats.invisibilityState == GameActionFightInvisibilityStateEnum.DETECTED)
+      public static function canBeTackler(fighter:GameFightFighterInformations, target:GameFightFighterInformations) : Boolean {
+         var monster:Monster = null;
+         if((FightersStateManager.getInstance().hasState(fighter.contextualId,6)) || (FightersStateManager.getInstance().hasState(fighter.contextualId,95)) || (fighter.stats.invisibilityState == GameActionFightInvisibilityStateEnum.INVISIBLE) || (fighter.stats.invisibilityState == GameActionFightInvisibilityStateEnum.DETECTED))
          {
             return false;
          }
-         var _loc3_:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-         var _loc4_:GameFightFighterInformations = _loc3_.getEntityInfos(param1.contextualId) as GameFightFighterInformations;
-         if((_loc4_) && _loc4_.teamId == param2.teamId)
+         var entitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         var infos:GameFightFighterInformations = entitiesFrame.getEntityInfos(fighter.contextualId) as GameFightFighterInformations;
+         if((infos) && (infos.teamId == target.teamId))
          {
             return false;
          }
-         if(param1 is GameFightMonsterInformations)
+         if(fighter is GameFightMonsterInformations)
          {
-            _loc5_ = Monster.getMonsterById((param1 as GameFightMonsterInformations).creatureGenericId);
-            if(!_loc5_.canTackle)
+            monster = Monster.getMonsterById((fighter as GameFightMonsterInformations).creatureGenericId);
+            if(!monster.canTackle)
             {
                return false;
             }
          }
-         if(!param1.alive)
+         if(!fighter.alive)
          {
             return false;
          }
          return true;
       }
       
-      public static function isTackling(param1:GameFightFighterInformations, param2:GameFightFighterInformations, param3:MovementPath) : Boolean {
-         var _loc5_:PathElement = null;
-         var _loc6_:* = 0;
-         var _loc7_:* = 0;
-         var _loc8_:* = 0;
-         var _loc9_:* = 0;
-         var _loc10_:* = 0;
-         var _loc11_:* = 0;
-         var _loc12_:AnimatedCharacter = null;
-         var _loc4_:* = false;
-         if((param3) && (canBeTackler(param2,param1)))
+      public static function isTackling(pPlayer:GameFightFighterInformations, pTackler:GameFightFighterInformations, pPlayerPath:MovementPath) : Boolean {
+         var pe:PathElement = null;
+         var x:* = 0;
+         var y:* = 0;
+         var playerEvasion:* = 0;
+         var tacklerBlock:* = 0;
+         var i:* = 0;
+         var j:* = 0;
+         var ac:AnimatedCharacter = null;
+         var tackling:Boolean = false;
+         if((pPlayerPath) && (canBeTackler(pTackler,pPlayer)))
          {
-            for each (_loc5_ in param3.path)
+            for each (pe in pPlayerPath.path)
             {
-               if(canBeTackled(param1,_loc5_.step))
+               if(canBeTackled(pPlayer,pe.step))
                {
-                  _loc6_ = _loc5_.step.x;
-                  _loc7_ = _loc5_.step.y;
-                  _loc10_ = _loc6_-1;
-                  while(_loc10_ <= _loc6_ + 1)
+                  x = pe.step.x;
+                  y = pe.step.y;
+                  i = x - 1;
+                  while(i <= x + 1)
                   {
-                     _loc11_ = _loc7_-1;
-                     while(_loc11_ <= _loc7_ + 1)
+                     j = y - 1;
+                     while(j <= y + 1)
                      {
-                        _loc12_ = getTacklerOnCell(MapPoint.fromCoords(_loc10_,_loc11_).cellId);
-                        if((_loc12_) && _loc12_.id == param2.contextualId)
+                        ac = getTacklerOnCell(MapPoint.fromCoords(i,j).cellId);
+                        if((ac) && (ac.id == pTackler.contextualId))
                         {
-                           _loc8_ = param1.stats.tackleEvade < 0?0:param1.stats.tackleEvade;
-                           _loc9_ = param2.stats.tackleBlock < 0?0:param2.stats.tackleBlock;
-                           return (_loc8_ + 2) / (_loc9_ + 2) / 2 < 1;
+                           playerEvasion = pPlayer.stats.tackleEvade < 0?0:pPlayer.stats.tackleEvade;
+                           tacklerBlock = pTackler.stats.tackleBlock < 0?0:pTackler.stats.tackleBlock;
+                           return (playerEvasion + 2) / (tacklerBlock + 2) / 2 < 1;
                         }
-                        _loc11_++;
+                        j++;
                      }
-                     _loc10_++;
+                     i++;
                   }
                }
             }
          }
-         return _loc4_;
+         return tackling;
       }
    }
 }

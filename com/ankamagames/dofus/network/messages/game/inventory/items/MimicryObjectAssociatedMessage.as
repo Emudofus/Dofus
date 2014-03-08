@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6462;
       }
       
-      public function initMimicryObjectAssociatedMessage(param1:uint=0) : MimicryObjectAssociatedMessage {
-         this.hostUID = param1;
+      public function initMimicryObjectAssociatedMessage(hostUID:uint=0) : MimicryObjectAssociatedMessage {
+         this.hostUID = hostUID;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MimicryObjectAssociatedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MimicryObjectAssociatedMessage(output);
       }
       
-      public function serializeAs_MimicryObjectAssociatedMessage(param1:IDataOutput) : void {
+      public function serializeAs_MimicryObjectAssociatedMessage(output:IDataOutput) : void {
          if(this.hostUID < 0)
          {
             throw new Error("Forbidden value (" + this.hostUID + ") on element hostUID.");
          }
          else
          {
-            param1.writeInt(this.hostUID);
+            output.writeInt(this.hostUID);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MimicryObjectAssociatedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MimicryObjectAssociatedMessage(input);
       }
       
-      public function deserializeAs_MimicryObjectAssociatedMessage(param1:IDataInput) : void {
-         this.hostUID = param1.readInt();
+      public function deserializeAs_MimicryObjectAssociatedMessage(input:IDataInput) : void {
+         this.hostUID = input.readInt();
          if(this.hostUID < 0)
          {
             throw new Error("Forbidden value (" + this.hostUID + ") on element of MimicryObjectAssociatedMessage.hostUID.");

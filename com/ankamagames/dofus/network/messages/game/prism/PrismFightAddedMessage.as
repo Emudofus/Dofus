@@ -29,8 +29,8 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 6452;
       }
       
-      public function initPrismFightAddedMessage(param1:PrismFightersInformation=null) : PrismFightAddedMessage {
-         this.fight = param1;
+      public function initPrismFightAddedMessage(fight:PrismFightersInformation=null) : PrismFightAddedMessage {
+         this.fight = fight;
          this._isInitialized = true;
          return this;
       }
@@ -40,31 +40,31 @@ package com.ankamagames.dofus.network.messages.game.prism
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PrismFightAddedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismFightAddedMessage(output);
       }
       
-      public function serializeAs_PrismFightAddedMessage(param1:IDataOutput) : void {
-         this.fight.serializeAs_PrismFightersInformation(param1);
+      public function serializeAs_PrismFightAddedMessage(output:IDataOutput) : void {
+         this.fight.serializeAs_PrismFightersInformation(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PrismFightAddedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismFightAddedMessage(input);
       }
       
-      public function deserializeAs_PrismFightAddedMessage(param1:IDataInput) : void {
+      public function deserializeAs_PrismFightAddedMessage(input:IDataInput) : void {
          this.fight = new PrismFightersInformation();
-         this.fight.deserialize(param1);
+         this.fight.deserialize(input);
       }
    }
 }

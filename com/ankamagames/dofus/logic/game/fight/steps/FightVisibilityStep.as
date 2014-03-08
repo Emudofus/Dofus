@@ -7,10 +7,10 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightVisibilityStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightVisibilityStep(param1:int, param2:Boolean) {
+      public function FightVisibilityStep(fighterId:int, visibility:Boolean) {
          super();
-         this._fighterId = param1;
-         this._visibility = param2;
+         this._fighterId = fighterId;
+         this._visibility = visibility;
       }
       
       private var _fighterId:int;
@@ -22,10 +22,10 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc1_:Sprite = DofusEntities.getEntity(this._fighterId) as Sprite;
-         if(_loc1_)
+         var summonedCreature:Sprite = DofusEntities.getEntity(this._fighterId) as Sprite;
+         if(summonedCreature)
          {
-            _loc1_.visible = this._visibility;
+            summonedCreature.visible = this._visibility;
          }
          executeCallbacks();
       }

@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5987;
       }
       
-      public function initMountRenameRequestMessage(param1:String="", param2:Number=0) : MountRenameRequestMessage {
-         this.name = param1;
-         this.mountId = param2;
+      public function initMountRenameRequestMessage(name:String="", mountId:Number=0) : MountRenameRequestMessage {
+         this.name = name;
+         this.mountId = mountId;
          this._isInitialized = true;
          return this;
       }
@@ -42,32 +42,32 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MountRenameRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MountRenameRequestMessage(output);
       }
       
-      public function serializeAs_MountRenameRequestMessage(param1:IDataOutput) : void {
-         param1.writeUTF(this.name);
-         param1.writeDouble(this.mountId);
+      public function serializeAs_MountRenameRequestMessage(output:IDataOutput) : void {
+         output.writeUTF(this.name);
+         output.writeDouble(this.mountId);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MountRenameRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MountRenameRequestMessage(input);
       }
       
-      public function deserializeAs_MountRenameRequestMessage(param1:IDataInput) : void {
-         this.name = param1.readUTF();
-         this.mountId = param1.readDouble();
+      public function deserializeAs_MountRenameRequestMessage(input:IDataInput) : void {
+         this.name = input.readUTF();
+         this.mountId = input.readDouble();
       }
    }
 }

@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.appearance
       
       public static const MODULE:String = "TitleCategories";
       
-      public static function getTitleCategoryById(param1:int) : TitleCategory {
-         return GameData.getObject(MODULE,param1) as TitleCategory;
+      public static function getTitleCategoryById(id:int) : TitleCategory {
+         return GameData.getObject(MODULE,id) as TitleCategory;
       }
       
       public static function getTitleCategories() : Array {

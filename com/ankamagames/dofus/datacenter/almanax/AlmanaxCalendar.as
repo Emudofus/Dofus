@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.almanax
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlmanaxCalendar));
       
-      public static function getAlmanaxCalendarById(param1:int) : AlmanaxCalendar {
-         return GameData.getObject(MODULE,param1) as AlmanaxCalendar;
+      public static function getAlmanaxCalendarById(id:int) : AlmanaxCalendar {
+         return GameData.getObject(MODULE,id) as AlmanaxCalendar;
       }
       
       public static function getAlmanaxCalendars() : Array {

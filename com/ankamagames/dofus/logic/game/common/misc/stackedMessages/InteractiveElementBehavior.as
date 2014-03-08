@@ -67,26 +67,26 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
       
       private var _isFreeMovement:Boolean = false;
       
-      override public function processInputMessage(param1:Message, param2:String) : Boolean {
-         var _loc5_:InteractiveElementActivationMessage = null;
-         var _loc6_:Interactive = null;
-         var _loc7_:InteractiveElementUpdatedMessage = null;
+      override public function processInputMessage(pMsgToProcess:Message, pMode:String) : Boolean {
+         var msg:InteractiveElementActivationMessage = null;
+         var interactive:Interactive = null;
+         var ieumsg:InteractiveElementUpdatedMessage = null;
          canBeStacked = true;
-         var _loc3_:IEntity = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
-         var _loc4_:* = false;
-         if(param1 is MouseClickMessage)
+         var entity:IEntity = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
+         var returnValue:Boolean = false;
+         if(pMsgToProcess is MouseClickMessage)
          {
-            this._isFreeMovement = !((param1 as MouseClickMessage).target is SpriteWrapper);
+            this._isFreeMovement = !((pMsgToProcess as MouseClickMessage).target is SpriteWrapper);
             return false;
          }
-         if(param1 is InteractiveElementActivationMessage)
+         if(pMsgToProcess is InteractiveElementActivationMessage)
          {
-            _loc5_ = param1 as InteractiveElementActivationMessage;
+            msg = pMsgToProcess as InteractiveElementActivationMessage;
             type = ALWAYS;
-            _loc6_ = Interactive.getInteractiveById(_loc5_.interactiveElement.elementTypeId);
-            if(_loc6_)
+            interactive = Interactive.getInteractiveById(msg.interactiveElement.elementTypeId);
+            if(interactive)
             {
-               switch(_loc6_.actionId)
+               switch(interactive.actionId)
                {
                   case 3:
                   case 15:
@@ -97,28 +97,28 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
             else
             {
                type = NORMAL;
-               if(param2 == ALWAYS)
+               if(pMode == ALWAYS)
                {
                   canBeStacked = false;
                   return false;
                }
             }
-            this.interactiveElement = _loc5_.interactiveElement;
-            this.currentSkillInstanceId = _loc5_.skillInstanceId;
-            position = _loc5_.position;
-            interactiveElements[_loc5_.interactiveElement.elementId] = true;
-            InteractiveElementBehavior.currentElementId = _loc5_.interactiveElement.elementId;
-            pendingMessage = param1;
-            _loc4_ = true;
+            this.interactiveElement = msg.interactiveElement;
+            this.currentSkillInstanceId = msg.skillInstanceId;
+            position = msg.position;
+            interactiveElements[msg.interactiveElement.elementId] = true;
+            InteractiveElementBehavior.currentElementId = msg.interactiveElement.elementId;
+            pendingMessage = pMsgToProcess;
+            returnValue = true;
          }
          else
          {
-            if(param1 is GameMapMovementMessage && (param1 as GameMapMovementMessage).actorId == PlayedCharacterManager.getInstance().id && (param1 as GameMapMovementMessage).keyMovements[0] == _loc3_.position.cellId)
+            if((pMsgToProcess is GameMapMovementMessage) && ((pMsgToProcess as GameMapMovementMessage).actorId == PlayedCharacterManager.getInstance().id) && ((pMsgToProcess as GameMapMovementMessage).keyMovements[0] == entity.position.cellId))
             {
                this._isMoving = true;
                if(this._isFreeMovement)
                {
-                  this._lastCellExpected = (param1 as GameMapMovementMessage).keyMovements[(param1 as GameMapMovementMessage).keyMovements.length-1];
+                  this._lastCellExpected = (pMsgToProcess as GameMapMovementMessage).keyMovements[(pMsgToProcess as GameMapMovementMessage).keyMovements.length - 1];
                }
                else
                {
@@ -127,33 +127,33 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
             }
             else
             {
-               if(param1 is CharacterMovementStoppedMessage)
+               if(pMsgToProcess is CharacterMovementStoppedMessage)
                {
                   this._lastCellExpected = -1;
                   this._isMoving = false;
                }
                else
                {
-                  if(param2 == ALWAYS && param1 is CellClickMessage && (this._isMoving))
+                  if((pMode == ALWAYS) && (pMsgToProcess is CellClickMessage) && (this._isMoving))
                   {
                      isAvailableToStart = false;
-                     _loc4_ = true;
+                     returnValue = true;
                      canBeStacked = false;
                   }
                   else
                   {
-                     if(param1 is InteractiveElementUpdatedMessage)
+                     if(pMsgToProcess is InteractiveElementUpdatedMessage)
                      {
-                        _loc7_ = param1 as InteractiveElementUpdatedMessage;
-                        if(_loc7_.interactiveElement.enabledSkills.length)
+                        ieumsg = pMsgToProcess as InteractiveElementUpdatedMessage;
+                        if(ieumsg.interactiveElement.enabledSkills.length)
                         {
-                           interactiveElements[_loc7_.interactiveElement.elementId] = true;
+                           interactiveElements[ieumsg.interactiveElement.elementId] = true;
                         }
                         else
                         {
-                           if((_loc7_.interactiveElement.disabledSkills.length) && (interactiveElements[_loc7_.interactiveElement.elementId]))
+                           if((ieumsg.interactiveElement.disabledSkills.length) && (interactiveElements[ieumsg.interactiveElement.elementId]))
                            {
-                              interactiveElements[_loc7_.interactiveElement.elementId] = null;
+                              interactiveElements[ieumsg.interactiveElement.elementId] = null;
                            }
                         }
                      }
@@ -161,11 +161,11 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
                }
             }
          }
-         return _loc4_;
+         return returnValue;
       }
       
-      override public function checkAvailability(param1:Message) : void {
-         if(!(this._startTime == 0) && getTimer() >= this._startTime + this._time)
+      override public function checkAvailability(pMsgToProcess:Message) : void {
+         if((!(this._startTime == 0)) && (getTimer() >= this._startTime + this._time))
          {
             isAvailableToStart = false;
             this._startTime = 0;
@@ -177,15 +177,15 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          }
          else
          {
-            if(param1 is InteractiveUsedMessage && (param1 as InteractiveUsedMessage).entityId == PlayedCharacterManager.getInstance().id)
+            if((pMsgToProcess is InteractiveUsedMessage) && ((pMsgToProcess as InteractiveUsedMessage).entityId == PlayedCharacterManager.getInstance().id))
             {
                isAvailableToStart = true;
-               this._tmpInteractiveElementId = (param1 as InteractiveUsedMessage).elemId;
+               this._tmpInteractiveElementId = (pMsgToProcess as InteractiveUsedMessage).elemId;
                this._startTime = 0;
             }
             else
             {
-               if(param1 is InteractiveUseEndedMessage && this._tmpInteractiveElementId == (param1 as InteractiveUseEndedMessage).elemId)
+               if((pMsgToProcess is InteractiveUseEndedMessage) && (this._tmpInteractiveElementId == (pMsgToProcess as InteractiveUseEndedMessage).elemId))
                {
                   this._startTime = getTimer();
                }
@@ -193,42 +193,42 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          }
       }
       
-      override public function processOutputMessage(param1:Message, param2:String) : Boolean {
-         var _loc3_:* = false;
-         if(param1 is InteractiveUseEndedMessage)
+      override public function processOutputMessage(pMsgToProcess:Message, pMode:String) : Boolean {
+         var returnValue:Boolean = false;
+         if(pMsgToProcess is InteractiveUseEndedMessage)
          {
             this.stopAction();
-            _loc3_ = true;
+            returnValue = true;
          }
          else
          {
-            if(param1 is InteractiveUseErrorMessage)
+            if(pMsgToProcess is InteractiveUseErrorMessage)
             {
                this.stopAction();
-               _loc3_ = true;
+               returnValue = true;
                actionStarted = true;
             }
             else
             {
-               if(param1 is InteractiveUsedMessage)
+               if(pMsgToProcess is InteractiveUsedMessage)
                {
                   this.removeIcon();
-                  this._duration = (param1 as InteractiveUsedMessage).duration * 100;
+                  this._duration = (pMsgToProcess as InteractiveUsedMessage).duration * 100;
                   this._timeOutRecolte = getTimer();
                   actionStarted = true;
-                  _loc3_ = this._duration == 0;
+                  returnValue = this._duration == 0;
                }
                else
                {
-                  if(this._timeOutRecolte > 0 && getTimer() > this._timeOutRecolte + this._duration + 1000)
+                  if((this._timeOutRecolte > 0) && (getTimer() > this._timeOutRecolte + this._duration + 1000))
                   {
                      this.stopAction();
-                     _loc3_ = true;
+                     returnValue = true;
                   }
                }
             }
          }
-         return _loc3_;
+         return returnValue;
       }
       
       private function stopAction() : void {
@@ -237,7 +237,7 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          this.removeIcon();
       }
       
-      override public function isAvailableToProcess(param1:Message) : Boolean {
+      override public function isAvailableToProcess(pMsg:Message) : Boolean {
          if(interactiveElements[this.interactiveElement.elementId])
          {
             return true;
@@ -246,30 +246,30 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
       }
       
       override public function addIcon() : void {
-         var _loc1_:* = 0;
-         var _loc2_:InteractiveElementSkill = null;
-         var _loc3_:Skill = null;
-         var _loc4_:InteractiveObject = null;
+         var skillId:* = 0;
+         var ieskill:InteractiveElementSkill = null;
+         var s:Skill = null;
+         var io:InteractiveObject = null;
          if(this.interactiveElement == null)
          {
             return;
          }
-         for each (_loc2_ in this.interactiveElement.enabledSkills)
+         for each (ieskill in this.interactiveElement.enabledSkills)
          {
-            if(_loc2_.skillInstanceUid == this.currentSkillInstanceId)
+            if(ieskill.skillInstanceUid == this.currentSkillInstanceId)
             {
-               _loc1_ = _loc2_.skillId;
+               skillId = ieskill.skillId;
                break;
             }
          }
-         _loc3_ = Skill.getSkillById(_loc1_);
-         sprite = RoleplayInteractivesFrame.getCursor(_loc3_.cursor,true,false);
+         s = Skill.getSkillById(skillId);
+         sprite = RoleplayInteractivesFrame.getCursor(s.cursor,true,false);
          sprite.y = sprite.y - sprite.height;
          sprite.x = sprite.x - sprite.width / 2;
          sprite.transform.colorTransform = new ColorTransform(0.33,0.33,0.33,0.5,0,0,0,0);
-         _loc4_ = Atouin.getInstance().getIdentifiedElement(this.interactiveElement.elementId);
-         FiltersManager.getInstance().addEffect(_loc4_,FILTER_1);
-         FiltersManager.getInstance().addEffect(_loc4_,FILTER_2);
+         io = Atouin.getInstance().getIdentifiedElement(this.interactiveElement.elementId);
+         FiltersManager.getInstance().addEffect(io,FILTER_1);
+         FiltersManager.getInstance().addEffect(io,FILTER_2);
          super.addIcon();
       }
       
@@ -278,11 +278,11 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          {
             return;
          }
-         var _loc1_:InteractiveObject = Atouin.getInstance().getIdentifiedElement(this.interactiveElement.elementId);
-         if(_loc1_)
+         var io:InteractiveObject = Atouin.getInstance().getIdentifiedElement(this.interactiveElement.elementId);
+         if(io)
          {
-            FiltersManager.getInstance().removeEffect(_loc1_,FILTER_1);
-            FiltersManager.getInstance().removeEffect(_loc1_,FILTER_2);
+            FiltersManager.getInstance().removeEffect(io,FILTER_1);
+            FiltersManager.getInstance().removeEffect(io,FILTER_2);
          }
          super.removeIcon();
       }
@@ -293,19 +293,19 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
       }
       
       override public function copy() : AbstractBehavior {
-         var _loc1_:InteractiveElementBehavior = new InteractiveElementBehavior();
-         _loc1_.pendingMessage = this.pendingMessage;
-         _loc1_.interactiveElement = this.interactiveElement;
-         _loc1_.position = this.position;
-         _loc1_.sprite = this.sprite;
-         _loc1_.currentSkillInstanceId = this.currentSkillInstanceId;
-         _loc1_.isAvailableToStart = this.isAvailableToStart;
-         _loc1_.type = this.type;
-         return _loc1_;
+         var cp:InteractiveElementBehavior = new InteractiveElementBehavior();
+         cp.pendingMessage = this.pendingMessage;
+         cp.interactiveElement = this.interactiveElement;
+         cp.position = this.position;
+         cp.sprite = this.sprite;
+         cp.currentSkillInstanceId = this.currentSkillInstanceId;
+         cp.isAvailableToStart = this.isAvailableToStart;
+         cp.type = this.type;
+         return cp;
       }
       
-      override public function isMessageCatchable(param1:Message) : Boolean {
-         if(param1 is GameMapMovementMessage)
+      override public function isMessageCatchable(pMsg:Message) : Boolean {
+         if(pMsg is GameMapMovementMessage)
          {
             return !((this._isMoving) || (actionStarted));
          }
@@ -317,13 +317,13 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
       }
       
       override public function get needToWait() : Boolean {
-         return (this._isMoving) && !(this._lastCellExpected == -1);
+         return (this._isMoving) && (!(this._lastCellExpected == -1));
       }
       
       override public function getFakePosition() : MapPoint {
-         var _loc1_:MapPoint = new MapPoint();
-         _loc1_.cellId = this._lastCellExpected;
-         return _loc1_;
+         var mp:MapPoint = new MapPoint();
+         mp.cellId = this._lastCellExpected;
+         return mp;
       }
    }
 }

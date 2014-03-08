@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.prism
       }
       
       public static function create() : PrismAttackRequestAction {
-         var _loc1_:PrismAttackRequestAction = new PrismAttackRequestAction();
-         return _loc1_;
+         var action:PrismAttackRequestAction = new PrismAttackRequestAction();
+         return action;
       }
    }
 }

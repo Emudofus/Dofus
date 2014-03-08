@@ -6,13 +6,13 @@ package com.ankamagames.dofus.logic.game.roleplay.types
    public class TaxCollectorTooltipInformation extends Object
    {
       
-      public function TaxCollectorTooltipInformation(param1:String, param2:String, param3:GuildWrapper, param4:AllianceWrapper, param5:int) {
+      public function TaxCollectorTooltipInformation(pFirstName:String, pLastName:String, pGuildIdentity:GuildWrapper, pAllianceIdentity:AllianceWrapper, pTaxCollectorAttack:int) {
          super();
-         this.lastName = param2;
-         this.firstName = param1;
-         this.guildIdentity = param3;
-         this.allianceIdentity = param4;
-         this.taxCollectorAttack = param5;
+         this.lastName = pLastName;
+         this.firstName = pFirstName;
+         this.guildIdentity = pGuildIdentity;
+         this.allianceIdentity = pAllianceIdentity;
+         this.taxCollectorAttack = pTaxCollectorAttack;
       }
       
       public var lastName:String;

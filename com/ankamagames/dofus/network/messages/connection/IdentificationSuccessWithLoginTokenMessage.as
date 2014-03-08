@@ -26,9 +26,9 @@ package com.ankamagames.dofus.network.messages.connection
          return 6209;
       }
       
-      public function initIdentificationSuccessWithLoginTokenMessage(param1:String="", param2:String="", param3:uint=0, param4:uint=0, param5:Boolean=false, param6:String="", param7:Number=0, param8:Boolean=false, param9:Number=0, param10:String="") : IdentificationSuccessWithLoginTokenMessage {
-         super.initIdentificationSuccessMessage(param1,param2,param3,param4,param5,param6,param7,param8,param9);
-         this.loginToken = param10;
+      public function initIdentificationSuccessWithLoginTokenMessage(login:String="", nickname:String="", accountId:uint=0, communityId:uint=0, hasRights:Boolean=false, secretQuestion:String="", subscriptionEndDate:Number=0, wasAlreadyConnected:Boolean=false, accountCreation:Number=0, loginToken:String="") : IdentificationSuccessWithLoginTokenMessage {
+         super.initIdentificationSuccessMessage(login,nickname,accountId,communityId,hasRights,secretQuestion,subscriptionEndDate,wasAlreadyConnected,accountCreation);
+         this.loginToken = loginToken;
          this._isInitialized = true;
          return this;
       }
@@ -39,32 +39,32 @@ package com.ankamagames.dofus.network.messages.connection
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_IdentificationSuccessWithLoginTokenMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_IdentificationSuccessWithLoginTokenMessage(output);
       }
       
-      public function serializeAs_IdentificationSuccessWithLoginTokenMessage(param1:IDataOutput) : void {
-         super.serializeAs_IdentificationSuccessMessage(param1);
-         param1.writeUTF(this.loginToken);
+      public function serializeAs_IdentificationSuccessWithLoginTokenMessage(output:IDataOutput) : void {
+         super.serializeAs_IdentificationSuccessMessage(output);
+         output.writeUTF(this.loginToken);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_IdentificationSuccessWithLoginTokenMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_IdentificationSuccessWithLoginTokenMessage(input);
       }
       
-      public function deserializeAs_IdentificationSuccessWithLoginTokenMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.loginToken = param1.readUTF();
+      public function deserializeAs_IdentificationSuccessWithLoginTokenMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.loginToken = input.readUTF();
       }
    }
 }

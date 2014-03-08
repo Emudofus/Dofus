@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.context
          return 5612;
       }
       
-      public function initShowCellMessage(param1:int=0, param2:uint=0) : ShowCellMessage {
-         this.sourceId = param1;
-         this.cellId = param2;
+      public function initShowCellMessage(sourceId:int=0, cellId:uint=0) : ShowCellMessage {
+         this.sourceId = sourceId;
+         this.cellId = cellId;
          this._isInitialized = true;
          return this;
       }
@@ -42,41 +42,41 @@ package com.ankamagames.dofus.network.messages.game.context
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ShowCellMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ShowCellMessage(output);
       }
       
-      public function serializeAs_ShowCellMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.sourceId);
-         if(this.cellId < 0 || this.cellId > 559)
+      public function serializeAs_ShowCellMessage(output:IDataOutput) : void {
+         output.writeInt(this.sourceId);
+         if((this.cellId < 0) || (this.cellId > 559))
          {
             throw new Error("Forbidden value (" + this.cellId + ") on element cellId.");
          }
          else
          {
-            param1.writeShort(this.cellId);
+            output.writeShort(this.cellId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ShowCellMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ShowCellMessage(input);
       }
       
-      public function deserializeAs_ShowCellMessage(param1:IDataInput) : void {
-         this.sourceId = param1.readInt();
-         this.cellId = param1.readShort();
-         if(this.cellId < 0 || this.cellId > 559)
+      public function deserializeAs_ShowCellMessage(input:IDataInput) : void {
+         this.sourceId = input.readInt();
+         this.cellId = input.readShort();
+         if((this.cellId < 0) || (this.cellId > 559))
          {
             throw new Error("Forbidden value (" + this.cellId + ") on element of ShowCellMessage.cellId.");
          }

@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 407;
       }
       
-      public function initHumanOptionEmote(param1:uint=0, param2:Number=0) : HumanOptionEmote {
-         this.emoteId = param1;
-         this.emoteStartTime = param2;
+      public function initHumanOptionEmote(emoteId:uint=0, emoteStartTime:Number=0) : HumanOptionEmote {
+         this.emoteId = emoteId;
+         this.emoteStartTime = emoteStartTime;
          return this;
       }
       
@@ -32,38 +32,38 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.emoteStartTime = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_HumanOptionEmote(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HumanOptionEmote(output);
       }
       
-      public function serializeAs_HumanOptionEmote(param1:IDataOutput) : void {
-         super.serializeAs_HumanOption(param1);
-         if(this.emoteId < 0 || this.emoteId > 255)
+      public function serializeAs_HumanOptionEmote(output:IDataOutput) : void {
+         super.serializeAs_HumanOption(output);
+         if((this.emoteId < 0) || (this.emoteId > 255))
          {
             throw new Error("Forbidden value (" + this.emoteId + ") on element emoteId.");
          }
          else
          {
-            param1.writeByte(this.emoteId);
-            param1.writeDouble(this.emoteStartTime);
+            output.writeByte(this.emoteId);
+            output.writeDouble(this.emoteStartTime);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_HumanOptionEmote(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HumanOptionEmote(input);
       }
       
-      public function deserializeAs_HumanOptionEmote(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.emoteId = param1.readUnsignedByte();
-         if(this.emoteId < 0 || this.emoteId > 255)
+      public function deserializeAs_HumanOptionEmote(input:IDataInput) : void {
+         super.deserialize(input);
+         this.emoteId = input.readUnsignedByte();
+         if((this.emoteId < 0) || (this.emoteId > 255))
          {
             throw new Error("Forbidden value (" + this.emoteId + ") on element of HumanOptionEmote.emoteId.");
          }
          else
          {
-            this.emoteStartTime = param1.readDouble();
+            this.emoteStartTime = input.readDouble();
             return;
          }
       }

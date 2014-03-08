@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.social
          super();
       }
       
-      public static function create(param1:int) : RemoveFriendAction {
-         var _loc2_:RemoveFriendAction = new RemoveFriendAction();
-         _loc2_.accountId = param1;
-         return _loc2_;
+      public static function create(accountId:int) : RemoveFriendAction {
+         var a:RemoveFriendAction = new RemoveFriendAction();
+         a.accountId = accountId;
+         return a;
       }
       
       public var accountId:int;

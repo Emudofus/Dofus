@@ -32,26 +32,24 @@ package com.ankamagames.berilia.managers
       
       private static const _log:Logger = Log.getLogger(getQualifiedClassName(SecureCenter));
       
-      public static function init(param1:Object, param2:Object, param3:Object) : void {
-         SharedSecureComponent = param1 as Class;
-         SharedReadOnlyData = param2 as Class;
-         DirectAccessObject = param3 as Class;
+      public static function init(sharedSecureComponent:Object, sharedReadOnlyData:Object, directAccessObject:Object) : void {
+         SharedSecureComponent = sharedSecureComponent as Class;
+         SharedReadOnlyData = sharedReadOnlyData as Class;
+         DirectAccessObject = directAccessObject as Class;
       }
       
-      public static function destroy(param1:*) : void {
+      public static function destroy(target:*) : void {
          switch(true)
          {
-            case param1 is SharedSecureComponent:
-               SharedSecureComponent["destroy"](param1,ACCESS_KEY);
+            case target is SharedSecureComponent:
+               SharedSecureComponent["destroy"](target,ACCESS_KEY);
                break;
          }
       }
       
-      public static function secure(param1:*, param2:Boolean=false) : * {
+      public static function secure(target:*, trusted:Boolean=false) : * {
          var iDataCenter:* = undefined;
          var iModuleUtil:* = undefined;
-         var target:* = param1;
-         var trusted:Boolean = param2;
          switch(true)
          {
             case target == null:
@@ -66,18 +64,17 @@ package com.ankamagames.berilia.managers
          }
       }
       
-      public static function secureContent(param1:Array, param2:Boolean=false) : Array {
-         var _loc4_:* = undefined;
-         var _loc3_:Array = [];
-         for (_loc4_ in param1)
+      public static function secureContent(target:Array, trusted:Boolean=false) : Array {
+         var key:* = undefined;
+         var result:Array = [];
+         for (key in target)
          {
-            _loc3_[_loc4_] = secure(param1[_loc4_],param2);
+            result[key] = secure(target[key],trusted);
          }
-         return _loc3_;
+         return result;
       }
       
-      public static function unsecure(param1:*) : * {
-         var target:* = param1;
+      public static function unsecure(target:*) : * {
          switch(null)
          {
             case target is Secure && !(target is INoBoxing):
@@ -86,35 +83,33 @@ package com.ankamagames.berilia.managers
             case target is DirectAccessObject:
                return target.getObject(ACCESS_KEY);
             case target is Function:
-               return function(... rest):*
+               return function(... args):*
                {
-                  var _loc2_:* = rest.length;
-                  var _loc3_:* = 0;
-                  while(_loc3_ < _loc2_)
+                  var nb:* = args.length;
+                  var i:* = 0;
+                  while(i < nb)
                   {
-                     rest[_loc3_] = secure(rest[_loc3_]);
-                     _loc3_++;
+                     args[i] = secure(args[i]);
+                     i++;
                   }
-                  var _loc4_:* = CallWithParameters.callR(target,rest);
-                  return unsecure(_loc4_);
+                  var result:* = CallWithParameters.callR(target,args);
+                  return unsecure(result);
                };
-            default:
-               return target;
          }
       }
       
-      public static function unsecureContent(param1:Array) : Array {
-         var _loc3_:* = undefined;
-         var _loc2_:Array = [];
-         for (_loc3_ in param1)
+      public static function unsecureContent(target:Array) : Array {
+         var key:* = undefined;
+         var result:Array = [];
+         for (key in target)
          {
-            _loc2_[_loc3_] = unsecure(param1[_loc3_]);
+            result[key] = unsecure(target[key]);
          }
-         return _loc2_;
+         return result;
       }
       
-      public static function checkAccessKey(param1:Object) : void {
-         if(param1 != ACCESS_KEY)
+      public static function checkAccessKey(accessKey:Object) : void {
+         if(accessKey != ACCESS_KEY)
          {
             throw new IllegalOperationError("Wrong access key");
          }

@@ -54,69 +54,70 @@ package com.ankamagames.dofus.logic.game.approach.managers
          this.api.getComponentList(PROJECT_NAME);
       }
       
-      public function hasComponent(param1:String) : Boolean {
-         return this._modules?this._modules[param1] != null?this._modules[param1].activated as Boolean:false:false;
+      public function hasComponent(name:String) : Boolean {
+         return this._modules?!(this._modules[name] == null)?this._modules[name].activated as Boolean:false:false;
       }
       
-      public function activateComponent(param1:String, param2:Boolean=true, param3:String="game") : void {
-         if(!this.hasComponent(param1))
+      public function activateComponent(name:String, activate:Boolean=true, project:String="game") : void {
+         if(!this.hasComponent(name))
          {
-            logger.debug("Ask updater for " + param2?"activate":"desactivate" + " component : " + param1);
-            this.api.activateComponent(param1,param2,param3);
+            logger.debug("Ask updater for " + activate?"activate":"desactivate" + " component : " + name);
+            this.api.activateComponent(name,activate,project);
          }
       }
       
-      public function set installedModules(param1:Dictionary) : void {
-         this._modules = param1;
+      public function set installedModules(m:Dictionary) : void {
+         this._modules = m;
       }
       
-      public function handleMessage(param1:IUpdaterInputMessage) : void {
-         var _loc4_:ComponentListMessage = null;
-         var _loc5_:StepMessage = null;
-         var _loc6_:UiModule = null;
-         var _loc7_:ProgressMessage = null;
-         var _loc8_:FinishedMessage = null;
-         var _loc9_:ErrorMessage = null;
-         var _loc2_:Hook = null;
-         var _loc3_:Array = null;
+      public function handleMessage(msg:IUpdaterInputMessage) : void {
+         var clm:ComponentListMessage = null;
+         var sm:StepMessage = null;
+         var uiM:UiModule = null;
+         var pm:ProgressMessage = null;
+         var fm:FinishedMessage = null;
+         var em:ErrorMessage = null;
+         var hook:Hook = null;
+         var params:Array = null;
          switch(true)
          {
-            case param1 is ComponentListMessage:
-               _loc4_ = param1 as ComponentListMessage;
-               this._modules = _loc4_.components;
+            case msg is ComponentListMessage:
+               clm = msg as ComponentListMessage;
+               this._modules = clm.components;
                break;
-            case param1 is StepMessage:
-               _loc5_ = param1 as StepMessage;
-               if(_loc5_.step == StepMessage.UPDATING_STEP)
+            case msg is StepMessage:
+               sm = msg as StepMessage;
+               if(sm.step == StepMessage.UPDATING_STEP)
                {
-                  _loc6_ = UiModuleManager.getInstance().getModule("Ankama_Common");
+                  uiM = UiModuleManager.getInstance().getModule("Ankama_Common");
                   if(!Berilia.getInstance().isUiDisplayed("downloadUiNewUpdaterInstance"))
                   {
-                     Berilia.getInstance().loadUi(_loc6_,_loc6_.getUi("downloadUiNewUpdater"),"downloadUiNewUpdaterInstance",null,false,StrataEnum.STRATA_HIGH);
+                     Berilia.getInstance().loadUi(uiM,uiM.getUi("downloadUiNewUpdater"),"downloadUiNewUpdaterInstance",null,false,StrataEnum.STRATA_HIGH);
                   }
                }
-               _loc2_ = HookList.UpdateStepChange;
-               _loc3_ = [_loc2_,_loc5_.step];
+               hook = HookList.UpdateStepChange;
+               params = [hook,sm.step];
                break;
-            case param1 is ProgressMessage:
-               _loc7_ = param1 as ProgressMessage;
-               _loc2_ = HookList.UpdateProgress;
-               _loc3_ = [_loc2_,_loc7_.step,_loc7_.currentSize,_loc7_.eta,_loc7_.progress,_loc7_.smooth,_loc7_.speed,_loc7_.totalSize];
+            case msg is ProgressMessage:
+               pm = msg as ProgressMessage;
+               hook = HookList.UpdateProgress;
+               params = [hook,pm.step,pm.currentSize,pm.eta,pm.progress,pm.smooth,pm.speed,pm.totalSize];
                break;
-            case param1 is FinishedMessage:
-               _loc8_ = param1 as FinishedMessage;
-               _loc2_ = HookList.UpdateFinished;
-               _loc3_ = [_loc2_,_loc8_.needRestart,_loc8_.needUpdate,_loc8_.newVersion,_loc8_.previousVersion,_loc8_.error];
+            case msg is FinishedMessage:
+               fm = msg as FinishedMessage;
+               hook = HookList.UpdateFinished;
+               params = [hook,fm.needRestart,fm.needUpdate,fm.newVersion,fm.previousVersion,fm.error];
                setTimeout(Berilia.getInstance().unloadUi,2000,"downloadUiNewUpdaterInstance");
                break;
-            case param1 is d2hooks.UpdateError:
-               _loc9_ = param1 as ErrorMessage;
-               _loc2_ = HookList.UpdateError;
-               _loc3_ = [_loc2_,_loc9_.type,_loc9_.message];
+            case msg is d2hooks.UpdateError:
+               em = msg as ErrorMessage;
+               hook = HookList.UpdateError;
+               params = [hook,em.type,em.message];
+               break;
          }
-         if(_loc2_)
+         if(hook)
          {
-            KernelEventsManager.getInstance().processCallback.apply(null,_loc3_);
+            KernelEventsManager.getInstance().processCallback.apply(null,params);
          }
       }
       

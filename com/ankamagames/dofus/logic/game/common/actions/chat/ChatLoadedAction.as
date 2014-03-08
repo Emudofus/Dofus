@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.chat
       }
       
       public static function create() : ChatLoadedAction {
-         var _loc1_:ChatLoadedAction = new ChatLoadedAction();
-         return _loc1_;
+         var a:ChatLoadedAction = new ChatLoadedAction();
+         return a;
       }
    }
 }

@@ -14,13 +14,13 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         var _loc4_:uint = 0;
-         var _loc5_:uint = 0;
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var resX:uint = 0;
+         var resY:uint = 0;
+         switch(cmd)
          {
             case "fullscreen":
-               if(param3.length == 0)
+               if(args.length == 0)
                {
                   if(AirScanner.hasAir())
                   {
@@ -30,19 +30,19 @@ package com.ankamagames.dofus.console.debug
                      }
                      else
                      {
-                        param1.output("Resolution needed.");
+                        console.output("Resolution needed.");
                      }
                   }
                }
                else
                {
-                  if(param3.length == 2)
+                  if(args.length == 2)
                   {
                      if(AirScanner.hasAir())
                      {
-                        _loc4_ = uint(param3[0]);
-                        _loc5_ = uint(param3[1]);
-                        StageShareManager.stage.fullScreenSourceRect = new Rectangle(0,0,_loc4_,_loc5_);
+                        resX = uint(args[0]);
+                        resY = uint(args[1]);
+                        StageShareManager.stage.fullScreenSourceRect = new Rectangle(0,0,resX,resY);
                         StageShareManager.stage.displayState = StageDisplayState["FULL_SCREEN_INTERACTIVE"];
                      }
                   }
@@ -51,17 +51,15 @@ package com.ankamagames.dofus.console.debug
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "fullscreen":
                return "Toggle the full-screen display mode.";
-            default:
-               return "Unknown command";
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return [];
       }
    }

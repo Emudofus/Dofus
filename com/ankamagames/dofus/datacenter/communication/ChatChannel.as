@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.communication
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ChatChannel));
       
-      public static function getChannelById(param1:int) : ChatChannel {
-         return GameData.getObject(MODULE,param1) as ChatChannel;
+      public static function getChannelById(id:int) : ChatChannel {
+         return GameData.getObject(MODULE,id) as ChatChannel;
       }
       
       public static function getChannels() : Array {

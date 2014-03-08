@@ -13,9 +13,9 @@ package com.ankamagames.dofus.scripts
    public class SpellFxRunner extends FxRunner implements IRunner
    {
       
-      public function SpellFxRunner(param1:ISpellCastProvider) {
-         super(DofusEntities.getEntity(param1.castingSpell.casterId),param1.castingSpell.targetedCell);
-         this._spellCastProvider = param1;
+      public function SpellFxRunner(spellCastProvider:ISpellCastProvider) {
+         super(DofusEntities.getEntity(spellCastProvider.castingSpell.casterId),spellCastProvider.castingSpell.targetedCell);
+         this._spellCastProvider = spellCastProvider;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpellFxRunner));

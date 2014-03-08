@@ -24,10 +24,10 @@ package com.ankamagames.dofus.network.types.game.character.characteristic
          return 215;
       }
       
-      public function initCharacterSpellModification(param1:uint=0, param2:uint=0, param3:CharacterBaseCharacteristic=null) : CharacterSpellModification {
-         this.modificationType = param1;
-         this.spellId = param2;
-         this.value = param3;
+      public function initCharacterSpellModification(modificationType:uint=0, spellId:uint=0, value:CharacterBaseCharacteristic=null) : CharacterSpellModification {
+         this.modificationType = modificationType;
+         this.spellId = spellId;
+         this.value = value;
          return this;
       }
       
@@ -37,37 +37,37 @@ package com.ankamagames.dofus.network.types.game.character.characteristic
          this.value = new CharacterBaseCharacteristic();
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CharacterSpellModification(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterSpellModification(output);
       }
       
-      public function serializeAs_CharacterSpellModification(param1:IDataOutput) : void {
-         param1.writeByte(this.modificationType);
+      public function serializeAs_CharacterSpellModification(output:IDataOutput) : void {
+         output.writeByte(this.modificationType);
          if(this.spellId < 0)
          {
             throw new Error("Forbidden value (" + this.spellId + ") on element spellId.");
          }
          else
          {
-            param1.writeShort(this.spellId);
-            this.value.serializeAs_CharacterBaseCharacteristic(param1);
+            output.writeShort(this.spellId);
+            this.value.serializeAs_CharacterBaseCharacteristic(output);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CharacterSpellModification(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterSpellModification(input);
       }
       
-      public function deserializeAs_CharacterSpellModification(param1:IDataInput) : void {
-         this.modificationType = param1.readByte();
+      public function deserializeAs_CharacterSpellModification(input:IDataInput) : void {
+         this.modificationType = input.readByte();
          if(this.modificationType < 0)
          {
             throw new Error("Forbidden value (" + this.modificationType + ") on element of CharacterSpellModification.modificationType.");
          }
          else
          {
-            this.spellId = param1.readShort();
+            this.spellId = input.readShort();
             if(this.spellId < 0)
             {
                throw new Error("Forbidden value (" + this.spellId + ") on element of CharacterSpellModification.spellId.");
@@ -75,7 +75,7 @@ package com.ankamagames.dofus.network.types.game.character.characteristic
             else
             {
                this.value = new CharacterBaseCharacteristic();
-               this.value.deserialize(param1);
+               this.value.deserialize(input);
                return;
             }
          }

@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 6239;
       }
       
-      public function initGameFightNewRoundMessage(param1:uint=0) : GameFightNewRoundMessage {
-         this.roundNumber = param1;
+      public function initGameFightNewRoundMessage(roundNumber:uint=0) : GameFightNewRoundMessage {
+         this.roundNumber = roundNumber;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightNewRoundMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightNewRoundMessage(output);
       }
       
-      public function serializeAs_GameFightNewRoundMessage(param1:IDataOutput) : void {
+      public function serializeAs_GameFightNewRoundMessage(output:IDataOutput) : void {
          if(this.roundNumber < 0)
          {
             throw new Error("Forbidden value (" + this.roundNumber + ") on element roundNumber.");
          }
          else
          {
-            param1.writeInt(this.roundNumber);
+            output.writeInt(this.roundNumber);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightNewRoundMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightNewRoundMessage(input);
       }
       
-      public function deserializeAs_GameFightNewRoundMessage(param1:IDataInput) : void {
-         this.roundNumber = param1.readInt();
+      public function deserializeAs_GameFightNewRoundMessage(input:IDataInput) : void {
+         this.roundNumber = input.readInt();
          if(this.roundNumber < 0)
          {
             throw new Error("Forbidden value (" + this.roundNumber + ") on element of GameFightNewRoundMessage.roundNumber.");

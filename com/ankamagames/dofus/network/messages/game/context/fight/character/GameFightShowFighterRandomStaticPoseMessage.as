@@ -25,8 +25,8 @@ package com.ankamagames.dofus.network.messages.game.context.fight.character
          return 6218;
       }
       
-      public function initGameFightShowFighterRandomStaticPoseMessage(param1:GameFightFighterInformations=null) : GameFightShowFighterRandomStaticPoseMessage {
-         super.initGameFightShowFighterMessage(param1);
+      public function initGameFightShowFighterRandomStaticPoseMessage(informations:GameFightFighterInformations=null) : GameFightShowFighterRandomStaticPoseMessage {
+         super.initGameFightShowFighterMessage(informations);
          this._isInitialized = true;
          return this;
       }
@@ -36,30 +36,30 @@ package com.ankamagames.dofus.network.messages.game.context.fight.character
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightShowFighterRandomStaticPoseMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightShowFighterRandomStaticPoseMessage(output);
       }
       
-      public function serializeAs_GameFightShowFighterRandomStaticPoseMessage(param1:IDataOutput) : void {
-         super.serializeAs_GameFightShowFighterMessage(param1);
+      public function serializeAs_GameFightShowFighterRandomStaticPoseMessage(output:IDataOutput) : void {
+         super.serializeAs_GameFightShowFighterMessage(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightShowFighterRandomStaticPoseMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightShowFighterRandomStaticPoseMessage(input);
       }
       
-      public function deserializeAs_GameFightShowFighterRandomStaticPoseMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_GameFightShowFighterRandomStaticPoseMessage(input:IDataInput) : void {
+         super.deserialize(input);
       }
    }
 }

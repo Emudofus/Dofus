@@ -1,6 +1,6 @@
 package com.ankamagames.berilia.enums
 {
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    
    public class StatesEnum extends Object
    {

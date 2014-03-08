@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.livingObjects
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Pet));
       
-      public static function getPetById(param1:int) : Pet {
-         return GameData.getObject(MODULE,param1) as Pet;
+      public static function getPetById(id:int) : Pet {
+         return GameData.getObject(MODULE,id) as Pet;
       }
       
       public static function getPets() : Array {

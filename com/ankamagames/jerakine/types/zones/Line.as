@@ -4,17 +4,17 @@ package com.ankamagames.jerakine.types.zones
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.map.IDataMapProvider;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.positions.MapPoint;
    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
    
    public class Line extends Object implements IZone
    {
       
-      public function Line(param1:uint, param2:IDataMapProvider) {
+      public function Line(nRadius:uint, dataMapProvider:IDataMapProvider) {
          super();
-         this.radius = param1;
-         this._dataMapProvider = param2;
+         this.radius = nRadius;
+         this._dataMapProvider = dataMapProvider;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Line));
@@ -31,104 +31,103 @@ package com.ankamagames.jerakine.types.zones
          return this._radius;
       }
       
-      public function set radius(param1:uint) : void {
-         this._radius = param1;
+      public function set radius(n:uint) : void {
+         this._radius = n;
       }
       
       public function get surface() : uint {
          return this._radius + 1;
       }
       
-      public function set minRadius(param1:uint) : void {
-         this._minRadius = param1;
+      public function set minRadius(r:uint) : void {
+         this._minRadius = r;
       }
       
       public function get minRadius() : uint {
          return this._minRadius;
       }
       
-      public function set direction(param1:uint) : void {
-         this._nDirection = param1;
+      public function set direction(d:uint) : void {
+         this._nDirection = d;
       }
       
       public function get direction() : uint {
          return this._nDirection;
       }
       
-      public function getCells(param1:uint=0) : Vector.<uint> {
-         var _loc6_:* = false;
-         var _loc2_:Vector.<uint> = new Vector.<uint>();
-         var _loc3_:MapPoint = MapPoint.fromCellId(param1);
-         var _loc4_:int = _loc3_.x;
-         var _loc5_:int = _loc3_.y;
-         var _loc7_:int = this._minRadius;
-         for(;_loc7_ <= this._radius;_loc7_++)
+      public function getCells(cellId:uint=0) : Vector.<uint> {
+         var added:* = false;
+         var aCells:Vector.<uint> = new Vector.<uint>();
+         var origin:MapPoint = MapPoint.fromCellId(cellId);
+         var x:int = origin.x;
+         var y:int = origin.y;
+         var r:int = this._minRadius;
+         while(r <= this._radius)
          {
             switch(this._nDirection)
             {
                case DirectionsEnum.LEFT:
-                  if(MapPoint.isInMap(_loc4_ - _loc7_,_loc5_ - _loc7_))
+                  if(MapPoint.isInMap(x - r,y - r))
                   {
-                     _loc6_ = this.addCell(_loc4_ - _loc7_,_loc5_ - _loc7_,_loc2_);
+                     added = this.addCell(x - r,y - r,aCells);
                   }
                   break;
                case DirectionsEnum.UP:
-                  if(MapPoint.isInMap(_loc4_ - _loc7_,_loc5_ + _loc7_))
+                  if(MapPoint.isInMap(x - r,y + r))
                   {
-                     _loc6_ = this.addCell(_loc4_ - _loc7_,_loc5_ + _loc7_,_loc2_);
+                     added = this.addCell(x - r,y + r,aCells);
                   }
                   break;
                case DirectionsEnum.RIGHT:
-                  if(MapPoint.isInMap(_loc4_ + _loc7_,_loc5_ + _loc7_))
+                  if(MapPoint.isInMap(x + r,y + r))
                   {
-                     _loc6_ = this.addCell(_loc4_ + _loc7_,_loc5_ + _loc7_,_loc2_);
+                     added = this.addCell(x + r,y + r,aCells);
                   }
                   break;
                case DirectionsEnum.DOWN:
-                  if(MapPoint.isInMap(_loc4_ + _loc7_,_loc5_ - _loc7_))
+                  if(MapPoint.isInMap(x + r,y - r))
                   {
-                     _loc6_ = this.addCell(_loc4_ + _loc7_,_loc5_ - _loc7_,_loc2_);
+                     added = this.addCell(x + r,y - r,aCells);
                   }
                   break;
                case DirectionsEnum.UP_LEFT:
-                  if(MapPoint.isInMap(_loc4_ - _loc7_,_loc5_))
+                  if(MapPoint.isInMap(x - r,y))
                   {
-                     _loc6_ = this.addCell(_loc4_ - _loc7_,_loc5_,_loc2_);
+                     added = this.addCell(x - r,y,aCells);
                   }
                   break;
                case DirectionsEnum.DOWN_LEFT:
-                  if(MapPoint.isInMap(_loc4_,_loc5_ - _loc7_))
+                  if(MapPoint.isInMap(x,y - r))
                   {
-                     _loc6_ = this.addCell(_loc4_,_loc5_ - _loc7_,_loc2_);
+                     added = this.addCell(x,y - r,aCells);
                   }
                   break;
                case DirectionsEnum.DOWN_RIGHT:
-                  if(MapPoint.isInMap(_loc4_ + _loc7_,_loc5_))
+                  if(MapPoint.isInMap(x + r,y))
                   {
-                     _loc6_ = this.addCell(_loc4_ + _loc7_,_loc5_,_loc2_);
+                     added = this.addCell(x + r,y,aCells);
                   }
                   break;
                case DirectionsEnum.UP_RIGHT:
-                  if(MapPoint.isInMap(_loc4_,_loc5_ + _loc7_))
+                  if(MapPoint.isInMap(x,y + r))
                   {
-                     _loc6_ = this.addCell(_loc4_,_loc5_ + _loc7_,_loc2_);
+                     added = this.addCell(x,y + r,aCells);
                   }
                   break;
-               default:
-                  continue;
             }
-            if(!_loc6_)
+            if(!added)
             {
                break;
             }
+            r++;
          }
-         return _loc2_;
+         return aCells;
       }
       
-      private function addCell(param1:int, param2:int, param3:Vector.<uint>) : Boolean {
-         if(this._dataMapProvider == null || (this._dataMapProvider.pointMov(param1,param2)))
+      private function addCell(x:int, y:int, cellMap:Vector.<uint>) : Boolean {
+         if((this._dataMapProvider == null) || (this._dataMapProvider.pointMov(x,y)))
          {
-            param3.push(MapPoint.fromCoords(param1,param2).cellId);
+            cellMap.push(MapPoint.fromCoords(x,y).cellId);
             return true;
          }
          return false;

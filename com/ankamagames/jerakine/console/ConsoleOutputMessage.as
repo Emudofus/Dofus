@@ -5,11 +5,11 @@ package com.ankamagames.jerakine.console
    public class ConsoleOutputMessage extends Object implements Message
    {
       
-      public function ConsoleOutputMessage(param1:String, param2:String, param3:uint) {
+      public function ConsoleOutputMessage(consoleId:String, text:String, type:uint) {
          super();
-         this._consoleId = param1;
-         this._text = param2;
-         this._type = param3;
+         this._consoleId = consoleId;
+         this._text = text;
+         this._type = type;
       }
       
       private var _consoleId:String;

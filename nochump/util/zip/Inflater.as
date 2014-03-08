@@ -44,399 +44,398 @@ package nochump.util.zip
       
       private var distcode:Object;
       
-      public function setInput(param1:ByteArray) : void {
-         this.inbuf = param1;
+      public function setInput(buf:ByteArray) : void {
+         this.inbuf = buf;
          this.inbuf.endian = Endian.LITTLE_ENDIAN;
       }
       
       private var _running:Boolean;
       
-      public function inflate(param1:ByteArray, param2:Function) : uint {
-         var _loc7_:* = 0;
-         var _loc8_:* = 0;
+      public function inflate(buf:ByteArray, asynCallback:Function) : uint {
+         var last:* = 0;
+         var type:* = 0;
          if(!this._running)
          {
             this.incnt = this.bitbuf = this.bitcnt = 0;
          }
          this._running = true;
-         var _loc3_:* = !(param2 == null);
-         var _loc4_:Number = getTimer();
-         var _loc5_:* = 0;
-         var _loc6_:uint = param1.length;
-         do
+         var asynch:Boolean = !(asynCallback == null);
+         var startTs:Number = getTimer();
+         var err:int = 0;
+         var startBuffLen:uint = buf.length;
+         while(!((asynch) && (getTimer() - startTs > 24)))
          {
-               if((_loc3_) && getTimer() - _loc4_ > 24)
+            last = this.bits(1);
+            type = this.bits(2);
+            if(type == 0)
+            {
+               this.stored(buf);
+            }
+            else
+            {
+               if(type == 3)
                {
-                  dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS,false,false,param1.length));
-                  setTimeout(this.inflate,1,param1,param2);
-                  return 0;
-               }
-               _loc7_ = this.bits(1);
-               _loc8_ = this.bits(2);
-               if(_loc8_ == 0)
-               {
-                  this.stored(param1);
+                  throw new Error("invalid block type (type == 3)",-1);
                }
                else
                {
-                  if(_loc8_ == 3)
+                  this.lencode = 
+                     {
+                        "count":[],
+                        "symbol":[]
+                     };
+                  this.distcode = 
+                     {
+                        "count":[],
+                        "symbol":[]
+                     };
+                  if(type == 1)
                   {
-                     throw new Error("invalid block type (type == 3)",-1);
+                     this.constructFixedTables();
                   }
                   else
                   {
-                     this.lencode = 
-                        {
-                           "count":[],
-                           "symbol":[]
-                        };
-                     this.distcode = 
-                        {
-                           "count":[],
-                           "symbol":[]
-                        };
-                     if(_loc8_ == 1)
+                     if(type == 2)
                      {
-                        this.constructFixedTables();
+                        err = this.constructDynamicTables();
                      }
-                     else
-                     {
-                        if(_loc8_ == 2)
-                        {
-                           _loc5_ = this.constructDynamicTables();
-                        }
-                     }
-                     if(_loc5_ != 0)
-                     {
-                        return _loc5_;
-                     }
-                     _loc5_ = this.codes(param1);
                   }
+                  if(err != 0)
+                  {
+                     return err;
+                  }
+                  err = this.codes(buf);
                }
-               if(_loc5_ != 0)
-               {
-                  break;
-               }
-            }while(!_loc7_);
-            
-            this._running = false;
-            if(_loc3_)
-            {
-               param2(param1);
             }
-            return _loc5_;
-         }
-         
-         private function bits(param1:int) : int {
-            var _loc2_:int = this.bitbuf;
-            while(this.bitcnt < param1)
+            if(err == 0)
             {
-               if(this.incnt == this.inbuf.length)
+               if(!last)
                {
-                  throw new Error("available inflate data did not terminate",2);
-               }
-               else
-               {
-                  _loc2_ = _loc2_ | this.inbuf[this.incnt++] << this.bitcnt;
-                  this.bitcnt = this.bitcnt + 8;
                   continue;
                }
             }
-            this.bitbuf = _loc2_ >> param1;
-            this.bitcnt = this.bitcnt - param1;
-            return _loc2_ & 1 << param1-1;
+            this._running = false;
+            if(asynch)
+            {
+               asynCallback(buf);
+            }
+            return err;
          }
-         
-         private function construct(param1:Object, param2:Array, param3:int) : int {
-            var _loc4_:Array = [];
-            var _loc5_:* = 0;
-            while(_loc5_ <= MAXBITS)
-            {
-               param1.count[_loc5_] = 0;
-               _loc5_++;
-            }
-            var _loc6_:* = 0;
-            while(_loc6_ < param3)
-            {
-               param1.count[param2[_loc6_]]++;
-               _loc6_++;
-            }
-            if(param1.count[0] == param3)
-            {
-               return 0;
-            }
-            var _loc7_:* = 1;
-            _loc5_ = 1;
-            while(_loc5_ <= MAXBITS)
-            {
-               _loc7_ = _loc7_ << 1;
-               _loc7_ = _loc7_ - param1.count[_loc5_];
-               if(_loc7_ < 0)
-               {
-                  return _loc7_;
-               }
-               _loc5_++;
-            }
-            _loc4_[1] = 0;
-            _loc5_ = 1;
-            while(_loc5_ < MAXBITS)
-            {
-               _loc4_[_loc5_ + 1] = _loc4_[_loc5_] + param1.count[_loc5_];
-               _loc5_++;
-            }
-            _loc6_ = 0;
-            while(_loc6_ < param3)
-            {
-               if(param2[_loc6_] != 0)
-               {
-                  param1.symbol[_loc4_[param2[_loc6_]]++] = _loc6_;
-               }
-               _loc6_++;
-            }
-            return _loc7_;
-         }
-         
-         private function decode(param1:Object) : int {
-            var _loc6_:* = 0;
-            var _loc2_:* = 0;
-            var _loc3_:* = 0;
-            var _loc4_:* = 0;
-            var _loc5_:* = 1;
-            while(_loc5_ <= MAXBITS)
-            {
-               _loc2_ = _loc2_ | this.bits(1);
-               _loc6_ = param1.count[_loc5_];
-               if(_loc2_ < _loc3_ + _loc6_)
-               {
-                  return param1.symbol[_loc4_ + (_loc2_ - _loc3_)];
-               }
-               _loc4_ = _loc4_ + _loc6_;
-               _loc3_ = _loc3_ + _loc6_;
-               _loc3_ = _loc3_ << 1;
-               _loc2_ = _loc2_ << 1;
-               _loc5_++;
-            }
-            return -9;
-         }
-         
-         private function codes(param1:ByteArray) : int {
-            var _loc2_:* = 0;
-            var _loc3_:* = 0;
-            var _loc4_:uint = 0;
-            while(true)
-            {
-               _loc2_ = this.decode(this.lencode);
-               if(_loc2_ < 0)
-               {
-                  break;
-               }
-               if(_loc2_ < 256)
-               {
-                  param1[param1.length] = _loc2_;
-               }
-               else
-               {
-                  if(_loc2_ > 256)
-                  {
-                     _loc2_ = _loc2_ - 257;
-                     if(_loc2_ >= 29)
-                     {
-                        throw new Error("invalid literal/length or distance code in fixed or dynamic block",-9);
-                     }
-                     else
-                     {
-                        _loc3_ = LENS[_loc2_] + this.bits(LEXT[_loc2_]);
-                        _loc2_ = this.decode(this.distcode);
-                        if(_loc2_ < 0)
-                        {
-                           return _loc2_;
-                        }
-                        _loc4_ = DISTS[_loc2_] + this.bits(DEXT[_loc2_]);
-                        if(_loc4_ > param1.length)
-                        {
-                           throw new Error("distance is too far back in fixed or dynamic block",-10);
-                        }
-                        else
-                        {
-                           while(_loc3_--)
-                           {
-                              param1[param1.length] = param1[param1.length - _loc4_];
-                           }
-                        }
-                     }
-                  }
-               }
-               if(_loc2_ == 256)
-               {
-                  return 0;
-               }
-            }
-            return _loc2_;
-         }
-         
-         private function stored(param1:ByteArray) : void {
-            this.bitbuf = 0;
-            this.bitcnt = 0;
-            if(this.incnt + 4 > this.inbuf.length)
+         dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS,false,false,buf.length));
+         setTimeout(this.inflate,1,buf,asynCallback);
+         return 0;
+      }
+      
+      private function bits(need:int) : int {
+         var val:int = this.bitbuf;
+         while(this.bitcnt < need)
+         {
+            if(this.incnt == this.inbuf.length)
             {
                throw new Error("available inflate data did not terminate",2);
             }
             else
             {
-               _loc2_ = this.inbuf[this.incnt++];
-               _loc2_ = _loc2_ | this.inbuf[this.incnt++] << 8;
-               if(!(this.inbuf[this.incnt++] == (~_loc2_ & 255)) || !(this.inbuf[this.incnt++] == (~_loc2_ >> 8 & 255)))
-               {
-                  throw new Error("stored block length did not match one\'s complement",-2);
-               }
-               else
-               {
-                  if(this.incnt + _loc2_ > this.inbuf.length)
-                  {
-                     throw new Error("available inflate data did not terminate",2);
-                  }
-                  else
-                  {
-                     while(_loc2_--)
-                     {
-                        param1[param1.length] = this.inbuf[this.incnt++];
-                     }
-                     return;
-                  }
-               }
+               val = val | this.inbuf[this.incnt++] << this.bitcnt;
+               this.bitcnt = this.bitcnt + 8;
+               continue;
             }
          }
-         
-         private function constructFixedTables() : void {
-            var _loc1_:Array = [];
-            var _loc2_:* = 0;
-            while(_loc2_ < 144)
-            {
-               _loc1_[_loc2_] = 8;
-               _loc2_++;
-            }
-            while(_loc2_ < 256)
-            {
-               _loc1_[_loc2_] = 9;
-               _loc2_++;
-            }
-            while(_loc2_ < 280)
-            {
-               _loc1_[_loc2_] = 7;
-               _loc2_++;
-            }
-            while(_loc2_ < FIXLCODES)
-            {
-               _loc1_[_loc2_] = 8;
-               _loc2_++;
-            }
-            this.construct(this.lencode,_loc1_,FIXLCODES);
-            _loc2_ = 0;
-            while(_loc2_ < MAXDCODES)
-            {
-               _loc1_[_loc2_] = 5;
-               _loc2_++;
-            }
-            this.construct(this.distcode,_loc1_,MAXDCODES);
+         this.bitbuf = val >> need;
+         this.bitcnt = this.bitcnt - need;
+         return val & (1 << need) - 1;
+      }
+      
+      private function construct(h:Object, length:Array, n:int) : int {
+         var offs:Array = [];
+         var len:int = 0;
+         while(len <= MAXBITS)
+         {
+            h.count[len] = 0;
+            len++;
          }
-         
-         private function constructDynamicTables() : int {
-            var _loc8_:* = 0;
-            var _loc9_:* = 0;
-            var _loc1_:Array = [];
-            var _loc2_:Array = [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
-            var _loc3_:int = this.bits(5) + 257;
-            var _loc4_:int = this.bits(5) + 1;
-            var _loc5_:int = this.bits(4) + 4;
-            if(_loc3_ > MAXLCODES || _loc4_ > MAXDCODES)
+         var symbol:int = 0;
+         while(symbol < n)
+         {
+            h.count[length[symbol]]++;
+            symbol++;
+         }
+         if(h.count[0] == n)
+         {
+            return 0;
+         }
+         var left:int = 1;
+         len = 1;
+         while(len <= MAXBITS)
+         {
+            left = left << 1;
+            left = left - h.count[len];
+            if(left < 0)
             {
-               throw new Error("dynamic block code description: too many length or distance codes",-3);
+               return left;
+            }
+            len++;
+         }
+         offs[1] = 0;
+         len = 1;
+         while(len < MAXBITS)
+         {
+            offs[len + 1] = offs[len] + h.count[len];
+            len++;
+         }
+         symbol = 0;
+         while(symbol < n)
+         {
+            if(length[symbol] != 0)
+            {
+               h.symbol[offs[length[symbol]]++] = symbol;
+            }
+            symbol++;
+         }
+         return left;
+      }
+      
+      private function decode(h:Object) : int {
+         var count:* = 0;
+         var code:int = 0;
+         var first:int = 0;
+         var index:int = 0;
+         var len:int = 1;
+         while(len <= MAXBITS)
+         {
+            code = code | this.bits(1);
+            count = h.count[len];
+            if(code < first + count)
+            {
+               return h.symbol[index + (code - first)];
+            }
+            index = index + count;
+            first = first + count;
+            first = first << 1;
+            code = code << 1;
+            len++;
+         }
+         return -9;
+      }
+      
+      private function codes(buf:ByteArray) : int {
+         var symbol:* = 0;
+         var len:* = 0;
+         var dist:uint = 0;
+         while(true)
+         {
+            symbol = this.decode(this.lencode);
+            if(symbol < 0)
+            {
+               break;
+            }
+            if(symbol < 256)
+            {
+               buf[buf.length] = symbol;
             }
             else
             {
-               _loc6_ = 0;
-               while(_loc6_ < _loc5_)
+               if(symbol > 256)
                {
-                  _loc1_[_loc2_[_loc6_]] = this.bits(3);
-                  _loc6_++;
-               }
-               while(_loc6_ < 19)
-               {
-                  _loc1_[_loc2_[_loc6_]] = 0;
-                  _loc6_++;
-               }
-               _loc7_ = this.construct(this.lencode,_loc1_,19);
-               if(_loc7_ != 0)
-               {
-                  throw new Error("dynamic block code description: code lengths codes incomplete",-4);
-               }
-               else
-               {
-                  _loc6_ = 0;
-                  while(_loc6_ < _loc3_ + _loc4_)
+                  symbol = symbol - 257;
+                  if(symbol >= 29)
                   {
-                     _loc8_ = this.decode(this.lencode);
-                     if(_loc8_ < 16)
-                     {
-                        _loc1_[_loc6_++] = _loc8_;
-                        continue;
-                     }
-                     _loc9_ = 0;
-                     if(_loc8_ == 16)
-                     {
-                        if(_loc6_ == 0)
-                        {
-                           throw new Error("dynamic block code description: repeat lengths with no first length",-5);
-                        }
-                        else
-                        {
-                           _loc9_ = _loc1_[_loc6_-1];
-                           _loc8_ = 3 + this.bits(2);
-                        }
-                     }
-                     else
-                     {
-                        if(_loc8_ == 17)
-                        {
-                           _loc8_ = 3 + this.bits(3);
-                        }
-                        else
-                        {
-                           _loc8_ = 11 + this.bits(7);
-                        }
-                     }
-                     if(_loc6_ + _loc8_ > _loc3_ + _loc4_)
-                     {
-                        throw new Error("dynamic block code description: repeat more than specified lengths",-6);
-                     }
-                     else
-                     {
-                        while(_loc8_--)
-                        {
-                           _loc1_[_loc6_++] = _loc9_;
-                        }
-                        continue;
-                     }
-                  }
-                  _loc7_ = this.construct(this.lencode,_loc1_,_loc3_);
-                  if(_loc7_ < 0 || _loc7_ > 0 && !(_loc3_ - this.lencode.count[0] == 1))
-                  {
-                     throw new Error("dynamic block code description: invalid literal/length code lengths",-7);
+                     throw new Error("invalid literal/length or distance code in fixed or dynamic block",-9);
                   }
                   else
                   {
-                     _loc7_ = this.construct(this.distcode,_loc1_.slice(_loc3_),_loc4_);
-                     if(_loc7_ < 0 || _loc7_ > 0 && !(_loc4_ - this.distcode.count[0] == 1))
+                     len = LENS[symbol] + this.bits(LEXT[symbol]);
+                     symbol = this.decode(this.distcode);
+                     if(symbol < 0)
                      {
-                        throw new Error("dynamic block code description: invalid distance code lengths",-8);
+                        return symbol;
+                     }
+                     dist = DISTS[symbol] + this.bits(DEXT[symbol]);
+                     if(dist > buf.length)
+                     {
+                        throw new Error("distance is too far back in fixed or dynamic block",-10);
                      }
                      else
                      {
-                        return _loc7_;
+                        while(len--)
+                        {
+                           buf[buf.length] = buf[buf.length - dist];
+                        }
                      }
+                  }
+               }
+            }
+            if(symbol == 256)
+            {
+               return 0;
+            }
+         }
+         return symbol;
+      }
+      
+      private function stored(buf:ByteArray) : void {
+         this.bitbuf = 0;
+         this.bitcnt = 0;
+         if(this.incnt + 4 > this.inbuf.length)
+         {
+            throw new Error("available inflate data did not terminate",2);
+         }
+         else
+         {
+            len = this.inbuf[this.incnt++];
+            len = len | this.inbuf[this.incnt++] << 8;
+            if((!(this.inbuf[this.incnt++] == (~len & 255))) || (!(this.inbuf[this.incnt++] == (~len >> 8 & 255))))
+            {
+               throw new Error("stored block length did not match one\'s complement",-2);
+            }
+            else
+            {
+               if(this.incnt + len > this.inbuf.length)
+               {
+                  throw new Error("available inflate data did not terminate",2);
+               }
+               else
+               {
+                  while(len--)
+                  {
+                     buf[buf.length] = this.inbuf[this.incnt++];
+                  }
+                  return;
+               }
+            }
+         }
+      }
+      
+      private function constructFixedTables() : void {
+         var lengths:Array = [];
+         var symbol:int = 0;
+         while(symbol < 144)
+         {
+            lengths[symbol] = 8;
+            symbol++;
+         }
+         while(symbol < 256)
+         {
+            lengths[symbol] = 9;
+            symbol++;
+         }
+         while(symbol < 280)
+         {
+            lengths[symbol] = 7;
+            symbol++;
+         }
+         while(symbol < FIXLCODES)
+         {
+            lengths[symbol] = 8;
+            symbol++;
+         }
+         this.construct(this.lencode,lengths,FIXLCODES);
+         symbol = 0;
+         while(symbol < MAXDCODES)
+         {
+            lengths[symbol] = 5;
+            symbol++;
+         }
+         this.construct(this.distcode,lengths,MAXDCODES);
+      }
+      
+      private function constructDynamicTables() : int {
+         var symbol:* = 0;
+         var len:* = 0;
+         var lengths:Array = [];
+         var order:Array = [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
+         var nlen:int = this.bits(5) + 257;
+         var ndist:int = this.bits(5) + 1;
+         var ncode:int = this.bits(4) + 4;
+         if((nlen > MAXLCODES) || (ndist > MAXDCODES))
+         {
+            throw new Error("dynamic block code description: too many length or distance codes",-3);
+         }
+         else
+         {
+            index = 0;
+            while(index < ncode)
+            {
+               lengths[order[index]] = this.bits(3);
+               index++;
+            }
+            while(index < 19)
+            {
+               lengths[order[index]] = 0;
+               index++;
+            }
+            err = this.construct(this.lencode,lengths,19);
+            if(err != 0)
+            {
+               throw new Error("dynamic block code description: code lengths codes incomplete",-4);
+            }
+            else
+            {
+               index = 0;
+               while(index < nlen + ndist)
+               {
+                  symbol = this.decode(this.lencode);
+                  if(symbol < 16)
+                  {
+                     lengths[index++] = symbol;
+                     continue;
+                  }
+                  len = 0;
+                  if(symbol == 16)
+                  {
+                     if(index == 0)
+                     {
+                        throw new Error("dynamic block code description: repeat lengths with no first length",-5);
+                     }
+                     else
+                     {
+                        len = lengths[index - 1];
+                        symbol = 3 + this.bits(2);
+                     }
+                  }
+                  else
+                  {
+                     if(symbol == 17)
+                     {
+                        symbol = 3 + this.bits(3);
+                     }
+                     else
+                     {
+                        symbol = 11 + this.bits(7);
+                     }
+                  }
+                  if(index + symbol > nlen + ndist)
+                  {
+                     throw new Error("dynamic block code description: repeat more than specified lengths",-6);
+                  }
+                  else
+                  {
+                     while(symbol--)
+                     {
+                        lengths[index++] = len;
+                     }
+                     continue;
+                  }
+               }
+               err = this.construct(this.lencode,lengths,nlen);
+               if((err < 0) || (err > 0) && (!(nlen - this.lencode.count[0] == 1)))
+               {
+                  throw new Error("dynamic block code description: invalid literal/length code lengths",-7);
+               }
+               else
+               {
+                  err = this.construct(this.distcode,lengths.slice(nlen),ndist);
+                  if((err < 0) || (err > 0) && (!(ndist - this.distcode.count[0] == 1)))
+                  {
+                     throw new Error("dynamic block code description: invalid distance code lengths",-8);
+                  }
+                  else
+                  {
+                     return err;
                   }
                }
             }
          }
       }
    }
+}

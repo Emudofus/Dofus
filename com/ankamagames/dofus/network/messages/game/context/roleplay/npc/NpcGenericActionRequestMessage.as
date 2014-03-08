@@ -31,10 +31,10 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 5898;
       }
       
-      public function initNpcGenericActionRequestMessage(param1:int=0, param2:uint=0, param3:int=0) : NpcGenericActionRequestMessage {
-         this.npcId = param1;
-         this.npcActionId = param2;
-         this.npcMapId = param3;
+      public function initNpcGenericActionRequestMessage(npcId:int=0, npcActionId:uint=0, npcMapId:int=0) : NpcGenericActionRequestMessage {
+         this.npcId = npcId;
+         this.npcActionId = npcActionId;
+         this.npcMapId = npcMapId;
          this._isInitialized = true;
          return this;
       }
@@ -46,48 +46,48 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_NpcGenericActionRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_NpcGenericActionRequestMessage(output);
       }
       
-      public function serializeAs_NpcGenericActionRequestMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.npcId);
+      public function serializeAs_NpcGenericActionRequestMessage(output:IDataOutput) : void {
+         output.writeInt(this.npcId);
          if(this.npcActionId < 0)
          {
             throw new Error("Forbidden value (" + this.npcActionId + ") on element npcActionId.");
          }
          else
          {
-            param1.writeByte(this.npcActionId);
-            param1.writeInt(this.npcMapId);
+            output.writeByte(this.npcActionId);
+            output.writeInt(this.npcMapId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_NpcGenericActionRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_NpcGenericActionRequestMessage(input);
       }
       
-      public function deserializeAs_NpcGenericActionRequestMessage(param1:IDataInput) : void {
-         this.npcId = param1.readInt();
-         this.npcActionId = param1.readByte();
+      public function deserializeAs_NpcGenericActionRequestMessage(input:IDataInput) : void {
+         this.npcId = input.readInt();
+         this.npcActionId = input.readByte();
          if(this.npcActionId < 0)
          {
             throw new Error("Forbidden value (" + this.npcActionId + ") on element of NpcGenericActionRequestMessage.npcActionId.");
          }
          else
          {
-            this.npcMapId = param1.readInt();
+            this.npcMapId = input.readInt();
             return;
          }
       }

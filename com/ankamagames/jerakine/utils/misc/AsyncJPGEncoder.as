@@ -1,6 +1,6 @@
 package com.ankamagames.jerakine.utils.misc
 {
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.ByteArray;
    import flash.display.BitmapData;
    import flash.events.Event;
@@ -11,7 +11,7 @@ package com.ankamagames.jerakine.utils.misc
    public class AsyncJPGEncoder extends Object
    {
       
-      public function AsyncJPGEncoder(param1:int=50) {
+      public function AsyncJPGEncoder(quality:int=50) {
          this.YTable = new Vector.<int>(64,true);
          this.UVTable = new Vector.<int>(64,true);
          this.outputfDCTQuant = new Vector.<int>(64,true);
@@ -26,22 +26,22 @@ package com.ankamagames.jerakine.utils.misc
          this.std_dc_chrominance_values = Vector.<int>([0,1,2,3,4,5,6,7,8,9,10,11]);
          this.std_ac_chrominance_nrcodes = Vector.<int>([0,0,2,1,2,4,4,3,4,7,5,4,4,0,1,2,119]);
          this.std_ac_chrominance_values = Vector.<int>([0,1,2,3,17,4,5,33,49,6,18,65,81,7,97,113,19,34,50,129,8,20,66,145,161,177,193,9,35,51,82,240,21,98,114,209,10,22,36,52,225,37,241,23,24,25,26,38,39,40,41,42,53,54,55,56,57,58,67,68,69,70,71,72,73,74,83,84,85,86,87,88,89,90,99,100,101,102,103,104,105,106,115,116,117,118,119,120,121,122,130,131,132,133,134,135,136,137,138,146,147,148,149,150,151,152,153,154,162,163,164,165,166,167,168,169,170,178,179,180,181,182,183,184,185,186,194,195,196,197,198,199,200,201,202,210,211,212,213,214,215,216,217,218,226,227,228,229,230,231,232,233,234,242,243,244,245,246,247,248,249,250]);
-         this.bitcode = new Vector.<AsyncJPGEncoder>(65535,true);
+         this.bitcode = new Vector.<BitString>(65535,true);
          this.category = new Vector.<int>(65535,true);
          this.DU = new Vector.<int>(64,true);
          this.YDU = new Vector.<Number>(64,true);
          this.UDU = new Vector.<Number>(64,true);
          this.VDU = new Vector.<Number>(64,true);
          super();
-         if(param1 <= 0)
+         if(quality <= 0)
          {
-            param1 = 1;
+            quality = 1;
          }
-         if(param1 > 100)
+         if(quality > 100)
          {
-            param1 = 100;
+            quality = 100;
          }
-         this.sf = param1 < 50?int(5000 / param1):int(200 - (param1 << 1));
+         this.sf = quality < 50?int(5000 / quality):int(200 - (quality << 1));
          this.init();
       }
       
@@ -65,62 +65,62 @@ package com.ankamagames.jerakine.utils.misc
       
       private const UVQT:Vector.<int> = Vector.<int>([17,18,24,47,99,99,99,99,18,21,26,66,99,99,99,99,24,26,56,99,99,99,99,99,47,66,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99]);
       
-      private function initQuantTables(param1:int) : void {
-         var _loc2_:* = 0;
-         var _loc6_:* = 0;
-         var _loc7_:* = 0;
-         var _loc8_:* = 0;
-         var _loc3_:* = 64;
-         var _loc4_:* = 8;
-         _loc2_ = 0;
-         while(_loc2_ < _loc3_)
+      private function initQuantTables(sf:int) : void {
+         var i:* = 0;
+         var t:* = 0;
+         var u:* = 0;
+         var col:* = 0;
+         var I64:int = 64;
+         var I8:int = 8;
+         i = 0;
+         while(i < I64)
          {
-            _loc6_ = int((this.YQT[_loc2_] * param1 + 50) * 0.01);
-            if(_loc6_ < 1)
+            t = int((this.YQT[i] * sf + 50) * 0.01);
+            if(t < 1)
             {
-               _loc6_ = 1;
+               t = 1;
             }
             else
             {
-               if(_loc6_ > 255)
+               if(t > 255)
                {
-                  _loc6_ = 255;
+                  t = 255;
                }
             }
-            this.YTable[this.ZigZag[_loc2_]] = _loc6_;
-            _loc2_++;
+            this.YTable[this.ZigZag[i]] = t;
+            i++;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _loc3_)
+         i = 0;
+         while(i < I64)
          {
-            _loc7_ = int((this.UVQT[_loc2_] * param1 + 50) * 0.01);
-            if(_loc7_ < 1)
+            u = int((this.UVQT[i] * sf + 50) * 0.01);
+            if(u < 1)
             {
-               _loc7_ = 1;
+               u = 1;
             }
             else
             {
-               if(_loc7_ > 255)
+               if(u > 255)
                {
-                  _loc7_ = 255;
+                  u = 255;
                }
             }
-            this.UVTable[this.ZigZag[_loc2_]] = _loc7_;
-            _loc2_++;
+            this.UVTable[this.ZigZag[i]] = u;
+            i++;
          }
-         _loc2_ = 0;
-         var _loc5_:* = 0;
-         while(_loc5_ < _loc4_)
+         i = 0;
+         var row:int = 0;
+         while(row < I8)
          {
-            _loc8_ = 0;
-            while(_loc8_ < _loc4_)
+            col = 0;
+            while(col < I8)
             {
-               this.fdtbl_Y[_loc2_] = 1 / (this.YTable[this.ZigZag[_loc2_]] * this.aasf[_loc5_] * this.aasf[_loc8_] * _loc4_);
-               this.fdtbl_UV[_loc2_] = 1 / (this.UVTable[this.ZigZag[_loc2_]] * this.aasf[_loc5_] * this.aasf[_loc8_] * _loc4_);
-               _loc2_++;
-               _loc8_++;
+               this.fdtbl_Y[i] = 1 / (this.YTable[this.ZigZag[i]] * this.aasf[row] * this.aasf[col] * I8);
+               this.fdtbl_UV[i] = 1 / (this.UVTable[this.ZigZag[i]] * this.aasf[row] * this.aasf[col] * I8);
+               i++;
+               col++;
             }
-            _loc5_++;
+            row++;
          }
       }
       
@@ -132,29 +132,29 @@ package com.ankamagames.jerakine.utils.misc
       
       private var UVAC_HT:Vector.<BitString>;
       
-      private function computeHuffmanTbl(param1:Vector.<int>, param2:Vector.<int>) : Vector.<BitString> {
-         var _loc6_:BitString = null;
-         var _loc8_:* = 0;
-         var _loc3_:* = 0;
-         var _loc4_:* = 0;
-         var _loc5_:Vector.<BitString> = new Vector.<AsyncJPGEncoder>(251,true);
-         var _loc7_:* = 1;
-         while(_loc7_ <= 16)
+      private function computeHuffmanTbl(nrcodes:Vector.<int>, std_table:Vector.<int>) : Vector.<BitString> {
+         var bitString:BitString = null;
+         var j:* = 0;
+         var codevalue:int = 0;
+         var pos_in_table:int = 0;
+         var HT:Vector.<BitString> = new Vector.<BitString>(251,true);
+         var k:int = 1;
+         while(k <= 16)
          {
-            _loc8_ = 1;
-            while(_loc8_ <= param1[_loc7_])
+            j = 1;
+            while(j <= nrcodes[k])
             {
-               _loc5_[param2[_loc4_]] = _loc6_ = new BitString();
-               _loc6_.val = _loc3_;
-               _loc6_.len = _loc7_;
-               _loc4_++;
-               _loc3_++;
-               _loc8_++;
+               HT[std_table[pos_in_table]] = bitString = new BitString();
+               bitString.val = codevalue;
+               bitString.len = k;
+               pos_in_table++;
+               codevalue++;
+               j++;
             }
-            _loc3_ = _loc3_ << 1;
-            _loc7_++;
+            codevalue = codevalue << 1;
+            k++;
          }
-         return _loc5_;
+         return HT;
       }
       
       private var std_dc_luminance_nrcodes:Vector.<int>;
@@ -185,39 +185,39 @@ package com.ankamagames.jerakine.utils.misc
       private var category:Vector.<int>;
       
       private function initCategoryNumber() : void {
-         var _loc3_:BitString = null;
-         var _loc5_:* = 0;
-         var _loc7_:* = 0;
-         var _loc8_:* = 0;
-         var _loc1_:* = 1;
-         var _loc2_:* = 2;
-         var _loc4_:* = 15;
-         var _loc6_:* = 1;
-         while(_loc6_ <= _loc4_)
+         var bitString:BitString = null;
+         var pos:* = 0;
+         var nr:* = 0;
+         var nrneg:* = 0;
+         var nrlower:int = 1;
+         var nrupper:int = 2;
+         var I15:int = 15;
+         var cat:int = 1;
+         while(cat <= I15)
          {
-            _loc7_ = _loc1_;
-            while(_loc7_ < _loc2_)
+            nr = nrlower;
+            while(nr < nrupper)
             {
-               _loc5_ = int(32767 + _loc7_);
-               this.category[_loc5_] = _loc6_;
-               this.bitcode[_loc5_] = _loc3_ = new BitString();
-               _loc3_.len = _loc6_;
-               _loc3_.val = _loc7_;
-               _loc7_++;
+               pos = int(32767 + nr);
+               this.category[pos] = cat;
+               this.bitcode[pos] = bitString = new BitString();
+               bitString.len = cat;
+               bitString.val = nr;
+               nr++;
             }
-            _loc8_ = -(_loc2_-1);
-            while(_loc8_ <= -_loc1_)
+            nrneg = -(nrupper - 1);
+            while(nrneg <= -nrlower)
             {
-               _loc5_ = int(32767 + _loc8_);
-               this.category[_loc5_] = _loc6_;
-               this.bitcode[_loc5_] = _loc3_ = new BitString();
-               _loc3_.len = _loc6_;
-               _loc3_.val = _loc2_-1 + _loc8_;
-               _loc8_++;
+               pos = int(32767 + nrneg);
+               this.category[pos] = cat;
+               this.bitcode[pos] = bitString = new BitString();
+               bitString.len = cat;
+               bitString.val = nrupper - 1 + nrneg;
+               nrneg++;
             }
-            _loc1_ = _loc1_ << 1;
-            _loc2_ = _loc2_ << 1;
-            _loc6_++;
+            nrlower = nrlower << 1;
+            nrupper = nrupper << 1;
+            cat++;
          }
       }
       
@@ -227,16 +227,16 @@ package com.ankamagames.jerakine.utils.misc
       
       private var bytepos:int = 7;
       
-      private function writeBits(param1:BitString) : void {
-         var _loc2_:int = param1.val;
-         var _loc3_:int = param1.len-1;
-         while(_loc3_ >= 0)
+      private function writeBits(bs:BitString) : void {
+         var value:int = bs.val;
+         var posval:int = bs.len - 1;
+         while(posval >= 0)
          {
-            if(_loc2_ & uint(1 << _loc3_))
+            if(value & uint(1 << posval))
             {
                this.bytenew = this.bytenew | uint(1 << this.bytepos);
             }
-            _loc3_--;
+            posval--;
             this.bytepos--;
             if(this.bytepos < 0)
             {
@@ -255,153 +255,153 @@ package com.ankamagames.jerakine.utils.misc
          }
       }
       
-      private function fDCTQuant(param1:Vector.<Number>, param2:Vector.<Number>) : Vector.<int> {
-         var _loc4_:* = NaN;
-         var _loc5_:* = NaN;
-         var _loc6_:* = NaN;
-         var _loc7_:* = NaN;
-         var _loc8_:* = NaN;
-         var _loc9_:* = NaN;
-         var _loc10_:* = NaN;
-         var _loc11_:* = NaN;
-         var _loc12_:* = 0;
-         var _loc15_:* = NaN;
-         var _loc16_:* = NaN;
-         var _loc17_:* = NaN;
-         var _loc18_:* = NaN;
-         var _loc19_:* = NaN;
-         var _loc20_:* = NaN;
-         var _loc21_:* = NaN;
-         var _loc22_:* = NaN;
-         var _loc23_:* = NaN;
-         var _loc24_:* = NaN;
-         var _loc25_:* = NaN;
-         var _loc26_:* = NaN;
-         var _loc27_:* = NaN;
-         var _loc28_:* = NaN;
-         var _loc29_:* = NaN;
-         var _loc30_:* = NaN;
-         var _loc31_:* = NaN;
-         var _loc32_:* = NaN;
-         var _loc33_:* = NaN;
-         var _loc34_:* = NaN;
-         var _loc35_:* = NaN;
-         var _loc36_:* = NaN;
-         var _loc37_:* = NaN;
-         var _loc38_:* = NaN;
-         var _loc39_:* = NaN;
-         var _loc40_:* = NaN;
-         var _loc41_:* = NaN;
-         var _loc42_:* = NaN;
-         var _loc43_:* = NaN;
-         var _loc44_:* = NaN;
-         var _loc45_:* = NaN;
-         var _loc46_:* = NaN;
-         var _loc47_:* = NaN;
-         var _loc48_:* = NaN;
-         var _loc49_:* = NaN;
-         var _loc50_:* = NaN;
-         var _loc51_:* = NaN;
-         var _loc52_:* = NaN;
-         var _loc53_:* = NaN;
-         var _loc3_:* = 0;
-         var _loc13_:* = 8;
-         var _loc14_:* = 64;
-         _loc12_ = 0;
-         while(_loc12_ < _loc13_)
+      private function fDCTQuant(data:Vector.<Number>, fdtbl:Vector.<Number>) : Vector.<int> {
+         var d0:* = NaN;
+         var d1:* = NaN;
+         var d2:* = NaN;
+         var d3:* = NaN;
+         var d4:* = NaN;
+         var d5:* = NaN;
+         var d6:* = NaN;
+         var d7:* = NaN;
+         var i:* = 0;
+         var fDCTQuant:* = NaN;
+         var tmp0:* = NaN;
+         var tmp7:* = NaN;
+         var tmp1:* = NaN;
+         var tmp6:* = NaN;
+         var tmp2:* = NaN;
+         var tmp5:* = NaN;
+         var tmp3:* = NaN;
+         var tmp4:* = NaN;
+         var tmp10:* = NaN;
+         var tmp13:* = NaN;
+         var tmp11:* = NaN;
+         var tmp12:* = NaN;
+         var z1:* = NaN;
+         var z5:* = NaN;
+         var z2:* = NaN;
+         var z4:* = NaN;
+         var z3:* = NaN;
+         var z11:* = NaN;
+         var z13:* = NaN;
+         var tmp0p2:* = NaN;
+         var tmp7p2:* = NaN;
+         var tmp1p2:* = NaN;
+         var tmp6p2:* = NaN;
+         var tmp2p2:* = NaN;
+         var tmp5p2:* = NaN;
+         var tmp3p2:* = NaN;
+         var tmp4p2:* = NaN;
+         var tmp10p2:* = NaN;
+         var tmp13p2:* = NaN;
+         var tmp11p2:* = NaN;
+         var tmp12p2:* = NaN;
+         var z1p2:* = NaN;
+         var z5p2:* = NaN;
+         var z2p2:* = NaN;
+         var z4p2:* = NaN;
+         var z3p2:* = NaN;
+         var z11p2:* = NaN;
+         var z13p2:* = NaN;
+         var dataOff:int = 0;
+         var I8:int = 8;
+         var I64:int = 64;
+         i = 0;
+         while(i < I8)
          {
-            _loc4_ = param1[int(_loc3_)];
-            _loc5_ = param1[int(_loc3_ + 1)];
-            _loc6_ = param1[int(_loc3_ + 2)];
-            _loc7_ = param1[int(_loc3_ + 3)];
-            _loc8_ = param1[int(_loc3_ + 4)];
-            _loc9_ = param1[int(_loc3_ + 5)];
-            _loc10_ = param1[int(_loc3_ + 6)];
-            _loc11_ = param1[int(_loc3_ + 7)];
-            _loc16_ = _loc4_ + _loc11_;
-            _loc17_ = _loc4_ - _loc11_;
-            _loc18_ = _loc5_ + _loc10_;
-            _loc19_ = _loc5_ - _loc10_;
-            _loc20_ = _loc6_ + _loc9_;
-            _loc21_ = _loc6_ - _loc9_;
-            _loc22_ = _loc7_ + _loc8_;
-            _loc23_ = _loc7_ - _loc8_;
-            _loc24_ = _loc16_ + _loc22_;
-            _loc25_ = _loc16_ - _loc22_;
-            _loc26_ = _loc18_ + _loc20_;
-            _loc27_ = _loc18_ - _loc20_;
-            param1[int(_loc3_)] = _loc24_ + _loc26_;
-            param1[int(_loc3_ + 4)] = _loc24_ - _loc26_;
-            _loc28_ = (_loc27_ + _loc25_) * 0.707106781;
-            param1[int(_loc3_ + 2)] = _loc25_ + _loc28_;
-            param1[int(_loc3_ + 6)] = _loc25_ - _loc28_;
-            _loc24_ = _loc23_ + _loc21_;
-            _loc26_ = _loc21_ + _loc19_;
-            _loc27_ = _loc19_ + _loc17_;
-            _loc29_ = (_loc24_ - _loc27_) * 0.382683433;
-            _loc30_ = 0.5411961 * _loc24_ + _loc29_;
-            _loc31_ = 1.306562965 * _loc27_ + _loc29_;
-            _loc32_ = _loc26_ * 0.707106781;
-            _loc33_ = _loc17_ + _loc32_;
-            _loc34_ = _loc17_ - _loc32_;
-            param1[int(_loc3_ + 5)] = _loc34_ + _loc30_;
-            param1[int(_loc3_ + 3)] = _loc34_ - _loc30_;
-            param1[int(_loc3_ + 1)] = _loc33_ + _loc31_;
-            param1[int(_loc3_ + 7)] = _loc33_ - _loc31_;
-            _loc3_ = _loc3_ + 8;
-            _loc12_++;
+            d0 = data[int(dataOff)];
+            d1 = data[int(dataOff + 1)];
+            d2 = data[int(dataOff + 2)];
+            d3 = data[int(dataOff + 3)];
+            d4 = data[int(dataOff + 4)];
+            d5 = data[int(dataOff + 5)];
+            d6 = data[int(dataOff + 6)];
+            d7 = data[int(dataOff + 7)];
+            tmp0 = d0 + d7;
+            tmp7 = d0 - d7;
+            tmp1 = d1 + d6;
+            tmp6 = d1 - d6;
+            tmp2 = d2 + d5;
+            tmp5 = d2 - d5;
+            tmp3 = d3 + d4;
+            tmp4 = d3 - d4;
+            tmp10 = tmp0 + tmp3;
+            tmp13 = tmp0 - tmp3;
+            tmp11 = tmp1 + tmp2;
+            tmp12 = tmp1 - tmp2;
+            data[int(dataOff)] = tmp10 + tmp11;
+            data[int(dataOff + 4)] = tmp10 - tmp11;
+            z1 = (tmp12 + tmp13) * 0.707106781;
+            data[int(dataOff + 2)] = tmp13 + z1;
+            data[int(dataOff + 6)] = tmp13 - z1;
+            tmp10 = tmp4 + tmp5;
+            tmp11 = tmp5 + tmp6;
+            tmp12 = tmp6 + tmp7;
+            z5 = (tmp10 - tmp12) * 0.382683433;
+            z2 = 0.5411961 * tmp10 + z5;
+            z4 = 1.306562965 * tmp12 + z5;
+            z3 = tmp11 * 0.707106781;
+            z11 = tmp7 + z3;
+            z13 = tmp7 - z3;
+            data[int(dataOff + 5)] = z13 + z2;
+            data[int(dataOff + 3)] = z13 - z2;
+            data[int(dataOff + 1)] = z11 + z4;
+            data[int(dataOff + 7)] = z11 - z4;
+            dataOff = dataOff + 8;
+            i++;
          }
-         _loc3_ = 0;
-         _loc12_ = 0;
-         while(_loc12_ < _loc13_)
+         dataOff = 0;
+         i = 0;
+         while(i < I8)
          {
-            _loc4_ = param1[int(_loc3_)];
-            _loc5_ = param1[int(_loc3_ + 8)];
-            _loc6_ = param1[int(_loc3_ + 16)];
-            _loc7_ = param1[int(_loc3_ + 24)];
-            _loc8_ = param1[int(_loc3_ + 32)];
-            _loc9_ = param1[int(_loc3_ + 40)];
-            _loc10_ = param1[int(_loc3_ + 48)];
-            _loc11_ = param1[int(_loc3_ + 56)];
-            _loc35_ = _loc4_ + _loc11_;
-            _loc36_ = _loc4_ - _loc11_;
-            _loc37_ = _loc5_ + _loc10_;
-            _loc38_ = _loc5_ - _loc10_;
-            _loc39_ = _loc6_ + _loc9_;
-            _loc40_ = _loc6_ - _loc9_;
-            _loc41_ = _loc7_ + _loc8_;
-            _loc42_ = _loc7_ - _loc8_;
-            _loc43_ = _loc35_ + _loc41_;
-            _loc44_ = _loc35_ - _loc41_;
-            _loc45_ = _loc37_ + _loc39_;
-            _loc46_ = _loc37_ - _loc39_;
-            param1[int(_loc3_)] = _loc43_ + _loc45_;
-            param1[int(_loc3_ + 32)] = _loc43_ - _loc45_;
-            _loc47_ = (_loc46_ + _loc44_) * 0.707106781;
-            param1[int(_loc3_ + 16)] = _loc44_ + _loc47_;
-            param1[int(_loc3_ + 48)] = _loc44_ - _loc47_;
-            _loc43_ = _loc42_ + _loc40_;
-            _loc45_ = _loc40_ + _loc38_;
-            _loc46_ = _loc38_ + _loc36_;
-            _loc48_ = (_loc43_ - _loc46_) * 0.382683433;
-            _loc49_ = 0.5411961 * _loc43_ + _loc48_;
-            _loc50_ = 1.306562965 * _loc46_ + _loc48_;
-            _loc51_ = _loc45_ * 0.707106781;
-            _loc52_ = _loc36_ + _loc51_;
-            _loc53_ = _loc36_ - _loc51_;
-            param1[int(_loc3_ + 40)] = _loc53_ + _loc49_;
-            param1[int(_loc3_ + 24)] = _loc53_ - _loc49_;
-            param1[int(_loc3_ + 8)] = _loc52_ + _loc50_;
-            param1[int(_loc3_ + 56)] = _loc52_ - _loc50_;
-            _loc3_++;
-            _loc12_++;
+            d0 = data[int(dataOff)];
+            d1 = data[int(dataOff + 8)];
+            d2 = data[int(dataOff + 16)];
+            d3 = data[int(dataOff + 24)];
+            d4 = data[int(dataOff + 32)];
+            d5 = data[int(dataOff + 40)];
+            d6 = data[int(dataOff + 48)];
+            d7 = data[int(dataOff + 56)];
+            tmp0p2 = d0 + d7;
+            tmp7p2 = d0 - d7;
+            tmp1p2 = d1 + d6;
+            tmp6p2 = d1 - d6;
+            tmp2p2 = d2 + d5;
+            tmp5p2 = d2 - d5;
+            tmp3p2 = d3 + d4;
+            tmp4p2 = d3 - d4;
+            tmp10p2 = tmp0p2 + tmp3p2;
+            tmp13p2 = tmp0p2 - tmp3p2;
+            tmp11p2 = tmp1p2 + tmp2p2;
+            tmp12p2 = tmp1p2 - tmp2p2;
+            data[int(dataOff)] = tmp10p2 + tmp11p2;
+            data[int(dataOff + 32)] = tmp10p2 - tmp11p2;
+            z1p2 = (tmp12p2 + tmp13p2) * 0.707106781;
+            data[int(dataOff + 16)] = tmp13p2 + z1p2;
+            data[int(dataOff + 48)] = tmp13p2 - z1p2;
+            tmp10p2 = tmp4p2 + tmp5p2;
+            tmp11p2 = tmp5p2 + tmp6p2;
+            tmp12p2 = tmp6p2 + tmp7p2;
+            z5p2 = (tmp10p2 - tmp12p2) * 0.382683433;
+            z2p2 = 0.5411961 * tmp10p2 + z5p2;
+            z4p2 = 1.306562965 * tmp12p2 + z5p2;
+            z3p2 = tmp11p2 * 0.707106781;
+            z11p2 = tmp7p2 + z3p2;
+            z13p2 = tmp7p2 - z3p2;
+            data[int(dataOff + 40)] = z13p2 + z2p2;
+            data[int(dataOff + 24)] = z13p2 - z2p2;
+            data[int(dataOff + 8)] = z11p2 + z4p2;
+            data[int(dataOff + 56)] = z11p2 - z4p2;
+            dataOff++;
+            i++;
          }
-         _loc12_ = 0;
-         while(_loc12_ < _loc14_)
+         i = 0;
+         while(i < I64)
          {
-            _loc15_ = param1[int(_loc12_)] * param2[int(_loc12_)];
-            this.outputfDCTQuant[int(_loc12_)] = _loc15_ > 0.0?int(_loc15_ + 0.5):int(_loc15_ - 0.5);
-            _loc12_++;
+            fDCTQuant = data[int(i)] * fdtbl[int(i)];
+            this.outputfDCTQuant[int(i)] = fDCTQuant > 0.0?int(fDCTQuant + 0.5):int(fDCTQuant - 0.5);
+            i++;
          }
          return this.outputfDCTQuant;
       }
@@ -423,12 +423,12 @@ package com.ankamagames.jerakine.utils.misc
          this.byteout.writeByte(0);
       }
       
-      private function writeSOF0(param1:int, param2:int) : void {
+      private function writeSOF0(width:int, height:int) : void {
          this.byteout.writeShort(65472);
          this.byteout.writeShort(17);
          this.byteout.writeByte(8);
-         this.byteout.writeShort(param2);
-         this.byteout.writeShort(param1);
+         this.byteout.writeShort(height);
+         this.byteout.writeShort(width);
          this.byteout.writeByte(3);
          this.byteout.writeByte(1);
          this.byteout.writeByte(17);
@@ -442,84 +442,84 @@ package com.ankamagames.jerakine.utils.misc
       }
       
       private function writeDQT() : void {
-         var _loc1_:* = 0;
+         var i:* = 0;
          this.byteout.writeShort(65499);
          this.byteout.writeShort(132);
          this.byteout.writeByte(0);
-         var _loc2_:* = 64;
-         _loc1_ = 0;
-         while(_loc1_ < _loc2_)
+         var I64:int = 64;
+         i = 0;
+         while(i < I64)
          {
-            this.byteout.writeByte(this.YTable[_loc1_]);
-            _loc1_++;
+            this.byteout.writeByte(this.YTable[i]);
+            i++;
          }
          this.byteout.writeByte(1);
-         _loc1_ = 0;
-         while(_loc1_ < _loc2_)
+         i = 0;
+         while(i < I64)
          {
-            this.byteout.writeByte(this.UVTable[_loc1_]);
-            _loc1_++;
+            this.byteout.writeByte(this.UVTable[i]);
+            i++;
          }
       }
       
       private function writeDHT() : void {
-         var _loc1_:* = 0;
+         var i:* = 0;
          this.byteout.writeShort(65476);
          this.byteout.writeShort(418);
          this.byteout.writeByte(0);
-         var _loc2_:* = 11;
-         var _loc3_:* = 16;
-         var _loc4_:* = 161;
-         _loc1_ = 0;
-         while(_loc1_ < _loc3_)
+         var I11:int = 11;
+         var I16:int = 16;
+         var I161:int = 161;
+         i = 0;
+         while(i < I16)
          {
-            this.byteout.writeByte(this.std_dc_luminance_nrcodes[int(_loc1_ + 1)]);
-            _loc1_++;
+            this.byteout.writeByte(this.std_dc_luminance_nrcodes[int(i + 1)]);
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ <= _loc2_)
+         i = 0;
+         while(i <= I11)
          {
-            this.byteout.writeByte(this.std_dc_luminance_values[int(_loc1_)]);
-            _loc1_++;
+            this.byteout.writeByte(this.std_dc_luminance_values[int(i)]);
+            i++;
          }
          this.byteout.writeByte(16);
-         _loc1_ = 0;
-         while(_loc1_ < _loc3_)
+         i = 0;
+         while(i < I16)
          {
-            this.byteout.writeByte(this.std_ac_luminance_nrcodes[int(_loc1_ + 1)]);
-            _loc1_++;
+            this.byteout.writeByte(this.std_ac_luminance_nrcodes[int(i + 1)]);
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ <= _loc4_)
+         i = 0;
+         while(i <= I161)
          {
-            this.byteout.writeByte(this.std_ac_luminance_values[int(_loc1_)]);
-            _loc1_++;
+            this.byteout.writeByte(this.std_ac_luminance_values[int(i)]);
+            i++;
          }
          this.byteout.writeByte(1);
-         _loc1_ = 0;
-         while(_loc1_ < _loc3_)
+         i = 0;
+         while(i < I16)
          {
-            this.byteout.writeByte(this.std_dc_chrominance_nrcodes[int(_loc1_ + 1)]);
-            _loc1_++;
+            this.byteout.writeByte(this.std_dc_chrominance_nrcodes[int(i + 1)]);
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ <= _loc2_)
+         i = 0;
+         while(i <= I11)
          {
-            this.byteout.writeByte(this.std_dc_chrominance_values[int(_loc1_)]);
-            _loc1_++;
+            this.byteout.writeByte(this.std_dc_chrominance_values[int(i)]);
+            i++;
          }
          this.byteout.writeByte(17);
-         _loc1_ = 0;
-         while(_loc1_ < _loc3_)
+         i = 0;
+         while(i < I16)
          {
-            this.byteout.writeByte(this.std_ac_chrominance_nrcodes[int(_loc1_ + 1)]);
-            _loc1_++;
+            this.byteout.writeByte(this.std_ac_chrominance_nrcodes[int(i + 1)]);
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ <= _loc4_)
+         i = 0;
+         while(i <= I161)
          {
-            this.byteout.writeByte(this.std_ac_chrominance_values[int(_loc1_)]);
-            _loc1_++;
+            this.byteout.writeByte(this.std_ac_chrominance_values[int(i)]);
+            i++;
          }
       }
       
@@ -540,76 +540,76 @@ package com.ankamagames.jerakine.utils.misc
       
       var DU:Vector.<int>;
       
-      private function processDU(param1:Vector.<Number>, param2:Vector.<Number>, param3:Number, param4:Vector.<BitString>, param5:Vector.<BitString>) : Number {
-         var _loc8_:* = 0;
-         var _loc17_:* = 0;
-         var _loc18_:* = 0;
-         var _loc19_:* = 0;
-         var _loc20_:* = 0;
-         var _loc6_:BitString = param5[0];
-         var _loc7_:BitString = param5[240];
-         var _loc9_:* = 16;
-         var _loc10_:* = 63;
-         var _loc11_:* = 64;
-         var _loc12_:Vector.<int> = this.fDCTQuant(param1,param2);
-         var _loc13_:* = 0;
-         while(_loc13_ < _loc11_)
+      private function processDU(CDU:Vector.<Number>, fdtbl:Vector.<Number>, DC:Number, HTDC:Vector.<BitString>, HTAC:Vector.<BitString>) : Number {
+         var pos:* = 0;
+         var lng:* = 0;
+         var startpos:* = 0;
+         var nrzeroes:* = 0;
+         var nrmarker:* = 0;
+         var EOB:BitString = HTAC[0];
+         var M16zeroes:BitString = HTAC[240];
+         var I16:int = 16;
+         var I63:int = 63;
+         var I64:int = 64;
+         var DU_DCT:Vector.<int> = this.fDCTQuant(CDU,fdtbl);
+         var j:int = 0;
+         while(j < I64)
          {
-            this.DU[this.ZigZag[_loc13_]] = _loc12_[_loc13_];
-            _loc13_++;
+            this.DU[this.ZigZag[j]] = DU_DCT[j];
+            j++;
          }
-         var _loc14_:int = this.DU[0] - param3;
-         var param3:Number = this.DU[0];
-         if(_loc14_ == 0)
+         var Diff:int = this.DU[0] - DC;
+         var DC:Number = this.DU[0];
+         if(Diff == 0)
          {
-            this.writeBits(param4[0]);
+            this.writeBits(HTDC[0]);
          }
          else
          {
-            _loc8_ = int(32767 + _loc14_);
-            this.writeBits(param4[this.category[_loc8_]]);
-            this.writeBits(this.bitcode[_loc8_]);
+            pos = int(32767 + Diff);
+            this.writeBits(HTDC[this.category[pos]]);
+            this.writeBits(this.bitcode[pos]);
          }
-         var _loc15_:* = 63;
-         while(_loc15_ > 0 && this.DU[_loc15_] == 0)
+         var end0pos:int = 63;
+         while((end0pos > 0) && (this.DU[end0pos] == 0))
          {
-            _loc15_--;
+            end0pos--;
          }
-         if(_loc15_ == 0)
+         if(end0pos == 0)
          {
-            this.writeBits(_loc6_);
-            return param3;
+            this.writeBits(EOB);
+            return DC;
          }
-         var _loc16_:* = 1;
-         while(_loc16_ <= _loc15_)
+         var i:int = 1;
+         while(i <= end0pos)
          {
-            _loc18_ = _loc16_;
-            while(this.DU[_loc16_] == 0 && _loc16_ <= _loc15_)
+            startpos = i;
+            while((this.DU[i] == 0) && (i <= end0pos))
             {
-               _loc16_++;
+               i++;
             }
-            _loc19_ = _loc16_ - _loc18_;
-            if(_loc19_ >= _loc9_)
+            nrzeroes = i - startpos;
+            if(nrzeroes >= I16)
             {
-               _loc17_ = _loc19_ >> 4;
-               _loc20_ = 1;
-               while(_loc20_ <= _loc17_)
+               lng = nrzeroes >> 4;
+               nrmarker = 1;
+               while(nrmarker <= lng)
                {
-                  this.writeBits(_loc7_);
-                  _loc20_++;
+                  this.writeBits(M16zeroes);
+                  nrmarker++;
                }
-               _loc19_ = int(_loc19_ & 15);
+               nrzeroes = int(nrzeroes & 15);
             }
-            _loc8_ = int(32767 + this.DU[_loc16_]);
-            this.writeBits(param5[int((_loc19_ << 4) + this.category[_loc8_])]);
-            this.writeBits(this.bitcode[_loc8_]);
-            _loc16_++;
+            pos = int(32767 + this.DU[i]);
+            this.writeBits(HTAC[int((nrzeroes << 4) + this.category[pos])]);
+            this.writeBits(this.bitcode[pos]);
+            i++;
          }
-         if(_loc15_ != _loc10_)
+         if(end0pos != I63)
          {
-            this.writeBits(_loc6_);
+            this.writeBits(EOB);
          }
-         return param3;
+         return DC;
       }
       
       private var YDU:Vector.<Number>;
@@ -618,31 +618,31 @@ package com.ankamagames.jerakine.utils.misc
       
       private var VDU:Vector.<Number>;
       
-      private function RGB2YUV(param1:BitmapData, param2:int, param3:int) : void {
-         var _loc7_:* = 0;
-         var _loc8_:uint = 0;
-         var _loc9_:* = 0;
-         var _loc10_:* = 0;
-         var _loc11_:* = 0;
-         var _loc4_:* = 0;
-         var _loc5_:* = 8;
-         var _loc6_:* = 0;
-         while(_loc6_ < _loc5_)
+      private function RGB2YUV(img:BitmapData, xpos:int, ypos:int) : void {
+         var x:* = 0;
+         var P:uint = 0;
+         var R:* = 0;
+         var G:* = 0;
+         var B:* = 0;
+         var pos:int = 0;
+         var I8:int = 8;
+         var y:int = 0;
+         while(y < I8)
          {
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_)
+            x = 0;
+            while(x < I8)
             {
-               _loc8_ = param1.getPixel32(param2 + _loc7_,param3 + _loc6_);
-               _loc9_ = _loc8_ >> 16 & 255;
-               _loc10_ = _loc8_ >> 8 & 255;
-               _loc11_ = _loc8_ & 255;
-               this.YDU[int(_loc4_)] = 0.299 * _loc9_ + 0.587 * _loc10_ + 0.114 * _loc11_ - 128;
-               this.UDU[int(_loc4_)] = -0.16874 * _loc9_ + -0.33126 * _loc10_ + 0.5 * _loc11_;
-               this.VDU[int(_loc4_)] = 0.5 * _loc9_ + -0.41869 * _loc10_ + -0.08131 * _loc11_;
-               _loc4_++;
-               _loc7_++;
+               P = img.getPixel32(xpos + x,ypos + y);
+               R = P >> 16 & 255;
+               G = P >> 8 & 255;
+               B = P & 255;
+               this.YDU[int(pos)] = 0.299 * R + 0.587 * G + 0.114 * B - 128;
+               this.UDU[int(pos)] = -0.16874 * R + -0.33126 * G + 0.5 * B;
+               this.VDU[int(pos)] = 0.5 * R + -0.41869 * G + -0.08131 * B;
+               pos++;
+               x++;
             }
-            _loc6_++;
+            y++;
          }
       }
       
@@ -664,9 +664,9 @@ package com.ankamagames.jerakine.utils.misc
          this.initQuantTables(this.sf);
       }
       
-      private function process(param1:Event) : void {
+      private function process(e:Event) : void {
          FpsManager.getInstance().startTracking("processJPG",1243644);
-         var _loc2_:int = getTimer();
+         var currentTime:int = getTimer();
          while(true)
          {
             this.RGB2YUV(this._image,this._xpos,this._ypos);
@@ -680,31 +680,31 @@ package com.ankamagames.jerakine.utils.misc
                this._ypos = this._ypos + 8;
                if(this._ypos >= this._height)
                {
-                  break;
+                  EnterFrameDispatcher.removeEventListener(this.process);
+                  this.endProcess();
+                  return;
                }
             }
-            if(getTimer() - _loc2_ > this._maxTime)
+            if(getTimer() - currentTime > this._maxTime)
             {
-               _loc3_ = _loc2_ - this._lastFrame;
-               this._lastFrame = _loc2_;
-               if(_loc3_ > 20)
-               {
-                  this._maxTime = this._maxTime - 2;
-                  if(this._maxTime < 1)
-                  {
-                     this._maxTime = 1;
-                  }
-               }
-               else
-               {
-                  this._maxTime++;
-               }
-               FpsManager.getInstance().stopTracking("processJPG");
-               return;
+               break;
             }
          }
-         EnterFrameDispatcher.removeEventListener(this.process);
-         this.endProcess();
+         var lastTime:int = currentTime - this._lastFrame;
+         this._lastFrame = currentTime;
+         if(lastTime > 20)
+         {
+            this._maxTime = this._maxTime - 2;
+            if(this._maxTime < 1)
+            {
+               this._maxTime = 1;
+            }
+         }
+         else
+         {
+            this._maxTime++;
+         }
+         FpsManager.getInstance().stopTracking("processJPG");
       }
       
       private var _width:int;
@@ -731,11 +731,11 @@ package com.ankamagames.jerakine.utils.misc
       
       private var _maxTime:int;
       
-      public function encode(param1:BitmapData, param2:Function, param3:Object) : void {
+      public function encode(image:BitmapData, callBack:Function, param:Object) : void {
          EnterFrameDispatcher.addEventListener(this.process,"jpgEncoder");
-         this._image = param1;
-         this._callBack = param2;
-         this._param = param3;
+         this._image = image;
+         this._callBack = callBack;
+         this._param = param;
          this._maxTime = 10;
          this.byteout = new ByteArray();
          this.bytenew = 0;
@@ -743,7 +743,7 @@ package com.ankamagames.jerakine.utils.misc
          this.byteout.writeShort(65496);
          this.writeAPP0();
          this.writeDQT();
-         this.writeSOF0(param1.width,param1.height);
+         this.writeSOF0(image.width,image.height);
          this.writeDHT();
          this.writeSOS();
          this._DCY = 0;
@@ -751,20 +751,20 @@ package com.ankamagames.jerakine.utils.misc
          this._DCV = 0;
          this.bytenew = 0;
          this.bytepos = 7;
-         this._width = param1.width;
-         this._height = param1.height;
+         this._width = image.width;
+         this._height = image.height;
          this._ypos = 0;
          this._xpos = 0;
       }
       
       private function endProcess() : void {
-         var _loc1_:BitString = null;
+         var fillbits:BitString = null;
          if(this.bytepos >= 0)
          {
-            _loc1_ = new BitString();
-            _loc1_.len = this.bytepos + 1;
-            _loc1_.val = 1 << this.bytepos + 1-1;
-            this.writeBits(_loc1_);
+            fillbits = new BitString();
+            fillbits.len = this.bytepos + 1;
+            fillbits.val = (1 << this.bytepos + 1) - 1;
+            this.writeBits(fillbits);
          }
          this.byteout.writeShort(65497);
          this._callBack(this.byteout,this._param);

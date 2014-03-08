@@ -21,10 +21,10 @@ package com.ankamagames.dofus.network.types.game.paddock
          return 130;
       }
       
-      public function initPaddockBuyableInformations(param1:uint=0, param2:uint=0, param3:uint=0, param4:Boolean=false) : PaddockBuyableInformations {
-         super.initPaddockInformations(param1,param2);
-         this.price = param3;
-         this.locked = param4;
+      public function initPaddockBuyableInformations(maxOutdoorMount:uint=0, maxItems:uint=0, price:uint=0, locked:Boolean=false) : PaddockBuyableInformations {
+         super.initPaddockInformations(maxOutdoorMount,maxItems);
+         this.price = price;
+         this.locked = locked;
          return this;
       }
       
@@ -34,38 +34,38 @@ package com.ankamagames.dofus.network.types.game.paddock
          this.locked = false;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PaddockBuyableInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PaddockBuyableInformations(output);
       }
       
-      public function serializeAs_PaddockBuyableInformations(param1:IDataOutput) : void {
-         super.serializeAs_PaddockInformations(param1);
+      public function serializeAs_PaddockBuyableInformations(output:IDataOutput) : void {
+         super.serializeAs_PaddockInformations(output);
          if(this.price < 0)
          {
             throw new Error("Forbidden value (" + this.price + ") on element price.");
          }
          else
          {
-            param1.writeInt(this.price);
-            param1.writeBoolean(this.locked);
+            output.writeInt(this.price);
+            output.writeBoolean(this.locked);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PaddockBuyableInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PaddockBuyableInformations(input);
       }
       
-      public function deserializeAs_PaddockBuyableInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.price = param1.readInt();
+      public function deserializeAs_PaddockBuyableInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.price = input.readInt();
          if(this.price < 0)
          {
             throw new Error("Forbidden value (" + this.price + ") on element of PaddockBuyableInformations.price.");
          }
          else
          {
-            this.locked = param1.readBoolean();
+            this.locked = input.readBoolean();
             return;
          }
       }

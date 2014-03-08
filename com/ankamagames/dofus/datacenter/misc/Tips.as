@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.misc
       
       public static const MODULE:String = "Tips";
       
-      public static function getTipsById(param1:int) : Tips {
-         return GameData.getObject(MODULE,param1) as Tips;
+      public static function getTipsById(id:int) : Tips {
+         return GameData.getObject(MODULE,id) as Tips;
       }
       
       public static function getAllTips() : Array {

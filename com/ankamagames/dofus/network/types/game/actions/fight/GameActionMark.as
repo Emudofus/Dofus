@@ -1,7 +1,7 @@
 package com.ankamagames.dofus.network.types.game.actions.fight
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -29,12 +29,12 @@ package com.ankamagames.dofus.network.types.game.actions.fight
          return 351;
       }
       
-      public function initGameActionMark(param1:int=0, param2:uint=0, param3:int=0, param4:int=0, param5:Vector.<GameActionMarkedCell>=null) : GameActionMark {
-         this.markAuthorId = param1;
-         this.markSpellId = param2;
-         this.markId = param3;
-         this.markType = param4;
-         this.cells = param5;
+      public function initGameActionMark(markAuthorId:int=0, markSpellId:uint=0, markId:int=0, markType:int=0, cells:Vector.<GameActionMarkedCell>=null) : GameActionMark {
+         this.markAuthorId = markAuthorId;
+         this.markSpellId = markSpellId;
+         this.markId = markId;
+         this.markType = markType;
+         this.cells = cells;
          return this;
       }
       
@@ -46,56 +46,56 @@ package com.ankamagames.dofus.network.types.game.actions.fight
          this.cells = new Vector.<GameActionMarkedCell>();
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameActionMark(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameActionMark(output);
       }
       
-      public function serializeAs_GameActionMark(param1:IDataOutput) : void {
-         param1.writeInt(this.markAuthorId);
+      public function serializeAs_GameActionMark(output:IDataOutput) : void {
+         output.writeInt(this.markAuthorId);
          if(this.markSpellId < 0)
          {
             throw new Error("Forbidden value (" + this.markSpellId + ") on element markSpellId.");
          }
          else
          {
-            param1.writeInt(this.markSpellId);
-            param1.writeShort(this.markId);
-            param1.writeByte(this.markType);
-            param1.writeShort(this.cells.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.cells.length)
+            output.writeInt(this.markSpellId);
+            output.writeShort(this.markId);
+            output.writeByte(this.markType);
+            output.writeShort(this.cells.length);
+            _i5 = 0;
+            while(_i5 < this.cells.length)
             {
-               (this.cells[_loc2_] as GameActionMarkedCell).serializeAs_GameActionMarkedCell(param1);
-               _loc2_++;
+               (this.cells[_i5] as GameActionMarkedCell).serializeAs_GameActionMarkedCell(output);
+               _i5++;
             }
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameActionMark(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameActionMark(input);
       }
       
-      public function deserializeAs_GameActionMark(param1:IDataInput) : void {
-         var _loc4_:GameActionMarkedCell = null;
-         this.markAuthorId = param1.readInt();
-         this.markSpellId = param1.readInt();
+      public function deserializeAs_GameActionMark(input:IDataInput) : void {
+         var _item5:GameActionMarkedCell = null;
+         this.markAuthorId = input.readInt();
+         this.markSpellId = input.readInt();
          if(this.markSpellId < 0)
          {
             throw new Error("Forbidden value (" + this.markSpellId + ") on element of GameActionMark.markSpellId.");
          }
          else
          {
-            this.markId = param1.readShort();
-            this.markType = param1.readByte();
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            this.markId = input.readShort();
+            this.markType = input.readByte();
+            _cellsLen = input.readUnsignedShort();
+            _i5 = 0;
+            while(_i5 < _cellsLen)
             {
-               _loc4_ = new GameActionMarkedCell();
-               _loc4_.deserialize(param1);
-               this.cells.push(_loc4_);
-               _loc3_++;
+               _item5 = new GameActionMarkedCell();
+               _item5.deserialize(input);
+               this.cells.push(_item5);
+               _i5++;
             }
             return;
          }

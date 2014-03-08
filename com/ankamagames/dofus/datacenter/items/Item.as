@@ -48,13 +48,13 @@ package com.ankamagames.dofus.datacenter.items
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Item));
       
-      public static function getItemById(param1:uint, param2:Boolean=true) : Item {
-         var _loc3_:Item = GameData.getObject(MODULE,param1) as Item;
-         if((_loc3_) || !param2)
+      public static function getItemById(id:uint, returnDefaultItemIfNull:Boolean=true) : Item {
+         var item:Item = GameData.getObject(MODULE,id) as Item;
+         if((item) || (!returnDefaultItemIfNull))
          {
-            return _loc3_;
+            return item;
          }
-         _log.error("Impossible de trouver l\'objet " + param1 + ", remplacement par l\'objet 666");
+         _log.error("Impossible de trouver l\'objet " + id + ", remplacement par l\'objet 666");
          return GameData.getObject(MODULE,666) as Item;
       }
       
@@ -169,8 +169,8 @@ package com.ankamagames.dofus.datacenter.items
          return this._weight;
       }
       
-      public function set weight(param1:uint) : void {
-         this._weight = param1;
+      public function set weight(n:uint) : void {
+         this._weight = n;
       }
       
       public function get type() : Object {
@@ -194,35 +194,35 @@ package com.ankamagames.dofus.datacenter.items
       }
       
       public function get appearance() : TiphonEntityLook {
-         var _loc1_:Appearance = null;
+         var appearance:Appearance = null;
          if(!this._appearance)
          {
-            _loc1_ = Appearance.getAppearanceById(this.appearanceId);
-            if(_loc1_)
+            appearance = Appearance.getAppearanceById(this.appearanceId);
+            if(appearance)
             {
-               this._appearance = TiphonEntityLook.fromString(_loc1_.data);
+               this._appearance = TiphonEntityLook.fromString(appearance.data);
             }
          }
          return this._appearance;
       }
       
       public function get recipes() : Array {
-         var _loc1_:* = 0;
-         var _loc2_:* = 0;
-         var _loc3_:Recipe = null;
+         var numRecipes:* = 0;
+         var i:* = 0;
+         var recipe:Recipe = null;
          if(!this._recipes)
          {
-            _loc1_ = this.recipeIds.length;
+            numRecipes = this.recipeIds.length;
             this._recipes = new Array();
-            _loc2_ = 0;
-            while(_loc2_ < _loc1_)
+            i = 0;
+            while(i < numRecipes)
             {
-               _loc3_ = Recipe.getRecipeByResultId(this.recipeIds[_loc2_]);
-               if(_loc3_)
+               recipe = Recipe.getRecipeByResultId(this.recipeIds[i]);
+               if(recipe)
                {
-                  this._recipes.push(_loc3_);
+                  this._recipes.push(recipe);
                }
-               _loc2_++;
+               i++;
             }
          }
          return this._recipes;
@@ -239,8 +239,6 @@ package com.ankamagames.dofus.datacenter.items
                return RESSOURCES_CATEGORY;
             case FILTER_QUEST[this.type.superTypeId]:
                return QUEST_CATEGORY;
-            default:
-               return OTHER_CATEGORY;
          }
       }
       
@@ -249,12 +247,12 @@ package com.ankamagames.dofus.datacenter.items
       }
       
       public function get canEquip() : Boolean {
-         var _loc1_:PlayedCharacterManager = PlayedCharacterManager.getInstance();
+         var player:PlayedCharacterManager = PlayedCharacterManager.getInstance();
          if(!this.isEquipable)
          {
             return false;
          }
-         if((_loc1_) && _loc1_.infos.level <= this.level)
+         if((player) && (player.infos.level <= this.level))
          {
             return false;
          }
@@ -285,38 +283,38 @@ package com.ankamagames.dofus.datacenter.items
          return this._conditionsTarget;
       }
       
-      public function copy(param1:Item, param2:Item) : void {
-         param2.id = param1.id;
-         param2.nameId = param1.nameId;
-         param2.typeId = param1.typeId;
-         param2.descriptionId = param1.descriptionId;
-         param2.iconId = param1.iconId;
-         param2.level = param1.level;
-         param2.realWeight = param1.realWeight;
-         param2.weight = param1.weight;
-         param2.cursed = param1.cursed;
-         param2.useAnimationId = param1.useAnimationId;
-         param2.usable = param1.usable;
-         param2.targetable = param1.targetable;
-         param2.price = param1.price;
-         param2.twoHanded = param1.twoHanded;
-         param2.etheral = param1.etheral;
-         param2.enhanceable = param1.enhanceable;
-         param2.nonUsableOnAnother = param1.nonUsableOnAnother;
-         param2.itemSetId = param1.itemSetId;
-         param2.criteria = param1.criteria;
-         param2.criteriaTarget = param1.criteriaTarget;
-         param2.hideEffects = param1.hideEffects;
-         param2.appearanceId = param1.appearanceId;
-         param2.recipeIds = param1.recipeIds;
-         param2.recipeSlots = param1.recipeSlots;
-         param2.secretRecipe = param1.secretRecipe;
-         param2.bonusIsSecret = param1.bonusIsSecret;
-         param2.possibleEffects = param1.possibleEffects;
-         param2.favoriteSubAreas = param1.favoriteSubAreas;
-         param2.favoriteSubAreasBonus = param1.favoriteSubAreasBonus;
-         param2.dropMonsterIds = param1.dropMonsterIds;
-         param2.exchangeable = param1.exchangeable;
+      public function copy(from:Item, to:Item) : void {
+         to.id = from.id;
+         to.nameId = from.nameId;
+         to.typeId = from.typeId;
+         to.descriptionId = from.descriptionId;
+         to.iconId = from.iconId;
+         to.level = from.level;
+         to.realWeight = from.realWeight;
+         to.weight = from.weight;
+         to.cursed = from.cursed;
+         to.useAnimationId = from.useAnimationId;
+         to.usable = from.usable;
+         to.targetable = from.targetable;
+         to.price = from.price;
+         to.twoHanded = from.twoHanded;
+         to.etheral = from.etheral;
+         to.enhanceable = from.enhanceable;
+         to.nonUsableOnAnother = from.nonUsableOnAnother;
+         to.itemSetId = from.itemSetId;
+         to.criteria = from.criteria;
+         to.criteriaTarget = from.criteriaTarget;
+         to.hideEffects = from.hideEffects;
+         to.appearanceId = from.appearanceId;
+         to.recipeIds = from.recipeIds;
+         to.recipeSlots = from.recipeSlots;
+         to.secretRecipe = from.secretRecipe;
+         to.bonusIsSecret = from.bonusIsSecret;
+         to.possibleEffects = from.possibleEffects;
+         to.favoriteSubAreas = from.favoriteSubAreas;
+         to.favoriteSubAreasBonus = from.favoriteSubAreasBonus;
+         to.dropMonsterIds = from.dropMonsterIds;
+         to.exchangeable = from.exchangeable;
       }
       
       public function postInit() : void {

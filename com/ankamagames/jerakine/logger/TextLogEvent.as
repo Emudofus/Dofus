@@ -5,8 +5,8 @@ package com.ankamagames.jerakine.logger
    public class TextLogEvent extends LogEvent
    {
       
-      public function TextLogEvent(param1:String=null, param2:String=null, param3:uint=0) {
-         super(param1,param2,param3);
+      public function TextLogEvent(category:String=null, message:String=null, logLevel:uint=0) {
+         super(category,message,logLevel);
       }
       
       override public function clone() : Event {

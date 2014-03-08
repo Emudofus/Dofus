@@ -12,46 +12,44 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         var _loc4_:Dictionary = null;
-         var _loc5_:Dictionary = null;
-         var _loc6_:* = undefined;
-         var _loc7_:String = null;
-         var _loc8_:* = undefined;
-         var _loc9_:String = null;
-         switch(param2)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var ctrlDic:Dictionary = null;
+         var rtDic:Dictionary = null;
+         var cefl:* = undefined;
+         var cname:String = null;
+         var refl:* = undefined;
+         var rname:String = null;
+         switch(cmd)
          {
             case "enterframecount":
-               param1.output("ENTER_FRAME listeners count : " + EnterFrameDispatcher.enterFrameListenerCount);
-               param1.output("Controled listeners :");
-               _loc4_ = EnterFrameDispatcher.controledEnterFrameListeners;
-               for (_loc6_ in _loc4_)
+               console.output("ENTER_FRAME listeners count : " + EnterFrameDispatcher.enterFrameListenerCount);
+               console.output("Controled listeners :");
+               ctrlDic = EnterFrameDispatcher.controledEnterFrameListeners;
+               for (cefl in ctrlDic)
                {
-                  _loc7_ = _loc4_[_loc6_]["name"];
-                  param1.output("  - " + _loc7_);
+                  cname = ctrlDic[cefl]["name"];
+                  console.output("  - " + cname);
                }
-               param1.output("Real time listeners :");
-               _loc5_ = EnterFrameDispatcher.realTimeEnterFrameListeners;
-               for (_loc8_ in _loc5_)
+               console.output("Real time listeners :");
+               rtDic = EnterFrameDispatcher.realTimeEnterFrameListeners;
+               for (refl in rtDic)
                {
-                  _loc9_ = _loc5_[_loc8_];
-                  param1.output("  - " + _loc9_);
+                  rname = rtDic[refl];
+                  console.output("  - " + rname);
                }
                break;
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "enterframecount":
                return "Count the ENTER_FRAME listeners.";
-            default:
-               return "Unknown command";
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return [];
       }
    }

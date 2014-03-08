@@ -4,18 +4,18 @@ package com.ankamagames.jerakine.types.zones
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.map.IDataMapProvider;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.positions.MapPoint;
    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
    
    public class HalfLozenge extends Object implements IZone
    {
       
-      public function HalfLozenge(param1:uint, param2:uint, param3:IDataMapProvider) {
+      public function HalfLozenge(minRadius:uint, nRadius:uint, dataMapProvider:IDataMapProvider) {
          super();
-         this.radius = param2;
-         this._minRadius = param1;
-         this._dataMapProvider = param3;
+         this.radius = nRadius;
+         this._minRadius = minRadius;
+         this._dataMapProvider = dataMapProvider;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(HalfLozenge));
@@ -32,20 +32,20 @@ package com.ankamagames.jerakine.types.zones
          return this._radius;
       }
       
-      public function set radius(param1:uint) : void {
-         this._radius = param1;
+      public function set radius(n:uint) : void {
+         this._radius = n;
       }
       
-      public function set minRadius(param1:uint) : void {
-         this._minRadius = param1;
+      public function set minRadius(r:uint) : void {
+         this._minRadius = r;
       }
       
       public function get minRadius() : uint {
          return this._minRadius;
       }
       
-      public function set direction(param1:uint) : void {
-         this._direction = param1;
+      public function set direction(d:uint) : void {
+         this._direction = d;
       }
       
       public function get direction() : uint {
@@ -56,50 +56,50 @@ package com.ankamagames.jerakine.types.zones
          return this._radius * 2 + 1;
       }
       
-      public function getCells(param1:uint=0) : Vector.<uint> {
-         var _loc6_:* = 0;
-         var _loc7_:* = 0;
-         var _loc2_:Vector.<uint> = new Vector.<uint>();
-         var _loc3_:MapPoint = MapPoint.fromCellId(param1);
-         var _loc4_:int = _loc3_.x;
-         var _loc5_:int = _loc3_.y;
+      public function getCells(cellId:uint=0) : Vector.<uint> {
+         var i:* = 0;
+         var j:* = 0;
+         var aCells:Vector.<uint> = new Vector.<uint>();
+         var origin:MapPoint = MapPoint.fromCellId(cellId);
+         var x:int = origin.x;
+         var y:int = origin.y;
          if(this._minRadius == 0)
          {
-            _loc2_.push(param1);
+            aCells.push(cellId);
          }
-         var _loc8_:* = 1;
-         var _loc9_:uint = 0;
-         _loc6_ = 1;
-         while(_loc6_ <= this._radius)
+         var inc:int = 1;
+         var step:uint = 0;
+         i = 1;
+         while(i <= this._radius)
          {
             switch(this._direction)
             {
                case DirectionsEnum.UP_LEFT:
-                  this.addCell(_loc4_ + _loc6_,_loc5_ + _loc6_,_loc2_);
-                  this.addCell(_loc4_ + _loc6_,_loc5_ - _loc6_,_loc2_);
+                  this.addCell(x + i,y + i,aCells);
+                  this.addCell(x + i,y - i,aCells);
                   break;
                case DirectionsEnum.UP_RIGHT:
-                  this.addCell(_loc4_ - _loc6_,_loc5_ - _loc6_,_loc2_);
-                  this.addCell(_loc4_ + _loc6_,_loc5_ - _loc6_,_loc2_);
+                  this.addCell(x - i,y - i,aCells);
+                  this.addCell(x + i,y - i,aCells);
                   break;
                case DirectionsEnum.DOWN_RIGHT:
-                  this.addCell(_loc4_ - _loc6_,_loc5_ + _loc6_,_loc2_);
-                  this.addCell(_loc4_ - _loc6_,_loc5_ - _loc6_,_loc2_);
+                  this.addCell(x - i,y + i,aCells);
+                  this.addCell(x - i,y - i,aCells);
                   break;
                case DirectionsEnum.DOWN_LEFT:
-                  this.addCell(_loc4_ - _loc6_,_loc5_ + _loc6_,_loc2_);
-                  this.addCell(_loc4_ + _loc6_,_loc5_ + _loc6_,_loc2_);
+                  this.addCell(x - i,y + i,aCells);
+                  this.addCell(x + i,y + i,aCells);
                   break;
             }
-            _loc6_++;
+            i++;
          }
-         return _loc2_;
+         return aCells;
       }
       
-      private function addCell(param1:int, param2:int, param3:Vector.<uint>) : void {
-         if(this._dataMapProvider == null || (this._dataMapProvider.pointMov(param1,param2)))
+      private function addCell(x:int, y:int, cellMap:Vector.<uint>) : void {
+         if((this._dataMapProvider == null) || (this._dataMapProvider.pointMov(x,y)))
          {
-            param3.push(MapPoint.fromCoords(param1,param2).cellId);
+            cellMap.push(MapPoint.fromCoords(x,y).cellId);
          }
       }
    }

@@ -12,12 +12,12 @@ package com.ankamagames.dofus
       
       public static var BUILD_VERSION:Version = new Version(2,18,2);
       
-      public static var BUILD_TYPE:uint = BuildTypeEnum.RELEASE;
+      public static var BUILD_TYPE:uint = BuildTypeEnum.BETA;
       
-      public static var BUILD_REVISION:int = 82300;
+      public static var BUILD_REVISION:int = 82009;
       
       public static var BUILD_PATCH:int = 0;
       
-      public static const BUILD_DATE:String = "Feb 24, 2014 - 10:21:36 CET";
+      public static const BUILD_DATE:String = "Feb 13, 2014 - 11:02:31 CET";
    }
 }

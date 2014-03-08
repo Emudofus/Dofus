@@ -1,8 +1,8 @@
 package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyMemberGeoPosition;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5595;
       }
       
-      public function initPartyLocateMembersMessage(param1:uint=0, param2:Vector.<PartyMemberGeoPosition>=null) : PartyLocateMembersMessage {
-         super.initAbstractPartyMessage(param1);
-         this.geopositions = param2;
+      public function initPartyLocateMembersMessage(partyId:uint=0, geopositions:Vector.<PartyMemberGeoPosition>=null) : PartyLocateMembersMessage {
+         super.initAbstractPartyMessage(partyId);
+         this.geopositions = geopositions;
          this._isInitialized = true;
          return this;
       }
@@ -42,46 +42,46 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PartyLocateMembersMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartyLocateMembersMessage(output);
       }
       
-      public function serializeAs_PartyLocateMembersMessage(param1:IDataOutput) : void {
-         super.serializeAs_AbstractPartyMessage(param1);
-         param1.writeShort(this.geopositions.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.geopositions.length)
+      public function serializeAs_PartyLocateMembersMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractPartyMessage(output);
+         output.writeShort(this.geopositions.length);
+         var _i1:uint = 0;
+         while(_i1 < this.geopositions.length)
          {
-            (this.geopositions[_loc2_] as PartyMemberGeoPosition).serializeAs_PartyMemberGeoPosition(param1);
-            _loc2_++;
+            (this.geopositions[_i1] as PartyMemberGeoPosition).serializeAs_PartyMemberGeoPosition(output);
+            _i1++;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PartyLocateMembersMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartyLocateMembersMessage(input);
       }
       
-      public function deserializeAs_PartyLocateMembersMessage(param1:IDataInput) : void {
-         var _loc4_:PartyMemberGeoPosition = null;
-         super.deserialize(param1);
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_PartyLocateMembersMessage(input:IDataInput) : void {
+         var _item1:PartyMemberGeoPosition = null;
+         super.deserialize(input);
+         var _geopositionsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _geopositionsLen)
          {
-            _loc4_ = new PartyMemberGeoPosition();
-            _loc4_.deserialize(param1);
-            this.geopositions.push(_loc4_);
-            _loc3_++;
+            _item1 = new PartyMemberGeoPosition();
+            _item1.deserialize(input);
+            this.geopositions.push(_item1);
+            _i1++;
          }
       }
    }

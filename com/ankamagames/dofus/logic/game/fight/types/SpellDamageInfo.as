@@ -40,166 +40,166 @@ package com.ankamagames.dofus.logic.game.fight.types
       
       private static const NONE_ELEMENT:int = 5;
       
-      public static function fromCurrentPlayer(param1:Object, param2:int) : SpellDamageInfo {
-         var _loc7_:EffectInstance = null;
-         var _loc8_:EffectInstanceDice = null;
-         var _loc9_:EffectDamage = null;
-         var _loc10_:* = 0;
-         var _loc11_:Array = null;
-         var _loc12_:BasicBuff = null;
-         var _loc13_:Array = null;
-         var _loc14_:WeaponWrapper = null;
-         var _loc15_:GameFightMinimalStats = null;
-         var _loc3_:SpellDamageInfo = new SpellDamageInfo();
-         var _loc4_:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
-         if(!_loc4_)
+      public static function fromCurrentPlayer(pSpell:Object, pTargetId:int) : SpellDamageInfo {
+         var effi:EffectInstance = null;
+         var effid:EffectInstanceDice = null;
+         var ed:EffectDamage = null;
+         var spellShapeEfficiencyPercent:* = 0;
+         var casterBuffs:Array = null;
+         var buff:BasicBuff = null;
+         var targetStates:Array = null;
+         var weapon:WeaponWrapper = null;
+         var targetStats:GameFightMinimalStats = null;
+         var sdi:SpellDamageInfo = new SpellDamageInfo();
+         var fightContextFrame:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
+         if(!fightContextFrame)
          {
-            return _loc3_;
+            return sdi;
          }
-         _loc3_.casterId = CurrentPlayedFighterManager.getInstance().currentFighterId;
-         _loc3_.casterLevel = _loc4_.getFighterLevel(CurrentPlayedFighterManager.getInstance().currentFighterId);
-         _loc3_.targetId = param2;
-         _loc3_.targetLevel = _loc4_.getFighterLevel(param2);
-         _loc3_.spellEffects = param1.effects;
-         _loc3_.isWeapon = !(param1 is SpellWrapper);
-         var _loc5_:CharacterCharacteristicsInformations = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
-         var _loc6_:GameFightFighterInformations = _loc4_.entitiesFrame.getEntityInfos(param2) as GameFightFighterInformations;
-         _loc3_.casterStrength = _loc5_.strength.base + _loc5_.strength.objectsAndMountBonus + _loc5_.strength.alignGiftBonus + _loc5_.strength.contextModif;
-         _loc3_.casterChance = _loc5_.chance.base + _loc5_.chance.objectsAndMountBonus + _loc5_.chance.alignGiftBonus + _loc5_.chance.contextModif;
-         _loc3_.casterAgility = _loc5_.agility.base + _loc5_.agility.objectsAndMountBonus + _loc5_.agility.alignGiftBonus + _loc5_.agility.contextModif;
-         _loc3_.casterIntelligence = _loc5_.intelligence.base + _loc5_.intelligence.objectsAndMountBonus + _loc5_.intelligence.alignGiftBonus + _loc5_.intelligence.contextModif;
-         _loc3_.casterCriticalHit = _loc5_.criticalHit.base + _loc5_.criticalHit.objectsAndMountBonus + _loc5_.criticalHit.alignGiftBonus + _loc5_.criticalHit.contextModif;
-         _loc3_.casterCriticalHitWeapon = _loc5_.criticalHitWeapon;
-         _loc3_.casterHealBonus = _loc5_.healBonus.base + _loc5_.healBonus.objectsAndMountBonus + _loc5_.healBonus.alignGiftBonus + _loc5_.healBonus.contextModif;
-         _loc3_.casterAllDamagesBonus = _loc5_.allDamagesBonus.base + _loc5_.allDamagesBonus.objectsAndMountBonus + _loc5_.allDamagesBonus.alignGiftBonus + _loc5_.allDamagesBonus.contextModif;
-         _loc3_.casterDamagesBonus = _loc5_.damagesBonusPercent.base + _loc5_.damagesBonusPercent.objectsAndMountBonus + _loc5_.damagesBonusPercent.alignGiftBonus + _loc5_.damagesBonusPercent.contextModif;
-         _loc3_.casterTrapBonus = _loc5_.trapBonus.base + _loc5_.trapBonus.objectsAndMountBonus + _loc5_.trapBonus.alignGiftBonus + _loc5_.trapBonus.contextModif;
-         _loc3_.casterTrapBonusPercent = _loc5_.trapBonusPercent.base + _loc5_.trapBonusPercent.objectsAndMountBonus + _loc5_.trapBonusPercent.alignGiftBonus + _loc5_.trapBonusPercent.contextModif;
-         _loc3_.casterGlyphBonusPercent = _loc5_.glyphBonusPercent.base + _loc5_.glyphBonusPercent.objectsAndMountBonus + _loc5_.glyphBonusPercent.alignGiftBonus + _loc5_.glyphBonusPercent.contextModif;
-         _loc3_.casterPermanentDamagePercent = _loc5_.permanentDamagePercent.base + _loc5_.permanentDamagePercent.objectsAndMountBonus + _loc5_.permanentDamagePercent.alignGiftBonus + _loc5_.permanentDamagePercent.contextModif;
-         _loc3_.casterPushDamageBonus = _loc5_.pushDamageBonus.base + _loc5_.pushDamageBonus.objectsAndMountBonus + _loc5_.pushDamageBonus.alignGiftBonus + _loc5_.pushDamageBonus.contextModif;
-         _loc3_.casterCriticalDamageBonus = _loc5_.criticalDamageBonus.base + _loc5_.criticalDamageBonus.objectsAndMountBonus + _loc5_.criticalDamageBonus.alignGiftBonus + _loc5_.criticalDamageBonus.contextModif;
-         _loc3_.casterNeutralDamageBonus = _loc5_.neutralDamageBonus.base + _loc5_.neutralDamageBonus.objectsAndMountBonus + _loc5_.neutralDamageBonus.alignGiftBonus + _loc5_.neutralDamageBonus.contextModif;
-         _loc3_.casterEarthDamageBonus = _loc5_.earthDamageBonus.base + _loc5_.earthDamageBonus.objectsAndMountBonus + _loc5_.earthDamageBonus.alignGiftBonus + _loc5_.earthDamageBonus.contextModif;
-         _loc3_.casterWaterDamageBonus = _loc5_.waterDamageBonus.base + _loc5_.waterDamageBonus.objectsAndMountBonus + _loc5_.waterDamageBonus.alignGiftBonus + _loc5_.waterDamageBonus.contextModif;
-         _loc3_.casterAirDamageBonus = _loc5_.airDamageBonus.base + _loc5_.airDamageBonus.objectsAndMountBonus + _loc5_.airDamageBonus.alignGiftBonus + _loc5_.airDamageBonus.contextModif;
-         _loc3_.casterFireDamageBonus = _loc5_.fireDamageBonus.base + _loc5_.fireDamageBonus.objectsAndMountBonus + _loc5_.fireDamageBonus.alignGiftBonus + _loc5_.fireDamageBonus.contextModif;
-         _loc3_.neutralDamage = DamageUtil.getSpellElementDamage(param1,NEUTRAL_ELEMENT,CurrentPlayedFighterManager.getInstance().currentFighterId,param2);
-         _loc3_.earthDamage = DamageUtil.getSpellElementDamage(param1,EARTH_ELEMENT,CurrentPlayedFighterManager.getInstance().currentFighterId,param2);
-         _loc3_.fireDamage = DamageUtil.getSpellElementDamage(param1,FIRE_ELEMENT,CurrentPlayedFighterManager.getInstance().currentFighterId,param2);
-         _loc3_.waterDamage = DamageUtil.getSpellElementDamage(param1,WATER_ELEMENT,CurrentPlayedFighterManager.getInstance().currentFighterId,param2);
-         _loc3_.airDamage = DamageUtil.getSpellElementDamage(param1,AIR_ELEMENT,CurrentPlayedFighterManager.getInstance().currentFighterId,param2);
-         _loc3_.spellHasCriticalDamage = (_loc3_.isWeapon) || (_loc3_.neutralDamage.hasCriticalDamage) || (_loc3_.earthDamage.hasCriticalDamage) || (_loc3_.fireDamage.hasCriticalDamage) || (_loc3_.waterDamage.hasCriticalDamage) || (_loc3_.airDamage.hasCriticalDamage);
-         _loc3_.healDamage = new SpellDamage();
-         for each (_loc7_ in param1.effects)
+         sdi.casterId = CurrentPlayedFighterManager.getInstance().currentFighterId;
+         sdi.casterLevel = fightContextFrame.getFighterLevel(CurrentPlayedFighterManager.getInstance().currentFighterId);
+         sdi.targetId = pTargetId;
+         sdi.targetLevel = fightContextFrame.getFighterLevel(pTargetId);
+         sdi.spellEffects = pSpell.effects;
+         sdi.isWeapon = !(pSpell is SpellWrapper);
+         var charStats:CharacterCharacteristicsInformations = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
+         var targetInfos:GameFightFighterInformations = fightContextFrame.entitiesFrame.getEntityInfos(pTargetId) as GameFightFighterInformations;
+         sdi.casterStrength = charStats.strength.base + charStats.strength.objectsAndMountBonus + charStats.strength.alignGiftBonus + charStats.strength.contextModif;
+         sdi.casterChance = charStats.chance.base + charStats.chance.objectsAndMountBonus + charStats.chance.alignGiftBonus + charStats.chance.contextModif;
+         sdi.casterAgility = charStats.agility.base + charStats.agility.objectsAndMountBonus + charStats.agility.alignGiftBonus + charStats.agility.contextModif;
+         sdi.casterIntelligence = charStats.intelligence.base + charStats.intelligence.objectsAndMountBonus + charStats.intelligence.alignGiftBonus + charStats.intelligence.contextModif;
+         sdi.casterCriticalHit = charStats.criticalHit.base + charStats.criticalHit.objectsAndMountBonus + charStats.criticalHit.alignGiftBonus + charStats.criticalHit.contextModif;
+         sdi.casterCriticalHitWeapon = charStats.criticalHitWeapon;
+         sdi.casterHealBonus = charStats.healBonus.base + charStats.healBonus.objectsAndMountBonus + charStats.healBonus.alignGiftBonus + charStats.healBonus.contextModif;
+         sdi.casterAllDamagesBonus = charStats.allDamagesBonus.base + charStats.allDamagesBonus.objectsAndMountBonus + charStats.allDamagesBonus.alignGiftBonus + charStats.allDamagesBonus.contextModif;
+         sdi.casterDamagesBonus = charStats.damagesBonusPercent.base + charStats.damagesBonusPercent.objectsAndMountBonus + charStats.damagesBonusPercent.alignGiftBonus + charStats.damagesBonusPercent.contextModif;
+         sdi.casterTrapBonus = charStats.trapBonus.base + charStats.trapBonus.objectsAndMountBonus + charStats.trapBonus.alignGiftBonus + charStats.trapBonus.contextModif;
+         sdi.casterTrapBonusPercent = charStats.trapBonusPercent.base + charStats.trapBonusPercent.objectsAndMountBonus + charStats.trapBonusPercent.alignGiftBonus + charStats.trapBonusPercent.contextModif;
+         sdi.casterGlyphBonusPercent = charStats.glyphBonusPercent.base + charStats.glyphBonusPercent.objectsAndMountBonus + charStats.glyphBonusPercent.alignGiftBonus + charStats.glyphBonusPercent.contextModif;
+         sdi.casterPermanentDamagePercent = charStats.permanentDamagePercent.base + charStats.permanentDamagePercent.objectsAndMountBonus + charStats.permanentDamagePercent.alignGiftBonus + charStats.permanentDamagePercent.contextModif;
+         sdi.casterPushDamageBonus = charStats.pushDamageBonus.base + charStats.pushDamageBonus.objectsAndMountBonus + charStats.pushDamageBonus.alignGiftBonus + charStats.pushDamageBonus.contextModif;
+         sdi.casterCriticalDamageBonus = charStats.criticalDamageBonus.base + charStats.criticalDamageBonus.objectsAndMountBonus + charStats.criticalDamageBonus.alignGiftBonus + charStats.criticalDamageBonus.contextModif;
+         sdi.casterNeutralDamageBonus = charStats.neutralDamageBonus.base + charStats.neutralDamageBonus.objectsAndMountBonus + charStats.neutralDamageBonus.alignGiftBonus + charStats.neutralDamageBonus.contextModif;
+         sdi.casterEarthDamageBonus = charStats.earthDamageBonus.base + charStats.earthDamageBonus.objectsAndMountBonus + charStats.earthDamageBonus.alignGiftBonus + charStats.earthDamageBonus.contextModif;
+         sdi.casterWaterDamageBonus = charStats.waterDamageBonus.base + charStats.waterDamageBonus.objectsAndMountBonus + charStats.waterDamageBonus.alignGiftBonus + charStats.waterDamageBonus.contextModif;
+         sdi.casterAirDamageBonus = charStats.airDamageBonus.base + charStats.airDamageBonus.objectsAndMountBonus + charStats.airDamageBonus.alignGiftBonus + charStats.airDamageBonus.contextModif;
+         sdi.casterFireDamageBonus = charStats.fireDamageBonus.base + charStats.fireDamageBonus.objectsAndMountBonus + charStats.fireDamageBonus.alignGiftBonus + charStats.fireDamageBonus.contextModif;
+         sdi.neutralDamage = DamageUtil.getSpellElementDamage(pSpell,NEUTRAL_ELEMENT,CurrentPlayedFighterManager.getInstance().currentFighterId,pTargetId);
+         sdi.earthDamage = DamageUtil.getSpellElementDamage(pSpell,EARTH_ELEMENT,CurrentPlayedFighterManager.getInstance().currentFighterId,pTargetId);
+         sdi.fireDamage = DamageUtil.getSpellElementDamage(pSpell,FIRE_ELEMENT,CurrentPlayedFighterManager.getInstance().currentFighterId,pTargetId);
+         sdi.waterDamage = DamageUtil.getSpellElementDamage(pSpell,WATER_ELEMENT,CurrentPlayedFighterManager.getInstance().currentFighterId,pTargetId);
+         sdi.airDamage = DamageUtil.getSpellElementDamage(pSpell,AIR_ELEMENT,CurrentPlayedFighterManager.getInstance().currentFighterId,pTargetId);
+         sdi.spellHasCriticalDamage = (sdi.isWeapon) || (sdi.neutralDamage.hasCriticalDamage) || (sdi.earthDamage.hasCriticalDamage) || (sdi.fireDamage.hasCriticalDamage) || (sdi.waterDamage.hasCriticalDamage) || (sdi.airDamage.hasCriticalDamage);
+         sdi.healDamage = new SpellDamage();
+         for each (effi in pSpell.effects)
          {
-            if(!(DamageUtil.HEALING_EFFECTS_IDS.indexOf(_loc7_.effectId) == -1) && (DamageUtil.verifySpellEffectMask(CurrentPlayedFighterManager.getInstance().currentFighterId,param2,_loc7_)))
+            if((!(DamageUtil.HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1)) && (DamageUtil.verifySpellEffectMask(CurrentPlayedFighterManager.getInstance().currentFighterId,pTargetId,effi)))
             {
-               _loc8_ = _loc7_ as EffectInstanceDice;
-               _loc9_ = DamageUtil.getEffectDamageByEffectId(_loc3_.healDamage,_loc8_.effectId);
-               if(!_loc9_)
+               effid = effi as EffectInstanceDice;
+               ed = DamageUtil.getEffectDamageByEffectId(sdi.healDamage,effid.effectId);
+               if(!ed)
                {
-                  _loc9_ = new EffectDamage(_loc7_.effectId,-1,_loc7_.random);
-                  _loc3_.healDamage.addEffectDamage(_loc9_);
+                  ed = new EffectDamage(effi.effectId,-1,effi.random);
+                  sdi.healDamage.addEffectDamage(ed);
                }
-               if(_loc7_.effectId == 1109)
+               if(effi.effectId == 1109)
                {
-                  if(_loc6_)
+                  if(targetInfos)
                   {
-                     _loc9_.lifePointsAddedBasedOnLifePercent = _loc9_.lifePointsAddedBasedOnLifePercent + _loc8_.diceNum * _loc6_.stats.maxLifePoints / 100;
+                     ed.lifePointsAddedBasedOnLifePercent = ed.lifePointsAddedBasedOnLifePercent + effid.diceNum * targetInfos.stats.maxLifePoints / 100;
                   }
                }
                else
                {
-                  _loc9_.minLifePointsAdded = _loc9_.minLifePointsAdded + _loc8_.diceNum;
-                  _loc9_.maxLifePointsAdded = _loc9_.maxLifePointsAdded + (_loc8_.diceSide == 0?_loc8_.diceNum:_loc8_.diceSide);
+                  ed.minLifePointsAdded = ed.minLifePointsAdded + effid.diceNum;
+                  ed.maxLifePointsAdded = ed.maxLifePointsAdded + (effid.diceSide == 0?effid.diceNum:effid.diceSide);
                }
             }
          }
-         for each (_loc7_ in param1.criticalEffect)
+         for each (effi in pSpell.criticalEffect)
          {
-            if(!(DamageUtil.HEALING_EFFECTS_IDS.indexOf(_loc7_.effectId) == -1) && (DamageUtil.verifySpellEffectMask(CurrentPlayedFighterManager.getInstance().currentFighterId,param2,_loc7_)))
+            if((!(DamageUtil.HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1)) && (DamageUtil.verifySpellEffectMask(CurrentPlayedFighterManager.getInstance().currentFighterId,pTargetId,effi)))
             {
-               _loc8_ = _loc7_ as EffectInstanceDice;
-               _loc9_ = DamageUtil.getEffectDamageByEffectId(_loc3_.healDamage,_loc8_.effectId);
-               if(!_loc9_)
+               effid = effi as EffectInstanceDice;
+               ed = DamageUtil.getEffectDamageByEffectId(sdi.healDamage,effid.effectId);
+               if(!ed)
                {
-                  _loc9_ = new EffectDamage(_loc7_.effectId,-1,_loc7_.random);
-                  _loc3_.healDamage.addEffectDamage(_loc9_);
+                  ed = new EffectDamage(effi.effectId,-1,effi.random);
+                  sdi.healDamage.addEffectDamage(ed);
                }
-               if(_loc7_.effectId == 1109)
+               if(effi.effectId == 1109)
                {
-                  if(_loc6_)
+                  if(targetInfos)
                   {
-                     _loc9_.criticalLifePointsAddedBasedOnLifePercent = _loc9_.criticalLifePointsAddedBasedOnLifePercent + _loc8_.diceNum * _loc6_.stats.maxLifePoints / 100;
+                     ed.criticalLifePointsAddedBasedOnLifePercent = ed.criticalLifePointsAddedBasedOnLifePercent + effid.diceNum * targetInfos.stats.maxLifePoints / 100;
                   }
                }
                else
                {
-                  _loc9_.minCriticalLifePointsAdded = _loc9_.minCriticalLifePointsAdded + _loc8_.diceNum;
-                  _loc9_.maxCriticalLifePointsAdded = _loc9_.maxCriticalLifePointsAdded + (_loc8_.diceSide == 0?_loc8_.diceNum:_loc8_.diceSide);
+                  ed.minCriticalLifePointsAdded = ed.minCriticalLifePointsAdded + effid.diceNum;
+                  ed.maxCriticalLifePointsAdded = ed.maxCriticalLifePointsAdded + (effid.diceSide == 0?effid.diceNum:effid.diceSide);
                }
-               _loc3_.spellHasCriticalHeal = true;
+               sdi.spellHasCriticalHeal = true;
             }
          }
-         _loc3_.spellHasRandomEffects = (_loc3_.neutralDamage.hasRandomEffects) || (_loc3_.earthDamage.hasRandomEffects) || (_loc3_.fireDamage.hasRandomEffects) || (_loc3_.waterDamage.hasRandomEffects) || (_loc3_.airDamage.hasRandomEffects) || (_loc3_.healDamage.hasRandomEffects);
-         if(_loc3_.isWeapon)
+         sdi.spellHasRandomEffects = (sdi.neutralDamage.hasRandomEffects) || (sdi.earthDamage.hasRandomEffects) || (sdi.fireDamage.hasRandomEffects) || (sdi.waterDamage.hasRandomEffects) || (sdi.airDamage.hasRandomEffects) || (sdi.healDamage.hasRandomEffects);
+         if(sdi.isWeapon)
          {
-            _loc14_ = PlayedCharacterManager.getInstance().currentWeapon;
-            _loc3_.spellWeaponCriticalBonus = _loc14_.criticalHitBonus;
-            if(_loc14_.type.id == 7)
+            weapon = PlayedCharacterManager.getInstance().currentWeapon;
+            sdi.spellWeaponCriticalBonus = weapon.criticalHitBonus;
+            if(weapon.type.id == 7)
             {
-               _loc3_.spellShapeEfficiencyPercent = 25;
+               sdi.spellShapeEfficiencyPercent = 25;
             }
          }
-         if(_loc6_)
+         if(targetInfos)
          {
-            _loc15_ = _loc6_.stats;
-            _loc3_.targetShieldsPoints = _loc15_.shieldPoints;
-            _loc3_.targetNeutralElementResistPercent = _loc15_.neutralElementResistPercent;
-            _loc3_.targetEarthElementResistPercent = _loc15_.earthElementResistPercent;
-            _loc3_.targetWaterElementResistPercent = _loc15_.waterElementResistPercent;
-            _loc3_.targetAirElementResistPercent = _loc15_.airElementResistPercent;
-            _loc3_.targetFireElementResistPercent = _loc15_.fireElementResistPercent;
-            _loc3_.targetNeutralElementReduction = _loc15_.neutralElementReduction;
-            _loc3_.targetEarthElementReduction = _loc15_.earthElementReduction;
-            _loc3_.targetWaterElementReduction = _loc15_.waterElementReduction;
-            _loc3_.targetAirElementReduction = _loc15_.airElementReduction;
-            _loc3_.targetFireElementReduction = _loc15_.fireElementReduction;
-            _loc3_.targetCriticalDamageFixedResist = _loc15_.criticalDamageFixedResist;
-            _loc3_.targetPushDamageFixedResist = _loc15_.pushDamageFixedResist;
-            _loc3_.targetCell = _loc6_.disposition.cellId;
+            targetStats = targetInfos.stats;
+            sdi.targetShieldsPoints = targetStats.shieldPoints;
+            sdi.targetNeutralElementResistPercent = targetStats.neutralElementResistPercent;
+            sdi.targetEarthElementResistPercent = targetStats.earthElementResistPercent;
+            sdi.targetWaterElementResistPercent = targetStats.waterElementResistPercent;
+            sdi.targetAirElementResistPercent = targetStats.airElementResistPercent;
+            sdi.targetFireElementResistPercent = targetStats.fireElementResistPercent;
+            sdi.targetNeutralElementReduction = targetStats.neutralElementReduction;
+            sdi.targetEarthElementReduction = targetStats.earthElementReduction;
+            sdi.targetWaterElementReduction = targetStats.waterElementReduction;
+            sdi.targetAirElementReduction = targetStats.airElementReduction;
+            sdi.targetFireElementReduction = targetStats.fireElementReduction;
+            sdi.targetCriticalDamageFixedResist = targetStats.criticalDamageFixedResist;
+            sdi.targetPushDamageFixedResist = targetStats.pushDamageFixedResist;
+            sdi.targetCell = targetInfos.disposition.cellId;
          }
-         _loc3_.spellCenterCell = FightContextFrame.currentCell;
-         for each (_loc7_ in param1.effects)
+         sdi.spellCenterCell = FightContextFrame.currentCell;
+         for each (effi in pSpell.effects)
          {
-            if(_loc7_.category == DamageUtil.DAMAGE_EFFECT_CATEGORY)
+            if(effi.category == DamageUtil.DAMAGE_EFFECT_CATEGORY)
             {
-               if(_loc7_.rawZone)
+               if(effi.rawZone)
                {
-                  _loc3_.spellShapeSize = _loc7_.zoneSize;
-                  _loc3_.spellShapeMinSize = _loc7_.zoneMinSize;
-                  _loc3_.spellShapeEfficiencyPercent = _loc7_.zoneEfficiencyPercent;
-                  _loc3_.spellShapeMaxEfficiency = _loc7_.zoneMaxEfficiency;
+                  sdi.spellShapeSize = effi.zoneSize;
+                  sdi.spellShapeMinSize = effi.zoneMinSize;
+                  sdi.spellShapeEfficiencyPercent = effi.zoneEfficiencyPercent;
+                  sdi.spellShapeMaxEfficiency = effi.zoneMaxEfficiency;
                   break;
                }
             }
          }
-         _loc11_ = BuffManager.getInstance().getAllBuff(CurrentPlayedFighterManager.getInstance().currentFighterId);
-         for each (_loc12_ in _loc11_)
+         casterBuffs = BuffManager.getInstance().getAllBuff(CurrentPlayedFighterManager.getInstance().currentFighterId);
+         for each (buff in casterBuffs)
          {
-            if(_loc12_.actionId == 1144)
+            if(buff.actionId == 1144)
             {
-               _loc3_.casterDamagesBonus = _loc3_.casterDamagesBonus + _loc12_.param1;
+               sdi.casterDamagesBonus = sdi.casterDamagesBonus + buff.param1;
             }
          }
-         _loc3_.targetBuffs = BuffManager.getInstance().getAllBuff(param2);
-         _loc13_ = FightersStateManager.getInstance().getStates(param2);
-         if(_loc13_)
+         sdi.targetBuffs = BuffManager.getInstance().getAllBuff(pTargetId);
+         targetStates = FightersStateManager.getInstance().getStates(pTargetId);
+         if(targetStates)
          {
-            _loc3_.targetIsInvulnerable = !(_loc13_.indexOf(56) == -1);
+            sdi.targetIsInvulnerable = !(targetStates.indexOf(56) == -1);
          }
-         return _loc3_;
+         return sdi;
       }
       
       public var isWeapon:Boolean;

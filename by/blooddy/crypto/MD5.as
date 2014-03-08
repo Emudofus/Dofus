@@ -33,10 +33,10 @@ package by.blooddy.crypto
             _loc5_.length = ApplicationDomain.MIN_DOMAIN_MEMORY_LENGTH;
          }
          ApplicationDomain.currentDomain.domainMemory = _loc5_;
-         var _loc8_:* = 1732584193;
-         var _loc9_:* = -271733879;
-         var _loc10_:* = -1732584194;
-         var _loc11_:* = 271733878;
+         var _loc8_:int = 1732584193;
+         var _loc9_:int = -271733879;
+         var _loc10_:int = -1732584194;
+         var _loc11_:int = 271733878;
          var _loc12_:int = _loc8_;
          var _loc13_:int = _loc9_;
          var _loc14_:int = _loc10_;

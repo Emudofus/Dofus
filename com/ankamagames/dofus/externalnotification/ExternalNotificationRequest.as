@@ -5,26 +5,26 @@ package com.ankamagames.dofus.externalnotification
    public class ExternalNotificationRequest extends Object
    {
       
-      public function ExternalNotificationRequest(param1:int, param2:String, param3:Array, param4:String, param5:int, param6:String, param7:Object, param8:String, param9:Boolean, param10:Boolean, param11:String=null, param12:Array=null) {
+      public function ExternalNotificationRequest(pNotificationType:int, pClientId:String, pOtherClientsIds:Array, pId:String, pShowMode:int, pUiName:String, pDisplayData:Object, pSoundId:String, pPlaySound:Boolean, pNotify:Boolean, pHookName:String=null, pHookParams:Array=null) {
          super();
-         this._notificationType = param1;
-         this._clientId = param2;
-         this._otherClientsIds = param3;
-         this._id = param4;
-         this._showMode = param5;
-         this._uiName = param6;
-         this._displayData = param7;
-         this._soundId = param8;
-         this._playSound = param9;
-         this._notify = param10;
-         this._hookName = param11;
-         this._hookParams = param12;
+         this._notificationType = pNotificationType;
+         this._clientId = pClientId;
+         this._otherClientsIds = pOtherClientsIds;
+         this._id = pId;
+         this._showMode = pShowMode;
+         this._uiName = pUiName;
+         this._displayData = pDisplayData;
+         this._soundId = pSoundId;
+         this._playSound = pPlaySound;
+         this._notify = pNotify;
+         this._hookName = pHookName;
+         this._hookParams = pHookParams;
       }
       
-      public static function createFromJSONString(param1:String) : ExternalNotificationRequest {
-         var _loc2_:Object = com.ankamagames.jerakine.json.JSON.decode(param1);
-         var _loc3_:ExternalNotificationRequest = new ExternalNotificationRequest(_loc2_.notificationType,_loc2_.clientId,_loc2_.otherClientsIds,_loc2_.id,_loc2_.showMode,_loc2_.uiName,_loc2_.displayData,_loc2_.soundId,_loc2_.playSound,_loc2_.notify,_loc2_.hookName,_loc2_.hookParams);
-         return _loc3_;
+      public static function createFromJSONString(pJSONStr:String) : ExternalNotificationRequest {
+         var obj:Object = com.ankamagames.jerakine.json.JSON.decode(pJSONStr);
+         var req:ExternalNotificationRequest = new ExternalNotificationRequest(obj.notificationType,obj.clientId,obj.otherClientsIds,obj.id,obj.showMode,obj.uiName,obj.displayData,obj.soundId,obj.playSound,obj.notify,obj.hookName,obj.hookParams);
+         return req;
       }
       
       private var _notificationType:int;

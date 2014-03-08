@@ -1,12 +1,12 @@
 package com.ankamagames.dofus.logic.game.roleplay.types
 {
    import flash.utils.Dictionary;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.dofus.datacenter.monsters.Companion;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberInformations;
    import com.ankamagames.dofus.datacenter.monsters.Monster;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberCompanionInformations;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberWithAllianceCharacterInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberCharacterInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberMonsterInformations;
@@ -17,54 +17,54 @@ package com.ankamagames.dofus.logic.game.roleplay.types
    public class RoleplayTeamFightersTooltipInformation extends Object
    {
       
-      public function RoleplayTeamFightersTooltipInformation(param1:FightTeam) {
-         var _loc2_:FightTeamMemberInformations = null;
-         var _loc3_:* = 0;
-         var _loc5_:Fighter = null;
-         var _loc6_:String = null;
-         var _loc7_:Monster = null;
-         var _loc8_:uint = 0;
-         var _loc9_:String = null;
-         var _loc10_:uint = 0;
-         var _loc11_:String = null;
-         var _loc12_:String = null;
-         var _loc13_:String = null;
-         var _loc14_:FightTeamMemberCompanionInformations = null;
+      public function RoleplayTeamFightersTooltipInformation(pFightTeam:FightTeam) {
+         var fightMemberInfo:FightTeamMemberInformations = null;
+         var i:* = 0;
+         var fighter:Fighter = null;
+         var allianceTag:String = null;
+         var monster:Monster = null;
+         var monsterLevel:uint = 0;
+         var monsterName:String = null;
+         var taxCollectorLevel:uint = 0;
+         var firstName:String = null;
+         var lastName:String = null;
+         var taxCollectorName:String = null;
+         var companionInfo:FightTeamMemberCompanionInformations = null;
          super();
          this.fighters = new Vector.<Fighter>();
-         var _loc4_:int = param1.teamInfos.teamMembers.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc4_)
+         var len:int = pFightTeam.teamInfos.teamMembers.length;
+         i = 0;
+         while(i < len)
          {
-            _loc2_ = param1.teamInfos.teamMembers[_loc3_];
-            _loc5_ = null;
+            fightMemberInfo = pFightTeam.teamInfos.teamMembers[i];
+            fighter = null;
             switch(true)
             {
-               case _loc2_ is FightTeamMemberCharacterInformations:
-                  if(_loc2_ is FightTeamMemberWithAllianceCharacterInformations)
+               case fightMemberInfo is FightTeamMemberCharacterInformations:
+                  if(fightMemberInfo is FightTeamMemberWithAllianceCharacterInformations)
                   {
-                     _loc6_ = (_loc2_ as FightTeamMemberWithAllianceCharacterInformations).allianceInfos.allianceTag;
+                     allianceTag = (fightMemberInfo as FightTeamMemberWithAllianceCharacterInformations).allianceInfos.allianceTag;
                   }
-                  _loc5_ = new Fighter(_loc2_.id,(_loc2_ as FightTeamMemberCharacterInformations).name,(_loc2_ as FightTeamMemberCharacterInformations).level,_loc6_);
+                  fighter = new Fighter(fightMemberInfo.id,(fightMemberInfo as FightTeamMemberCharacterInformations).name,(fightMemberInfo as FightTeamMemberCharacterInformations).level,allianceTag);
                   break;
-               case _loc2_ is FightTeamMemberMonsterInformations:
-                  _loc7_ = Monster.getMonsterById((_loc2_ as FightTeamMemberMonsterInformations).monsterId);
-                  _loc8_ = _loc7_.getMonsterGrade((_loc2_ as FightTeamMemberMonsterInformations).grade).level;
-                  _loc9_ = _loc7_.name;
-                  _loc5_ = new Fighter(_loc2_.id,_loc9_,_loc8_);
+               case fightMemberInfo is FightTeamMemberMonsterInformations:
+                  monster = Monster.getMonsterById((fightMemberInfo as FightTeamMemberMonsterInformations).monsterId);
+                  monsterLevel = monster.getMonsterGrade((fightMemberInfo as FightTeamMemberMonsterInformations).grade).level;
+                  monsterName = monster.name;
+                  fighter = new Fighter(fightMemberInfo.id,monsterName,monsterLevel);
                   break;
-               case _loc2_ is FightTeamMemberTaxCollectorInformations:
-                  _loc10_ = (_loc2_ as FightTeamMemberTaxCollectorInformations).level;
-                  _loc11_ = TaxCollectorFirstname.getTaxCollectorFirstnameById((_loc2_ as FightTeamMemberTaxCollectorInformations).firstNameId).firstname;
-                  _loc12_ = TaxCollectorName.getTaxCollectorNameById((_loc2_ as FightTeamMemberTaxCollectorInformations).lastNameId).name;
-                  _loc13_ = _loc11_ + " " + _loc12_;
-                  _loc5_ = new Fighter(_loc2_.id,_loc13_,_loc10_);
+               case fightMemberInfo is FightTeamMemberTaxCollectorInformations:
+                  taxCollectorLevel = (fightMemberInfo as FightTeamMemberTaxCollectorInformations).level;
+                  firstName = TaxCollectorFirstname.getTaxCollectorFirstnameById((fightMemberInfo as FightTeamMemberTaxCollectorInformations).firstNameId).firstname;
+                  lastName = TaxCollectorName.getTaxCollectorNameById((fightMemberInfo as FightTeamMemberTaxCollectorInformations).lastNameId).name;
+                  taxCollectorName = firstName + " " + lastName;
+                  fighter = new Fighter(fightMemberInfo.id,taxCollectorName,taxCollectorLevel);
                   break;
-               case _loc2_ is FightTeamMemberCompanionInformations:
-                  _loc14_ = _loc2_ as FightTeamMemberCompanionInformations;
-                  if(this.fighters.length > 0 && _loc3_ > 0 && this.fighters[_loc3_-1].id == _loc14_.masterId)
+               case fightMemberInfo is FightTeamMemberCompanionInformations:
+                  companionInfo = fightMemberInfo as FightTeamMemberCompanionInformations;
+                  if((this.fighters.length > 0) && (i > 0) && (this.fighters[i - 1].id == companionInfo.masterId))
                   {
-                     _loc5_ = this.getCompanionFighter(this.fighters[_loc3_-1],_loc14_.id,_loc14_.companionId);
+                     fighter = this.getCompanionFighter(this.fighters[i - 1],companionInfo.id,companionInfo.companionId);
                   }
                   else
                   {
@@ -72,24 +72,24 @@ package com.ankamagames.dofus.logic.game.roleplay.types
                      {
                         this._waitingCompanions = new Dictionary();
                      }
-                     this._waitingCompanions[_loc14_.masterId] = 
+                     this._waitingCompanions[companionInfo.masterId] = 
                         {
-                           "id":_loc14_.id,
-                           "genericId":_loc14_.companionId
+                           "id":companionInfo.id,
+                           "genericId":companionInfo.companionId
                         };
                   }
                   break;
             }
-            if(_loc5_)
+            if(fighter)
             {
-               this.fighters.push(_loc5_);
-               if((this._waitingCompanions) && (this._waitingCompanions[_loc5_.id]))
+               this.fighters.push(fighter);
+               if((this._waitingCompanions) && (this._waitingCompanions[fighter.id]))
                {
-                  this.fighters.push(this.getCompanionFighter(_loc5_,this._waitingCompanions[_loc5_.id].id,this._waitingCompanions[_loc5_.id].genericId));
-                  delete this._waitingCompanions[[_loc5_.id]];
+                  this.fighters.push(this.getCompanionFighter(fighter,this._waitingCompanions[fighter.id].id,this._waitingCompanions[fighter.id].genericId));
+                  delete this._waitingCompanions[[fighter.id]];
                }
             }
-            _loc3_++;
+            i++;
          }
       }
       
@@ -97,20 +97,20 @@ package com.ankamagames.dofus.logic.game.roleplay.types
       
       public var fighters:Vector.<Fighter>;
       
-      private function getCompanionFighter(param1:Fighter, param2:int, param3:int) : Fighter {
-         return new Fighter(param2,I18n.getUiText("ui.common.belonging",[Companion.getCompanionById(param3).name,param1.name]),param1.level,param1.allianceTagName);
+      private function getCompanionFighter(pFighter:Fighter, pCompanionId:int, pCompanionGenericId:int) : Fighter {
+         return new Fighter(pCompanionId,I18n.getUiText("ui.common.belonging",[Companion.getCompanionById(pCompanionGenericId).name,pFighter.name]),pFighter.level,pFighter.allianceTagName);
       }
    }
 }
 class Fighter extends Object
 {
    
-   function Fighter(param1:int, param2:String, param3:uint, param4:String=null) {
+   function Fighter(pId:int, pName:String, pLevel:uint, pAllianceTagName:String=null) {
       super();
-      this._id = param1;
-      this.name = param2;
-      this.level = param3;
-      this.allianceTagName = param4;
+      this._id = pId;
+      this.name = pName;
+      this.level = pLevel;
+      this.allianceTagName = pAllianceTagName;
    }
    
    private var _id:int;

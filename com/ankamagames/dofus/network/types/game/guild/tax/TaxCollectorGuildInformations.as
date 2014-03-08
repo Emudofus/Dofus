@@ -21,8 +21,8 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          return 446;
       }
       
-      public function initTaxCollectorGuildInformations(param1:BasicGuildInformations=null) : TaxCollectorGuildInformations {
-         this.guild = param1;
+      public function initTaxCollectorGuildInformations(guild:BasicGuildInformations=null) : TaxCollectorGuildInformations {
+         this.guild = guild;
          return this;
       }
       
@@ -30,23 +30,23 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          this.guild = new BasicGuildInformations();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_TaxCollectorGuildInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TaxCollectorGuildInformations(output);
       }
       
-      public function serializeAs_TaxCollectorGuildInformations(param1:IDataOutput) : void {
-         super.serializeAs_TaxCollectorComplementaryInformations(param1);
-         this.guild.serializeAs_BasicGuildInformations(param1);
+      public function serializeAs_TaxCollectorGuildInformations(output:IDataOutput) : void {
+         super.serializeAs_TaxCollectorComplementaryInformations(output);
+         this.guild.serializeAs_BasicGuildInformations(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_TaxCollectorGuildInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TaxCollectorGuildInformations(input);
       }
       
-      public function deserializeAs_TaxCollectorGuildInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_TaxCollectorGuildInformations(input:IDataInput) : void {
+         super.deserialize(input);
          this.guild = new BasicGuildInformations();
-         this.guild.deserialize(param1);
+         this.guild.deserialize(input);
       }
    }
 }

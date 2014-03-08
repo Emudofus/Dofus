@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.exchange
          super();
       }
       
-      public static function create(param1:uint) : ExchangeObjectMoveKamaAction {
-         var _loc2_:ExchangeObjectMoveKamaAction = new ExchangeObjectMoveKamaAction();
-         _loc2_.kamas = param1;
-         return _loc2_;
+      public static function create(pKamas:uint) : ExchangeObjectMoveKamaAction {
+         var a:ExchangeObjectMoveKamaAction = new ExchangeObjectMoveKamaAction();
+         a.kamas = pKamas;
+         return a;
       }
       
       public var kamas:uint;

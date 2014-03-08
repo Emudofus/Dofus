@@ -41,7 +41,7 @@ package com.ankamagames.dofus.logic.common.frames
    import com.ankamagames.jerakine.pools.GenericPool;
    import flash.events.MouseEvent;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseOverMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import com.ankamagames.berilia.managers.HtmlManager;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.ChatHookList;
@@ -102,11 +102,12 @@ package com.ankamagames.dofus.logic.common.frames
       
       private var _changeMap:Boolean = true;
       
-      public function enableChatMessagesBot(param1:Boolean, param2:int=500) : void {
-         if(param1)
+      public function enableChatMessagesBot(val:Boolean, time:int=500) : void {
+         if(val)
          {
             this._changeMap = false;
-            this._chatTimer = new Timer(param2);
+            this._chatTimer = new Timer(time);
+            trace("start debug chat mode with a timer of: " + time);
             this._chatTimer.addEventListener(TimerEvent.TIMER,this.sendChatMessage);
          }
          else
@@ -129,9 +130,9 @@ package com.ankamagames.dofus.logic.common.frames
             this._chatTimer.start();
          }
          this._mapPos = MapPosition.getMapPositions();
-         var _loc1_:MapFightCountMessage = new MapFightCountMessage();
-         _loc1_.initMapFightCountMessage(1);
-         this.process(_loc1_);
+         var mfcMsg:MapFightCountMessage = new MapFightCountMessage();
+         mfcMsg.initMapFightCountMessage(1);
+         this.process(mfcMsg);
          return true;
       }
       
@@ -154,70 +155,70 @@ package com.ankamagames.dofus.logic.common.frames
          return this._fightCount;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:MapFightCountMessage = null;
-         var _loc3_:MapRunningFightListMessage = null;
-         var _loc4_:* = 0;
-         var _loc5_:* = 0;
-         var _loc6_:GameFightJoinRequestMessage = null;
-         var _loc7_:ChatServerMessage = null;
-         var _loc8_:MapRunningFightListRequestMessage = null;
-         var _loc9_:FightExternalInformations = null;
+      public function process(msg:Message) : Boolean {
+         var mfcMsg:MapFightCountMessage = null;
+         var mrflMsg:MapRunningFightListMessage = null;
+         var maxFightId:* = 0;
+         var maxFighter:* = 0;
+         var joinRequestMsg:GameFightJoinRequestMessage = null;
+         var csmsg:ChatServerMessage = null;
+         var requestRunningFightMsg:MapRunningFightListRequestMessage = null;
+         var fightInfos:FightExternalInformations = null;
          switch(true)
          {
-            case param1 is MapFightCountMessage:
-               _loc2_ = param1 as MapFightCountMessage;
-               if(_loc2_.fightCount)
+            case msg is MapFightCountMessage:
+               mfcMsg = msg as MapFightCountMessage;
+               if(mfcMsg.fightCount)
                {
-                  _loc8_ = new MapRunningFightListRequestMessage();
-                  _loc8_.initMapRunningFightListRequestMessage();
-                  ConnectionsHandler.getConnection().send(_loc8_);
+                  requestRunningFightMsg = new MapRunningFightListRequestMessage();
+                  requestRunningFightMsg.initMapRunningFightListRequestMessage();
+                  ConnectionsHandler.getConnection().send(requestRunningFightMsg);
                   this._frameFightListRequest = true;
                }
                break;
-            case param1 is MapRunningFightListMessage:
+            case msg is MapRunningFightListMessage:
                if(!this._frameFightListRequest)
                {
                   break;
                }
                this._frameFightListRequest = false;
-               _loc3_ = param1 as MapRunningFightListMessage;
-               for each (_loc9_ in _loc3_.fights)
+               mrflMsg = msg as MapRunningFightListMessage;
+               for each (fightInfos in mrflMsg.fights)
                {
-                  if(_loc9_.fightTeams.length > _loc5_)
+                  if(fightInfos.fightTeams.length > maxFighter)
                   {
-                     _loc5_ = _loc9_.fightTeams.length;
-                     _loc4_ = _loc9_.fightId;
+                     maxFighter = fightInfos.fightTeams.length;
+                     maxFightId = fightInfos.fightId;
                   }
                }
-               if((this._wait) || Math.random() < 0.6)
+               if((this._wait) || (Math.random() < 0.6))
                {
                   return true;
                }
-               _loc6_ = new GameFightJoinRequestMessage();
-               _loc6_.initGameFightJoinRequestMessage(0,_loc4_);
-               ConnectionsHandler.getConnection().send(_loc6_);
+               joinRequestMsg = new GameFightJoinRequestMessage();
+               joinRequestMsg.initGameFightJoinRequestMessage(0,maxFightId);
+               ConnectionsHandler.getConnection().send(joinRequestMsg);
                this._actionTimer.reset();
                this._actionTimer.start();
                return true;
-            case param1 is GameFightJoinMessage:
+            case msg is GameFightJoinMessage:
                this._fightCount++;
                this._inFight = true;
                break;
-            case param1 is GameFightEndMessage:
+            case msg is GameFightEndMessage:
                this._inFight = false;
                break;
-            case param1 is MapComplementaryInformationsDataMessage:
+            case msg is MapComplementaryInformationsDataMessage:
                this._wait = false;
                break;
-            case param1 is MapsLoadingStartedMessage:
+            case msg is MapsLoadingStartedMessage:
                this._wait = true;
                break;
-            case param1 is ChatServerMessage:
-               _loc7_ = param1 as ChatServerMessage;
-               if(_loc7_.channel == ChatChannelsMultiEnum.CHANNEL_SALES || _loc7_.channel == ChatChannelsMultiEnum.CHANNEL_SEEK && Math.random() > 0.95)
+            case msg is ChatServerMessage:
+               csmsg = msg as ChatServerMessage;
+               if((csmsg.channel == ChatChannelsMultiEnum.CHANNEL_SALES) || (csmsg.channel == ChatChannelsMultiEnum.CHANNEL_SEEK) && (Math.random() > 0.95))
                {
-                  this.join(_loc7_.senderName);
+                  this.join(csmsg.senderName);
                }
                break;
          }
@@ -225,14 +226,14 @@ package com.ankamagames.dofus.logic.common.frames
       }
       
       private function initRight() : void {
-         var _loc1_:AdminQuietCommandMessage = new AdminQuietCommandMessage();
-         _loc1_.initAdminQuietCommandMessage("adminaway");
-         ConnectionsHandler.getConnection().send(_loc1_);
-         _loc1_.initAdminQuietCommandMessage("god");
-         ConnectionsHandler.getConnection().send(_loc1_);
+         var aqcmsg:AdminQuietCommandMessage = new AdminQuietCommandMessage();
+         aqcmsg.initAdminQuietCommandMessage("adminaway");
+         ConnectionsHandler.getConnection().send(aqcmsg);
+         aqcmsg.initAdminQuietCommandMessage("god");
+         ConnectionsHandler.getConnection().send(aqcmsg);
       }
       
-      private function onAction(param1:Event) : void {
+      private function onAction(e:Event) : void {
          if(Math.random() < 0.9)
          {
             this.randomWalk();
@@ -243,27 +244,27 @@ package com.ankamagames.dofus.logic.common.frames
          }
       }
       
-      private function join(param1:String) : void {
+      private function join(name:String) : void {
          if((this._inFight) || (this._wait))
          {
             return;
          }
-         var _loc2_:AdminQuietCommandMessage = new AdminQuietCommandMessage();
-         _loc2_.initAdminQuietCommandMessage("join " + param1);
-         ConnectionsHandler.getConnection().send(_loc2_);
+         var aqcmsg:AdminQuietCommandMessage = new AdminQuietCommandMessage();
+         aqcmsg.initAdminQuietCommandMessage("join " + name);
+         ConnectionsHandler.getConnection().send(aqcmsg);
          this._actionTimer.reset();
          this._actionTimer.start();
       }
       
       private function randomMove() : void {
-         if((this._inFight) || (this._wait) || !this._changeMap)
+         if((this._inFight) || (this._wait) || (!this._changeMap))
          {
             return;
          }
-         var _loc1_:MapPosition = this._mapPos[int(Math.random() * this._mapPos.length)];
-         var _loc2_:AdminQuietCommandMessage = new AdminQuietCommandMessage();
-         _loc2_.initAdminQuietCommandMessage("moveto " + _loc1_.id);
-         ConnectionsHandler.getConnection().send(_loc2_);
+         var mapPos:MapPosition = this._mapPos[int(Math.random() * this._mapPos.length)];
+         var aqcmsg:AdminQuietCommandMessage = new AdminQuietCommandMessage();
+         aqcmsg.initAdminQuietCommandMessage("moveto " + mapPos.id);
+         ConnectionsHandler.getConnection().send(aqcmsg);
          this._actionTimer.reset();
          this._actionTimer.start();
       }
@@ -274,120 +275,120 @@ package com.ankamagames.dofus.logic.common.frames
             return;
          }
          setTimeout(this.fakeActivity,1000 * 60 * 5);
-         var _loc1_:BasicPingMessage = new BasicPingMessage();
-         _loc1_.initBasicPingMessage(false);
-         ConnectionsHandler.getConnection().send(_loc1_);
+         var bpmgs:BasicPingMessage = new BasicPingMessage();
+         bpmgs.initBasicPingMessage(false);
+         ConnectionsHandler.getConnection().send(bpmgs);
       }
       
       private function randomWalk() : void {
-         var _loc2_:CellReference = null;
-         var _loc4_:MapPoint = null;
+         var cell:CellReference = null;
+         var mp:MapPoint = null;
          if((this._inFight) || (this._wait))
          {
             return;
          }
-         var _loc1_:Array = [];
-         for each (_loc2_ in MapDisplayManager.getInstance().getDataMapContainer().getCell())
+         var avaibleCells:Array = [];
+         for each (cell in MapDisplayManager.getInstance().getDataMapContainer().getCell())
          {
-            _loc4_ = MapPoint.fromCellId(_loc2_.id);
-            if(DataMapProvider.getInstance().pointMov(_loc4_.x,_loc4_.y))
+            mp = MapPoint.fromCellId(cell.id);
+            if(DataMapProvider.getInstance().pointMov(mp.x,mp.y))
             {
-               _loc1_.push(_loc4_);
+               avaibleCells.push(mp);
             }
          }
-         if(!_loc1_)
+         if(!avaibleCells)
          {
             return;
          }
-         var _loc3_:CellClickMessage = new CellClickMessage();
-         _loc3_.cell = _loc1_[Math.floor(_loc1_.length * Math.random())];
-         _loc3_.cellId = _loc3_.cell.cellId;
-         _loc3_.id = MapDisplayManager.getInstance().currentMapPoint.mapId;
-         Kernel.getWorker().process(_loc3_);
+         var ccmsg:CellClickMessage = new CellClickMessage();
+         ccmsg.cell = avaibleCells[Math.floor(avaibleCells.length * Math.random())];
+         ccmsg.cellId = ccmsg.cell.cellId;
+         ccmsg.id = MapDisplayManager.getInstance().currentMapPoint.mapId;
+         Kernel.getWorker().process(ccmsg);
       }
       
-      private function randomOver(... rest) : void {
-         var _loc3_:IEntity = null;
-         var _loc4_:IInteractive = null;
-         var _loc7_:UiRootContainer = null;
-         var _loc10_:EntityMouseOutMessage = null;
-         var _loc11_:GraphicContainer = null;
-         var _loc12_:MouseOutMessage = null;
+      private function randomOver(... foo) : void {
+         var e:IEntity = null;
+         var entity:IInteractive = null;
+         var ui:UiRootContainer = null;
+         var emomsg2:EntityMouseOutMessage = null;
+         var elem:GraphicContainer = null;
+         var momsg2:MouseOutMessage = null;
          if(this._wait)
          {
             return;
          }
-         var _loc2_:Array = [];
-         for each (_loc3_ in EntitiesManager.getInstance().entities)
+         var avaibleEntities:Array = [];
+         for each (e in EntitiesManager.getInstance().entities)
          {
-            if(_loc3_ is IInteractive)
+            if(e is IInteractive)
             {
-               _loc2_.push(_loc3_);
+               avaibleEntities.push(e);
             }
          }
-         _loc4_ = _loc2_[Math.floor(_loc2_.length * Math.random())];
-         if(!_loc4_)
+         entity = avaibleEntities[Math.floor(avaibleEntities.length * Math.random())];
+         if(!entity)
          {
             return;
          }
          if(this._lastEntityOver)
          {
-            _loc10_ = new EntityMouseOutMessage(this._lastEntityOver);
-            Kernel.getWorker().process(_loc10_);
+            emomsg2 = new EntityMouseOutMessage(this._lastEntityOver);
+            Kernel.getWorker().process(emomsg2);
          }
-         this._lastEntityOver = _loc4_;
-         var _loc5_:EntityMouseOverMessage = new EntityMouseOverMessage(_loc4_);
-         Kernel.getWorker().process(_loc5_);
-         var _loc6_:Array = [];
-         for each (_loc7_ in Berilia.getInstance().uiList)
+         this._lastEntityOver = entity;
+         var emomsg:EntityMouseOverMessage = new EntityMouseOverMessage(entity);
+         Kernel.getWorker().process(emomsg);
+         var avaibleElem:Array = [];
+         for each (ui in Berilia.getInstance().uiList)
          {
-            for each (_loc11_ in _loc7_.getElements())
+            for each (elem in ui.getElements())
             {
-               if((_loc11_.mouseChildren) || (_loc11_.mouseEnabled))
+               if((elem.mouseChildren) || (elem.mouseEnabled))
                {
-                  _loc6_.push(_loc11_);
+                  avaibleElem.push(elem);
                }
             }
          }
-         if(!_loc6_.length)
+         if(!avaibleElem.length)
          {
             return;
          }
          if(this._lastElemOver)
          {
-            _loc12_ = GenericPool.get(MouseOutMessage,this._lastElemOver,new MouseEvent(MouseEvent.MOUSE_OUT));
-            Kernel.getWorker().process(_loc12_);
+            momsg2 = GenericPool.get(MouseOutMessage,this._lastElemOver,new MouseEvent(MouseEvent.MOUSE_OUT));
+            Kernel.getWorker().process(momsg2);
          }
-         var _loc8_:GraphicContainer = _loc6_[Math.floor(_loc6_.length * Math.random())];
-         var _loc9_:MouseOverMessage = GenericPool.get(MouseOverMessage,_loc8_,new MouseEvent(MouseEvent.MOUSE_OVER));
-         Kernel.getWorker().process(_loc9_);
-         this._lastElemOver = _loc8_;
+         var target:GraphicContainer = avaibleElem[Math.floor(avaibleElem.length * Math.random())];
+         var momsg:MouseOverMessage = GenericPool.get(MouseOverMessage,target,new MouseEvent(MouseEvent.MOUSE_OVER));
+         Kernel.getWorker().process(momsg);
+         this._lastElemOver = target;
       }
       
       private var ttSentence:int = 0;
       
       private var limit:int = 100;
       
-      private function sendChatMessage(param1:TimerEvent) : void {
-         var _loc5_:* = 0;
-         var _loc6_:* = 0;
-         var _loc2_:uint = Math.random() * 16777215;
-         var _loc3_:Vector.<String> = new Vector.<String>();
-         _loc3_[0] = "Test html: salut <span style=\"color:#" + (Math.random() * 16777215).toString(8) + "\">je suis la</span> et la";
-         _loc3_[1] = "i\'m batman";
-         _loc3_[2] = HtmlManager.addLink("i\'m a link now, awesome !!","");
-         _loc3_[3] = ":( sd :p :) fdg dfg f";
-         _loc3_[4] = "je suis <u>underlineeeeeee</u> et moi <b>BOLD</b>" + "\nEt un retour a la ligne, un !!";
-         _loc3_[5] = "*test de texte italic via la commande*";
-         var _loc4_:String = _loc3_[Math.floor(Math.random() * _loc3_.length)];
+      private function sendChatMessage(pEvt:TimerEvent) : void {
+         var channel:* = 0;
+         var removedSentences:* = 0;
+         var color:uint = Math.random() * 16777215;
+         var SENTENCES:Vector.<String> = new Vector.<String>();
+         SENTENCES[0] = "Test html: salut <span style=\"color:#" + (Math.random() * 16777215).toString(8) + "\">je suis la</span> et la";
+         SENTENCES[1] = "i\'m batman";
+         SENTENCES[2] = HtmlManager.addLink("i\'m a link now, awesome !!","");
+         SENTENCES[3] = ":( sd :p :) fdg dfg f";
+         SENTENCES[4] = "je suis <u>underlineeeeeee</u> et moi <b>BOLD</b>" + "\nEt un retour a la ligne, un !!";
+         SENTENCES[5] = "*test de texte italic via la commande*";
+         var sentence:String = SENTENCES[Math.floor(Math.random() * SENTENCES.length)];
          this.ttSentence++;
-         KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,_loc4_,ChatActivableChannelsEnum.CHANNEL_GLOBAL);
+         KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,sentence,ChatActivableChannelsEnum.CHANNEL_GLOBAL);
          if(this.ttSentence > this.limit + 1)
          {
             this.ttSentence--;
-            _loc5_ = 0;
-            _loc6_ = 1;
-            KernelEventsManager.getInstance().processCallback(ChatHookList.NewMessage,_loc5_,_loc6_);
+            channel = 0;
+            removedSentences = 1;
+            KernelEventsManager.getInstance().processCallback(ChatHookList.NewMessage,channel,removedSentences);
          }
       }
    }

@@ -19,8 +19,8 @@ package com.ankamagames.dofus.datacenter.servers
       
       public static const MODULE:String = "Servers";
       
-      public static function getServerById(param1:int) : Server {
-         return GameData.getObject(MODULE,param1) as Server;
+      public static function getServerById(id:int) : Server {
+         return GameData.getObject(MODULE,id) as Server;
       }
       
       public static function getServers() : Array {
@@ -72,7 +72,7 @@ package com.ankamagames.dofus.datacenter.servers
       }
       
       public function get gameType() : ServerGameType {
-         if(!this._gameType || !(this._gameType.id == this.gameTypeId))
+         if((!this._gameType) || (!(this._gameType.id == this.gameTypeId)))
          {
             this._gameType = ServerGameType.getServerGameTypeById(this.gameTypeId);
          }
@@ -80,7 +80,7 @@ package com.ankamagames.dofus.datacenter.servers
       }
       
       public function get community() : ServerCommunity {
-         if(!this._community || !(this._community.id == this.communityId))
+         if((!this._community) || (!(this._community.id == this.communityId)))
          {
             this._community = ServerCommunity.getServerCommunityById(this.communityId);
          }

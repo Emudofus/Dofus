@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions
       }
       
       public static function create() : OpenStatsAction {
-         var _loc1_:OpenStatsAction = new OpenStatsAction();
-         return _loc1_;
+         var a:OpenStatsAction = new OpenStatsAction();
+         return a;
       }
    }
 }

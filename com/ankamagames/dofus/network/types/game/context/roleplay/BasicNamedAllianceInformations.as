@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 418;
       }
       
-      public function initBasicNamedAllianceInformations(param1:uint=0, param2:String="", param3:String="") : BasicNamedAllianceInformations {
-         super.initBasicAllianceInformations(param1,param2);
-         this.allianceName = param3;
+      public function initBasicNamedAllianceInformations(allianceId:uint=0, allianceTag:String="", allianceName:String="") : BasicNamedAllianceInformations {
+         super.initBasicAllianceInformations(allianceId,allianceTag);
+         this.allianceName = allianceName;
          return this;
       }
       
@@ -30,22 +30,22 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.allianceName = "";
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_BasicNamedAllianceInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_BasicNamedAllianceInformations(output);
       }
       
-      public function serializeAs_BasicNamedAllianceInformations(param1:IDataOutput) : void {
-         super.serializeAs_BasicAllianceInformations(param1);
-         param1.writeUTF(this.allianceName);
+      public function serializeAs_BasicNamedAllianceInformations(output:IDataOutput) : void {
+         super.serializeAs_BasicAllianceInformations(output);
+         output.writeUTF(this.allianceName);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_BasicNamedAllianceInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_BasicNamedAllianceInformations(input);
       }
       
-      public function deserializeAs_BasicNamedAllianceInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.allianceName = param1.readUTF();
+      public function deserializeAs_BasicNamedAllianceInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.allianceName = input.readUTF();
       }
    }
 }

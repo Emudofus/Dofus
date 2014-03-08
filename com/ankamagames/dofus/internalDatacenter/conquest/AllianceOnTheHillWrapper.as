@@ -12,21 +12,21 @@ package com.ankamagames.dofus.internalDatacenter.conquest
          super();
       }
       
-      public static function create(param1:uint, param2:String, param3:String, param4:GuildEmblem, param5:uint, param6:uint, param7:uint, param8:uint) : AllianceOnTheHillWrapper {
-         var _loc9_:AllianceOnTheHillWrapper = new AllianceOnTheHillWrapper();
-         _loc9_.allianceId = param1;
-         _loc9_._allianceTag = param2;
-         _loc9_._allianceName = param3;
-         if(param4 != null)
+      public static function create(pAllianceId:uint, pAllianceTag:String, pAllianceName:String, pAllianceEmblem:GuildEmblem, nbMembers:uint, roundWeigth:uint, matchScore:uint, side:uint) : AllianceOnTheHillWrapper {
+         var item:AllianceOnTheHillWrapper = new AllianceOnTheHillWrapper();
+         item.allianceId = pAllianceId;
+         item._allianceTag = pAllianceTag;
+         item._allianceName = pAllianceName;
+         if(pAllianceEmblem != null)
          {
-            _loc9_.upEmblem = EmblemWrapper.create(param4.symbolShape,EmblemWrapper.UP,param4.symbolColor);
-            _loc9_.backEmblem = EmblemWrapper.create(param4.backgroundShape,EmblemWrapper.BACK,param4.backgroundColor);
+            item.upEmblem = EmblemWrapper.create(pAllianceEmblem.symbolShape,EmblemWrapper.UP,pAllianceEmblem.symbolColor);
+            item.backEmblem = EmblemWrapper.create(pAllianceEmblem.backgroundShape,EmblemWrapper.BACK,pAllianceEmblem.backgroundColor);
          }
-         _loc9_.nbMembers = param5;
-         _loc9_.roundWeigth = param6;
-         _loc9_.matchScore = param7;
-         _loc9_.side = param8;
-         return _loc9_;
+         item.nbMembers = nbMembers;
+         item.roundWeigth = roundWeigth;
+         item.matchScore = matchScore;
+         item.side = side;
+         return item;
       }
       
       private var _allianceName:String;
@@ -71,16 +71,16 @@ package com.ankamagames.dofus.internalDatacenter.conquest
          return this._allianceName;
       }
       
-      public function update(param1:uint, param2:String, param3:String, param4:GuildEmblem, param5:uint, param6:uint, param7:uint, param8:uint) : void {
-         this.allianceId = param1;
-         this._allianceTag = param2;
-         this._allianceName = param3;
-         this.upEmblem.update(param4.symbolShape,EmblemWrapper.UP,param4.symbolColor);
-         this.backEmblem.update(param4.backgroundShape,EmblemWrapper.BACK,param4.backgroundColor);
-         this.nbMembers = param5;
-         this.roundWeigth = param6;
-         this.matchScore = param7;
-         this.side = param8;
+      public function update(pAllianceId:uint, pAllianceTag:String, pAllianceName:String, pAllianceEmblem:GuildEmblem, nbMembers:uint, roundWeigth:uint, matchScore:uint, side:uint) : void {
+         this.allianceId = pAllianceId;
+         this._allianceTag = pAllianceTag;
+         this._allianceName = pAllianceName;
+         this.upEmblem.update(pAllianceEmblem.symbolShape,EmblemWrapper.UP,pAllianceEmblem.symbolColor);
+         this.backEmblem.update(pAllianceEmblem.backgroundShape,EmblemWrapper.BACK,pAllianceEmblem.backgroundColor);
+         this.nbMembers = nbMembers;
+         this.roundWeigth = roundWeigth;
+         this.matchScore = matchScore;
+         this.side = side;
       }
    }
 }

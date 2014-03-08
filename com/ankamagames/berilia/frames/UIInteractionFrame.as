@@ -88,32 +88,32 @@ package com.ankamagames.berilia.frames
          return this._isProcessingDirectInteraction;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:HumanInputMessage = null;
-         var _loc3_:* = false;
-         var _loc4_:* = false;
-         var _loc5_:Grid = null;
-         var _loc6_:* = false;
-         var _loc7_:ComponentMessage = null;
-         var _loc8_:KeyboardKeyUpMessage = null;
-         var _loc9_:UIComponent = null;
-         var _loc10_:* = false;
-         var _loc11_:MouseClickMessage = null;
-         var _loc12_:UIComponent = null;
-         var _loc13_:UIComponent = null;
-         var _loc14_:Action = null;
-         var _loc15_:String = null;
-         var _loc16_:InstanceEvent = null;
-         var _loc17_:Array = null;
+      public function process(msg:Message) : Boolean {
+         var himsg:HumanInputMessage = null;
+         var onlyGrid:* = false;
+         var isGrid:* = false;
+         var gridInstance:Grid = null;
+         var dispatched:* = false;
+         var comsg:ComponentMessage = null;
+         var kkumsg:KeyboardKeyUpMessage = null;
+         var uic:UIComponent = null;
+         var res:* = false;
+         var newMsg:MouseClickMessage = null;
+         var uic3:UIComponent = null;
+         var uic4:UIComponent = null;
+         var act2:Action = null;
+         var targetFct:String = null;
+         var ie2:InstanceEvent = null;
+         var args:Array = null;
          this._isProcessingDirectInteraction = false;
          this.currentDo = null;
          switch(true)
          {
-            case param1 is HumanInputMessage:
+            case msg is HumanInputMessage:
                this._isProcessingDirectInteraction = true;
-               _loc2_ = HumanInputMessage(param1);
+               himsg = HumanInputMessage(msg);
                this.hierarchy = new Array();
-               this.currentDo = _loc2_.target;
+               this.currentDo = himsg.target;
                while(this.currentDo != null)
                {
                   if(this.currentDo is UIComponent)
@@ -122,33 +122,33 @@ package com.ankamagames.berilia.frames
                   }
                   this.currentDo = this.currentDo.parent;
                }
-               if(param1 is MouseClickMessage)
+               if(msg is MouseClickMessage)
                {
-                  KernelEventsManager.getInstance().processCallback(BeriliaHookList.MouseClick,SecureCenter.secure(MouseClickMessage(param1).target));
+                  KernelEventsManager.getInstance().processCallback(BeriliaHookList.MouseClick,SecureCenter.secure(MouseClickMessage(msg).target));
                }
-               if(param1 is MouseMiddleClickMessage)
+               if(msg is MouseMiddleClickMessage)
                {
-                  KernelEventsManager.getInstance().processCallback(BeriliaHookList.MouseMiddleClick,SecureCenter.secure(MouseMiddleClickMessage(param1).target));
+                  KernelEventsManager.getInstance().processCallback(BeriliaHookList.MouseMiddleClick,SecureCenter.secure(MouseMiddleClickMessage(msg).target));
                }
-               if(param1 is KeyboardKeyUpMessage)
+               if(msg is KeyboardKeyUpMessage)
                {
-                  _loc8_ = KeyboardKeyUpMessage(param1);
-                  KernelEventsManager.getInstance().processCallback(BeriliaHookList.KeyUp,SecureCenter.secure(_loc8_.target),_loc8_.keyboardEvent.keyCode);
+                  kkumsg = KeyboardKeyUpMessage(msg);
+                  KernelEventsManager.getInstance().processCallback(BeriliaHookList.KeyUp,SecureCenter.secure(kkumsg.target),kkumsg.keyboardEvent.keyCode);
                }
-               _loc3_ = false;
-               _loc6_ = false;
-               for each (_loc9_ in this.hierarchy)
+               onlyGrid = false;
+               dispatched = false;
+               for each (uic in this.hierarchy)
                {
-                  _loc4_ = UIComponent(_loc9_) is Grid;
-                  if(!_loc3_ || (_loc4_))
+                  isGrid = UIComponent(uic) is Grid;
+                  if((!onlyGrid) || (isGrid))
                   {
-                     _loc10_ = UIComponent(_loc9_).process(_loc2_);
-                     if(_loc10_)
+                     res = UIComponent(uic).process(himsg);
+                     if(res)
                      {
-                        if((_loc4_) && !_loc2_.canceled)
+                        if((isGrid) && (!himsg.canceled))
                         {
-                           _loc6_ = true;
-                           _loc3_ = true;
+                           dispatched = true;
+                           onlyGrid = true;
                         }
                         else
                         {
@@ -159,43 +159,43 @@ package com.ankamagames.berilia.frames
                         }
                      }
                   }
-                  if(!_loc5_ && (_loc4_))
+                  if((!gridInstance) && (isGrid))
                   {
-                     _loc5_ = Grid(_loc9_);
+                     gridInstance = Grid(uic);
                   }
                }
-               this.currentDo = _loc2_.target;
+               this.currentDo = himsg.target;
                while(this.currentDo != null)
                {
                   if(this.currentDo is GraphicContainer)
                   {
-                     UiSoundManager.getInstance().fromUiElement(this.currentDo as GraphicContainer,EventEnums.convertMsgToFct(getQualifiedClassName(param1)));
+                     UiSoundManager.getInstance().fromUiElement(this.currentDo as GraphicContainer,EventEnums.convertMsgToFct(getQualifiedClassName(msg)));
                   }
-                  if(UIEventManager.getInstance().isRegisteredInstance(this.currentDo,param1))
+                  if(UIEventManager.getInstance().isRegisteredInstance(this.currentDo,msg))
                   {
-                     _loc6_ = true;
-                     this.processRegisteredUiEvent(param1,_loc5_);
+                     dispatched = true;
+                     this.processRegisteredUiEvent(msg,gridInstance);
                      break;
                   }
                   this.currentDo = this.currentDo.parent;
                }
-               if(param1 is MouseClickMessage)
+               if(msg is MouseClickMessage)
                {
-                  KernelEventsManager.getInstance().processCallback(BeriliaHookList.PostMouseClick,SecureCenter.secure(MouseClickMessage(param1).target));
+                  KernelEventsManager.getInstance().processCallback(BeriliaHookList.PostMouseClick,SecureCenter.secure(MouseClickMessage(msg).target));
                }
-               if(param1 is MouseDoubleClickMessage && !_loc6_)
+               if((msg is MouseDoubleClickMessage) && (!dispatched))
                {
-                  _loc11_ = GenericPool.get(MouseClickMessage,_loc2_.target as InteractiveObject,new MouseEvent(MouseEvent.CLICK));
-                  Berilia.getInstance().handler.process(_loc11_);
+                  newMsg = GenericPool.get(MouseClickMessage,himsg.target as InteractiveObject,new MouseEvent(MouseEvent.CLICK));
+                  Berilia.getInstance().handler.process(newMsg);
                }
                this.hierarchy = null;
                this.currentDo = null;
                this._isProcessingDirectInteraction = false;
                break;
-            case param1 is ComponentMessage:
-               _loc7_ = ComponentMessage(param1);
+            case msg is ComponentMessage:
+               comsg = ComponentMessage(msg);
                this.hierarchy = new Array();
-               this.currentDo = _loc7_.target;
+               this.currentDo = comsg.target;
                while(this.currentDo != null)
                {
                   if(this.currentDo is UIComponent)
@@ -209,130 +209,130 @@ package com.ankamagames.berilia.frames
                   this._isProcessingDirectInteraction = false;
                   return false;
                }
-               for each (_loc12_ in this.hierarchy)
+               for each (uic3 in this.hierarchy)
                {
-                  UIComponent(_loc12_).process(_loc7_);
+                  UIComponent(uic3).process(comsg);
                }
-               _loc7_.bubbling = true;
+               comsg.bubbling = true;
                this.hierarchy.reverse();
                this.hierarchy.pop();
-               for each (_loc13_ in this.hierarchy)
+               for each (uic4 in this.hierarchy)
                {
-                  UIComponent(_loc13_).process(_loc7_);
+                  UIComponent(uic4).process(comsg);
                }
                this.hierarchy = null;
-               if(!_loc7_.canceled)
+               if(!comsg.canceled)
                {
-                  for each (_loc14_ in _loc7_.actions)
+                  for each (act2 in comsg.actions)
                   {
-                     Berilia.getInstance().handler.process(_loc14_);
+                     Berilia.getInstance().handler.process(act2);
                   }
-                  _loc15_ = EventEnums.convertMsgToFct(getQualifiedClassName(param1));
-                  UiSoundManager.getInstance().fromUiElement(_loc7_.target as GraphicContainer,_loc15_);
-                  this.currentDo = _loc7_.target;
+                  targetFct = EventEnums.convertMsgToFct(getQualifiedClassName(msg));
+                  UiSoundManager.getInstance().fromUiElement(comsg.target as GraphicContainer,targetFct);
+                  this.currentDo = comsg.target;
                   while(this.currentDo != null)
                   {
-                     if((UIEventManager.getInstance().instances[this.currentDo]) && (UIEventManager.getInstance().instances[this.currentDo].events[getQualifiedClassName(param1)]))
+                     if((UIEventManager.getInstance().instances[this.currentDo]) && (UIEventManager.getInstance().instances[this.currentDo].events[getQualifiedClassName(msg)]))
                      {
-                        _loc16_ = InstanceEvent(UIEventManager.getInstance().instances[this.currentDo]);
+                        ie2 = InstanceEvent(UIEventManager.getInstance().instances[this.currentDo]);
                         switch(true)
                         {
-                           case param1 is MouseMiddleClickMessage:
-                           case param1 is ChangeMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance)];
+                           case msg is MouseMiddleClickMessage:
+                           case msg is ChangeMessage:
+                              args = [SecureCenter.secure(ie2.instance)];
                               break;
-                           case param1 is BrowserSessionTimeout:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance)];
+                           case msg is BrowserSessionTimeout:
+                              args = [SecureCenter.secure(ie2.instance)];
                               break;
-                           case param1 is BrowserDomReady:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance)];
+                           case msg is BrowserDomReady:
+                              args = [SecureCenter.secure(ie2.instance)];
                               break;
-                           case param1 is ColorChangeMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance)];
+                           case msg is ColorChangeMessage:
+                              args = [SecureCenter.secure(ie2.instance)];
                               break;
-                           case param1 is EntityReadyMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance)];
+                           case msg is EntityReadyMessage:
+                              args = [SecureCenter.secure(ie2.instance)];
                               break;
-                           case param1 is SelectItemMessage:
-                              if(!(SelectItemMessage(param1).selectMethod == SelectMethodEnum.MANUAL) && !(SelectItemMessage(param1).selectMethod == SelectMethodEnum.AUTO))
+                           case msg is SelectItemMessage:
+                              if((!(SelectItemMessage(msg).selectMethod == SelectMethodEnum.MANUAL)) && (!(SelectItemMessage(msg).selectMethod == SelectMethodEnum.AUTO)))
                               {
                                  this._isProcessingDirectInteraction = true;
                               }
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance),SelectItemMessage(param1).selectMethod,SelectItemMessage(param1).isNewSelection];
+                              args = [SecureCenter.secure(ie2.instance),SelectItemMessage(msg).selectMethod,SelectItemMessage(msg).isNewSelection];
                               break;
-                           case param1 is SelectEmptyItemMessage:
-                              if(!(SelectEmptyItemMessage(param1).selectMethod == SelectMethodEnum.MANUAL) && !(SelectEmptyItemMessage(param1).selectMethod == SelectMethodEnum.AUTO))
+                           case msg is SelectEmptyItemMessage:
+                              if((!(SelectEmptyItemMessage(msg).selectMethod == SelectMethodEnum.MANUAL)) && (!(SelectEmptyItemMessage(msg).selectMethod == SelectMethodEnum.AUTO)))
                               {
                                  this._isProcessingDirectInteraction = true;
                               }
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance),SelectEmptyItemMessage(param1).selectMethod];
+                              args = [SecureCenter.secure(ie2.instance),SelectEmptyItemMessage(msg).selectMethod];
                               break;
-                           case param1 is ItemRollOverMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance),ItemRollOverMessage(param1).item];
+                           case msg is ItemRollOverMessage:
+                              args = [SecureCenter.secure(ie2.instance),ItemRollOverMessage(msg).item];
                               break;
-                           case param1 is ItemRollOutMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance),ItemRollOutMessage(param1).item];
+                           case msg is ItemRollOutMessage:
+                              args = [SecureCenter.secure(ie2.instance),ItemRollOutMessage(msg).item];
                               break;
-                           case param1 is ItemRightClickMessage:
+                           case msg is ItemRightClickMessage:
                               this._isProcessingDirectInteraction = true;
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance),ItemRightClickMessage(param1).item];
+                              args = [SecureCenter.secure(ie2.instance),ItemRightClickMessage(msg).item];
                               break;
-                           case param1 is TextureReadyMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance)];
+                           case msg is TextureReadyMessage:
+                              args = [SecureCenter.secure(ie2.instance)];
                               break;
-                           case param1 is TextureLoadFailMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance)];
+                           case msg is TextureLoadFailMessage:
+                              args = [SecureCenter.secure(ie2.instance)];
                               break;
-                           case param1 is DropMessage:
+                           case msg is DropMessage:
                               this._isProcessingDirectInteraction = true;
-                              _loc17_ = [DropMessage(param1).target,DropMessage(param1).source];
+                              args = [DropMessage(msg).target,DropMessage(msg).source];
                               break;
-                           case param1 is CreateTabMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance)];
+                           case msg is CreateTabMessage:
+                              args = [SecureCenter.secure(ie2.instance)];
                               break;
-                           case param1 is DeleteTabMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance),DeleteTabMessage(param1).deletedIndex];
+                           case msg is DeleteTabMessage:
+                              args = [SecureCenter.secure(ie2.instance),DeleteTabMessage(msg).deletedIndex];
                               break;
-                           case param1 is RenameTabMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance),RenameTabMessage(param1).index,RenameTabMessage(param1).name];
+                           case msg is RenameTabMessage:
+                              args = [SecureCenter.secure(ie2.instance),RenameTabMessage(msg).index,RenameTabMessage(msg).name];
                               break;
-                           case param1 is MapElementRollOverMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance),ReadOnlyObject.create(MapElementRollOverMessage(param1).targetedElement)];
+                           case msg is MapElementRollOverMessage:
+                              args = [SecureCenter.secure(ie2.instance),ReadOnlyObject.create(MapElementRollOverMessage(msg).targetedElement)];
                               break;
-                           case param1 is MapElementRollOutMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance),ReadOnlyObject.create(MapElementRollOutMessage(param1).targetedElement)];
+                           case msg is MapElementRollOutMessage:
+                              args = [SecureCenter.secure(ie2.instance),ReadOnlyObject.create(MapElementRollOutMessage(msg).targetedElement)];
                               break;
-                           case param1 is MapElementRightClickMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance),ReadOnlyObject.create(MapElementRightClickMessage(param1).targetedElement)];
+                           case msg is MapElementRightClickMessage:
+                              args = [SecureCenter.secure(ie2.instance),ReadOnlyObject.create(MapElementRightClickMessage(msg).targetedElement)];
                               break;
-                           case param1 is MapMoveMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance)];
+                           case msg is MapMoveMessage:
+                              args = [SecureCenter.secure(ie2.instance)];
                               break;
-                           case param1 is MapRollOverMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance),MapRollOverMessage(param1).x,MapRollOverMessage(param1).y];
+                           case msg is MapRollOverMessage:
+                              args = [SecureCenter.secure(ie2.instance),MapRollOverMessage(msg).x,MapRollOverMessage(msg).y];
                               break;
-                           case param1 is VideoConnectFailedMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance)];
+                           case msg is VideoConnectFailedMessage:
+                              args = [SecureCenter.secure(ie2.instance)];
                               break;
-                           case param1 is VideoConnectSuccessMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance)];
+                           case msg is VideoConnectSuccessMessage:
+                              args = [SecureCenter.secure(ie2.instance)];
                               break;
-                           case param1 is VideoBufferChangeMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance),VideoBufferChangeMessage(param1).state];
+                           case msg is VideoBufferChangeMessage:
+                              args = [SecureCenter.secure(ie2.instance),VideoBufferChangeMessage(msg).state];
                               break;
-                           case param1 is ComponentReadyMessage:
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance)];
+                           case msg is ComponentReadyMessage:
+                              args = [SecureCenter.secure(ie2.instance)];
                               break;
-                           case param1 is TextClickMessage:
+                           case msg is TextClickMessage:
                               this._isProcessingDirectInteraction = true;
-                              _loc17_ = [SecureCenter.secure(_loc16_.instance),(param1 as TextClickMessage).textEvent];
+                              args = [SecureCenter.secure(ie2.instance),(msg as TextClickMessage).textEvent];
                               break;
                         }
-                        if(_loc17_)
+                        if(args)
                         {
-                           ModuleLogger.log(param1,_loc16_.instance);
-                           _loc17_ = SecureCenter.secureContent(_loc17_);
-                           ErrorManager.tryFunction(GraphicContainer(_loc16_.instance).getUi().call,[_loc16_.callbackObject[_loc15_],_loc17_,SecureCenter.ACCESS_KEY],"Erreur lors du traitement de " + param1);
+                           ModuleLogger.log(msg,ie2.instance);
+                           args = SecureCenter.secureContent(args);
+                           ErrorManager.tryFunction(GraphicContainer(ie2.instance).getUi().call,[ie2.callbackObject[targetFct],args,SecureCenter.ACCESS_KEY],"Erreur lors du traitement de " + msg);
                            this._isProcessingDirectInteraction = false;
                            return true;
                         }
@@ -357,34 +357,34 @@ package com.ankamagames.berilia.frames
          return true;
       }
       
-      private function processRegisteredUiEvent(param1:Message, param2:Grid) : void {
-         var _loc5_:Array = null;
-         var _loc6_:String = null;
-         var _loc3_:InstanceEvent = InstanceEvent(UIEventManager.getInstance().instances[this.currentDo]);
-         var _loc4_:String = EventEnums.convertMsgToFct(getQualifiedClassName(param1));
-         ModuleLogger.log(param1,_loc3_.instance);
-         if(param2)
+      private function processRegisteredUiEvent(msg:Message, gridInstance:Grid) : void {
+         var args:Array = null;
+         var fct:String = null;
+         var ie:InstanceEvent = InstanceEvent(UIEventManager.getInstance().instances[this.currentDo]);
+         var fctName:String = EventEnums.convertMsgToFct(getQualifiedClassName(msg));
+         ModuleLogger.log(msg,ie.instance);
+         if(gridInstance)
          {
-            if(param1 is MouseWheelMessage)
+            if(msg is MouseWheelMessage)
             {
-               _loc5_ = [SecureCenter.secure(_loc3_.instance),MouseWheelMessage(param1).mouseEvent.delta];
+               args = [SecureCenter.secure(ie.instance),MouseWheelMessage(msg).mouseEvent.delta];
             }
             else
             {
-               _loc5_ = [SecureCenter.secure(_loc3_.instance)];
+               args = [SecureCenter.secure(ie.instance)];
             }
-            _loc6_ = param2.renderer.eventModificator(param1,_loc4_,_loc5_,_loc3_.instance as UIComponent);
-            ErrorManager.tryFunction(CallWithParameters.call,[_loc3_.callbackObject[_loc4_],_loc5_],"Erreur lors du traitement de " + param1);
+            fct = gridInstance.renderer.eventModificator(msg,fctName,args,ie.instance as UIComponent);
+            ErrorManager.tryFunction(CallWithParameters.call,[ie.callbackObject[fctName],args],"Erreur lors du traitement de " + msg);
          }
          else
          {
-            if(param1 is MouseWheelMessage)
+            if(msg is MouseWheelMessage)
             {
-               ErrorManager.tryFunction(_loc3_.callbackObject[_loc4_],[SecureCenter.secure(_loc3_.instance),MouseWheelMessage(param1).mouseEvent.delta]);
+               ErrorManager.tryFunction(ie.callbackObject[fctName],[SecureCenter.secure(ie.instance),MouseWheelMessage(msg).mouseEvent.delta]);
             }
             else
             {
-               ErrorManager.tryFunction(_loc3_.callbackObject[_loc4_],[SecureCenter.secure(_loc3_.instance)]);
+               ErrorManager.tryFunction(ie.callbackObject[fctName],[SecureCenter.secure(ie.instance)]);
             }
          }
       }
@@ -395,8 +395,8 @@ package com.ankamagames.berilia.frames
       
       private var _lastH:uint;
       
-      private function onStageResize(param1:Event=null) : void {
-         if(this._lastW == StageShareManager.stage.stageWidth && this._lastH == StageShareManager.stage.stageHeight)
+      private function onStageResize(e:Event=null) : void {
+         if((this._lastW == StageShareManager.stage.stageWidth) && (this._lastH == StageShareManager.stage.stageHeight))
          {
             return;
          }

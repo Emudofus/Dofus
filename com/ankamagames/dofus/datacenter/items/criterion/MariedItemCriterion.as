@@ -6,41 +6,41 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class MariedItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function MariedItemCriterion(param1:String) {
-         super(param1);
+      public function MariedItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get text() : String {
-         var _loc1_:* = "";
+         var readableCriterion:String = "";
          switch(_operator.text)
          {
             case ItemCriterionOperator.EQUAL:
                if(_criterionValue == 1)
                {
-                  _loc1_ = I18n.getUiText("ui.tooltip.beMaried");
+                  readableCriterion = I18n.getUiText("ui.tooltip.beMaried");
                }
                else
                {
-                  _loc1_ = I18n.getUiText("ui.tooltip.beSingle");
+                  readableCriterion = I18n.getUiText("ui.tooltip.beSingle");
                }
                break;
             case ItemCriterionOperator.DIFFERENT:
                if(_criterionValue == 2)
                {
-                  _loc1_ = I18n.getUiText("ui.tooltip.beMaried");
+                  readableCriterion = I18n.getUiText("ui.tooltip.beMaried");
                }
                else
                {
-                  _loc1_ = I18n.getUiText("ui.tooltip.beSingle");
+                  readableCriterion = I18n.getUiText("ui.tooltip.beSingle");
                }
                break;
          }
-         return _loc1_;
+         return readableCriterion;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:MariedItemCriterion = new MariedItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:MariedItemCriterion = new MariedItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {

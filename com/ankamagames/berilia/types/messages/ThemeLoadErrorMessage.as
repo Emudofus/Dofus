@@ -5,9 +5,9 @@ package com.ankamagames.berilia.types.messages
    public class ThemeLoadErrorMessage extends Object implements Message
    {
       
-      public function ThemeLoadErrorMessage(param1:String) {
+      public function ThemeLoadErrorMessage(themeName:String) {
          super();
-         this._themeName = param1;
+         this._themeName = themeName;
       }
       
       private var _themeName:String;

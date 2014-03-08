@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.mounts
       
       public static const MODULE:String = "MountBehaviors";
       
-      public static function getMountBehaviorById(param1:uint) : MountBehavior {
-         return GameData.getObject(MODULE,param1) as MountBehavior;
+      public static function getMountBehaviorById(id:uint) : MountBehavior {
+         return GameData.getObject(MODULE,id) as MountBehavior;
       }
       
       public static function getMountBehaviors() : Array {

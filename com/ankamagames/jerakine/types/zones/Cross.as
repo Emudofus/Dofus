@@ -4,19 +4,19 @@ package com.ankamagames.jerakine.types.zones
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.map.IDataMapProvider;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
    import com.ankamagames.jerakine.types.positions.MapPoint;
    
    public class Cross extends Object implements IZone
    {
       
-      public function Cross(param1:uint, param2:uint, param3:IDataMapProvider) {
+      public function Cross(nMinRadius:uint, nMaxRadius:uint, dataMapProvider:IDataMapProvider) {
          this.disabledDirection = [];
          super();
-         this.minRadius = param1;
-         this.radius = param2;
-         this._dataMapProvider = param3;
+         this.minRadius = nMinRadius;
+         this.radius = nMaxRadius;
+         this._dataMapProvider = dataMapProvider;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Cross));
@@ -37,40 +37,40 @@ package com.ankamagames.jerakine.types.zones
          return this._radius;
       }
       
-      public function set radius(param1:uint) : void {
-         this._radius = param1;
+      public function set radius(n:uint) : void {
+         this._radius = n;
       }
       
       public function get surface() : uint {
          return this._radius * 4 + 1;
       }
       
-      public function set minRadius(param1:uint) : void {
-         this._minRadius = param1;
+      public function set minRadius(r:uint) : void {
+         this._minRadius = r;
       }
       
       public function get minRadius() : uint {
          return this._minRadius;
       }
       
-      public function set direction(param1:uint) : void {
-         this._direction = param1;
+      public function set direction(d:uint) : void {
+         this._direction = d;
       }
       
       public function get direction() : uint {
          return this._direction;
       }
       
-      public function set diagonal(param1:Boolean) : void {
-         this._diagonal = param1;
+      public function set diagonal(d:Boolean) : void {
+         this._diagonal = d;
       }
       
       public function get diagonal() : Boolean {
          return this._diagonal;
       }
       
-      public function set allDirections(param1:Boolean) : void {
-         this._allDirections = param1;
+      public function set allDirections(d:Boolean) : void {
+         this._allDirections = d;
          if(this._allDirections)
          {
             this.diagonal = false;
@@ -85,11 +85,11 @@ package com.ankamagames.jerakine.types.zones
       
       public var onlyPerpendicular:Boolean = false;
       
-      public function getCells(param1:uint=0) : Vector.<uint> {
-         var _loc2_:Vector.<uint> = new Vector.<uint>();
+      public function getCells(cellId:uint=0) : Vector.<uint> {
+         var aCells:Vector.<uint> = new Vector.<uint>();
          if(this._minRadius == 0)
          {
-            _loc2_.push(param1);
+            aCells.push(cellId);
          }
          if(this.onlyPerpendicular)
          {
@@ -113,62 +113,62 @@ package com.ankamagames.jerakine.types.zones
                   break;
             }
          }
-         var _loc3_:MapPoint = MapPoint.fromCellId(param1);
-         var _loc4_:int = _loc3_.x;
-         var _loc5_:int = _loc3_.y;
-         var _loc6_:int = this._radius;
-         while(_loc6_ > 0)
+         var origin:MapPoint = MapPoint.fromCellId(cellId);
+         var x:int = origin.x;
+         var y:int = origin.y;
+         var r:int = this._radius;
+         while(r > 0)
          {
-            if(_loc6_ >= this._minRadius)
+            if(r >= this._minRadius)
             {
                if(!this._diagonal)
                {
-                  if((MapPoint.isInMap(_loc4_ + _loc6_,_loc5_)) && this.disabledDirection.indexOf(DirectionsEnum.DOWN_RIGHT) == -1)
+                  if((MapPoint.isInMap(x + r,y)) && (this.disabledDirection.indexOf(DirectionsEnum.DOWN_RIGHT) == -1))
                   {
-                     this.addCell(_loc4_ + _loc6_,_loc5_,_loc2_);
+                     this.addCell(x + r,y,aCells);
                   }
-                  if((MapPoint.isInMap(_loc4_ - _loc6_,_loc5_)) && this.disabledDirection.indexOf(DirectionsEnum.UP_LEFT) == -1)
+                  if((MapPoint.isInMap(x - r,y)) && (this.disabledDirection.indexOf(DirectionsEnum.UP_LEFT) == -1))
                   {
-                     this.addCell(_loc4_ - _loc6_,_loc5_,_loc2_);
+                     this.addCell(x - r,y,aCells);
                   }
-                  if((MapPoint.isInMap(_loc4_,_loc5_ + _loc6_)) && this.disabledDirection.indexOf(DirectionsEnum.UP_RIGHT) == -1)
+                  if((MapPoint.isInMap(x,y + r)) && (this.disabledDirection.indexOf(DirectionsEnum.UP_RIGHT) == -1))
                   {
-                     this.addCell(_loc4_,_loc5_ + _loc6_,_loc2_);
+                     this.addCell(x,y + r,aCells);
                   }
-                  if((MapPoint.isInMap(_loc4_,_loc5_ - _loc6_)) && this.disabledDirection.indexOf(DirectionsEnum.DOWN_LEFT) == -1)
+                  if((MapPoint.isInMap(x,y - r)) && (this.disabledDirection.indexOf(DirectionsEnum.DOWN_LEFT) == -1))
                   {
-                     this.addCell(_loc4_,_loc5_ - _loc6_,_loc2_);
+                     this.addCell(x,y - r,aCells);
                   }
                }
                if((this._diagonal) || (this._allDirections))
                {
-                  if((MapPoint.isInMap(_loc4_ + _loc6_,_loc5_ - _loc6_)) && this.disabledDirection.indexOf(DirectionsEnum.DOWN) == -1)
+                  if((MapPoint.isInMap(x + r,y - r)) && (this.disabledDirection.indexOf(DirectionsEnum.DOWN) == -1))
                   {
-                     this.addCell(_loc4_ + _loc6_,_loc5_ - _loc6_,_loc2_);
+                     this.addCell(x + r,y - r,aCells);
                   }
-                  if((MapPoint.isInMap(_loc4_ - _loc6_,_loc5_ + _loc6_)) && this.disabledDirection.indexOf(DirectionsEnum.UP) == -1)
+                  if((MapPoint.isInMap(x - r,y + r)) && (this.disabledDirection.indexOf(DirectionsEnum.UP) == -1))
                   {
-                     this.addCell(_loc4_ - _loc6_,_loc5_ + _loc6_,_loc2_);
+                     this.addCell(x - r,y + r,aCells);
                   }
-                  if((MapPoint.isInMap(_loc4_ + _loc6_,_loc5_ + _loc6_)) && this.disabledDirection.indexOf(DirectionsEnum.RIGHT) == -1)
+                  if((MapPoint.isInMap(x + r,y + r)) && (this.disabledDirection.indexOf(DirectionsEnum.RIGHT) == -1))
                   {
-                     this.addCell(_loc4_ + _loc6_,_loc5_ + _loc6_,_loc2_);
+                     this.addCell(x + r,y + r,aCells);
                   }
-                  if((MapPoint.isInMap(_loc4_ - _loc6_,_loc5_ - _loc6_)) && this.disabledDirection.indexOf(DirectionsEnum.LEFT) == -1)
+                  if((MapPoint.isInMap(x - r,y - r)) && (this.disabledDirection.indexOf(DirectionsEnum.LEFT) == -1))
                   {
-                     this.addCell(_loc4_ - _loc6_,_loc5_ - _loc6_,_loc2_);
+                     this.addCell(x - r,y - r,aCells);
                   }
                }
             }
-            _loc6_--;
+            r--;
          }
-         return _loc2_;
+         return aCells;
       }
       
-      private function addCell(param1:int, param2:int, param3:Vector.<uint>) : void {
-         if(this._dataMapProvider == null || (this._dataMapProvider.pointMov(param1,param2)))
+      private function addCell(x:int, y:int, cellMap:Vector.<uint>) : void {
+         if((this._dataMapProvider == null) || (this._dataMapProvider.pointMov(x,y)))
          {
-            param3.push(MapPoint.fromCoords(param1,param2).cellId);
+            cellMap.push(MapPoint.fromCoords(x,y).cellId);
          }
       }
    }

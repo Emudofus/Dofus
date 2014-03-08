@@ -2,7 +2,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,10 +33,10 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
          return 6276;
       }
       
-      public function initGameRolePlayArenaFightPropositionMessage(param1:uint=0, param2:Vector.<uint>=null, param3:uint=0) : GameRolePlayArenaFightPropositionMessage {
-         this.fightId = param1;
-         this.alliesId = param2;
-         this.duration = param3;
+      public function initGameRolePlayArenaFightPropositionMessage(fightId:uint=0, alliesId:Vector.<uint>=null, duration:uint=0) : GameRolePlayArenaFightPropositionMessage {
+         this.fightId = fightId;
+         this.alliesId = alliesId;
+         this.duration = duration;
          this._isInitialized = true;
          return this;
       }
@@ -48,40 +48,40 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameRolePlayArenaFightPropositionMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayArenaFightPropositionMessage(output);
       }
       
-      public function serializeAs_GameRolePlayArenaFightPropositionMessage(param1:IDataOutput) : void {
+      public function serializeAs_GameRolePlayArenaFightPropositionMessage(output:IDataOutput) : void {
          if(this.fightId < 0)
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
          }
          else
          {
-            param1.writeInt(this.fightId);
-            param1.writeShort(this.alliesId.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.alliesId.length)
+            output.writeInt(this.fightId);
+            output.writeShort(this.alliesId.length);
+            _i2 = 0;
+            while(_i2 < this.alliesId.length)
             {
-               if(this.alliesId[_loc2_] < 0)
+               if(this.alliesId[_i2] < 0)
                {
-                  throw new Error("Forbidden value (" + this.alliesId[_loc2_] + ") on element 2 (starting at 1) of alliesId.");
+                  throw new Error("Forbidden value (" + this.alliesId[_i2] + ") on element 2 (starting at 1) of alliesId.");
                }
                else
                {
-                  param1.writeInt(this.alliesId[_loc2_]);
-                  _loc2_++;
+                  output.writeInt(this.alliesId[_i2]);
+                  _i2++;
                   continue;
                }
             }
@@ -91,42 +91,42 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
             }
             else
             {
-               param1.writeShort(this.duration);
+               output.writeShort(this.duration);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameRolePlayArenaFightPropositionMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayArenaFightPropositionMessage(input);
       }
       
-      public function deserializeAs_GameRolePlayArenaFightPropositionMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         this.fightId = param1.readInt();
+      public function deserializeAs_GameRolePlayArenaFightPropositionMessage(input:IDataInput) : void {
+         var _val2:uint = 0;
+         this.fightId = input.readInt();
          if(this.fightId < 0)
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element of GameRolePlayArenaFightPropositionMessage.fightId.");
          }
          else
          {
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            _alliesIdLen = input.readUnsignedShort();
+            _i2 = 0;
+            while(_i2 < _alliesIdLen)
             {
-               _loc4_ = param1.readInt();
-               if(_loc4_ < 0)
+               _val2 = input.readInt();
+               if(_val2 < 0)
                {
-                  throw new Error("Forbidden value (" + _loc4_ + ") on elements of alliesId.");
+                  throw new Error("Forbidden value (" + _val2 + ") on elements of alliesId.");
                }
                else
                {
-                  this.alliesId.push(_loc4_);
-                  _loc3_++;
+                  this.alliesId.push(_val2);
+                  _i2++;
                   continue;
                }
             }
-            this.duration = param1.readShort();
+            this.duration = input.readShort();
             if(this.duration < 0)
             {
                throw new Error("Forbidden value (" + this.duration + ") on element of GameRolePlayArenaFightPropositionMessage.duration.");

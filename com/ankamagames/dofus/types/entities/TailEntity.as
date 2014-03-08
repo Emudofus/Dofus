@@ -61,17 +61,17 @@ package com.ankamagames.dofus.types.entities
          return 0;
       }
       
-      public function set id(param1:int) : void {
+      public function set id(nValue:int) : void {
       }
       
       public function get position() : MapPoint {
          return null;
       }
       
-      public function set position(param1:MapPoint) : void {
+      public function set position(oValue:MapPoint) : void {
       }
       
-      private function onTailAdded(param1:Event) : void {
+      private function onTailAdded(e:Event) : void {
          if(!this._emiter.running)
          {
             parent.parent.addChild(this._renderer);
@@ -80,12 +80,12 @@ package com.ankamagames.dofus.types.entities
          }
       }
       
-      private function onRemove(param1:Event) : void {
+      private function onRemove(e:Event) : void {
          this._emiter.counter = new ZeroCounter();
          removeEventListener(Event.ENTER_FRAME,this.onNewFrame);
       }
       
-      private function onNewFrame(param1:Event) : void {
+      private function onNewFrame(e:Event) : void {
          this._startPositionZone.point1.x = this._startPositionZone.point2.x;
          this._startPositionZone.point1.y = this._startPositionZone.point2.y;
          this._startPositionZone.point2.x = parent.x;

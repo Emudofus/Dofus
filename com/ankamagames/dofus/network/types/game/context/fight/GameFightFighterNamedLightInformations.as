@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 456;
       }
       
-      public function initGameFightFighterNamedLightInformations(param1:int=0, param2:uint=0, param3:int=0, param4:Boolean=false, param5:Boolean=false, param6:String="") : GameFightFighterNamedLightInformations {
-         super.initGameFightFighterLightInformations(param1,param2,param3,param4,param5);
-         this.name = param6;
+      public function initGameFightFighterNamedLightInformations(id:int=0, level:uint=0, breed:int=0, sex:Boolean=false, alive:Boolean=false, name:String="") : GameFightFighterNamedLightInformations {
+         super.initGameFightFighterLightInformations(id,level,breed,sex,alive);
+         this.name = name;
          return this;
       }
       
@@ -30,22 +30,22 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.name = "";
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightFighterNamedLightInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightFighterNamedLightInformations(output);
       }
       
-      public function serializeAs_GameFightFighterNamedLightInformations(param1:IDataOutput) : void {
-         super.serializeAs_GameFightFighterLightInformations(param1);
-         param1.writeUTF(this.name);
+      public function serializeAs_GameFightFighterNamedLightInformations(output:IDataOutput) : void {
+         super.serializeAs_GameFightFighterLightInformations(output);
+         output.writeUTF(this.name);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightFighterNamedLightInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightFighterNamedLightInformations(input);
       }
       
-      public function deserializeAs_GameFightFighterNamedLightInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.name = param1.readUTF();
+      public function deserializeAs_GameFightFighterNamedLightInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.name = input.readUTF();
       }
    }
 }

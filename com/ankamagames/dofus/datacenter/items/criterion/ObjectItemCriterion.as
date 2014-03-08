@@ -9,15 +9,15 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class ObjectItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function ObjectItemCriterion(param1:String) {
-         super(param1);
+      public function ObjectItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get isRespected() : Boolean {
-         var _loc1_:ItemWrapper = null;
-         for each (_loc1_ in InventoryManager.getInstance().realInventory)
+         var iw:ItemWrapper = null;
+         for each (iw in InventoryManager.getInstance().realInventory)
          {
-            if(_loc1_.objectGID == _criterionValue)
+            if(iw.objectGID == _criterionValue)
             {
                if(_operator.text == ItemCriterionOperator.EQUAL)
                {
@@ -34,23 +34,23 @@ package com.ankamagames.dofus.datacenter.items.criterion
       }
       
       override public function get text() : String {
-         var _loc1_:String = Item.getItemById(_criterionValue).name;
-         var _loc2_:* = "";
+         var objectName:String = Item.getItemById(_criterionValue).name;
+         var readableCriterion:String = "";
          switch(_operator.text)
          {
             case ItemCriterionOperator.DIFFERENT:
-               _loc2_ = I18n.getUiText("ui.common.doNotPossess",[_loc1_]);
+               readableCriterion = I18n.getUiText("ui.common.doNotPossess",[objectName]);
                break;
             case ItemCriterionOperator.EQUAL:
-               _loc2_ = I18n.getUiText("ui.common.doPossess",[_loc1_]);
+               readableCriterion = I18n.getUiText("ui.common.doPossess",[objectName]);
                break;
          }
-         return _loc2_;
+         return readableCriterion;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:ObjectItemCriterion = new ObjectItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:ObjectItemCriterion = new ObjectItemCriterion(this.basicText);
+         return clonedCriterion;
       }
    }
 }

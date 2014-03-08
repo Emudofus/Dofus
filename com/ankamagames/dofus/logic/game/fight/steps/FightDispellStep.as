@@ -8,9 +8,9 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightDispellStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightDispellStep(param1:int) {
+      public function FightDispellStep(fighterId:int) {
          super();
-         this._fighterId = param1;
+         this._fighterId = fighterId;
       }
       
       private var _fighterId:int;

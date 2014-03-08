@@ -38,13 +38,13 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 702;
       }
       
-      public function initGameFightJoinMessage(param1:Boolean=false, param2:Boolean=false, param3:Boolean=false, param4:Boolean=false, param5:uint=0, param6:uint=0) : GameFightJoinMessage {
-         this.canBeCancelled = param1;
-         this.canSayReady = param2;
-         this.isSpectator = param3;
-         this.isFightStarted = param4;
-         this.timeMaxBeforeFightStart = param5;
-         this.fightType = param6;
+      public function initGameFightJoinMessage(canBeCancelled:Boolean=false, canSayReady:Boolean=false, isSpectator:Boolean=false, isFightStarted:Boolean=false, timeMaxBeforeFightStart:uint=0, fightType:uint=0) : GameFightJoinMessage {
+         this.canBeCancelled = canBeCancelled;
+         this.canSayReady = canSayReady;
+         this.isSpectator = isSpectator;
+         this.isFightStarted = isFightStarted;
+         this.timeMaxBeforeFightStart = timeMaxBeforeFightStart;
+         this.fightType = fightType;
          this._isInitialized = true;
          return this;
       }
@@ -59,57 +59,57 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightJoinMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightJoinMessage(output);
       }
       
-      public function serializeAs_GameFightJoinMessage(param1:IDataOutput) : void {
-         var _loc2_:uint = 0;
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,0,this.canBeCancelled);
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,1,this.canSayReady);
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,2,this.isSpectator);
-         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,3,this.isFightStarted);
-         param1.writeByte(_loc2_);
+      public function serializeAs_GameFightJoinMessage(output:IDataOutput) : void {
+         var _box0:uint = 0;
+         _box0 = BooleanByteWrapper.setFlag(_box0,0,this.canBeCancelled);
+         _box0 = BooleanByteWrapper.setFlag(_box0,1,this.canSayReady);
+         _box0 = BooleanByteWrapper.setFlag(_box0,2,this.isSpectator);
+         _box0 = BooleanByteWrapper.setFlag(_box0,3,this.isFightStarted);
+         output.writeByte(_box0);
          if(this.timeMaxBeforeFightStart < 0)
          {
             throw new Error("Forbidden value (" + this.timeMaxBeforeFightStart + ") on element timeMaxBeforeFightStart.");
          }
          else
          {
-            param1.writeInt(this.timeMaxBeforeFightStart);
-            param1.writeByte(this.fightType);
+            output.writeInt(this.timeMaxBeforeFightStart);
+            output.writeByte(this.fightType);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightJoinMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightJoinMessage(input);
       }
       
-      public function deserializeAs_GameFightJoinMessage(param1:IDataInput) : void {
-         var _loc2_:uint = param1.readByte();
-         this.canBeCancelled = BooleanByteWrapper.getFlag(_loc2_,0);
-         this.canSayReady = BooleanByteWrapper.getFlag(_loc2_,1);
-         this.isSpectator = BooleanByteWrapper.getFlag(_loc2_,2);
-         this.isFightStarted = BooleanByteWrapper.getFlag(_loc2_,3);
-         this.timeMaxBeforeFightStart = param1.readInt();
+      public function deserializeAs_GameFightJoinMessage(input:IDataInput) : void {
+         var _box0:uint = input.readByte();
+         this.canBeCancelled = BooleanByteWrapper.getFlag(_box0,0);
+         this.canSayReady = BooleanByteWrapper.getFlag(_box0,1);
+         this.isSpectator = BooleanByteWrapper.getFlag(_box0,2);
+         this.isFightStarted = BooleanByteWrapper.getFlag(_box0,3);
+         this.timeMaxBeforeFightStart = input.readInt();
          if(this.timeMaxBeforeFightStart < 0)
          {
             throw new Error("Forbidden value (" + this.timeMaxBeforeFightStart + ") on element of GameFightJoinMessage.timeMaxBeforeFightStart.");
          }
          else
          {
-            this.fightType = param1.readByte();
+            this.fightType = input.readByte();
             if(this.fightType < 0)
             {
                throw new Error("Forbidden value (" + this.fightType + ") on element of GameFightJoinMessage.fightType.");

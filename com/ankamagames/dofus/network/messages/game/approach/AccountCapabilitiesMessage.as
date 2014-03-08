@@ -35,12 +35,12 @@ package com.ankamagames.dofus.network.messages.game.approach
          return 6216;
       }
       
-      public function initAccountCapabilitiesMessage(param1:int=0, param2:Boolean=false, param3:uint=0, param4:uint=0, param5:int=-1) : AccountCapabilitiesMessage {
-         this.accountId = param1;
-         this.tutorialAvailable = param2;
-         this.breedsVisible = param3;
-         this.breedsAvailable = param4;
-         this.status = param5;
+      public function initAccountCapabilitiesMessage(accountId:int=0, tutorialAvailable:Boolean=false, breedsVisible:uint=0, breedsAvailable:uint=0, status:int=-1) : AccountCapabilitiesMessage {
+         this.accountId = accountId;
+         this.tutorialAvailable = tutorialAvailable;
+         this.breedsVisible = breedsVisible;
+         this.breedsAvailable = breedsAvailable;
+         this.status = status;
          this._isInitialized = true;
          return this;
       }
@@ -54,65 +54,65 @@ package com.ankamagames.dofus.network.messages.game.approach
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AccountCapabilitiesMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AccountCapabilitiesMessage(output);
       }
       
-      public function serializeAs_AccountCapabilitiesMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.accountId);
-         param1.writeBoolean(this.tutorialAvailable);
+      public function serializeAs_AccountCapabilitiesMessage(output:IDataOutput) : void {
+         output.writeInt(this.accountId);
+         output.writeBoolean(this.tutorialAvailable);
          if(this.breedsVisible < 0)
          {
             throw new Error("Forbidden value (" + this.breedsVisible + ") on element breedsVisible.");
          }
          else
          {
-            param1.writeShort(this.breedsVisible);
+            output.writeShort(this.breedsVisible);
             if(this.breedsAvailable < 0)
             {
                throw new Error("Forbidden value (" + this.breedsAvailable + ") on element breedsAvailable.");
             }
             else
             {
-               param1.writeShort(this.breedsAvailable);
-               param1.writeByte(this.status);
+               output.writeShort(this.breedsAvailable);
+               output.writeByte(this.status);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AccountCapabilitiesMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AccountCapabilitiesMessage(input);
       }
       
-      public function deserializeAs_AccountCapabilitiesMessage(param1:IDataInput) : void {
-         this.accountId = param1.readInt();
-         this.tutorialAvailable = param1.readBoolean();
-         this.breedsVisible = param1.readShort();
+      public function deserializeAs_AccountCapabilitiesMessage(input:IDataInput) : void {
+         this.accountId = input.readInt();
+         this.tutorialAvailable = input.readBoolean();
+         this.breedsVisible = input.readShort();
          if(this.breedsVisible < 0)
          {
             throw new Error("Forbidden value (" + this.breedsVisible + ") on element of AccountCapabilitiesMessage.breedsVisible.");
          }
          else
          {
-            this.breedsAvailable = param1.readShort();
+            this.breedsAvailable = input.readShort();
             if(this.breedsAvailable < 0)
             {
                throw new Error("Forbidden value (" + this.breedsAvailable + ") on element of AccountCapabilitiesMessage.breedsAvailable.");
             }
             else
             {
-               this.status = param1.readByte();
+               this.status = input.readByte();
                return;
             }
          }

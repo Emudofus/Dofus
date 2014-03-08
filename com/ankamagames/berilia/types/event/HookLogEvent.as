@@ -7,10 +7,10 @@ package com.ankamagames.berilia.types.event
    public class HookLogEvent extends LogEvent
    {
       
-      public function HookLogEvent(param1:String, param2:Array) {
+      public function HookLogEvent(hookName:String, params:Array) {
          super(null,null,0);
-         this._hookName = param1;
-         this._params = param2;
+         this._hookName = hookName;
+         this._params = params;
          MEMORY_LOG[this] = 1;
       }
       

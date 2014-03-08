@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.friend
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.friend.FriendInformations;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,8 +31,8 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 4002;
       }
       
-      public function initFriendsListMessage(param1:Vector.<FriendInformations>=null) : FriendsListMessage {
-         this.friendsList = param1;
+      public function initFriendsListMessage(friendsList:Vector.<FriendInformations>=null) : FriendsListMessage {
+         this.friendsList = friendsList;
          this._isInitialized = true;
          return this;
       }
@@ -42,47 +42,47 @@ package com.ankamagames.dofus.network.messages.game.friend
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FriendsListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FriendsListMessage(output);
       }
       
-      public function serializeAs_FriendsListMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.friendsList.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.friendsList.length)
+      public function serializeAs_FriendsListMessage(output:IDataOutput) : void {
+         output.writeShort(this.friendsList.length);
+         var _i1:uint = 0;
+         while(_i1 < this.friendsList.length)
          {
-            param1.writeShort((this.friendsList[_loc2_] as FriendInformations).getTypeId());
-            (this.friendsList[_loc2_] as FriendInformations).serialize(param1);
-            _loc2_++;
+            output.writeShort((this.friendsList[_i1] as FriendInformations).getTypeId());
+            (this.friendsList[_i1] as FriendInformations).serialize(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FriendsListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FriendsListMessage(input);
       }
       
-      public function deserializeAs_FriendsListMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         var _loc5_:FriendInformations = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_FriendsListMessage(input:IDataInput) : void {
+         var _id1:uint = 0;
+         var _item1:FriendInformations = null;
+         var _friendsListLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _friendsListLen)
          {
-            _loc4_ = param1.readUnsignedShort();
-            _loc5_ = ProtocolTypeManager.getInstance(FriendInformations,_loc4_);
-            _loc5_.deserialize(param1);
-            this.friendsList.push(_loc5_);
-            _loc3_++;
+            _id1 = input.readUnsignedShort();
+            _item1 = ProtocolTypeManager.getInstance(FriendInformations,_id1);
+            _item1.deserialize(input);
+            this.friendsList.push(_item1);
+            _i1++;
          }
       }
    }

@@ -15,13 +15,13 @@ package com.ankamagames.dofus.datacenter.world
       
       private static var _allSuperAreas:Array;
       
-      public static function getSuperAreaById(param1:int) : SuperArea {
-         var _loc2_:SuperArea = GameData.getObject(MODULE,param1) as SuperArea;
-         if(!_loc2_)
+      public static function getSuperAreaById(id:int) : SuperArea {
+         var superArea:SuperArea = GameData.getObject(MODULE,id) as SuperArea;
+         if(!superArea)
          {
             return null;
          }
-         return _loc2_;
+         return superArea;
       }
       
       public static function getAllSuperArea() : Array {

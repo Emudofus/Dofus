@@ -7,8 +7,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class SexItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function SexItemCriterion(param1:String) {
-         super(param1);
+      public function SexItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get text() : String {
@@ -20,8 +20,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:SexItemCriterion = new SexItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:SexItemCriterion = new SexItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {

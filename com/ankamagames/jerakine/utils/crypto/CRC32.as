@@ -12,37 +12,37 @@ package com.ankamagames.jerakine.utils.crypto
       private static var CRCTable:Array = initCRCTable();
       
       private static function initCRCTable() : Array {
-         var _loc3_:uint = 0;
-         var _loc4_:* = 0;
-         var _loc1_:Array = new Array(256);
-         var _loc2_:* = 0;
-         while(_loc2_ < 256)
+         var crc:uint = 0;
+         var j:* = 0;
+         var crcTable:Array = new Array(256);
+         var i:int = 0;
+         while(i < 256)
          {
-            _loc3_ = _loc2_;
-            _loc4_ = 0;
-            while(_loc4_ < 8)
+            crc = i;
+            j = 0;
+            while(j < 8)
             {
-               _loc3_ = _loc3_ & 1?_loc3_ >>> 1 ^ 3.988292384E9:_loc3_ >>> 1;
-               _loc4_++;
+               crc = crc & 1?crc >>> 1 ^ 3.988292384E9:crc >>> 1;
+               j++;
             }
-            _loc1_[_loc2_] = _loc3_;
-            _loc2_++;
+            crcTable[i] = crc;
+            i++;
          }
-         return _loc1_;
+         return crcTable;
       }
       
       private var _crc32:uint;
       
-      public function update(param1:ByteArray, param2:int=0, param3:int=0) : void {
-         var param3:int = param3 == 0?param1.length:param3;
-         var _loc4_:uint = ~this._crc32;
-         var _loc5_:int = param2;
-         while(_loc5_ < param3)
+      public function update(buffer:ByteArray, offset:int=0, length:int=0) : void {
+         var length:int = length == 0?buffer.length:length;
+         var crc:uint = ~this._crc32;
+         var i:int = offset;
+         while(i < length)
          {
-            _loc4_ = CRCTable[(_loc4_ ^ param1[_loc5_]) & 255] ^ _loc4_ >>> 8;
-            _loc5_++;
+            crc = CRCTable[(crc ^ buffer[i]) & 255] ^ crc >>> 8;
+            i++;
          }
-         this._crc32 = ~_loc4_;
+         this._crc32 = ~crc;
       }
       
       public function getValue() : uint {

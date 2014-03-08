@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.fight.actions
       }
       
       public static function create() : ToggleLockPartyAction {
-         var _loc1_:ToggleLockPartyAction = new ToggleLockPartyAction();
-         return _loc1_;
+         var a:ToggleLockPartyAction = new ToggleLockPartyAction();
+         return a;
       }
    }
 }

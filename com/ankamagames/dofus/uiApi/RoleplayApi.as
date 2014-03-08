@@ -52,8 +52,8 @@ package com.ankamagames.dofus.uiApi
          return Kernel.getWorker().getFrame(ZaapFrame) as ZaapFrame;
       }
       
-      public function set module(param1:UiModule) : void {
-         this._module = param1;
+      public function set module(value:UiModule) : void {
+         this._module = value;
       }
       
       public function destroy() : void {
@@ -65,21 +65,21 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function getSpellToForgetList() : Array {
-         var _loc2_:SpellWrapper = null;
-         var _loc1_:Array = new Array();
-         for each (_loc2_ in PlayedCharacterManager.getInstance().spellsInventory)
+         var spell:SpellWrapper = null;
+         var spellList:Array = new Array();
+         for each (spell in PlayedCharacterManager.getInstance().spellsInventory)
          {
-            if(_loc2_.spellLevel > 1)
+            if(spell.spellLevel > 1)
             {
-               _loc1_.push(_loc2_);
+               spellList.push(spell);
             }
          }
-         return _loc1_;
+         return spellList;
       }
       
       public function getEmotesList() : Array {
-         var _loc1_:Array = this.roleplayEmoticonFrame.emotesList;
-         return _loc1_;
+         var emotes:Array = this.roleplayEmoticonFrame.emotesList;
+         return emotes;
       }
       
       public function getUsableEmotesList() : Array {
@@ -90,16 +90,16 @@ package com.ankamagames.dofus.uiApi
          return this.zaapFrame.spawnMapId;
       }
       
-      public function getEntitiesOnCell(param1:int) : Array {
-         return EntitiesManager.getInstance().getEntitiesOnCell(param1);
+      public function getEntitiesOnCell(cellId:int) : Array {
+         return EntitiesManager.getInstance().getEntitiesOnCell(cellId);
       }
       
       public function getPlayersIdOnCurrentMap() : Array {
          return this.roleplayEntitiesFrame.playersId;
       }
       
-      public function getPlayerIsInCurrentMap(param1:int) : Boolean {
-         return !(this.roleplayEntitiesFrame.playersId.indexOf(param1) == -1);
+      public function getPlayerIsInCurrentMap(playerId:int) : Boolean {
+         return !(this.roleplayEntitiesFrame.playersId.indexOf(playerId) == -1);
       }
       
       public function isUsingInteractive() : Boolean {
@@ -110,43 +110,43 @@ package com.ankamagames.dofus.uiApi
          return this.roleplayInteractivesFrame.usingInteractive;
       }
       
-      public function getFight(param1:int) : Object {
-         return this.roleplayEntitiesFrame.fights[param1];
+      public function getFight(id:int) : Object {
+         return this.roleplayEntitiesFrame.fights[id];
       }
       
-      public function putEntityOnTop(param1:AnimatedCharacter) : void {
-         RoleplayManager.getInstance().putEntityOnTop(param1);
+      public function putEntityOnTop(entity:AnimatedCharacter) : void {
+         RoleplayManager.getInstance().putEntityOnTop(entity);
       }
       
-      public function getEntityInfos(param1:Object) : Object {
-         var _loc2_:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-         return _loc2_.entitiesFrame.getEntityInfos(param1.id);
+      public function getEntityInfos(entity:Object) : Object {
+         var roleplayContextFrame:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+         return roleplayContextFrame.entitiesFrame.getEntityInfos(entity.id);
       }
       
-      public function getEntityByName(param1:String) : Object {
-         var _loc3_:IEntity = null;
-         var _loc4_:GameRolePlayNamedActorInformations = null;
-         var _loc2_:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-         for each (_loc3_ in EntitiesManager.getInstance().entities)
+      public function getEntityByName(name:String) : Object {
+         var entity:IEntity = null;
+         var infos:GameRolePlayNamedActorInformations = null;
+         var roleplayContextFrame:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+         for each (entity in EntitiesManager.getInstance().entities)
          {
-            _loc4_ = _loc2_.entitiesFrame.getEntityInfos(_loc3_.id) as GameRolePlayNamedActorInformations;
-            if((_loc4_) && param1 == _loc4_.name)
+            infos = roleplayContextFrame.entitiesFrame.getEntityInfos(entity.id) as GameRolePlayNamedActorInformations;
+            if((infos) && (name == infos.name))
             {
-               return _loc3_;
+               return entity;
             }
          }
          return null;
       }
       
-      public function switchButtonWrappers(param1:Object, param2:Object) : void {
-         var _loc3_:int = param2.position;
-         var _loc4_:int = param1.position;
-         param2.setPosition(_loc4_);
-         param1.setPosition(_loc3_);
+      public function switchButtonWrappers(btnWrapper1:Object, btnWrapper2:Object) : void {
+         var indexT:int = btnWrapper2.position;
+         var indexS:int = btnWrapper1.position;
+         btnWrapper2.setPosition(indexS);
+         btnWrapper1.setPosition(indexT);
       }
       
-      public function setButtonWrapperActivation(param1:Object, param2:Boolean) : void {
-         param1.active = param2;
+      public function setButtonWrapperActivation(btnWrapper:Object, active:Boolean) : void {
+         btnWrapper.active = active;
       }
    }
 }

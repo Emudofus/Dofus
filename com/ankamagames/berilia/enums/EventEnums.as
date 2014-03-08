@@ -155,8 +155,8 @@ package com.ankamagames.berilia.enums
       
       public static const EVENT_ONVIDEOBUFFERCHANGE_MSG:String = EVENT_UI_MSG + "VideoBufferChangeMessage";
       
-      public static function convertMsgToFct(param1:String) : String {
-         switch(param1)
+      public static function convertMsgToFct(msgName:String) : String {
+         switch(msgName)
          {
             case EVENT_ONPRESS_MSG:
                return EVENT_ONPRESS;
@@ -230,8 +230,6 @@ package com.ankamagames.berilia.enums
                return EVENT_ONTEXTCLICK;
             case EVENT_MIDDLECLICK_MSG:
                return EVENT_MIDDLECLICK;
-            default:
-               return null;
          }
       }
    }

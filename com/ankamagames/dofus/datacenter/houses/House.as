@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.houses
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(House));
       
-      public static function getGuildHouseById(param1:int) : House {
-         return GameData.getObject(MODULE,param1) as House;
+      public static function getGuildHouseById(id:int) : House {
+         return GameData.getObject(MODULE,id) as House;
       }
       
       public var typeId:int;

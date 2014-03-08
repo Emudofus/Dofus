@@ -10,25 +10,25 @@ package com.ankamagames.dofus.logic.game.common.steps
    public class RemoveEntityStep extends AbstractSequencable
    {
       
-      public function RemoveEntityStep(param1:int) {
+      public function RemoveEntityStep(pEntityId:int) {
          super();
-         this._id = param1;
+         this._id = pEntityId;
       }
       
       private var _id:int;
       
       override public function start() : void {
-         var _loc3_:EntityApi = null;
-         var _loc1_:GameContextRemoveElementMessage = new GameContextRemoveElementMessage();
-         _loc1_.initGameContextRemoveElementMessage(this._id);
-         Kernel.getWorker().process(_loc1_);
-         var _loc2_:LuaPlayer = ScriptsManager.getInstance().getPlayer(ScriptsManager.LUA_PLAYER) as LuaPlayer;
-         if(_loc2_)
+         var luaEntityApi:EntityApi = null;
+         var gcrem:GameContextRemoveElementMessage = new GameContextRemoveElementMessage();
+         gcrem.initGameContextRemoveElementMessage(this._id);
+         Kernel.getWorker().process(gcrem);
+         var luaPlayer:LuaPlayer = ScriptsManager.getInstance().getPlayer(ScriptsManager.LUA_PLAYER) as LuaPlayer;
+         if(luaPlayer)
          {
-            _loc3_ = ScriptsManager.getInstance().getPlayerApi(_loc2_,"EntityApi") as EntityApi;
-            if(_loc3_)
+            luaEntityApi = ScriptsManager.getInstance().getPlayerApi(luaPlayer,"EntityApi") as EntityApi;
+            if(luaEntityApi)
             {
-               _loc3_.removeEntity(this._id);
+               luaEntityApi.removeEntity(this._id);
             }
          }
          executeCallbacks();

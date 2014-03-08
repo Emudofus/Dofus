@@ -5,8 +5,8 @@ package com.ankamagames.tubul.events
    public class TubulEvent extends Event
    {
       
-      public function TubulEvent(param1:String, param2:Boolean=false, param3:Boolean=false) {
-         super(param1,param2,param3);
+      public function TubulEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
       }
       
       public static const ACTIVATION:String = "activation";
@@ -14,9 +14,9 @@ package com.ankamagames.tubul.events
       public var activated:Boolean;
       
       override public function clone() : Event {
-         var _loc1_:TubulEvent = new TubulEvent(this.type,this.bubbles,this.cancelable);
-         _loc1_.activated = this.activated;
-         return _loc1_;
+         var e:TubulEvent = new TubulEvent(this.type,this.bubbles,this.cancelable);
+         e.activated = this.activated;
+         return e;
       }
    }
 }

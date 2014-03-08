@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(param1:uint) : DisplayContextualMenuAction {
-         var _loc2_:DisplayContextualMenuAction = new DisplayContextualMenuAction();
-         _loc2_.playerId = param1;
-         return _loc2_;
+      public static function create(playerId:uint) : DisplayContextualMenuAction {
+         var o:DisplayContextualMenuAction = new DisplayContextualMenuAction();
+         o.playerId = playerId;
+         return o;
       }
       
       public var playerId:uint;

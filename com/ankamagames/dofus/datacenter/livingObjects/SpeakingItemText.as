@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.livingObjects
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpeakingItemText));
       
-      public static function getSpeakingItemTextById(param1:int) : SpeakingItemText {
-         return GameData.getObject(MODULE,param1) as SpeakingItemText;
+      public static function getSpeakingItemTextById(id:int) : SpeakingItemText {
+         return GameData.getObject(MODULE,id) as SpeakingItemText;
       }
       
       public static function getSpeakingItemsText() : Array {

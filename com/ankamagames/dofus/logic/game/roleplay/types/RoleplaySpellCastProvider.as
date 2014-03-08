@@ -1,9 +1,9 @@
 package com.ankamagames.dofus.logic.game.roleplay.types
 {
    import com.ankamagames.dofus.logic.game.common.misc.ISpellCastProvider;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.sequencer.ISequencable;
    import com.ankamagames.dofus.logic.game.fight.types.CastingSpell;
+   import __AS3__.vec.*;
    
    public class RoleplaySpellCastProvider extends Object implements ISpellCastProvider
    {

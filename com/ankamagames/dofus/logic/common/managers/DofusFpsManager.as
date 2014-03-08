@@ -52,83 +52,83 @@ package com.ankamagames.dofus.logic.common.managers
          TiphonCacheManager.init();
          _logWrapped = new FpsLogWrapper();
          _logRamWrapped = new FpsLogWrapper();
-         if(BuildInfos.BUILD_TYPE == BuildTypeEnum.DEBUG || BuildInfos.BUILD_TYPE == BuildTypeEnum.INTERNAL)
+         if((BuildInfos.BUILD_TYPE == BuildTypeEnum.DEBUG) || (BuildInfos.BUILD_TYPE == BuildTypeEnum.INTERNAL))
          {
             TiphonDebugManager.enable();
          }
       }
       
-      public static function updateFocusList(param1:Array, param2:String) : void {
-         var _loc5_:String = null;
-         var _loc6_:* = NaN;
-         var _loc9_:* = NaN;
-         var _loc3_:Boolean = AirScanner.hasAir();
-         var _loc4_:NativeWindow = NativeApplication.nativeApplication.openedWindows[0];
-         if(_loc3_)
+      public static function updateFocusList(focusList:Array, clientId:String) : void {
+         var lastFocus:String = null;
+         var lastTime:* = NaN;
+         var time:* = NaN;
+         var hasAir:Boolean = AirScanner.hasAir();
+         var nativeWindow:NativeWindow = NativeApplication.nativeApplication.openedWindows[0];
+         if(hasAir)
          {
-            if((_loc4_) && _loc4_["displayState"] == NativeWindowDisplayState.MINIMIZED)
+            if((nativeWindow) && (nativeWindow["displayState"] == NativeWindowDisplayState.MINIMIZED))
             {
                StageShareManager.stage.frameRate = 12;
                return;
             }
          }
-         var _loc7_:int = param1.length;
-         var _loc8_:* = 0;
-         while(_loc8_ < _loc7_)
+         var num:int = focusList.length;
+         var i:int = 0;
+         while(i < num)
          {
-            if(_loc5_ == null)
+            if(lastFocus == null)
             {
-               _loc5_ = param1[_loc8_];
-               _loc6_ = Number(param1[_loc8_ + 1]);
+               lastFocus = focusList[i];
+               lastTime = Number(focusList[i + 1]);
             }
             else
             {
-               _loc9_ = Number(param1[_loc8_ + 1]);
-               if(_loc6_ < _loc9_)
+               time = Number(focusList[i + 1]);
+               if(lastTime < time)
                {
-                  _loc5_ = param1[_loc8_];
-                  _loc6_ = _loc9_;
+                  lastFocus = focusList[i];
+                  lastTime = time;
                }
             }
-            _loc8_ = _loc8_ + 2;
+            i = i + 2;
          }
-         if(param2 == _loc5_)
+         if(clientId == lastFocus)
          {
             StageShareManager.stage.frameRate = PerformanceManager.BASE_FRAMERATE;
          }
          else
          {
-            if(!_loc3_ || ((_loc3_) && (_loc4_)) && (!_loc4_.active))
+            if((!hasAir) || ((hasAir) && (nativeWindow)) && (!nativeWindow.active))
             {
                StageShareManager.stage.frameRate = 12;
             }
          }
       }
       
-      private static function onActivate(param1:Event) : void {
+      private static function onActivate(e:Event) : void {
          StageShareManager.stage.frameRate = PerformanceManager.BASE_FRAMERATE;
-         var _loc2_:DofusOptions = Dofus.getInstance().options;
-         if((_loc2_) && (_loc2_.optimizeMultiAccount))
+         var options:DofusOptions = Dofus.getInstance().options;
+         if((options) && (options.optimizeMultiAccount))
          {
             InterClientManager.getInstance().gainFocus();
          }
          StageShareManager.stage.removeEventListener(MouseEvent.MOUSE_OVER,onStageRollOver);
       }
       
-      private static function onDesactivate(param1:Event) : void {
+      private static function onDesactivate(e:Event) : void {
          StageShareManager.stage.addEventListener(MouseEvent.MOUSE_OVER,onStageRollOver);
       }
       
-      private static function onStageRollOver(param1:Event) : void {
+      private static function onStageRollOver(e:Event) : void {
          StageShareManager.stage.removeEventListener(MouseEvent.MOUSE_OVER,onStageRollOver);
          StageShareManager.stage.frameRate = PerformanceManager.BASE_FRAMERATE;
       }
       
-      private static function onStateChange(param1:NativeWindowDisplayStateEvent) : void {
-         var _loc2_:DofusOptions = Dofus.getInstance().options;
-         if((_loc2_) && (_loc2_.optimizeMultiAccount))
+      private static function onStateChange(e:NativeWindowDisplayStateEvent) : void {
+         var options:DofusOptions = Dofus.getInstance().options;
+         if((options) && (options.optimizeMultiAccount))
          {
-            if(param1.afterDisplayState == NativeWindowDisplayState.MINIMIZED)
+            if(e.afterDisplayState == NativeWindowDisplayState.MINIMIZED)
             {
                StageShareManager.stage.frameRate = 12;
                InterClientManager.getInstance().resetFocus();
@@ -150,10 +150,10 @@ package com.ankamagames.dofus.logic.common.managers
       
       private static var _logRamWrapped:FpsLogWrapper;
       
-      private static function onEnterFrame(param1:Event) : void {
-         var _loc4_:* = 0;
-         var _loc2_:int = getTimer();
-         _elapsedTime = _elapsedTime + (_loc2_ - _lastTime);
+      private static function onEnterFrame(e:Event) : void {
+         var i:* = 0;
+         var time:int = getTimer();
+         _elapsedTime = _elapsedTime + (time - _lastTime);
          _frame++;
          if(_elapsedTime > 1000)
          {
@@ -168,20 +168,20 @@ package com.ankamagames.dofus.logic.common.managers
                LogFrame.log(LogTypeEnum.RAM,_logRamWrapped);
             }
          }
-         _frameNeeded = _loc2_ / _interval;
+         _frameNeeded = time / _interval;
          _totalFrame++;
-         var _loc3_:int = _frameNeeded - _framePlayed;
-         if(_loc3_)
+         var numFrame:int = _frameNeeded - _framePlayed;
+         if(numFrame)
          {
             _framePlayed = _frameNeeded;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            i = 0;
+            while(i < numFrame)
             {
                FpsControler.nextFrame();
-               _loc4_++;
+               i++;
             }
          }
-         _lastTime = _loc2_;
+         _lastTime = time;
       }
    }
 }

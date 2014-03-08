@@ -12,11 +12,11 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    public class StorageBidHouseFilterView extends StorageGenericView
    {
       
-      public function StorageBidHouseFilterView(param1:HookLock, param2:IStorageView, param3:Vector.<uint>, param4:uint) {
-         super(param1);
-         this._allowedTypes = param3;
-         this._maxItemLevel = param4;
-         this._parent = param2;
+      public function StorageBidHouseFilterView(hookLock:HookLock, parentView:IStorageView, allowedTypes:Vector.<uint>, maxItemLevel:uint) {
+         super(hookLock);
+         this._allowedTypes = allowedTypes;
+         this._maxItemLevel = maxItemLevel;
+         this._parent = parentView;
       }
       
       private var _allowedTypes:Vector.<uint>;
@@ -29,9 +29,9 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          return "storageBidHouseFilter";
       }
       
-      override public function isListening(param1:ItemWrapper) : Boolean {
-         var _loc2_:Item = Item.getItemById(param1.objectGID);
-         return (this._parent.isListening(param1)) && (super.isListening(param1)) && _loc2_.level <= this._maxItemLevel && !(this._allowedTypes.indexOf(_loc2_.typeId) == -1);
+      override public function isListening(item:ItemWrapper) : Boolean {
+         var data:Item = Item.getItemById(item.objectGID);
+         return (this._parent.isListening(item)) && (super.isListening(item)) && (data.level <= this._maxItemLevel) && (!(this._allowedTypes.indexOf(data.typeId) == -1));
       }
       
       override public function updateView() : void {
@@ -42,8 +42,8 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          }
       }
       
-      public function set parent(param1:IStorageView) : void {
-         this._parent = param1;
+      public function set parent(view:IStorageView) : void {
+         this._parent = view;
       }
       
       public function get parent() : IStorageView {

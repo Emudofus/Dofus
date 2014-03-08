@@ -23,10 +23,10 @@ package com.ankamagames.dofus.network.types.game.paddock
          return 184;
       }
       
-      public function initMountInformationsForPaddock(param1:int=0, param2:String="", param3:String="") : MountInformationsForPaddock {
-         this.modelId = param1;
-         this.name = param2;
-         this.ownerName = param3;
+      public function initMountInformationsForPaddock(modelId:int=0, name:String="", ownerName:String="") : MountInformationsForPaddock {
+         this.modelId = modelId;
+         this.name = name;
+         this.ownerName = ownerName;
          return this;
       }
       
@@ -36,24 +36,24 @@ package com.ankamagames.dofus.network.types.game.paddock
          this.ownerName = "";
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MountInformationsForPaddock(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MountInformationsForPaddock(output);
       }
       
-      public function serializeAs_MountInformationsForPaddock(param1:IDataOutput) : void {
-         param1.writeInt(this.modelId);
-         param1.writeUTF(this.name);
-         param1.writeUTF(this.ownerName);
+      public function serializeAs_MountInformationsForPaddock(output:IDataOutput) : void {
+         output.writeInt(this.modelId);
+         output.writeUTF(this.name);
+         output.writeUTF(this.ownerName);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MountInformationsForPaddock(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MountInformationsForPaddock(input);
       }
       
-      public function deserializeAs_MountInformationsForPaddock(param1:IDataInput) : void {
-         this.modelId = param1.readInt();
-         this.name = param1.readUTF();
-         this.ownerName = param1.readUTF();
+      public function deserializeAs_MountInformationsForPaddock(input:IDataInput) : void {
+         this.modelId = input.readInt();
+         this.name = input.readUTF();
+         this.ownerName = input.readUTF();
       }
    }
 }

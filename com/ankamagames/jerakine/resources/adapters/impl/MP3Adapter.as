@@ -36,29 +36,29 @@ package com.ankamagames.jerakine.resources.adapters.impl
       
       private var _mp3BinaryLoader:MP3FileReferenceLoader;
       
-      public function loadDirectly(param1:Uri, param2:String, param3:IResourceObserver, param4:Boolean) : void {
+      public function loadDirectly(uri:Uri, path:String, observer:IResourceObserver, dispatchProgress:Boolean) : void {
          if(this._sound)
          {
             throw new IllegalOperationError("A single adapter can\'t handle two simultaneous loadings.");
          }
          else
          {
-            this._observer = param3;
-            this._uri = param1;
-            this._dispatchProgress = param4;
+            this._observer = observer;
+            this._uri = uri;
+            this._dispatchProgress = dispatchProgress;
             this.prepareLoader();
-            this._sound.load(new URLRequest(param2));
+            this._sound.load(new URLRequest(path));
             return;
          }
       }
       
-      public function loadFromData(param1:Uri, param2:ByteArray, param3:IResourceObserver, param4:Boolean) : void {
-         this._observer = param3;
-         this._uri = param1;
-         this._dispatchProgress = param4;
+      public function loadFromData(uri:Uri, data:ByteArray, observer:IResourceObserver, dispatchProgress:Boolean) : void {
+         this._observer = observer;
+         this._uri = uri;
+         this._dispatchProgress = dispatchProgress;
          this._mp3BinaryLoader = new MP3FileReferenceLoader();
          this._mp3BinaryLoader.addEventListener(MP3SoundEvent.COMPLETE,this.onMp3BinaryParsed);
-         this._mp3BinaryLoader.loadMP3ByteArray(param2);
+         this._mp3BinaryLoader.loadMP3ByteArray(data);
          _a[this] = this._mp3BinaryLoader;
       }
       
@@ -68,7 +68,7 @@ package com.ankamagames.jerakine.resources.adapters.impl
          this._uri = null;
       }
       
-      protected function getResource(param1:LoaderInfo) : * {
+      protected function getResource(ldr:LoaderInfo) : * {
          return this._sound;
       }
       
@@ -103,25 +103,25 @@ package com.ankamagames.jerakine.resources.adapters.impl
          this._sound = null;
       }
       
-      private function onMp3BinaryParsed(param1:MP3SoundEvent) : void {
-         var _loc2_:* = param1.sound;
+      private function onMp3BinaryParsed(e:MP3SoundEvent) : void {
+         var res:* = e.sound;
          this.releaseLoader();
-         this._observer.onLoaded(this._uri,this.getResourceType(),_loc2_);
+         this._observer.onLoaded(this._uri,this.getResourceType(),res);
       }
       
-      protected function onInit(param1:Event) : void {
-         var _loc2_:* = param1.target as Sound;
+      protected function onInit(e:Event) : void {
+         var res:* = e.target as Sound;
          this.releaseLoader();
-         this._observer.onLoaded(this._uri,this.getResourceType(),_loc2_);
+         this._observer.onLoaded(this._uri,this.getResourceType(),res);
       }
       
-      protected function onError(param1:ErrorEvent) : void {
+      protected function onError(ee:ErrorEvent) : void {
          this.releaseLoader();
-         this._observer.onFailed(this._uri,param1.text,ResourceErrorCode.RESOURCE_NOT_FOUND);
+         this._observer.onFailed(this._uri,ee.text,ResourceErrorCode.RESOURCE_NOT_FOUND);
       }
       
-      protected function onProgress(param1:ProgressEvent) : void {
-         this._observer.onProgress(this._uri,param1.bytesLoaded,param1.bytesTotal);
+      protected function onProgress(pe:ProgressEvent) : void {
+         this._observer.onProgress(this._uri,pe.bytesLoaded,pe.bytesTotal);
       }
    }
 }

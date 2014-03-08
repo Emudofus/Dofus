@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.social
          super();
       }
       
-      public static function create(param1:Boolean) : FriendOrGuildMemberLevelUpWarningSetAction {
-         var _loc2_:FriendOrGuildMemberLevelUpWarningSetAction = new FriendOrGuildMemberLevelUpWarningSetAction();
-         _loc2_.enable = param1;
-         return _loc2_;
+      public static function create(enable:Boolean) : FriendOrGuildMemberLevelUpWarningSetAction {
+         var a:FriendOrGuildMemberLevelUpWarningSetAction = new FriendOrGuildMemberLevelUpWarningSetAction();
+         a.enable = enable;
+         return a;
       }
       
       public var enable:Boolean;

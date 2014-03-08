@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.roleplay.actions.estate
          super();
       }
       
-      public static function create(param1:uint) : HouseToSellListRequestAction {
-         var _loc2_:HouseToSellListRequestAction = new HouseToSellListRequestAction();
-         _loc2_.pageIndex = param1;
-         return _loc2_;
+      public static function create(pageIndex:uint) : HouseToSellListRequestAction {
+         var a:HouseToSellListRequestAction = new HouseToSellListRequestAction();
+         a.pageIndex = pageIndex;
+         return a;
       }
       
       public var pageIndex:uint;

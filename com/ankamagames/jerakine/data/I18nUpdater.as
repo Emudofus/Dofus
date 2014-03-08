@@ -39,13 +39,13 @@ package com.ankamagames.jerakine.data
       
       private var _overrideProvider:Uri;
       
-      public function initI18n(param1:String, param2:Uri, param3:Boolean=false, param4:Uri=null) : void {
-         this._language = param1;
-         this._overrideProvider = param4;
-         super.init(param2,param3);
+      public function initI18n(language:String, metaFileListe:Uri, clearAll:Boolean=false, overrideProvider:Uri=null) : void {
+         this._language = language;
+         this._overrideProvider = overrideProvider;
+         super.init(metaFileListe,clearAll);
       }
       
-      override protected function checkFileVersion(param1:String, param2:String) : Boolean {
+      override protected function checkFileVersion(sFileName:String, sVersion:String) : Boolean {
          return false;
       }
       
@@ -53,43 +53,43 @@ package com.ankamagames.jerakine.data
          I18nFileAccessor.getInstance().close();
       }
       
-      override protected function onLoaded(param1:ResourceLoadedEvent) : void {
-         var _loc2_:LangMetaData = null;
-         var _loc3_:Uri = null;
-         var _loc4_:uint = 0;
-         var _loc5_:String = null;
-         switch(param1.uri.fileType)
+      override protected function onLoaded(e:ResourceLoadedEvent) : void {
+         var meta:LangMetaData = null;
+         var uri:Uri = null;
+         var realCount:uint = 0;
+         var file:String = null;
+         switch(e.uri.fileType)
          {
             case "d2i":
-               I18nFileAccessor.getInstance().init(param1.uri);
+               I18nFileAccessor.getInstance().init(e.uri);
                if(this._overrideProvider)
                {
                   I18nFileAccessor.getInstance().addOverrideFile(this._overrideProvider);
                }
-               _versions[param1.uri.tag.file] = param1.uri.tag.version;
+               _versions[e.uri.tag.file] = e.uri.tag.version;
                StoreDataManager.getInstance().setData(JerakineConstants.DATASTORE_FILES_INFO,_storeKey,_versions);
-               dispatchEvent(new LangFileEvent(LangFileEvent.COMPLETE,false,false,param1.uri.tag.file));
+               dispatchEvent(new LangFileEvent(LangFileEvent.COMPLETE,false,false,e.uri.tag.file));
                _dataFilesLoaded = true;
                _loadedFileCount++;
                break;
             case "meta":
-               _loc2_ = LangMetaData.fromXml(param1.resource,param1.uri.uri,this.checkFileVersion);
-               _loc4_ = 0;
-               for (_loc5_ in _loc2_.clearFile)
+               meta = LangMetaData.fromXml(e.resource,e.uri.uri,this.checkFileVersion);
+               realCount = 0;
+               for (file in meta.clearFile)
                {
-                  if(_loc5_.indexOf("_" + this._language) != -1)
+                  if(file.indexOf("_" + this._language) != -1)
                   {
-                     _loc3_ = new Uri(FileUtils.getFilePath(param1.uri.path) + "/" + _loc5_);
-                     _loc3_.tag = 
+                     uri = new Uri(FileUtils.getFilePath(e.uri.path) + "/" + file);
+                     uri.tag = 
                         {
-                           "version":_loc2_.clearFile[_loc5_],
-                           "file":FileUtils.getFileStartName(param1.uri.uri) + "." + _loc5_
+                           "version":meta.clearFile[file],
+                           "file":FileUtils.getFileStartName(e.uri.uri) + "." + file
                         };
-                     _files.push(_loc3_);
-                     _loc4_++;
+                     _files.push(uri);
+                     realCount++;
                   }
                }
-               if(_loc4_)
+               if(realCount)
                {
                   _loader.load(_files);
                }
@@ -98,8 +98,6 @@ package com.ankamagames.jerakine.data
                   dispatchEvent(new Event(Event.COMPLETE));
                }
                break;
-            default:
-               super.onLoaded(param1);
          }
       }
    }

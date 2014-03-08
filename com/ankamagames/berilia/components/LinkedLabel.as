@@ -22,23 +22,23 @@ package com.ankamagames.berilia.components
          return this._sUrl;
       }
       
-      public function set url(param1:String) : void {
-         this._sUrl = param1;
+      public function set url(value:String) : void {
+         this._sUrl = value;
       }
       
       public function get target() : String {
          return this._sTarget;
       }
       
-      public function set target(param1:String) : void {
-         this._sTarget = param1;
+      public function set target(value:String) : void {
+         this._sTarget = value;
       }
       
-      override public function process(param1:Message) : Boolean {
+      override public function process(msg:Message) : Boolean {
          switch(true)
          {
-            case param1 is MouseClickMessage:
-               if(((param1 as MouseClickMessage).target == this) && (getUi()) && (getUi().uiModule.trusted))
+            case msg is MouseClickMessage:
+               if(((msg as MouseClickMessage).target == this) && (getUi()) && (getUi().uiModule.trusted))
                {
                   navigateToURL(new URLRequest(this.url),this.target);
                   return true;

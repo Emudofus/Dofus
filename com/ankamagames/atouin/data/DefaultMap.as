@@ -11,11 +11,11 @@ package com.ankamagames.atouin.data
    public class DefaultMap extends Map
    {
       
-      public function DefaultMap(param1:uint=0) {
-         var _loc2_:* = 0;
-         var _loc3_:CellData = null;
+      public function DefaultMap(id:uint=0) {
+         var l:* = 0;
+         var cd:CellData = null;
          super();
-         this.id = param1;
+         this.id = id;
          mapVersion = 7;
          backgroundFixtures = new Array();
          foregroundFixtures = new Array();
@@ -24,28 +24,28 @@ package com.ankamagames.atouin.data
          layers.push(this.createLayer(Layer.LAYER_DECOR));
          cells = new Array();
          cellsCount = AtouinConstants.MAP_CELLS_COUNT;
-         _loc2_ = 0;
-         while(_loc2_ < cellsCount)
+         l = 0;
+         while(l < cellsCount)
          {
-            _loc3_ = new CellData(this,_loc2_);
-            cells.push(_loc3_);
-            _loc2_++;
+            cd = new CellData(this,l);
+            cells.push(cd);
+            l++;
          }
       }
       
-      override public function fromRaw(param1:IDataInput, param2:ByteArray=null) : void {
+      override public function fromRaw(raw:IDataInput, decryptionKey:ByteArray=null) : void {
       }
       
-      private function createLayer(param1:uint) : Layer {
-         var _loc2_:Layer = null;
-         _loc2_ = new Layer(this);
-         _loc2_.cells = new Array();
-         _loc2_.layerId = param1;
-         _loc2_.cellsCount = 1;
-         var _loc3_:Cell = new Cell(_loc2_);
-         _loc3_.elements = new Array();
-         _loc2_.cells.push(_loc3_);
-         return _loc2_;
+      private function createLayer(id:uint) : Layer {
+         var bgLayer:Layer = null;
+         bgLayer = new Layer(this);
+         bgLayer.cells = new Array();
+         bgLayer.layerId = id;
+         bgLayer.cellsCount = 1;
+         var firstCell:Cell = new Cell(bgLayer);
+         firstCell.elements = new Array();
+         bgLayer.cells.push(firstCell);
+         return bgLayer;
       }
    }
 }

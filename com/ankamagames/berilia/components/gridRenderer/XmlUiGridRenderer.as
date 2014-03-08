@@ -26,48 +26,48 @@ package com.ankamagames.berilia.components.gridRenderer
    public class XmlUiGridRenderer extends Object implements IGridRenderer
    {
       
-      public function XmlUiGridRenderer(param1:String) {
-         var _loc4_:Array = null;
+      public function XmlUiGridRenderer(args:String) {
+         var tmp:Array = null;
          this._log = Log.getLogger(getQualifiedClassName(XmlUiGridRenderer));
          this._berilia = Berilia.getInstance();
          this._shapeIndex = new Dictionary(true);
          this._dWaitingUpdate = new Dictionary(true);
          super();
-         var _loc2_:Array = param1.split(",");
-         var _loc3_:String = _loc2_[0];
-         if(_loc2_[1])
+         var params:Array = args.split(",");
+         var uiName:String = params[0];
+         if(params[1])
          {
             this._bgColor1 = new ColorTransform();
-            this._bgColor1.color = parseInt(_loc2_[1],16);
+            this._bgColor1.color = parseInt(params[1],16);
          }
-         if(_loc2_[2])
+         if(params[2])
          {
             this._bgColor2 = new ColorTransform();
-            this._bgColor2.color = parseInt(_loc2_[2],16);
+            this._bgColor2.color = parseInt(params[2],16);
          }
-         if(_loc3_.indexOf("::") != -1)
+         if(uiName.indexOf("::") != -1)
          {
-            _loc4_ = _loc3_.split("::");
-            if(UiModuleManager.getInstance().getModules()[_loc4_[0]])
+            tmp = uiName.split("::");
+            if(UiModuleManager.getInstance().getModules()[tmp[0]])
             {
-               this._sUiModule = _loc4_[0];
-               if(UiModule(UiModuleManager.getInstance().getModules()[_loc4_[0]]).uis[_loc4_[1]])
+               this._sUiModule = tmp[0];
+               if(UiModule(UiModuleManager.getInstance().getModules()[tmp[0]]).uis[tmp[1]])
                {
-                  this._sUiName = _loc4_[1];
+                  this._sUiName = tmp[1];
                }
                else
                {
-                  throw new BeriliaError("Ui [" + _loc4_[1] + "] does not exit in module [" + _loc4_[0] + "] (grid parameter name [" + _loc3_ + "])");
+                  throw new BeriliaError("Ui [" + tmp[1] + "] does not exit in module [" + tmp[0] + "] (grid parameter name [" + uiName + "])");
                }
             }
             else
             {
-               throw new BeriliaError("Module [" + _loc4_[0] + "] does not exit (grid parameter name [" + _loc3_ + "])");
+               throw new BeriliaError("Module [" + tmp[0] + "] does not exit (grid parameter name [" + uiName + "])");
             }
          }
          else
          {
-            this._sUiName = _loc3_;
+            this._sUiName = uiName;
          }
       }
       
@@ -93,58 +93,58 @@ package com.ankamagames.berilia.components.gridRenderer
       
       private var _dWaitingUpdate:Dictionary;
       
-      public function set grid(param1:Grid) : void {
-         this._grid = param1;
+      public function set grid(g:Grid) : void {
+         this._grid = g;
       }
       
-      public function render(param1:*, param2:uint, param3:Boolean, param4:uint=0) : DisplayObject {
-         var _loc5_:UiRootContainer = this._grid.getUi();
-         this._uiCtr = new UiRootContainer(StageShareManager.stage,_loc5_.uiModule.uis[this._sUiName],this._ctr);
-         this._uiCtr.uiModule = _loc5_.uiModule;
+      public function render(data:*, index:uint, selected:Boolean, subIndex:uint=0) : DisplayObject {
+         var mainUi:UiRootContainer = this._grid.getUi();
+         this._uiCtr = new UiRootContainer(StageShareManager.stage,mainUi.uiModule.uis[this._sUiName],this._ctr);
+         this._uiCtr.uiModule = mainUi.uiModule;
          this._uiCtr.addEventListener(UiRenderEvent.UIRenderComplete,this.onItemUiLoaded);
          this._uiCtr.mouseEnabled = true;
-         if(!_loc5_.uiModule.uis[this._sUiName])
+         if(!mainUi.uiModule.uis[this._sUiName])
          {
             throw new BeriliaError("Ui [" + this._sUiName + "] does not exit in module [" + this._uiCtr.uiModule.id + "] (grid parameter name [" + this._sUiName + "])");
          }
          else
          {
-            this.updateBackground(this._uiCtr,param2);
-            this._berilia.loadUiInside(_loc5_.uiModule.uis[this._sUiName],this._uiCtr.name,this._uiCtr,new GridScriptProperties(param1,param3,this._grid));
+            this.updateBackground(this._uiCtr,index);
+            this._berilia.loadUiInside(mainUi.uiModule.uis[this._sUiName],this._uiCtr.name,this._uiCtr,new GridScriptProperties(data,selected,this._grid));
             return this._uiCtr;
          }
       }
       
-      public function update(param1:*, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint=0) : void {
-         if(param3 is UiRootContainer)
+      public function update(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, subIndex:uint=0) : void {
+         if(dispObj is UiRootContainer)
          {
-            if((UiRootContainer(param3).ready) && (Object(UiRootContainer(param3).uiClass)))
+            if((UiRootContainer(dispObj).ready) && (Object(UiRootContainer(dispObj).uiClass)))
             {
-               if(!(Object(UiRootContainer(param3).uiClass).data == null) || !(param1 == null))
+               if((!(Object(UiRootContainer(dispObj).uiClass).data == null)) || (!(data == null)))
                {
-                  this.updateBackground(UiRootContainer(param3),param2);
-                  Object(UiRootContainer(param3).uiClass).update(SecureCenter.secure(param1),param4);
+                  this.updateBackground(UiRootContainer(dispObj),index);
+                  Object(UiRootContainer(dispObj).uiClass).update(SecureCenter.secure(data),selected);
                }
             }
             else
             {
-               this._dWaitingUpdate[param3] = new WaitingUpdate(param1,param2,param3,param4,true);
+               this._dWaitingUpdate[dispObj] = new WaitingUpdate(data,index,dispObj,selected,true);
             }
          }
          else
          {
-            this._log.warn("Can\'t update, " + param3.name + " is not a SecureUi");
+            this._log.warn("Can\'t update, " + dispObj.name + " is not a SecureUi");
          }
       }
       
-      public function getDataLength(param1:*, param2:Boolean) : uint {
+      public function getDataLength(data:*, selected:Boolean) : uint {
          return 1;
       }
       
-      public function remove(param1:DisplayObject) : void {
-         if(param1 is UiRootContainer)
+      public function remove(dispObj:DisplayObject) : void {
+         if(dispObj is UiRootContainer)
          {
-            Berilia.getInstance().unloadUi(UiRootContainer(param1).name);
+            Berilia.getInstance().unloadUi(UiRootContainer(dispObj).name);
          }
       }
       
@@ -154,46 +154,46 @@ package com.ankamagames.berilia.components.gridRenderer
          this._grid = null;
       }
       
-      public function renderModificator(param1:Array) : Array {
-         return param1;
+      public function renderModificator(childs:Array) : Array {
+         return childs;
       }
       
-      public function eventModificator(param1:Message, param2:String, param3:Array, param4:UIComponent) : String {
-         return param2;
+      public function eventModificator(msg:Message, functionName:String, args:Array, target:UIComponent) : String {
+         return functionName;
       }
       
-      private function onItemUiLoaded(param1:UiRenderEvent) : void {
-         var _loc2_:WaitingUpdate = null;
-         if(this._dWaitingUpdate[param1.uiTarget])
+      private function onItemUiLoaded(e:UiRenderEvent) : void {
+         var data:WaitingUpdate = null;
+         if(this._dWaitingUpdate[e.uiTarget])
          {
-            _loc2_ = this._dWaitingUpdate[param1.uiTarget];
-            this.update(_loc2_.data,_loc2_.index,_loc2_.dispObj,_loc2_.selected);
-            this._dWaitingUpdate[param1.uiTarget] = null;
+            data = this._dWaitingUpdate[e.uiTarget];
+            this.update(data.data,data.index,data.dispObj,data.selected);
+            this._dWaitingUpdate[e.uiTarget] = null;
          }
       }
       
-      private function updateBackground(param1:UiRootContainer, param2:uint) : void {
-         var _loc3_:ColorTransform = null;
-         var _loc4_:Shape = null;
+      private function updateBackground(uiContainer:UiRootContainer, index:uint) : void {
+         var t:ColorTransform = null;
+         var shape:Shape = null;
          if((this._bgColor1) || (this._bgColor2))
          {
-            if(!this._shapeIndex[param1])
+            if(!this._shapeIndex[uiContainer])
             {
-               _loc4_ = new Shape();
-               _loc4_.graphics.beginFill(16777215);
-               _loc4_.graphics.drawRect(0,0,this._grid.slotWidth,this._grid.slotHeight);
-               this._uiCtr.getStrata(0).addChild(_loc4_);
-               this._shapeIndex[param1] = 
+               shape = new Shape();
+               shape.graphics.beginFill(16777215);
+               shape.graphics.drawRect(0,0,this._grid.slotWidth,this._grid.slotHeight);
+               this._uiCtr.getStrata(0).addChild(shape);
+               this._shapeIndex[uiContainer] = 
                   {
-                     "trans":new Transform(_loc4_),
-                     "shape":_loc4_
+                     "trans":new Transform(shape),
+                     "shape":shape
                   };
             }
-            _loc3_ = param2 % 2?this._bgColor1:this._bgColor2;
-            DisplayObject(this._shapeIndex[param1].shape).visible = !(_loc3_ == null);
-            if(_loc3_)
+            t = index % 2?this._bgColor1:this._bgColor2;
+            DisplayObject(this._shapeIndex[uiContainer].shape).visible = !(t == null);
+            if(t)
             {
-               Transform(this._shapeIndex[param1].trans).colorTransform = _loc3_;
+               Transform(this._shapeIndex[uiContainer].trans).colorTransform = t;
             }
          }
       }
@@ -204,13 +204,13 @@ import flash.display.DisplayObject;
 class WaitingUpdate extends Object
 {
    
-   function WaitingUpdate(param1:*, param2:uint, param3:DisplayObject, param4:Boolean, param5:Boolean) {
+   function WaitingUpdate(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, drawBackground:Boolean) {
       super();
-      this.data = param1;
-      this.selected = param4;
-      this.drawBackground = param5;
-      this.dispObj = param3;
-      this.index = param2;
+      this.data = data;
+      this.selected = selected;
+      this.drawBackground = drawBackground;
+      this.dispObj = dispObj;
+      this.index = index;
    }
    
    public var data;

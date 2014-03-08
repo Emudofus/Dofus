@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.fight.actions
       }
       
       public static function create() : DisableAfkAction {
-         var _loc1_:DisableAfkAction = new DisableAfkAction();
-         return _loc1_;
+         var a:DisableAfkAction = new DisableAfkAction();
+         return a;
       }
    }
 }

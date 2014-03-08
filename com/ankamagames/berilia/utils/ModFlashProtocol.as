@@ -19,32 +19,32 @@ package com.ankamagames.berilia.utils
       
       private var _observer2:IResourceObserver;
       
-      override public function load(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:ICache, param5:Class, param6:Boolean) : void {
-         var _loc7_:String = param1.path.substr(0,param1.path.indexOf("/"));
-         var _loc8_:String = UiModuleManager.getInstance().getModulePath(_loc7_) + param1.path.substr(param1.path.indexOf("/"));
-         var _loc9_:Uri = new Uri(_loc8_);
-         this._uri = param1;
-         this._observer2 = param2;
-         super.load(_loc9_,new ResourceObserverWrapper(this._onLoaded,this._onFailed,this._onProgress),param3,param4,param5,param6);
+      override public function load(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, cache:ICache, forcedAdapter:Class, singleFile:Boolean) : void {
+         var moduleName:String = uri.path.substr(0,uri.path.indexOf("/"));
+         var path:String = UiModuleManager.getInstance().getModulePath(moduleName) + uri.path.substr(uri.path.indexOf("/"));
+         var realUri:Uri = new Uri(path);
+         this._uri = uri;
+         this._observer2 = observer;
+         super.load(realUri,new ResourceObserverWrapper(this._onLoaded,this._onFailed,this._onProgress),dispatchProgress,cache,forcedAdapter,singleFile);
       }
       
-      override protected function loadDirectly(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:Class) : void {
-         getAdapter(param1,param4);
-         var _loc5_:String = param1.path.substr(0,param1.path.indexOf("/"));
-         var _loc6_:String = UiModuleManager.getInstance().getModulePath(_loc5_) + param1.path.substr(param1.path.indexOf("/"));
-         _adapter.loadDirectly(param1,extractPath(_loc6_),param2,param3);
+      override protected function loadDirectly(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, forcedAdapter:Class) : void {
+         getAdapter(uri,forcedAdapter);
+         var moduleName:String = uri.path.substr(0,uri.path.indexOf("/"));
+         var path:String = UiModuleManager.getInstance().getModulePath(moduleName) + uri.path.substr(uri.path.indexOf("/"));
+         _adapter.loadDirectly(uri,extractPath(path),observer,dispatchProgress);
       }
       
-      private function _onLoaded(param1:Uri, param2:uint, param3:*) : void {
-         this._observer2.onLoaded(this._uri,param2,param3);
+      private function _onLoaded(uri:Uri, resourceType:uint, resource:*) : void {
+         this._observer2.onLoaded(this._uri,resourceType,resource);
       }
       
-      private function _onFailed(param1:Uri, param2:String, param3:uint) : void {
-         this._observer2.onFailed(this._uri,param2,param3);
+      private function _onFailed(uri:Uri, errorMsg:String, errorCode:uint) : void {
+         this._observer2.onFailed(this._uri,errorMsg,errorCode);
       }
       
-      private function _onProgress(param1:Uri, param2:uint, param3:uint) : void {
-         this._observer2.onProgress(this._uri,param2,param3);
+      private function _onProgress(uri:Uri, bytesLoaded:uint, bytesTotal:uint) : void {
+         this._observer2.onProgress(this._uri,bytesLoaded,bytesTotal);
       }
    }
 }

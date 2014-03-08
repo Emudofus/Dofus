@@ -47,21 +47,21 @@ package com.ankamagames.berilia.components
       
       private var _finalized:Boolean;
       
-      public function setSpellLevel(param1:ICellZoneProvider) : void {
-         var _loc5_:Object = null;
-         this._spellLevel = param1;
+      public function setSpellLevel(pSpellLevel:ICellZoneProvider) : void {
+         var zoneEffect:Object = null;
+         this._spellLevel = pSpellLevel;
          this._spellZoneManager.spellLevel = this._spellLevel;
-         var _loc2_:Boolean = this._spellLevel.minimalRange == 0 && this._spellLevel.maximalRange == 0 || this._spellLevel.maximalRange == 63;
-         var _loc3_:* = false;
-         var _loc4_:* = true;
-         for each (_loc5_ in this._spellLevel.spellZoneEffects)
+         var infiniteRange:Boolean = (this._spellLevel.minimalRange == 0) && (this._spellLevel.maximalRange == 0) || (this._spellLevel.maximalRange == 63);
+         var infiniteZoneEffect:Boolean = false;
+         var affectOneCharacter:Boolean = true;
+         for each (zoneEffect in this._spellLevel.spellZoneEffects)
          {
-            if(!(_loc5_.zoneSize == 0 && _loc5_.zoneShape == 80))
+            if(!((zoneEffect.zoneSize == 0) && (zoneEffect.zoneShape == 80)))
             {
-               _loc4_ = false;
+               affectOneCharacter = false;
             }
          }
-         if((_loc2_) && !_loc4_ || (_loc3_))
+         if((infiniteRange) && (!affectOneCharacter) || (infiniteZoneEffect))
          {
             this._infiniteRange = false;
             return;
@@ -70,23 +70,23 @@ package com.ankamagames.berilia.components
          this.setRange(this._spellLevel.minimalRange,this._spellLevel.maximalRange);
       }
       
-      private function setRange(param1:uint, param2:uint) : void {
-         var _loc3_:uint = 0;
-         var _loc4_:IZoneShape = null;
-         this._minRange = param1;
-         this._maxRange = param2;
+      private function setRange(minRange:uint, maxRange:uint) : void {
+         var additionalRange:uint = 0;
+         var shape:IZoneShape = null;
+         this._minRange = minRange;
+         this._maxRange = maxRange;
          this._horizontalCells = this._maxRange + 2 + 1;
          if(this._spellLevel)
          {
-            _loc3_ = 0;
-            for each (_loc4_ in this._spellLevel.spellZoneEffects)
+            additionalRange = 0;
+            for each (shape in this._spellLevel.spellZoneEffects)
             {
-               if(_loc3_ < _loc4_.zoneSize / 2 && !(_loc4_.zoneSize == 63))
+               if((additionalRange < shape.zoneSize / 2) && (!(shape.zoneSize == 63)))
                {
-                  _loc3_ = _loc4_.zoneSize;
+                  additionalRange = shape.zoneSize;
                }
             }
-            this._horizontalCells = this._horizontalCells + _loc3_;
+            this._horizontalCells = this._horizontalCells + additionalRange;
          }
          if(this._horizontalCells % 2 == 0)
          {
@@ -96,7 +96,7 @@ package com.ankamagames.berilia.components
          {
             this._horizontalCells = 14;
          }
-         this._verticalCells = this._horizontalCells * 2-1;
+         this._verticalCells = this._horizontalCells * 2 - 1;
          if(this._verticalCells > 20)
          {
             this._verticalCells = 20;
@@ -112,12 +112,12 @@ package com.ankamagames.berilia.components
          return this._finalized;
       }
       
-      public function set finalized(param1:Boolean) : void {
-         this._finalized = param1;
+      public function set finalized(b:Boolean) : void {
+         this._finalized = b;
       }
       
       public function finalize() : void {
-         var _loc1_:String = null;
+         var infiniteText:String = null;
          if(this._infiniteRange)
          {
             if(this.contains(this._spellZoneManager))
@@ -134,8 +134,8 @@ package com.ankamagames.berilia.components
             this._infiniteLabel.wordWrap = true;
             this._infiniteLabel.css = new Uri("[config.ui.skin]css/normal.css");
             this._infiniteLabel.cssClass = "center";
-            _loc1_ = I18n.getUiText("ui.common.infiniteRange");
-            this._infiniteLabel.text = _loc1_;
+            infiniteText = I18n.getUiText("ui.common.infiniteRange");
+            this._infiniteLabel.text = infiniteText;
             addChild(this._infiniteLabel);
             this._infiniteLabel.y = (height - this._infiniteLabel.height) / 2;
          }
@@ -162,11 +162,11 @@ package com.ankamagames.berilia.components
          this.removeCells();
       }
       
-      private function getCenterCellId(param1:uint) : uint {
-         var _loc2_:uint = param1;
-         var _loc3_:uint = 0;
-         var _loc4_:uint = MapPoint.fromCoords(_loc2_,_loc3_).cellId;
-         return _loc4_;
+      private function getCenterCellId(spellRange:uint) : uint {
+         var posX:uint = spellRange;
+         var posY:uint = 0;
+         var centerCellId:uint = MapPoint.fromCoords(posX,posY).cellId;
+         return centerCellId;
       }
    }
 }

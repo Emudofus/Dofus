@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.updater.parts
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.updater.ContentPart;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,8 +30,8 @@ package com.ankamagames.dofus.network.messages.updater.parts
          return 1502;
       }
       
-      public function initPartsListMessage(param1:Vector.<ContentPart>=null) : PartsListMessage {
-         this.parts = param1;
+      public function initPartsListMessage(parts:Vector.<ContentPart>=null) : PartsListMessage {
+         this.parts = parts;
          this._isInitialized = true;
          return this;
       }
@@ -41,44 +41,44 @@ package com.ankamagames.dofus.network.messages.updater.parts
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PartsListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartsListMessage(output);
       }
       
-      public function serializeAs_PartsListMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.parts.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.parts.length)
+      public function serializeAs_PartsListMessage(output:IDataOutput) : void {
+         output.writeShort(this.parts.length);
+         var _i1:uint = 0;
+         while(_i1 < this.parts.length)
          {
-            (this.parts[_loc2_] as ContentPart).serializeAs_ContentPart(param1);
-            _loc2_++;
+            (this.parts[_i1] as ContentPart).serializeAs_ContentPart(output);
+            _i1++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PartsListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartsListMessage(input);
       }
       
-      public function deserializeAs_PartsListMessage(param1:IDataInput) : void {
-         var _loc4_:ContentPart = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_PartsListMessage(input:IDataInput) : void {
+         var _item1:ContentPart = null;
+         var _partsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _partsLen)
          {
-            _loc4_ = new ContentPart();
-            _loc4_.deserialize(param1);
-            this.parts.push(_loc4_);
-            _loc3_++;
+            _item1 = new ContentPart();
+            _item1.deserialize(input);
+            this.parts.push(_item1);
+            _i1++;
          }
       }
    }

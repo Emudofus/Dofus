@@ -11,14 +11,14 @@ package com.ankamagames.dofus.console.chat
          super();
       }
       
-      public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void {
-         if(0)
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         if(false?0:0)
          {
          }
       }
       
-      public function getHelp(param1:String) : String {
-         switch(param1)
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
          {
             case "w":
                return I18n.getUiText("ui.chat.console.help.whisper");
@@ -40,12 +40,10 @@ package com.ankamagames.dofus.console.chat
                return I18n.getUiText("ui.chat.console.help.sellbuymessage");
             case "m":
                return I18n.getUiText("ui.chat.console.help.meetmessage");
-            default:
-               return I18n.getUiText("ui.chat.console.noHelp",[param1]);
          }
       }
       
-      public function getParamPossibilities(param1:String, param2:uint=0, param3:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
          return [];
       }
    }

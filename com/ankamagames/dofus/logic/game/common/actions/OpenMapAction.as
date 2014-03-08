@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(param1:Boolean=false) : OpenMapAction {
-         var _loc2_:OpenMapAction = new OpenMapAction();
-         _loc2_.conquest = param1;
-         return _loc2_;
+      public static function create(conquest:Boolean=false) : OpenMapAction {
+         var a:OpenMapAction = new OpenMapAction();
+         a.conquest = conquest;
+         return a;
       }
       
       public var conquest:Boolean;

@@ -32,9 +32,9 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5678;
       }
       
-      public function initIgnoredAddedMessage(param1:IgnoredInformations=null, param2:Boolean=false) : IgnoredAddedMessage {
-         this.ignoreAdded = param1;
-         this.session = param2;
+      public function initIgnoredAddedMessage(ignoreAdded:IgnoredInformations=null, session:Boolean=false) : IgnoredAddedMessage {
+         this.ignoreAdded = ignoreAdded;
+         this.session = session;
          this._isInitialized = true;
          return this;
       }
@@ -44,35 +44,35 @@ package com.ankamagames.dofus.network.messages.game.friend
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_IgnoredAddedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_IgnoredAddedMessage(output);
       }
       
-      public function serializeAs_IgnoredAddedMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.ignoreAdded.getTypeId());
-         this.ignoreAdded.serialize(param1);
-         param1.writeBoolean(this.session);
+      public function serializeAs_IgnoredAddedMessage(output:IDataOutput) : void {
+         output.writeShort(this.ignoreAdded.getTypeId());
+         this.ignoreAdded.serialize(output);
+         output.writeBoolean(this.session);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_IgnoredAddedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_IgnoredAddedMessage(input);
       }
       
-      public function deserializeAs_IgnoredAddedMessage(param1:IDataInput) : void {
-         var _loc2_:uint = param1.readUnsignedShort();
-         this.ignoreAdded = ProtocolTypeManager.getInstance(IgnoredInformations,_loc2_);
-         this.ignoreAdded.deserialize(param1);
-         this.session = param1.readBoolean();
+      public function deserializeAs_IgnoredAddedMessage(input:IDataInput) : void {
+         var _id1:uint = input.readUnsignedShort();
+         this.ignoreAdded = ProtocolTypeManager.getInstance(IgnoredInformations,_id1);
+         this.ignoreAdded.deserialize(input);
+         this.session = input.readBoolean();
       }
    }
 }

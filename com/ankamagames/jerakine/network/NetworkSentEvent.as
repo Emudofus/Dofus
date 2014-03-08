@@ -5,9 +5,9 @@ package com.ankamagames.jerakine.network
    public class NetworkSentEvent extends Event
    {
       
-      public function NetworkSentEvent(param1:String, param2:INetworkMessage) {
-         super(param1,false,false);
-         this._message = param2;
+      public function NetworkSentEvent(type:String, msg:INetworkMessage) {
+         super(type,false,false);
+         this._message = msg;
       }
       
       public static const EVENT_SENT:String = "messageSent";

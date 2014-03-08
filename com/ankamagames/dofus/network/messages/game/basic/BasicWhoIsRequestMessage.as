@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 181;
       }
       
-      public function initBasicWhoIsRequestMessage(param1:Boolean=false, param2:String="") : BasicWhoIsRequestMessage {
-         this.verbose = param1;
-         this.search = param2;
+      public function initBasicWhoIsRequestMessage(verbose:Boolean=false, search:String="") : BasicWhoIsRequestMessage {
+         this.verbose = verbose;
+         this.search = search;
          this._isInitialized = true;
          return this;
       }
@@ -42,32 +42,32 @@ package com.ankamagames.dofus.network.messages.game.basic
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_BasicWhoIsRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_BasicWhoIsRequestMessage(output);
       }
       
-      public function serializeAs_BasicWhoIsRequestMessage(param1:IDataOutput) : void {
-         param1.writeBoolean(this.verbose);
-         param1.writeUTF(this.search);
+      public function serializeAs_BasicWhoIsRequestMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.verbose);
+         output.writeUTF(this.search);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_BasicWhoIsRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_BasicWhoIsRequestMessage(input);
       }
       
-      public function deserializeAs_BasicWhoIsRequestMessage(param1:IDataInput) : void {
-         this.verbose = param1.readBoolean();
-         this.search = param1.readUTF();
+      public function deserializeAs_BasicWhoIsRequestMessage(input:IDataInput) : void {
+         this.verbose = input.readBoolean();
+         this.search = input.readUTF();
       }
    }
 }

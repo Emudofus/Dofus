@@ -42,80 +42,80 @@ package com.ankamagames.dofus.modules.utils
       
       private var _moduleFilesNum:Dictionary;
       
-      public function initModuleFiles(param1:String) : void {
-         if(this._moduleSizes[param1] != null)
+      public function initModuleFiles(moduleId:String) : void {
+         if(this._moduleSizes[moduleId] != null)
          {
             return;
          }
-         var _loc2_:UiModule = UiModuleManager.getInstance().getModule(param1);
-         var _loc3_:File = new Uri(_loc2_.storagePath).toFile();
-         if(!_loc3_.exists)
+         var module:UiModule = UiModuleManager.getInstance().getModule(moduleId);
+         var folder:File = new Uri(module.storagePath).toFile();
+         if(!folder.exists)
          {
-            _loc3_.createDirectory();
+            folder.createDirectory();
          }
-         this.updateFolderSize(_loc3_,param1);
+         this.updateFolderSize(folder,moduleId);
       }
       
-      public function updateModuleSize(param1:String, param2:int) : void {
-         this.initModuleFiles(param1);
-         this._moduleSizes[param1] = this._moduleSizes[param1] + param2;
+      public function updateModuleSize(moduleId:String, delta:int) : void {
+         this.initModuleFiles(moduleId);
+         this._moduleSizes[moduleId] = this._moduleSizes[moduleId] + delta;
       }
       
-      public function updateModuleFileNum(param1:String, param2:int) : void {
-         this.initModuleFiles(param1);
-         this._moduleFilesNum[param1] = this._moduleFilesNum[param1] + param2;
+      public function updateModuleFileNum(moduleId:String, delta:int) : void {
+         this.initModuleFiles(moduleId);
+         this._moduleFilesNum[moduleId] = this._moduleFilesNum[moduleId] + delta;
       }
       
-      public function canCreateFiles(param1:String, param2:uint=0) : Boolean {
-         return this._moduleFilesNum[param1] < MAX_FILE_NUM;
+      public function canCreateFiles(moduleId:String, amount:uint=0) : Boolean {
+         return this._moduleFilesNum[moduleId] < MAX_FILE_NUM;
       }
       
-      public function canAddSize(param1:String, param2:uint=0) : Boolean {
-         return this._moduleSizes[param1] < MAX_FILE_SIZE;
+      public function canAddSize(moduleId:String, amount:uint=0) : Boolean {
+         return this._moduleSizes[moduleId] < MAX_FILE_SIZE;
       }
       
-      public function getAvaibleSpace(param1:String) : uint {
-         return Math.max(MAX_FILE_SIZE - this._moduleSizes[param1],0);
+      public function getAvaibleSpace(moduleId:String) : uint {
+         return Math.max(MAX_FILE_SIZE - this._moduleSizes[moduleId],0);
       }
       
-      public function getUsedSpace(param1:String) : uint {
-         return this._moduleSizes[param1];
+      public function getUsedSpace(moduleId:String) : uint {
+         return this._moduleSizes[moduleId];
       }
       
-      public function getMaxSpace(param1:String) : uint {
+      public function getMaxSpace(moduleId:String) : uint {
          return MAX_FILE_SIZE;
       }
       
-      public function getMaxFileCount(param1:String) : uint {
+      public function getMaxFileCount(moduleId:String) : uint {
          return MAX_FILE_NUM;
       }
       
-      public function getUsedFileCount(param1:String) : uint {
-         return this._moduleFilesNum[param1];
+      public function getUsedFileCount(moduleId:String) : uint {
+         return this._moduleFilesNum[moduleId];
       }
       
-      private function updateFolderSize(param1:File, param2:String) : void {
-         var _loc5_:File = null;
-         if(this._moduleSizes[param2] == null)
+      private function updateFolderSize(folder:File, moduleId:String) : void {
+         var file:File = null;
+         if(this._moduleSizes[moduleId] == null)
          {
-            this._moduleSizes[param2] = 0;
-            this._moduleFilesNum[param2] = 0;
+            this._moduleSizes[moduleId] = 0;
+            this._moduleFilesNum[moduleId] = 0;
          }
-         var _loc3_:uint = 0;
-         var _loc4_:Array = param1.getDirectoryListing();
-         for each (_loc5_ in _loc4_)
+         var size:uint = 0;
+         var files:Array = folder.getDirectoryListing();
+         for each (file in files)
          {
-            if(_loc5_.isDirectory)
+            if(file.isDirectory)
             {
-               this.updateFolderSize(_loc5_,param2);
+               this.updateFolderSize(file,moduleId);
             }
             else
             {
-               _loc3_ = _loc3_ + _loc5_.size;
+               size = size + file.size;
             }
          }
-         this._moduleSizes[param2] = this._moduleSizes[param2] + _loc3_;
-         this._moduleFilesNum[param2] = this._moduleFilesNum[param2] + _loc4_.length;
+         this._moduleSizes[moduleId] = this._moduleSizes[moduleId] + size;
+         this._moduleFilesNum[moduleId] = this._moduleFilesNum[moduleId] + files.length;
       }
    }
 }

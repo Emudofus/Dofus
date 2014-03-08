@@ -25,11 +25,11 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 450;
       }
       
-      public function initGameFightCompanionInformations(param1:int=0, param2:EntityLook=null, param3:EntityDispositionInformations=null, param4:uint=2, param5:Boolean=false, param6:GameFightMinimalStats=null, param7:uint=0, param8:uint=0, param9:int=0) : GameFightCompanionInformations {
-         super.initGameFightFighterInformations(param1,param2,param3,param4,param5,param6);
-         this.companionGenericId = param7;
-         this.level = param8;
-         this.masterId = param9;
+      public function initGameFightCompanionInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, alive:Boolean=false, stats:GameFightMinimalStats=null, companionGenericId:uint=0, level:uint=0, masterId:int=0) : GameFightCompanionInformations {
+         super.initGameFightFighterInformations(contextualId,look,disposition,teamId,alive,stats);
+         this.companionGenericId = companionGenericId;
+         this.level = level;
+         this.masterId = masterId;
          return this;
       }
       
@@ -40,53 +40,53 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.masterId = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightCompanionInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightCompanionInformations(output);
       }
       
-      public function serializeAs_GameFightCompanionInformations(param1:IDataOutput) : void {
-         super.serializeAs_GameFightFighterInformations(param1);
+      public function serializeAs_GameFightCompanionInformations(output:IDataOutput) : void {
+         super.serializeAs_GameFightFighterInformations(output);
          if(this.companionGenericId < 0)
          {
             throw new Error("Forbidden value (" + this.companionGenericId + ") on element companionGenericId.");
          }
          else
          {
-            param1.writeShort(this.companionGenericId);
+            output.writeShort(this.companionGenericId);
             if(this.level < 0)
             {
                throw new Error("Forbidden value (" + this.level + ") on element level.");
             }
             else
             {
-               param1.writeShort(this.level);
-               param1.writeInt(this.masterId);
+               output.writeShort(this.level);
+               output.writeInt(this.masterId);
                return;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightCompanionInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightCompanionInformations(input);
       }
       
-      public function deserializeAs_GameFightCompanionInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.companionGenericId = param1.readShort();
+      public function deserializeAs_GameFightCompanionInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.companionGenericId = input.readShort();
          if(this.companionGenericId < 0)
          {
             throw new Error("Forbidden value (" + this.companionGenericId + ") on element of GameFightCompanionInformations.companionGenericId.");
          }
          else
          {
-            this.level = param1.readShort();
+            this.level = input.readShort();
             if(this.level < 0)
             {
                throw new Error("Forbidden value (" + this.level + ") on element of GameFightCompanionInformations.level.");
             }
             else
             {
-               this.masterId = param1.readInt();
+               this.masterId = input.readInt();
                return;
             }
          }

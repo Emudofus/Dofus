@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6330;
       }
       
-      public function initGameActionFightCastOnTargetRequestMessage(param1:uint=0, param2:int=0) : GameActionFightCastOnTargetRequestMessage {
-         this.spellId = param1;
-         this.targetId = param2;
+      public function initGameActionFightCastOnTargetRequestMessage(spellId:uint=0, targetId:int=0) : GameActionFightCastOnTargetRequestMessage {
+         this.spellId = spellId;
+         this.targetId = targetId;
          this._isInitialized = true;
          return this;
       }
@@ -42,46 +42,46 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameActionFightCastOnTargetRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameActionFightCastOnTargetRequestMessage(output);
       }
       
-      public function serializeAs_GameActionFightCastOnTargetRequestMessage(param1:IDataOutput) : void {
+      public function serializeAs_GameActionFightCastOnTargetRequestMessage(output:IDataOutput) : void {
          if(this.spellId < 0)
          {
             throw new Error("Forbidden value (" + this.spellId + ") on element spellId.");
          }
          else
          {
-            param1.writeShort(this.spellId);
-            param1.writeInt(this.targetId);
+            output.writeShort(this.spellId);
+            output.writeInt(this.targetId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameActionFightCastOnTargetRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameActionFightCastOnTargetRequestMessage(input);
       }
       
-      public function deserializeAs_GameActionFightCastOnTargetRequestMessage(param1:IDataInput) : void {
-         this.spellId = param1.readShort();
+      public function deserializeAs_GameActionFightCastOnTargetRequestMessage(input:IDataInput) : void {
+         this.spellId = input.readShort();
          if(this.spellId < 0)
          {
             throw new Error("Forbidden value (" + this.spellId + ") on element of GameActionFightCastOnTargetRequestMessage.spellId.");
          }
          else
          {
-            this.targetId = param1.readInt();
+            this.targetId = input.readInt();
             return;
          }
       }

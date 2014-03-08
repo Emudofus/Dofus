@@ -9,21 +9,21 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    public class BankRessourcesView extends StorageGenericView
    {
       
-      public function BankRessourcesView(param1:HookLock) {
-         super(param1);
+      public function BankRessourcesView(hookLock:HookLock) {
+         super(hookLock);
       }
       
       override public function get name() : String {
          return "bankRessources";
       }
       
-      override public function isListening(param1:ItemWrapper) : Boolean {
-         return (super.isListening(param1)) && param1.category == StorageOptionManager.RESOURCES_CATEGORY;
+      override public function isListening(item:ItemWrapper) : Boolean {
+         return (super.isListening(item)) && (item.category == StorageOptionManager.RESOURCES_CATEGORY);
       }
       
       override public function updateView() : void {
          super.updateView();
-         if(StorageOptionManager.getInstance().bankCategory == StorageOptionManager.RESOURCES_CATEGORY && !StorageOptionManager.getInstance().hasBankFilter())
+         if((StorageOptionManager.getInstance().bankCategory == StorageOptionManager.RESOURCES_CATEGORY) && (!StorageOptionManager.getInstance().hasBankFilter()))
          {
             _hookLock.addHook(InventoryHookList.BankViewContent,[content,InventoryManager.getInstance().bankInventory.localKamas]);
          }

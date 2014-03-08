@@ -6,10 +6,10 @@ package com.ankamagames.atouin.messages
    public class MapsLoadingCompleteMessage extends MapMessage
    {
       
-      public function MapsLoadingCompleteMessage(param1:WorldPoint, param2:Map) {
+      public function MapsLoadingCompleteMessage(mapPoint:WorldPoint, mapData:Map) {
          super();
-         this._map = param1;
-         this._mapData = param2;
+         this._map = mapPoint;
+         this._mapData = mapData;
       }
       
       private var _map:WorldPoint;

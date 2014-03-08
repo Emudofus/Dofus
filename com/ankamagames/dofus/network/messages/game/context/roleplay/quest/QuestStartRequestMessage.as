@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
          return 5643;
       }
       
-      public function initQuestStartRequestMessage(param1:uint=0) : QuestStartRequestMessage {
-         this.questId = param1;
+      public function initQuestStartRequestMessage(questId:uint=0) : QuestStartRequestMessage {
+         this.questId = questId;
          this._isInitialized = true;
          return this;
       }
@@ -38,39 +38,39 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_QuestStartRequestMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_QuestStartRequestMessage(output);
       }
       
-      public function serializeAs_QuestStartRequestMessage(param1:IDataOutput) : void {
-         if(this.questId < 0 || this.questId > 65535)
+      public function serializeAs_QuestStartRequestMessage(output:IDataOutput) : void {
+         if((this.questId < 0) || (this.questId > 65535))
          {
             throw new Error("Forbidden value (" + this.questId + ") on element questId.");
          }
          else
          {
-            param1.writeShort(this.questId);
+            output.writeShort(this.questId);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_QuestStartRequestMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_QuestStartRequestMessage(input);
       }
       
-      public function deserializeAs_QuestStartRequestMessage(param1:IDataInput) : void {
-         this.questId = param1.readUnsignedShort();
-         if(this.questId < 0 || this.questId > 65535)
+      public function deserializeAs_QuestStartRequestMessage(input:IDataInput) : void {
+         this.questId = input.readUnsignedShort();
+         if((this.questId < 0) || (this.questId > 65535))
          {
             throw new Error("Forbidden value (" + this.questId + ") on element of QuestStartRequestMessage.questId.");
          }

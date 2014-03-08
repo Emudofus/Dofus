@@ -23,11 +23,11 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 451;
       }
       
-      public function initFightTeamMemberCompanionInformations(param1:int=0, param2:int=0, param3:uint=0, param4:int=0) : FightTeamMemberCompanionInformations {
-         super.initFightTeamMemberInformations(param1);
-         this.companionId = param2;
-         this.level = param3;
-         this.masterId = param4;
+      public function initFightTeamMemberCompanionInformations(id:int=0, companionId:int=0, level:uint=0, masterId:int=0) : FightTeamMemberCompanionInformations {
+         super.initFightTeamMemberInformations(id);
+         this.companionId = companionId;
+         this.level = level;
+         this.masterId = masterId;
          return this;
       }
       
@@ -38,40 +38,40 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.masterId = 0;
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FightTeamMemberCompanionInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FightTeamMemberCompanionInformations(output);
       }
       
-      public function serializeAs_FightTeamMemberCompanionInformations(param1:IDataOutput) : void {
-         super.serializeAs_FightTeamMemberInformations(param1);
-         param1.writeInt(this.companionId);
+      public function serializeAs_FightTeamMemberCompanionInformations(output:IDataOutput) : void {
+         super.serializeAs_FightTeamMemberInformations(output);
+         output.writeInt(this.companionId);
          if(this.level < 0)
          {
             throw new Error("Forbidden value (" + this.level + ") on element level.");
          }
          else
          {
-            param1.writeShort(this.level);
-            param1.writeInt(this.masterId);
+            output.writeShort(this.level);
+            output.writeInt(this.masterId);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FightTeamMemberCompanionInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FightTeamMemberCompanionInformations(input);
       }
       
-      public function deserializeAs_FightTeamMemberCompanionInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.companionId = param1.readInt();
-         this.level = param1.readShort();
+      public function deserializeAs_FightTeamMemberCompanionInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.companionId = input.readInt();
+         this.level = input.readShort();
          if(this.level < 0)
          {
             throw new Error("Forbidden value (" + this.level + ") on element of FightTeamMemberCompanionInformations.level.");
          }
          else
          {
-            this.masterId = param1.readInt();
+            this.masterId = input.readInt();
             return;
          }
       }

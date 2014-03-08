@@ -26,10 +26,10 @@ package com.ankamagames.dofus.network.types.game.action.fight
          return 208;
       }
       
-      public function initFightDispellableEffectExtendedInformations(param1:uint=0, param2:int=0, param3:AbstractFightDispellableEffect=null) : FightDispellableEffectExtendedInformations {
-         this.actionId = param1;
-         this.sourceId = param2;
-         this.effect = param3;
+      public function initFightDispellableEffectExtendedInformations(actionId:uint=0, sourceId:int=0, effect:AbstractFightDispellableEffect=null) : FightDispellableEffectExtendedInformations {
+         this.actionId = actionId;
+         this.sourceId = sourceId;
+         this.effect = effect;
          return this;
       }
       
@@ -39,41 +39,41 @@ package com.ankamagames.dofus.network.types.game.action.fight
          this.effect = new AbstractFightDispellableEffect();
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FightDispellableEffectExtendedInformations(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FightDispellableEffectExtendedInformations(output);
       }
       
-      public function serializeAs_FightDispellableEffectExtendedInformations(param1:IDataOutput) : void {
+      public function serializeAs_FightDispellableEffectExtendedInformations(output:IDataOutput) : void {
          if(this.actionId < 0)
          {
             throw new Error("Forbidden value (" + this.actionId + ") on element actionId.");
          }
          else
          {
-            param1.writeShort(this.actionId);
-            param1.writeInt(this.sourceId);
-            param1.writeShort(this.effect.getTypeId());
-            this.effect.serialize(param1);
+            output.writeShort(this.actionId);
+            output.writeInt(this.sourceId);
+            output.writeShort(this.effect.getTypeId());
+            this.effect.serialize(output);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FightDispellableEffectExtendedInformations(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FightDispellableEffectExtendedInformations(input);
       }
       
-      public function deserializeAs_FightDispellableEffectExtendedInformations(param1:IDataInput) : void {
-         this.actionId = param1.readShort();
+      public function deserializeAs_FightDispellableEffectExtendedInformations(input:IDataInput) : void {
+         this.actionId = input.readShort();
          if(this.actionId < 0)
          {
             throw new Error("Forbidden value (" + this.actionId + ") on element of FightDispellableEffectExtendedInformations.actionId.");
          }
          else
          {
-            this.sourceId = param1.readInt();
-            _loc2_ = param1.readUnsignedShort();
-            this.effect = ProtocolTypeManager.getInstance(AbstractFightDispellableEffect,_loc2_);
-            this.effect.deserialize(param1);
+            this.sourceId = input.readInt();
+            _id3 = input.readUnsignedShort();
+            this.effect = ProtocolTypeManager.getInstance(AbstractFightDispellableEffect,_id3);
+            this.effect.deserialize(input);
             return;
          }
       }

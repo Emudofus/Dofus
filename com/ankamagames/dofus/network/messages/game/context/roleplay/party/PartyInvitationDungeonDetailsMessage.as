@@ -1,9 +1,9 @@
 package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyInvitationMemberInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyGuestInformations;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,10 +32,10 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6262;
       }
       
-      public function initPartyInvitationDungeonDetailsMessage(param1:uint=0, param2:uint=0, param3:uint=0, param4:String="", param5:uint=0, param6:Vector.<PartyInvitationMemberInformations>=null, param7:Vector.<PartyGuestInformations>=null, param8:uint=0, param9:Vector.<Boolean>=null) : PartyInvitationDungeonDetailsMessage {
-         super.initPartyInvitationDetailsMessage(param1,param2,param3,param4,param5,param6,param7);
-         this.dungeonId = param8;
-         this.playersDungeonReady = param9;
+      public function initPartyInvitationDungeonDetailsMessage(partyId:uint=0, partyType:uint=0, fromId:uint=0, fromName:String="", leaderId:uint=0, members:Vector.<PartyInvitationMemberInformations>=null, guests:Vector.<PartyGuestInformations>=null, dungeonId:uint=0, playersDungeonReady:Vector.<Boolean>=null) : PartyInvitationDungeonDetailsMessage {
+         super.initPartyInvitationDetailsMessage(partyId,partyType,fromId,fromName,leaderId,members,guests);
+         this.dungeonId = dungeonId;
+         this.playersDungeonReady = playersDungeonReady;
          this._isInitialized = true;
          return this;
       }
@@ -47,61 +47,61 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PartyInvitationDungeonDetailsMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartyInvitationDungeonDetailsMessage(output);
       }
       
-      public function serializeAs_PartyInvitationDungeonDetailsMessage(param1:IDataOutput) : void {
-         super.serializeAs_PartyInvitationDetailsMessage(param1);
+      public function serializeAs_PartyInvitationDungeonDetailsMessage(output:IDataOutput) : void {
+         super.serializeAs_PartyInvitationDetailsMessage(output);
          if(this.dungeonId < 0)
          {
             throw new Error("Forbidden value (" + this.dungeonId + ") on element dungeonId.");
          }
          else
          {
-            param1.writeShort(this.dungeonId);
-            param1.writeShort(this.playersDungeonReady.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.playersDungeonReady.length)
+            output.writeShort(this.dungeonId);
+            output.writeShort(this.playersDungeonReady.length);
+            _i2 = 0;
+            while(_i2 < this.playersDungeonReady.length)
             {
-               param1.writeBoolean(this.playersDungeonReady[_loc2_]);
-               _loc2_++;
+               output.writeBoolean(this.playersDungeonReady[_i2]);
+               _i2++;
             }
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PartyInvitationDungeonDetailsMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartyInvitationDungeonDetailsMessage(input);
       }
       
-      public function deserializeAs_PartyInvitationDungeonDetailsMessage(param1:IDataInput) : void {
-         var _loc4_:* = false;
-         super.deserialize(param1);
-         this.dungeonId = param1.readShort();
+      public function deserializeAs_PartyInvitationDungeonDetailsMessage(input:IDataInput) : void {
+         var _val2:* = false;
+         super.deserialize(input);
+         this.dungeonId = input.readShort();
          if(this.dungeonId < 0)
          {
             throw new Error("Forbidden value (" + this.dungeonId + ") on element of PartyInvitationDungeonDetailsMessage.dungeonId.");
          }
          else
          {
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            _playersDungeonReadyLen = input.readUnsignedShort();
+            _i2 = 0;
+            while(_i2 < _playersDungeonReadyLen)
             {
-               _loc4_ = param1.readBoolean();
-               this.playersDungeonReady.push(_loc4_);
-               _loc3_++;
+               _val2 = input.readBoolean();
+               this.playersDungeonReady.push(_val2);
+               _i2++;
             }
             return;
          }

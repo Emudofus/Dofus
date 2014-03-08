@@ -11,11 +11,11 @@ package com.ankamagames.dofus.logic.game.common.steps
    public class PlayEmoteStep extends AbstractSequencable
    {
       
-      public function PlayEmoteStep(param1:AnimatedCharacter, param2:int, param3:Boolean) {
+      public function PlayEmoteStep(pEntity:AnimatedCharacter, pEmoteId:int, pWaitForEnd:Boolean) {
          super();
-         this._entity = param1;
-         this._emoteId = param2;
-         this._waitForEnd = param3;
+         this._entity = pEntity;
+         this._emoteId = pEmoteId;
+         this._waitForEnd = pWaitForEnd;
          timeout = 10000;
       }
       
@@ -26,28 +26,28 @@ package com.ankamagames.dofus.logic.game.common.steps
       private var _waitForEnd:Boolean;
       
       override public function start() : void {
-         var _loc2_:String = null;
-         var _loc3_:RoleplayEntitiesFrame = null;
-         var _loc1_:Emoticon = Emoticon.getEmoticonById(this._emoteId);
-         if(_loc1_)
+         var anim:String = null;
+         var rpef:RoleplayEntitiesFrame = null;
+         var emote:Emoticon = Emoticon.getEmoticonById(this._emoteId);
+         if(emote)
          {
             if(this._waitForEnd)
             {
                this._entity.addEventListener(TiphonEvent.ANIMATION_END,this.onAnimationEnd);
             }
-            _loc2_ = _loc1_.getAnimName(this._entity.look);
-            _loc3_ = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-            _loc3_.currentEmoticon = this._emoteId;
-            _loc3_.process(new GameRolePlaySetAnimationMessage(_loc3_.getEntityInfos(this._entity.id),_loc2_,0,!_loc1_.persistancy,_loc1_.eight_directions));
+            anim = emote.getAnimName(this._entity.look);
+            rpef = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+            rpef.currentEmoticon = this._emoteId;
+            rpef.process(new GameRolePlaySetAnimationMessage(rpef.getEntityInfos(this._entity.id),anim,0,!emote.persistancy,emote.eight_directions));
          }
-         if(!_loc1_ || !this._waitForEnd)
+         if((!emote) || (!this._waitForEnd))
          {
             executeCallbacks();
          }
       }
       
-      private function onAnimationEnd(param1:TiphonEvent) : void {
-         param1.currentTarget.removeEventListener(TiphonEvent.ANIMATION_END,this.onAnimationEnd);
+      private function onAnimationEnd(pEvent:TiphonEvent) : void {
+         pEvent.currentTarget.removeEventListener(TiphonEvent.ANIMATION_END,this.onAnimationEnd);
          executeCallbacks();
       }
    }

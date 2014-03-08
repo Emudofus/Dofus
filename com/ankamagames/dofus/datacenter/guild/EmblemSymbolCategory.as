@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.guild
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EmblemSymbolCategory));
       
-      public static function getEmblemSymbolCategoryById(param1:int) : EmblemSymbolCategory {
-         return GameData.getObject(MODULE,param1) as EmblemSymbolCategory;
+      public static function getEmblemSymbolCategoryById(id:int) : EmblemSymbolCategory {
+         return GameData.getObject(MODULE,id) as EmblemSymbolCategory;
       }
       
       public static function getEmblemSymbolCategories() : Array {

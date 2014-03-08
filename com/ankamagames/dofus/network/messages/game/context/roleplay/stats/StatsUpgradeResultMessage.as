@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.stats
          return 5609;
       }
       
-      public function initStatsUpgradeResultMessage(param1:uint=0) : StatsUpgradeResultMessage {
-         this.nbCharacBoost = param1;
+      public function initStatsUpgradeResultMessage(nbCharacBoost:uint=0) : StatsUpgradeResultMessage {
+         this.nbCharacBoost = nbCharacBoost;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.stats
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_StatsUpgradeResultMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_StatsUpgradeResultMessage(output);
       }
       
-      public function serializeAs_StatsUpgradeResultMessage(param1:IDataOutput) : void {
+      public function serializeAs_StatsUpgradeResultMessage(output:IDataOutput) : void {
          if(this.nbCharacBoost < 0)
          {
             throw new Error("Forbidden value (" + this.nbCharacBoost + ") on element nbCharacBoost.");
          }
          else
          {
-            param1.writeShort(this.nbCharacBoost);
+            output.writeShort(this.nbCharacBoost);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_StatsUpgradeResultMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_StatsUpgradeResultMessage(input);
       }
       
-      public function deserializeAs_StatsUpgradeResultMessage(param1:IDataInput) : void {
-         this.nbCharacBoost = param1.readShort();
+      public function deserializeAs_StatsUpgradeResultMessage(input:IDataInput) : void {
+         this.nbCharacBoost = input.readShort();
          if(this.nbCharacBoost < 0)
          {
             throw new Error("Forbidden value (" + this.nbCharacBoost + ") on element of StatsUpgradeResultMessage.nbCharacBoost.");

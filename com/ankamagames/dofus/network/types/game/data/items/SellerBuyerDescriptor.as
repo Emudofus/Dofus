@@ -1,7 +1,7 @@
 package com.ankamagames.dofus.network.types.game.data.items
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -36,15 +36,15 @@ package com.ankamagames.dofus.network.types.game.data.items
          return 121;
       }
       
-      public function initSellerBuyerDescriptor(param1:Vector.<uint>=null, param2:Vector.<uint>=null, param3:Number=0, param4:Number=0, param5:uint=0, param6:uint=0, param7:int=0, param8:uint=0) : SellerBuyerDescriptor {
-         this.quantities = param1;
-         this.types = param2;
-         this.taxPercentage = param3;
-         this.taxModificationPercentage = param4;
-         this.maxItemLevel = param5;
-         this.maxItemPerAccount = param6;
-         this.npcContextualId = param7;
-         this.unsoldDelay = param8;
+      public function initSellerBuyerDescriptor(quantities:Vector.<uint>=null, types:Vector.<uint>=null, taxPercentage:Number=0, taxModificationPercentage:Number=0, maxItemLevel:uint=0, maxItemPerAccount:uint=0, npcContextualId:int=0, unsoldDelay:uint=0) : SellerBuyerDescriptor {
+         this.quantities = quantities;
+         this.types = types;
+         this.taxPercentage = taxPercentage;
+         this.taxModificationPercentage = taxModificationPercentage;
+         this.maxItemLevel = maxItemLevel;
+         this.maxItemPerAccount = maxItemPerAccount;
+         this.npcContextualId = npcContextualId;
+         this.unsoldDelay = unsoldDelay;
          return this;
       }
       
@@ -59,128 +59,128 @@ package com.ankamagames.dofus.network.types.game.data.items
          this.unsoldDelay = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_SellerBuyerDescriptor(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SellerBuyerDescriptor(output);
       }
       
-      public function serializeAs_SellerBuyerDescriptor(param1:IDataOutput) : void {
-         param1.writeShort(this.quantities.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.quantities.length)
+      public function serializeAs_SellerBuyerDescriptor(output:IDataOutput) : void {
+         output.writeShort(this.quantities.length);
+         var _i1:uint = 0;
+         while(_i1 < this.quantities.length)
          {
-            if(this.quantities[_loc2_] < 0)
+            if(this.quantities[_i1] < 0)
             {
-               throw new Error("Forbidden value (" + this.quantities[_loc2_] + ") on element 1 (starting at 1) of quantities.");
+               throw new Error("Forbidden value (" + this.quantities[_i1] + ") on element 1 (starting at 1) of quantities.");
             }
             else
             {
-               param1.writeInt(this.quantities[_loc2_]);
-               _loc2_++;
+               output.writeInt(this.quantities[_i1]);
+               _i1++;
                continue;
             }
          }
-         param1.writeShort(this.types.length);
-         var _loc3_:uint = 0;
-         while(_loc3_ < this.types.length)
+         output.writeShort(this.types.length);
+         var _i2:uint = 0;
+         while(_i2 < this.types.length)
          {
-            if(this.types[_loc3_] < 0)
+            if(this.types[_i2] < 0)
             {
-               throw new Error("Forbidden value (" + this.types[_loc3_] + ") on element 2 (starting at 1) of types.");
+               throw new Error("Forbidden value (" + this.types[_i2] + ") on element 2 (starting at 1) of types.");
             }
             else
             {
-               param1.writeInt(this.types[_loc3_]);
-               _loc3_++;
+               output.writeInt(this.types[_i2]);
+               _i2++;
                continue;
             }
          }
-         param1.writeFloat(this.taxPercentage);
-         param1.writeFloat(this.taxModificationPercentage);
+         output.writeFloat(this.taxPercentage);
+         output.writeFloat(this.taxModificationPercentage);
          if(this.maxItemLevel < 0)
          {
             throw new Error("Forbidden value (" + this.maxItemLevel + ") on element maxItemLevel.");
          }
          else
          {
-            param1.writeInt(this.maxItemLevel);
+            output.writeInt(this.maxItemLevel);
             if(this.maxItemPerAccount < 0)
             {
                throw new Error("Forbidden value (" + this.maxItemPerAccount + ") on element maxItemPerAccount.");
             }
             else
             {
-               param1.writeInt(this.maxItemPerAccount);
-               param1.writeInt(this.npcContextualId);
+               output.writeInt(this.maxItemPerAccount);
+               output.writeInt(this.npcContextualId);
                if(this.unsoldDelay < 0)
                {
                   throw new Error("Forbidden value (" + this.unsoldDelay + ") on element unsoldDelay.");
                }
                else
                {
-                  param1.writeShort(this.unsoldDelay);
+                  output.writeShort(this.unsoldDelay);
                   return;
                }
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_SellerBuyerDescriptor(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SellerBuyerDescriptor(input);
       }
       
-      public function deserializeAs_SellerBuyerDescriptor(param1:IDataInput) : void {
-         var _loc6_:uint = 0;
-         var _loc7_:uint = 0;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_SellerBuyerDescriptor(input:IDataInput) : void {
+         var _val1:uint = 0;
+         var _val2:uint = 0;
+         var _quantitiesLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _quantitiesLen)
          {
-            _loc6_ = param1.readInt();
-            if(_loc6_ < 0)
+            _val1 = input.readInt();
+            if(_val1 < 0)
             {
-               throw new Error("Forbidden value (" + _loc6_ + ") on elements of quantities.");
+               throw new Error("Forbidden value (" + _val1 + ") on elements of quantities.");
             }
             else
             {
-               this.quantities.push(_loc6_);
-               _loc3_++;
+               this.quantities.push(_val1);
+               _i1++;
                continue;
             }
          }
-         var _loc4_:uint = param1.readUnsignedShort();
-         var _loc5_:uint = 0;
-         while(_loc5_ < _loc4_)
+         var _typesLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2 < _typesLen)
          {
-            _loc7_ = param1.readInt();
-            if(_loc7_ < 0)
+            _val2 = input.readInt();
+            if(_val2 < 0)
             {
-               throw new Error("Forbidden value (" + _loc7_ + ") on elements of types.");
+               throw new Error("Forbidden value (" + _val2 + ") on elements of types.");
             }
             else
             {
-               this.types.push(_loc7_);
-               _loc5_++;
+               this.types.push(_val2);
+               _i2++;
                continue;
             }
          }
-         this.taxPercentage = param1.readFloat();
-         this.taxModificationPercentage = param1.readFloat();
-         this.maxItemLevel = param1.readInt();
+         this.taxPercentage = input.readFloat();
+         this.taxModificationPercentage = input.readFloat();
+         this.maxItemLevel = input.readInt();
          if(this.maxItemLevel < 0)
          {
             throw new Error("Forbidden value (" + this.maxItemLevel + ") on element of SellerBuyerDescriptor.maxItemLevel.");
          }
          else
          {
-            this.maxItemPerAccount = param1.readInt();
+            this.maxItemPerAccount = input.readInt();
             if(this.maxItemPerAccount < 0)
             {
                throw new Error("Forbidden value (" + this.maxItemPerAccount + ") on element of SellerBuyerDescriptor.maxItemPerAccount.");
             }
             else
             {
-               this.npcContextualId = param1.readInt();
-               this.unsoldDelay = param1.readShort();
+               this.npcContextualId = input.readInt();
+               this.unsoldDelay = input.readShort();
                if(this.unsoldDelay < 0)
                {
                   throw new Error("Forbidden value (" + this.unsoldDelay + ") on element of SellerBuyerDescriptor.unsoldDelay.");

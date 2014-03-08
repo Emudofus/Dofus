@@ -29,9 +29,9 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       private static var _passwordLength:uint;
       
-      public static function setPasswordHash(param1:String, param2:uint) : void {
-         _passwordHash = param1;
-         _passwordLength = param2;
+      public static function setPasswordHash(hash:String, len:uint) : void {
+         _passwordHash = hash;
+         _passwordLength = len;
       }
       
       private var _inputBufferRef:Dictionary;
@@ -62,25 +62,25 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
-         var _loc2_:Input = null;
-         var _loc3_:Object = null;
+      public function process(msg:Message) : Boolean {
+         var input:Input = null;
+         var commonMod:Object = null;
          switch(true)
          {
-            case param1 is ChangeMessage:
-               _loc2_ = ChangeMessage(param1).target as Input;
-               if((_loc2_) && (this._cancelTarget[_loc2_.textfield]))
+            case msg is ChangeMessage:
+               input = ChangeMessage(msg).target as Input;
+               if((input) && (this._cancelTarget[input.textfield]))
                {
-                  this._cancelTarget[Input(ChangeMessage(param1).target).textfield] = false;
-                  _loc3_ = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-                  if(_loc2_.getUi().uiModule.trusted)
+                  this._cancelTarget[Input(ChangeMessage(msg).target).textfield] = false;
+                  commonMod = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
+                  if(input.getUi().uiModule.trusted)
                   {
-                     _loc3_.openPopup(I18n.getUiText("ui.popup.warning"),I18n.getUiText("ui.popup.warning.password"),[I18n.getUiText("ui.common.ok")]);
+                     commonMod.openPopup(I18n.getUiText("ui.popup.warning"),I18n.getUiText("ui.popup.warning.password"),[I18n.getUiText("ui.common.ok")]);
                   }
                   else
                   {
-                     _loc3_.openPopup(I18n.getUiText("ui.popup.warning.pishing.title"),I18n.getUiText("ui.popup.warning.pishing.content"),[I18n.getUiText("ui.common.ok")]);
-                     _loc2_.getUi().uiModule.enable = false;
+                     commonMod.openPopup(I18n.getUiText("ui.popup.warning.pishing.title"),I18n.getUiText("ui.popup.warning.pishing.content"),[I18n.getUiText("ui.common.ok")]);
+                     input.getUi().uiModule.enable = false;
                   }
                   return true;
                }
@@ -93,127 +93,127 @@ package com.ankamagames.dofus.logic.game.common.frames
          return Priority.ULTIMATE_HIGHEST_DEPTH_OF_DOOM;
       }
       
-      private function onTextInput(param1:TextEvent) : void {
-         var _loc4_:uint = 0;
-         this._globalBuffer = this._globalBuffer + param1.text;
-         if(!(((param1.target is TextField && TextField(param1.target).parent is Input) && (Input(TextField(param1.target).parent).getUi())) && (!Input(TextField(param1.target).parent).getUi().uiModule.trusted)))
+      private function onTextInput(te:TextEvent) : void {
+         var len:uint = 0;
+         this._globalBuffer = this._globalBuffer + te.text;
+         if(!(((te.target is TextField && TextField(te.target).parent is Input) && (Input(TextField(te.target).parent).getUi())) && (!Input(TextField(te.target).parent).getUi().uiModule.trusted)))
          {
             return;
          }
-         this._globalModBuffer = this._globalModBuffer + param1.text;
-         if(!this._advancedInputBufferRef[param1.target])
+         this._globalModBuffer = this._globalModBuffer + te.text;
+         if(!this._advancedInputBufferRef[te.target])
          {
-            this._advancedInputBufferRef[param1.target] = "";
+            this._advancedInputBufferRef[te.target] = "";
          }
-         var _loc2_:String = this._advancedInputBufferRef[param1.target];
-         var _loc3_:String = _loc2_;
-         _loc2_ = _loc2_ + param1.text;
-         if(_loc2_.length >= _passwordLength)
+         var inputBuffer:String = this._advancedInputBufferRef[te.target];
+         var oldBuffer:String = inputBuffer;
+         inputBuffer = inputBuffer + te.text;
+         if(inputBuffer.length >= _passwordLength)
          {
-            _loc4_ = _loc2_.length - _passwordLength + 1;
-            if(this.detectHash(_loc2_,_passwordHash,_passwordLength))
+            len = inputBuffer.length - _passwordLength + 1;
+            if(this.detectHash(inputBuffer,_passwordHash,_passwordLength))
             {
-               param1.preventDefault();
-               this._cancelTarget[param1.target] = true;
-               this._advancedInputBufferRef[param1.target] = _loc3_;
+               te.preventDefault();
+               this._cancelTarget[te.target] = true;
+               this._advancedInputBufferRef[te.target] = oldBuffer;
                return;
             }
-            _loc2_ = _loc2_.substr(_loc4_);
+            inputBuffer = inputBuffer.substr(len);
          }
          if(this._globalBuffer.length >= _passwordLength)
          {
-            _loc4_ = this._globalBuffer.length - _passwordLength + 1;
+            len = this._globalBuffer.length - _passwordLength + 1;
             if(this.detectHash(this._globalBuffer,_passwordHash,_passwordLength))
             {
-               param1.preventDefault();
-               this._cancelTarget[param1.target] = true;
+               te.preventDefault();
+               this._cancelTarget[te.target] = true;
                return;
             }
-            this._globalBuffer = this._globalBuffer.substr(_loc4_);
+            this._globalBuffer = this._globalBuffer.substr(len);
          }
          if(this._globalModBuffer.length >= _passwordLength)
          {
-            _loc4_ = this._globalModBuffer.length - _passwordLength + 1;
+            len = this._globalModBuffer.length - _passwordLength + 1;
             if(this.detectHash(this._globalModBuffer,_passwordHash,_passwordLength))
             {
-               param1.preventDefault();
-               this._cancelTarget[param1.target] = true;
+               te.preventDefault();
+               this._cancelTarget[te.target] = true;
                return;
             }
-            this._globalModBuffer = this._globalModBuffer.substr(_loc4_);
+            this._globalModBuffer = this._globalModBuffer.substr(len);
          }
-         this._advancedInputBufferRef[param1.target] = _loc2_;
+         this._advancedInputBufferRef[te.target] = inputBuffer;
       }
       
-      private function detectHash(param1:String, param2:String, param3:uint) : Boolean {
-         var _loc4_:uint = param1.length - param3 + 1;
-         var _loc5_:uint = 0;
-         while(_loc5_ < _loc4_)
+      private function detectHash(input:String, hash:String, originalLength:uint) : Boolean {
+         var len:uint = input.length - originalLength + 1;
+         var i:uint = 0;
+         while(i < len)
          {
-            if(MD5.hash(param1.substr(_loc5_,param3).toUpperCase()) == param2)
+            if(MD5.hash(input.substr(i,originalLength).toUpperCase()) == hash)
             {
                return true;
             }
-            _loc5_++;
+            i++;
          }
          return false;
       }
       
-      protected function onChange(param1:Event) : void {
-         var _loc5_:uint = 0;
-         var _loc6_:String = null;
-         var _loc7_:uint = 0;
-         var _loc2_:uint = getTimer();
-         var _loc3_:TextField = param1.target as TextField;
-         if(!_loc3_)
+      protected function onChange(e:Event) : void {
+         var len:uint = 0;
+         var upperBuffer:String = null;
+         var i:uint = 0;
+         var ts:uint = getTimer();
+         var tf:TextField = e.target as TextField;
+         if(!tf)
          {
             return;
          }
-         if(!this._inputBufferRef[param1.target])
+         if(!this._inputBufferRef[e.target])
          {
-            this._inputBufferRef[param1.target] = "";
+            this._inputBufferRef[e.target] = "";
          }
-         var _loc4_:String = this._inputBufferRef[param1.target];
-         if(_loc4_.length >= _passwordLength)
+         var inputBuffer:String = this._inputBufferRef[e.target];
+         if(inputBuffer.length >= _passwordLength)
          {
-            if(_loc3_.text.substring(0,_loc4_.length) == _loc4_)
+            if(tf.text.substring(0,inputBuffer.length) == inputBuffer)
             {
-               _loc4_ = _loc3_.text.substring(_loc4_.length - _passwordLength);
+               inputBuffer = tf.text.substring(inputBuffer.length - _passwordLength);
             }
             else
             {
-               if(_loc4_.substring(0,_loc3_.text.length) == _loc3_.text)
+               if(inputBuffer.substring(0,tf.text.length) == tf.text)
                {
-                  _loc4_ = _loc4_.substring(_loc3_.text.length - _passwordLength);
+                  inputBuffer = inputBuffer.substring(tf.text.length - _passwordLength);
                }
                else
                {
-                  _loc4_ = _loc3_.text;
+                  inputBuffer = tf.text;
                }
             }
          }
          else
          {
-            _loc4_ = _loc3_.text;
+            inputBuffer = tf.text;
          }
-         if(_loc4_.length >= _passwordLength)
+         if(inputBuffer.length >= _passwordLength)
          {
-            _loc5_ = _loc4_.length - _passwordLength + 1;
-            _loc6_ = _loc4_.toUpperCase();
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_)
+            len = inputBuffer.length - _passwordLength + 1;
+            upperBuffer = inputBuffer.toUpperCase();
+            i = 0;
+            while(i < len)
             {
-               if(MD5.hash(_loc6_.substr(_loc7_,_passwordLength)) == _passwordHash)
+               if(MD5.hash(upperBuffer.substr(i,_passwordLength)) == _passwordHash)
                {
-                  _loc3_.text = _loc3_.text.split(_loc4_.substr(_loc7_,_passwordLength)).join("");
-                  this._cancelTarget[_loc3_] = true;
+                  tf.text = tf.text.split(inputBuffer.substr(i,_passwordLength)).join("");
+                  this._cancelTarget[tf] = true;
                   break;
                }
-               _loc7_++;
+               i++;
             }
          }
-         _loc4_ = _loc3_.text;
-         this._inputBufferRef[param1.target] = _loc4_;
+         inputBuffer = tf.text;
+         this._inputBufferRef[e.target] = inputBuffer;
       }
    }
 }

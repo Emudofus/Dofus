@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 417;
       }
       
-      public function initAllianceInformations(param1:uint=0, param2:String="", param3:String="", param4:GuildEmblem=null) : AllianceInformations {
-         super.initBasicNamedAllianceInformations(param1,param2,param3);
-         this.allianceEmblem = param4;
+      public function initAllianceInformations(allianceId:uint=0, allianceTag:String="", allianceName:String="", allianceEmblem:GuildEmblem=null) : AllianceInformations {
+         super.initBasicNamedAllianceInformations(allianceId,allianceTag,allianceName);
+         this.allianceEmblem = allianceEmblem;
          return this;
       }
       
@@ -32,23 +32,23 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.allianceEmblem = new GuildEmblem();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AllianceInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AllianceInformations(output);
       }
       
-      public function serializeAs_AllianceInformations(param1:IDataOutput) : void {
-         super.serializeAs_BasicNamedAllianceInformations(param1);
-         this.allianceEmblem.serializeAs_GuildEmblem(param1);
+      public function serializeAs_AllianceInformations(output:IDataOutput) : void {
+         super.serializeAs_BasicNamedAllianceInformations(output);
+         this.allianceEmblem.serializeAs_GuildEmblem(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AllianceInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AllianceInformations(input);
       }
       
-      public function deserializeAs_AllianceInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_AllianceInformations(input:IDataInput) : void {
+         super.deserialize(input);
          this.allianceEmblem = new GuildEmblem();
-         this.allianceEmblem.deserialize(param1);
+         this.allianceEmblem.deserialize(input);
       }
    }
 }

@@ -8,7 +8,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
    import com.ankamagames.dofus.network.types.game.social.AlliancedGuildFactSheetInformations;
    import com.ankamagames.dofus.network.types.game.guild.GuildEmblem;
    import com.ankamagames.jerakine.data.I18n;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    
    public class GuildWrapper extends Object implements IDataCenter
    {
@@ -63,83 +63,83 @@ package com.ankamagames.dofus.internalDatacenter.guild
          _ref = new Dictionary();
       }
       
-      public static function getFromNetwork(param1:Object) : GuildWrapper {
-         var _loc2_:GuildWrapper = null;
-         var _loc3_:GuildVersatileInformations = null;
-         if(_ref[param1.guildId])
+      public static function getFromNetwork(msg:Object) : GuildWrapper {
+         var o:GuildWrapper = null;
+         var gvi:GuildVersatileInformations = null;
+         if(_ref[msg.guildId])
          {
-            _loc2_ = _ref[param1.guildId];
+            o = _ref[msg.guildId];
          }
          else
          {
-            _loc2_ = new GuildWrapper();
-            _ref[param1.guildId] = _loc2_;
+            o = new GuildWrapper();
+            _ref[msg.guildId] = o;
          }
-         _loc2_.guildId = param1.guildId;
-         if(param1 is GuildVersatileInformations)
+         o.guildId = msg.guildId;
+         if(msg is GuildVersatileInformations)
          {
-            _loc3_ = param1 as GuildVersatileInformations;
-            _loc2_.level = _loc3_.guildLevel;
-            _loc2_.leaderId = _loc3_.leaderId;
-            _loc2_.nbMembers = _loc3_.nbMembers;
+            gvi = msg as GuildVersatileInformations;
+            o.level = gvi.guildLevel;
+            o.leaderId = gvi.leaderId;
+            o.nbMembers = gvi.nbMembers;
          }
          else
          {
-            if(param1 is BasicGuildInformations)
+            if(msg is BasicGuildInformations)
             {
-               _loc2_._guildName = BasicGuildInformations(param1).guildName;
-               if(param1 is GuildInformations)
+               o._guildName = BasicGuildInformations(msg).guildName;
+               if(msg is GuildInformations)
                {
-                  _loc2_.backEmblem = EmblemWrapper.fromNetwork(GuildInformations(param1).guildEmblem,true);
-                  _loc2_.upEmblem = EmblemWrapper.fromNetwork(GuildInformations(param1).guildEmblem,false);
+                  o.backEmblem = EmblemWrapper.fromNetwork(GuildInformations(msg).guildEmblem,true);
+                  o.upEmblem = EmblemWrapper.fromNetwork(GuildInformations(msg).guildEmblem,false);
                }
-               if(param1 is AlliancedGuildFactSheetInformations)
+               if(msg is AlliancedGuildFactSheetInformations)
                {
-                  _loc2_.alliance = AllianceWrapper.getFromNetwork(AlliancedGuildFactSheetInformations(param1).allianceInfos);
-                  _loc2_.allianceTag = _loc2_.alliance.allianceTag;
+                  o.alliance = AllianceWrapper.getFromNetwork(AlliancedGuildFactSheetInformations(msg).allianceInfos);
+                  o.allianceTag = o.alliance.allianceTag;
                }
             }
          }
-         return _loc2_;
+         return o;
       }
       
-      public static function updateRef(param1:uint, param2:GuildWrapper) : void {
-         _ref[param1] = param2;
+      public static function updateRef(pGuildId:uint, pGuildWrapper:GuildWrapper) : void {
+         _ref[pGuildId] = pGuildWrapper;
       }
       
-      public static function create(param1:uint, param2:String, param3:GuildEmblem, param4:Number, param5:Boolean) : GuildWrapper {
-         var _loc6_:GuildWrapper = null;
-         _loc6_ = new GuildWrapper();
-         _loc6_.initDictionary();
-         _loc6_.guildId = param1;
-         _loc6_._guildName = param2;
-         _loc6_._memberRightsNumber = param4;
-         _loc6_.enabled = param5;
-         if(param3 != null)
+      public static function create(pGuildId:uint, pGuildName:String, pGuildEmblem:GuildEmblem, pMemberRights:Number, pEnabled:Boolean) : GuildWrapper {
+         var item:GuildWrapper = null;
+         item = new GuildWrapper();
+         item.initDictionary();
+         item.guildId = pGuildId;
+         item._guildName = pGuildName;
+         item._memberRightsNumber = pMemberRights;
+         item.enabled = pEnabled;
+         if(pGuildEmblem != null)
          {
-            _loc6_.upEmblem = EmblemWrapper.create(param3.symbolShape,EmblemWrapper.UP,param3.symbolColor);
-            _loc6_.backEmblem = EmblemWrapper.create(param3.backgroundShape,EmblemWrapper.BACK,param3.backgroundColor);
+            item.upEmblem = EmblemWrapper.create(pGuildEmblem.symbolShape,EmblemWrapper.UP,pGuildEmblem.symbolColor);
+            item.backEmblem = EmblemWrapper.create(pGuildEmblem.backgroundShape,EmblemWrapper.BACK,pGuildEmblem.backgroundColor);
          }
-         return _loc6_;
+         return item;
       }
       
-      public static function getRightsNumber(param1:Array) : Number {
-         var _loc3_:String = null;
-         var _loc4_:* = false;
-         var _loc5_:String = null;
-         var _loc2_:Number = 0;
-         for each (_loc3_ in guildRights)
+      public static function getRightsNumber(pRightsIDs:Array) : Number {
+         var right:String = null;
+         var wantToSet:* = false;
+         var pRight:String = null;
+         var rightNumber:Number = 0;
+         for each (right in guildRights)
          {
-            _loc4_ = false;
-            for each (_loc5_ in param1)
+            wantToSet = false;
+            for each (pRight in pRightsIDs)
             {
-               if(_loc5_ == _loc3_)
+               if(pRight == right)
                {
-                  _loc2_ = _loc2_ | 1 << _rightDictionnary[_loc5_];
+                  rightNumber = rightNumber | 1 << _rightDictionnary[pRight];
                }
             }
          }
-         return _loc2_;
+         return rightNumber;
       }
       
       private var _guildName:String;
@@ -184,8 +184,8 @@ package com.ankamagames.dofus.internalDatacenter.guild
          return this._guildName;
       }
       
-      public function set memberRightsNumber(param1:uint) : void {
-         this._memberRightsNumber = param1;
+      public function set memberRightsNumber(value:uint) : void {
+         this._memberRightsNumber = value;
       }
       
       public function get memberRightsNumber() : uint {
@@ -193,26 +193,26 @@ package com.ankamagames.dofus.internalDatacenter.guild
       }
       
       public function get memberRights() : Vector.<Boolean> {
-         var _loc1_:Vector.<Boolean> = new Vector.<Boolean>();
-         _loc1_.push(this.isBoss);
-         _loc1_.push(this.manageGuildBoosts);
-         _loc1_.push(this.manageRights);
-         _loc1_.push(this.manageLightRights);
-         _loc1_.push(this.inviteNewMembers);
-         _loc1_.push(this.banMembers);
-         _loc1_.push(this.manageXPContribution);
-         _loc1_.push(this.manageRanks);
-         _loc1_.push(this.manageMyXpContribution);
-         _loc1_.push(this.hireTaxCollector);
-         _loc1_.push(this.collect);
-         _loc1_.push(this.useFarms);
-         _loc1_.push(this.organizeFarms);
-         _loc1_.push(this.takeOthersRidesInFarm);
-         _loc1_.push(this.prioritizeMeInDefense);
-         _loc1_.push(this.collectMyTaxCollectors);
-         _loc1_.push(this.setAlliancePrism);
-         _loc1_.push(this.talkInAllianceChannel);
-         return _loc1_;
+         var rights:Vector.<Boolean> = new Vector.<Boolean>();
+         rights.push(this.isBoss);
+         rights.push(this.manageGuildBoosts);
+         rights.push(this.manageRights);
+         rights.push(this.manageLightRights);
+         rights.push(this.inviteNewMembers);
+         rights.push(this.banMembers);
+         rights.push(this.manageXPContribution);
+         rights.push(this.manageRanks);
+         rights.push(this.manageMyXpContribution);
+         rights.push(this.hireTaxCollector);
+         rights.push(this.collect);
+         rights.push(this.useFarms);
+         rights.push(this.organizeFarms);
+         rights.push(this.takeOthersRidesInFarm);
+         rights.push(this.prioritizeMeInDefense);
+         rights.push(this.collectMyTaxCollectors);
+         rights.push(this.setAlliancePrism);
+         rights.push(this.talkInAllianceChannel);
+         return rights;
       }
       
       public function get isBoss() : Boolean {
@@ -220,149 +220,149 @@ package com.ankamagames.dofus.internalDatacenter.guild
       }
       
       public function get manageGuildBoosts() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (2 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((2 & this._memberRightsNumber) > 0);
       }
       
       public function get manageRights() : Boolean {
-         return (this.isBoss) || (4 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || ((4 & this._memberRightsNumber) > 0);
       }
       
       public function get inviteNewMembers() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (8 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((8 & this._memberRightsNumber) > 0);
       }
       
       public function get banMembers() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (16 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((16 & this._memberRightsNumber) > 0);
       }
       
       public function get manageXPContribution() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (32 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((32 & this._memberRightsNumber) > 0);
       }
       
       public function get manageRanks() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (64 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((64 & this._memberRightsNumber) > 0);
       }
       
       public function get hireTaxCollector() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (128 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((128 & this._memberRightsNumber) > 0);
       }
       
       public function get manageMyXpContribution() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (256 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((256 & this._memberRightsNumber) > 0);
       }
       
       public function get collect() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (512 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((512 & this._memberRightsNumber) > 0);
       }
       
       public function get manageLightRights() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (1024 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((1024 & this._memberRightsNumber) > 0);
       }
       
       public function get useFarms() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (4096 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((4096 & this._memberRightsNumber) > 0);
       }
       
       public function get organizeFarms() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (8192 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((8192 & this._memberRightsNumber) > 0);
       }
       
       public function get takeOthersRidesInFarm() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (16384 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((16384 & this._memberRightsNumber) > 0);
       }
       
       public function get prioritizeMeInDefense() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (32768 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((32768 & this._memberRightsNumber) > 0);
       }
       
       public function get collectMyTaxCollectors() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (65536 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((65536 & this._memberRightsNumber) > 0);
       }
       
       public function get setAlliancePrism() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (131072 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((131072 & this._memberRightsNumber) > 0);
       }
       
       public function get talkInAllianceChannel() : Boolean {
-         return (this.isBoss) || (this.manageRights) || (262144 & this._memberRightsNumber) > 0;
+         return (this.isBoss) || (this.manageRights) || ((262144 & this._memberRightsNumber) > 0);
       }
       
       public function clone() : GuildWrapper {
-         var _loc1_:GuildWrapper = create(this.guildId,this.guildName,null,this.memberRightsNumber,this.enabled);
-         _loc1_.upEmblem = this.upEmblem;
-         _loc1_.backEmblem = this.backEmblem;
-         return _loc1_;
+         var wrapper:GuildWrapper = create(this.guildId,this.guildName,null,this.memberRightsNumber,this.enabled);
+         wrapper.upEmblem = this.upEmblem;
+         wrapper.backEmblem = this.backEmblem;
+         return wrapper;
       }
       
-      public function update(param1:uint, param2:String, param3:GuildEmblem, param4:Number, param5:Boolean) : void {
-         this.guildId = param1;
-         this._guildName = param2;
-         this._memberRightsNumber = param4;
-         this.enabled = param5;
-         this.upEmblem.update(param3.symbolShape,EmblemWrapper.UP,param3.symbolColor);
-         this.backEmblem.update(param3.backgroundShape,EmblemWrapper.BACK,param3.backgroundColor);
+      public function update(pGuildId:uint, pGuildName:String, pGuildEmblem:GuildEmblem, pMemberRights:Number, pEnabled:Boolean) : void {
+         this.guildId = pGuildId;
+         this._guildName = pGuildName;
+         this._memberRightsNumber = pMemberRights;
+         this.enabled = pEnabled;
+         this.upEmblem.update(pGuildEmblem.symbolShape,EmblemWrapper.UP,pGuildEmblem.symbolColor);
+         this.backEmblem.update(pGuildEmblem.backgroundShape,EmblemWrapper.BACK,pGuildEmblem.backgroundColor);
       }
       
-      public function hasRight(param1:String) : Boolean {
-         var _loc2_:* = false;
-         switch(param1)
+      public function hasRight(pRightId:String) : Boolean {
+         var returnValue:Boolean = false;
+         switch(pRightId)
          {
             case IS_BOSS:
-               _loc2_ = this.isBoss;
+               returnValue = this.isBoss;
                break;
             case MANAGE_GUILD_BOOSTS:
-               _loc2_ = this.manageGuildBoosts;
+               returnValue = this.manageGuildBoosts;
                break;
             case MANAGE_RIGHTS:
-               _loc2_ = this.manageRights;
+               returnValue = this.manageRights;
                break;
             case MANAGE_LIGHT_RIGHTS:
-               _loc2_ = this.manageLightRights;
+               returnValue = this.manageLightRights;
                break;
             case INVITE_NEW_MEMBERS:
-               _loc2_ = this.inviteNewMembers;
+               returnValue = this.inviteNewMembers;
                break;
             case BAN_MEMBERS:
-               _loc2_ = this.banMembers;
+               returnValue = this.banMembers;
                break;
             case MANAGE_XP_CONTRIBUTION:
-               _loc2_ = this.manageXPContribution;
+               returnValue = this.manageXPContribution;
                break;
             case MANAGE_RANKS:
-               _loc2_ = this.manageRanks;
+               returnValue = this.manageRanks;
                break;
             case MANAGE_MY_XP_CONTRIBUTION:
-               _loc2_ = this.manageMyXpContribution;
+               returnValue = this.manageMyXpContribution;
                break;
             case HIRE_TAX_COLLECTOR:
-               _loc2_ = this.hireTaxCollector;
+               returnValue = this.hireTaxCollector;
                break;
             case COLLECT:
-               _loc2_ = this.collect;
+               returnValue = this.collect;
                break;
             case USE_FARMS:
-               _loc2_ = this.useFarms;
+               returnValue = this.useFarms;
                break;
             case ORGANIZE_FARMS:
-               _loc2_ = this.organizeFarms;
+               returnValue = this.organizeFarms;
                break;
             case TAKE_OTHERS_RIDES_IN_FARM:
-               _loc2_ = this.takeOthersRidesInFarm;
+               returnValue = this.takeOthersRidesInFarm;
                break;
             case PRIORITIZE_DEFENSE:
-               _loc2_ = this.prioritizeMeInDefense;
+               returnValue = this.prioritizeMeInDefense;
                break;
             case COLLECT_MY_TAX_COLLECTORS:
-               _loc2_ = this.collectMyTaxCollectors;
+               returnValue = this.collectMyTaxCollectors;
                break;
             case SET_ALLIANCE_PRISM:
-               _loc2_ = this.setAlliancePrism;
+               returnValue = this.setAlliancePrism;
                break;
             case TALK_IN_ALLIANCE_CHANNEL:
-               _loc2_ = this.talkInAllianceChannel;
+               returnValue = this.talkInAllianceChannel;
                break;
          }
-         return _loc2_;
+         return returnValue;
       }
       
       private function initDictionary() : void {

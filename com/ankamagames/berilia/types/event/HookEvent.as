@@ -6,9 +6,9 @@ package com.ankamagames.berilia.types.event
    public class HookEvent extends Event
    {
       
-      public function HookEvent(param1:String, param2:Hook) {
-         super(param1,false,false);
-         this._hook = param2;
+      public function HookEvent(type:String, hook:Hook) {
+         super(type,false,false);
+         this._hook = hook;
       }
       
       public static const DISPATCHED:String = "hooDispatched";

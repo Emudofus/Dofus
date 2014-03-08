@@ -8,45 +8,43 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class SubareaItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function SubareaItemCriterion(param1:String) {
-         super(param1);
+      public function SubareaItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get isRespected() : Boolean {
-         var _loc1_:uint = PlayedCharacterManager.getInstance().currentSubArea.id;
+         var playerPosition:uint = PlayedCharacterManager.getInstance().currentSubArea.id;
          switch(_operator.text)
          {
             case ItemCriterionOperator.EQUAL:
             case ItemCriterionOperator.DIFFERENT:
                return super.isRespected;
-            default:
-               return false;
          }
       }
       
       override public function get text() : String {
-         var _loc1_:String = null;
-         var _loc2_:SubArea = SubArea.getSubAreaById(_criterionValue);
-         if(!_loc2_)
+         var readableCriterion:String = null;
+         var subArea:SubArea = SubArea.getSubAreaById(_criterionValue);
+         if(!subArea)
          {
             return "error on subareaItemCriterion";
          }
-         var _loc3_:String = _loc2_.name;
+         var zoneName:String = subArea.name;
          switch(_operator.text)
          {
             case ItemCriterionOperator.EQUAL:
-               _loc1_ = I18n.getUiText("ui.tooltip.beInSubarea",[_loc3_]);
+               readableCriterion = I18n.getUiText("ui.tooltip.beInSubarea",[zoneName]);
                break;
             case ItemCriterionOperator.DIFFERENT:
-               _loc1_ = I18n.getUiText("ui.tooltip.dontBeInSubarea",[_loc3_]);
+               readableCriterion = I18n.getUiText("ui.tooltip.dontBeInSubarea",[zoneName]);
                break;
          }
-         return _loc1_;
+         return readableCriterion;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:SubareaItemCriterion = new SubareaItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:SubareaItemCriterion = new SubareaItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {

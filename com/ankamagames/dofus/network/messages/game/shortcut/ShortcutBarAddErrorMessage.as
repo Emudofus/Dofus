@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          return 6227;
       }
       
-      public function initShortcutBarAddErrorMessage(param1:uint=0) : ShortcutBarAddErrorMessage {
-         this.error = param1;
+      public function initShortcutBarAddErrorMessage(error:uint=0) : ShortcutBarAddErrorMessage {
+         this.error = error;
          this._isInitialized = true;
          return this;
       }
@@ -38,30 +38,30 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ShortcutBarAddErrorMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ShortcutBarAddErrorMessage(output);
       }
       
-      public function serializeAs_ShortcutBarAddErrorMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.error);
+      public function serializeAs_ShortcutBarAddErrorMessage(output:IDataOutput) : void {
+         output.writeByte(this.error);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ShortcutBarAddErrorMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ShortcutBarAddErrorMessage(input);
       }
       
-      public function deserializeAs_ShortcutBarAddErrorMessage(param1:IDataInput) : void {
-         this.error = param1.readByte();
+      public function deserializeAs_ShortcutBarAddErrorMessage(input:IDataInput) : void {
+         this.error = input.readByte();
          if(this.error < 0)
          {
             throw new Error("Forbidden value (" + this.error + ") on element of ShortcutBarAddErrorMessage.error.");

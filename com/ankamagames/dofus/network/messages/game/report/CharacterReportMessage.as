@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.report
          return 6079;
       }
       
-      public function initCharacterReportMessage(param1:uint=0, param2:uint=0) : CharacterReportMessage {
-         this.reportedId = param1;
-         this.reason = param2;
+      public function initCharacterReportMessage(reportedId:uint=0, reason:uint=0) : CharacterReportMessage {
+         this.reportedId = reportedId;
+         this.reason = reason;
          this._isInitialized = true;
          return this;
       }
@@ -42,53 +42,53 @@ package com.ankamagames.dofus.network.messages.game.report
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CharacterReportMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterReportMessage(output);
       }
       
-      public function serializeAs_CharacterReportMessage(param1:IDataOutput) : void {
-         if(this.reportedId < 0 || this.reportedId > 4.294967295E9)
+      public function serializeAs_CharacterReportMessage(output:IDataOutput) : void {
+         if((this.reportedId < 0) || (this.reportedId > 4.294967295E9))
          {
             throw new Error("Forbidden value (" + this.reportedId + ") on element reportedId.");
          }
          else
          {
-            param1.writeUnsignedInt(this.reportedId);
+            output.writeUnsignedInt(this.reportedId);
             if(this.reason < 0)
             {
                throw new Error("Forbidden value (" + this.reason + ") on element reason.");
             }
             else
             {
-               param1.writeByte(this.reason);
+               output.writeByte(this.reason);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CharacterReportMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterReportMessage(input);
       }
       
-      public function deserializeAs_CharacterReportMessage(param1:IDataInput) : void {
-         this.reportedId = param1.readUnsignedInt();
-         if(this.reportedId < 0 || this.reportedId > 4.294967295E9)
+      public function deserializeAs_CharacterReportMessage(input:IDataInput) : void {
+         this.reportedId = input.readUnsignedInt();
+         if((this.reportedId < 0) || (this.reportedId > 4.294967295E9))
          {
             throw new Error("Forbidden value (" + this.reportedId + ") on element of CharacterReportMessage.reportedId.");
          }
          else
          {
-            this.reason = param1.readByte();
+            this.reason = input.readByte();
             if(this.reason < 0)
             {
                throw new Error("Forbidden value (" + this.reason + ") on element of CharacterReportMessage.reason.");

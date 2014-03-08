@@ -5,12 +5,12 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.berilia.types.data.UiModule;
    import com.ankamagames.dofus.internalDatacenter.fight.FighterInformations;
    import com.ankamagames.berilia.utils.errors.ApiError;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.fight.frames.FightBattleFrame;
    import com.ankamagames.dofus.logic.game.fight.frames.FightPreparationFrame;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightMonsterInformations;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
    import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
    import com.ankamagames.dofus.internalDatacenter.spells.EffectsWrapper;
@@ -45,21 +45,20 @@ package com.ankamagames.dofus.uiApi
       
       private var _module:UiModule;
       
-      public function set module(param1:UiModule) : void {
-         this._module = param1;
+      public function set module(value:UiModule) : void {
+         this._module = value;
       }
       
       public function destroy() : void {
          this._module = null;
       }
       
-      public function getFighterInformations(param1:int) : FighterInformations {
-         var _loc2_:FighterInformations = new FighterInformations(param1);
-         return _loc2_;
+      public function getFighterInformations(fighterId:int) : FighterInformations {
+         var fighterInfos:FighterInformations = new FighterInformations(fighterId);
+         return fighterInfos;
       }
       
-      public function getFighterName(param1:int) : String {
-         var fighterId:int = param1;
+      public function getFighterName(fighterId:int) : String {
          try
          {
             return this.getFightFrame().getFighterName(fighterId);
@@ -71,23 +70,23 @@ package com.ankamagames.dofus.uiApi
          return null;
       }
       
-      public function getFighterLevel(param1:int) : uint {
-         return this.getFightFrame().getFighterLevel(param1);
+      public function getFighterLevel(fighterId:int) : uint {
+         return this.getFightFrame().getFighterLevel(fighterId);
       }
       
       public function getFighters() : Vector.<int> {
-         if((Kernel.getWorker().getFrame(FightBattleFrame)) && !Kernel.getWorker().getFrame(FightPreparationFrame))
+         if((Kernel.getWorker().getFrame(FightBattleFrame)) && (!Kernel.getWorker().getFrame(FightPreparationFrame)))
          {
             return this.getFightFrame().battleFrame.fightersList;
          }
          return this.getFightFrame().entitiesFrame.getOrdonnedPreFighters();
       }
       
-      public function getMonsterId(param1:int) : int {
-         var _loc2_:GameFightFighterInformations = this.getFighterInfos(param1);
-         if(_loc2_ is GameFightMonsterInformations)
+      public function getMonsterId(id:int) : int {
+         var gffi:GameFightFighterInformations = this.getFighterInfos(id);
+         if(gffi is GameFightMonsterInformations)
          {
-            return GameFightMonsterInformations(_loc2_).creatureGenericId;
+            return GameFightMonsterInformations(gffi).creatureGenericId;
          }
          return -1;
       }
@@ -104,58 +103,58 @@ package com.ankamagames.dofus.uiApi
          return this.getFightFrame().fightType;
       }
       
-      public function getBuffList(param1:int) : Array {
-         return BuffManager.getInstance().getAllBuff(param1);
+      public function getBuffList(targetId:int) : Array {
+         return BuffManager.getInstance().getAllBuff(targetId);
       }
       
-      public function getBuffById(param1:uint, param2:int) : BasicBuff {
-         return BuffManager.getInstance().getBuff(param1,param2);
+      public function getBuffById(buffId:uint, playerId:int) : BasicBuff {
+         return BuffManager.getInstance().getBuff(buffId,playerId);
       }
       
-      public function createEffectsWrapper(param1:Spell, param2:Array, param3:String) : EffectsWrapper {
-         return new EffectsWrapper(param2,param1,param3);
+      public function createEffectsWrapper(spell:Spell, effects:Array, name:String) : EffectsWrapper {
+         return new EffectsWrapper(effects,spell,name);
       }
       
-      public function getCastingSpellBuffEffects(param1:int, param2:uint) : EffectsWrapper {
-         var _loc5_:Spell = null;
-         var _loc7_:BasicBuff = null;
-         var _loc8_:EffectsWrapper = null;
-         var _loc9_:EffectInstance = null;
-         var _loc10_:EffectInstanceInteger = null;
-         var _loc3_:Array = new Array();
-         var _loc4_:Array = BuffManager.getInstance().getAllBuff(param1);
-         var _loc6_:Array = new Array();
-         for each (_loc7_ in _loc4_)
+      public function getCastingSpellBuffEffects(targetId:int, castingSpellId:uint) : EffectsWrapper {
+         var spell:Spell = null;
+         var buffItem:BasicBuff = null;
+         var effects:EffectsWrapper = null;
+         var ei:EffectInstance = null;
+         var eii:EffectInstanceInteger = null;
+         var res:Array = new Array();
+         var buffs:Array = BuffManager.getInstance().getAllBuff(targetId);
+         var triggerList:Array = new Array();
+         for each (buffItem in buffs)
          {
-            if(_loc7_.castingSpell.castingSpellId == param2)
+            if(buffItem.castingSpell.castingSpellId == castingSpellId)
             {
-               _loc9_ = _loc7_.effects;
-               if((_loc9_.trigger) && _loc9_ is EffectInstanceInteger)
+               ei = buffItem.effects;
+               if((ei.trigger) && (ei is EffectInstanceInteger))
                {
-                  _loc10_ = _loc9_ as EffectInstanceInteger;
-                  if(_loc6_[_loc10_.effectId + "," + _loc10_.value])
+                  eii = ei as EffectInstanceInteger;
+                  if(triggerList[eii.effectId + "," + eii.value])
                   {
                      continue;
                   }
-                  _loc6_[_loc10_.effectId + "," + _loc10_.value] = true;
-                  _loc3_.push(_loc9_);
+                  triggerList[eii.effectId + "," + eii.value] = true;
+                  res.push(ei);
                }
                else
                {
-                  _loc3_.push(_loc9_);
+                  res.push(ei);
                }
-               if(!_loc5_)
+               if(!spell)
                {
-                  _loc5_ = _loc7_.castingSpell.spell;
+                  spell = buffItem.castingSpell.spell;
                }
             }
          }
-         _loc8_ = new EffectsWrapper(_loc3_,_loc5_,"");
-         return _loc8_;
+         effects = new EffectsWrapper(res,spell,"");
+         return effects;
       }
       
-      public function getAllBuffEffects(param1:int) : EffectsListWrapper {
-         return new EffectsListWrapper(BuffManager.getInstance().getAllBuff(param1));
+      public function getAllBuffEffects(targetId:int) : EffectsListWrapper {
+         return new EffectsListWrapper(BuffManager.getInstance().getAllBuff(targetId));
       }
       
       public function isCastingSpell() : Boolean {
@@ -186,7 +185,7 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function isWaitingBeforeFight() : Boolean {
-         if(this.getFightFrame().fightType == FightTypeEnum.FIGHT_TYPE_PvMA || this.getFightFrame().fightType == FightTypeEnum.FIGHT_TYPE_PvT)
+         if((this.getFightFrame().fightType == FightTypeEnum.FIGHT_TYPE_PvMA) || (this.getFightFrame().fightType == FightTypeEnum.FIGHT_TYPE_PvT))
          {
             return true;
          }
@@ -209,39 +208,39 @@ package com.ankamagames.dofus.uiApi
          return this.getFightFrame().battleFrame.turnsCount;
       }
       
-      public function getFighterStatus(param1:uint) : int {
-         var _loc2_:Frame = Kernel.getWorker().getFrame(FightEntitiesFrame);
-         var _loc3_:Dictionary = FightEntitiesFrame(_loc2_).lastKnownPlayerStatus;
-         if(_loc3_[param1])
+      public function getFighterStatus(fighterId:uint) : int {
+         var frame:Frame = Kernel.getWorker().getFrame(FightEntitiesFrame);
+         var fightersStatus:Dictionary = FightEntitiesFrame(frame).lastKnownPlayerStatus;
+         if(fightersStatus[fighterId])
          {
-            return _loc3_[param1];
+            return fightersStatus[fighterId];
          }
          return -1;
       }
       
-      public function isMouseOverFighter(param1:uint) : Boolean {
-         var _loc2_:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
-         return this.getFighterInfos(param1).disposition.cellId == FightContextFrame.currentCell || (_loc2_.timelineOverEntity) && param1 == _loc2_.timelineOverEntityId;
+      public function isMouseOverFighter(fighterId:uint) : Boolean {
+         var fcf:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
+         return (this.getFighterInfos(fighterId).disposition.cellId == FightContextFrame.currentCell) || (fcf.timelineOverEntity) && (fighterId == fcf.timelineOverEntityId);
       }
       
-      private function getFighterInfos(param1:int) : GameFightFighterInformations {
-         return this.getFightFrame().entitiesFrame.getEntityInfos(param1) as GameFightFighterInformations;
+      private function getFighterInfos(fighterId:int) : GameFightFighterInformations {
+         return this.getFightFrame().entitiesFrame.getEntityInfos(fighterId) as GameFightFighterInformations;
       }
       
       private function getFightFrame() : FightContextFrame {
-         var _loc1_:Frame = Kernel.getWorker().getFrame(FightContextFrame);
-         if(!_loc1_)
+         var frame:Frame = Kernel.getWorker().getFrame(FightContextFrame);
+         if(!frame)
          {
             throw new ApiError("Unallowed call of FightApi method while not fighting.");
          }
          else
          {
-            return _loc1_ as FightContextFrame;
+            return frame as FightContextFrame;
          }
       }
       
-      private function getFighterTeam(param1:GameFightFighterInformations) : String {
-         switch(param1.teamId)
+      private function getFighterTeam(fighterInfos:GameFightFighterInformations) : String {
+         switch(fighterInfos.teamId)
          {
             case TeamEnum.TEAM_CHALLENGER:
                return "challenger";
@@ -249,9 +248,6 @@ package com.ankamagames.dofus.uiApi
                return "defender";
             case TeamEnum.TEAM_SPECTATOR:
                return "spectator";
-            default:
-               this._log.warn("Unknown teamId " + param1.teamId + " ?!");
-               return "unknown";
          }
       }
    }

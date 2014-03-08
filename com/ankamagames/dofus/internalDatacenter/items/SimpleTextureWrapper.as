@@ -17,10 +17,10 @@ package com.ankamagames.dofus.internalDatacenter.items
       
       private static const _log:Logger = Log.getLogger(getQualifiedClassName(SimpleTextureWrapper));
       
-      public static function create(param1:Uri) : SimpleTextureWrapper {
-         var _loc2_:SimpleTextureWrapper = new SimpleTextureWrapper();
-         _loc2_._uri = param1;
-         return _loc2_;
+      public static function create(uri:Uri) : SimpleTextureWrapper {
+         var simpleTextureWrapper:SimpleTextureWrapper = new SimpleTextureWrapper();
+         simpleTextureWrapper._uri = uri;
+         return simpleTextureWrapper;
       }
       
       private var _uri:Uri;
@@ -53,7 +53,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          return 0;
       }
       
-      public function set endTime(param1:int) : void {
+      public function set endTime(t:int) : void {
       }
       
       public function get timer() : int {
@@ -64,10 +64,10 @@ package com.ankamagames.dofus.internalDatacenter.items
          return true;
       }
       
-      public function addHolder(param1:ISlotDataHolder) : void {
+      public function addHolder(h:ISlotDataHolder) : void {
       }
       
-      public function removeHolder(param1:ISlotDataHolder) : void {
+      public function removeHolder(h:ISlotDataHolder) : void {
       }
    }
 }

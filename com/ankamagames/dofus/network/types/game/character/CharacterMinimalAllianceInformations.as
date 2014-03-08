@@ -23,9 +23,9 @@ package com.ankamagames.dofus.network.types.game.character
          return 444;
       }
       
-      public function initCharacterMinimalAllianceInformations(param1:uint=0, param2:uint=0, param3:String="", param4:EntityLook=null, param5:BasicGuildInformations=null, param6:BasicAllianceInformations=null) : CharacterMinimalAllianceInformations {
-         super.initCharacterMinimalGuildInformations(param1,param2,param3,param4,param5);
-         this.alliance = param6;
+      public function initCharacterMinimalAllianceInformations(id:uint=0, level:uint=0, name:String="", entityLook:EntityLook=null, guild:BasicGuildInformations=null, alliance:BasicAllianceInformations=null) : CharacterMinimalAllianceInformations {
+         super.initCharacterMinimalGuildInformations(id,level,name,entityLook,guild);
+         this.alliance = alliance;
          return this;
       }
       
@@ -34,23 +34,23 @@ package com.ankamagames.dofus.network.types.game.character
          this.alliance = new BasicAllianceInformations();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_CharacterMinimalAllianceInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterMinimalAllianceInformations(output);
       }
       
-      public function serializeAs_CharacterMinimalAllianceInformations(param1:IDataOutput) : void {
-         super.serializeAs_CharacterMinimalGuildInformations(param1);
-         this.alliance.serializeAs_BasicAllianceInformations(param1);
+      public function serializeAs_CharacterMinimalAllianceInformations(output:IDataOutput) : void {
+         super.serializeAs_CharacterMinimalGuildInformations(output);
+         this.alliance.serializeAs_BasicAllianceInformations(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_CharacterMinimalAllianceInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterMinimalAllianceInformations(input);
       }
       
-      public function deserializeAs_CharacterMinimalAllianceInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_CharacterMinimalAllianceInformations(input:IDataInput) : void {
+         super.deserialize(input);
          this.alliance = new BasicAllianceInformations();
-         this.alliance.deserialize(param1);
+         this.alliance.deserialize(input);
       }
    }
 }

@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 426;
       }
       
-      public function initFightTeamMemberWithAllianceCharacterInformations(param1:int=0, param2:String="", param3:uint=0, param4:BasicAllianceInformations=null) : FightTeamMemberWithAllianceCharacterInformations {
-         super.initFightTeamMemberCharacterInformations(param1,param2,param3);
-         this.allianceInfos = param4;
+      public function initFightTeamMemberWithAllianceCharacterInformations(id:int=0, name:String="", level:uint=0, allianceInfos:BasicAllianceInformations=null) : FightTeamMemberWithAllianceCharacterInformations {
+         super.initFightTeamMemberCharacterInformations(id,name,level);
+         this.allianceInfos = allianceInfos;
          return this;
       }
       
@@ -32,23 +32,23 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.allianceInfos = new BasicAllianceInformations();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FightTeamMemberWithAllianceCharacterInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FightTeamMemberWithAllianceCharacterInformations(output);
       }
       
-      public function serializeAs_FightTeamMemberWithAllianceCharacterInformations(param1:IDataOutput) : void {
-         super.serializeAs_FightTeamMemberCharacterInformations(param1);
-         this.allianceInfos.serializeAs_BasicAllianceInformations(param1);
+      public function serializeAs_FightTeamMemberWithAllianceCharacterInformations(output:IDataOutput) : void {
+         super.serializeAs_FightTeamMemberCharacterInformations(output);
+         this.allianceInfos.serializeAs_BasicAllianceInformations(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FightTeamMemberWithAllianceCharacterInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FightTeamMemberWithAllianceCharacterInformations(input);
       }
       
-      public function deserializeAs_FightTeamMemberWithAllianceCharacterInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_FightTeamMemberWithAllianceCharacterInformations(input:IDataInput) : void {
+         super.deserialize(input);
          this.allianceInfos = new BasicAllianceInformations();
-         this.allianceInfos.deserialize(param1);
+         this.allianceInfos.deserialize(input);
       }
    }
 }

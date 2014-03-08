@@ -8,25 +8,25 @@ package com.ankamagames.dofus.datacenter.items.criterion
    public class MonthItemCriterion extends ItemCriterion implements IDataCenter
    {
       
-      public function MonthItemCriterion(param1:String) {
-         super(param1);
+      public function MonthItemCriterion(pCriterion:String) {
+         super(pCriterion);
       }
       
       override public function get text() : String {
-         var _loc1_:String = Month.getMonthById(_criterionValue).name;
-         var _loc2_:String = I18n.getUiText("ui.time.months");
-         return _loc2_ + " " + _operator.text + " " + _loc1_;
+         var readableCriterionValue:String = Month.getMonthById(_criterionValue).name;
+         var readableCriterionRef:String = I18n.getUiText("ui.time.months");
+         return readableCriterionRef + " " + _operator.text + " " + readableCriterionValue;
       }
       
       override public function clone() : IItemCriterion {
-         var _loc1_:MonthItemCriterion = new MonthItemCriterion(this.basicText);
-         return _loc1_;
+         var clonedCriterion:MonthItemCriterion = new MonthItemCriterion(this.basicText);
+         return clonedCriterion;
       }
       
       override protected function getCriterion() : int {
-         var _loc1_:Date = new Date();
-         var _loc2_:int = TimeManager.getInstance().getDateFromTime(_loc1_.getTime())[3];
-         return _loc2_-1;
+         var date:Date = new Date();
+         var monthInt:int = TimeManager.getInstance().getDateFromTime(date.getTime())[3];
+         return monthInt - 1;
       }
    }
 }

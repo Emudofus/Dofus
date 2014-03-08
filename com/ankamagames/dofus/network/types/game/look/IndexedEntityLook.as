@@ -22,9 +22,9 @@ package com.ankamagames.dofus.network.types.game.look
          return 405;
       }
       
-      public function initIndexedEntityLook(param1:EntityLook=null, param2:uint=0) : IndexedEntityLook {
-         this.look = param1;
-         this.index = param2;
+      public function initIndexedEntityLook(look:EntityLook=null, index:uint=0) : IndexedEntityLook {
+         this.look = look;
+         this.index = index;
          return this;
       }
       
@@ -32,31 +32,31 @@ package com.ankamagames.dofus.network.types.game.look
          this.look = new EntityLook();
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_IndexedEntityLook(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_IndexedEntityLook(output);
       }
       
-      public function serializeAs_IndexedEntityLook(param1:IDataOutput) : void {
-         this.look.serializeAs_EntityLook(param1);
+      public function serializeAs_IndexedEntityLook(output:IDataOutput) : void {
+         this.look.serializeAs_EntityLook(output);
          if(this.index < 0)
          {
             throw new Error("Forbidden value (" + this.index + ") on element index.");
          }
          else
          {
-            param1.writeByte(this.index);
+            output.writeByte(this.index);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_IndexedEntityLook(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_IndexedEntityLook(input);
       }
       
-      public function deserializeAs_IndexedEntityLook(param1:IDataInput) : void {
+      public function deserializeAs_IndexedEntityLook(input:IDataInput) : void {
          this.look = new EntityLook();
-         this.look.deserialize(param1);
-         this.index = param1.readByte();
+         this.look.deserialize(input);
+         this.index = input.readByte();
          if(this.index < 0)
          {
             throw new Error("Forbidden value (" + this.index + ") on element of IndexedEntityLook.index.");

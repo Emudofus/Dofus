@@ -1,7 +1,7 @@
 package com.ankamagames.dofus.network.messages.game.context
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -28,9 +28,9 @@ package com.ankamagames.dofus.network.messages.game.context
          return 6416;
       }
       
-      public function initGameContextRemoveMultipleElementsWithEventsMessage(param1:Vector.<int>=null, param2:Vector.<uint>=null) : GameContextRemoveMultipleElementsWithEventsMessage {
-         super.initGameContextRemoveMultipleElementsMessage(param1);
-         this.elementEventIds = param2;
+      public function initGameContextRemoveMultipleElementsWithEventsMessage(id:Vector.<int>=null, elementEventIds:Vector.<uint>=null) : GameContextRemoveMultipleElementsWithEventsMessage {
+         super.initGameContextRemoveMultipleElementsMessage(id);
+         this.elementEventIds = elementEventIds;
          this._isInitialized = true;
          return this;
       }
@@ -41,59 +41,59 @@ package com.ankamagames.dofus.network.messages.game.context
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameContextRemoveMultipleElementsWithEventsMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameContextRemoveMultipleElementsWithEventsMessage(output);
       }
       
-      public function serializeAs_GameContextRemoveMultipleElementsWithEventsMessage(param1:IDataOutput) : void {
-         super.serializeAs_GameContextRemoveMultipleElementsMessage(param1);
-         param1.writeShort(this.elementEventIds.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.elementEventIds.length)
+      public function serializeAs_GameContextRemoveMultipleElementsWithEventsMessage(output:IDataOutput) : void {
+         super.serializeAs_GameContextRemoveMultipleElementsMessage(output);
+         output.writeShort(this.elementEventIds.length);
+         var _i1:uint = 0;
+         while(_i1 < this.elementEventIds.length)
          {
-            if(this.elementEventIds[_loc2_] < 0)
+            if(this.elementEventIds[_i1] < 0)
             {
-               throw new Error("Forbidden value (" + this.elementEventIds[_loc2_] + ") on element 1 (starting at 1) of elementEventIds.");
+               throw new Error("Forbidden value (" + this.elementEventIds[_i1] + ") on element 1 (starting at 1) of elementEventIds.");
             }
             else
             {
-               param1.writeByte(this.elementEventIds[_loc2_]);
-               _loc2_++;
+               output.writeByte(this.elementEventIds[_i1]);
+               _i1++;
                continue;
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameContextRemoveMultipleElementsWithEventsMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameContextRemoveMultipleElementsWithEventsMessage(input);
       }
       
-      public function deserializeAs_GameContextRemoveMultipleElementsWithEventsMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         super.deserialize(param1);
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_GameContextRemoveMultipleElementsWithEventsMessage(input:IDataInput) : void {
+         var _val1:uint = 0;
+         super.deserialize(input);
+         var _elementEventIdsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _elementEventIdsLen)
          {
-            _loc4_ = param1.readByte();
-            if(_loc4_ < 0)
+            _val1 = input.readByte();
+            if(_val1 < 0)
             {
-               throw new Error("Forbidden value (" + _loc4_ + ") on elements of elementEventIds.");
+               throw new Error("Forbidden value (" + _val1 + ") on elements of elementEventIds.");
             }
             else
             {
-               this.elementEventIds.push(_loc4_);
-               _loc3_++;
+               this.elementEventIds.push(_val1);
+               _i1++;
                continue;
             }
          }

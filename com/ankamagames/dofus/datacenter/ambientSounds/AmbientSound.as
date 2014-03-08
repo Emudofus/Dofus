@@ -20,8 +20,8 @@ package com.ankamagames.dofus.datacenter.ambientSounds
       
       public static const MODULE:String = "AmbientSounds";
       
-      public static function getAmbientSoundById(param1:uint) : AmbientSound {
-         return GameData.getObject(MODULE,param1) as AmbientSound;
+      public static function getAmbientSoundById(id:uint) : AmbientSound {
+         return GameData.getObject(MODULE,id) as AmbientSound;
       }
       
       public var id:int;

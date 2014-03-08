@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions
       }
       
       public static function create() : LeaveDialogAction {
-         var _loc1_:LeaveDialogAction = new LeaveDialogAction();
-         return _loc1_;
+         var action:LeaveDialogAction = new LeaveDialogAction();
+         return action;
       }
    }
 }

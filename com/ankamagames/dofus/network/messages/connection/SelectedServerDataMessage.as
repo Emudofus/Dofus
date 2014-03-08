@@ -35,12 +35,12 @@ package com.ankamagames.dofus.network.messages.connection
          return 42;
       }
       
-      public function initSelectedServerDataMessage(param1:int=0, param2:String="", param3:uint=0, param4:Boolean=false, param5:String="") : SelectedServerDataMessage {
-         this.serverId = param1;
-         this.address = param2;
-         this.port = param3;
-         this.canCreateNewCharacter = param4;
-         this.ticket = param5;
+      public function initSelectedServerDataMessage(serverId:int=0, address:String="", port:uint=0, canCreateNewCharacter:Boolean=false, ticket:String="") : SelectedServerDataMessage {
+         this.serverId = serverId;
+         this.address = address;
+         this.port = port;
+         this.canCreateNewCharacter = canCreateNewCharacter;
+         this.ticket = ticket;
          this._isInitialized = true;
          return this;
       }
@@ -54,52 +54,52 @@ package com.ankamagames.dofus.network.messages.connection
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_SelectedServerDataMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SelectedServerDataMessage(output);
       }
       
-      public function serializeAs_SelectedServerDataMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.serverId);
-         param1.writeUTF(this.address);
-         if(this.port < 0 || this.port > 65535)
+      public function serializeAs_SelectedServerDataMessage(output:IDataOutput) : void {
+         output.writeShort(this.serverId);
+         output.writeUTF(this.address);
+         if((this.port < 0) || (this.port > 65535))
          {
             throw new Error("Forbidden value (" + this.port + ") on element port.");
          }
          else
          {
-            param1.writeShort(this.port);
-            param1.writeBoolean(this.canCreateNewCharacter);
-            param1.writeUTF(this.ticket);
+            output.writeShort(this.port);
+            output.writeBoolean(this.canCreateNewCharacter);
+            output.writeUTF(this.ticket);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_SelectedServerDataMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SelectedServerDataMessage(input);
       }
       
-      public function deserializeAs_SelectedServerDataMessage(param1:IDataInput) : void {
-         this.serverId = param1.readShort();
-         this.address = param1.readUTF();
-         this.port = param1.readUnsignedShort();
-         if(this.port < 0 || this.port > 65535)
+      public function deserializeAs_SelectedServerDataMessage(input:IDataInput) : void {
+         this.serverId = input.readShort();
+         this.address = input.readUTF();
+         this.port = input.readUnsignedShort();
+         if((this.port < 0) || (this.port > 65535))
          {
             throw new Error("Forbidden value (" + this.port + ") on element of SelectedServerDataMessage.port.");
          }
          else
          {
-            this.canCreateNewCharacter = param1.readBoolean();
-            this.ticket = param1.readUTF();
+            this.canCreateNewCharacter = input.readBoolean();
+            this.ticket = input.readUTF();
             return;
          }
       }

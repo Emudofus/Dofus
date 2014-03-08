@@ -13,8 +13,8 @@ package com.ankamagames.dofus.datacenter.quest
       
       public static const MODULE:String = "QuestStepRewards";
       
-      public static function getQuestStepRewardsById(param1:int) : QuestStepRewards {
-         return GameData.getObject(MODULE,param1) as QuestStepRewards;
+      public static function getQuestStepRewardsById(id:int) : QuestStepRewards {
+         return GameData.getObject(MODULE,id) as QuestStepRewards;
       }
       
       public static function getQuestStepRewards() : Array {

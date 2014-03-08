@@ -5,7 +5,7 @@ package com.ankamagames.tiphon.engine
    import flash.events.TimerEvent;
    import com.ankamagames.tiphon.types.ScriptedAnimation;
    import flash.events.Event;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.getTimer;
    import flash.display.MovieClip;
    import com.ankamagames.jerakine.utils.display.FpsControler;
@@ -29,97 +29,97 @@ package com.ankamagames.tiphon.engine
          _tiphonGarbageCollectorTimer.addEventListener(TimerEvent.TIMER,onTiphonGarbageCollector);
       }
       
-      public static function addOldScriptedAnimation(param1:ScriptedAnimation, param2:Boolean=false) : void {
+      public static function addOldScriptedAnimation(scriptedAnimation:ScriptedAnimation, destroyNow:Boolean=false) : void {
       }
       
-      private static function onTiphonGarbageCollector(param1:Event) : void {
-         var _loc4_:Object = null;
-         var _loc5_:* = 0;
-         var _loc6_:* = 0;
-         var _loc7_:ScriptedAnimation = null;
-         var _loc2_:Vector.<ScriptedAnimation> = new Vector.<ScriptedAnimation>();
-         var _loc3_:int = getTimer();
-         for (_loc4_ in _oldScriptedAnimation)
+      private static function onTiphonGarbageCollector(e:Event) : void {
+         var object:Object = null;
+         var i:* = 0;
+         var num:* = 0;
+         var scriptedAnimation:ScriptedAnimation = null;
+         var destroyedScriptedAnimation:Vector.<ScriptedAnimation> = new Vector.<ScriptedAnimation>();
+         var time:int = getTimer();
+         for (object in _oldScriptedAnimation)
          {
-            _loc7_ = _loc4_ as ScriptedAnimation;
-            if(_loc3_ - _oldScriptedAnimation[_loc7_] > 300000)
+            scriptedAnimation = object as ScriptedAnimation;
+            if(time - _oldScriptedAnimation[scriptedAnimation] > 300000)
             {
-               _loc2_.push(_loc7_);
-               destroyScriptedAnimation(_loc7_);
+               destroyedScriptedAnimation.push(scriptedAnimation);
+               destroyScriptedAnimation(scriptedAnimation);
             }
          }
-         _loc5_ = -1;
-         _loc6_ = _loc2_.length;
-         while(++_loc5_ < _loc6_)
+         i = -1;
+         num = destroyedScriptedAnimation.length;
+         while(++i < num)
          {
-            delete _oldScriptedAnimation[[_loc2_[_loc5_]]];
+            delete _oldScriptedAnimation[[destroyedScriptedAnimation[i]]];
          }
       }
       
-      private static function destroyScriptedAnimation(param1:ScriptedAnimation) : void {
-         if((param1) && !param1.parent)
+      private static function destroyScriptedAnimation(scriptedAnimation:ScriptedAnimation) : void {
+         if((scriptedAnimation) && (!scriptedAnimation.parent))
          {
-            param1.destroyed = true;
-            if(param1.parent)
+            scriptedAnimation.destroyed = true;
+            if(scriptedAnimation.parent)
             {
-               param1.parent.removeChild(param1);
+               scriptedAnimation.parent.removeChild(scriptedAnimation);
             }
-            param1.spriteHandler = null;
-            eraseMovieClip(param1);
+            scriptedAnimation.spriteHandler = null;
+            eraseMovieClip(scriptedAnimation);
          }
       }
       
-      private static function eraseMovieClip(param1:MovieClip) : void {
-         var _loc2_:int = param1.totalFrames + 1;
-         var _loc3_:* = 1;
-         while(_loc3_ < _loc2_)
+      private static function eraseMovieClip(clip:MovieClip) : void {
+         var frames:int = clip.totalFrames + 1;
+         var i:int = 1;
+         while(i < frames)
          {
-            param1.gotoAndStop(_loc3_);
-            eraseFrame(param1);
-            _loc3_++;
+            clip.gotoAndStop(i);
+            eraseFrame(clip);
+            i++;
          }
-         param1.stop();
-         if(param1.isControled)
+         clip.stop();
+         if(clip.isControled)
          {
-            FpsControler.uncontrolFps(param1);
+            FpsControler.uncontrolFps(clip);
          }
       }
       
-      private static function eraseFrame(param1:DisplayObjectContainer) : void {
-         var _loc3_:DisplayObject = null;
-         var _loc4_:DisplayObject = null;
-         var _loc2_:* = 0;
-         while(param1.numChildren > _loc2_)
+      private static function eraseFrame(clip:DisplayObjectContainer) : void {
+         var lastChild:DisplayObject = null;
+         var child:DisplayObject = null;
+         var index:int = 0;
+         while(clip.numChildren > index)
          {
-            _loc4_ = param1.removeChildAt(_loc2_);
-            if(_loc4_ == _loc3_)
+            child = clip.removeChildAt(index);
+            if(child == lastChild)
             {
-               _loc2_++;
+               index++;
             }
-            _loc3_ = _loc4_;
-            if(!(_loc4_ is DynamicSprite))
+            lastChild = child;
+            if(!(child is DynamicSprite))
             {
-               if(_loc4_ is ScriptedAnimation)
+               if(child is ScriptedAnimation)
                {
-                  destroyScriptedAnimation(param1 as ScriptedAnimation);
+                  destroyScriptedAnimation(clip as ScriptedAnimation);
                }
                else
                {
-                  if(_loc4_ is MovieClip)
+                  if(child is MovieClip)
                   {
-                     eraseMovieClip(_loc4_ as MovieClip);
+                     eraseMovieClip(child as MovieClip);
                   }
                   else
                   {
-                     if(_loc4_ is DisplayObjectContainer)
+                     if(child is DisplayObjectContainer)
                      {
-                        eraseFrame(_loc4_ as DisplayObjectContainer);
+                        eraseFrame(child as DisplayObjectContainer);
                      }
                      else
                      {
-                        if(_loc4_ is Shape)
+                        if(child is Shape)
                         {
-                           (_loc4_ as Shape).graphics.clear();
+                           (child as Shape).graphics.clear();
                         }
                      }
                   }

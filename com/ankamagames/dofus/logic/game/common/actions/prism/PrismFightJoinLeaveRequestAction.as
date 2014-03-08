@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.common.actions.prism
          super();
       }
       
-      public static function create(param1:uint, param2:Boolean) : PrismFightJoinLeaveRequestAction {
-         var _loc3_:PrismFightJoinLeaveRequestAction = new PrismFightJoinLeaveRequestAction();
-         _loc3_.subAreaId = param1;
-         _loc3_.join = param2;
-         return _loc3_;
+      public static function create(subAreaId:uint, join:Boolean) : PrismFightJoinLeaveRequestAction {
+         var action:PrismFightJoinLeaveRequestAction = new PrismFightJoinLeaveRequestAction();
+         action.subAreaId = subAreaId;
+         action.join = join;
+         return action;
       }
       
       public var subAreaId:uint;

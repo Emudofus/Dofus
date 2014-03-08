@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.achievement
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.achievement.AchievementRewardable;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,9 +33,9 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6205;
       }
       
-      public function initAchievementListMessage(param1:Vector.<uint>=null, param2:Vector.<AchievementRewardable>=null) : AchievementListMessage {
-         this.finishedAchievementsIds = param1;
-         this.rewardableAchievements = param2;
+      public function initAchievementListMessage(finishedAchievementsIds:Vector.<uint>=null, rewardableAchievements:Vector.<AchievementRewardable>=null) : AchievementListMessage {
+         this.finishedAchievementsIds = finishedAchievementsIds;
+         this.rewardableAchievements = rewardableAchievements;
          this._isInitialized = true;
          return this;
       }
@@ -46,76 +46,76 @@ package com.ankamagames.dofus.network.messages.game.achievement
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AchievementListMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AchievementListMessage(output);
       }
       
-      public function serializeAs_AchievementListMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.finishedAchievementsIds.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.finishedAchievementsIds.length)
+      public function serializeAs_AchievementListMessage(output:IDataOutput) : void {
+         output.writeShort(this.finishedAchievementsIds.length);
+         var _i1:uint = 0;
+         while(_i1 < this.finishedAchievementsIds.length)
          {
-            if(this.finishedAchievementsIds[_loc2_] < 0)
+            if(this.finishedAchievementsIds[_i1] < 0)
             {
-               throw new Error("Forbidden value (" + this.finishedAchievementsIds[_loc2_] + ") on element 1 (starting at 1) of finishedAchievementsIds.");
+               throw new Error("Forbidden value (" + this.finishedAchievementsIds[_i1] + ") on element 1 (starting at 1) of finishedAchievementsIds.");
             }
             else
             {
-               param1.writeShort(this.finishedAchievementsIds[_loc2_]);
-               _loc2_++;
+               output.writeShort(this.finishedAchievementsIds[_i1]);
+               _i1++;
                continue;
             }
          }
-         param1.writeShort(this.rewardableAchievements.length);
-         var _loc3_:uint = 0;
-         while(_loc3_ < this.rewardableAchievements.length)
+         output.writeShort(this.rewardableAchievements.length);
+         var _i2:uint = 0;
+         while(_i2 < this.rewardableAchievements.length)
          {
-            (this.rewardableAchievements[_loc3_] as AchievementRewardable).serializeAs_AchievementRewardable(param1);
-            _loc3_++;
+            (this.rewardableAchievements[_i2] as AchievementRewardable).serializeAs_AchievementRewardable(output);
+            _i2++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AchievementListMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AchievementListMessage(input);
       }
       
-      public function deserializeAs_AchievementListMessage(param1:IDataInput) : void {
-         var _loc6_:uint = 0;
-         var _loc7_:AchievementRewardable = null;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_AchievementListMessage(input:IDataInput) : void {
+         var _val1:uint = 0;
+         var _item2:AchievementRewardable = null;
+         var _finishedAchievementsIdsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _finishedAchievementsIdsLen)
          {
-            _loc6_ = param1.readShort();
-            if(_loc6_ < 0)
+            _val1 = input.readShort();
+            if(_val1 < 0)
             {
-               throw new Error("Forbidden value (" + _loc6_ + ") on elements of finishedAchievementsIds.");
+               throw new Error("Forbidden value (" + _val1 + ") on elements of finishedAchievementsIds.");
             }
             else
             {
-               this.finishedAchievementsIds.push(_loc6_);
-               _loc3_++;
+               this.finishedAchievementsIds.push(_val1);
+               _i1++;
                continue;
             }
          }
-         var _loc4_:uint = param1.readUnsignedShort();
-         var _loc5_:uint = 0;
-         while(_loc5_ < _loc4_)
+         var _rewardableAchievementsLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2 < _rewardableAchievementsLen)
          {
-            _loc7_ = new AchievementRewardable();
-            _loc7_.deserialize(param1);
-            this.rewardableAchievements.push(_loc7_);
-            _loc5_++;
+            _item2 = new AchievementRewardable();
+            _item2.deserialize(input);
+            this.rewardableAchievements.push(_item2);
+            _i2++;
          }
       }
    }

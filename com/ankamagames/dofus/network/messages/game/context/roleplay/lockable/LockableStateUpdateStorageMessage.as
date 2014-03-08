@@ -28,10 +28,10 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.lockable
          return 5669;
       }
       
-      public function initLockableStateUpdateStorageMessage(param1:Boolean=false, param2:int=0, param3:uint=0) : LockableStateUpdateStorageMessage {
-         super.initLockableStateUpdateAbstractMessage(param1);
-         this.mapId = param2;
-         this.elementId = param3;
+      public function initLockableStateUpdateStorageMessage(locked:Boolean=false, mapId:int=0, elementId:uint=0) : LockableStateUpdateStorageMessage {
+         super.initLockableStateUpdateAbstractMessage(locked);
+         this.mapId = mapId;
+         this.elementId = elementId;
          this._isInitialized = true;
          return this;
       }
@@ -43,42 +43,42 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.lockable
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_LockableStateUpdateStorageMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_LockableStateUpdateStorageMessage(output);
       }
       
-      public function serializeAs_LockableStateUpdateStorageMessage(param1:IDataOutput) : void {
-         super.serializeAs_LockableStateUpdateAbstractMessage(param1);
-         param1.writeInt(this.mapId);
+      public function serializeAs_LockableStateUpdateStorageMessage(output:IDataOutput) : void {
+         super.serializeAs_LockableStateUpdateAbstractMessage(output);
+         output.writeInt(this.mapId);
          if(this.elementId < 0)
          {
             throw new Error("Forbidden value (" + this.elementId + ") on element elementId.");
          }
          else
          {
-            param1.writeInt(this.elementId);
+            output.writeInt(this.elementId);
             return;
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_LockableStateUpdateStorageMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_LockableStateUpdateStorageMessage(input);
       }
       
-      public function deserializeAs_LockableStateUpdateStorageMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.mapId = param1.readInt();
-         this.elementId = param1.readInt();
+      public function deserializeAs_LockableStateUpdateStorageMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.mapId = input.readInt();
+         this.elementId = input.readInt();
          if(this.elementId < 0)
          {
             throw new Error("Forbidden value (" + this.elementId + ") on element of LockableStateUpdateStorageMessage.elementId.");

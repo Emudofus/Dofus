@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.character.stats
          return 5684;
       }
       
-      public function initLifePointsRegenBeginMessage(param1:uint=0) : LifePointsRegenBeginMessage {
-         this.regenRate = param1;
+      public function initLifePointsRegenBeginMessage(regenRate:uint=0) : LifePointsRegenBeginMessage {
+         this.regenRate = regenRate;
          this._isInitialized = true;
          return this;
       }
@@ -38,39 +38,39 @@ package com.ankamagames.dofus.network.messages.game.character.stats
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_LifePointsRegenBeginMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_LifePointsRegenBeginMessage(output);
       }
       
-      public function serializeAs_LifePointsRegenBeginMessage(param1:IDataOutput) : void {
-         if(this.regenRate < 0 || this.regenRate > 255)
+      public function serializeAs_LifePointsRegenBeginMessage(output:IDataOutput) : void {
+         if((this.regenRate < 0) || (this.regenRate > 255))
          {
             throw new Error("Forbidden value (" + this.regenRate + ") on element regenRate.");
          }
          else
          {
-            param1.writeByte(this.regenRate);
+            output.writeByte(this.regenRate);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_LifePointsRegenBeginMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_LifePointsRegenBeginMessage(input);
       }
       
-      public function deserializeAs_LifePointsRegenBeginMessage(param1:IDataInput) : void {
-         this.regenRate = param1.readUnsignedByte();
-         if(this.regenRate < 0 || this.regenRate > 255)
+      public function deserializeAs_LifePointsRegenBeginMessage(input:IDataInput) : void {
+         this.regenRate = input.readUnsignedByte();
+         if((this.regenRate < 0) || (this.regenRate > 255))
          {
             throw new Error("Forbidden value (" + this.regenRate + ") on element of LifePointsRegenBeginMessage.regenRate.");
          }

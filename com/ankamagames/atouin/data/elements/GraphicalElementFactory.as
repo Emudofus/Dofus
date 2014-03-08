@@ -15,24 +15,21 @@ package com.ankamagames.atouin.data.elements
          super();
       }
       
-      public static function getGraphicalElementData(param1:int, param2:int) : GraphicalElementData {
-         switch(param2)
+      public static function getGraphicalElementData(elementId:int, elementType:int) : GraphicalElementData {
+         switch(elementType)
          {
             case GraphicalElementTypes.NORMAL:
-               return new NormalGraphicalElementData(param1,param2);
+               return new NormalGraphicalElementData(elementId,elementType);
             case GraphicalElementTypes.BOUNDING_BOX:
-               return new BoundingBoxGraphicalElementData(param1,param2);
+               return new BoundingBoxGraphicalElementData(elementId,elementType);
             case GraphicalElementTypes.ANIMATED:
-               return new AnimatedGraphicalElementData(param1,param2);
+               return new AnimatedGraphicalElementData(elementId,elementType);
             case GraphicalElementTypes.ENTITY:
-               return new EntityGraphicalElementData(param1,param2);
+               return new EntityGraphicalElementData(elementId,elementType);
             case GraphicalElementTypes.PARTICLES:
-               return new ParticlesGraphicalElementData(param1,param2);
+               return new ParticlesGraphicalElementData(elementId,elementType);
             case GraphicalElementTypes.BLENDED:
-               return new BlendedGraphicalElementData(param1,param2);
-            default:
-               ErrorManager.addError("Unknown graphical element data type " + param2 + " for element " + param1 + "!",false);
-               return null;
+               return new BlendedGraphicalElementData(elementId,elementType);
          }
       }
    }

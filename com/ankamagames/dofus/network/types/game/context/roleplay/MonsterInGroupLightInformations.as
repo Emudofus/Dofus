@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 395;
       }
       
-      public function initMonsterInGroupLightInformations(param1:int=0, param2:uint=0) : MonsterInGroupLightInformations {
-         this.creatureGenericId = param1;
-         this.grade = param2;
+      public function initMonsterInGroupLightInformations(creatureGenericId:int=0, grade:uint=0) : MonsterInGroupLightInformations {
+         this.creatureGenericId = creatureGenericId;
+         this.grade = grade;
          return this;
       }
       
@@ -32,30 +32,30 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.grade = 0;
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MonsterInGroupLightInformations(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MonsterInGroupLightInformations(output);
       }
       
-      public function serializeAs_MonsterInGroupLightInformations(param1:IDataOutput) : void {
-         param1.writeInt(this.creatureGenericId);
+      public function serializeAs_MonsterInGroupLightInformations(output:IDataOutput) : void {
+         output.writeInt(this.creatureGenericId);
          if(this.grade < 0)
          {
             throw new Error("Forbidden value (" + this.grade + ") on element grade.");
          }
          else
          {
-            param1.writeByte(this.grade);
+            output.writeByte(this.grade);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MonsterInGroupLightInformations(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MonsterInGroupLightInformations(input);
       }
       
-      public function deserializeAs_MonsterInGroupLightInformations(param1:IDataInput) : void {
-         this.creatureGenericId = param1.readInt();
-         this.grade = param1.readByte();
+      public function deserializeAs_MonsterInGroupLightInformations(input:IDataInput) : void {
+         this.creatureGenericId = input.readInt();
+         this.grade = input.readByte();
          if(this.grade < 0)
          {
             throw new Error("Forbidden value (" + this.grade + ") on element of MonsterInGroupLightInformations.grade.");

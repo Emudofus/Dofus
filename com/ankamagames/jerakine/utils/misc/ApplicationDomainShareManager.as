@@ -11,8 +11,8 @@ package com.ankamagames.jerakine.utils.misc
       
       private static var _applicationDomain:ApplicationDomain;
       
-      public static function set currentApplicationDomain(param1:ApplicationDomain) : void {
-         _applicationDomain = param1;
+      public static function set currentApplicationDomain(a:ApplicationDomain) : void {
+         _applicationDomain = a;
       }
       
       public static function get currentApplicationDomain() : ApplicationDomain {

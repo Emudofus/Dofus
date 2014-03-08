@@ -21,9 +21,9 @@ package com.ankamagames.dofus.network.types.game.friend
          return 380;
       }
       
-      public function initAbstractContactInformations(param1:uint=0, param2:String="") : AbstractContactInformations {
-         this.accountId = param1;
-         this.accountName = param2;
+      public function initAbstractContactInformations(accountId:uint=0, accountName:String="") : AbstractContactInformations {
+         this.accountId = accountId;
+         this.accountName = accountName;
          return this;
       }
       
@@ -32,36 +32,36 @@ package com.ankamagames.dofus.network.types.game.friend
          this.accountName = "";
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AbstractContactInformations(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AbstractContactInformations(output);
       }
       
-      public function serializeAs_AbstractContactInformations(param1:IDataOutput) : void {
+      public function serializeAs_AbstractContactInformations(output:IDataOutput) : void {
          if(this.accountId < 0)
          {
             throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
          }
          else
          {
-            param1.writeInt(this.accountId);
-            param1.writeUTF(this.accountName);
+            output.writeInt(this.accountId);
+            output.writeUTF(this.accountName);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AbstractContactInformations(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AbstractContactInformations(input);
       }
       
-      public function deserializeAs_AbstractContactInformations(param1:IDataInput) : void {
-         this.accountId = param1.readInt();
+      public function deserializeAs_AbstractContactInformations(input:IDataInput) : void {
+         this.accountId = input.readInt();
          if(this.accountId < 0)
          {
             throw new Error("Forbidden value (" + this.accountId + ") on element of AbstractContactInformations.accountId.");
          }
          else
          {
-            this.accountName = param1.readUTF();
+            this.accountName = input.readUTF();
             return;
          }
       }

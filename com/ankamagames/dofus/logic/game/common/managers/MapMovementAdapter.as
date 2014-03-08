@@ -1,9 +1,9 @@
 package com.ankamagames.dofus.logic.game.common.managers
 {
    import com.ankamagames.jerakine.logger.Logger;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.types.positions.MovementPath;
    import com.ankamagames.jerakine.types.positions.PathElement;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.positions.MapPoint;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
@@ -19,7 +19,7 @@ package com.ankamagames.dofus.logic.game.common.managers
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MapMovementAdapter));
       
-      public static function getServerMovement(param1:MovementPath) : Vector.<uint> {
+      public static function getServerMovement(path:MovementPath) : Vector.<uint> {
          /*
           * Decompilation error
           * Code may be obfuscated
@@ -28,7 +28,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          throw new IllegalOperationError("Not decompiled due to error");
       }
       
-      public static function getClientMovement(param1:Vector.<uint>) : MovementPath {
+      public static function getClientMovement(path:Vector.<uint>) : MovementPath {
          /*
           * Decompilation error
           * Code may be obfuscated

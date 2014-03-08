@@ -23,9 +23,9 @@ package com.ankamagames.dofus.network.types.game.social
          return 422;
       }
       
-      public function initAlliancedGuildFactSheetInformations(param1:uint=0, param2:String="", param3:GuildEmblem=null, param4:BasicNamedAllianceInformations=null) : AlliancedGuildFactSheetInformations {
-         super.initGuildInformations(param1,param2,param3);
-         this.allianceInfos = param4;
+      public function initAlliancedGuildFactSheetInformations(guildId:uint=0, guildName:String="", guildEmblem:GuildEmblem=null, allianceInfos:BasicNamedAllianceInformations=null) : AlliancedGuildFactSheetInformations {
+         super.initGuildInformations(guildId,guildName,guildEmblem);
+         this.allianceInfos = allianceInfos;
          return this;
       }
       
@@ -34,23 +34,23 @@ package com.ankamagames.dofus.network.types.game.social
          this.allianceInfos = new BasicNamedAllianceInformations();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AlliancedGuildFactSheetInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AlliancedGuildFactSheetInformations(output);
       }
       
-      public function serializeAs_AlliancedGuildFactSheetInformations(param1:IDataOutput) : void {
-         super.serializeAs_GuildInformations(param1);
-         this.allianceInfos.serializeAs_BasicNamedAllianceInformations(param1);
+      public function serializeAs_AlliancedGuildFactSheetInformations(output:IDataOutput) : void {
+         super.serializeAs_GuildInformations(output);
+         this.allianceInfos.serializeAs_BasicNamedAllianceInformations(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AlliancedGuildFactSheetInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AlliancedGuildFactSheetInformations(input);
       }
       
-      public function deserializeAs_AlliancedGuildFactSheetInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_AlliancedGuildFactSheetInformations(input:IDataInput) : void {
+         super.deserialize(input);
          this.allianceInfos = new BasicNamedAllianceInformations();
-         this.allianceInfos.deserialize(param1);
+         this.allianceInfos.deserialize(input);
       }
    }
 }

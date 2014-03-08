@@ -12,13 +12,13 @@ package com.ankamagames.berilia.types.template
    public class XmlTemplate extends Object
    {
       
-      public function XmlTemplate(param1:String=null, param2:String=null) {
+      public function XmlTemplate(sXml:String=null, sFilename:String=null) {
          this._aVariablesStack = new Array();
          super();
-         this._filename = param2;
-         if(param1 != null)
+         this._filename = sFilename;
+         if(sXml != null)
          {
-            this.xml = param1;
+            this.xml = sXml;
          }
       }
       
@@ -38,8 +38,8 @@ package com.ankamagames.berilia.types.template
          return this._sXml;
       }
       
-      public function set xml(param1:String) : void {
-         this._sXml = param1;
+      public function set xml(sXml:String) : void {
+         this._sXml = sXml;
          this.parseTemplate();
       }
       
@@ -47,8 +47,8 @@ package com.ankamagames.berilia.types.template
          return this._filename;
       }
       
-      public function set filename(param1:String) : void {
-         this._filename = param1;
+      public function set filename(s:String) : void {
+         this._filename = s;
       }
       
       public function get templateParams() : Array {
@@ -59,44 +59,44 @@ package com.ankamagames.berilia.types.template
          return this._aVariablesStack;
       }
       
-      public function makeTemplate(param1:Array) : XMLNode {
-         var _loc4_:String = null;
-         var _loc6_:Array = null;
-         var _loc7_:TemplateVar = null;
-         var _loc8_:uint = 0;
-         var _loc2_:Evaluator = new Evaluator();
-         var _loc3_:String = this._xDoc.toString();
-         var _loc5_:Array = [];
-         for (_loc4_ in this._aTemplateParams)
+      public function makeTemplate(aVar:Array) : XMLNode {
+         var key:String = null;
+         var aVariables:Array = null;
+         var variable:TemplateVar = null;
+         var step:uint = 0;
+         var evaluator:Evaluator = new Evaluator();
+         var newXml:String = this._xDoc.toString();
+         var localVar:Array = [];
+         for (key in this._aTemplateParams)
          {
-            _loc5_[_loc4_] = this._aTemplateParams[_loc4_];
+            localVar[key] = this._aTemplateParams[key];
          }
-         for (_loc4_ in param1)
+         for (key in aVar)
          {
-            if(!this._aTemplateParams[_loc4_])
+            if(!this._aTemplateParams[key])
             {
-               _log.error("Template " + this._filename + ", param " + _loc4_ + " is not defined");
-               delete param1[[_loc4_]];
+               _log.error("Template " + this._filename + ", param " + key + " is not defined");
+               delete aVar[[key]];
             }
             else
             {
-               _loc5_[_loc4_] = param1[_loc4_];
+               localVar[key] = aVar[key];
             }
          }
-         _loc3_ = this.replaceParam(_loc3_,_loc5_,"#");
-         _loc6_ = new Array();
-         _loc8_ = 0;
-         while(_loc8_ < this._aVariablesStack.length)
+         newXml = this.replaceParam(newXml,localVar,"#");
+         aVariables = new Array();
+         step = 0;
+         while(step < this._aVariablesStack.length)
          {
-            _loc7_ = this._aVariablesStack[_loc8_].clone();
-            _loc7_.value = _loc2_.eval(this.replaceParam(this.replaceParam(_loc7_.value,_loc5_,"#"),_loc6_,"$"));
-            _loc6_[_loc7_.name] = _loc7_;
-            _loc8_++;
+            variable = this._aVariablesStack[step].clone();
+            variable.value = evaluator.eval(this.replaceParam(this.replaceParam(variable.value,localVar,"#"),aVariables,"$"));
+            aVariables[variable.name] = variable;
+            step++;
          }
-         _loc3_ = this.replaceParam(_loc3_,_loc6_,"$");
-         var _loc9_:XMLDocument = new XMLDocument();
-         _loc9_.parseXML(_loc3_);
-         return _loc9_;
+         newXml = this.replaceParam(newXml,aVariables,"$");
+         var newDoc:XMLDocument = new XMLDocument();
+         newDoc.parseXML(newXml);
+         return newDoc;
       }
       
       private function parseTemplate() : void {
@@ -112,89 +112,89 @@ package com.ankamagames.berilia.types.template
          this.matchDynamicsParts(this._xDoc.firstChild);
       }
       
-      private function matchDynamicsParts(param1:XMLNode) : void {
-         var _loc2_:XMLNode = null;
-         var _loc3_:TemplateVar = null;
-         var _loc4_:TemplateParam = null;
-         var _loc5_:uint = 0;
-         for(;_loc5_ < param1.childNodes.length;_loc5_++)
+      private function matchDynamicsParts(node:XMLNode) : void {
+         var currNode:XMLNode = null;
+         var variable:TemplateVar = null;
+         var param:TemplateParam = null;
+         var i:uint = 0;
+         for(;i < node.childNodes.length;i++)
          {
-            _loc2_ = param1.childNodes[_loc5_];
-            if(_loc2_.nodeName == XmlTagsEnum.TAG_VAR)
+            currNode = node.childNodes[i];
+            if(currNode.nodeName == XmlTagsEnum.TAG_VAR)
             {
-               if(_loc2_.attributes[XmlAttributesEnum.ATTRIBUTE_NAME])
+               if(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME])
                {
-                  _loc3_ = new TemplateVar(_loc2_.attributes[XmlAttributesEnum.ATTRIBUTE_NAME]);
-                  _loc3_.value = _loc2_.firstChild.toString().replace(new RegExp("&apos;","g"),"\'");
-                  this._aVariablesStack.push(_loc3_);
-                  _loc2_.removeNode();
-                  _loc5_--;
+                  variable = new TemplateVar(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME]);
+                  variable.value = currNode.firstChild.toString().replace(new RegExp("&apos;","g"),"\'");
+                  this._aVariablesStack.push(variable);
+                  currNode.removeNode();
+                  i--;
                   continue;
                }
-               _log.warn(_loc2_.nodeName + " must have [" + XmlAttributesEnum.ATTRIBUTE_NAME + "] attribute");
+               _log.warn(currNode.nodeName + " must have [" + XmlAttributesEnum.ATTRIBUTE_NAME + "] attribute");
             }
-            if(_loc2_.nodeName == XmlTagsEnum.TAG_PARAM)
+            if(currNode.nodeName == XmlTagsEnum.TAG_PARAM)
             {
-               if(_loc2_.attributes[XmlAttributesEnum.ATTRIBUTE_NAME])
+               if(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME])
                {
-                  _loc4_ = new TemplateParam(_loc2_.attributes[XmlAttributesEnum.ATTRIBUTE_NAME]);
-                  this._aTemplateParams[_loc4_.name] = _loc4_;
-                  if(_loc2_.hasChildNodes())
+                  param = new TemplateParam(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME]);
+                  this._aTemplateParams[param.name] = param;
+                  if(currNode.hasChildNodes())
                   {
-                     _loc4_.defaultValue = _loc2_.firstChild.toString();
+                     param.defaultValue = currNode.firstChild.toString();
                   }
                   else
                   {
-                     _loc4_.defaultValue = "";
+                     param.defaultValue = "";
                   }
-                  _loc2_.removeNode();
-                  _loc5_--;
+                  currNode.removeNode();
+                  i--;
                }
                else
                {
-                  _log.warn(_loc2_.nodeName + " must have [" + XmlAttributesEnum.ATTRIBUTE_NAME + "] attribute");
+                  _log.warn(currNode.nodeName + " must have [" + XmlAttributesEnum.ATTRIBUTE_NAME + "] attribute");
                }
             }
          }
       }
       
-      private function replaceParam(param1:String, param2:Array, param3:String, param4:uint=1) : String {
-         var _loc5_:String = null;
-         var _loc7_:String = null;
-         var _loc8_:uint = 0;
-         if(!param1)
+      private function replaceParam(txt:String, aVars:Array, prefix:String, recur:uint=1) : String {
+         var value:String = null;
+         var key:String = null;
+         var i:uint = 0;
+         if(!txt)
          {
-            return param1;
+            return txt;
          }
-         var _loc6_:Array = new Array();
-         for (_loc7_ in param2)
+         var sortedParam:Array = new Array();
+         for (key in aVars)
          {
-            _loc6_.push(_loc7_);
+            sortedParam.push(key);
          }
-         _loc6_.sort(Array.DESCENDING);
-         _loc8_ = 0;
-         while(_loc8_ < _loc6_.length)
+         sortedParam.sort(Array.DESCENDING);
+         i = 0;
+         while(i < sortedParam.length)
          {
-            _loc7_ = _loc6_[_loc8_];
-            if(param2[_loc7_] != null)
+            key = sortedParam[i];
+            if(aVars[key] != null)
             {
-               _loc5_ = param2[_loc7_].value;
-               if(!_loc5_ && param2[_loc7_] is TemplateParam)
+               value = aVars[key].value;
+               if((!value) && (aVars[key] is TemplateParam))
                {
-                  _loc5_ = param2[_loc7_].defaultValue;
+                  value = aVars[key].defaultValue;
                }
-               if(_loc5_ == null)
+               if(value == null)
                {
-                  _log.warn("No value for " + param3 + _loc7_);
+                  _log.warn("No value for " + prefix + key);
                }
                else
                {
-                  param1 = param1.split(param3 + _loc7_).join(_loc5_);
+                  txt = txt.split(prefix + key).join(value);
                }
             }
-            _loc8_++;
+            i++;
          }
-         return param1;
+         return txt;
       }
    }
 }

@@ -7,7 +7,6 @@ package com.ankamagames.dofus.logic.game.approach.frames
    import flash.events.Event;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.connection.BasicCharacterWrapper;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.logic.common.frames.LoadingModuleFrame;
@@ -81,6 +80,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
    import flash.utils.setTimeout;
    import com.ankamagames.dofus.logic.common.managers.PlayerManager;
    import com.ankamagames.jerakine.data.I18n;
+   import __AS3__.vec.*;
    import com.ankamagames.berilia.Berilia;
    import com.ankamagames.dofus.network.ProtocolConstantsEnum;
    import by.blooddy.crypto.MD5;
@@ -159,10 +159,12 @@ package com.ankamagames.dofus.logic.game.approach.frames
       
       private static var _changeLogLoader:Loader = new Loader();
       
-      private static function onChangeLogError(param1:IOErrorEvent) : void {
+      private static function onChangeLogError(e:IOErrorEvent) : void {
+         trace("fail");
       }
       
-      private static function onChangeLogLoaded(param1:Event) : void {
+      private static function onChangeLogLoaded(e:Event) : void {
+         trace("New change");
       }
       
       private var _charactersList:Vector.<BasicCharacterWrapper>;
@@ -199,12 +201,12 @@ package com.ankamagames.dofus.logic.game.approach.frames
          return this._requestedCharacterId;
       }
       
-      public function set requestedCharaId(param1:uint) : void {
-         this._requestedCharacterId = param1;
+      public function set requestedCharaId(id:uint) : void {
+         this._requestedCharacterId = id;
       }
       
-      public function isCharacterWaitingForChange(param1:uint) : Boolean {
-         if(this._charactersToRecolorList[param1])
+      public function isCharacterWaitingForChange(id:uint) : Boolean {
+         if(this._charactersToRecolorList[id])
          {
             return true;
          }
@@ -218,7 +220,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
          return true;
       }
       
-      public function process(param1:Message) : Boolean {
+      public function process(msg:Message) : Boolean {
          var perso:* = undefined;
          var color:* = undefined;
          var characterId:int = 0;
@@ -318,7 +320,6 @@ package com.ankamagames.dofus.logic.game.approach.frames
          var sao:StartupActionsObjetAttributionMessage = null;
          var safm:StartupActionFinishedMessage = null;
          var cmdIndex:uint = 0;
-         var msg:Message = param1;
          switch(true)
          {
             case msg is HelloGameMessage:
@@ -366,9 +367,9 @@ package com.ankamagames.dofus.logic.game.approach.frames
                      while(i < num)
                      {
                         uIndexedColor = ctrci.colors[i];
-                        uIndex = uIndexedColor >> 24-1;
+                        uIndex = (uIndexedColor >> 24) - 1;
                         uColor = uIndexedColor & 16777215;
-                        if(uIndex > -1 && uIndex < charColors.length)
+                        if((uIndex > -1) && (uIndex < charColors.length))
                         {
                            charColors[uIndex] = uColor;
                         }
@@ -419,7 +420,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                      bonusXp = 1;
                      for each (cbi2 in clmsg.characters)
                      {
-                        if(!(cbi2.id == cbi.id) && cbi2.level > cbi.level && bonusXp < 4)
+                        if((!(cbi2.id == cbi.id)) && (cbi2.level > cbi.level) && (bonusXp < 4))
                         {
                            bonusXp++;
                         }
@@ -459,7 +460,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                               }
                            }
                         }
-                        if((charToConnect) && (!(server.gameTypeId == 1) || charToConnect.deathState == 0) && !SecureModeManager.getInstance().active && !this.isCharacterWaitingForChange(charToConnect.id))
+                        if((charToConnect) && ((!(server.gameTypeId == 1)) || (charToConnect.deathState == 0)) && (!SecureModeManager.getInstance().active) && (!this.isCharacterWaitingForChange(charToConnect.id)))
                         {
                            openCharsList = false;
                            this._kernel.processCallback(HookList.CharactersListUpdated,this._charactersList);
@@ -870,6 +871,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                }
                catch(e:Error)
                {
+                  trace("Error on changelog loading.");
                }
                Kernel.getWorker().addFrame(new AlignmentFrame());
                Kernel.getWorker().addFrame(new SynchronisationFrame());
@@ -896,7 +898,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                Kernel.getWorker().removeFrame(Kernel.getWorker().getFrame(GameStartingFrame));
                Kernel.getWorker().resume();
                ConnectionsHandler.resume();
-               if((Kernel.beingInReconection) && !this._reconnectMsgSend)
+               if((Kernel.beingInReconection) && (!this._reconnectMsgSend))
                {
                   this._reconnectMsgSend = true;
                   ConnectionsHandler.getConnection().send(new CharacterSelectedForceReadyMessage());
@@ -988,7 +990,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                   charaListMinusDeadPeople = new Array();
                   for each (perso in this._charactersList)
                   {
-                     if(!perso.deathState || perso.deathState == 0)
+                     if((!perso.deathState) || (perso.deathState == 0))
                      {
                         charaListMinusDeadPeople.push(perso);
                      }
@@ -1017,7 +1019,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                return true;
             case msg is GiftAssignRequestAction:
                gar = msg as GiftAssignRequestAction;
-               if(gar.characterId == 0 && gar.giftId == this._giftList[0].uid)
+               if((gar.characterId == 0) && (gar.giftId == this._giftList[0].uid))
                {
                   if(!Berilia.getInstance().getUi("characterSelection"))
                   {
@@ -1047,8 +1049,6 @@ package com.ankamagames.dofus.logic.game.approach.frames
                   cmdIndex++;
                }
                return true;
-            default:
-               return false;
          }
       }
       
@@ -1061,10 +1061,10 @@ package com.ankamagames.dofus.logic.game.approach.frames
       }
       
       private function requestCharactersList() : void {
-         var _loc1_:CharactersListRequestMessage = new CharactersListRequestMessage();
+         var clrmsg:CharactersListRequestMessage = new CharactersListRequestMessage();
          if((ConnectionsHandler) && (ConnectionsHandler.getConnection()))
          {
-            ConnectionsHandler.getConnection().send(_loc1_);
+            ConnectionsHandler.getConnection().send(clrmsg);
          }
       }
    }

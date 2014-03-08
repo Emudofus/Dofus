@@ -6,14 +6,14 @@ package com.ankamagames.jerakine.entities.messages
    public class EntityMouseOutMessage extends EntityInteractionMessage implements CancelableMessage
    {
       
-      public function EntityMouseOutMessage(param1:IInteractive) {
-         super(param1);
+      public function EntityMouseOutMessage(entity:IInteractive) {
+         super(entity);
       }
       
       private var _cancel:Boolean;
       
-      public function set cancel(param1:Boolean) : void {
-         this._cancel = param1;
+      public function set cancel(b:Boolean) : void {
+         this._cancel = b;
       }
       
       public function get cancel() : Boolean {

@@ -8,10 +8,10 @@ package com.ankamagames.dofus.logic.game.common.steps
    public class CameraFollowStep extends AbstractSequencable
    {
       
-      public function CameraFollowStep(param1:Camera, param2:AnimatedCharacter) {
+      public function CameraFollowStep(pCamera:Camera, pEntity:AnimatedCharacter) {
          super();
-         this._camera = param1;
-         this._entity = param2;
+         this._camera = pCamera;
+         this._entity = pEntity;
       }
       
       private var _camera:Camera;
@@ -19,11 +19,11 @@ package com.ankamagames.dofus.logic.game.common.steps
       private var _entity:AnimatedCharacter;
       
       override public function start() : void {
-         var _loc1_:CameraZoomStep = null;
+         var step:CameraZoomStep = null;
          if(Atouin.getInstance().currentZoom != this._camera.currentZoom)
          {
-            _loc1_ = new CameraZoomStep(this._camera,[this._entity.position.x,this._entity.position.y],true);
-            _loc1_.start();
+            step = new CameraZoomStep(this._camera,[this._entity.position.x,this._entity.position.y],true);
+            step.start();
          }
          if(this._camera.currentZoom > 1)
          {

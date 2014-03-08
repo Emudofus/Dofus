@@ -8,9 +8,9 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
    public class ExtensionPanel extends Sprite
    {
       
-      public function ExtensionPanel(param1:Sprite) {
+      public function ExtensionPanel(pRoot:Sprite) {
          super();
-         this._parent = param1;
+         this._parent = pRoot;
          y = FpsManagerConst.BOX_HEIGHT;
          this._memoryState = new MemoryPanel();
          this._leakState = new LeakDetectionPanel();
@@ -57,27 +57,27 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
       public function update() : void {
          this._memoryState.updateData();
          this._leakState.updateData();
-         if(this._currentState == 1 || this._currentState == 2)
+         if((this._currentState == 1) || (this._currentState == 2))
          {
             this._memoryState.render();
          }
       }
       
-      private function addGraphToMemory(param1:FpsManagerEvent) : void {
-         var _loc2_:MonitoredObject = param1.data as MonitoredObject;
-         this._memoryState.addNewGraph(_loc2_);
+      private function addGraphToMemory(pEvt:FpsManagerEvent) : void {
+         var mo:MonitoredObject = pEvt.data as MonitoredObject;
+         this._memoryState.addNewGraph(mo);
       }
       
-      public function set lastGc(param1:int) : void {
-         this._memoryState.lastGc = param1;
+      public function set lastGc(val:int) : void {
+         this._memoryState.lastGc = val;
       }
       
-      public function watchObject(param1:Object, param2:uint, param3:Boolean=false) : void {
-         this._leakState.watchObject(param1,param2,param3);
+      public function watchObject(o:Object, pColor:uint, pIncrementParents:Boolean=false) : void {
+         this._leakState.watchObject(o,pColor,pIncrementParents);
       }
       
-      public function updateGc(param1:Number=0) : void {
-         this._memoryState.updateGc(param1);
+      public function updateGc(max_memory:Number=0) : void {
+         this._memoryState.updateGc(max_memory);
       }
    }
 }

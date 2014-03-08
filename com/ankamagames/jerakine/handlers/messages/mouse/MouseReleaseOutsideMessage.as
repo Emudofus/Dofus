@@ -10,12 +10,12 @@ package com.ankamagames.jerakine.handlers.messages.mouse
          super();
       }
       
-      public static function create(param1:InteractiveObject, param2:MouseEvent, param3:MouseMessage=null) : MouseReleaseOutsideMessage {
-         if(!param3)
+      public static function create(target:InteractiveObject, mouseEvent:MouseEvent, instance:MouseMessage=null) : MouseReleaseOutsideMessage {
+         if(!instance)
          {
-            param3 = new MouseReleaseOutsideMessage();
+            instance = new MouseReleaseOutsideMessage();
          }
-         return MouseMessage.create(param1,param2,param3) as MouseReleaseOutsideMessage;
+         return MouseMessage.create(target,mouseEvent,instance) as MouseReleaseOutsideMessage;
       }
    }
 }

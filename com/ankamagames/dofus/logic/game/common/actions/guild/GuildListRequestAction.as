@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.guild
       }
       
       public static function create() : GuildListRequestAction {
-         var _loc1_:GuildListRequestAction = new GuildListRequestAction();
-         return _loc1_;
+         var action:GuildListRequestAction = new GuildListRequestAction();
+         return action;
       }
    }
 }

@@ -10,10 +10,10 @@ package com.ankamagames.dofus.logic.game.common.actions.exchange
          super();
       }
       
-      public static function create(param1:Vector.<uint>) : ExchangeObjectTransfertListToInvAction {
-         var _loc2_:ExchangeObjectTransfertListToInvAction = new ExchangeObjectTransfertListToInvAction();
-         _loc2_.ids = param1;
-         return _loc2_;
+      public static function create(pIds:Vector.<uint>) : ExchangeObjectTransfertListToInvAction {
+         var a:ExchangeObjectTransfertListToInvAction = new ExchangeObjectTransfertListToInvAction();
+         a.ids = pIds;
+         return a;
       }
       
       public var ids:Vector.<uint>;

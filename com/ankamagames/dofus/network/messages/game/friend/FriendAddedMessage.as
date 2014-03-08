@@ -30,8 +30,8 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5599;
       }
       
-      public function initFriendAddedMessage(param1:FriendInformations=null) : FriendAddedMessage {
-         this.friendAdded = param1;
+      public function initFriendAddedMessage(friendAdded:FriendInformations=null) : FriendAddedMessage {
+         this.friendAdded = friendAdded;
          this._isInitialized = true;
          return this;
       }
@@ -41,33 +41,33 @@ package com.ankamagames.dofus.network.messages.game.friend
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_FriendAddedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FriendAddedMessage(output);
       }
       
-      public function serializeAs_FriendAddedMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.friendAdded.getTypeId());
-         this.friendAdded.serialize(param1);
+      public function serializeAs_FriendAddedMessage(output:IDataOutput) : void {
+         output.writeShort(this.friendAdded.getTypeId());
+         this.friendAdded.serialize(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_FriendAddedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FriendAddedMessage(input);
       }
       
-      public function deserializeAs_FriendAddedMessage(param1:IDataInput) : void {
-         var _loc2_:uint = param1.readUnsignedShort();
-         this.friendAdded = ProtocolTypeManager.getInstance(FriendInformations,_loc2_);
-         this.friendAdded.deserialize(param1);
+      public function deserializeAs_FriendAddedMessage(input:IDataInput) : void {
+         var _id1:uint = input.readUnsignedShort();
+         this.friendAdded = ProtocolTypeManager.getInstance(FriendInformations,_id1);
+         this.friendAdded.deserialize(input);
       }
    }
 }

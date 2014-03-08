@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          return 6224;
       }
       
-      public function initShortcutBarRemovedMessage(param1:uint=0, param2:uint=0) : ShortcutBarRemovedMessage {
-         this.barType = param1;
-         this.slot = param2;
+      public function initShortcutBarRemovedMessage(barType:uint=0, slot:uint=0) : ShortcutBarRemovedMessage {
+         this.barType = barType;
+         this.slot = slot;
          this._isInitialized = true;
          return this;
       }
@@ -42,47 +42,47 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ShortcutBarRemovedMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ShortcutBarRemovedMessage(output);
       }
       
-      public function serializeAs_ShortcutBarRemovedMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.barType);
-         if(this.slot < 0 || this.slot > 99)
+      public function serializeAs_ShortcutBarRemovedMessage(output:IDataOutput) : void {
+         output.writeByte(this.barType);
+         if((this.slot < 0) || (this.slot > 99))
          {
             throw new Error("Forbidden value (" + this.slot + ") on element slot.");
          }
          else
          {
-            param1.writeInt(this.slot);
+            output.writeInt(this.slot);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ShortcutBarRemovedMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ShortcutBarRemovedMessage(input);
       }
       
-      public function deserializeAs_ShortcutBarRemovedMessage(param1:IDataInput) : void {
-         this.barType = param1.readByte();
+      public function deserializeAs_ShortcutBarRemovedMessage(input:IDataInput) : void {
+         this.barType = input.readByte();
          if(this.barType < 0)
          {
             throw new Error("Forbidden value (" + this.barType + ") on element of ShortcutBarRemovedMessage.barType.");
          }
          else
          {
-            this.slot = param1.readInt();
-            if(this.slot < 0 || this.slot > 99)
+            this.slot = input.readInt();
+            if((this.slot < 0) || (this.slot > 99))
             {
                throw new Error("Forbidden value (" + this.slot + ") on element of ShortcutBarRemovedMessage.slot.");
             }

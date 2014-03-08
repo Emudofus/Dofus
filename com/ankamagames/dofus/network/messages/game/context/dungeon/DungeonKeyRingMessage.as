@@ -2,7 +2,7 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,9 +32,9 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
          return 6299;
       }
       
-      public function initDungeonKeyRingMessage(param1:Vector.<uint>=null, param2:Vector.<uint>=null) : DungeonKeyRingMessage {
-         this.availables = param1;
-         this.unavailables = param2;
+      public function initDungeonKeyRingMessage(availables:Vector.<uint>=null, unavailables:Vector.<uint>=null) : DungeonKeyRingMessage {
+         this.availables = availables;
+         this.unavailables = unavailables;
          this._isInitialized = true;
          return this;
       }
@@ -45,89 +45,89 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_DungeonKeyRingMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_DungeonKeyRingMessage(output);
       }
       
-      public function serializeAs_DungeonKeyRingMessage(param1:IDataOutput) : void {
-         param1.writeShort(this.availables.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.availables.length)
+      public function serializeAs_DungeonKeyRingMessage(output:IDataOutput) : void {
+         output.writeShort(this.availables.length);
+         var _i1:uint = 0;
+         while(_i1 < this.availables.length)
          {
-            if(this.availables[_loc2_] < 0)
+            if(this.availables[_i1] < 0)
             {
-               throw new Error("Forbidden value (" + this.availables[_loc2_] + ") on element 1 (starting at 1) of availables.");
+               throw new Error("Forbidden value (" + this.availables[_i1] + ") on element 1 (starting at 1) of availables.");
             }
             else
             {
-               param1.writeShort(this.availables[_loc2_]);
-               _loc2_++;
+               output.writeShort(this.availables[_i1]);
+               _i1++;
                continue;
             }
          }
-         param1.writeShort(this.unavailables.length);
-         var _loc3_:uint = 0;
-         while(_loc3_ < this.unavailables.length)
+         output.writeShort(this.unavailables.length);
+         var _i2:uint = 0;
+         while(_i2 < this.unavailables.length)
          {
-            if(this.unavailables[_loc3_] < 0)
+            if(this.unavailables[_i2] < 0)
             {
-               throw new Error("Forbidden value (" + this.unavailables[_loc3_] + ") on element 2 (starting at 1) of unavailables.");
+               throw new Error("Forbidden value (" + this.unavailables[_i2] + ") on element 2 (starting at 1) of unavailables.");
             }
             else
             {
-               param1.writeShort(this.unavailables[_loc3_]);
-               _loc3_++;
+               output.writeShort(this.unavailables[_i2]);
+               _i2++;
                continue;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_DungeonKeyRingMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_DungeonKeyRingMessage(input);
       }
       
-      public function deserializeAs_DungeonKeyRingMessage(param1:IDataInput) : void {
-         var _loc6_:uint = 0;
-         var _loc7_:uint = 0;
-         var _loc2_:uint = param1.readUnsignedShort();
-         var _loc3_:uint = 0;
-         while(_loc3_ < _loc2_)
+      public function deserializeAs_DungeonKeyRingMessage(input:IDataInput) : void {
+         var _val1:uint = 0;
+         var _val2:uint = 0;
+         var _availablesLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _availablesLen)
          {
-            _loc6_ = param1.readShort();
-            if(_loc6_ < 0)
+            _val1 = input.readShort();
+            if(_val1 < 0)
             {
-               throw new Error("Forbidden value (" + _loc6_ + ") on elements of availables.");
+               throw new Error("Forbidden value (" + _val1 + ") on elements of availables.");
             }
             else
             {
-               this.availables.push(_loc6_);
-               _loc3_++;
+               this.availables.push(_val1);
+               _i1++;
                continue;
             }
          }
-         var _loc4_:uint = param1.readUnsignedShort();
-         var _loc5_:uint = 0;
-         while(_loc5_ < _loc4_)
+         var _unavailablesLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2 < _unavailablesLen)
          {
-            _loc7_ = param1.readShort();
-            if(_loc7_ < 0)
+            _val2 = input.readShort();
+            if(_val2 < 0)
             {
-               throw new Error("Forbidden value (" + _loc7_ + ") on elements of unavailables.");
+               throw new Error("Forbidden value (" + _val2 + ") on elements of unavailables.");
             }
             else
             {
-               this.unavailables.push(_loc7_);
-               _loc5_++;
+               this.unavailables.push(_val2);
+               _i2++;
                continue;
             }
          }

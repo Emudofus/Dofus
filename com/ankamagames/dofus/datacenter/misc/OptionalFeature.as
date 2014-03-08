@@ -13,22 +13,22 @@ package com.ankamagames.dofus.datacenter.misc
       
       public static const MODULE:String = "OptionalFeatures";
       
-      public static function getOptionalFeatureById(param1:int) : OptionalFeature {
-         return GameData.getObject(MODULE,param1) as OptionalFeature;
+      public static function getOptionalFeatureById(id:int) : OptionalFeature {
+         return GameData.getObject(MODULE,id) as OptionalFeature;
       }
       
       private static var _keywords:Dictionary;
       
-      public static function getOptionalFeatureByKeyword(param1:String) : OptionalFeature {
-         var _loc2_:OptionalFeature = null;
-         if(!_keywords || !_keywords[param1])
+      public static function getOptionalFeatureByKeyword(key:String) : OptionalFeature {
+         var feature:OptionalFeature = null;
+         if((!_keywords) || (!_keywords[key]))
          {
             _keywords = new Dictionary();
-            for each (_keywords[_loc2_.keyword] in getAllOptionalFeatures())
+            for each (_keywords[feature.keyword] in getAllOptionalFeatures())
             {
             }
          }
-         return _keywords[param1];
+         return _keywords[key];
       }
       
       public static function getAllOptionalFeatures() : Array {

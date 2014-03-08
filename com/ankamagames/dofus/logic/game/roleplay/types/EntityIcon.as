@@ -22,44 +22,44 @@ package com.ankamagames.dofus.logic.game.roleplay.types
       
       public var rendering:Boolean;
       
-      public function addIcon(param1:String, param2:String) : void {
-         this._icons[param2] = new Texture();
-         var _loc3_:Texture = this._icons[param2];
-         _loc3_.uri = new Uri(param1);
-         _loc3_.dispatchMessages = true;
-         _loc3_.addEventListener(Event.COMPLETE,this.iconRendered);
-         _loc3_.finalize();
+      public function addIcon(pIconUri:String, pIconName:String) : void {
+         this._icons[pIconName] = new Texture();
+         var icon:Texture = this._icons[pIconName];
+         icon.uri = new Uri(pIconUri);
+         icon.dispatchMessages = true;
+         icon.addEventListener(Event.COMPLETE,this.iconRendered);
+         icon.finalize();
          this._nbIcons++;
       }
       
-      public function removeIcon(param1:String) : void {
-         var _loc2_:Texture = this._icons[param1];
-         if(_loc2_)
+      public function removeIcon(pIconName:String) : void {
+         var icon:Texture = this._icons[pIconName];
+         if(icon)
          {
-            if(_loc2_.parent == this)
+            if(icon.parent == this)
             {
-               removeChild(_loc2_);
+               removeChild(icon);
             }
-            delete this._icons[[param1]];
+            delete this._icons[[pIconName]];
             this._nbIcons--;
             if(numChildren == this._nbIcons)
             {
-               for each (_loc2_ in this._icons)
+               for each (icon in this._icons)
                {
-                  removeChild(_loc2_);
+                  removeChild(icon);
                }
-               for each (_loc2_ in this._icons)
+               for each (icon in this._icons)
                {
-                  _loc2_.x = width == 0?_loc2_.width / 2:width + 5 + _loc2_.width / 2;
-                  addChild(_loc2_);
+                  icon.x = width == 0?icon.width / 2:width + 5 + icon.width / 2;
+                  addChild(icon);
                }
                this.needUpdate = true;
             }
          }
       }
       
-      public function hasIcon(param1:String) : Boolean {
-         return this._icons[param1];
+      public function hasIcon(pIconName:String) : Boolean {
+         return this._icons[pIconName];
       }
       
       public function get length() : int {
@@ -70,11 +70,11 @@ package com.ankamagames.dofus.logic.game.roleplay.types
          parent.removeChild(this);
       }
       
-      private function iconRendered(param1:Event) : void {
-         var _loc2_:Texture = param1.currentTarget as Texture;
-         _loc2_.removeEventListener(Event.COMPLETE,this.iconRendered);
-         _loc2_.x = width == 0?_loc2_.width / 2:width + 5 + _loc2_.width / 2;
-         addChild(_loc2_);
+      private function iconRendered(pEvent:Event) : void {
+         var icon:Texture = pEvent.currentTarget as Texture;
+         icon.removeEventListener(Event.COMPLETE,this.iconRendered);
+         icon.x = width == 0?icon.width / 2:width + 5 + icon.width / 2;
+         addChild(icon);
          this.needUpdate = true;
       }
    }

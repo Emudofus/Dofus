@@ -35,9 +35,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 6130;
       }
       
-      public function initMapComplementaryInformationsDataInHouseMessage(param1:uint=0, param2:uint=0, param3:Vector.<HouseInformations>=null, param4:Vector.<GameRolePlayActorInformations>=null, param5:Vector.<InteractiveElement>=null, param6:Vector.<StatedElement>=null, param7:Vector.<MapObstacle>=null, param8:Vector.<FightCommonInformations>=null, param9:HouseInformationsInside=null) : MapComplementaryInformationsDataInHouseMessage {
-         super.initMapComplementaryInformationsDataMessage(param1,param2,param3,param4,param5,param6,param7,param8);
-         this.currentHouse = param9;
+      public function initMapComplementaryInformationsDataInHouseMessage(subAreaId:uint=0, mapId:uint=0, houses:Vector.<HouseInformations>=null, actors:Vector.<GameRolePlayActorInformations>=null, interactiveElements:Vector.<InteractiveElement>=null, statedElements:Vector.<StatedElement>=null, obstacles:Vector.<MapObstacle>=null, fights:Vector.<FightCommonInformations>=null, currentHouse:HouseInformationsInside=null) : MapComplementaryInformationsDataInHouseMessage {
+         super.initMapComplementaryInformationsDataMessage(subAreaId,mapId,houses,actors,interactiveElements,statedElements,obstacles,fights);
+         this.currentHouse = currentHouse;
          this._isInitialized = true;
          return this;
       }
@@ -48,33 +48,33 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_MapComplementaryInformationsDataInHouseMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MapComplementaryInformationsDataInHouseMessage(output);
       }
       
-      public function serializeAs_MapComplementaryInformationsDataInHouseMessage(param1:IDataOutput) : void {
-         super.serializeAs_MapComplementaryInformationsDataMessage(param1);
-         this.currentHouse.serializeAs_HouseInformationsInside(param1);
+      public function serializeAs_MapComplementaryInformationsDataInHouseMessage(output:IDataOutput) : void {
+         super.serializeAs_MapComplementaryInformationsDataMessage(output);
+         this.currentHouse.serializeAs_HouseInformationsInside(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_MapComplementaryInformationsDataInHouseMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MapComplementaryInformationsDataInHouseMessage(input);
       }
       
-      public function deserializeAs_MapComplementaryInformationsDataInHouseMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_MapComplementaryInformationsDataInHouseMessage(input:IDataInput) : void {
+         super.deserialize(input);
          this.currentHouse = new HouseInformationsInside();
-         this.currentHouse.deserialize(param1);
+         this.currentHouse.deserialize(input);
       }
    }
 }

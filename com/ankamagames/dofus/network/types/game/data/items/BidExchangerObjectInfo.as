@@ -1,8 +1,8 @@
 package com.ankamagames.dofus.network.types.game.data.items
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
@@ -28,10 +28,10 @@ package com.ankamagames.dofus.network.types.game.data.items
          return 122;
       }
       
-      public function initBidExchangerObjectInfo(param1:uint=0, param2:Vector.<ObjectEffect>=null, param3:Vector.<uint>=null) : BidExchangerObjectInfo {
-         this.objectUID = param1;
-         this.effects = param2;
-         this.prices = param3;
+      public function initBidExchangerObjectInfo(objectUID:uint=0, effects:Vector.<ObjectEffect>=null, prices:Vector.<uint>=null) : BidExchangerObjectInfo {
+         this.objectUID = objectUID;
+         this.effects = effects;
+         this.prices = prices;
          return this;
       }
       
@@ -41,84 +41,83 @@ package com.ankamagames.dofus.network.types.game.data.items
          this.prices = new Vector.<uint>();
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_BidExchangerObjectInfo(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_BidExchangerObjectInfo(output);
       }
       
-      public function serializeAs_BidExchangerObjectInfo(param1:IDataOutput) : void {
+      public function serializeAs_BidExchangerObjectInfo(output:IDataOutput) : void {
          if(this.objectUID < 0)
          {
             throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
          }
          else
          {
-            param1.writeInt(this.objectUID);
-            param1.writeShort(this.effects.length);
-            _loc2_ = 0;
-            while(_loc2_ < this.effects.length)
+            output.writeInt(this.objectUID);
+            output.writeShort(this.effects.length);
+            _i2 = 0;
+            while(_i2 < this.effects.length)
             {
-               param1.writeShort((this.effects[_loc2_] as ObjectEffect).getTypeId());
-               (this.effects[_loc2_] as ObjectEffect).serialize(param1);
-               _loc2_++;
+               output.writeShort((this.effects[_i2] as ObjectEffect).getTypeId());
+               (this.effects[_i2] as ObjectEffect).serialize(output);
+               _i2++;
             }
-            param1.writeShort(this.prices.length);
-            _loc3_ = 0;
-            loop1:
-            while(_loc3_ < this.prices.length)
+            output.writeShort(this.prices.length);
+            _i3 = 0;
+            while(_i3 < this.prices.length)
             {
-               if(this.prices[_loc3_] < 0)
+               if(this.prices[_i3] < 0)
                {
-                  throw new Error("Forbidden value (" + this.prices[_loc3_] + ") on element 3 (starting at 1) of prices.");
+                  throw new Error("Forbidden value (" + this.prices[_i3] + ") on element 3 (starting at 1) of prices.");
                }
                else
                {
-                  param1.writeInt(this.prices[_loc3_]);
-                  _loc3_++;
-                  continue loop1;
+                  output.writeInt(this.prices[_i3]);
+                  _i3++;
+                  continue;
                }
             }
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_BidExchangerObjectInfo(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_BidExchangerObjectInfo(input);
       }
       
-      public function deserializeAs_BidExchangerObjectInfo(param1:IDataInput) : void {
-         var _loc6_:uint = 0;
-         var _loc7_:ObjectEffect = null;
-         var _loc8_:uint = 0;
-         this.objectUID = param1.readInt();
+      public function deserializeAs_BidExchangerObjectInfo(input:IDataInput) : void {
+         var _id2:uint = 0;
+         var _item2:ObjectEffect = null;
+         var _val3:uint = 0;
+         this.objectUID = input.readInt();
          if(this.objectUID < 0)
          {
             throw new Error("Forbidden value (" + this.objectUID + ") on element of BidExchangerObjectInfo.objectUID.");
          }
          else
          {
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            _effectsLen = input.readUnsignedShort();
+            _i2 = 0;
+            while(_i2 < _effectsLen)
             {
-               _loc6_ = param1.readUnsignedShort();
-               _loc7_ = ProtocolTypeManager.getInstance(ObjectEffect,_loc6_);
-               _loc7_.deserialize(param1);
-               this.effects.push(_loc7_);
-               _loc3_++;
+               _id2 = input.readUnsignedShort();
+               _item2 = ProtocolTypeManager.getInstance(ObjectEffect,_id2);
+               _item2.deserialize(input);
+               this.effects.push(_item2);
+               _i2++;
             }
-            _loc4_ = param1.readUnsignedShort();
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            _pricesLen = input.readUnsignedShort();
+            _i3 = 0;
+            while(_i3 < _pricesLen)
             {
-               _loc8_ = param1.readInt();
-               if(_loc8_ < 0)
+               _val3 = input.readInt();
+               if(_val3 < 0)
                {
-                  throw new Error("Forbidden value (" + _loc8_ + ") on elements of prices.");
+                  throw new Error("Forbidden value (" + _val3 + ") on elements of prices.");
                }
                else
                {
-                  this.prices.push(_loc8_);
-                  _loc5_++;
+                  this.prices.push(_val3);
+                  _i3++;
                   continue;
                }
             }

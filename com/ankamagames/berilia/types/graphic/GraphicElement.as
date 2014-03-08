@@ -7,20 +7,20 @@ package com.ankamagames.berilia.types.graphic
    public class GraphicElement extends Object
    {
       
-      public function GraphicElement(param1:GraphicContainer, param2:Array, param3:String) {
+      public function GraphicElement(spSprite:GraphicContainer, aLocations:Array, sName:String) {
          super();
-         this.sprite = param1;
-         if(!(param2 == null) && !(param2[0] == null))
+         this.sprite = spSprite;
+         if((!(aLocations == null)) && (!(aLocations[0] == null)))
          {
-            this.locations = param2;
-            this.location = param2[0];
+            this.locations = aLocations;
+            this.location = aLocations[0];
          }
          else
          {
             this.location = new GraphicLocation();
             this.locations = new Array(this.location);
          }
-         this.name = param3;
+         this.name = sName;
          this.size = new GraphicSize();
       }
       
@@ -28,29 +28,29 @@ package com.ankamagames.berilia.types.graphic
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GraphicElement));
       
-      public static function getGraphicElement(param1:GraphicContainer, param2:Array, param3:String=null) : GraphicElement {
-         var _loc4_:GraphicElement = null;
-         if(param3 == null || _aGEIndex[param3] == null)
+      public static function getGraphicElement(spSprite:GraphicContainer, aLocations:Array, sName:String=null) : GraphicElement {
+         var ge:GraphicElement = null;
+         if((sName == null) || (_aGEIndex[sName] == null))
          {
-            _loc4_ = new GraphicElement(param1,param2,param3);
-            if(param3 != null)
+            ge = new GraphicElement(spSprite,aLocations,sName);
+            if(sName != null)
             {
-               _aGEIndex[param3] = _loc4_;
+               _aGEIndex[sName] = ge;
             }
          }
          else
          {
-            _loc4_ = _aGEIndex[param3];
+            ge = _aGEIndex[sName];
          }
-         if(param2 != null)
+         if(aLocations != null)
          {
-            _loc4_.locations = param2;
-            if(!(param2 == null) && !(param2[0] == null))
+            ge.locations = aLocations;
+            if((!(aLocations == null)) && (!(aLocations[0] == null)))
             {
-               _loc4_.location = param2[0];
+               ge.location = aLocations[0];
             }
          }
-         return _loc4_;
+         return ge;
       }
       
       public static function init() : void {

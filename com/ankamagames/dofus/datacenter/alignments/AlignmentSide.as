@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.alignments
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlignmentSide));
       
-      public static function getAlignmentSideById(param1:int) : AlignmentSide {
-         return GameData.getObject(MODULE,param1) as AlignmentSide;
+      public static function getAlignmentSideById(id:int) : AlignmentSide {
+         return GameData.getObject(MODULE,id) as AlignmentSide;
       }
       
       public static function getAlignmentSides() : Array {

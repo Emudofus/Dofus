@@ -33,11 +33,11 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
          return 5733;
       }
       
-      public function initGameRolePlayPlayerFightFriendlyAnsweredMessage(param1:int=0, param2:uint=0, param3:uint=0, param4:Boolean=false) : GameRolePlayPlayerFightFriendlyAnsweredMessage {
-         this.fightId = param1;
-         this.sourceId = param2;
-         this.targetId = param3;
-         this.accept = param4;
+      public function initGameRolePlayPlayerFightFriendlyAnsweredMessage(fightId:int=0, sourceId:uint=0, targetId:uint=0, accept:Boolean=false) : GameRolePlayPlayerFightFriendlyAnsweredMessage {
+         this.fightId = fightId;
+         this.sourceId = sourceId;
+         this.targetId = targetId;
+         this.accept = accept;
          this._isInitialized = true;
          return this;
       }
@@ -50,63 +50,63 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(output);
       }
       
-      public function serializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.fightId);
+      public function serializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(output:IDataOutput) : void {
+         output.writeInt(this.fightId);
          if(this.sourceId < 0)
          {
             throw new Error("Forbidden value (" + this.sourceId + ") on element sourceId.");
          }
          else
          {
-            param1.writeInt(this.sourceId);
+            output.writeInt(this.sourceId);
             if(this.targetId < 0)
             {
                throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
             }
             else
             {
-               param1.writeInt(this.targetId);
-               param1.writeBoolean(this.accept);
+               output.writeInt(this.targetId);
+               output.writeBoolean(this.accept);
                return;
             }
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(input);
       }
       
-      public function deserializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(param1:IDataInput) : void {
-         this.fightId = param1.readInt();
-         this.sourceId = param1.readInt();
+      public function deserializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(input:IDataInput) : void {
+         this.fightId = input.readInt();
+         this.sourceId = input.readInt();
          if(this.sourceId < 0)
          {
             throw new Error("Forbidden value (" + this.sourceId + ") on element of GameRolePlayPlayerFightFriendlyAnsweredMessage.sourceId.");
          }
          else
          {
-            this.targetId = param1.readInt();
+            this.targetId = input.readInt();
             if(this.targetId < 0)
             {
                throw new Error("Forbidden value (" + this.targetId + ") on element of GameRolePlayPlayerFightFriendlyAnsweredMessage.targetId.");
             }
             else
             {
-               this.accept = param1.readBoolean();
+               this.accept = input.readBoolean();
                return;
             }
          }

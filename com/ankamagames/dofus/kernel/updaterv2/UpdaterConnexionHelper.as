@@ -4,7 +4,6 @@ package com.ankamagames.dofus.kernel.updaterv2
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import flash.net.Socket;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.kernel.updaterv2.messages.IUpdaterOutputMessage;
    import com.ankamagames.jerakine.utils.system.AirScanner;
    import com.ankamagames.dofus.kernel.updaterv2.messages.IUpdaterInputMessage;
@@ -17,18 +16,19 @@ package com.ankamagames.dofus.kernel.updaterv2
    import flash.errors.IOError;
    import com.ankamagames.jerakine.json.JSONDecoder;
    import com.ankamagames.dofus.kernel.updaterv2.messages.UpdaterMessageFactory;
+   import __AS3__.vec.*;
    
    public class UpdaterConnexionHelper extends Object
    {
       
-      public function UpdaterConnexionHelper(param1:Boolean=true) {
+      public function UpdaterConnexionHelper(autoConnect:Boolean=true) {
          super();
          this._buffer = new Vector.<IUpdaterOutputMessage>();
          this._socket = new Socket();
          this._port = CommandLineArguments.getInstance().hasArgument("update-server-port")?parseInt(CommandLineArguments.getInstance().getArgument("update-server-port")):4242;
          this._handlers = new Vector.<IUpdaterMessageHandler>();
          this.setEventListeners();
-         if(param1)
+         if(autoConnect)
          {
             this.connect();
          }
@@ -46,12 +46,12 @@ package com.ankamagames.dofus.kernel.updaterv2
       
       private var _buffer:Vector.<IUpdaterOutputMessage>;
       
-      public function addObserver(param1:IUpdaterMessageHandler) : void {
-         this._handlers.push(param1);
+      public function addObserver(handler:IUpdaterMessageHandler) : void {
+         this._handlers.push(handler);
       }
       
-      public function removeObserver(param1:IUpdaterMessageHandler) : void {
-         this._handlers.slice(this._handlers.indexOf(param1),1);
+      public function removeObserver(handler:IUpdaterMessageHandler) : void {
+         this._handlers.slice(this._handlers.indexOf(handler),1);
       }
       
       public function removeObservers() : void {
@@ -76,8 +76,7 @@ package com.ankamagames.dofus.kernel.updaterv2
          }
       }
       
-      public function sendMessage(param1:IUpdaterOutputMessage) : Boolean {
-         var msg:IUpdaterOutputMessage = param1;
+      public function sendMessage(msg:IUpdaterOutputMessage) : Boolean {
          try
          {
             if(!this._socket.connected)
@@ -97,70 +96,69 @@ package com.ankamagames.dofus.kernel.updaterv2
       }
       
       private function dispatchConnected() : void {
-         var _loc1_:* = 0;
-         while(_loc1_ < this._handlers.length)
+         var i:int = 0;
+         while(i < this._handlers.length)
          {
-            this._handlers[_loc1_].handleConnectionOpened();
-            _loc1_++;
+            this._handlers[i].handleConnectionOpened();
+            i++;
          }
       }
       
       private function dispatchRagquit() : void {
-         var _loc1_:* = 0;
-         while(_loc1_ < this._handlers.length)
+         var i:int = 0;
+         while(i < this._handlers.length)
          {
-            this._handlers[_loc1_].handleConnectionClosed();
-            _loc1_++;
+            this._handlers[i].handleConnectionClosed();
+            i++;
          }
       }
       
-      private function dispatchMessage(param1:IUpdaterInputMessage) : void {
-         var _loc2_:* = 0;
-         while(_loc2_ < this._handlers.length)
+      private function dispatchMessage(msg:IUpdaterInputMessage) : void {
+         var i:int = 0;
+         while(i < this._handlers.length)
          {
-            this._handlers[_loc2_].handleMessage(param1);
-            _loc2_++;
+            this._handlers[i].handleMessage(msg);
+            i++;
          }
       }
       
-      private function onConnectionOpened(param1:Event) : void {
+      private function onConnectionOpened(event:Event) : void {
          logger.info("Connected to the updater on port : " + this._port);
          this._socket.removeEventListener(Event.CONNECT,this.onConnectionOpened);
          StatisticReportingManager.getInstance().report("UpdaterConnexion - " + BuildInfos.BUILD_TYPE + " - " + BuildInfos.BUILD_VERSION,"success");
          this.dispatchConnected();
-         var _loc2_:* = 0;
-         while(_loc2_ < this._buffer.length)
+         var i:int = 0;
+         while(i < this._buffer.length)
          {
             this.sendMessage(this._buffer.shift());
-            _loc2_++;
+            i++;
          }
       }
       
-      private function onConnectionClosed(param1:Event) : void {
+      private function onConnectionClosed(event:Event) : void {
          logger.info("Updater connection has been closed");
          this.removeEventListeners();
          this.dispatchRagquit();
       }
       
-      private function onIOError(param1:IOErrorEvent) : void {
-         logger.error("Error : [" + param1.errorID + "] " + param1.text);
+      private function onIOError(event:IOErrorEvent) : void {
+         logger.error("Error : [" + event.errorID + "] " + event.text);
          if(CommandLineArguments.getInstance().hasArgument("update-server-port"))
          {
-            StatisticReportingManager.getInstance().report("UpdaterConnexion - " + BuildInfos.BUILD_TYPE + " - " + BuildInfos.BUILD_VERSION,"failed [" + param1.text + "]");
+            StatisticReportingManager.getInstance().report("UpdaterConnexion - " + BuildInfos.BUILD_TYPE + " - " + BuildInfos.BUILD_VERSION,"failed [" + event.text + "]");
          }
          else
          {
-            StatisticReportingManager.getInstance().report("UpdaterConnexion - " + BuildInfos.BUILD_TYPE + " - " + BuildInfos.BUILD_VERSION,"noupdater [" + param1.text + "]");
+            StatisticReportingManager.getInstance().report("UpdaterConnexion - " + BuildInfos.BUILD_TYPE + " - " + BuildInfos.BUILD_VERSION,"noupdater [" + event.text + "]");
          }
       }
       
-      private function onSocketData(param1:ProgressEvent) : void {
+      private function onSocketData(event:ProgressEvent) : void {
          var content:String = null;
          var messages:Vector.<String> = null;
          var i:int = 0;
          var contentJSON:Object = null;
          var message:IUpdaterInputMessage = null;
-         var event:ProgressEvent = param1;
          try
          {
             content = this._socket.readUTFBytes(this._socket.bytesAvailable);
@@ -194,38 +192,38 @@ package com.ankamagames.dofus.kernel.updaterv2
          }
       }
       
-      private function splitPacket(param1:String) : Vector.<String> {
-         var _loc6_:String = null;
-         var _loc2_:* = 0;
-         var _loc3_:* = "";
-         var _loc4_:Vector.<String> = new Vector.<String>();
-         var _loc5_:* = 0;
-         while(_loc5_ < param1.length)
+      private function splitPacket(raw:String) : Vector.<String> {
+         var c:String = null;
+         var depth:int = 0;
+         var message:String = "";
+         var messages:Vector.<String> = new Vector.<String>();
+         var i:int = 0;
+         while(i < raw.length)
          {
-            _loc6_ = param1.charAt(_loc5_);
-            if(_loc6_ == "{")
+            c = raw.charAt(i);
+            if(c == "{")
             {
-               _loc2_++;
+               depth++;
             }
             else
             {
-               if(_loc6_ == "}")
+               if(c == "}")
                {
-                  _loc2_--;
+                  depth--;
                }
             }
-            _loc3_ = _loc3_ + _loc6_;
-            if(_loc2_ == 0)
+            message = message + c;
+            if(depth == 0)
             {
-               if(_loc3_ != "\n")
+               if(message != "\n")
                {
-                  _loc4_.push(_loc3_);
+                  messages.push(message);
                }
-               _loc3_ = "";
+               message = "";
             }
-            _loc5_++;
+            i++;
          }
-         return _loc4_;
+         return messages;
       }
       
       protected function setEventListeners() : void {

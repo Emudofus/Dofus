@@ -45,38 +45,38 @@ package com.ankamagames.jerakine.utils.display
       
       private var states:ByteArray;
       
-      private function keyDownListener(param1:KeyboardEvent) : void {
-         this.states[param1.keyCode >>> 3] = this.states[param1.keyCode >>> 3] | 1 << (param1.keyCode & 7);
+      private function keyDownListener(ev:KeyboardEvent) : void {
+         this.states[ev.keyCode >>> 3] = this.states[ev.keyCode >>> 3] | 1 << (ev.keyCode & 7);
       }
       
-      private function keyUpListener(param1:KeyboardEvent) : void {
-         this.states[param1.keyCode >>> 3] = this.states[param1.keyCode >>> 3] & ~(1 << (param1.keyCode & 7));
+      private function keyUpListener(ev:KeyboardEvent) : void {
+         this.states[ev.keyCode >>> 3] = this.states[ev.keyCode >>> 3] & ~(1 << (ev.keyCode & 7));
       }
       
-      private function activateListener(param1:Event) : void {
-         var _loc2_:* = 0;
-         while(_loc2_ < 32)
+      private function activateListener(ev:Event) : void {
+         var i:int = 0;
+         while(i < 32)
          {
-            this.states[_loc2_] = 0;
-            _loc2_++;
+            this.states[i] = 0;
+            i++;
          }
       }
       
-      private function deactivateListener(param1:Event) : void {
-         var _loc2_:* = 0;
-         while(_loc2_ < 32)
+      private function deactivateListener(ev:Event) : void {
+         var i:int = 0;
+         while(i < 32)
          {
-            this.states[_loc2_] = 0;
-            _loc2_++;
+            this.states[i] = 0;
+            i++;
          }
       }
       
-      public function isDown(param1:uint) : Boolean {
-         return !((this.states[param1 >>> 3] & 1 << (param1 & 7)) == 0);
+      public function isDown(keyCode:uint) : Boolean {
+         return !((this.states[keyCode >>> 3] & 1 << (keyCode & 7)) == 0);
       }
       
-      public function isUp(param1:uint) : Boolean {
-         return (this.states[param1 >>> 3] & 1 << (param1 & 7)) == 0;
+      public function isUp(keyCode:uint) : Boolean {
+         return (this.states[keyCode >>> 3] & 1 << (keyCode & 7)) == 0;
       }
    }
 }

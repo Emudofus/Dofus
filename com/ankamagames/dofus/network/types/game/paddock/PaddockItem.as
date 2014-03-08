@@ -22,9 +22,9 @@ package com.ankamagames.dofus.network.types.game.paddock
          return 185;
       }
       
-      public function initPaddockItem(param1:uint=0, param2:uint=0, param3:ItemDurability=null) : PaddockItem {
-         super.initObjectItemInRolePlay(param1,param2);
-         this.durability = param3;
+      public function initPaddockItem(cellId:uint=0, objectGID:uint=0, durability:ItemDurability=null) : PaddockItem {
+         super.initObjectItemInRolePlay(cellId,objectGID);
+         this.durability = durability;
          return this;
       }
       
@@ -33,23 +33,23 @@ package com.ankamagames.dofus.network.types.game.paddock
          this.durability = new ItemDurability();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PaddockItem(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PaddockItem(output);
       }
       
-      public function serializeAs_PaddockItem(param1:IDataOutput) : void {
-         super.serializeAs_ObjectItemInRolePlay(param1);
-         this.durability.serializeAs_ItemDurability(param1);
+      public function serializeAs_PaddockItem(output:IDataOutput) : void {
+         super.serializeAs_ObjectItemInRolePlay(output);
+         this.durability.serializeAs_ItemDurability(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PaddockItem(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PaddockItem(input);
       }
       
-      public function deserializeAs_PaddockItem(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_PaddockItem(input:IDataInput) : void {
+         super.deserialize(input);
          this.durability = new ItemDurability();
-         this.durability.deserialize(param1);
+         this.durability.deserialize(input);
       }
    }
 }

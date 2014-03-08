@@ -26,8 +26,8 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6427;
       }
       
-      public function initAlliancePartialListMessage(param1:Vector.<AllianceFactSheetInformations>=null) : AlliancePartialListMessage {
-         super.initAllianceListMessage(param1);
+      public function initAlliancePartialListMessage(alliances:Vector.<AllianceFactSheetInformations>=null) : AlliancePartialListMessage {
+         super.initAllianceListMessage(alliances);
          this._isInitialized = true;
          return this;
       }
@@ -37,30 +37,30 @@ package com.ankamagames.dofus.network.messages.game.alliance
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_AlliancePartialListMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AlliancePartialListMessage(output);
       }
       
-      public function serializeAs_AlliancePartialListMessage(param1:IDataOutput) : void {
-         super.serializeAs_AllianceListMessage(param1);
+      public function serializeAs_AlliancePartialListMessage(output:IDataOutput) : void {
+         super.serializeAs_AllianceListMessage(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_AlliancePartialListMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AlliancePartialListMessage(input);
       }
       
-      public function deserializeAs_AlliancePartialListMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_AlliancePartialListMessage(input:IDataInput) : void {
+         super.deserialize(input);
       }
    }
 }

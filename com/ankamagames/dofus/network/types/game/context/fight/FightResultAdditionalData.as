@@ -24,16 +24,16 @@ package com.ankamagames.dofus.network.types.game.context.fight
       public function reset() : void {
       }
       
-      public function serialize(param1:IDataOutput) : void {
+      public function serialize(output:IDataOutput) : void {
       }
       
-      public function serializeAs_FightResultAdditionalData(param1:IDataOutput) : void {
+      public function serializeAs_FightResultAdditionalData(output:IDataOutput) : void {
       }
       
-      public function deserialize(param1:IDataInput) : void {
+      public function deserialize(input:IDataInput) : void {
       }
       
-      public function deserializeAs_FightResultAdditionalData(param1:IDataInput) : void {
+      public function deserializeAs_FightResultAdditionalData(input:IDataInput) : void {
       }
    }
 }

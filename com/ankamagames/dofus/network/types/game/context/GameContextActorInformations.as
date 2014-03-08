@@ -27,10 +27,10 @@ package com.ankamagames.dofus.network.types.game.context
          return 150;
       }
       
-      public function initGameContextActorInformations(param1:int=0, param2:EntityLook=null, param3:EntityDispositionInformations=null) : GameContextActorInformations {
-         this.contextualId = param1;
-         this.look = param2;
-         this.disposition = param3;
+      public function initGameContextActorInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null) : GameContextActorInformations {
+         this.contextualId = contextualId;
+         this.look = look;
+         this.disposition = disposition;
          return this;
       }
       
@@ -39,28 +39,28 @@ package com.ankamagames.dofus.network.types.game.context
          this.look = new EntityLook();
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameContextActorInformations(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameContextActorInformations(output);
       }
       
-      public function serializeAs_GameContextActorInformations(param1:IDataOutput) : void {
-         param1.writeInt(this.contextualId);
-         this.look.serializeAs_EntityLook(param1);
-         param1.writeShort(this.disposition.getTypeId());
-         this.disposition.serialize(param1);
+      public function serializeAs_GameContextActorInformations(output:IDataOutput) : void {
+         output.writeInt(this.contextualId);
+         this.look.serializeAs_EntityLook(output);
+         output.writeShort(this.disposition.getTypeId());
+         this.disposition.serialize(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameContextActorInformations(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameContextActorInformations(input);
       }
       
-      public function deserializeAs_GameContextActorInformations(param1:IDataInput) : void {
-         this.contextualId = param1.readInt();
+      public function deserializeAs_GameContextActorInformations(input:IDataInput) : void {
+         this.contextualId = input.readInt();
          this.look = new EntityLook();
-         this.look.deserialize(param1);
-         var _loc2_:uint = param1.readUnsignedShort();
-         this.disposition = ProtocolTypeManager.getInstance(EntityDispositionInformations,_loc2_);
-         this.disposition.deserialize(param1);
+         this.look.deserialize(input);
+         var _id3:uint = input.readUnsignedShort();
+         this.disposition = ProtocolTypeManager.getInstance(EntityDispositionInformations,_id3);
+         this.disposition.deserialize(input);
       }
    }
 }

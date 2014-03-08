@@ -135,198 +135,196 @@ package com.ankamagames.dofus.uiApi
       
       private var _hooks:Dictionary;
       
-      public function set module(param1:UiModule) : void {
-         this._module = param1;
+      public function set module(value:UiModule) : void {
+         this._module = value;
       }
       
-      public function set currentUi(param1:UiRootContainer) : void {
-         this._currentUi = param1;
+      public function set currentUi(value:UiRootContainer) : void {
+         this._currentUi = value;
       }
       
       public function destroy() : void {
-         var _loc1_:* = undefined;
+         var hookName:* = undefined;
          EnterFrameDispatcher.removeEventListener(this.onEnterFrame);
          this._listener = null;
          this._module = null;
          this._currentUi = null;
          this._characterDataStore = null;
          this._accountDataStore = null;
-         for (_loc1_ in this._hooks)
+         for (hookName in this._hooks)
          {
-            this.removeHook(_loc1_);
+            this.removeHook(hookName);
          }
          this._hooks = new Dictionary();
       }
       
       public function isInGame() : Boolean {
-         var _loc1_:Boolean = Kernel.getWorker().contains(AuthentificationFrame);
-         var _loc2_:Boolean = Kernel.getWorker().contains(InitializationFrame);
-         var _loc3_:Boolean = Kernel.getWorker().contains(GameServerApproachFrame);
-         var _loc4_:Boolean = Kernel.getWorker().contains(ServerSelectionFrame);
-         var _loc5_:Worker = Kernel.getWorker();
-         return !((_loc1_) || (_loc2_) || (_loc3_) || (_loc4_));
+         var authentificationFramePresent:Boolean = Kernel.getWorker().contains(AuthentificationFrame);
+         var initializationFramePresent:Boolean = Kernel.getWorker().contains(InitializationFrame);
+         var gameServerApproachFramePresent:Boolean = Kernel.getWorker().contains(GameServerApproachFrame);
+         var serverSelectionFramePresent:Boolean = Kernel.getWorker().contains(ServerSelectionFrame);
+         var worker:Worker = Kernel.getWorker();
+         return !((authentificationFramePresent) || (initializationFramePresent) || (gameServerApproachFramePresent) || (serverSelectionFramePresent));
       }
       
-      public function addHook(param1:Class, param2:Function) : void {
-         var _loc3_:String = null;
-         var _loc4_:* = getQualifiedClassName(param1).split("::");
-         _loc3_ = _loc4_[_loc4_.length-1];
-         var _loc5_:Hook = Hook.getHookByName(_loc3_);
-         if(!_loc5_)
+      public function addHook(hookClass:Class, callback:Function) : void {
+         var hookName:String = null;
+         var classInfo:Array = getQualifiedClassName(hookClass).split("::");
+         hookName = classInfo[classInfo.length - 1];
+         var targetedHook:Hook = Hook.getHookByName(hookName);
+         if(!targetedHook)
          {
-            throw new BeriliaError("Hook [" + _loc3_ + "] does not exists.");
+            throw new BeriliaError("Hook [" + hookName + "] does not exists.");
          }
          else
          {
-            if((_loc5_.trusted) && !this._module.trusted)
+            if((targetedHook.trusted) && (!this._module.trusted))
             {
-               throw new UntrustedApiCallError("Hook " + _loc3_ + " cannot be listen from an untrusted module");
+               throw new UntrustedApiCallError("Hook " + hookName + " cannot be listen from an untrusted module");
             }
             else
             {
-               _loc6_ = new GenericListener(_loc3_,this._currentUi?this._currentUi.name:"__module_" + this._module.id,param2,0,this._currentUi?GenericListener.LISTENER_TYPE_UI:GenericListener.LISTENER_TYPE_MODULE);
-               this._hooks[param1] = _loc6_;
-               KernelEventsManager.getInstance().registerEvent(_loc6_);
+               listener = new GenericListener(hookName,this._currentUi?this._currentUi.name:"__module_" + this._module.id,callback,0,this._currentUi?GenericListener.LISTENER_TYPE_UI:GenericListener.LISTENER_TYPE_MODULE);
+               this._hooks[hookClass] = listener;
+               KernelEventsManager.getInstance().registerEvent(listener);
                return;
             }
          }
       }
       
-      public function removeHook(param1:Class) : void {
-         if(param1)
+      public function removeHook(hookClass:Class) : void {
+         if(hookClass)
          {
-            KernelEventsManager.getInstance().removeEventListener(this._hooks[param1]);
-            delete this._hooks[[param1]];
+            KernelEventsManager.getInstance().removeEventListener(this._hooks[hookClass]);
+            delete this._hooks[[hookClass]];
          }
       }
       
-      public function createHook(param1:String) : void {
+      public function createHook(name:String) : void {
       }
       
-      public function dispatchHook(param1:Class, ... rest) : void {
-         var _loc3_:String = null;
-         var _loc4_:* = getQualifiedClassName(param1).split("::");
-         _loc3_ = _loc4_[_loc4_.length-1];
-         var _loc5_:Hook = Hook.getHookByName(_loc3_);
-         if(!_loc5_)
+      public function dispatchHook(hookClass:Class, ... params) : void {
+         var hookName:String = null;
+         var classInfo:Array = getQualifiedClassName(hookClass).split("::");
+         hookName = classInfo[classInfo.length - 1];
+         var targetedHook:Hook = Hook.getHookByName(hookName);
+         if(!targetedHook)
          {
-            throw new ApiError("Hook [" + _loc3_ + "] does not exist");
+            throw new ApiError("Hook [" + hookName + "] does not exist");
          }
          else
          {
-            if(_loc5_.nativeHook)
+            if(targetedHook.nativeHook)
             {
-               throw new UntrustedApiCallError("Hook " + _loc3_ + " is a native hook. Native hooks cannot be dispatch by module");
+               throw new UntrustedApiCallError("Hook " + hookName + " is a native hook. Native hooks cannot be dispatch by module");
             }
             else
             {
-               CallWithParameters.call(KernelEventsManager.getInstance().processCallback,new Array(_loc5_).concat(rest));
+               CallWithParameters.call(KernelEventsManager.getInstance().processCallback,new Array(targetedHook).concat(params));
                return;
             }
          }
       }
       
-      public function sendAction(param1:Object) : uint {
-         var _loc2_:DofusApiAction = null;
-         var _loc4_:Array = null;
-         var _loc5_:uint = 0;
-         var _loc6_:Array = null;
-         var _loc7_:Object = null;
-         if(param1.hasOwnProperty("parameters"))
+      public function sendAction(action:Object) : uint {
+         var apiAction:DofusApiAction = null;
+         var classInfo:Array = null;
+         var t:uint = 0;
+         var needConfirmStoreDataManager:Array = null;
+         var commonMod:Object = null;
+         if(action.hasOwnProperty("parameters"))
          {
-            _loc4_ = getQualifiedClassName(param1).split("::");
-            _loc2_ = DofusApiAction.getApiActionByName(_loc4_[_loc4_.length-1]);
-            if(!_loc2_)
+            classInfo = getQualifiedClassName(action).split("::");
+            apiAction = DofusApiAction.getApiActionByName(classInfo[classInfo.length - 1]);
+            if(!apiAction)
             {
-               throw new ApiError("Action [" + param1 + "] does not exist");
+               throw new ApiError("Action [" + action + "] does not exist");
             }
             else
             {
-               if((_loc2_.trusted) && !this._module.trusted)
+               if((apiAction.trusted) && (!this._module.trusted))
                {
-                  throw new UntrustedApiCallError("Action " + param1 + " cannot be launch from an untrusted module");
+                  throw new UntrustedApiCallError("Action " + action + " cannot be launch from an untrusted module");
                }
                else
                {
-                  if(!this._module.trusted && (_loc2_.needInteraction) && !((UIInteractionFrame(Kernel.getWorker().getFrame(UIInteractionFrame)).isProcessingDirectInteraction) || (ShortcutsFrame(Kernel.getWorker().getFrame(ShortcutsFrame)).isProcessingDirectInteraction)))
+                  if((!this._module.trusted) && (apiAction.needInteraction) && (!((UIInteractionFrame(Kernel.getWorker().getFrame(UIInteractionFrame)).isProcessingDirectInteraction) || (ShortcutsFrame(Kernel.getWorker().getFrame(ShortcutsFrame)).isProcessingDirectInteraction))))
                   {
                      return 0;
                   }
-                  if(!this._module.trusted && (_loc2_.maxUsePerFrame))
+                  if((!this._module.trusted) && (apiAction.maxUsePerFrame))
                   {
                      if(_lastFrameId != FrameIdManager.frameId)
                      {
                         _actionCountRef = new Dictionary();
                         _lastFrameId = FrameIdManager.frameId;
                      }
-                     if(_actionCountRef[_loc2_] != undefined)
+                     if(_actionCountRef[apiAction] != undefined)
                      {
-                        if(_actionCountRef[_loc2_] == 0)
+                        if(_actionCountRef[apiAction] == 0)
                         {
                            return 0;
                         }
-                        _actionCountRef[_loc2_] = _actionCountRef[_loc2_]-1;
+                        _actionCountRef[apiAction] = _actionCountRef[apiAction] - 1;
                      }
                      else
                      {
-                        _actionCountRef[_loc2_] = _loc2_.maxUsePerFrame-1;
+                        _actionCountRef[apiAction] = apiAction.maxUsePerFrame - 1;
                      }
                   }
-                  if(!this._module.trusted && (_loc2_.minimalUseInterval))
+                  if((!this._module.trusted) && (apiAction.minimalUseInterval))
                   {
-                     _loc5_ = getTimer() - _actionTsRef[_loc2_];
-                     if((_actionTsRef[_loc2_]) && _loc5_ <= _loc2_.minimalUseInterval)
+                     t = getTimer() - _actionTsRef[apiAction];
+                     if((_actionTsRef[apiAction]) && (t <= apiAction.minimalUseInterval))
                      {
                         return 0;
                      }
-                     _actionTsRef[_loc2_] = getTimer();
+                     _actionTsRef[apiAction] = getTimer();
                   }
-                  _loc3_ = CallWithParameters.callR(_loc2_.actionClass["create"],SecureCenter.unsecureContent(param1.parameters));
-                  if(_loc2_.needConfirmation)
+                  actionToSend = CallWithParameters.callR(apiAction.actionClass["create"],SecureCenter.unsecureContent(action.parameters));
+                  if(apiAction.needConfirmation)
                   {
                      if(!this._moduleActionDataStore)
                      {
                         this.initModuleActionDataStore();
                      }
-                     _loc6_ = StoreDataManager.getInstance().getSetData(this._moduleActionDataStore,"needConfirm",new Array());
-                     if(!this._module.trusted && !(_loc6_[_loc2_.name] === false))
+                     needConfirmStoreDataManager = StoreDataManager.getInstance().getSetData(this._moduleActionDataStore,"needConfirm",new Array());
+                     if((!this._module.trusted) && (!(needConfirmStoreDataManager[apiAction.name] === false)))
                      {
-                        _loc7_ = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-                        if(_loc3_ is ApiActionList.DeleteObject.actionClass)
+                        commonMod = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
+                        if(actionToSend is ApiActionList.DeleteObject.actionClass)
                         {
-                           _loc7_.openPopup(I18n.getUiText("ui.popup.warning"),I18n.getUiText("ui.module.action.confirm",[this._module.name,_loc2_.description]),[I18n.getUiText("ui.common.ok"),I18n.getUiText("ui.common.no")],[this.onActionConfirm(_loc3_,_loc2_)],this.onActionConfirm(_loc3_,_loc2_));
+                           commonMod.openPopup(I18n.getUiText("ui.popup.warning"),I18n.getUiText("ui.module.action.confirm",[this._module.name,apiAction.description]),[I18n.getUiText("ui.common.ok"),I18n.getUiText("ui.common.no")],[this.onActionConfirm(actionToSend,apiAction)],this.onActionConfirm(actionToSend,apiAction));
                         }
                         else
                         {
-                           _loc7_.openCheckboxPopup(I18n.getUiText("ui.popup.warning"),I18n.getUiText("ui.module.action.confirm",[this._module.name,_loc2_.description]),this.onActionConfirm(_loc3_,_loc2_),null,I18n.getUiText("ui.common.rememberMyChoice"));
+                           commonMod.openCheckboxPopup(I18n.getUiText("ui.popup.warning"),I18n.getUiText("ui.module.action.confirm",[this._module.name,apiAction.description]),this.onActionConfirm(actionToSend,apiAction),null,I18n.getUiText("ui.common.rememberMyChoice"));
                         }
                         return 2;
                      }
                   }
-                  LogFrame.log(LogTypeEnum.ACTION,_loc3_);
-                  ModuleLogger.log(_loc3_);
-                  Kernel.getWorker().process(_loc3_);
+                  LogFrame.log(LogTypeEnum.ACTION,actionToSend);
+                  ModuleLogger.log(actionToSend);
+                  Kernel.getWorker().process(actionToSend);
                   return 1;
                }
             }
          }
          else
          {
-            throw new ApiError("Action [" + param1 + "] don\'t implement IAction");
+            throw new ApiError("Action [" + action + "] don\'t implement IAction");
          }
       }
       
-      private function onActionConfirm(param1:Action, param2:DofusApiAction) : Function {
-         var actionToSend:Action = param1;
-         var apiAction:DofusApiAction = param2;
-         return function(... rest):void
+      private function onActionConfirm(actionToSend:Action, apiAction:DofusApiAction) : Function {
+         return function(... args):void
          {
-            var _loc2_:* = undefined;
-            if((rest.length) && (rest[0]))
+            var needConfirmStoreDataManager:* = undefined;
+            if((args.length) && (args[0]))
             {
-               _loc2_ = StoreDataManager.getInstance().getSetData(_moduleActionDataStore,"needConfirm",new Array());
-               _loc2_[apiAction.name] = !rest[0];
-               StoreDataManager.getInstance().setData(_moduleActionDataStore,"needConfirm",_loc2_);
+               needConfirmStoreDataManager = StoreDataManager.getInstance().getSetData(_moduleActionDataStore,"needConfirm",new Array());
+               needConfirmStoreDataManager[apiAction.name] = !args[0];
+               StoreDataManager.getInstance().setData(_moduleActionDataStore,"needConfirm",needConfirmStoreDataManager);
             }
             LogFrame.log(LogTypeEnum.ACTION,actionToSend);
             ModuleLogger.log(actionToSend);
@@ -334,26 +332,26 @@ package com.ankamagames.dofus.uiApi
          };
       }
       
-      public function log(param1:uint, param2:*) : void {
-         var _loc3_:String = this._currentUi?this._currentUi.uiModule.name + "/" + this._currentUi.uiClass:"?";
-         this._log.log(param1,"[" + _loc3_ + "] " + param2);
-         if(!this._module.trusted || BuildInfos.BUILD_TYPE >= BuildTypeEnum.TESTING)
+      public function log(level:uint, text:*) : void {
+         var ui:String = this._currentUi?this._currentUi.uiModule.name + "/" + this._currentUi.uiClass:"?";
+         this._log.log(level,"[" + ui + "] " + text);
+         if((!this._module.trusted) || (BuildInfos.BUILD_TYPE >= BuildTypeEnum.TESTING))
          {
-            ModuleLogger.log("[" + _loc3_ + "] " + param2,param1);
+            ModuleLogger.log("[" + ui + "] " + text,level);
          }
       }
       
-      public function setConfigEntry(param1:String, param2:*) : void {
-         XmlConfig.getInstance().setEntry(param1,param2);
+      public function setConfigEntry(sKey:String, sValue:*) : void {
+         XmlConfig.getInstance().setEntry(sKey,sValue);
       }
       
-      public function getConfigEntry(param1:String) : * {
-         return XmlConfig.getInstance().getEntry(param1);
+      public function getConfigEntry(sKey:String) : * {
+         return XmlConfig.getInstance().getEntry(sKey);
       }
       
-      public function getEnum(param1:String) : Class {
-         var _loc2_:Class = getDefinitionByName(param1) as Class;
-         return _loc2_;
+      public function getEnum(name:String) : Class {
+         var ClassReference:Class = getDefinitionByName(name) as Class;
+         return ClassReference;
       }
       
       public function isEventMode() : Boolean {
@@ -364,12 +362,12 @@ package com.ankamagames.dofus.uiApi
          return Constants.CHARACTER_CREATION_ALLOWED;
       }
       
-      public function getConfigKey(param1:String) : * {
-         return XmlConfig.getInstance().getEntry("config." + param1);
+      public function getConfigKey(key:String) : * {
+         return XmlConfig.getInstance().getEntry("config." + key);
       }
       
-      public function goToUrl(param1:String) : void {
-         navigateToURL(new URLRequest(param1));
+      public function goToUrl(url:String) : void {
+         navigateToURL(new URLRequest(url));
       }
       
       public function getPlayerManager() : PlayerManager {
@@ -377,24 +375,24 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function getPort() : uint {
-         var _loc1_:DataStoreType = new DataStoreType("Dofus_ComputerOptions",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_ACCOUNT);
-         return StoreDataManager.getInstance().getData(_loc1_,"connectionPortDefault");
+         var dst:DataStoreType = new DataStoreType("Dofus_ComputerOptions",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_ACCOUNT);
+         return StoreDataManager.getInstance().getData(dst,"connectionPortDefault");
       }
       
-      public function setPort(param1:uint) : Boolean {
-         var _loc2_:DataStoreType = new DataStoreType("Dofus_ComputerOptions",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_ACCOUNT);
-         return StoreDataManager.getInstance().setData(_loc2_,"connectionPortDefault",param1);
+      public function setPort(port:uint) : Boolean {
+         var dst:DataStoreType = new DataStoreType("Dofus_ComputerOptions",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_ACCOUNT);
+         return StoreDataManager.getInstance().setData(dst,"connectionPortDefault",port);
       }
       
-      public function setData(param1:String, param2:*, param3:Boolean=false) : Boolean {
-         var _loc4_:DataStoreType = null;
-         if(param3)
+      public function setData(name:String, value:*, shareWithAccount:Boolean=false) : Boolean {
+         var dst:DataStoreType = null;
+         if(shareWithAccount)
          {
             if(!this._accountDataStore)
             {
                this.initAccountDataStore();
             }
-            _loc4_ = this._accountDataStore;
+            dst = this._accountDataStore;
          }
          else
          {
@@ -402,20 +400,20 @@ package com.ankamagames.dofus.uiApi
             {
                this.initCharacterDataStore();
             }
-            _loc4_ = this._characterDataStore;
+            dst = this._characterDataStore;
          }
-         return StoreDataManager.getInstance().setData(_loc4_,param1,param2);
+         return StoreDataManager.getInstance().setData(dst,name,value);
       }
       
-      public function getSetData(param1:String, param2:*, param3:Boolean=false) : * {
-         var _loc4_:DataStoreType = null;
-         if(param3)
+      public function getSetData(name:String, value:*, shareWithAccount:Boolean=false) : * {
+         var dst:DataStoreType = null;
+         if(shareWithAccount)
          {
             if(!this._accountDataStore)
             {
                this.initAccountDataStore();
             }
-            _loc4_ = this._accountDataStore;
+            dst = this._accountDataStore;
          }
          else
          {
@@ -423,9 +421,9 @@ package com.ankamagames.dofus.uiApi
             {
                this.initCharacterDataStore();
             }
-            _loc4_ = this._characterDataStore;
+            dst = this._characterDataStore;
          }
-         return StoreDataManager.getInstance().getSetData(_loc4_,param1,param2);
+         return StoreDataManager.getInstance().getSetData(dst,name,value);
       }
       
       public function setQualityIsEnable() : Boolean {
@@ -437,17 +435,16 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function getAirVersion() : uint {
-         return Capabilities.version.indexOf(" 10,0") != -1?1:2;
+         return !(Capabilities.version.indexOf(" 10,0") == -1)?1:2;
       }
       
-      public function isAirVersionAvailable(param1:uint) : Boolean {
+      public function isAirVersionAvailable(version:uint) : Boolean {
          return this.setQualityIsEnable();
       }
       
-      public function setAirVersion(param1:uint) : Boolean {
+      public function setAirVersion(version:uint) : Boolean {
          var fs:FileStream = null;
          var fs2:FileStream = null;
-         var version:uint = param1;
          if(!this.isAirVersionAvailable(version))
          {
             return false;
@@ -507,15 +504,15 @@ package com.ankamagames.dofus.uiApi
          return SystemManager.getSingleton().cpu;
       }
       
-      public function getData(param1:String, param2:Boolean=false) : * {
-         var _loc3_:DataStoreType = null;
-         if(param2)
+      public function getData(name:String, shareWithAccount:Boolean=false) : * {
+         var dst:DataStoreType = null;
+         if(shareWithAccount)
          {
             if(!this._accountDataStore)
             {
                this.initAccountDataStore();
             }
-            _loc3_ = this._accountDataStore;
+            dst = this._accountDataStore;
          }
          else
          {
@@ -523,73 +520,71 @@ package com.ankamagames.dofus.uiApi
             {
                this.initCharacterDataStore();
             }
-            _loc3_ = this._characterDataStore;
+            dst = this._characterDataStore;
          }
-         var _loc4_:* = StoreDataManager.getInstance().getData(_loc3_,param1);
+         var value:* = StoreDataManager.getInstance().getData(dst,name);
          switch(true)
          {
-            case _loc4_ is IModuleUtil:
-            case _loc4_ is IDataCenter:
-               return SecureCenter.secure(_loc4_);
-            default:
-               return _loc4_;
+            case value is IModuleUtil:
+            case value is IDataCenter:
+               return SecureCenter.secure(value);
          }
       }
       
-      public function getOption(param1:String, param2:String) : * {
-         return OptionManager.getOptionManager(param2)[param1];
+      public function getOption(name:String, moduleName:String) : * {
+         return OptionManager.getOptionManager(moduleName)[name];
       }
       
-      public function callbackHook(param1:Hook, ... rest) : void {
-         KernelEventsManager.getInstance().processCallback(param1,rest);
+      public function callbackHook(hook:Hook, ... params) : void {
+         KernelEventsManager.getInstance().processCallback(hook,params);
       }
       
-      public function showWorld(param1:Boolean, param2:Boolean=false) : void {
-         Atouin.getInstance().showWorld(param1,param2);
+      public function showWorld(b:Boolean, resetAnimations:Boolean=false) : void {
+         Atouin.getInstance().showWorld(b,resetAnimations);
       }
       
       public function worldIsVisible() : Boolean {
          return Atouin.getInstance().worldIsVisible;
       }
       
-      public function getConsoleAutoCompletion(param1:String, param2:Boolean) : String {
-         if(param2)
+      public function getConsoleAutoCompletion(cmd:String, server:Boolean) : String {
+         if(server)
          {
-            return ServerCommand.autoComplete(param1);
+            return ServerCommand.autoComplete(cmd);
          }
-         return ConsolesManager.getConsole("debug").autoComplete(param1);
+         return ConsolesManager.getConsole("debug").autoComplete(cmd);
       }
       
-      public function getAutoCompletePossibilities(param1:String, param2:Boolean=false) : Array {
-         if(param2)
+      public function getAutoCompletePossibilities(cmd:String, server:Boolean=false) : Array {
+         if(server)
          {
-            return ServerCommand.getAutoCompletePossibilities(param1).sort();
+            return ServerCommand.getAutoCompletePossibilities(cmd).sort();
          }
-         return ConsolesManager.getConsole("debug").getAutoCompletePossibilities(param1).sort();
+         return ConsolesManager.getConsole("debug").getAutoCompletePossibilities(cmd).sort();
       }
       
-      public function getAutoCompletePossibilitiesOnParam(param1:String, param2:Boolean=false, param3:uint=0, param4:Array=null) : Array {
-         return ConsolesManager.getConsole("debug").getAutoCompletePossibilitiesOnParam(param1,param3,param4).sort();
+      public function getAutoCompletePossibilitiesOnParam(cmd:String, server:Boolean=false, paramIndex:uint=0, currentParams:Array=null) : Array {
+         return ConsolesManager.getConsole("debug").getAutoCompletePossibilitiesOnParam(cmd,paramIndex,currentParams).sort();
       }
       
-      public function getCmdHelp(param1:String, param2:Boolean=false) : String {
-         if(param2)
+      public function getCmdHelp(cmd:String, server:Boolean=false) : String {
+         if(server)
          {
-            return ServerCommand.getHelp(param1);
+            return ServerCommand.getHelp(cmd);
          }
-         return ConsolesManager.getConsole("debug").getCmdHelp(param1);
+         return ConsolesManager.getConsole("debug").getCmdHelp(cmd);
       }
       
-      public function startChrono(param1:String) : void {
-         Chrono.start(param1);
+      public function startChrono(label:String) : void {
+         Chrono.start(label);
       }
       
       public function stopChrono() : void {
          Chrono.stop();
       }
       
-      public function hasAdminCommand(param1:String) : Boolean {
-         return ServerCommand.hasCommand(param1);
+      public function hasAdminCommand(cmd:String) : Boolean {
+         return ServerCommand.hasCommand(cmd);
       }
       
       private var _listener:Dictionary;
@@ -598,41 +593,41 @@ package com.ankamagames.dofus.uiApi
       
       private var _running:Boolean;
       
-      private function onEnterFrame(param1:Event) : void {
-         var _loc2_:Function = null;
-         for each (_loc2_ in this._listener)
+      private function onEnterFrame(e:Event) : void {
+         var fct:Function = null;
+         for each (fct in this._listener)
          {
-            if(_loc2_ != null)
+            if(fct != null)
             {
-               _loc2_();
+               fct();
             }
          }
       }
       
-      public function addEventListener(param1:Function, param2:String, param3:uint=25) : void {
+      public function addEventListener(listener:Function, name:String, frameRate:uint=25) : void {
          this._listenerCount++;
-         this._listener[param2] = param1;
+         this._listener[name] = listener;
          if(!this._running)
          {
-            EnterFrameDispatcher.addEventListener(this.onEnterFrame,this._module.id + ".enterframe" + Math.random(),param3);
+            EnterFrameDispatcher.addEventListener(this.onEnterFrame,this._module.id + ".enterframe" + Math.random(),frameRate);
             this._running = true;
          }
       }
       
-      public function removeEventListener(param1:Function) : void {
-         var _loc3_:String = null;
-         var _loc2_:Array = [];
-         for (_loc3_ in this._listener)
+      public function removeEventListener(listener:Function) : void {
+         var name:String = null;
+         var toDelete:Array = [];
+         for (name in this._listener)
          {
-            if(param1 == this._listener[_loc3_])
+            if(listener == this._listener[name])
             {
                this._listenerCount--;
-               _loc2_.push(_loc3_);
+               toDelete.push(name);
             }
          }
-         for each (_loc3_ in _loc2_)
+         for each (name in toDelete)
          {
-            delete this._listener[[_loc3_]];
+            delete this._listener[[name]];
          }
          if(!this._listenerCount)
          {
@@ -641,10 +636,10 @@ package com.ankamagames.dofus.uiApi
          }
       }
       
-      public function disableWorldInteraction(param1:Boolean=true) : void {
+      public function disableWorldInteraction(pTotal:Boolean=true) : void {
          _wordInteractionEnable = false;
          TooltipManager.hideAll();
-         Kernel.getWorker().process(ChangeWorldInteractionAction.create(false,param1));
+         Kernel.getWorker().process(ChangeWorldInteractionAction.create(false,pTotal));
       }
       
       public function enableWorldInteraction() : void {
@@ -652,17 +647,17 @@ package com.ankamagames.dofus.uiApi
          Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
       }
       
-      public function setFrameRate(param1:uint) : void {
-         StageShareManager.stage.frameRate = param1;
+      public function setFrameRate(f:uint) : void {
+         StageShareManager.stage.frameRate = f;
       }
       
       public function hasWorldInteraction() : Boolean {
-         var _loc1_:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-         if(!_loc1_)
+         var contextFrame:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+         if(!contextFrame)
          {
             return false;
          }
-         return _loc1_.hasWorldInteraction;
+         return contextFrame.hasWorldInteraction;
       }
       
       public function hasRight() : Boolean {
@@ -673,8 +668,8 @@ package com.ankamagames.dofus.uiApi
          return Kernel.getWorker().contains(FightContextFrame);
       }
       
-      public function getEntityLookFromString(param1:String) : TiphonEntityLook {
-         return TiphonEntityLook.fromString(param1);
+      public function getEntityLookFromString(s:String) : TiphonEntityLook {
+         return TiphonEntityLook.fromString(s);
       }
       
       public function getCurrentVersion() : Version {
@@ -689,8 +684,8 @@ package com.ankamagames.dofus.uiApi
          return XmlConfig.getInstance().getEntry("config.lang.current");
       }
       
-      public function clearCache(param1:Boolean=false) : void {
-         Dofus.getInstance().clearCache(param1,true);
+      public function clearCache(pSelective:Boolean=false) : void {
+         Dofus.getInstance().clearCache(pSelective,true);
       }
       
       public function reset() : void {
@@ -709,192 +704,192 @@ package com.ankamagames.dofus.uiApi
          DataGroundMapManager.clearGroundCache();
       }
       
-      public function zoom(param1:Number) : void {
-         this.luaZoom(param1);
-         Atouin.getInstance().zoom(param1);
+      public function zoom(value:Number) : void {
+         this.luaZoom(value);
+         Atouin.getInstance().zoom(value);
       }
       
       public function getCurrentZoom() : Number {
          return Atouin.getInstance().currentZoom;
       }
       
-      public function goToThirdPartyLogin(param1:WebBrowser) : void {
-         var _loc2_:URLRequest = null;
+      public function goToThirdPartyLogin(target:WebBrowser) : void {
+         var ur:URLRequest = null;
          if(BuildInfos.BUILD_TYPE == BuildTypeEnum.DEBUG)
          {
-            _loc2_ = new URLRequest("http://127.0.0.1/login.php");
+            ur = new URLRequest("http://127.0.0.1/login.php");
          }
          else
          {
-            _loc2_ = new URLRequest(I18n.getUiText("ui.link.thirdparty.login"));
+            ur = new URLRequest(I18n.getUiText("ui.link.thirdparty.login"));
          }
-         ComponentInternalAccessor.access(param1,"load")(_loc2_);
+         ComponentInternalAccessor.access(target,"load")(ur);
       }
       
-      public function goToOgrinePortal(param1:WebBrowser) : void {
-         var _loc2_:URLRequest = null;
-         if(BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE || BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA)
+      public function goToOgrinePortal(target:WebBrowser) : void {
+         var ur:URLRequest = null;
+         if((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE) || (BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA))
          {
-            _loc2_ = new URLRequest(I18n.getUiText("ui.link.ogrinePortal"));
+            ur = new URLRequest(I18n.getUiText("ui.link.ogrinePortal"));
          }
          else
          {
-            _loc2_ = new URLRequest(I18n.getUiText("ui.link.ogrinePortalLocal"));
+            ur = new URLRequest(I18n.getUiText("ui.link.ogrinePortalLocal"));
          }
-         _loc2_.data = this.getAnkamaPortalUrlParams();
-         _loc2_.method = URLRequestMethod.POST;
-         ComponentInternalAccessor.access(param1,"load")(_loc2_);
+         ur.data = this.getAnkamaPortalUrlParams();
+         ur.method = URLRequestMethod.POST;
+         ComponentInternalAccessor.access(target,"load")(ur);
       }
       
-      public function goToAnkaBoxPortal(param1:WebBrowser) : void {
-         var _loc2_:URLRequest = null;
-         if(BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE || BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA)
+      public function goToAnkaBoxPortal(target:WebBrowser) : void {
+         var ur:URLRequest = null;
+         if((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE) || (BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA))
          {
-            _loc2_ = new URLRequest(I18n.getUiText("ui.link.ankaboxPortal"));
+            ur = new URLRequest(I18n.getUiText("ui.link.ankaboxPortal"));
          }
          else
          {
-            _loc2_ = new URLRequest(I18n.getUiText("ui.link.ankaboxPortalLocal"));
+            ur = new URLRequest(I18n.getUiText("ui.link.ankaboxPortalLocal"));
          }
-         _loc2_.data = this.getAnkamaPortalUrlParams();
-         _loc2_.data.idbar = 0;
-         _loc2_.data.game = 1;
-         _loc2_.method = URLRequestMethod.POST;
-         ComponentInternalAccessor.access(param1,"load")(_loc2_);
+         ur.data = this.getAnkamaPortalUrlParams();
+         ur.data.idbar = 0;
+         ur.data.game = 1;
+         ur.method = URLRequestMethod.POST;
+         ComponentInternalAccessor.access(target,"load")(ur);
       }
       
-      public function goToAnkaBoxLastMessage(param1:WebBrowser) : void {
-         var _loc2_:URLRequest = null;
-         if(BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE || BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA)
+      public function goToAnkaBoxLastMessage(target:WebBrowser) : void {
+         var ur:URLRequest = null;
+         if((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE) || (BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA))
          {
-            _loc2_ = new URLRequest(I18n.getUiText("ui.link.ankaboxLastMessage"));
+            ur = new URLRequest(I18n.getUiText("ui.link.ankaboxLastMessage"));
          }
          else
          {
-            _loc2_ = new URLRequest(I18n.getUiText("ui.link.ankaboxLastMessageLocal"));
+            ur = new URLRequest(I18n.getUiText("ui.link.ankaboxLastMessageLocal"));
          }
-         _loc2_.data = this.getAnkamaPortalUrlParams();
-         _loc2_.data.idbar = 0;
-         _loc2_.data.game = 1;
-         _loc2_.method = URLRequestMethod.POST;
-         ComponentInternalAccessor.access(param1,"load")(_loc2_);
+         ur.data = this.getAnkamaPortalUrlParams();
+         ur.data.idbar = 0;
+         ur.data.game = 1;
+         ur.method = URLRequestMethod.POST;
+         ComponentInternalAccessor.access(target,"load")(ur);
       }
       
-      public function goToAnkaBoxSend(param1:WebBrowser, param2:int) : void {
-         var _loc3_:URLRequest = null;
-         if(BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE || BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA)
+      public function goToAnkaBoxSend(target:WebBrowser, userId:int) : void {
+         var ur:URLRequest = null;
+         if((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE) || (BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA))
          {
-            _loc3_ = new URLRequest(I18n.getUiText("ui.link.ankaboxSend"));
+            ur = new URLRequest(I18n.getUiText("ui.link.ankaboxSend"));
          }
          else
          {
-            _loc3_ = new URLRequest(I18n.getUiText("ui.link.ankaboxSendLocal"));
+            ur = new URLRequest(I18n.getUiText("ui.link.ankaboxSendLocal"));
          }
-         _loc3_.data = this.getAnkamaPortalUrlParams();
-         _loc3_.data.i = String(param2);
-         _loc3_.data.idbar = 0;
-         _loc3_.data.game = 1;
-         _loc3_.method = URLRequestMethod.POST;
-         ComponentInternalAccessor.access(param1,"load")(_loc3_);
+         ur.data = this.getAnkamaPortalUrlParams();
+         ur.data.i = String(userId);
+         ur.data.idbar = 0;
+         ur.data.game = 1;
+         ur.method = URLRequestMethod.POST;
+         ComponentInternalAccessor.access(target,"load")(ur);
       }
       
-      public function goToSupportFAQ(param1:uint) : void {
-         var _loc2_:URLRequest = new URLRequest(I18n.getUiText("ui.link.support.faq",[param1]));
-         navigateToURL(_loc2_);
+      public function goToSupportFAQ(faqId:uint) : void {
+         var ur:URLRequest = new URLRequest(I18n.getUiText("ui.link.support.faq",[faqId]));
+         navigateToURL(ur);
       }
       
-      public function goToChangelogPortal(param1:WebBrowser) : void {
+      public function goToChangelogPortal(target:WebBrowser) : void {
       }
       
-      public function goToCheckLink(param1:String, param2:uint, param3:String) : void {
-         var _loc4_:String = null;
-         if(BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE || BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA || BuildInfos.BUILD_TYPE == BuildTypeEnum.TESTING)
+      public function goToCheckLink(url:String, sender:uint, senderName:String) : void {
+         var checkLink:String = null;
+         if((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE) || (BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA) || (BuildInfos.BUILD_TYPE == BuildTypeEnum.TESTING))
          {
-            _loc4_ = I18n.getUiText("ui.link.checklink");
+            checkLink = I18n.getUiText("ui.link.checklink");
          }
          else
          {
-            _loc4_ = "http://go.ankama.lan/" + this.getCurrentLanguage() + "/check";
+            checkLink = "http://go.ankama.lan/" + this.getCurrentLanguage() + "/check";
          }
-         if(param1.indexOf("www") == 0)
+         if(url.indexOf("www") == 0)
          {
-            param1 = "http://" + param1;
+            url = "http://" + url;
          }
-         var param1:String = param1;
-         var _loc5_:uint = PlayerManager.getInstance().accountId;
-         var _loc6_:String = PlayedCharacterManager.getInstance().infos.name;
-         var _loc7_:uint = param2;
-         var _loc8_:String = param3;
-         var _loc9_:* = 1;
-         var _loc10_:int = PlayerManager.getInstance().server.id;
-         this._log.debug("goToCheckLink : " + param1 + " " + _loc5_ + " " + _loc7_ + " " + _loc9_ + " " + _loc10_);
-         var _loc11_:String = param1 + _loc5_ + "" + _loc7_ + "" + _loc6_ + param3 + _loc9_.toString() + _loc10_.toString();
-         var _loc12_:String = AdvancedMd5.hex_hmac_md5(">:fIZ?vfU0sDM_9j",_loc11_);
-         var _loc13_:* = "{\"url\":\"" + param1 + "\",\"click_account\":" + _loc5_ + ",\"from_account\":" + _loc7_ + ",\"click_name\":\"" + _loc6_ + "\",\"from_name\":\"" + _loc8_ + "\",\"game\":" + _loc9_ + ",\"server\":" + _loc10_ + ",\"hmac\":\"" + _loc12_ + "\"}";
-         var _loc14_:ByteArray = new ByteArray();
-         _loc14_.writeUTFBytes(_loc13_);
-         _loc14_.position = 0;
-         var _loc15_:* = "";
-         _loc14_.position = 0;
-         while(_loc14_.bytesAvailable)
+         var url:String = url;
+         var click_id:uint = PlayerManager.getInstance().accountId;
+         var click_name:String = PlayedCharacterManager.getInstance().infos.name;
+         var sender_id:uint = sender;
+         var sender_name:String = senderName;
+         var game:int = 1;
+         var server:int = PlayerManager.getInstance().server.id;
+         this._log.debug("goToCheckLink : " + url + " " + click_id + " " + sender_id + " " + game + " " + server);
+         var chaine:String = url + click_id + "" + sender_id + "" + click_name + senderName + game.toString() + server.toString();
+         var keyMd5:String = AdvancedMd5.hex_hmac_md5(">:fIZ?vfU0sDM_9j",chaine);
+         var jsonTab:String = "{\"url\":\"" + url + "\",\"click_account\":" + click_id + ",\"from_account\":" + sender_id + ",\"click_name\":\"" + click_name + "\",\"from_name\":\"" + sender_name + "\",\"game\":" + game + ",\"server\":" + server + ",\"hmac\":\"" + keyMd5 + "\"}";
+         var bytearray:ByteArray = new ByteArray();
+         bytearray.writeUTFBytes(jsonTab);
+         bytearray.position = 0;
+         var buffer:String = "";
+         bytearray.position = 0;
+         while(bytearray.bytesAvailable)
          {
-            _loc15_ = _loc15_ + _loc14_.readUnsignedByte().toString(16);
+            buffer = buffer + bytearray.readUnsignedByte().toString(16);
          }
-         _loc15_ = _loc15_.toUpperCase();
-         _loc4_ = _loc4_ + ("?s=" + _loc15_);
-         var _loc16_:URLRequest = new URLRequest(_loc4_);
-         var _loc17_:URLVariables = new URLVariables();
-         _loc17_.s = _loc15_;
-         _loc16_.method = URLRequestMethod.POST;
-         navigateToURL(_loc16_);
+         buffer = buffer.toUpperCase();
+         checkLink = checkLink + ("?s=" + buffer);
+         var ur:URLRequest = new URLRequest(checkLink);
+         var params:URLVariables = new URLVariables();
+         params.s = buffer;
+         ur.method = URLRequestMethod.POST;
+         navigateToURL(ur);
       }
       
-      public function refreshUrl(param1:WebBrowser, param2:uint=0) : void {
-         var _loc4_:URLVariables = null;
-         var _loc3_:URLRequest = new URLRequest(param1.location);
-         if(param2 == 0)
+      public function refreshUrl(target:WebBrowser, domain:uint=0) : void {
+         var params:URLVariables = null;
+         var ur:URLRequest = new URLRequest(target.location);
+         if(domain == 0)
          {
-            _loc3_.data = this.getAnkamaPortalUrlParams();
-            _loc3_.method = URLRequestMethod.POST;
+            ur.data = this.getAnkamaPortalUrlParams();
+            ur.method = URLRequestMethod.POST;
          }
          else
          {
-            if(param2 == 1)
+            if(domain == 1)
             {
-               _loc4_ = new URLVariables();
-               _loc4_.tags = BuildInfos.BUILD_VERSION.major + "." + BuildInfos.BUILD_VERSION.minor + "." + BuildInfos.BUILD_VERSION.release;
-               _loc4_.theme = OptionManager.getOptionManager("dofus").switchUiSkin;
-               _loc3_.data = _loc4_;
-               _loc3_.method = URLRequestMethod.GET;
+               params = new URLVariables();
+               params.tags = BuildInfos.BUILD_VERSION.major + "." + BuildInfos.BUILD_VERSION.minor + "." + BuildInfos.BUILD_VERSION.release;
+               params.theme = OptionManager.getOptionManager("dofus").switchUiSkin;
+               ur.data = params;
+               ur.method = URLRequestMethod.GET;
             }
          }
-         ComponentInternalAccessor.access(param1,"load")(_loc3_);
+         ComponentInternalAccessor.access(target,"load")(ur);
       }
       
-      public function execServerCmd(param1:String) : void {
-         var _loc2_:AdminQuietCommandMessage = new AdminQuietCommandMessage();
-         _loc2_.initAdminQuietCommandMessage(param1);
+      public function execServerCmd(cmd:String) : void {
+         var aqcmsg:AdminQuietCommandMessage = new AdminQuietCommandMessage();
+         aqcmsg.initAdminQuietCommandMessage(cmd);
          if(PlayerManager.getInstance().hasRights)
          {
-            ConnectionsHandler.getConnection().send(_loc2_);
+            ConnectionsHandler.getConnection().send(aqcmsg);
          }
       }
       
-      public function mouseZoom(param1:Boolean=true) : void {
-         var _loc2_:Number = Atouin.getInstance().currentZoom + (param1?1:-1);
-         this.luaZoom(_loc2_);
-         Atouin.getInstance().zoom(_loc2_,Atouin.getInstance().worldContainer.mouseX,Atouin.getInstance().worldContainer.mouseY);
-         var _loc3_:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-         if(_loc3_)
+      public function mouseZoom(zoomIn:Boolean=true) : void {
+         var zoomLevel:Number = Atouin.getInstance().currentZoom + (zoomIn?1:-1);
+         this.luaZoom(zoomLevel);
+         Atouin.getInstance().zoom(zoomLevel,Atouin.getInstance().worldContainer.mouseX,Atouin.getInstance().worldContainer.mouseY);
+         var rpEntitesFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+         if(rpEntitesFrame)
          {
-            _loc3_.updateAllIcons();
+            rpEntitesFrame.updateAllIcons();
          }
-         var _loc4_:MonstersInfoFrame = Kernel.getWorker().getFrame(MonstersInfoFrame) as MonstersInfoFrame;
-         if(_loc4_)
+         var monstersInfoFrame:MonstersInfoFrame = Kernel.getWorker().getFrame(MonstersInfoFrame) as MonstersInfoFrame;
+         if(monstersInfoFrame)
          {
-            _loc4_.update(true);
+            monstersInfoFrame.update(true);
          }
-         if(_loc2_ <= AtouinConstants.MAX_ZOOM && _loc2_ >= 1)
+         if((zoomLevel <= AtouinConstants.MAX_ZOOM) && (zoomLevel >= 1))
          {
             TooltipManager.hideAll();
          }
@@ -902,10 +897,10 @@ package com.ankamagames.dofus.uiApi
       
       public function resetZoom() : void {
          Atouin.getInstance().zoom(1);
-         var _loc1_:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-         if(_loc1_)
+         var rpEntitesFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+         if(rpEntitesFrame)
          {
-            _loc1_.updateAllIcons();
+            rpEntitesFrame.updateAllIcons();
          }
       }
       
@@ -917,11 +912,11 @@ package com.ankamagames.dofus.uiApi
          return PerformanceManager.optimize;
       }
       
-      public function hasPart(param1:String) : Boolean {
-         var _loc2_:ContentPart = PartManager.getInstance().getPart(param1);
-         if(_loc2_)
+      public function hasPart(partName:String) : Boolean {
+         var part:ContentPart = PartManager.getInstance().getPart(partName);
+         if(part)
          {
-            return _loc2_.state == PartStateEnum.PART_UP_TO_DATE;
+            return part.state == PartStateEnum.PART_UP_TO_DATE;
          }
          return true;
       }
@@ -946,52 +941,52 @@ package com.ankamagames.dofus.uiApi
          return PartManager.getInstance().isFinished;
       }
       
-      public function notifyUser(param1:Boolean) : void {
-         return SystemManager.getSingleton().notifyUser(param1);
+      public function notifyUser(always:Boolean) : void {
+         return SystemManager.getSingleton().notifyUser(always);
       }
       
-      public function setGameAlign(param1:String) : void {
-         StageShareManager.stage.align = param1;
+      public function setGameAlign(align:String) : void {
+         StageShareManager.stage.align = align;
       }
       
       public function getGameAlign() : String {
          return StageShareManager.stage.align;
       }
       
-      public function getDirectoryContent(param1:String=".") : Array {
-         var _loc2_:uint = 0;
-         var _loc4_:Array = null;
-         var _loc5_:Array = null;
-         var _loc6_:File = null;
+      public function getDirectoryContent(path:String=".") : Array {
+         var len:uint = 0;
+         var result:Array = null;
+         var folderContent:Array = null;
+         var file:File = null;
          do
          {
-               _loc2_ = param1.length;
-               param1 = param1.replace("..",".");
-            }while(param1.length != _loc2_);
+               len = path.length;
+               path = path.replace("..",".");
+            }while(path.length != len);
             
-            var param1:String = param1.replace(":","");
-            var _loc3_:File = new File(unescape(this._module.rootPath.replace("file://",""))).resolvePath(param1);
-            if(_loc3_.isDirectory)
+            var path:String = path.replace(":","");
+            var folder:File = new File(unescape(this._module.rootPath.replace("file://",""))).resolvePath(path);
+            if(folder.isDirectory)
             {
-               _loc4_ = [];
-               _loc5_ = _loc3_.getDirectoryListing();
-               for each (_loc6_ in _loc5_)
+               result = [];
+               folderContent = folder.getDirectoryListing();
+               for each (file in folderContent)
                {
-                  _loc4_.push(
+                  result.push(
                      {
-                        "name":_loc6_.name,
-                        "type":(_loc6_.isDirectory?"folder":"file")
+                        "name":file.name,
+                        "type":(file.isDirectory?"folder":"file")
                      });
                }
-               return _loc4_;
+               return result;
             }
             return [];
          }
          
-         public function getAccountId(param1:String) : int {
+         public function getAccountId(playerName:String) : int {
             try
             {
-               return AccountManager.getInstance().getAccountId(param1);
+               return AccountManager.getInstance().getAccountId(playerName);
             }
             catch(error:Error)
             {
@@ -1000,10 +995,10 @@ package com.ankamagames.dofus.uiApi
          }
          
          public function getIsAnkaBoxEnabled() : Boolean {
-            var _loc1_:ChatFrame = Kernel.getWorker().getFrame(ChatFrame) as ChatFrame;
-            if(_loc1_)
+            var chat:ChatFrame = Kernel.getWorker().getFrame(ChatFrame) as ChatFrame;
+            if(chat)
             {
-               return _loc1_.ankaboxEnabled;
+               return chat.ankaboxEnabled;
             }
             return false;
          }
@@ -1012,29 +1007,29 @@ package com.ankamagames.dofus.uiApi
             return PlayerManager.getInstance().adminStatus;
          }
          
-         public function getObjectVariables(param1:Object, param2:Boolean=false, param3:Boolean=false) : Array {
-            return DescribeTypeCache.getVariables(param1,param2,param3);
+         public function getObjectVariables(o:Object, onlyVar:Boolean=false, useCache:Boolean=false) : Array {
+            return DescribeTypeCache.getVariables(o,onlyVar,useCache);
          }
          
          public function getNewDynamicSecureObject() : DynamicSecureObject {
             return new DynamicSecureObject();
          }
          
-         public function sendStatisticReport(param1:String, param2:String) : Boolean {
-            return StatisticReportingManager.getInstance().report(param1,param2);
+         public function sendStatisticReport(key:String, value:String) : Boolean {
+            return StatisticReportingManager.getInstance().report(key,value);
          }
          
-         public function isStatisticReported(param1:String) : Boolean {
-            return StatisticReportingManager.getInstance().isReported(param1);
+         public function isStatisticReported(key:String) : Boolean {
+            return StatisticReportingManager.getInstance().isReported(key);
          }
          
          public function getNickname() : String {
             return PlayerManager.getInstance().nickname;
          }
          
-         public function copyToClipboard(param1:String) : void {
+         public function copyToClipboard(val:String) : void {
             Clipboard.generalClipboard.clear();
-            Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT,param1);
+            Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT,val);
          }
          
          public function getLaunchArgs() : String {
@@ -1042,30 +1037,30 @@ package com.ankamagames.dofus.uiApi
          }
          
          public function getPartnerInfo() : String {
-            var _loc2_:FileStream = null;
-            var _loc3_:String = null;
-            var _loc1_:File = File.applicationDirectory.resolvePath("partner");
-            if(_loc1_.exists)
+            var fs:FileStream = null;
+            var content:String = null;
+            var f:File = File.applicationDirectory.resolvePath("partner");
+            if(f.exists)
             {
-               _loc2_ = new FileStream();
-               _loc2_.open(_loc1_,FileMode.READ);
-               _loc3_ = _loc2_.readUTFBytes(_loc2_.bytesAvailable);
-               _loc2_.close();
-               return _loc3_;
+               fs = new FileStream();
+               fs.open(f,FileMode.READ);
+               content = fs.readUTFBytes(fs.bytesAvailable);
+               fs.close();
+               return content;
             }
             return "";
          }
          
          private function getAnkamaPortalUrlParams() : URLVariables {
-            var _loc1_:URLVariables = new URLVariables();
-            _loc1_.username = AuthentificationManager.getInstance().username;
-            _loc1_.passkey = AuthentificationManager.getInstance().ankamaPortalKey;
-            _loc1_.server = PlayerManager.getInstance().server.id;
-            _loc1_.serverName = PlayerManager.getInstance().server.name;
-            _loc1_.language = XmlConfig.getInstance().getEntry("config.lang.current");
-            _loc1_.character = PlayedCharacterManager.getInstance().id;
-            _loc1_.theme = OptionManager.getOptionManager("dofus").switchUiSkin;
-            return _loc1_;
+            var params:URLVariables = new URLVariables();
+            params.username = AuthentificationManager.getInstance().username;
+            params.passkey = AuthentificationManager.getInstance().ankamaPortalKey;
+            params.server = PlayerManager.getInstance().server.id;
+            params.serverName = PlayerManager.getInstance().server.name;
+            params.language = XmlConfig.getInstance().getEntry("config.lang.current");
+            params.character = PlayedCharacterManager.getInstance().id;
+            params.theme = OptionManager.getOptionManager("dofus").switchUiSkin;
+            return params;
          }
          
          private function initAccountDataStore() : void {
@@ -1080,11 +1075,11 @@ package com.ankamagames.dofus.uiApi
             this._moduleActionDataStore = new DataStoreType("ModuleAction_" + this._module.id,true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_CHARACTER);
          }
          
-         private function luaZoom(param1:Number) : void {
-            var _loc2_:LuaScriptRecorderFrame = Kernel.getWorker().getFrame(LuaScriptRecorderFrame) as LuaScriptRecorderFrame;
-            if(_loc2_)
+         private function luaZoom(value:Number) : void {
+            var lsrf:LuaScriptRecorderFrame = Kernel.getWorker().getFrame(LuaScriptRecorderFrame) as LuaScriptRecorderFrame;
+            if(lsrf)
             {
-               _loc2_.cameraZoom(param1);
+               lsrf.cameraZoom(value);
             }
          }
       }

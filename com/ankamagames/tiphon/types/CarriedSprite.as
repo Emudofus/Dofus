@@ -10,12 +10,12 @@ package com.ankamagames.tiphon.types
          super();
       }
       
-      override public function init(param1:IAnimationSpriteHandler) : void {
-         var _loc2_:Array = getQualifiedClassName(this).split("_");
-         var _loc3_:DisplayObjectContainer = param1.getSubEntitySlot(parseInt(_loc2_[1]),parseInt(_loc2_[2]));
-         if(_loc3_)
+      override public function init(handler:IAnimationSpriteHandler) : void {
+         var splitedName:Array = getQualifiedClassName(this).split("_");
+         var c:DisplayObjectContainer = handler.getSubEntitySlot(parseInt(splitedName[1]),parseInt(splitedName[2]));
+         if(c)
          {
-            addChild(_loc3_);
+            addChild(c);
          }
       }
    }

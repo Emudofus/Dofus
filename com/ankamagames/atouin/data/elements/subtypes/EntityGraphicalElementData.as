@@ -10,8 +10,8 @@ package com.ankamagames.atouin.data.elements.subtypes
    public class EntityGraphicalElementData extends GraphicalElementData
    {
       
-      public function EntityGraphicalElementData(param1:int, param2:int) {
-         super(param1,param2);
+      public function EntityGraphicalElementData(elementId:int, elementType:int) {
+         super(elementId,elementType);
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EntityGraphicalElementData));
@@ -28,42 +28,42 @@ package com.ankamagames.atouin.data.elements.subtypes
       
       public var maxDelay:uint;
       
-      override public function fromRaw(param1:IDataInput, param2:int) : void {
-         var _loc3_:uint = param1.readInt();
-         this.entityLook = param1.readUTFBytes(_loc3_);
+      override public function fromRaw(raw:IDataInput, version:int) : void {
+         var entityLookLength:uint = raw.readInt();
+         this.entityLook = raw.readUTFBytes(entityLookLength);
          if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
          {
             _log.debug("  (EntityGraphicalElementData) Entity look : " + this.entityLook);
          }
-         this.horizontalSymmetry = param1.readBoolean();
+         this.horizontalSymmetry = raw.readBoolean();
          if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
          {
             _log.debug("  (EntityGraphicalElementData) Element horizontals symmetry : " + this.horizontalSymmetry);
          }
-         if(param2 >= 7)
+         if(version >= 7)
          {
-            this.playAnimation = param1.readBoolean();
+            this.playAnimation = raw.readBoolean();
             if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
             {
                _log.debug("  (EntityGraphicalElementData) playAnimation : " + this.playAnimation);
             }
          }
-         if(param2 >= 6)
+         if(version >= 6)
          {
-            this.playAnimStatic = param1.readBoolean();
+            this.playAnimStatic = raw.readBoolean();
             if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
             {
                _log.debug("  (EntityGraphicalElementData) playAnimStatic : " + this.playAnimStatic);
             }
          }
-         if(param2 >= 5)
+         if(version >= 5)
          {
-            this.minDelay = param1.readInt();
+            this.minDelay = raw.readInt();
             if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
             {
                _log.debug("  (EntityGraphicalElementData) minDelay : " + this.minDelay);
             }
-            this.maxDelay = param1.readInt();
+            this.maxDelay = raw.readInt();
             if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
             {
                _log.debug("  (EntityGraphicalElementData) maxDelay : " + this.maxDelay);

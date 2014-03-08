@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.character.status
          return 414;
       }
       
-      public function initPlayerStatusExtended(param1:uint=1, param2:String="") : PlayerStatusExtended {
-         super.initPlayerStatus(param1);
-         this.message = param2;
+      public function initPlayerStatusExtended(statusId:uint=1, message:String="") : PlayerStatusExtended {
+         super.initPlayerStatus(statusId);
+         this.message = message;
          return this;
       }
       
@@ -30,22 +30,22 @@ package com.ankamagames.dofus.network.types.game.character.status
          this.message = "";
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PlayerStatusExtended(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PlayerStatusExtended(output);
       }
       
-      public function serializeAs_PlayerStatusExtended(param1:IDataOutput) : void {
-         super.serializeAs_PlayerStatus(param1);
-         param1.writeUTF(this.message);
+      public function serializeAs_PlayerStatusExtended(output:IDataOutput) : void {
+         super.serializeAs_PlayerStatus(output);
+         output.writeUTF(this.message);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PlayerStatusExtended(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PlayerStatusExtended(input);
       }
       
-      public function deserializeAs_PlayerStatusExtended(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.message = param1.readUTF();
+      public function deserializeAs_PlayerStatusExtended(input:IDataInput) : void {
+         super.deserialize(input);
+         this.message = input.readUTF();
       }
    }
 }

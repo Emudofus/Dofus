@@ -3,17 +3,17 @@ package com.ankamagames.jerakine.data
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import flash.utils.IDataInput;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.enum.GameDataTypeEnum;
    import flash.utils.getDefinitionByName;
    
    public class GameDataField extends Object
    {
       
-      public function GameDataField(param1:String) {
+      public function GameDataField(fieldName:String) {
          super();
-         this.name = param1;
+         this.name = fieldName;
       }
       
       private static const _log:Logger = Log.getLogger(getQualifiedClassName(GameDataField));
@@ -28,13 +28,13 @@ package com.ankamagames.jerakine.data
       
       private var _innerTypeNames:Vector.<String>;
       
-      public function readType(param1:IDataInput) : void {
-         var _loc2_:int = param1.readInt();
-         this.readData = this.getReadMethod(_loc2_,param1);
+      public function readType(stream:IDataInput) : void {
+         var type:int = stream.readInt();
+         this.readData = this.getReadMethod(type,stream);
       }
       
-      private function getReadMethod(param1:int, param2:IDataInput) : Function {
-         switch(param1)
+      private function getReadMethod(type:int, stream:IDataInput) : Function {
+         switch(type)
          {
             case GameDataTypeEnum.INT:
                return this.readInteger;
@@ -54,68 +54,62 @@ package com.ankamagames.jerakine.data
                   this._innerReadMethods = new Vector.<Function>();
                   this._innerTypeNames = new Vector.<String>();
                }
-               this._innerTypeNames.push(param2.readUTF());
-               this._innerReadMethods.unshift(this.getReadMethod(param2.readInt(),param2));
+               this._innerTypeNames.push(stream.readUTF());
+               this._innerReadMethods.unshift(this.getReadMethod(stream.readInt(),stream));
                return this.readVector;
-            default:
-               if(param1 > 0)
-               {
-                  return this.readObject;
-               }
-               throw new Error("Unknown type \'" + param1 + "\'.");
          }
       }
       
-      private function readVector(param1:String, param2:IDataInput, param3:uint=0) : * {
-         var _loc4_:uint = param2.readInt();
-         var _loc5_:String = this._innerTypeNames[param3];
-         var _loc6_:* = new getDefinitionByName(_loc5_)(_loc4_,true);
-         var _loc7_:uint = 0;
-         while(_loc7_ < _loc4_)
+      private function readVector(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         var len:uint = stream.readInt();
+         var vectorTypeName:String = this._innerTypeNames[innerIndex];
+         var content:* = new getDefinitionByName(vectorTypeName)(len,true);
+         var i:uint = 0;
+         while(i < len)
          {
-            _loc6_[_loc7_] = this._innerReadMethods[param3](param1,param2,param3 + 1);
-            _loc7_++;
+            content[i] = this._innerReadMethods[innerIndex](moduleName,stream,innerIndex + 1);
+            i++;
          }
-         return _loc6_;
+         return content;
       }
       
-      private function readObject(param1:String, param2:IDataInput, param3:uint=0) : * {
-         var _loc4_:int = param2.readInt();
-         if(_loc4_ == NULL_IDENTIFIER)
+      private function readObject(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         var classIdentifier:int = stream.readInt();
+         if(classIdentifier == NULL_IDENTIFIER)
          {
             return null;
          }
-         var _loc5_:GameDataClassDefinition = GameDataFileAccessor.getInstance().getClassDefinition(param1,_loc4_);
-         return _loc5_.read(param1,param2);
+         var classDefinition:GameDataClassDefinition = GameDataFileAccessor.getInstance().getClassDefinition(moduleName,classIdentifier);
+         return classDefinition.read(moduleName,stream);
       }
       
-      private function readInteger(param1:String, param2:IDataInput, param3:uint=0) : * {
-         return param2.readInt();
+      private function readInteger(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         return stream.readInt();
       }
       
-      private function readBoolean(param1:String, param2:IDataInput, param3:uint=0) : * {
-         return param2.readBoolean();
+      private function readBoolean(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         return stream.readBoolean();
       }
       
-      private function readString(param1:String, param2:IDataInput, param3:uint=0) : * {
-         var _loc4_:* = param2.readUTF();
-         if(_loc4_ == "null")
+      private function readString(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         var result:* = stream.readUTF();
+         if(result == "null")
          {
-            _loc4_ = null;
+            result = null;
          }
-         return _loc4_;
+         return result;
       }
       
-      private function readNumber(param1:String, param2:IDataInput, param3:uint=0) : * {
-         return param2.readDouble();
+      private function readNumber(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         return stream.readDouble();
       }
       
-      private function readI18n(param1:String, param2:IDataInput, param3:uint=0) : * {
-         return param2.readInt();
+      private function readI18n(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         return stream.readInt();
       }
       
-      private function readUnsignedInteger(param1:String, param2:IDataInput, param3:uint=0) : * {
-         return param2.readUnsignedInt();
+      private function readUnsignedInteger(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         return stream.readUnsignedInt();
       }
    }
 }

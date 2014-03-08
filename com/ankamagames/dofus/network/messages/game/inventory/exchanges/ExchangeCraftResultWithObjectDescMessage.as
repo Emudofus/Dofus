@@ -28,9 +28,9 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5999;
       }
       
-      public function initExchangeCraftResultWithObjectDescMessage(param1:uint=0, param2:ObjectItemNotInContainer=null) : ExchangeCraftResultWithObjectDescMessage {
-         super.initExchangeCraftResultMessage(param1);
-         this.objectInfo = param2;
+      public function initExchangeCraftResultWithObjectDescMessage(craftResult:uint=0, objectInfo:ObjectItemNotInContainer=null) : ExchangeCraftResultWithObjectDescMessage {
+         super.initExchangeCraftResultMessage(craftResult);
+         this.objectInfo = objectInfo;
          this._isInitialized = true;
          return this;
       }
@@ -41,33 +41,33 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ExchangeCraftResultWithObjectDescMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeCraftResultWithObjectDescMessage(output);
       }
       
-      public function serializeAs_ExchangeCraftResultWithObjectDescMessage(param1:IDataOutput) : void {
-         super.serializeAs_ExchangeCraftResultMessage(param1);
-         this.objectInfo.serializeAs_ObjectItemNotInContainer(param1);
+      public function serializeAs_ExchangeCraftResultWithObjectDescMessage(output:IDataOutput) : void {
+         super.serializeAs_ExchangeCraftResultMessage(output);
+         this.objectInfo.serializeAs_ObjectItemNotInContainer(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ExchangeCraftResultWithObjectDescMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeCraftResultWithObjectDescMessage(input);
       }
       
-      public function deserializeAs_ExchangeCraftResultWithObjectDescMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_ExchangeCraftResultWithObjectDescMessage(input:IDataInput) : void {
+         super.deserialize(input);
          this.objectInfo = new ObjectItemNotInContainer();
-         this.objectInfo.deserialize(param1);
+         this.objectInfo.deserialize(input);
       }
    }
 }

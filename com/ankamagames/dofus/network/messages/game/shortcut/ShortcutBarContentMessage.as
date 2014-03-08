@@ -2,8 +2,8 @@ package com.ankamagames.dofus.network.messages.game.shortcut
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.shortcut.Shortcut;
+   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,9 +33,9 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          return 6231;
       }
       
-      public function initShortcutBarContentMessage(param1:uint=0, param2:Vector.<Shortcut>=null) : ShortcutBarContentMessage {
-         this.barType = param1;
-         this.shortcuts = param2;
+      public function initShortcutBarContentMessage(barType:uint=0, shortcuts:Vector.<Shortcut>=null) : ShortcutBarContentMessage {
+         this.barType = barType;
+         this.shortcuts = shortcuts;
          this._isInitialized = true;
          return this;
       }
@@ -46,55 +46,55 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ShortcutBarContentMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ShortcutBarContentMessage(output);
       }
       
-      public function serializeAs_ShortcutBarContentMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.barType);
-         param1.writeShort(this.shortcuts.length);
-         var _loc2_:uint = 0;
-         while(_loc2_ < this.shortcuts.length)
+      public function serializeAs_ShortcutBarContentMessage(output:IDataOutput) : void {
+         output.writeByte(this.barType);
+         output.writeShort(this.shortcuts.length);
+         var _i2:uint = 0;
+         while(_i2 < this.shortcuts.length)
          {
-            param1.writeShort((this.shortcuts[_loc2_] as Shortcut).getTypeId());
-            (this.shortcuts[_loc2_] as Shortcut).serialize(param1);
-            _loc2_++;
+            output.writeShort((this.shortcuts[_i2] as Shortcut).getTypeId());
+            (this.shortcuts[_i2] as Shortcut).serialize(output);
+            _i2++;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ShortcutBarContentMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ShortcutBarContentMessage(input);
       }
       
-      public function deserializeAs_ShortcutBarContentMessage(param1:IDataInput) : void {
-         var _loc4_:uint = 0;
-         var _loc5_:Shortcut = null;
-         this.barType = param1.readByte();
+      public function deserializeAs_ShortcutBarContentMessage(input:IDataInput) : void {
+         var _id2:uint = 0;
+         var _item2:Shortcut = null;
+         this.barType = input.readByte();
          if(this.barType < 0)
          {
             throw new Error("Forbidden value (" + this.barType + ") on element of ShortcutBarContentMessage.barType.");
          }
          else
          {
-            _loc2_ = param1.readUnsignedShort();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            _shortcutsLen = input.readUnsignedShort();
+            _i2 = 0;
+            while(_i2 < _shortcutsLen)
             {
-               _loc4_ = param1.readUnsignedShort();
-               _loc5_ = ProtocolTypeManager.getInstance(Shortcut,_loc4_);
-               _loc5_.deserialize(param1);
-               this.shortcuts.push(_loc5_);
-               _loc3_++;
+               _id2 = input.readUnsignedShort();
+               _item2 = ProtocolTypeManager.getInstance(Shortcut,_id2);
+               _item2.deserialize(input);
+               this.shortcuts.push(_item2);
+               _i2++;
             }
             return;
          }

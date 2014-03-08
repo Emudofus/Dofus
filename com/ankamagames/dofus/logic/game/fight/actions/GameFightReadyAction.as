@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.fight.actions
          super();
       }
       
-      public static function create(param1:Boolean) : GameFightReadyAction {
-         var _loc2_:GameFightReadyAction = new GameFightReadyAction();
-         _loc2_.isReady = param1;
-         return _loc2_;
+      public static function create(isReady:Boolean) : GameFightReadyAction {
+         var a:GameFightReadyAction = new GameFightReadyAction();
+         a.isReady = isReady;
+         return a;
       }
       
       public var isReady:Boolean;

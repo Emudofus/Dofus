@@ -3,11 +3,11 @@ package com.ankamagames.dofus.kernel.sound.type
    public class RollOffPreset extends Object
    {
       
-      public function RollOffPreset(param1:uint, param2:uint, param3:uint) {
+      public function RollOffPreset(pMaxVolume:uint, pRange:uint, pMaxSaturationRange:uint) {
          super();
-         this._maxVolume = param1;
-         this._maxRange = param2;
-         this._maxSaturationRange = param3;
+         this._maxVolume = pMaxVolume;
+         this._maxRange = pRange;
+         this._maxSaturationRange = pMaxSaturationRange;
       }
       
       private var _maxVolume:uint;

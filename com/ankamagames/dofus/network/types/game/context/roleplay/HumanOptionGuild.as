@@ -20,8 +20,8 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 409;
       }
       
-      public function initHumanOptionGuild(param1:GuildInformations=null) : HumanOptionGuild {
-         this.guildInformations = param1;
+      public function initHumanOptionGuild(guildInformations:GuildInformations=null) : HumanOptionGuild {
+         this.guildInformations = guildInformations;
          return this;
       }
       
@@ -29,23 +29,23 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          this.guildInformations = new GuildInformations();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_HumanOptionGuild(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HumanOptionGuild(output);
       }
       
-      public function serializeAs_HumanOptionGuild(param1:IDataOutput) : void {
-         super.serializeAs_HumanOption(param1);
-         this.guildInformations.serializeAs_GuildInformations(param1);
+      public function serializeAs_HumanOptionGuild(output:IDataOutput) : void {
+         super.serializeAs_HumanOption(output);
+         this.guildInformations.serializeAs_GuildInformations(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_HumanOptionGuild(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HumanOptionGuild(input);
       }
       
-      public function deserializeAs_HumanOptionGuild(param1:IDataInput) : void {
-         super.deserialize(param1);
+      public function deserializeAs_HumanOptionGuild(input:IDataInput) : void {
+         super.deserialize(input);
          this.guildInformations = new GuildInformations();
-         this.guildInformations.deserialize(param1);
+         this.guildInformations.deserialize(input);
       }
    }
 }

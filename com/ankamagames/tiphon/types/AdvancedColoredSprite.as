@@ -11,12 +11,12 @@ package com.ankamagames.tiphon.types
       
       private static const baseColorTransform:ColorTransform = new ColorTransform();
       
-      override public function colorize(param1:ColorTransform) : void {
-         if(param1)
+      override public function colorize(colorT:ColorTransform) : void {
+         if(colorT)
          {
-            baseColorTransform.redMultiplier = param1.redOffset / 128;
-            baseColorTransform.greenMultiplier = param1.greenOffset / 128;
-            baseColorTransform.blueMultiplier = param1.blueOffset / 128;
+            baseColorTransform.redMultiplier = colorT.redOffset / 128;
+            baseColorTransform.greenMultiplier = colorT.greenOffset / 128;
+            baseColorTransform.blueMultiplier = colorT.blueOffset / 128;
             transform.colorTransform = baseColorTransform;
          }
       }

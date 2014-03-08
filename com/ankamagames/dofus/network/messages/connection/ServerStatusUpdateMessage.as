@@ -29,8 +29,8 @@ package com.ankamagames.dofus.network.messages.connection
          return 50;
       }
       
-      public function initServerStatusUpdateMessage(param1:GameServerInformations=null) : ServerStatusUpdateMessage {
-         this.server = param1;
+      public function initServerStatusUpdateMessage(server:GameServerInformations=null) : ServerStatusUpdateMessage {
+         this.server = server;
          this._isInitialized = true;
          return this;
       }
@@ -40,31 +40,31 @@ package com.ankamagames.dofus.network.messages.connection
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ServerStatusUpdateMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ServerStatusUpdateMessage(output);
       }
       
-      public function serializeAs_ServerStatusUpdateMessage(param1:IDataOutput) : void {
-         this.server.serializeAs_GameServerInformations(param1);
+      public function serializeAs_ServerStatusUpdateMessage(output:IDataOutput) : void {
+         this.server.serializeAs_GameServerInformations(output);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ServerStatusUpdateMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ServerStatusUpdateMessage(input);
       }
       
-      public function deserializeAs_ServerStatusUpdateMessage(param1:IDataInput) : void {
+      public function deserializeAs_ServerStatusUpdateMessage(input:IDataInput) : void {
          this.server = new GameServerInformations();
-         this.server.deserialize(param1);
+         this.server.deserialize(input);
       }
    }
 }

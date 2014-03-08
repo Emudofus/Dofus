@@ -42,16 +42,16 @@ package com.ankamagames.berilia.managers
          return this._dInstanceIndex;
       }
       
-      public function registerInstance(param1:InstanceEvent) : void {
-         this._dInstanceIndex[param1.instance] = param1;
+      public function registerInstance(ie:InstanceEvent) : void {
+         this._dInstanceIndex[ie.instance] = ie;
       }
       
-      public function isRegisteredInstance(param1:DisplayObject, param2:*=null) : Boolean {
-         return (this._dInstanceIndex[param1]) && (this._dInstanceIndex[param1].events[getQualifiedClassName(param2)]);
+      public function isRegisteredInstance(target:DisplayObject, msg:*=null) : Boolean {
+         return (this._dInstanceIndex[target]) && (this._dInstanceIndex[target].events[getQualifiedClassName(msg)]);
       }
       
-      public function removeInstance(param1:*) : void {
-         delete this._dInstanceIndex[[param1]];
+      public function removeInstance(instance:*) : void {
+         delete this._dInstanceIndex[[instance]];
       }
    }
 }

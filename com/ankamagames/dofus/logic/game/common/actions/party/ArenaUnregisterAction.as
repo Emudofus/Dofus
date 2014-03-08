@@ -10,8 +10,8 @@ package com.ankamagames.dofus.logic.game.common.actions.party
       }
       
       public static function create() : ArenaUnregisterAction {
-         var _loc1_:ArenaUnregisterAction = new ArenaUnregisterAction();
-         return _loc1_;
+         var a:ArenaUnregisterAction = new ArenaUnregisterAction();
+         return a;
       }
    }
 }

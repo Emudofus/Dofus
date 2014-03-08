@@ -27,16 +27,16 @@ package com.ankamagames.berilia.types.uiDefinition
       public var y:Number;
       
       public function toGraphicSize() : GraphicSize {
-         var _loc1_:GraphicSize = new GraphicSize();
+         var graphicSize:GraphicSize = new GraphicSize();
          if(!isNaN(this.xUnit))
          {
-            _loc1_.setX(this.x,this.xUnit);
+            graphicSize.setX(this.x,this.xUnit);
          }
          if(!isNaN(this.yUnit))
          {
-            _loc1_.setY(this.y,this.yUnit);
+            graphicSize.setY(this.y,this.yUnit);
          }
-         return _loc1_;
+         return graphicSize;
       }
    }
 }

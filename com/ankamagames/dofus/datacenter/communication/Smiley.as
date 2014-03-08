@@ -18,8 +18,8 @@ package com.ankamagames.dofus.datacenter.communication
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Smiley));
       
-      public static function getSmileyById(param1:int) : Smiley {
-         return GameData.getObject(MODULE,param1) as Smiley;
+      public static function getSmileyById(id:int) : Smiley {
+         return GameData.getObject(MODULE,id) as Smiley;
       }
       
       public static function getSmileys() : Array {

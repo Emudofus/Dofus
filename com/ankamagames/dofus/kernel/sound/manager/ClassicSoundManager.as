@@ -33,8 +33,8 @@ package com.ankamagames.dofus.kernel.sound.manager
    import com.ankamagames.jerakine.resources.loaders.ResourceLoaderType;
    import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
    import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import __AS3__.vec.*;
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import flash.filesystem.File;
@@ -126,8 +126,8 @@ package com.ankamagames.dofus.kernel.sound.manager
       
       private var _adminPlaylist:PlayList;
       
-      public function set soundDirectoryExist(param1:Boolean) : void {
-         this._soundDirectoryExist = param1;
+      public function set soundDirectoryExist(pExists:Boolean) : void {
+         this._soundDirectoryExist = pExists;
       }
       
       public function get soundDirectoryExist() : Boolean {
@@ -146,12 +146,12 @@ package com.ankamagames.dofus.kernel.sound.manager
          return this._reverseEntitySounds;
       }
       
-      public function set forceSoundsDebugMode(param1:Boolean) : void {
-         this._forceSounds = param1;
+      public function set forceSoundsDebugMode(pForce:Boolean) : void {
+         this._forceSounds = pForce;
          if(this._forceSounds)
          {
             this.initTubul();
-            if(!(this._localizedSoundsManager == null) && (this._localizedSoundsManager.isInitialized))
+            if((!(this._localizedSoundsManager == null)) && (this._localizedSoundsManager.isInitialized))
             {
                this._localizedSoundsManager.playLocalizedSounds();
             }
@@ -159,7 +159,7 @@ package com.ankamagames.dofus.kernel.sound.manager
             {
                this._ambientManager.playMusicAndAmbient();
             }
-            if(!(this._fightMusicManager == null) && (this._inFight))
+            if((!(this._fightMusicManager == null)) && (this._inFight))
             {
                this._fightMusicManager.playFightMusic();
             }
@@ -176,88 +176,88 @@ package com.ankamagames.dofus.kernel.sound.manager
       public function deactivateSound() : void {
       }
       
-      public function setDisplayOptions(param1:TubulOptions) : void {
+      public function setDisplayOptions(pOptions:TubulOptions) : void {
          if(this.soundIsActivate)
          {
-            Tubul.getInstance().setDisplayOptions(param1);
+            Tubul.getInstance().setDisplayOptions(pOptions);
          }
       }
       
-      public function setSubArea(param1:Map=null) : void {
-         var _loc4_:IAudioBus = null;
-         var _loc5_:IAudioBus = null;
-         var _loc6_:IAudioBus = null;
-         var _loc7_:IAudioBus = null;
-         var _loc2_:MapPosition = MapPosition.getMapPositionById(param1.id);
-         if((this.soundIsActivate) && false)
+      public function setSubArea(pMap:Map=null) : void {
+         var busMusic1:IAudioBus = null;
+         var busAmbiance1:IAudioBus = null;
+         var busMusic2:IAudioBus = null;
+         var busAmbiance2:IAudioBus = null;
+         var mp:MapPosition = MapPosition.getMapPositionById(pMap.id);
+         if((this.soundIsActivate) && (false))
          {
-            if(this._indoor == MapTypesEnum.INDOOR && param1.mapType == MapTypesEnum.OUTDOOR)
+            if((this._indoor == MapTypesEnum.INDOOR) && (pMap.mapType == MapTypesEnum.OUTDOOR))
             {
                this._indoor = MapTypesEnum.OUTDOOR;
-               _loc4_ = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_MUSIC_ID);
-               _loc5_ = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_AMBIENT_2D_ID);
-               _loc4_.removeEffect(this._lowPassFilter);
-               _loc5_.removeEffect(this._lowPassFilter);
+               busMusic1 = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_MUSIC_ID);
+               busAmbiance1 = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_AMBIENT_2D_ID);
+               busMusic1.removeEffect(this._lowPassFilter);
+               busAmbiance1.removeEffect(this._lowPassFilter);
             }
             else
             {
-               if(this._indoor == MapTypesEnum.OUTDOOR && param1.mapType == MapTypesEnum.INDOOR)
+               if((this._indoor == MapTypesEnum.OUTDOOR) && (pMap.mapType == MapTypesEnum.INDOOR))
                {
                   this._indoor = MapTypesEnum.INDOOR;
-                  _loc6_ = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_MUSIC_ID);
-                  _loc7_ = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_AMBIENT_2D_ID);
-                  _loc6_.addEffect(this._lowPassFilter);
-                  _loc7_.addEffect(this._lowPassFilter);
+                  busMusic2 = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_MUSIC_ID);
+                  busAmbiance2 = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_AMBIENT_2D_ID);
+                  busMusic2.addEffect(this._lowPassFilter);
+                  busAmbiance2.addEffect(this._lowPassFilter);
                }
             }
          }
-         this._localizedSoundsManager.setMap(param1);
+         this._localizedSoundsManager.setMap(pMap);
          if(this.soundIsActivate)
          {
             this._localizedSoundsManager.playLocalizedSounds();
          }
-         this._previousSubareaId = param1.subareaId;
+         this._previousSubareaId = pMap.subareaId;
          this._criterionSubarea = 1;
-         var _loc3_:SubArea = SubArea.getSubAreaById(param1.subareaId);
-         if(_loc3_ == null)
+         var subArea:SubArea = SubArea.getSubAreaById(pMap.subareaId);
+         if(subArea == null)
          {
             return;
          }
-         this._ambientManager.setAmbientSounds(_loc3_.ambientSounds,_loc2_.sounds);
+         this._ambientManager.setAmbientSounds(subArea.ambientSounds,mp.sounds);
          this._ambientManager.selectValidSounds();
          this._ambientManager.playMusicAndAmbient();
       }
       
-      public function playUISound(param1:String, param2:Boolean=false) : void {
+      public function playUISound(pSoundId:String, pLoop:Boolean=false) : void {
          if(!this.checkIfAvailable())
          {
             return;
          }
-         var _loc3_:uint = SoundUtil.getBusIdBySoundId(param1);
-         var _loc4_:String = SoundUtil.getConfigEntryByBusId(_loc3_);
-         var _loc5_:Uri = new Uri(_loc4_ + param1 + ".mp3");
-         var _loc6_:ISound = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,_loc5_);
-         _loc6_.volume = 1;
-         var _loc7_:IAudioBus = Tubul.getInstance().getBus(_loc3_);
-         if(_loc7_ != null)
+         var busId:uint = SoundUtil.getBusIdBySoundId(pSoundId);
+         var soundPath:String = SoundUtil.getConfigEntryByBusId(busId);
+         var soundUri:Uri = new Uri(soundPath + pSoundId + ".mp3");
+         var isound:ISound = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,soundUri);
+         isound.volume = 1;
+         var bus:IAudioBus = Tubul.getInstance().getBus(busId);
+         if(bus != null)
          {
-            _loc7_.playISound(_loc6_,param2);
+            bus.playISound(isound,pLoop);
          }
       }
       
-      public function playSound(param1:ISound, param2:Boolean=false, param3:int=-1) : ISound {
+      public function playSound(pSound:ISound, pLoop:Boolean=false, pLoops:int=-1) : ISound {
          if(!this.checkIfAvailable())
          {
             return null;
          }
-         var _loc4_:String = param1.uri.fileName.split(".mp3")[0];
-         var _loc5_:uint = SoundUtil.getBusIdBySoundId(_loc4_);
-         var _loc6_:IAudioBus = Tubul.getInstance().getBus(_loc5_);
-         if(_loc6_ != null)
+         var soundID:String = pSound.uri.fileName.split(".mp3")[0];
+         var busId:uint = SoundUtil.getBusIdBySoundId(soundID);
+         var bus:IAudioBus = Tubul.getInstance().getBus(busId);
+         if(bus != null)
          {
-            _loc6_.playISound(param1,param2,param3);
+            bus.playISound(pSound,pLoop,pLoops);
          }
-         return param1;
+         return pSound;
       }
       
       public function playFightMusic() : void {
@@ -274,77 +274,77 @@ package com.ankamagames.dofus.kernel.sound.manager
          this._fightMusicManager.stopFightMusic();
       }
       
-      public function handleFLAEvent(param1:String, param2:String, param3:String, param4:Object=null) : void {
-         var _loc12_:uint = 0;
-         var _loc13_:uint = 0;
-         var _loc14_:RollOffPreset = null;
-         var _loc15_:String = null;
-         var _loc19_:VolumeFadeEffect = null;
-         var _loc20_:VolumeFadeEffect = null;
+      public function handleFLAEvent(pAnimationName:String, pType:String, pParams:String, pSprite:Object=null) : void {
+         var soundType:uint = 0;
+         var busId:uint = 0;
+         var rollOff:RollOffPreset = null;
+         var soundPath:String = null;
+         var fadeIn:VolumeFadeEffect = null;
+         var fadeOut:VolumeFadeEffect = null;
          if(!this.checkIfAvailable())
          {
             return;
          }
-         var _loc5_:Number = param4.absoluteBounds.x;
-         var _loc6_:Number = param4.absoluteBounds.y;
-         var _loc7_:int = param4.id;
-         var _loc8_:Array = FLAEventLabelParser.parseSoundLabel(param3);
-         var _loc9_:uint = Math.round(Math.random() * (_loc8_.length-1));
-         var _loc10_:SoundEventParamWrapper = _loc8_[_loc9_];
-         var _loc11_:String = _loc10_.id;
-         if(this._XMLSoundFilesDictionary[_loc11_])
+         var posX:Number = pSprite.absoluteBounds.x;
+         var posY:Number = pSprite.absoluteBounds.y;
+         var entityId:int = pSprite.id;
+         var sepw:Array = FLAEventLabelParser.parseSoundLabel(pParams);
+         var selectedIndex:uint = Math.round(Math.random() * (sepw.length - 1));
+         var selectedSEPW:SoundEventParamWrapper = sepw[selectedIndex];
+         var soundId:String = selectedSEPW.id;
+         if(this._XMLSoundFilesDictionary[soundId])
          {
-            _loc10_ = XMLSoundParser.parseXMLSoundFile(this._XMLSoundFilesDictionary[_loc11_],param4.look.skins);
-            _loc11_ = _loc10_.id;
+            selectedSEPW = XMLSoundParser.parseXMLSoundFile(this._XMLSoundFilesDictionary[soundId],pSprite.look.skins);
+            soundId = selectedSEPW.id;
          }
-         if(XMLSoundParser.isLocalized(_loc11_))
+         if(XMLSoundParser.isLocalized(soundId))
          {
-            _loc12_ = EnumSoundType.LOCALIZED_SOUND;
+            soundType = EnumSoundType.LOCALIZED_SOUND;
          }
          else
          {
-            _loc12_ = EnumSoundType.UNLOCALIZED_SOUND;
+            soundType = EnumSoundType.UNLOCALIZED_SOUND;
          }
-         _loc13_ = SoundUtil.getBusIdBySoundId(_loc11_);
-         _loc15_ = SoundUtil.getConfigEntryByBusId(_loc13_);
-         var _loc16_:Uri = new Uri(_loc15_ + _loc11_ + ".mp3");
-         var _loc17_:ISound = SoundFactory.getSound(_loc12_,_loc16_);
-         _loc17_.volume = _loc10_.volume / 100;
-         if(_loc17_ is LocalizedSound && (_loc10_.rollOff))
+         busId = SoundUtil.getBusIdBySoundId(soundId);
+         soundPath = SoundUtil.getConfigEntryByBusId(busId);
+         var soundUri:Uri = new Uri(soundPath + soundId + ".mp3");
+         var isound:ISound = SoundFactory.getSound(soundType,soundUri);
+         isound.volume = selectedSEPW.volume / 100;
+         if((isound is LocalizedSound) && (selectedSEPW.rollOff))
          {
-            _loc14_ = this._rollOffPresets[_loc10_.rollOff];
-            if((_loc14_) && _loc17_ is LocalizedSound)
+            rollOff = this._rollOffPresets[selectedSEPW.rollOff];
+            if((rollOff) && (isound is LocalizedSound))
             {
-               (_loc17_ as LocalizedSound).range = _loc14_.maxRange * AtouinConstants.CELL_WIDTH;
-               (_loc17_ as LocalizedSound).saturationRange = _loc14_.maxSaturationRange * AtouinConstants.CELL_WIDTH;
-               (_loc17_ as LocalizedSound).volumeMax = _loc10_.volume / 100;
-               (_loc17_ as LocalizedSound).position = new Point(_loc5_,_loc6_);
+               (isound as LocalizedSound).range = rollOff.maxRange * AtouinConstants.CELL_WIDTH;
+               (isound as LocalizedSound).saturationRange = rollOff.maxSaturationRange * AtouinConstants.CELL_WIDTH;
+               (isound as LocalizedSound).volumeMax = selectedSEPW.volume / 100;
+               (isound as LocalizedSound).position = new Point(posX,posY);
             }
          }
-         this.addSoundEntity(_loc17_,_loc7_);
-         var _loc18_:IAudioBus = Tubul.getInstance().getBus(_loc13_);
-         if(_loc18_ != null)
+         this.addSoundEntity(isound,entityId);
+         var bus:IAudioBus = Tubul.getInstance().getBus(busId);
+         if(bus != null)
          {
-            _loc18_.playISound(_loc17_);
-            if(int(_loc10_.berceauVol) < 100)
+            bus.playISound(isound);
+            if(int(selectedSEPW.berceauVol) < 100)
             {
-               _loc19_ = new VolumeFadeEffect(_loc18_.currentFadeVolume,_loc10_.berceauVol,_loc10_.berceauFadeIn);
-               _loc20_ = new VolumeFadeEffect(-1,_loc18_.currentFadeVolume,_loc10_.berceauFadeOut);
-               _loc18_.applyDynamicMix(_loc19_,_loc10_.berceauDuree,_loc20_);
+               fadeIn = new VolumeFadeEffect(bus.currentFadeVolume,selectedSEPW.berceauVol,selectedSEPW.berceauFadeIn);
+               fadeOut = new VolumeFadeEffect(-1,bus.currentFadeVolume,selectedSEPW.berceauFadeOut);
+               bus.applyDynamicMix(fadeIn,selectedSEPW.berceauDuree,fadeOut);
             }
          }
       }
       
-      public function applyDynamicMix(param1:VolumeFadeEffect, param2:uint, param3:VolumeFadeEffect) : void {
-         var _loc4_:IAudioBus = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_MUSIC_ID);
-         var _loc5_:IAudioBus = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_AMBIENT_2D_ID);
-         if(_loc4_)
+      public function applyDynamicMix(pFadeIn:VolumeFadeEffect, pWaitingTime:uint, pFadeOut:VolumeFadeEffect) : void {
+         var musicBus:IAudioBus = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_MUSIC_ID);
+         var ambientBus:IAudioBus = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_AMBIENT_2D_ID);
+         if(musicBus)
          {
-            _loc4_.applyDynamicMix(param1,param2,param3);
+            musicBus.applyDynamicMix(pFadeIn,pWaitingTime,pFadeOut);
          }
-         if(_loc5_)
+         if(ambientBus)
          {
-            _loc5_.applyDynamicMix(param1,param2,param3);
+            ambientBus.applyDynamicMix(pFadeIn,pWaitingTime,pFadeOut);
          }
       }
       
@@ -355,87 +355,87 @@ package com.ankamagames.dofus.kernel.sound.manager
          this._presetResourceLoader.load(TubulSoundConfiguration.ROLLOFF_PRESET);
       }
       
-      public function setSoundSourcePosition(param1:int, param2:Point) : void {
-         var _loc3_:Vector.<ISound> = null;
-         var _loc4_:ISound = null;
+      public function setSoundSourcePosition(pEntityId:int, pPosition:Point) : void {
+         var sounds:Vector.<ISound> = null;
+         var isound:ISound = null;
          if(!this.checkIfAvailable())
          {
             return;
          }
-         if(param1 == PlayedCharacterManager.getInstance().id)
+         if(pEntityId == PlayedCharacterManager.getInstance().id)
          {
-            Tubul.getInstance().earPosition = param2;
+            Tubul.getInstance().earPosition = pPosition;
          }
          else
          {
-            _loc3_ = this.entitySounds[param1];
-            for each (_loc4_ in _loc3_)
+            sounds = this.entitySounds[pEntityId];
+            for each (isound in sounds)
             {
-               if(_loc4_ is LocalizedSound)
+               if(isound is LocalizedSound)
                {
-                  (_loc4_ as LocalizedSound).position = param2;
+                  (isound as LocalizedSound).position = pPosition;
                }
             }
          }
       }
       
-      public function addSoundEntity(param1:ISound, param2:int) : void {
+      public function addSoundEntity(pISound:ISound, pEntityId:int) : void {
          if(!this.checkIfAvailable())
          {
             return;
          }
-         if(this._entitySounds[param2] == null)
+         if(this._entitySounds[pEntityId] == null)
          {
-            this._entitySounds[param2] = new Vector.<ISound>();
+            this._entitySounds[pEntityId] = new Vector.<ISound>();
          }
-         this._entityDictionary[DofusEntities.getEntity(param2)] = this._entitySounds[param2];
-         this._entitySounds[param2].push(param1);
-         this._reverseEntitySounds[param1] = param2;
+         this._entityDictionary[DofusEntities.getEntity(pEntityId)] = this._entitySounds[pEntityId];
+         this._entitySounds[pEntityId].push(pISound);
+         this._reverseEntitySounds[pISound] = pEntityId;
       }
       
-      public function removeSoundEntity(param1:ISound) : void {
-         var _loc4_:ISound = null;
-         var _loc2_:int = this._reverseEntitySounds[param1];
-         if(!this._entitySounds[_loc2_])
+      public function removeSoundEntity(pISound:ISound) : void {
+         var isound:ISound = null;
+         var entityId:int = this._reverseEntitySounds[pISound];
+         if(!this._entitySounds[entityId])
          {
             return;
          }
-         var _loc3_:uint = 0;
-         for each (_loc4_ in this._entitySounds[_loc2_])
+         var compt:uint = 0;
+         for each (isound in this._entitySounds[entityId])
          {
-            if(_loc4_ == param1)
+            if(isound == pISound)
             {
-               this._entitySounds[_loc2_].splice(_loc3_,1);
-               delete this._reverseEntitySounds[[param1]];
-               if(this._entitySounds[_loc2_].length == 0)
+               this._entitySounds[entityId].splice(compt,1);
+               delete this._reverseEntitySounds[[pISound]];
+               if(this._entitySounds[entityId].length == 0)
                {
-                  this._entitySounds[_loc2_] = null;
+                  this._entitySounds[entityId] = null;
                }
                return;
             }
-            _loc3_++;
+            compt++;
          }
       }
       
-      public function removeEntitySound(param1:IEntity) : void {
-         var _loc2_:ISound = null;
-         var _loc3_:VolumeFadeEffect = null;
-         if(this._entityDictionary[param1] == null)
+      public function removeEntitySound(pEntityId:IEntity) : void {
+         var isound:ISound = null;
+         var fade:VolumeFadeEffect = null;
+         if(this._entityDictionary[pEntityId] == null)
          {
             return;
          }
-         for each (_loc2_ in this._entityDictionary[param1])
+         for each (isound in this._entityDictionary[pEntityId])
          {
-            _loc3_ = new VolumeFadeEffect(-1,0,0.1);
-            _loc2_.stop(_loc3_);
+            fade = new VolumeFadeEffect(-1,0,0.1);
+            isound.stop(fade);
          }
       }
       
       public function retriveXMLSounds() : void {
          this._XMLSoundFilesDictionary = new Dictionary();
          this._XMLSoundFilesToLoad = new Array();
-         var _loc1_:File = new File(File.applicationDirectory.nativePath + "/content/audio");
-         this.findXmlSoundsInDirectory(_loc1_);
+         var AudioDirectory:File = new File(File.applicationDirectory.nativePath + "/content/audio");
+         this.findXmlSoundsInDirectory(AudioDirectory);
          this._XMLSoundFilesResourceLoader = ResourceLoaderFactory.getLoader(ResourceLoaderType.PARALLEL_LOADER);
          this._XMLSoundFilesResourceLoader.addEventListener(ResourceLoadedEvent.LOADED,this.onXMLSoundFileLoaded);
          this._XMLSoundFilesResourceLoader.addEventListener(ResourceErrorEvent.ERROR,this.onXMLSoundFileFailed);
@@ -451,72 +451,72 @@ package com.ankamagames.dofus.kernel.sound.manager
          this._introHarmonicTwo.currentFadeVolume = 0;
          Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_MUSIC_ID).playISound(this._introHarmonicOne,true);
          Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_MUSIC_ID).playISound(this._introHarmonicTwo,true);
-         var _loc1_:VolumeFadeEffect = new VolumeFadeEffect(-1,1,TubulSoundConfiguration.TIME_FADE_IN_INTRO);
+         var fadeIntro:VolumeFadeEffect = new VolumeFadeEffect(-1,1,TubulSoundConfiguration.TIME_FADE_IN_INTRO);
          if(this._introFirstHarmonic)
          {
-            _loc1_.attachToSoundSource(this._introHarmonicOne);
+            fadeIntro.attachToSoundSource(this._introHarmonicOne);
          }
          else
          {
-            _loc1_.attachToSoundSource(this._introHarmonicTwo);
+            fadeIntro.attachToSoundSource(this._introHarmonicTwo);
          }
-         _loc1_.start();
+         fadeIntro.start();
       }
       
-      public function playIntroMusic(param1:Boolean=true) : void {
-         var _loc3_:String = null;
-         var _loc4_:uint = 0;
-         var _loc5_:String = null;
-         var _loc6_:Uri = null;
+      public function playIntroMusic(pFirstHarmonic:Boolean=true) : void {
+         var soundId:String = null;
+         var busId:uint = 0;
+         var soundPath:String = null;
+         var soundUri:Uri = null;
          if(!this.checkIfAvailable())
          {
             return;
          }
-         this._introFirstHarmonic = param1;
-         var _loc2_:IAudioBus = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_MUSIC_ID);
-         if(_loc2_)
+         this._introFirstHarmonic = pFirstHarmonic;
+         var musicBus:IAudioBus = Tubul.getInstance().getBus(TubulSoundConfiguration.BUS_MUSIC_ID);
+         if(musicBus)
          {
-            _loc3_ = "20000";
-            _loc4_ = SoundUtil.getBusIdBySoundId(_loc3_);
-            _loc5_ = SoundUtil.getConfigEntryByBusId(_loc4_);
-            _loc6_ = new Uri(_loc5_ + _loc3_ + ".mp3");
-            this._introHarmonicOne = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,_loc6_);
+            soundId = "20000";
+            busId = SoundUtil.getBusIdBySoundId(soundId);
+            soundPath = SoundUtil.getConfigEntryByBusId(busId);
+            soundUri = new Uri(soundPath + soundId + ".mp3");
+            this._introHarmonicOne = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,soundUri);
             this._introHarmonicOne.volume = 1;
-            _loc3_ = "20001";
-            _loc4_ = SoundUtil.getBusIdBySoundId(_loc3_);
-            _loc5_ = SoundUtil.getConfigEntryByBusId(_loc4_);
-            _loc6_ = new Uri(_loc5_ + _loc3_ + ".mp3");
-            this._introHarmonicTwo = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,_loc6_);
+            soundId = "20001";
+            busId = SoundUtil.getBusIdBySoundId(soundId);
+            soundPath = SoundUtil.getConfigEntryByBusId(busId);
+            soundUri = new Uri(soundPath + soundId + ".mp3");
+            this._introHarmonicTwo = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,soundUri);
             this._introHarmonicOne.eventDispatcher.addEventListener(LoadingSoundEvent.LOADED,this.onIntroMusicHarmonicOneLoaded);
             this._introHarmonicTwo.eventDispatcher.addEventListener(LoadingSoundEvent.LOADED,this.onIntroMusicHarmonicTwoLoaded);
-            _loc2_.addISound(this._introHarmonicOne);
-            _loc2_.addISound(this._introHarmonicTwo);
+            musicBus.addISound(this._introHarmonicOne);
+            musicBus.addISound(this._introHarmonicTwo);
          }
       }
       
-      public function switchIntroMusic(param1:Boolean) : void {
-         var _loc2_:VolumeFadeEffect = null;
-         var _loc3_:VolumeFadeEffect = null;
+      public function switchIntroMusic(pFirstHarmonic:Boolean) : void {
+         var fadeOne:VolumeFadeEffect = null;
+         var fadeTwo:VolumeFadeEffect = null;
          if(!this.checkIfAvailable())
          {
             return;
          }
          if((this._introHarmonicOneLoaded) && (this._introHarmonicTwoLoaded))
          {
-            if(param1)
+            if(pFirstHarmonic)
             {
-               _loc2_ = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_SWITCH_INTRO);
-               _loc3_ = new VolumeFadeEffect(-1,1,TubulSoundConfiguration.TIME_FADE_SWITCH_INTRO);
+               fadeOne = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_SWITCH_INTRO);
+               fadeTwo = new VolumeFadeEffect(-1,1,TubulSoundConfiguration.TIME_FADE_SWITCH_INTRO);
             }
             else
             {
-               _loc2_ = new VolumeFadeEffect(-1,1,TubulSoundConfiguration.TIME_FADE_SWITCH_INTRO);
-               _loc3_ = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_SWITCH_INTRO);
+               fadeOne = new VolumeFadeEffect(-1,1,TubulSoundConfiguration.TIME_FADE_SWITCH_INTRO);
+               fadeTwo = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_SWITCH_INTRO);
             }
-            _loc2_.attachToSoundSource(this._introHarmonicOne);
-            _loc3_.attachToSoundSource(this._introHarmonicTwo);
-            _loc2_.start();
-            _loc3_.start();
+            fadeOne.attachToSoundSource(this._introHarmonicOne);
+            fadeTwo.attachToSoundSource(this._introHarmonicTwo);
+            fadeOne.start();
+            fadeTwo.start();
          }
          else
          {
@@ -524,36 +524,36 @@ package com.ankamagames.dofus.kernel.sound.manager
          }
       }
       
-      public function stopIntroMusic(param1:Boolean=false) : void {
-         var _loc2_:VolumeFadeEffect = null;
-         var _loc3_:VolumeFadeEffect = null;
+      public function stopIntroMusic(pImmediatly:Boolean=false) : void {
+         var fadeOutOne:VolumeFadeEffect = null;
+         var fadeOutTwo:VolumeFadeEffect = null;
          if(!this.checkIfAvailable())
          {
             return;
          }
          if(this._introHarmonicOne)
          {
-            if(param1)
+            if(pImmediatly)
             {
                this._introHarmonicOne.stop();
             }
             else
             {
-               _loc2_ = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_OUT_INTRO);
-               this._introHarmonicOne.stop(_loc2_);
+               fadeOutOne = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_OUT_INTRO);
+               this._introHarmonicOne.stop(fadeOutOne);
             }
             this._introHarmonicOne.eventDispatcher.removeEventListener(LoadingSoundEvent.LOADED,this.onIntroMusicHarmonicOneLoaded);
          }
          if(this._introHarmonicTwo)
          {
-            if(param1)
+            if(pImmediatly)
             {
                this._introHarmonicTwo.stop();
             }
             else
             {
-               _loc3_ = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_OUT_INTRO);
-               this._introHarmonicTwo.stop(_loc3_);
+               fadeOutTwo = new VolumeFadeEffect(-1,0,TubulSoundConfiguration.TIME_FADE_OUT_INTRO);
+               this._introHarmonicTwo.stop(fadeOutTwo);
             }
             this._introHarmonicTwo.eventDispatcher.removeEventListener(LoadingSoundEvent.LOADED,this.onIntroMusicHarmonicTwoLoaded);
          }
@@ -561,8 +561,8 @@ package com.ankamagames.dofus.kernel.sound.manager
          this._introHarmonicTwoLoaded = false;
       }
       
-      public function removeAllSounds(param1:Number=0, param2:Number=0) : void {
-         var _loc3_:IAudioBus = null;
+      public function removeAllSounds(pFade:Number=0, pFadeTime:Number=0) : void {
+         var iBus:IAudioBus = null;
          if(this._introHarmonicOne)
          {
             this._introHarmonicOne.eventDispatcher.removeEventListener(LoadingSoundEvent.LOADED,this.onIntroMusicHarmonicOneLoaded);
@@ -571,17 +571,17 @@ package com.ankamagames.dofus.kernel.sound.manager
          {
             this._introHarmonicTwo.eventDispatcher.removeEventListener(LoadingSoundEvent.LOADED,this.onIntroMusicHarmonicTwoLoaded);
          }
-         for each (_loc3_ in Tubul.getInstance().audioBusList)
+         for each (iBus in Tubul.getInstance().audioBusList)
          {
-            _loc3_.clear();
+            iBus.clear();
          }
       }
       
-      public function setBusVolume(param1:int, param2:Number) : void {
-         var _loc3_:IAudioBus = Tubul.getInstance().getBus(param1);
-         if(_loc3_ != null)
+      public function setBusVolume(pBusID:int, pNewVolume:Number) : void {
+         var bus:IAudioBus = Tubul.getInstance().getBus(pBusID);
+         if(bus != null)
          {
-            _loc3_.volume = param2;
+            bus.volume = pNewVolume;
          }
       }
       
@@ -589,23 +589,23 @@ package com.ankamagames.dofus.kernel.sound.manager
          this.removeAllSounds();
       }
       
-      private function findXmlSoundsInDirectory(param1:File) : void {
-         var _loc2_:Array = null;
-         var _loc3_:File = null;
-         if(param1.exists)
+      private function findXmlSoundsInDirectory(pDirectory:File) : void {
+         var filesAndDirectories:Array = null;
+         var file:File = null;
+         if(pDirectory.exists)
          {
-            _loc2_ = param1.getDirectoryListing();
-            for each (_loc3_ in _loc2_)
+            filesAndDirectories = pDirectory.getDirectoryListing();
+            for each (file in filesAndDirectories)
             {
-               if((_loc3_.isDirectory) && !(_loc3_.name == ".svn") && !(_loc3_.name == "presets"))
+               if((file.isDirectory) && (!(file.name == ".svn")) && (!(file.name == "presets")))
                {
-                  this.findXmlSoundsInDirectory(_loc3_);
+                  this.findXmlSoundsInDirectory(file);
                }
                else
                {
-                  if((_loc3_.extension) && _loc3_.extension.toUpperCase() == "XML")
+                  if((file.extension) && (file.extension.toUpperCase() == "XML"))
                   {
-                     this._XMLSoundFilesToLoad.push(new Uri(_loc3_.nativePath));
+                     this._XMLSoundFilesToLoad.push(new Uri(file.nativePath));
                   }
                }
             }
@@ -661,9 +661,9 @@ package com.ankamagames.dofus.kernel.sound.manager
          this.retriveRollOffPresets();
          this.retriveXMLSounds();
          Tubul.getInstance().addEventListener(TubulEvent.ACTIVATION,this.onTubulActivation);
-         var _loc1_:TubulEvent = new TubulEvent(TubulEvent.ACTIVATION);
-         _loc1_.activated = true;
-         this.onTubulActivation(_loc1_);
+         var e:TubulEvent = new TubulEvent(TubulEvent.ACTIVATION);
+         e.activated = true;
+         this.onTubulActivation(e);
       }
       
       private function desactivateTubul() : void {
@@ -686,44 +686,44 @@ package com.ankamagames.dofus.kernel.sound.manager
          return (this._forceSounds) && (this._soundDirectoryExist);
       }
       
-      public function playAdminSound(param1:String, param2:Number, param3:Boolean, param4:uint) : void {
-         var _loc5_:uint = SoundUtil.getBusIdBySoundId(param1);
-         var _loc6_:String = SoundUtil.getConfigEntryByBusId(_loc5_);
-         var _loc7_:Uri = new Uri(_loc6_ + param1 + ".mp3");
-         var _loc8_:ISound = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,_loc7_);
-         _loc8_.busId = _loc5_;
-         _loc8_.volume = param2 / 100;
-         this._adminSounds[param4] = _loc8_;
-         _loc8_.play(param3);
+      public function playAdminSound(pSoundId:String, pVolume:Number, pLoop:Boolean, pType:uint) : void {
+         var busId:uint = SoundUtil.getBusIdBySoundId(pSoundId);
+         var soundPath:String = SoundUtil.getConfigEntryByBusId(busId);
+         var soundUri:Uri = new Uri(soundPath + pSoundId + ".mp3");
+         var isound:ISound = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,soundUri);
+         isound.busId = busId;
+         isound.volume = pVolume / 100;
+         this._adminSounds[pType] = isound;
+         isound.play(pLoop);
       }
       
-      public function stopAdminSound(param1:uint) : void {
-         var _loc2_:ISound = this._adminSounds[param1] as ISound;
-         _loc2_.stop();
+      public function stopAdminSound(pType:uint) : void {
+         var isound:ISound = this._adminSounds[pType] as ISound;
+         isound.stop();
       }
       
-      public function addSoundInPlaylist(param1:String, param2:Number, param3:uint, param4:uint) : Boolean {
+      public function addSoundInPlaylist(pSoundId:String, pVolume:Number, pSilenceMin:uint, pSilenceMax:uint) : Boolean {
          if(this._adminPlaylist == null)
          {
             this._adminPlaylist = new PlayList(false,true);
          }
-         var _loc5_:uint = SoundUtil.getBusIdBySoundId(param1);
-         var _loc6_:String = SoundUtil.getConfigEntryByBusId(_loc5_);
-         var _loc7_:Uri = new Uri(_loc6_ + param1 + ".mp3");
-         var _loc8_:ISound = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,_loc7_);
-         if(this._adminPlaylist.addSound(_loc8_) > 0)
+         var busId:uint = SoundUtil.getBusIdBySoundId(pSoundId);
+         var soundPath:String = SoundUtil.getConfigEntryByBusId(busId);
+         var soundUri:Uri = new Uri(soundPath + pSoundId + ".mp3");
+         var isound:ISound = SoundFactory.getSound(EnumSoundType.UNLOCALIZED_SOUND,soundUri);
+         if(this._adminPlaylist.addSound(isound) > 0)
          {
             return true;
          }
          return false;
       }
       
-      public function removeSoundInPLaylist(param1:String) : Boolean {
+      public function removeSoundInPLaylist(pSoundId:String) : Boolean {
          if(this._adminPlaylist == null)
          {
             return false;
          }
-         this._adminPlaylist.removeSoundBySoundId(param1,true);
+         this._adminPlaylist.removeSoundBySoundId(pSoundId,true);
          return true;
       }
       
@@ -754,42 +754,42 @@ package com.ankamagames.dofus.kernel.sound.manager
          }
       }
       
-      public function fadeBusVolume(param1:int, param2:Number, param3:Number) : void {
-         var _loc5_:VolumeFadeEffect = null;
-         var _loc4_:IAudioBus = Tubul.getInstance().getBus(param1);
-         if(_loc4_ != null)
+      public function fadeBusVolume(pBusID:int, pFade:Number, pFadeTime:Number) : void {
+         var fade:VolumeFadeEffect = null;
+         var bus:IAudioBus = Tubul.getInstance().getBus(pBusID);
+         if(bus != null)
          {
-            _loc5_ = new VolumeFadeEffect(-1,param2,param3);
-            _loc5_.attachToSoundSource(_loc4_);
-            _loc5_.start();
+            fade = new VolumeFadeEffect(-1,pFade,pFadeTime);
+            fade.attachToSoundSource(bus);
+            fade.start();
          }
       }
       
-      private function onXMLPresetsRollOffLoaded(param1:ResourceLoadedEvent) : void {
-         var _loc3_:XML = null;
-         var _loc4_:RollOffPreset = null;
-         var _loc2_:XMLList = (param1.resource as XML).elements();
-         for each (_loc3_ in _loc2_)
+      private function onXMLPresetsRollOffLoaded(pEvent:ResourceLoadedEvent) : void {
+         var preset:XML = null;
+         var rollOffPreset:RollOffPreset = null;
+         var presets:XMLList = (pEvent.resource as XML).elements();
+         for each (preset in presets)
          {
-            _loc4_ = new RollOffPreset(uint(_loc3_.GainMax),uint(_loc3_.DistMax),uint(_loc3_.DistMaxSat));
-            this._rollOffPresets[_loc3_.@id] = _loc4_;
+            rollOffPreset = new RollOffPreset(uint(preset.GainMax),uint(preset.DistMax),uint(preset.DistMaxSat));
+            this._rollOffPresets[preset.@id] = rollOffPreset;
          }
       }
       
-      private function onXMLPresetsRollOffFailed(param1:ResourceErrorEvent) : void {
+      private function onXMLPresetsRollOffFailed(pEvent:ResourceErrorEvent) : void {
          Tubul.getInstance().activate(false);
-         _log.error("An XML sound file failed to load : " + param1.uri + " / [" + param1.errorCode + "] " + param1.errorMsg);
+         _log.error("An XML sound file failed to load : " + pEvent.uri + " / [" + pEvent.errorCode + "] " + pEvent.errorMsg);
       }
       
-      private function onXMLSoundFileLoaded(param1:ResourceLoadedEvent) : void {
-         var _loc2_:String = param1.uri.fileName.split("." + param1.uri.fileType)[0];
-         var _loc3_:Array = _loc2_.split("\\");
-         _loc2_ = _loc3_.pop();
-         this._XMLSoundFilesDictionary[_loc2_] = param1.resource;
-         var _loc4_:int = this._XMLSoundFilesToLoad.indexOf(param1.uri);
-         if(_loc4_ >= 0)
+      private function onXMLSoundFileLoaded(pEvent:ResourceLoadedEvent) : void {
+         var filename:String = pEvent.uri.fileName.split("." + pEvent.uri.fileType)[0];
+         var splitedFilename:Array = filename.split("\\");
+         filename = splitedFilename.pop();
+         this._XMLSoundFilesDictionary[filename] = pEvent.resource;
+         var index:int = this._XMLSoundFilesToLoad.indexOf(pEvent.uri);
+         if(index >= 0)
          {
-            this._XMLSoundFilesToLoad.splice(_loc4_,1);
+            this._XMLSoundFilesToLoad.splice(index,1);
          }
          if(this._XMLSoundFilesToLoad.length == 0)
          {
@@ -799,22 +799,22 @@ package com.ankamagames.dofus.kernel.sound.manager
          }
       }
       
-      private function onXMLSoundFileFailed(param1:ResourceErrorEvent) : void {
-         _log.warn("The xml sound file " + param1.uri + " failed to load !!");
+      private function onXMLSoundFileFailed(pEvent:ResourceErrorEvent) : void {
+         _log.warn("The xml sound file " + pEvent.uri + " failed to load !!");
       }
       
-      private function onRemoveSoundInTubul(param1:AudioBusEvent) : void {
-         this.removeSoundEntity(param1.sound);
+      private function onRemoveSoundInTubul(pEvent:AudioBusEvent) : void {
+         this.removeSoundEntity(pEvent.sound);
       }
       
-      private function onSoundAdminComplete(param1:SoundCompleteEvent) : void {
-         param1.sound.eventDispatcher.removeEventListener(SoundCompleteEvent.SOUND_COMPLETE,this.onSoundAdminComplete);
-         var _loc2_:String = param1.sound.uri.fileName.split(".mp3")[0];
-         this._adminSounds[_loc2_] = null;
-         delete this._adminSounds[[_loc2_]];
+      private function onSoundAdminComplete(pEvent:SoundCompleteEvent) : void {
+         pEvent.sound.eventDispatcher.removeEventListener(SoundCompleteEvent.SOUND_COMPLETE,this.onSoundAdminComplete);
+         var soundId:String = pEvent.sound.uri.fileName.split(".mp3")[0];
+         this._adminSounds[soundId] = null;
+         delete this._adminSounds[[soundId]];
       }
       
-      private function onIntroMusicHarmonicOneLoaded(param1:LoadingSoundEvent) : void {
+      private function onIntroMusicHarmonicOneLoaded(pEvent:LoadingSoundEvent) : void {
          this._introHarmonicOneLoaded = true;
          if(this._introHarmonicTwoLoaded)
          {
@@ -822,7 +822,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          }
       }
       
-      private function onIntroMusicHarmonicTwoLoaded(param1:LoadingSoundEvent) : void {
+      private function onIntroMusicHarmonicTwoLoaded(pEvent:LoadingSoundEvent) : void {
          this._introHarmonicTwoLoaded = true;
          if(this._introHarmonicOneLoaded)
          {
@@ -830,8 +830,8 @@ package com.ankamagames.dofus.kernel.sound.manager
          }
       }
       
-      private function onTubulActivation(param1:TubulEvent) : void {
-         switch(param1.activated)
+      private function onTubulActivation(pEvent:TubulEvent) : void {
+         switch(pEvent.activated)
          {
             case true:
                Berilia.getInstance().addUIListener(this);

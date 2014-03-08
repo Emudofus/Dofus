@@ -6,9 +6,9 @@ package com.ankamagames.dofus.datacenter.quest
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.dofus.datacenter.npcs.NpcMessage;
+   import __AS3__.vec.*;
    
    public class QuestStep extends Object implements IDataCenter
    {
@@ -25,8 +25,8 @@ package com.ankamagames.dofus.datacenter.quest
       
       private static const REWARD_REDUCED_SCALE:Number = 0.7;
       
-      public static function getQuestStepById(param1:int) : QuestStep {
-         return GameData.getObject(MODULE,param1) as QuestStep;
+      public static function getQuestStepById(id:int) : QuestStep {
+         return GameData.getObject(MODULE,id) as QuestStep;
       }
       
       public static function getQuestSteps() : Array {
@@ -124,57 +124,57 @@ package com.ankamagames.dofus.datacenter.quest
       }
       
       public function get objectives() : Vector.<QuestObjective> {
-         var _loc1_:uint = 0;
+         var i:uint = 0;
          if(!this._objectives)
          {
             this._objectives = new Vector.<QuestObjective>(this.objectiveIds.length,true);
-            _loc1_ = 0;
-            while(_loc1_ < this.objectiveIds.length)
+            i = 0;
+            while(i < this.objectiveIds.length)
             {
-               this._objectives[_loc1_] = QuestObjective.getQuestObjectiveById(this.objectiveIds[_loc1_]);
-               _loc1_++;
+               this._objectives[i] = QuestObjective.getQuestObjectiveById(this.objectiveIds[i]);
+               i++;
             }
          }
          return this._objectives;
       }
       
       private function initCurrentLevelRewards() : void {
-         var _loc2_:uint = 0;
-         var _loc3_:QuestStepRewards = null;
-         var _loc1_:uint = PlayedCharacterManager.getInstance().infos.level;
-         if(this._currentLevelRewards == null || _loc1_ < this._currentLevelRewards.levelMin && !(this._currentLevelRewards.levelMin == -1) || _loc1_ > this._currentLevelRewards.levelMax && !(this._currentLevelRewards.levelMax == -1))
+         var rewardsId:uint = 0;
+         var rewards:QuestStepRewards = null;
+         var playerLvl:uint = PlayedCharacterManager.getInstance().infos.level;
+         if((this._currentLevelRewards == null) || (playerLvl < this._currentLevelRewards.levelMin) && (!(this._currentLevelRewards.levelMin == -1)) || (playerLvl > this._currentLevelRewards.levelMax) && (!(this._currentLevelRewards.levelMax == -1)))
          {
             this._currentLevelRewards = null;
-            for each (_loc2_ in this.rewardsIds)
+            for each (rewardsId in this.rewardsIds)
             {
-               _loc3_ = QuestStepRewards.getQuestStepRewardsById(_loc2_);
-               if((_loc1_ >= _loc3_.levelMin || _loc3_.levelMin == -1) && (_loc1_ <= _loc3_.levelMax || _loc3_.levelMax == -1))
+               rewards = QuestStepRewards.getQuestStepRewardsById(rewardsId);
+               if(((playerLvl >= rewards.levelMin) || (rewards.levelMin == -1)) && ((playerLvl <= rewards.levelMax) || (rewards.levelMax == -1)))
                {
-                  this._currentLevelRewards = _loc3_;
+                  this._currentLevelRewards = rewards;
                   break;
                }
             }
          }
       }
       
-      public function getKamasReward(param1:int) : int {
-         var _loc2_:int = this.kamasScaleWithPlayerLevel?param1:this.optimalLevel;
-         return (Math.pow(_loc2_,2) + 20 * _loc2_ - 20) * this.kamasRatio * this.duration;
+      public function getKamasReward(pPlayerLevel:int) : int {
+         var lvl:int = this.kamasScaleWithPlayerLevel?pPlayerLevel:this.optimalLevel;
+         return (Math.pow(lvl,2) + 20 * lvl - 20) * this.kamasRatio * this.duration;
       }
       
-      public function getExperienceReward(param1:int, param2:int) : int {
-         var _loc4_:* = 0;
-         var _loc3_:Number = 1 + param2 / 100;
-         if(param1 > this.optimalLevel)
+      public function getExperienceReward(pPlayerLevel:int, pXpBonus:int) : int {
+         var rewLevel:* = 0;
+         var xpBonus:Number = 1 + pXpBonus / 100;
+         if(pPlayerLevel > this.optimalLevel)
          {
-            _loc4_ = Math.min(param1,this.optimalLevel * REWARD_SCALE_CAP);
-            return ((1 - REWARD_REDUCED_SCALE) * this.getFixeExperienceReward(this.optimalLevel) + REWARD_REDUCED_SCALE * this.getFixeExperienceReward(_loc4_)) * _loc3_;
+            rewLevel = Math.min(pPlayerLevel,this.optimalLevel * REWARD_SCALE_CAP);
+            return ((1 - REWARD_REDUCED_SCALE) * this.getFixeExperienceReward(this.optimalLevel) + REWARD_REDUCED_SCALE * this.getFixeExperienceReward(rewLevel)) * xpBonus;
          }
-         return this.getFixeExperienceReward(param1) * _loc3_;
+         return this.getFixeExperienceReward(pPlayerLevel) * xpBonus;
       }
       
-      private function getFixeExperienceReward(param1:int) : int {
-         return param1 * Math.pow(100 + 2 * param1,2) / 20 * this.duration * this.xpRatio;
+      private function getFixeExperienceReward(level:int) : int {
+         return level * Math.pow(100 + 2 * level,2) / 20 * this.duration * this.xpRatio;
       }
    }
 }

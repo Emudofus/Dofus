@@ -14,15 +14,15 @@ package com.ankamagames.atouin.types.sequences
    public class ParableGfxMovementStep extends AbstractSequencable
    {
       
-      public function ParableGfxMovementStep(param1:IMovable, param2:MapPoint, param3:uint, param4:Number=0.5, param5:int=0, param6:Boolean=true, param7:int=0) {
+      public function ParableGfxMovementStep(gfxEntity:IMovable, targetPoint:MapPoint, speed:uint, curvePrc:Number=0.5, yOffset:int=0, waitEnd:Boolean=true, yOffsetOnHit:int=0) {
          super();
-         this._gfxEntity = param1;
-         this._targetPoint = param2;
-         this._curvePrc = param4;
-         this._waitEnd = param6;
-         this._speed = param3;
-         this._yOffset = param5;
-         this._yOffsetOnHit = param7;
+         this._gfxEntity = gfxEntity;
+         this._targetPoint = targetPoint;
+         this._curvePrc = curvePrc;
+         this._waitEnd = waitEnd;
+         this._speed = speed;
+         this._yOffset = yOffset;
+         this._yOffsetOnHit = yOffsetOnHit;
       }
       
       private var _gfxEntity:IMovable;
@@ -40,27 +40,27 @@ package com.ankamagames.atouin.types.sequences
       private var _speed:uint;
       
       override public function start() : void {
-         var _loc3_:* = NaN;
+         var distance:* = NaN;
          if(this._targetPoint.equals(this._gfxEntity.position))
          {
             this.onTweenEnd(null);
             return;
          }
-         var _loc1_:Point = new Point(CellUtil.getPixelXFromMapPoint((this._gfxEntity as IEntity).position),CellUtil.getPixelYFromMapPoint((this._gfxEntity as IEntity).position) + this._yOffset);
-         var _loc2_:Point = new Point(CellUtil.getPixelXFromMapPoint(this._targetPoint),CellUtil.getPixelYFromMapPoint(this._targetPoint) + (this._yOffsetOnHit != 0?this._yOffsetOnHit:this._yOffset));
-         _loc3_ = Point.distance(_loc1_,_loc2_);
-         var _loc4_:* = Point.interpolate(_loc1_,_loc2_,0.5);
-         _loc4_.y = _loc4_.y - _loc3_ * this._curvePrc;
+         var start:Point = new Point(CellUtil.getPixelXFromMapPoint((this._gfxEntity as IEntity).position),CellUtil.getPixelYFromMapPoint((this._gfxEntity as IEntity).position) + this._yOffset);
+         var end:Point = new Point(CellUtil.getPixelXFromMapPoint(this._targetPoint),CellUtil.getPixelYFromMapPoint(this._targetPoint) + (!(this._yOffsetOnHit == 0)?this._yOffsetOnHit:this._yOffset));
+         distance = Point.distance(start,end);
+         var curvePoint:Point = Point.interpolate(start,end,0.5);
+         curvePoint.y = curvePoint.y - distance * this._curvePrc;
          DisplayObject(this._gfxEntity).y = DisplayObject(this._gfxEntity).y + this._yOffset;
-         var _loc5_:TweenMax = new TweenMax(this._gfxEntity,_loc3_ / 100 * this._speed / 1000,
+         var tweener:TweenMax = new TweenMax(this._gfxEntity,distance / 100 * this._speed / 1000,
             {
-               "x":_loc2_.x,
-               "y":_loc2_.y,
+               "x":end.x,
+               "y":end.y,
                "orientToBezier":true,
                "bezier":[
                   {
-                     "x":_loc4_.x,
-                     "y":_loc4_.y
+                     "x":curvePoint.x,
+                     "y":curvePoint.y
                   }],
                "scaleX":1,
                "scaleY":1,
@@ -69,14 +69,14 @@ package com.ankamagames.atouin.types.sequences
                "ease":Linear.easeNone,
                "renderOnStart":true
             });
-         _loc5_.addEventListener(TweenEvent.COMPLETE,this.onTweenEnd);
+         tweener.addEventListener(TweenEvent.COMPLETE,this.onTweenEnd);
          if(!this._waitEnd)
          {
             executeCallbacks();
          }
       }
       
-      private function onTweenEnd(param1:TweenEvent) : void {
+      private function onTweenEnd(e:TweenEvent) : void {
          if(this._waitEnd)
          {
             executeCallbacks();

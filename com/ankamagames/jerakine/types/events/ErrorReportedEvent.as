@@ -5,11 +5,11 @@ package com.ankamagames.jerakine.types.events
    public class ErrorReportedEvent extends Event
    {
       
-      public function ErrorReportedEvent(param1:Error, param2:String, param3:Boolean=true) {
+      public function ErrorReportedEvent(error:Error, text:String, pShowPopup:Boolean=true) {
          super(ERROR,false,false);
-         this._error = param1;
-         this._text = param2;
-         this._showPopup = param3;
+         this._error = error;
+         this._text = text;
+         this._showPopup = pShowPopup;
       }
       
       public static const ERROR:String = "ErrorReportedEvent";
@@ -37,8 +37,8 @@ package com.ankamagames.jerakine.types.events
          {
             return "";
          }
-         var _loc1_:Array = this.error.toString().split(":");
-         return _loc1_[0];
+         var tmp1:Array = this.error.toString().split(":");
+         return tmp1[0];
       }
    }
 }

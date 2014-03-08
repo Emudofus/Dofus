@@ -25,10 +25,10 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 158;
       }
       
-      public function initGameFightFighterNamedInformations(param1:int=0, param2:EntityLook=null, param3:EntityDispositionInformations=null, param4:uint=2, param5:Boolean=false, param6:GameFightMinimalStats=null, param7:String="", param8:PlayerStatus=null) : GameFightFighterNamedInformations {
-         super.initGameFightFighterInformations(param1,param2,param3,param4,param5,param6);
-         this.name = param7;
-         this.status = param8;
+      public function initGameFightFighterNamedInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, alive:Boolean=false, stats:GameFightMinimalStats=null, name:String="", status:PlayerStatus=null) : GameFightFighterNamedInformations {
+         super.initGameFightFighterInformations(contextualId,look,disposition,teamId,alive,stats);
+         this.name = name;
+         this.status = status;
          return this;
       }
       
@@ -38,25 +38,25 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.status = new PlayerStatus();
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameFightFighterNamedInformations(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightFighterNamedInformations(output);
       }
       
-      public function serializeAs_GameFightFighterNamedInformations(param1:IDataOutput) : void {
-         super.serializeAs_GameFightFighterInformations(param1);
-         param1.writeUTF(this.name);
-         this.status.serializeAs_PlayerStatus(param1);
+      public function serializeAs_GameFightFighterNamedInformations(output:IDataOutput) : void {
+         super.serializeAs_GameFightFighterInformations(output);
+         output.writeUTF(this.name);
+         this.status.serializeAs_PlayerStatus(output);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameFightFighterNamedInformations(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightFighterNamedInformations(input);
       }
       
-      public function deserializeAs_GameFightFighterNamedInformations(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.name = param1.readUTF();
+      public function deserializeAs_GameFightFighterNamedInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.name = input.readUTF();
          this.status = new PlayerStatus();
-         this.status.deserialize(param1);
+         this.status.deserialize(input);
       }
    }
 }

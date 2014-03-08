@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.chat.channel
          return 890;
       }
       
-      public function initChannelEnablingMessage(param1:uint=0, param2:Boolean=false) : ChannelEnablingMessage {
-         this.channel = param1;
-         this.enable = param2;
+      public function initChannelEnablingMessage(channel:uint=0, enable:Boolean=false) : ChannelEnablingMessage {
+         this.channel = channel;
+         this.enable = enable;
          this._isInitialized = true;
          return this;
       }
@@ -42,38 +42,38 @@ package com.ankamagames.dofus.network.messages.game.chat.channel
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ChannelEnablingMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ChannelEnablingMessage(output);
       }
       
-      public function serializeAs_ChannelEnablingMessage(param1:IDataOutput) : void {
-         param1.writeByte(this.channel);
-         param1.writeBoolean(this.enable);
+      public function serializeAs_ChannelEnablingMessage(output:IDataOutput) : void {
+         output.writeByte(this.channel);
+         output.writeBoolean(this.enable);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ChannelEnablingMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ChannelEnablingMessage(input);
       }
       
-      public function deserializeAs_ChannelEnablingMessage(param1:IDataInput) : void {
-         this.channel = param1.readByte();
+      public function deserializeAs_ChannelEnablingMessage(input:IDataInput) : void {
+         this.channel = input.readByte();
          if(this.channel < 0)
          {
             throw new Error("Forbidden value (" + this.channel + ") on element of ChannelEnablingMessage.channel.");
          }
          else
          {
-            this.enable = param1.readBoolean();
+            this.enable = input.readBoolean();
             return;
          }
       }

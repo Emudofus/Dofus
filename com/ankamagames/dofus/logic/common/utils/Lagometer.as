@@ -27,11 +27,11 @@ package com.ankamagames.dofus.logic.common.utils
       
       protected var _lagging:Boolean = false;
       
-      public function ping(param1:INetworkMessage=null) : void {
+      public function ping(msg:INetworkMessage=null) : void {
          this._timer.start();
       }
       
-      public function pong(param1:INetworkMessage=null) : void {
+      public function pong(msg:INetworkMessage=null) : void {
          if(this._lagging)
          {
             this.stopLag();
@@ -49,7 +49,7 @@ package com.ankamagames.dofus.logic.common.utils
          }
       }
       
-      protected function onTimerComplete(param1:TimerEvent) : void {
+      protected function onTimerComplete(e:TimerEvent) : void {
          this.startLag();
       }
       

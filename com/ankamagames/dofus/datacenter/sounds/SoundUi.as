@@ -13,9 +13,9 @@ package com.ankamagames.dofus.datacenter.sounds
       
       public static var MODULE:String = "SoundUi";
       
-      public static function getSoundUiById(param1:uint) : SoundUi {
-         var _loc2_:SoundUi = GameData.getObject(MODULE,param1) as SoundUi;
-         return _loc2_;
+      public static function getSoundUiById(id:uint) : SoundUi {
+         var sb:SoundUi = GameData.getObject(MODULE,id) as SoundUi;
+         return sb;
       }
       
       public static function getSoundUis() : Array {

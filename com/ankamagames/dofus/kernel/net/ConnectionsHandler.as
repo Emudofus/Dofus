@@ -52,8 +52,8 @@ package com.ankamagames.dofus.kernel.net
          return _useSniffer;
       }
       
-      public static function set useSniffer(param1:Boolean) : void {
-         _useSniffer = param1;
+      public static function set useSniffer(sniffer:Boolean) : void {
+         _useSniffer = sniffer;
       }
       
       public static function get connectionType() : String {
@@ -64,8 +64,8 @@ package com.ankamagames.dofus.kernel.net
          return _hasReceivedMsg;
       }
       
-      public static function set hasReceivedMsg(param1:Boolean) : void {
-         _hasReceivedMsg = param1;
+      public static function set hasReceivedMsg(value:Boolean) : void {
+         _hasReceivedMsg = value;
       }
       
       public static function getConnection() : MultiConnection {
@@ -85,16 +85,16 @@ package com.ankamagames.dofus.kernel.net
          return _currentHttpConnection;
       }
       
-      public static function connectToLoginServer(param1:String, param2:uint) : void {
+      public static function connectToLoginServer(host:String, port:uint) : void {
          if(_currentConnection != null)
          {
             closeConnection();
          }
-         etablishConnection(param1,param2,ConnectionType.TO_LOGIN_SERVER,_useSniffer);
+         etablishConnection(host,port,ConnectionType.TO_LOGIN_SERVER,_useSniffer);
          _currentConnectionType = ConnectionType.TO_LOGIN_SERVER;
       }
       
-      public static function connectToGameServer(param1:String, param2:uint) : void {
+      public static function connectToGameServer(gameServerHost:String, gameServerPort:uint) : void {
          if(!_connectionTimeout)
          {
             _connectionTimeout = new Timer(4000,1);
@@ -109,11 +109,11 @@ package com.ankamagames.dofus.kernel.net
          {
             closeConnection();
          }
-         etablishConnection(param1,param2,ConnectionType.TO_GAME_SERVER,_useSniffer);
+         etablishConnection(gameServerHost,gameServerPort,ConnectionType.TO_GAME_SERVER,_useSniffer);
          _currentConnectionType = ConnectionType.TO_GAME_SERVER;
       }
       
-      public static function connectToKoliServer(param1:String, param2:uint) : void {
+      public static function connectToKoliServer(gameServerHost:String, gameServerPort:uint) : void {
          if(!_connectionTimeout)
          {
             _connectionTimeout = new Timer(4000,1);
@@ -124,11 +124,11 @@ package com.ankamagames.dofus.kernel.net
             _connectionTimeout.reset();
          }
          _connectionTimeout.start();
-         if(!(_currentConnection == null) && (_currentConnection.getSubConnection(ConnectionType.TO_KOLI_SERVER)))
+         if((!(_currentConnection == null)) && (_currentConnection.getSubConnection(ConnectionType.TO_KOLI_SERVER)))
          {
             _currentConnection.close(ConnectionType.TO_KOLI_SERVER);
          }
-         etablishConnection(param1,param2,ConnectionType.TO_KOLI_SERVER,_useSniffer);
+         etablishConnection(gameServerHost,gameServerPort,ConnectionType.TO_KOLI_SERVER,_useSniffer);
          _currentConnectionType = ConnectionType.TO_GAME_SERVER;
       }
       
@@ -139,14 +139,14 @@ package com.ankamagames.dofus.kernel.net
          }
       }
       
-      public static function onConnectionTimeout(param1:TimerEvent) : void {
-         var _loc2_:BasicPingMessage = null;
+      public static function onConnectionTimeout(e:TimerEvent) : void {
+         var msg:BasicPingMessage = null;
          if((_currentConnection) && (_currentConnection.connected))
          {
-            _loc2_ = new BasicPingMessage();
-            _loc2_.initBasicPingMessage(true);
+            msg = new BasicPingMessage();
+            msg.initBasicPingMessage(true);
             _log.warn("La connection au serveur de jeu semble longue. On envoit un BasicPingMessage pour essayer de débloquer la situation.");
-            _currentConnection.send(_loc2_);
+            _currentConnection.send(msg);
             if(_connectionTimeout)
             {
                _connectionTimeout.stop();
@@ -169,14 +169,14 @@ package com.ankamagames.dofus.kernel.net
       
       public static function handleDisconnection() : DisconnectionReason {
          closeConnection();
-         var _loc1_:DisconnectionReason = new DisconnectionReason(_wantedSocketLost,_wantedSocketLostReason);
+         var reason:DisconnectionReason = new DisconnectionReason(_wantedSocketLost,_wantedSocketLostReason);
          _wantedSocketLost = false;
          _wantedSocketLostReason = DisconnectionReasonEnum.UNEXPECTED;
-         return _loc1_;
+         return reason;
       }
       
-      public static function connectionGonnaBeClosed(param1:uint) : void {
-         _wantedSocketLostReason = param1;
+      public static function connectionGonnaBeClosed(expectedReason:uint) : void {
+         _wantedSocketLostReason = expectedReason;
          _wantedSocketLost = true;
       }
       
@@ -194,41 +194,41 @@ package com.ankamagames.dofus.kernel.net
          Kernel.getWorker().process(new ConnectionResumedMessage());
       }
       
-      private static function etablishConnection(param1:String, param2:int, param3:String, param4:Boolean=false, param5:IConnectionProxy=null) : void {
-         var _loc6_:IServerConnection = null;
-         if(param4)
+      private static function etablishConnection(host:String, port:int, id:String, useSniffer:Boolean=false, proxy:IConnectionProxy=null) : void {
+         var conn:IServerConnection = null;
+         if(useSniffer)
          {
-            if(param5 != null)
+            if(proxy != null)
             {
                throw new ArgumentError("Can\'t etablish a connection using a proxy and the sniffer.");
             }
             else
             {
-               _loc6_ = new SnifferServerConnection();
+               conn = new SnifferServerConnection();
             }
          }
          else
          {
-            if(param5 != null)
+            if(proxy != null)
             {
-               _loc6_ = new ProxyedServerConnection(param5);
+               conn = new ProxyedServerConnection(proxy);
             }
             else
             {
-               _loc6_ = new ServerConnection();
+               conn = new ServerConnection();
             }
          }
          if(!_currentConnection)
          {
             _currentConnection = new MultiConnection();
          }
-         _loc6_.lagometer = new LagometerAck();
-         _loc6_.handler = Kernel.getWorker();
-         _loc6_.rawParser = new MessageReceiver();
-         _currentConnection.addConnection(_loc6_,param3);
-         _currentConnection.mainConnection = _loc6_;
+         conn.lagometer = new LagometerAck();
+         conn.handler = Kernel.getWorker();
+         conn.rawParser = new MessageReceiver();
+         _currentConnection.addConnection(conn,id);
+         _currentConnection.mainConnection = conn;
          Kernel.getWorker().addFrame(new HandshakeFrame());
-         _loc6_.connect(param1,param2);
+         conn.connect(host,port);
       }
    }
 }

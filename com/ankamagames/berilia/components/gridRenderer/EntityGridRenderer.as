@@ -18,11 +18,11 @@ package com.ankamagames.berilia.components.gridRenderer
    public class EntityGridRenderer extends Object implements IGridRenderer
    {
       
-      public function EntityGridRenderer(param1:String) {
+      public function EntityGridRenderer(strParams:String) {
          this._log = Log.getLogger(getQualifiedClassName(EntityGridRenderer));
          super();
-         var _loc2_:Array = param1?param1.split(","):[];
-         this._emptyTexture = (_loc2_[0]) && (_loc2_[0].length)?new Uri(_loc2_[0]):null;
+         var params:Array = strParams?strParams.split(","):[];
+         this._emptyTexture = (params[0]) && (params[0].length)?new Uri(params[0]):null;
          this._mask = new Sprite();
       }
       
@@ -34,116 +34,116 @@ package com.ankamagames.berilia.components.gridRenderer
       
       private var _mask:Sprite;
       
-      public function set grid(param1:Grid) : void {
-         this._grid = param1;
+      public function set grid(g:Grid) : void {
+         this._grid = g;
       }
       
-      public function render(param1:*, param2:uint, param3:Boolean, param4:uint=0) : DisplayObject {
-         var _loc7_:EntityDisplayer = null;
-         var _loc5_:GraphicContainer = new GraphicContainer();
-         _loc5_.mouseEnabled = true;
-         var _loc6_:Texture = new Texture();
-         _loc6_.width = this._grid.slotWidth;
-         _loc6_.height = this._grid.slotHeight;
-         _loc6_.uri = this._emptyTexture;
-         _loc6_.finalize();
-         _loc5_.addChild(_loc6_);
-         _loc5_.width = this._grid.slotWidth;
-         _loc5_.height = this._grid.slotHeight;
-         if(param1)
+      public function render(data:*, index:uint, selected:Boolean, subIndex:uint=0) : DisplayObject {
+         var entDisp:EntityDisplayer = null;
+         var ctr:GraphicContainer = new GraphicContainer();
+         ctr.mouseEnabled = true;
+         var background:Texture = new Texture();
+         background.width = this._grid.slotWidth;
+         background.height = this._grid.slotHeight;
+         background.uri = this._emptyTexture;
+         background.finalize();
+         ctr.addChild(background);
+         ctr.width = this._grid.slotWidth;
+         ctr.height = this._grid.slotHeight;
+         if(data)
          {
-            _loc7_ = new EntityDisplayer();
-            _loc7_.name = "entity";
-            _loc7_.width = this._grid.slotWidth;
-            _loc7_.height = this._grid.slotHeight;
-            _loc7_.look = param1.entityLook;
-            _loc7_.direction = 3;
-            _loc7_.scale = 2;
-            _loc7_.yOffset = 20;
-            _loc5_.addChild(_loc7_);
+            entDisp = new EntityDisplayer();
+            entDisp.name = "entity";
+            entDisp.width = this._grid.slotWidth;
+            entDisp.height = this._grid.slotHeight;
+            entDisp.look = data.entityLook;
+            entDisp.direction = 3;
+            entDisp.scale = 2;
+            entDisp.yOffset = 20;
+            ctr.addChild(entDisp);
             this._mask = new Sprite();
             this._mask.graphics.beginFill(16711680);
-            this._mask.graphics.drawRoundRect(3,3,_loc5_.width - 6,_loc5_.height - 6,6,6);
+            this._mask.graphics.drawRoundRect(3,3,ctr.width - 6,ctr.height - 6,6,6);
             this._mask.graphics.endFill();
-            _loc5_.addChild(this._mask);
-            _loc7_.mask = this._mask;
+            ctr.addChild(this._mask);
+            entDisp.mask = this._mask;
          }
-         return _loc5_;
+         return ctr;
       }
       
-      public function update(param1:*, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint=0) : void {
-         var _loc6_:GraphicContainer = null;
-         var _loc7_:EntityDisplayer = null;
-         var _loc8_:EntityDisplayer = null;
-         if(param3 is GraphicContainer)
+      public function update(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, subIndex:uint=0) : void {
+         var ctr:GraphicContainer = null;
+         var ed:EntityDisplayer = null;
+         var entDisp:EntityDisplayer = null;
+         if(dispObj is GraphicContainer)
          {
-            _loc6_ = GraphicContainer(param3);
-            _loc6_.mouseEnabled = true;
-            _loc7_ = _loc6_.getChildByName("entity") as EntityDisplayer;
-            if(param1)
+            ctr = GraphicContainer(dispObj);
+            ctr.mouseEnabled = true;
+            ed = ctr.getChildByName("entity") as EntityDisplayer;
+            if(data)
             {
-               if(_loc7_)
+               if(ed)
                {
-                  if(_loc7_.look.toString() == param1.entityLook.toString())
+                  if(ed.look.toString() == data.entityLook.toString())
                   {
                      return;
                   }
-                  _loc7_.look = SecureCenter.unsecure(param1.entityLook);
+                  ed.look = SecureCenter.unsecure(data.entityLook);
                }
                else
                {
-                  _loc8_ = new EntityDisplayer();
-                  _loc8_.name = "entity";
-                  _loc8_.width = this._grid.slotWidth;
-                  _loc8_.height = this._grid.slotHeight;
-                  _loc8_.look = SecureCenter.unsecure(param1.entityLook);
-                  _loc8_.direction = 3;
-                  _loc8_.scale = 2;
-                  _loc8_.yOffset = 20;
-                  _loc6_.addChild(_loc8_);
+                  entDisp = new EntityDisplayer();
+                  entDisp.name = "entity";
+                  entDisp.width = this._grid.slotWidth;
+                  entDisp.height = this._grid.slotHeight;
+                  entDisp.look = SecureCenter.unsecure(data.entityLook);
+                  entDisp.direction = 3;
+                  entDisp.scale = 2;
+                  entDisp.yOffset = 20;
+                  ctr.addChild(entDisp);
                   this._mask = new Sprite();
                   this._mask.graphics.beginFill(255);
-                  this._mask.graphics.drawRoundRect(3,3,_loc6_.width - 6,_loc6_.height - 6,6,6);
+                  this._mask.graphics.drawRoundRect(3,3,ctr.width - 6,ctr.height - 6,6,6);
                   this._mask.graphics.endFill();
-                  _loc6_.addChild(this._mask);
-                  _loc8_.mask = this._mask;
+                  ctr.addChild(this._mask);
+                  entDisp.mask = this._mask;
                }
             }
             else
             {
-               if(_loc7_)
+               if(ed)
                {
-                  _loc6_.removeChild(_loc7_);
-                  if((this._mask) && (_loc6_.getChildByName(this._mask.name)))
+                  ctr.removeChild(ed);
+                  if((this._mask) && (ctr.getChildByName(this._mask.name)))
                   {
-                     _loc6_.removeChild(this._mask);
+                     ctr.removeChild(this._mask);
                   }
-                  _loc7_.remove();
+                  ed.remove();
                }
             }
          }
       }
       
-      public function getDataLength(param1:*, param2:Boolean) : uint {
-         return param1 % 2;
+      public function getDataLength(data:*, selected:Boolean) : uint {
+         return data % 2;
       }
       
-      public function remove(param1:DisplayObject) : void {
-         var _loc2_:EntityDisplayer = null;
-         var _loc3_:DisplayObject = null;
-         if(param1 is GraphicContainer)
+      public function remove(dispObj:DisplayObject) : void {
+         var ed:EntityDisplayer = null;
+         var mask:DisplayObject = null;
+         if(dispObj is GraphicContainer)
          {
-            _loc2_ = GraphicContainer(param1).getChildByName("entity") as EntityDisplayer;
-            if(_loc2_)
+            ed = GraphicContainer(dispObj).getChildByName("entity") as EntityDisplayer;
+            if(ed)
             {
-               _loc2_.remove();
+               ed.remove();
             }
-            _loc3_ = GraphicContainer(param1).getChildByName(this._mask.name);
-            if(_loc3_)
+            mask = GraphicContainer(dispObj).getChildByName(this._mask.name);
+            if(mask)
             {
-               GraphicContainer(param1).removeChild(_loc3_);
+               GraphicContainer(dispObj).removeChild(mask);
             }
-            GraphicContainer(param1).remove();
+            GraphicContainer(dispObj).remove();
          }
       }
       
@@ -153,12 +153,12 @@ package com.ankamagames.berilia.components.gridRenderer
          this._mask = null;
       }
       
-      public function renderModificator(param1:Array) : Array {
-         return param1;
+      public function renderModificator(childs:Array) : Array {
+         return childs;
       }
       
-      public function eventModificator(param1:Message, param2:String, param3:Array, param4:UIComponent) : String {
-         return param2;
+      public function eventModificator(msg:Message, functionName:String, args:Array, target:UIComponent) : String {
+         return functionName;
       }
    }
 }

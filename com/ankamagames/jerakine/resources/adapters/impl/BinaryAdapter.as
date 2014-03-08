@@ -12,8 +12,8 @@ package com.ankamagames.jerakine.resources.adapters.impl
          super();
       }
       
-      override protected function getResource(param1:String, param2:*) : * {
-         return param2;
+      override protected function getResource(dataFormat:String, data:*) : * {
+         return data;
       }
       
       override public function getResourceType() : uint {

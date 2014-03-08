@@ -34,13 +34,13 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5586;
       }
       
-      public function initPartyInvitationMessage(param1:uint=0, param2:uint=0, param3:uint=0, param4:uint=0, param5:String="", param6:uint=0) : PartyInvitationMessage {
-         super.initAbstractPartyMessage(param1);
-         this.partyType = param2;
-         this.maxParticipants = param3;
-         this.fromId = param4;
-         this.fromName = param5;
-         this.toId = param6;
+      public function initPartyInvitationMessage(partyId:uint=0, partyType:uint=0, maxParticipants:uint=0, fromId:uint=0, fromName:String="", toId:uint=0) : PartyInvitationMessage {
+         super.initAbstractPartyMessage(partyId);
+         this.partyType = partyType;
+         this.maxParticipants = maxParticipants;
+         this.fromId = fromId;
+         this.fromName = fromName;
+         this.toId = toId;
          this._isInitialized = true;
          return this;
       }
@@ -55,80 +55,80 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_PartyInvitationMessage(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartyInvitationMessage(output);
       }
       
-      public function serializeAs_PartyInvitationMessage(param1:IDataOutput) : void {
-         super.serializeAs_AbstractPartyMessage(param1);
-         param1.writeByte(this.partyType);
+      public function serializeAs_PartyInvitationMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractPartyMessage(output);
+         output.writeByte(this.partyType);
          if(this.maxParticipants < 0)
          {
             throw new Error("Forbidden value (" + this.maxParticipants + ") on element maxParticipants.");
          }
          else
          {
-            param1.writeByte(this.maxParticipants);
+            output.writeByte(this.maxParticipants);
             if(this.fromId < 0)
             {
                throw new Error("Forbidden value (" + this.fromId + ") on element fromId.");
             }
             else
             {
-               param1.writeInt(this.fromId);
-               param1.writeUTF(this.fromName);
+               output.writeInt(this.fromId);
+               output.writeUTF(this.fromName);
                if(this.toId < 0)
                {
                   throw new Error("Forbidden value (" + this.toId + ") on element toId.");
                }
                else
                {
-                  param1.writeInt(this.toId);
+                  output.writeInt(this.toId);
                   return;
                }
             }
          }
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_PartyInvitationMessage(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartyInvitationMessage(input);
       }
       
-      public function deserializeAs_PartyInvitationMessage(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.partyType = param1.readByte();
+      public function deserializeAs_PartyInvitationMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.partyType = input.readByte();
          if(this.partyType < 0)
          {
             throw new Error("Forbidden value (" + this.partyType + ") on element of PartyInvitationMessage.partyType.");
          }
          else
          {
-            this.maxParticipants = param1.readByte();
+            this.maxParticipants = input.readByte();
             if(this.maxParticipants < 0)
             {
                throw new Error("Forbidden value (" + this.maxParticipants + ") on element of PartyInvitationMessage.maxParticipants.");
             }
             else
             {
-               this.fromId = param1.readInt();
+               this.fromId = input.readInt();
                if(this.fromId < 0)
                {
                   throw new Error("Forbidden value (" + this.fromId + ") on element of PartyInvitationMessage.fromId.");
                }
                else
                {
-                  this.fromName = param1.readUTF();
-                  this.toId = param1.readInt();
+                  this.fromName = input.readUTF();
+                  this.toId = input.readInt();
                   if(this.toId < 0)
                   {
                      throw new Error("Forbidden value (" + this.toId + ") on element of PartyInvitationMessage.toId.");

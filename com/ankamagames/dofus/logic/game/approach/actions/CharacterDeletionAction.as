@@ -9,11 +9,11 @@ package com.ankamagames.dofus.logic.game.approach.actions
          super();
       }
       
-      public static function create(param1:int, param2:String) : CharacterDeletionAction {
-         var _loc3_:CharacterDeletionAction = new CharacterDeletionAction();
-         _loc3_.id = param1;
-         _loc3_.answer = param2;
-         return _loc3_;
+      public static function create(id:int, answer:String) : CharacterDeletionAction {
+         var a:CharacterDeletionAction = new CharacterDeletionAction();
+         a.id = id;
+         a.answer = answer;
+         return a;
       }
       
       public var id:int;

@@ -12,12 +12,12 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightLifeVariationStep extends AbstractStatContextualStep implements IFightStep
    {
       
-      public function FightLifeVariationStep(param1:int, param2:int, param3:int, param4:int) {
-         super(COLOR,param2.toString(),param1,BLOCKING);
+      public function FightLifeVariationStep(entityId:int, delta:int, permanentDamages:int, actionId:int) {
+         super(COLOR,delta.toString(),entityId,BLOCKING);
          _virtual = true;
-         this._delta = param2;
-         this._permanentDamages = param3;
-         this._actionId = param4;
+         this._delta = delta;
+         this._permanentDamages = permanentDamages;
+         this._actionId = actionId;
       }
       
       public static const COLOR:uint = 16711680;
@@ -53,33 +53,33 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
-         var _loc1_:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_targetId) as GameFightFighterInformations;
-         if(!_loc1_)
+         var fighterInfos:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_targetId) as GameFightFighterInformations;
+         if(!fighterInfos)
          {
             super.executeCallbacks();
             return;
          }
-         var _loc2_:int = _loc1_.stats.lifePoints + this._delta;
-         _loc1_.stats.lifePoints = Math.max(0,_loc2_);
-         _loc1_.stats.maxLifePoints = Math.max(1,_loc1_.stats.maxLifePoints + this._permanentDamages);
-         if(_loc1_.stats.lifePoints > _loc1_.stats.maxLifePoints)
+         var res:int = fighterInfos.stats.lifePoints + this._delta;
+         fighterInfos.stats.lifePoints = Math.max(0,res);
+         fighterInfos.stats.maxLifePoints = Math.max(1,fighterInfos.stats.maxLifePoints + this._permanentDamages);
+         if(fighterInfos.stats.lifePoints > fighterInfos.stats.maxLifePoints)
          {
-            _loc1_.stats.lifePoints = _loc1_.stats.maxLifePoints;
+            fighterInfos.stats.lifePoints = fighterInfos.stats.maxLifePoints;
          }
-         if(_loc1_ is GameFightCharacterInformations)
+         if(fighterInfos is GameFightCharacterInformations)
          {
-            TooltipManager.updateContent("PlayerShortInfos" + _loc1_.contextualId,"tooltipOverEntity_" + _loc1_.contextualId,_loc1_);
+            TooltipManager.updateContent("PlayerShortInfos" + fighterInfos.contextualId,"tooltipOverEntity_" + fighterInfos.contextualId,fighterInfos);
          }
          else
          {
-            TooltipManager.updateContent("EntityShortInfos" + _loc1_.contextualId,"tooltipOverEntity_" + _loc1_.contextualId,_loc1_);
+            TooltipManager.updateContent("EntityShortInfos" + fighterInfos.contextualId,"tooltipOverEntity_" + fighterInfos.contextualId,fighterInfos);
          }
          if(PlayedCharacterManager.getInstance().id == _targetId)
          {
-            PlayedCharacterManager.getInstance().characteristics.lifePoints = _loc1_.stats.lifePoints;
-            PlayedCharacterManager.getInstance().characteristics.maxLifePoints = _loc1_.stats.maxLifePoints;
+            PlayedCharacterManager.getInstance().characteristics.lifePoints = fighterInfos.stats.lifePoints;
+            PlayedCharacterManager.getInstance().characteristics.maxLifePoints = fighterInfos.stats.maxLifePoints;
          }
-         if(this._delta < 0 || this._delta == 0 && !this.skipTextEvent)
+         if((this._delta < 0) || (this._delta == 0) && (!this.skipTextEvent))
          {
             FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_LIFE_LOSS,[_targetId,Math.abs(this._delta),this._actionId],_targetId,castingSpellId,false,2);
          }

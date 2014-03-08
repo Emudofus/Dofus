@@ -27,8 +27,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.storage
          return 5648;
       }
       
-      public function initStorageObjectRemoveMessage(param1:uint=0) : StorageObjectRemoveMessage {
-         this.objectUID = param1;
+      public function initStorageObjectRemoveMessage(objectUID:uint=0) : StorageObjectRemoveMessage {
+         this.objectUID = objectUID;
          this._isInitialized = true;
          return this;
       }
@@ -38,38 +38,38 @@ package com.ankamagames.dofus.network.messages.game.inventory.storage
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_StorageObjectRemoveMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_StorageObjectRemoveMessage(output);
       }
       
-      public function serializeAs_StorageObjectRemoveMessage(param1:IDataOutput) : void {
+      public function serializeAs_StorageObjectRemoveMessage(output:IDataOutput) : void {
          if(this.objectUID < 0)
          {
             throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
          }
          else
          {
-            param1.writeInt(this.objectUID);
+            output.writeInt(this.objectUID);
             return;
          }
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_StorageObjectRemoveMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_StorageObjectRemoveMessage(input);
       }
       
-      public function deserializeAs_StorageObjectRemoveMessage(param1:IDataInput) : void {
-         this.objectUID = param1.readInt();
+      public function deserializeAs_StorageObjectRemoveMessage(input:IDataInput) : void {
+         this.objectUID = input.readInt();
          if(this.objectUID < 0)
          {
             throw new Error("Forbidden value (" + this.objectUID + ") on element of StorageObjectRemoveMessage.objectUID.");

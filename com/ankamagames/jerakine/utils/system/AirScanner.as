@@ -16,18 +16,18 @@ package com.ankamagames.jerakine.utils.system
       
       private static var _isStreaming:Boolean;
       
-      public static function init(param1:Boolean=false) : void {
+      public static function init(pIsStreaming:Boolean=false) : void {
          if(!_initialized)
          {
             initialize();
-            _isStreaming = param1;
+            _isStreaming = pIsStreaming;
          }
       }
       
       private static function initialize() : void {
          _initialized = true;
-         var _loc1_:LoaderContext = new LoaderContext();
-         if(_loc1_.hasOwnProperty("allowLoadBytesCodeExecution"))
+         var lc:LoaderContext = new LoaderContext();
+         if(lc.hasOwnProperty("allowLoadBytesCodeExecution"))
          {
             _hasAir = true;
          }
@@ -35,8 +35,8 @@ package com.ankamagames.jerakine.utils.system
          {
             _hasAir = false;
          }
-         var _loc2_:String = Capabilities.version.substr(0,3);
-         if(!(_loc2_ == "LNX") && !(_loc2_ == "WIN") && !(_loc2_ == "MAC"))
+         var ver:String = Capabilities.version.substr(0,3);
+         if((!(ver == "LNX")) && (!(ver == "WIN")) && (!(ver == "MAC")))
          {
             _hasAir = false;
          }
@@ -60,14 +60,14 @@ package com.ankamagames.jerakine.utils.system
          return _isStreaming;
       }
       
-      public static function allowByteCodeExecution(param1:LoaderContext, param2:Boolean) : void {
-         if(param1.hasOwnProperty("allowCodeImport"))
+      public static function allowByteCodeExecution(pContext:LoaderContext, pVal:Boolean) : void {
+         if(pContext.hasOwnProperty("allowCodeImport"))
          {
-            param1["allowCodeImport"] = param2;
+            pContext["allowCodeImport"] = pVal;
          }
          else
          {
-            param1["allowLoadBytesCodeExecution"] = param2;
+            pContext["allowLoadBytesCodeExecution"] = pVal;
          }
       }
    }

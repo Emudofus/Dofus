@@ -12,15 +12,13 @@ package com.ankamagames.tubul.factory
          super();
       }
       
-      public static function getAudioBus(param1:uint, param2:uint, param3:String) : IAudioBus {
-         switch(param1)
+      public static function getAudioBus(pType:uint, pId:uint, pName:String) : IAudioBus {
+         switch(pType)
          {
             case EnumTypeBus.LOCALIZED_BUS:
-               return new LocalizedBus(param2,param3);
+               return new LocalizedBus(pId,pName);
             case EnumTypeBus.UNLOCALIZED_BUS:
-               return new UnlocalizedBus(param2,param3);
-            default:
-               throw new ArgumentError("Unknown audio bus type " + param1 + ". See EnumTypeBus !");
+               return new UnlocalizedBus(pId,pName);
          }
       }
    }

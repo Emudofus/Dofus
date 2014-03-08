@@ -7,19 +7,19 @@ package com.ankamagames.jerakine.pools
    public class Pool extends Object
    {
       
-      public function Pool(param1:Class, param2:int, param3:int, param4:int=0) {
+      public function Pool(pooledClass:Class, initialSize:int, growSize:int, warnLimit:int=0) {
          super();
-         this._pooledClass = param1;
+         this._pooledClass = pooledClass;
          this._pool = new Array();
-         this._growSize = param3;
-         this._warnLimit = param4;
-         var _loc5_:uint = 0;
-         while(_loc5_ < param2)
+         this._growSize = growSize;
+         this._warnLimit = warnLimit;
+         var i:uint = 0;
+         while(i < initialSize)
          {
             this._pool.push(new this._pooledClass());
-            _loc5_++;
+            i++;
          }
-         this._totalSize = param2;
+         this._totalSize = initialSize;
       }
       
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Pool));
@@ -51,28 +51,28 @@ package com.ankamagames.jerakine.pools
       }
       
       public function checkOut() : Poolable {
-         var _loc2_:uint = 0;
+         var i:uint = 0;
          if(this._pool.length == 0)
          {
-            _loc2_ = 0;
-            while(_loc2_ < this._growSize)
+            i = 0;
+            while(i < this._growSize)
             {
                this._pool.push(new this._pooledClass());
-               _loc2_++;
+               i++;
             }
             this._totalSize = this._totalSize + this._growSize;
-            if(this._warnLimit > 0 && this._totalSize > this._warnLimit)
+            if((this._warnLimit > 0) && (this._totalSize > this._warnLimit))
             {
                _log.warn("Pool of " + this._pooledClass + " size beyond the warning limit. Size: " + this._pool.length + ", limit: " + this._warnLimit + ".");
             }
          }
-         var _loc1_:Poolable = this._pool.shift();
-         return _loc1_;
+         var o:Poolable = this._pool.shift();
+         return o;
       }
       
-      public function checkIn(param1:Poolable) : void {
-         param1.free();
-         this._pool.push(param1);
+      public function checkIn(freedObject:Poolable) : void {
+         freedObject.free();
+         this._pool.push(freedObject);
       }
    }
 }

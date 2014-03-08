@@ -19,9 +19,9 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 74;
       }
       
-      public function initObjectEffectString(param1:uint=0, param2:String="") : ObjectEffectString {
-         super.initObjectEffect(param1);
-         this.value = param2;
+      public function initObjectEffectString(actionId:uint=0, value:String="") : ObjectEffectString {
+         super.initObjectEffect(actionId);
+         this.value = value;
          return this;
       }
       
@@ -30,22 +30,22 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          this.value = "";
       }
       
-      override public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_ObjectEffectString(param1);
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectEffectString(output);
       }
       
-      public function serializeAs_ObjectEffectString(param1:IDataOutput) : void {
-         super.serializeAs_ObjectEffect(param1);
-         param1.writeUTF(this.value);
+      public function serializeAs_ObjectEffectString(output:IDataOutput) : void {
+         super.serializeAs_ObjectEffect(output);
+         output.writeUTF(this.value);
       }
       
-      override public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_ObjectEffectString(param1);
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectEffectString(input);
       }
       
-      public function deserializeAs_ObjectEffectString(param1:IDataInput) : void {
-         super.deserialize(param1);
-         this.value = param1.readUTF();
+      public function deserializeAs_ObjectEffectString(input:IDataInput) : void {
+         super.deserialize(input);
+         this.value = input.readUTF();
       }
    }
 }

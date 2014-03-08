@@ -29,9 +29,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
          return 6279;
       }
       
-      public function initGameRolePlayArenaFightAnswerMessage(param1:int=0, param2:Boolean=false) : GameRolePlayArenaFightAnswerMessage {
-         this.fightId = param1;
-         this.accept = param2;
+      public function initGameRolePlayArenaFightAnswerMessage(fightId:int=0, accept:Boolean=false) : GameRolePlayArenaFightAnswerMessage {
+         this.fightId = fightId;
+         this.accept = accept;
          this._isInitialized = true;
          return this;
       }
@@ -42,32 +42,32 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
          this._isInitialized = false;
       }
       
-      override public function pack(param1:IDataOutput) : void {
-         var _loc2_:ByteArray = new ByteArray();
-         this.serialize(_loc2_);
-         writePacket(param1,this.getMessageId(),_loc2_);
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
       }
       
-      override public function unpack(param1:IDataInput, param2:uint) : void {
-         this.deserialize(param1);
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
       }
       
-      public function serialize(param1:IDataOutput) : void {
-         this.serializeAs_GameRolePlayArenaFightAnswerMessage(param1);
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayArenaFightAnswerMessage(output);
       }
       
-      public function serializeAs_GameRolePlayArenaFightAnswerMessage(param1:IDataOutput) : void {
-         param1.writeInt(this.fightId);
-         param1.writeBoolean(this.accept);
+      public function serializeAs_GameRolePlayArenaFightAnswerMessage(output:IDataOutput) : void {
+         output.writeInt(this.fightId);
+         output.writeBoolean(this.accept);
       }
       
-      public function deserialize(param1:IDataInput) : void {
-         this.deserializeAs_GameRolePlayArenaFightAnswerMessage(param1);
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayArenaFightAnswerMessage(input);
       }
       
-      public function deserializeAs_GameRolePlayArenaFightAnswerMessage(param1:IDataInput) : void {
-         this.fightId = param1.readInt();
-         this.accept = param1.readBoolean();
+      public function deserializeAs_GameRolePlayArenaFightAnswerMessage(input:IDataInput) : void {
+         this.fightId = input.readInt();
+         this.accept = input.readBoolean();
       }
    }
 }
