@@ -2,6 +2,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
 {
    import com.ankamagames.dofus.logic.game.fight.steps.abstract.AbstractStatContextualStep;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
+   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
    import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
    import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
@@ -47,13 +48,18 @@ package com.ankamagames.dofus.logic.game.fight.steps
       
       override public function start() : void {
          var fighterInfos:GameFightFighterInformations = null;
+         var characteristics:CharacterCharacteristicsInformations = null;
          if(this._updateFighterInfos)
          {
             fighterInfos = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_targetId) as GameFightFighterInformations;
             fighterInfos.stats.actionPoints = fighterInfos.stats.actionPoints + this._intValue;
-            if((CurrentPlayedFighterManager.getInstance().currentFighterId == _targetId) && (!this._voluntarlyUsed))
+            if(!this._voluntarlyUsed)
             {
-               CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent + this._intValue;
+               characteristics = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations(_targetId);
+               if(characteristics)
+               {
+                  characteristics.actionPointsCurrent = fighterInfos.stats.actionPoints;
+               }
             }
          }
          SpellWrapper.refreshAllPlayerSpellHolder(_targetId);

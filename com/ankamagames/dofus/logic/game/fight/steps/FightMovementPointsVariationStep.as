@@ -1,10 +1,10 @@
 package com.ankamagames.dofus.logic.game.fight.steps
 {
    import com.ankamagames.dofus.logic.game.fight.steps.abstract.AbstractStatContextualStep;
+   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
-   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.logic.game.fight.fightEvents.FightEventsHelper;
    import com.ankamagames.dofus.logic.game.fight.types.FightEventEnum;
    import com.ankamagames.jerakine.managers.OptionManager;
@@ -42,20 +42,15 @@ package com.ankamagames.dofus.logic.game.fight.steps
       }
       
       override public function start() : void {
+         var characteristics:CharacterCharacteristicsInformations = null;
          var fighterInfos:GameFightFighterInformations = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_targetId) as GameFightFighterInformations;
          if(this._updateCharacteristicManager)
          {
             fighterInfos.stats.movementPoints = fighterInfos.stats.movementPoints + this._intValue;
-            if(CurrentPlayedFighterManager.getInstance().currentFighterId == _targetId)
+            characteristics = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations(_targetId);
+            if(characteristics)
             {
-               CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().movementPointsCurrent = fighterInfos.stats.movementPoints;
-            }
-            else
-            {
-               if(PlayedCharacterManager.getInstance().id == _targetId)
-               {
-                  PlayedCharacterManager.getInstance().characteristics.movementPointsCurrent = fighterInfos.stats.movementPoints;
-               }
+               characteristics.movementPointsCurrent = fighterInfos.stats.movementPoints;
             }
             FightEntitiesFrame.getCurrentInstance().setLastKnownEntityMovementPoint(_targetId,-this._intValue,true);
          }

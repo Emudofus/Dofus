@@ -96,6 +96,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
    import com.ankamagames.dofus.Constants;
    import com.ankamagames.dofus.externalnotification.ExternalNotificationManager;
    import com.ankamagames.jerakine.utils.crypto.Base64;
+   import com.ankamagames.dofus.logic.game.common.frames.WorldFrame;
    import com.ankamagames.dofus.logic.game.common.frames.AlignmentFrame;
    import com.ankamagames.dofus.logic.game.common.frames.SynchronisationFrame;
    import com.ankamagames.dofus.logic.game.common.frames.LivingObjectFrame;
@@ -873,6 +874,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                {
                   trace("Error on changelog loading.");
                }
+               Kernel.getWorker().addFrame(new WorldFrame());
                Kernel.getWorker().addFrame(new AlignmentFrame());
                Kernel.getWorker().addFrame(new SynchronisationFrame());
                Kernel.getWorker().addFrame(new LivingObjectFrame());

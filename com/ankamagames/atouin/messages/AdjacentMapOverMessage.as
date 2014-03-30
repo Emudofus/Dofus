@@ -23,6 +23,8 @@ package com.ankamagames.atouin.messages
       
       private var _cellData:CellData;
       
+      private var _neighborMapId:uint;
+      
       public function get direction() : uint {
          return this._nDirection;
       }

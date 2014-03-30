@@ -25,8 +25,8 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 450;
       }
       
-      public function initGameFightCompanionInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, alive:Boolean=false, stats:GameFightMinimalStats=null, companionGenericId:uint=0, level:uint=0, masterId:int=0) : GameFightCompanionInformations {
-         super.initGameFightFighterInformations(contextualId,look,disposition,teamId,alive,stats);
+      public function initGameFightCompanionInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null, companionGenericId:uint=0, level:uint=0, masterId:int=0) : GameFightCompanionInformations {
+         super.initGameFightFighterInformations(contextualId,look,disposition,teamId,wave,alive,stats);
          this.companionGenericId = companionGenericId;
          this.level = level;
          this.masterId = masterId;

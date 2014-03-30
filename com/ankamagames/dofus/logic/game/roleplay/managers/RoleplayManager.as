@@ -14,6 +14,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
    import com.ankamagames.dofus.network.types.game.context.GameRolePlayTaxCollectorInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPrismInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPortalInformations;
    import com.ankamagames.dofus.logic.game.roleplay.types.GameContextPaddockItemInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMountInformations;
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
@@ -92,6 +93,9 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
                menu = MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
                break;
             case pGameContextActorInformations is GameRolePlayPrismInformations:
+               menu = MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
+               break;
+            case pGameContextActorInformations is GameRolePlayPortalInformations:
                menu = MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
                break;
             case pGameContextActorInformations is GameContextPaddockItemInformations:

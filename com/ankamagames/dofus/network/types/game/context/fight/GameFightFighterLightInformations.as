@@ -16,6 +16,8 @@ package com.ankamagames.dofus.network.types.game.context.fight
       
       public var id:int = 0;
       
+      public var wave:int = 0;
+      
       public var level:uint = 0;
       
       public var breed:int = 0;
@@ -28,8 +30,9 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 413;
       }
       
-      public function initGameFightFighterLightInformations(id:int=0, level:uint=0, breed:int=0, sex:Boolean=false, alive:Boolean=false) : GameFightFighterLightInformations {
+      public function initGameFightFighterLightInformations(id:int=0, wave:int=0, level:uint=0, breed:int=0, sex:Boolean=false, alive:Boolean=false) : GameFightFighterLightInformations {
          this.id = id;
+         this.wave = wave;
          this.level = level;
          this.breed = breed;
          this.sex = sex;
@@ -39,6 +42,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
       
       public function reset() : void {
          this.id = 0;
+         this.wave = 0;
          this.level = 0;
          this.breed = 0;
          this.sex = false;
@@ -55,6 +59,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          _box0 = BooleanByteWrapper.setFlag(_box0,1,this.alive);
          output.writeByte(_box0);
          output.writeInt(this.id);
+         output.writeInt(this.wave);
          if(this.level < 0)
          {
             throw new Error("Forbidden value (" + this.level + ") on element level.");
@@ -76,6 +81,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.sex = BooleanByteWrapper.getFlag(_box0,0);
          this.alive = BooleanByteWrapper.getFlag(_box0,1);
          this.id = input.readInt();
+         this.wave = input.readInt();
          this.level = input.readShort();
          if(this.level < 0)
          {

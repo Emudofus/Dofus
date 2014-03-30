@@ -103,12 +103,55 @@ package com.ankamagames.tiphon.engine
       }
       
       public function dispatchEvents(pFrame:*) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var num:* = 0;
+         var i:* = 0;
+         var event:TiphonEventInfo = null;
+         var numListener:* = 0;
+         var k:* = 0;
+         var eListener:EventListener = null;
+         if(!this._weakTiphonSprite)
+         {
+            return;
+         }
+         if(pFrame == 0)
+         {
+            pFrame = 1;
+         }
+         var ts:TiphonSprite = this._weakTiphonSprite.object as TiphonSprite;
+         var spriteDirection:uint = ts.getDirection();
+         if(spriteDirection == 3)
+         {
+            spriteDirection = 1;
+         }
+         if(spriteDirection == 7)
+         {
+            spriteDirection = 5;
+         }
+         if(spriteDirection == 4)
+         {
+            spriteDirection = 0;
+         }
+         var spriteAnimation:String = ts.getAnimation();
+         var frameEventsList:Vector.<TiphonEventInfo> = this._events[pFrame];
+         if(frameEventsList)
+         {
+            num = frameEventsList.length;
+            i = -1;
+            while(++i < num)
+            {
+               event = frameEventsList[i];
+               numListener = _listeners.length;
+               k = -1;
+               while(++k < numListener)
+               {
+                  eListener = _listeners[k];
+                  if((eListener.typesEvents == event.type) && (event.animationType == spriteAnimation) && (event.direction == spriteDirection))
+                  {
+                     eListener.listener.handleFLAEvent(event.animationName,event.type,event.params,ts);
+                  }
+               }
+            }
+         }
       }
       
       public function destroy() : void {
@@ -213,12 +256,36 @@ package com.ankamagames.tiphon.engine
       }
       
       private function parseLabel(pLabelName:String) : TiphonEventInfo {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var returnEvent:TiphonEventInfo = null;
+         var param:String = null;
+         var eventName:String = pLabelName.split(BALISE_PARAM_BEGIN)[0];
+         var r:RegExp = new RegExp("^\\s*(.*?)\\s*$","g");
+         eventName = eventName.replace(r,"$1");
+         switch(eventName.toUpperCase())
+         {
+            case BALISE_SOUND.toUpperCase():
+               param = pLabelName.split(BALISE_PARAM_BEGIN)[1];
+               param = param.split(BALISE_PARAM_END)[0];
+               returnEvent = new TiphonEventInfo(TiphonEvent.SOUND_EVENT,param);
+               break;
+            case BALISE_DATASOUND.toUpperCase():
+               param = pLabelName.split(BALISE_PARAM_BEGIN)[1];
+               param = param.split(BALISE_PARAM_END)[0];
+               returnEvent = new TiphonEventInfo(TiphonEvent.DATASOUND_EVENT,param);
+               break;
+            case BALISE_PLAYANIM.toUpperCase():
+               param = pLabelName.split(BALISE_PARAM_BEGIN)[1];
+               param = param.split(BALISE_PARAM_END)[0];
+               returnEvent = new TiphonEventInfo(TiphonEvent.PLAYANIM_EVENT,param);
+               break;
+            case BALISE_EVT.toUpperCase():
+               trace("BALISE_EVT : " + pLabelName);
+               param = pLabelName.split(BALISE_PARAM_BEGIN)[1];
+               param = param.split(BALISE_PARAM_END)[0];
+               returnEvent = new TiphonEventInfo(TiphonEvent.EVT_EVENT,param);
+               break;
+         }
+         return returnEvent;
       }
       
       private function convertOldLabel(pLabelName:String) : TiphonEventInfo {

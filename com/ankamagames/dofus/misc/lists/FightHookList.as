@@ -44,5 +44,7 @@ package com.ankamagames.dofus.misc.lists
       public static const SlaveStatsList:Hook = new Hook("SlaveStatsList",false);
       
       public static const ShowMonsterArtwork:Hook = new Hook("ShowMonsterArtwork",false);
+      
+      public static const WaveUpdated:Hook = new Hook("WaveUpdated",false);
    }
 }

@@ -24,8 +24,8 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 24;
       }
       
-      public function initFightResultPlayerListEntry(outcome:uint=0, rewards:FightLoot=null, id:int=0, alive:Boolean=false, level:uint=0, additional:Vector.<FightResultAdditionalData>=null) : FightResultPlayerListEntry {
-         super.initFightResultFighterListEntry(outcome,rewards,id,alive);
+      public function initFightResultPlayerListEntry(outcome:uint=0, wave:uint=0, rewards:FightLoot=null, id:int=0, alive:Boolean=false, level:uint=0, additional:Vector.<FightResultAdditionalData>=null) : FightResultPlayerListEntry {
+         super.initFightResultFighterListEntry(outcome,wave,rewards,id,alive);
          this.level = level;
          this.additional = additional;
          return this;

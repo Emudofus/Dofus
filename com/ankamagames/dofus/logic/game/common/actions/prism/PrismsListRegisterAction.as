@@ -9,11 +9,14 @@ package com.ankamagames.dofus.logic.game.common.actions.prism
          super();
       }
       
-      public static function create(listen:uint) : PrismsListRegisterAction {
+      public static function create(uiName:String, listen:uint) : PrismsListRegisterAction {
          var action:PrismsListRegisterAction = new PrismsListRegisterAction();
+         action.uiName = uiName;
          action.listen = listen;
          return action;
       }
+      
+      public var uiName:String;
       
       public var listen:uint;
    }

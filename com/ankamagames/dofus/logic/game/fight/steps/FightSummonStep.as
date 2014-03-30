@@ -51,7 +51,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
                super.executeCallbacks();
                return;
             }
-            CurrentPlayedFighterManager.getInstance().getSpellCastManager().resetInitialCooldown();
+            CurrentPlayedFighterManager.getInstance().getSpellCastManager().resetInitialCooldown(true);
             fighterInfos.stats.lifePoints = this._summonInfos.stats.lifePoints;
             if(PlayedCharacterManager.getInstance().id == this._summonInfos.contextualId)
             {

@@ -75,6 +75,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightCharacterInformations;
    import com.ankamagames.dofus.logic.game.fight.types.StateBuff;
    import com.ankamagames.dofus.network.enums.FightSpellCastCriticalEnum;
+   import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
    import com.ankamagames.jerakine.types.positions.MapPoint;
    import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
    import com.ankamagames.berilia.managers.KernelEventsManager;
@@ -89,7 +90,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.network.messages.game.actions.sequence.SequenceEndMessage;
    import com.ankamagames.dofus.network.messages.game.actions.sequence.SequenceStartMessage;
    import com.ankamagames.dofus.logic.game.fight.miscs.ActionIdConverter;
-   import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
    import com.ankamagames.dofus.logic.game.fight.steps.FightLeavingStateStep;
    import com.ankamagames.dofus.logic.game.fight.steps.FightEnteringStateStep;
    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostEffect;
@@ -426,13 +426,13 @@ package com.ankamagames.dofus.logic.game.fight.frames
                this._castingSpell.isCriticalFail = gafscmsg.critical == FightSpellCastCriticalEnum.CRITICAL_FAIL;
                this._castingSpell.isCriticalHit = gafscmsg.critical == FightSpellCastCriticalEnum.CRITICAL_HIT;
                this._castingSpell.silentCast = gafscmsg.silentCast;
+               if(!this._fightBattleFrame.currentPlayerId)
+               {
+                  BuffManager.getInstance().spellBuffsToIgnore.push(this._castingSpell);
+               }
                if(gafscmsg.destinationCellId != -1)
                {
                   this._castingSpell.targetedCell = MapPoint.fromCellId(gafscmsg.destinationCellId);
-               }
-               else
-               {
-                  _log.error("PAS D\'INFO");
                }
                if(this._castingSpell.isCriticalFail)
                {
@@ -685,6 +685,10 @@ package com.ankamagames.dofus.logic.game.fight.frames
                         }
                      }
                   }
+                  if((this._fightBattleFrame.slaveId == gafsnmsg.summon.contextualId) || (this._fightBattleFrame.masterId == gafsnmsg.summon.contextualId))
+                  {
+                     this._fightBattleFrame.prepareNextPlayableCharacter();
+                  }
                }
                return true;
             case msg is GameActionFightMarkCellsMessage:
@@ -935,10 +939,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   this._castingSpell.targetedCell = MapPoint.fromCellId(triggeredCellId);
                   this._castingSpell.spell = Spell.getSpellById(1750);
                   this._castingSpell.spellRank = this._castingSpell.spell.getSpellLevel(1);
-               }
-               else
-               {
-                  _log.error("PAS D\'INFO");
                }
                return true;
             case msg is GameActionFightDispellableEffectMessage:
@@ -1192,6 +1192,10 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   break;
                case step is FightShieldPointsVariationStep:
                   fspvs = step as FightShieldPointsVariationStep;
+                  if(flvs.target == null)
+                  {
+                     break;
+                  }
                   if(shieldLoseSum[fspvs.target] == null)
                   {
                      shieldLoseSum[fspvs.target] = 0;
@@ -1202,6 +1206,10 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   break;
                case step is FightLifeVariationStep:
                   flvs = step as FightLifeVariationStep;
+                  if(flvs.target == null)
+                  {
+                     break;
+                  }
                   if(flvs.delta < 0)
                   {
                      loseLifeStep[flvs.target] = flvs;

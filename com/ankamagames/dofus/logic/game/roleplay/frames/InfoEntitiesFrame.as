@@ -765,7 +765,7 @@ import com.ankamagames.jerakine.interfaces.IRectangle;
 class DisplayedEntity extends Object
 {
    
-   function DisplayedEntity(pId:int=0, pText:Label=null, pTarget:IRectangle=null, pAllianceName:*="") {
+   function DisplayedEntity(pId:int=0, pText:Label=null, pTarget:IRectangle=null, pAllianceName:String="") {
       super();
       this.entityId = pId;
       this.text = pText;

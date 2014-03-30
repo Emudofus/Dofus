@@ -44,5 +44,13 @@ package com.ankamagames.jerakine.utils.display.spellZone
       public static const U:uint = 85;
       
       public static const A:uint = 65;
+      
+      public static const B:uint = 66;
+      
+      public static const Z:uint = 90;
+      
+      public static const semicolon:uint = 59;
+      
+      public static const empty:uint = 32;
    }
 }

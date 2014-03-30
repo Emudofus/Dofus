@@ -208,7 +208,7 @@ package com.ankamagames.dofus.logic.shield
          /*
           * Decompilation error
           * Code may be obfuscated
-          * Error type: TranslateException
+          * Error type: EmptyStackException
           */
          throw new IllegalOperationError("Not decompiled due to error");
       }

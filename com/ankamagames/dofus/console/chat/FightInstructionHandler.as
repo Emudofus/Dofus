@@ -27,6 +27,7 @@ package com.ankamagames.dofus.console.chat
          var gckmsg:GameContextKickMessage = null;
          switch(cmd)
          {
+            case "s":
             case "spectator":
                if(PlayedCharacterManager.getInstance().isFighting)
                {

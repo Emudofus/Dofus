@@ -9,13 +9,12 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.jerakine.utils.memory.WeakReference;
    import flash.utils.Timer;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
+   import flash.utils.Dictionary;
    import com.ankamagames.jerakine.types.enums.Priority;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.common.frames.PartyManagementFrame;
    import com.ankamagames.atouin.Atouin;
    import flash.events.TimerEvent;
-   import com.ankamagames.berilia.Berilia;
-   import com.ankamagames.berilia.types.graphic.UiRootContainer;
    import com.ankamagames.dofus.logic.game.roleplay.frames.MonstersInfoFrame;
    import com.ankamagames.jerakine.managers.OptionManager;
    import com.ankamagames.atouin.managers.*;
@@ -23,6 +22,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.atouin.types.*;
    import com.ankamagames.jerakine.entities.interfaces.*;
    import com.ankamagames.jerakine.types.events.PropertyChangeEvent;
+   import com.ankamagames.berilia.Berilia;
    import com.ankamagames.berilia.types.event.UiUnloadEvent;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightCompanionInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightTaxCollectorInformations;
@@ -47,6 +47,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightResumeSlaveInfo;
    import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
    import com.ankamagames.dofus.logic.game.fight.types.CastingSpell;
+   import com.ankamagames.dofus.network.types.game.action.fight.FightDispellableEffectExtendedInformations;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightUpdateTeamMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightSpectateMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightJoinMessage;
@@ -71,7 +72,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapInformationsRequestMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightResumeWithSlavesMessage;
    import com.ankamagames.dofus.logic.game.fight.types.SpellCastInFightManager;
-   import com.ankamagames.dofus.network.types.game.action.fight.FightDispellableEffectExtendedInformations;
    import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
    import com.ankamagames.dofus.network.types.game.actions.fight.GameActionMark;
    import com.ankamagames.dofus.datacenter.spells.Spell;
@@ -120,10 +120,17 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.logic.game.common.frames.SpellInventoryManagementFrame;
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    import flash.display.Sprite;
-   import com.ankamagames.dofus.BuildInfos;
-   import com.ankamagames.dofus.network.enums.BuildTypeEnum;
-   import com.ankamagames.dofus.logic.game.fight.miscs.DamageUtil;
+   import com.ankamagames.dofus.logic.game.fight.miscs.PushUtil;
+   import com.ankamagames.berilia.types.tooltip.TooltipPlacer;
    import com.ankamagames.dofus.logic.game.fight.types.SpellDamageInfo;
+   import com.ankamagames.dofus.logic.game.fight.types.SpellDamage;
+   import com.ankamagames.dofus.logic.game.fight.types.EffectDamage;
+   import com.ankamagames.jerakine.types.zones.IZone;
+   import com.ankamagames.dofus.logic.game.fight.types.PushedEntity;
+   import com.ankamagames.dofus.logic.game.fight.types.TriggeredSpell;
+   import com.ankamagames.dofus.logic.game.fight.types.SplashDamage;
+   import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
+   import com.ankamagames.dofus.logic.game.fight.miscs.DamageUtil;
    import com.ankamagames.berilia.managers.UiModuleManager;
    import com.ankamagames.berilia.types.LocationEnum;
    import com.ankamagames.berilia.enums.StrataEnum;
@@ -140,6 +147,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
    {
       
       public function FightContextFrame() {
+         this._spellTargetsTooltips = new Dictionary();
+         this._spellDamages = new Dictionary();
          super();
       }
       
@@ -204,6 +213,12 @@ package com.ankamagames.dofus.logic.game.fight.frames
       private var _fightType:uint;
       
       private var _fightAttackerId:uint;
+      
+      private var _spellTargetsTooltips:Dictionary;
+      
+      private var _spellDamages:Dictionary;
+      
+      private var _spellAlreadyTriggered:Boolean;
       
       public var isFightLeader:Boolean;
       
@@ -277,11 +292,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
          if(MapDisplayManager.getInstance().getDataMapContainer())
          {
             MapDisplayManager.getInstance().getDataMapContainer().setTemporaryAnimatedElementState(false);
-         }
-         var mapInfoUi:UiRootContainer = Berilia.getInstance().getUi("mapInfo");
-         if(mapInfoUi)
-         {
-            mapInfoUi.visible = false;
          }
          if(Kernel.getWorker().contains(MonstersInfoFrame))
          {
@@ -391,6 +401,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
       }
       
       public function process(msg:Message) : Boolean {
+         var ttEntityId:* = undefined;
          var gfsmsg:GameFightStartingMessage = null;
          var mcmsg:CurrentMapMessage = null;
          var wp:WorldPointWrapper = null;
@@ -405,6 +416,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var targetPool:Array = null;
          var durationPool:Array = null;
          var castingSpell:CastingSpell = null;
+         var i:* = 0;
+         var numEffects:uint = 0;
+         var buff:FightDispellableEffectExtendedInformations = null;
          var gfutmsg:GameFightUpdateTeamMessage = null;
          var gfspmsg:GameFightSpectateMessage = null;
          var castingSpellPools:Array = null;
@@ -421,6 +435,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var emovmsg:EntityMouseOverMessage = null;
          var emomsg:EntityMouseOutMessage = null;
          var teoa:TimelineEntityOverAction = null;
+         var fscf:FightSpellCastFrame = null;
          var tleoutaction:TimelineEntityOutAction = null;
          var entityId:* = 0;
          var entities:Vector.<int> = null;
@@ -439,10 +454,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var mirmsg:MapInformationsRequestMessage = null;
          var decryptionKeyString:String = null;
          var gfrwsmsg:GameFightResumeWithSlavesMessage = null;
-         var i:* = 0;
          var infos:GameFightResumeSlaveInfo = null;
          var spellCastManager:SpellCastInFightManager = null;
-         var buff:FightDispellableEffectExtendedInformations = null;
          var buffTmp:BasicBuff = null;
          var mark:GameActionMark = null;
          var spell:Spell = null;
@@ -461,10 +474,12 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var resultIndex:uint = 0;
          var hardcoreLoots:FightResultEntryWrapper = null;
          var winners:Vector.<FightResultEntryWrapper> = null;
-         var resultEntry:FightResultListEntry = null;
+         var temp:Array = null;
+         var resultEntryTemp:FightResultListEntry = null;
          var resultsRecap:Object = null;
          var frew:FightResultEntryWrapper = null;
          var id:* = 0;
+         var resultEntry:FightResultListEntry = null;
          var currentWinner:uint = 0;
          var loot:ItemWrapper = null;
          var kamas:* = 0;
@@ -571,8 +586,11 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   i++;
                }
                castingSpellPool = [];
-               for each (buff in gfrmsg.effects)
+               numEffects = gfrmsg.effects.length;
+               i = 0;
+               while(i < numEffects)
                {
+                  buff = gfrmsg.effects[i];
                   if(!castingSpellPool[buff.effect.targetId])
                   {
                      castingSpellPool[buff.effect.targetId] = [];
@@ -593,6 +611,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   }
                   buffTmp = BuffManager.makeBuffFromEffect(buff.effect,castingSpell,buff.actionId);
                   BuffManager.getInstance().addBuff(buffTmp);
+                  i++;
                }
                for each (mark in gfrmsg.marks)
                {
@@ -699,11 +718,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
             MapDisplayManager.getInstance().getDataMapContainer().setTemporaryAnimatedElementState(true);
          }
          Atouin.getInstance().displayGrid(false);
-         var mapInfoUi:UiRootContainer = Berilia.getInstance().getUi("mapInfo");
-         if(mapInfoUi)
-         {
-            mapInfoUi.visible = true;
-         }
          OptionManager.getOptionManager("dofus").removeEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
          Berilia.getInstance().removeEventListener(UiUnloadEvent.UNLOAD_UI_COMPLETE,this.onUiUnloaded);
          if(this._hideTooltipsTimer)
@@ -770,11 +784,55 @@ package com.ankamagames.dofus.logic.game.fight.frames
          }
       }
       
-      public function displayEntityTooltip(pEntityId:int, pSpell:Object=null) : void {
+      public function removeSpellTargetsTooltips() : void {
+         var ttEntityId:* = undefined;
+         PushUtil.reset();
+         this._spellAlreadyTriggered = false;
+         for (ttEntityId in this._spellTargetsTooltips)
+         {
+            TooltipPlacer.removeTooltipPositionByName("tooltip_tooltipOverEntity_" + ttEntityId);
+            delete this._spellTargetsTooltips[[ttEntityId]];
+            TooltipManager.hide("tooltipOverEntity_" + ttEntityId);
+            delete this._spellDamages[[ttEntityId]];
+            if((this._showPermanentTooltips) && (!(this._battleFrame.targetedEntities.indexOf(ttEntityId) == -1)))
+            {
+               this.displayEntityTooltip(ttEntityId);
+            }
+         }
+      }
+      
+      public function displayEntityTooltip(pEntityId:int, pSpell:Object=null, pSpellInfo:SpellDamageInfo=null, pForceRefresh:Boolean=false, pSpellImpactCell:int=-1) : void {
          var params:Object = null;
+         var sdi:SpellDamageInfo = null;
+         var currentSpellDamage:SpellDamage = null;
+         var effect:EffectDamage = null;
+         var spellImpactCell:uint = 0;
+         var spellZone:IZone = null;
+         var spellZoneCells:Vector.<uint> = null;
+         var targetId:* = 0;
          var ac:AnimatedCharacter = null;
          var isCarriedEntity:* = false;
          var entityDamagedOrHealedBySpell:* = false;
+         var directDamageSpell:SpellWrapper = null;
+         var nbPushedEntities:uint = 0;
+         var pushedEntity:PushedEntity = null;
+         var i:* = 0;
+         var entityPushed:* = false;
+         var pushedEntitySdi:SpellDamageInfo = null;
+         var needRefresh:* = false;
+         var ts:TriggeredSpell = null;
+         var triggeredSpellsByCasterOnTarget:Vector.<TriggeredSpell> = null;
+         var triggeredSpells:Vector.<TriggeredSpell> = null;
+         var damageSharingTargets:Vector.<int> = null;
+         var damageWithoutResists:SpellDamage = null;
+         var allTargets:Vector.<int> = null;
+         var splashDamages:Vector.<SplashDamage> = null;
+         var damageModifications:* = false;
+         var splashdmg:SplashDamage = null;
+         var totalSpellDamage:SpellDamage = null;
+         var nbSameSpell:* = 0;
+         var entitySpellDamage:Object = null;
+         var sd:SpellDamage = null;
          var entity:IDisplayable = DofusEntities.getEntity(pEntityId) as IDisplayable;
          if((!entity) || (!(this._battleFrame.targetedEntities.indexOf(pEntityId) == -1)) && (this._hideTooltips))
          {
@@ -789,23 +847,253 @@ package com.ankamagames.dofus.logic.game.fight.frames
             }
             params.showName = false;
          }
-         var showDamages:Boolean = (BuildInfos.BUILD_TYPE == BuildTypeEnum.DEBUG) || (BuildInfos.BUILD_TYPE == BuildTypeEnum.INTERNAL);
+         var showDamages:Boolean = (pSpell) && (OptionManager.getOptionManager("dofus")["showDamagesPreview"] == true) && (FightSpellCastFrame.isCurrentTargetTargetable());
          if(showDamages)
          {
-            ac = entity as AnimatedCharacter;
-            isCarriedEntity = (ac) && (ac.parentSprite) && (ac.parentSprite.carriedEntity == ac);
-            entityDamagedOrHealedBySpell = (pSpell) && (DamageUtil.isDamagedOrHealedBySpell(CurrentPlayedFighterManager.getInstance().currentFighterId,pEntityId,pSpell));
-            if((isCarriedEntity) && (!entityDamagedOrHealedBySpell))
+            if((!pForceRefresh) && (this._spellTargetsTooltips[pEntityId]))
             {
                return;
             }
-            if(entityDamagedOrHealedBySpell)
+            spellImpactCell = !(pSpellImpactCell == -1)?pSpellImpactCell:currentCell;
+            spellZone = SpellZoneManager.getInstance().getSpellZone(pSpell);
+            spellZoneCells = spellZone.getCells(spellImpactCell);
+            if(!pSpellInfo)
+            {
+               ac = entity as AnimatedCharacter;
+               isCarriedEntity = (ac) && (ac.parentSprite) && (ac.parentSprite.carriedEntity == ac);
+               entityDamagedOrHealedBySpell = (pSpell) && (DamageUtil.isDamagedOrHealedBySpell(CurrentPlayedFighterManager.getInstance().currentFighterId,pEntityId,pSpell));
+               if((isCarriedEntity) && (!entityDamagedOrHealedBySpell))
+               {
+                  return;
+               }
+               if(entityDamagedOrHealedBySpell)
+               {
+                  if(DamageUtil.BOMB_SPELLS_IDS.indexOf(pSpell.id) != -1)
+                  {
+                     directDamageSpell = DamageUtil.getBombDirectDamageSpellWrapper(pSpell as SpellWrapper);
+                     sdi = SpellDamageInfo.fromCurrentPlayer(directDamageSpell,pEntityId);
+                     for each (targetId in sdi.originalTargetsIds)
+                     {
+                        this.displayEntityTooltip(targetId,directDamageSpell,sdi);
+                     }
+                     return;
+                  }
+                  sdi = SpellDamageInfo.fromCurrentPlayer(pSpell,pEntityId);
+                  if(pSpell is SpellWrapper)
+                  {
+                     sdi.pushedEntities = PushUtil.getPushedEntities(pSpell as SpellWrapper,this.entitiesFrame.getEntityInfos(pSpell.playerId).disposition.cellId,spellImpactCell);
+                     nbPushedEntities = sdi.pushedEntities?sdi.pushedEntities.length:0;
+                     if(nbPushedEntities > 0)
+                     {
+                        i = 0;
+                        while(i < nbPushedEntities)
+                        {
+                           pushedEntity = sdi.pushedEntities[i];
+                           if(!entityPushed)
+                           {
+                              entityPushed = pEntityId == pushedEntity.id;
+                           }
+                           if(pushedEntity.id == pEntityId)
+                           {
+                              this.displayEntityTooltip(pushedEntity.id,pSpell,sdi,true);
+                           }
+                           else
+                           {
+                              pushedEntitySdi = SpellDamageInfo.fromCurrentPlayer(pSpell,pushedEntity.id);
+                              pushedEntitySdi.pushedEntities = sdi.pushedEntities;
+                              this.displayEntityTooltip(pushedEntity.id,pSpell,pushedEntitySdi,true);
+                           }
+                           i++;
+                        }
+                        if(entityPushed)
+                        {
+                           return;
+                        }
+                     }
+                  }
+               }
+            }
+            else
+            {
+               sdi = pSpellInfo;
+            }
+            this._spellTargetsTooltips[pEntityId] = true;
+            if(sdi)
             {
                if(!params)
                {
                   params = new Object();
                }
-               params.spellDamage = DamageUtil.getSpellDamage(SpellDamageInfo.fromCurrentPlayer(pSpell,pEntityId));
+               if(sdi.targetId != pEntityId)
+               {
+                  sdi.targetId = pEntityId;
+               }
+               if(!sdi.damageSharingTargets)
+               {
+                  damageSharingTargets = sdi.getDamageSharingTargets();
+                  if((damageSharingTargets) && (damageSharingTargets.length > 1))
+                  {
+                     damageWithoutResists = DamageUtil.getSpellDamage(sdi,false,false);
+                     sdi.damageSharingTargets = damageSharingTargets;
+                     sdi.sharedDamage = damageWithoutResists;
+                     this._spellAlreadyTriggered = true;
+                     for each (targetId in damageSharingTargets)
+                     {
+                        needRefresh = (!this._spellDamages[targetId]) && (!(spellZoneCells.indexOf(this.entitiesFrame.getEntityInfos(targetId).disposition.cellId) == -1));
+                        this.displayEntityTooltip(targetId,pSpell,sdi,true);
+                        if(needRefresh)
+                        {
+                           this._spellTargetsTooltips[targetId] = false;
+                        }
+                     }
+                     return;
+                  }
+               }
+               triggeredSpellsByCasterOnTarget = sdi.triggeredSpellsByCasterOnTarget;
+               if((!this._spellAlreadyTriggered) && (triggeredSpellsByCasterOnTarget))
+               {
+                  for each (ts in triggeredSpellsByCasterOnTarget)
+                  {
+                     if(ts.triggers != "I")
+                     {
+                        this._spellAlreadyTriggered = true;
+                     }
+                     for each (targetId in ts.targets)
+                     {
+                        needRefresh = (!this._spellDamages[targetId]) && (!(spellZoneCells.indexOf(this.entitiesFrame.getEntityInfos(targetId).disposition.cellId) == -1));
+                        this.displayEntityTooltip(targetId,ts.spell,null,true,this.entitiesFrame.getEntityInfos(ts.targetId).disposition.cellId);
+                        if(needRefresh)
+                        {
+                           this._spellTargetsTooltips[targetId] = false;
+                        }
+                     }
+                  }
+               }
+               triggeredSpells = sdi.targetTriggeredSpells;
+               if((!this._spellAlreadyTriggered) && (triggeredSpells))
+               {
+                  splashDamages = DamageUtil.getSplashDamages(triggeredSpells,sdi);
+                  if(splashDamages)
+                  {
+                     if(!sdi.splashDamages)
+                     {
+                        sdi.splashDamages = new Vector.<SplashDamage>(0);
+                     }
+                     for each (splashdmg in splashDamages)
+                     {
+                        sdi.splashDamages.push(splashdmg);
+                        if(!allTargets)
+                        {
+                           allTargets = new Vector.<int>(0);
+                        }
+                        for each (targetId in splashdmg.targets)
+                        {
+                           if(allTargets.indexOf(targetId) == -1)
+                           {
+                              allTargets.push(targetId);
+                           }
+                        }
+                     }
+                  }
+                  damageModifications = sdi.addTriggeredSpellsEffects(triggeredSpells);
+                  if((damageModifications) && (!allTargets))
+                  {
+                     allTargets = new Vector.<int>(0);
+                  }
+                  if(allTargets)
+                  {
+                     for each (ts in triggeredSpells)
+                     {
+                        if(ts.triggers != "I")
+                        {
+                           this._spellAlreadyTriggered = true;
+                           break;
+                        }
+                     }
+                     if(allTargets.indexOf(pEntityId) == -1)
+                     {
+                        allTargets.push(pEntityId);
+                     }
+                     for each (targetId in allTargets)
+                     {
+                        this.displayEntityTooltip(targetId,pSpell,sdi,true);
+                     }
+                     return;
+                  }
+               }
+               currentSpellDamage = DamageUtil.getSpellDamage(sdi);
+            }
+            if(currentSpellDamage)
+            {
+               if(!this._spellDamages[pEntityId])
+               {
+                  this._spellDamages[pEntityId] = new Array();
+               }
+               for each (entitySpellDamage in this._spellDamages[pEntityId])
+               {
+                  if(entitySpellDamage.spellId == pSpell.id)
+                  {
+                     nbSameSpell++;
+                     if(!sdi.damageSharingTargets)
+                     {
+                        break;
+                     }
+                  }
+               }
+               if((nbSameSpell == 0) || (sdi.damageSharingTargets) && (nbSameSpell < sdi.originalTargetsIds.length))
+               {
+                  this._spellDamages[pEntityId].push(
+                     {
+                        "spellId":pSpell.id,
+                        "spellDamage":currentSpellDamage
+                     });
+               }
+               if(this._spellDamages[pEntityId].length > 1)
+               {
+                  totalSpellDamage = new SpellDamage();
+                  for each (entitySpellDamage in this._spellDamages[pEntityId])
+                  {
+                     sd = entitySpellDamage.spellDamage;
+                     for each (effect in sd.effectDamages)
+                     {
+                        totalSpellDamage.addEffectDamage(effect);
+                     }
+                     if(sd.invulnerableState)
+                     {
+                        totalSpellDamage.invulnerableState = true;
+                     }
+                     if(sd.unhealableState)
+                     {
+                        totalSpellDamage.unhealableState = true;
+                     }
+                     if(sd.hasCriticalDamage)
+                     {
+                        totalSpellDamage.hasCriticalDamage = true;
+                     }
+                     if(sd.hasCriticalShieldPointsRemoved)
+                     {
+                        totalSpellDamage.hasCriticalShieldPointsRemoved = true;
+                     }
+                     if(sd.hasCriticalLifePointsAdded)
+                     {
+                        totalSpellDamage.hasCriticalLifePointsAdded = true;
+                     }
+                     if(sd.isHealingSpell)
+                     {
+                        totalSpellDamage.isHealingSpell = true;
+                     }
+                     if(sd.hasHeal)
+                     {
+                        totalSpellDamage.hasHeal = true;
+                     }
+                  }
+                  totalSpellDamage.updateDamage();
+               }
+               else
+               {
+                  totalSpellDamage = currentSpellDamage;
+               }
+               params.spellDamage = totalSpellDamage;
             }
          }
          if(infos is GameFightCharacterInformations)
@@ -954,7 +1242,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
       
       private function overEntity(id:int, showRange:Boolean=true) : void {
          var entityId:* = 0;
-         var fscf:FightSpellCastFrame = null;
          var entityInfo:GameFightFighterInformations = null;
          var inviSelection:Selection = null;
          var pos:* = 0;
@@ -1024,9 +1311,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
             }
             return;
          }
-         fscf = Kernel.getWorker().getFrame(FightSpellCastFrame) as FightSpellCastFrame;
+         var fscf:FightSpellCastFrame = Kernel.getWorker().getFrame(FightSpellCastFrame) as FightSpellCastFrame;
          var spell:Object = null;
-         if((fscf) && (fscf.currentCellEntityInTargetSelection))
+         if((fscf) && ((SelectionManager.getInstance().isInside(currentCell,"SpellCastTarget")) || (this._spellTargetsTooltips[id])))
          {
             spell = fscf.currentSpell;
          }
@@ -1051,10 +1338,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var entitySprite:Sprite = entity as Sprite;
          if((entitySprite) && (Dofus.getInstance().options.showGlowOverTarget))
          {
-            fscf = Kernel.getWorker().getFrame(FightSpellCastFrame) as FightSpellCastFrame;
             fightTurnFrame = Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
             myTurn = fightTurnFrame?fightTurnFrame.myTurn:true;
-            if(((!fscf) || ((fscf) && (fscf.currentTargetIsTargetable))) && (myTurn))
+            if(((!fscf) || (FightSpellCastFrame.isCurrentTargetTargetable())) && (myTurn))
             {
                effect = this._overEffectOk;
             }

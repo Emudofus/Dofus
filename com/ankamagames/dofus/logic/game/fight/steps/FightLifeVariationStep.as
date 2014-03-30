@@ -5,7 +5,8 @@ package com.ankamagames.dofus.logic.game.fight.steps
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightCharacterInformations;
    import com.ankamagames.berilia.managers.TooltipManager;
-   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
+   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
    import com.ankamagames.dofus.logic.game.fight.fightEvents.FightEventsHelper;
    import com.ankamagames.dofus.logic.game.fight.types.FightEventEnum;
    
@@ -74,10 +75,11 @@ package com.ankamagames.dofus.logic.game.fight.steps
          {
             TooltipManager.updateContent("EntityShortInfos" + fighterInfos.contextualId,"tooltipOverEntity_" + fighterInfos.contextualId,fighterInfos);
          }
-         if(PlayedCharacterManager.getInstance().id == _targetId)
+         var characteristics:CharacterCharacteristicsInformations = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations(_targetId);
+         if(characteristics)
          {
-            PlayedCharacterManager.getInstance().characteristics.lifePoints = fighterInfos.stats.lifePoints;
-            PlayedCharacterManager.getInstance().characteristics.maxLifePoints = fighterInfos.stats.maxLifePoints;
+            characteristics.lifePoints = fighterInfos.stats.lifePoints;
+            characteristics.maxLifePoints = fighterInfos.stats.maxLifePoints;
          }
          if((this._delta < 0) || (this._delta == 0) && (!this.skipTextEvent))
          {

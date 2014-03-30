@@ -50,7 +50,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          }
       }
       
-      public function resetInitialCooldown() : void {
+      public function resetInitialCooldown(hasBeenSummoned:Boolean=false) : void {
          var sm:SpellManager = null;
          var s:SpellWrapper = null;
          var spim:SpellInventoryManagementFrame = Kernel.getWorker().getFrame(SpellInventoryManagementFrame) as SpellInventoryManagementFrame;
@@ -59,12 +59,15 @@ package com.ankamagames.dofus.logic.game.fight.types
          {
             if(s.spellLevelInfos.initialCooldown != 0)
             {
-               if(this._spells[s.spellId] == null)
+               if(!((hasBeenSummoned) && (s.actualCooldown > s.spellLevelInfos.initialCooldown)))
                {
-                  this._spells[s.spellId] = new SpellManager(this,s.spellId,s.spellLevel);
+                  if(this._spells[s.spellId] == null)
+                  {
+                     this._spells[s.spellId] = new SpellManager(this,s.spellId,s.spellLevel);
+                  }
+                  sm = this._spells[s.spellId];
+                  sm.resetInitialCooldown(this.currentTurn);
                }
-               sm = this._spells[s.spellId];
-               sm.resetInitialCooldown(this.currentTurn);
             }
          }
       }

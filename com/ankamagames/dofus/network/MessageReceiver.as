@@ -151,6 +151,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightNewRoundMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnListMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnStartMessage;
+   import com.ankamagames.dofus.network.messages.game.context.fight.GameFightNewWaveMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnStartPlayingMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnResumeMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.SlaveSwitchContextMessage;
@@ -329,6 +330,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.alliance.AllianceLeftMessage;
    import com.ankamagames.dofus.network.messages.game.alliance.AllianceMembershipMessage;
    import com.ankamagames.dofus.network.messages.game.alliance.KohUpdateMessage;
+   import com.ankamagames.dofus.network.messages.game.modificator.AreaFightModificatorUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.ui.ClientUIOpenedMessage;
    import com.ankamagames.dofus.network.messages.game.ui.ClientUIOpenedByObjectMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildCreationStartedMessage;
@@ -601,6 +603,12 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterInventoryMessage;
    import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterInventoryErrorMessage;
    import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterTransferMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntRequestAnswerMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntFinishedMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntDigRequestAnswerMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntAvailableRetryCountUpdateMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.PortalDialogQuestionMessage;
    import com.ankamagames.dofus.network.messages.game.packs.PackRestrictedSubAreaMessage;
    import com.ankamagames.dofus.network.messages.updater.parts.PartsListMessage;
    import com.ankamagames.dofus.network.messages.updater.parts.PartInfoMessage;
@@ -770,6 +778,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GameFightNewRoundMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightTurnListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightTurnStartMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameFightNewWaveMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightTurnStartPlayingMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightTurnResumeMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new SlaveSwitchContextMessage(),true,true);
@@ -948,6 +957,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new AllianceLeftMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new AllianceMembershipMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new KohUpdateMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AreaFightModificatorUpdateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ClientUIOpenedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ClientUIOpenedByObjectMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GuildCreationStartedMessage(),true,true);
@@ -1220,6 +1230,12 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new KrosmasterInventoryMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new KrosmasterInventoryErrorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new KrosmasterTransferMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntRequestAnswerMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntFinishedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntDigRequestAnswerMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntAvailableRetryCountUpdateMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new PortalDialogQuestionMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PackRestrictedSubAreaMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PartsListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PartInfoMessage(),true,true);

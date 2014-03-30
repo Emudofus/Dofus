@@ -28,8 +28,6 @@ package com.ankamagames.dofus.logic.game.fight.managers
    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import com.ankamagames.dofus.logic.game.fight.miscs.FightReachableCellsMaker;
-   import com.ankamagames.dofus.kernel.Kernel;
-   import com.ankamagames.dofus.logic.game.fight.frames.FightBattleFrame;
    
    public final class CurrentPlayedFighterManager extends Object
    {
@@ -114,11 +112,29 @@ package com.ankamagames.dofus.logic.game.fight.managers
       }
       
       public function setCharacteristicsInformations(id:int, characteristics:CharacterCharacteristicsInformations) : void {
-         this._characteristicsInformationsList[id] = characteristics;
+         if(PlayedCharacterManager.getInstance().id == id)
+         {
+            PlayedCharacterManager.getInstance().characteristics = characteristics;
+         }
+         else
+         {
+            if(!this._characteristicsInformationsList[id])
+            {
+               this._characteristicsInformationsList[id] = characteristics;
+            }
+         }
       }
       
-      public function getCharacteristicsInformations() : CharacterCharacteristicsInformations {
+      public function getCharacteristicsInformations(id:int=0) : CharacterCharacteristicsInformations {
          var player:PlayedCharacterManager = PlayedCharacterManager.getInstance();
+         if(id)
+         {
+            if(id == player.id)
+            {
+               return player.characteristics;
+            }
+            return this._characteristicsInformationsList[id];
+         }
          if((this._currentFighterIsRealPlayer) || (!player.isFighting))
          {
             return player.characteristics;
@@ -355,63 +371,13 @@ package com.ankamagames.dofus.logic.game.fight.managers
       }
       
       public function canPlay() : Boolean {
-         var entitiesFrame:FightEntitiesFrame = null;
-         var infos:GameFightFighterInformations = null;
-         var reachableCells:FightReachableCellsMaker = null;
-         var player:PlayedCharacterManager = null;
-         var spellKnown:SpellWrapper = null;
-         var weapon:Weapon = null;
-         var fbf:FightBattleFrame = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
-         if(this._currentFighterId != fbf.currentPlayerId)
-         {
-            return true;
-         }
-         var canMove:Boolean = true;
-         var canAct:Boolean = true;
-         var characteristics:CharacterCharacteristicsInformations = this.getCharacteristicsInformations();
-         if(!characteristics)
-         {
-            return true;
-         }
-         if(characteristics.movementPointsCurrent <= 0)
-         {
-            canMove = false;
-         }
-         else
-         {
-            entitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-            infos = entitiesFrame.getEntityInfos(this._currentFighterId) as GameFightFighterInformations;
-            reachableCells = new FightReachableCellsMaker(infos);
-            if(reachableCells.reachableCells.length <= 1)
-            {
-               canMove = false;
-            }
-         }
-         if(characteristics.actionPointsCurrent <= 0)
-         {
-            canAct = false;
-         }
-         else
-         {
-            canAct = false;
-            player = PlayedCharacterManager.getInstance();
-            for each (spellKnown in player.spellsInventory)
-            {
-               if(spellKnown.spellLevelInfos.apCost <= characteristics.actionPointsCurrent)
-               {
-                  return true;
-               }
-            }
-            if(player.currentWeapon != null)
-            {
-               weapon = Item.getItemById(player.currentWeapon.objectGID) as Weapon;
-               if((weapon) && (weapon.apCost <= characteristics.actionPointsCurrent))
-               {
-                  return true;
-               }
-            }
-         }
-         return (canMove) || (canAct);
+         var _loc5_:FightEntitiesFrame = null;
+         var _loc6_:GameFightFighterInformations = null;
+         var _loc7_:FightReachableCellsMaker = null;
+         var _loc8_:PlayedCharacterManager = null;
+         var _loc9_:SpellWrapper = null;
+         var _loc10_:Weapon = null;
+         return true;
       }
       
       private function updatePortrait(currentFighterEntity:AnimatedCharacter) : void {

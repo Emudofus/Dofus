@@ -10,6 +10,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.jerakine.types.enums.Priority;
    import com.ankamagames.dofus.internalDatacenter.conquest.PrismSubAreaWrapper;
    import com.ankamagames.dofus.internalDatacenter.conquest.PrismFightersWrapper;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.CurrentMapMessage;
    import com.ankamagames.dofus.datacenter.world.SubArea;
@@ -50,7 +51,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.actions.prism.PrismInfoJoinLeaveRequestAction;
    import com.ankamagames.dofus.network.messages.game.prism.PrismInfoJoinLeaveRequestMessage;
    import com.ankamagames.dofus.logic.game.common.actions.prism.PrismsListRegisterAction;
-   import com.ankamagames.dofus.network.messages.game.prism.PrismsListRegisterMessage;
    import com.ankamagames.dofus.logic.game.common.actions.prism.PrismAttackRequestAction;
    import com.ankamagames.dofus.network.messages.game.prism.PrismAttackRequestMessage;
    import com.ankamagames.dofus.logic.game.common.actions.prism.PrismUseRequestAction;
@@ -75,12 +75,12 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.types.game.social.GuildInsiderFactSheetInformations;
    import com.ankamagames.dofus.network.types.game.prism.PrismSubareaEmptyInfo;
    import com.ankamagames.dofus.internalDatacenter.guild.SocialEntityInFightWrapper;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismsListRegisterMessage;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.network.enums.PrismStateEnum;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.PrismHookList;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.misc.lists.AlignmentHookList;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.misc.lists.SocialHookList;
@@ -93,6 +93,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.types.enums.EntityIconEnum;
    import com.ankamagames.dofus.network.enums.AggressableStatusEnum;
    import com.ankamagames.dofus.logic.game.common.managers.TaxCollectorsManager;
+   import com.ankamagames.dofus.network.enums.PrismListenEnum;
    import com.ankamagames.dofus.network.enums.PrismSetSabotagedRefusedReasonEnum;
    import com.ankamagames.jerakine.utils.system.AirScanner;
    import com.ankamagames.dofus.externalnotification.ExternalNotificationManager;
@@ -144,6 +145,10 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       private var _autoLeaveHelpers:Boolean;
       
+      private var _currentPrismsListenMode:uint;
+      
+      private var _prismsListeners:Vector.<String>;
+      
       public function get priority() : int {
          return Priority.NORMAL;
       }
@@ -194,6 +199,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          _instance = this;
          this._infoJoinLeave = false;
          this._allianceDialogFrame = new AllianceDialogFrame();
+         this._prismsListeners = new Vector.<String>(0);
          return true;
       }
       
@@ -261,7 +267,8 @@ package com.ankamagames.dofus.logic.game.common.frames
          var pijlract:PrismInfoJoinLeaveRequestAction = null;
          var pijlrmsg:PrismInfoJoinLeaveRequestMessage = null;
          var plract:PrismsListRegisterAction = null;
-         var plrmsg:PrismsListRegisterMessage = null;
+         var listenerIndex:* = 0;
+         var updateRegistration:* = false;
          var pbra:PrismAttackRequestAction = null;
          var pbrqmsg:PrismAttackRequestMessage = null;
          var pura:PrismUseRequestAction = null;
@@ -297,6 +304,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          var insPrism:PrismSubareaEmptyInfo = null;
          var p:SocialEntityInFightWrapper = null;
          var defender:Object = null;
+         var plrmsg:PrismsListRegisterMessage = null;
          var text2:String = null;
          var prismUpdated:PrismSubareaEmptyInfo = null;
          var worldX:* = 0;
@@ -658,9 +666,45 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is PrismsListRegisterAction:
                plract = msg as PrismsListRegisterAction;
-               plrmsg = new PrismsListRegisterMessage();
-               plrmsg.initPrismsListRegisterMessage(plract.listen);
-               ConnectionsHandler.getConnection().send(plrmsg);
+               listenerIndex = this._prismsListeners.indexOf(plract.uiName);
+               updateRegistration = false;
+               if(plract.listen != PrismListenEnum.PRISM_LISTEN_NONE)
+               {
+                  if(listenerIndex == -1)
+                  {
+                     this._prismsListeners.push(plract.uiName);
+                  }
+                  if(this._currentPrismsListenMode == 0)
+                  {
+                     this._currentPrismsListenMode = plract.listen;
+                  }
+                  else
+                  {
+                     if(plract.listen < this._currentPrismsListenMode)
+                     {
+                        plract.listen = this._currentPrismsListenMode;
+                     }
+                  }
+                  updateRegistration = true;
+               }
+               else
+               {
+                  if(listenerIndex != -1)
+                  {
+                     this._prismsListeners.splice(listenerIndex,1);
+                  }
+                  if(this._prismsListeners.length > 0)
+                  {
+                     return true;
+                  }
+                  updateRegistration = true;
+               }
+               if(updateRegistration)
+               {
+                  plrmsg = new PrismsListRegisterMessage();
+                  plrmsg.initPrismsListRegisterMessage(plract.listen);
+                  ConnectionsHandler.getConnection().send(plrmsg);
+               }
                return true;
             case msg is PrismAttackRequestAction:
                pbra = msg as PrismAttackRequestAction;

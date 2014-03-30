@@ -11,13 +11,14 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.NpcDialogReplyMessage;
    import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogMessage;
    import com.ankamagames.berilia.managers.KernelEventsManager;
-   import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.dofus.misc.lists.RoleplayHookList;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogRequestMessage;
    import com.ankamagames.dofus.network.enums.DialogTypeEnum;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.common.actions.ChangeWorldInteractionAction;
    import com.ankamagames.dofus.logic.game.roleplay.actions.LeaveDialogRequestAction;
+   import com.ankamagames.dofus.misc.lists.HookList;
    
    public class NpcDialogFrame extends Object implements Frame
    {
@@ -45,7 +46,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          {
             case msg is NpcDialogQuestionMessage:
                ndcmsg = msg as NpcDialogQuestionMessage;
-               KernelEventsManager.getInstance().processCallback(HookList.NpcDialogQuestion,ndcmsg.messageId,ndcmsg.dialogParams,ndcmsg.visibleReplies);
+               KernelEventsManager.getInstance().processCallback(RoleplayHookList.NpcDialogQuestion,ndcmsg.messageId,ndcmsg.dialogParams,ndcmsg.visibleReplies);
                return true;
             case msg is NpcDialogReplyAction:
                ndra = msg as NpcDialogReplyAction;

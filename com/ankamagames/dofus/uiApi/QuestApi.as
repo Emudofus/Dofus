@@ -200,6 +200,10 @@ package com.ankamagames.dofus.uiApi
          return text;
       }
       
+      public function getTreasureHunt(typeId:int) : Object {
+         return this.getQuestFrame().getTreasureHuntById(typeId);
+      }
+      
       private function getQuestFrame() : QuestFrame {
          return Kernel.getWorker().getFrame(QuestFrame) as QuestFrame;
       }

@@ -28,6 +28,9 @@ package com.ankamagames.dofus.datacenter.effects.instances
          o.hidden = hidden;
          o.targetId = targetId;
          o.targetMask = targetMask;
+         o.delay = delay;
+         o.triggers = triggers;
+         o.order = order;
          return o;
       }
       

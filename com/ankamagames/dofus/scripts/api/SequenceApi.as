@@ -98,7 +98,7 @@ package com.ankamagames.dofus.scripts.api
             {
                if((!(i.zoneShape == 0)) && (i.zoneSize < 63) && ((i.zoneSize > ray) || (i.zoneSize == ray) && (shape == SpellShapeEnum.P)))
                {
-                  ray = i.zoneSize;
+                  ray = uint(i.zoneSize);
                   shape = i.zoneShape;
                }
             }

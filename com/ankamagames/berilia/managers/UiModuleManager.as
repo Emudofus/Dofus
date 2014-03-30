@@ -49,6 +49,7 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.berilia.types.data.PreCompiledUiModule;
    import com.ankamagames.jerakine.utils.misc.StringUtils;
    import flash.filesystem.FileMode;
+   import by.blooddy.crypto.MD5;
    import com.ankamagames.jerakine.resources.adapters.impl.SignedFileAdapter;
    import com.ankamagames.jerakine.resources.adapters.impl.BinaryAdapter;
    import com.ankamagames.jerakine.resources.adapters.impl.AdvancedSignedFileAdapter;
@@ -64,7 +65,6 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.berilia.types.event.ParsorEvent;
    import com.ankamagames.berilia.types.messages.UiXmlParsedMessage;
    import com.ankamagames.berilia.types.messages.UiXmlParsedErrorMessage;
-   import by.blooddy.crypto.MD5;
    import com.ankamagames.jerakine.types.ASwf;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
    import com.ankamagames.jerakine.resources.loaders.ResourceLoaderFactory;
@@ -169,7 +169,11 @@ package com.ankamagames.berilia.managers
       
       private var _moduleLaunchWaitForSharedDefinition:Boolean;
       
-      private var _unInitializedModule:Array;
+      private var _unInitializedModules:Array;
+      
+      public function get unInitializedModules() : Array {
+         return this._unInitializedModules;
+      }
       
       private var _useHttpServer:Boolean;
       
@@ -177,7 +181,7 @@ package com.ankamagames.berilia.managers
       
       private var _loadingModule:Dictionary;
       
-      private var _disabledModule:Array;
+      private var _disabledModules:Array;
       
       private var _sharedDefinitionInstance:Object;
       
@@ -204,14 +208,19 @@ package com.ankamagames.berilia.managers
       }
       
       public function set sharedDefinitionContainer(path:Uri) : void {
+         var url:String = null;
+         var sharedDefinitionUri:Uri = null;
          this._useSharedDefinition = !(path == null);
          if(path)
          {
             if(this._useHttpServer)
             {
-               this._sharedDefinitionLoader.load(new Uri(HttpServer.getInstance().getUrlTo(path.fileName)),null,path.fileType == "swf"?AdvancedSwfAdapter:null);
+               url = HttpServer.getInstance().getUrlTo(path.fileName);
+               sharedDefinitionUri = new Uri(url);
+               _log.debug("sharedDefinition.swf location: " + path.uri + " (" + url + ")");
+               this._sharedDefinitionLoader.load(sharedDefinitionUri,null,path.fileType == "swf"?AdvancedSwfAdapter:null);
                _log.info("trying to load sharedDefinition.swf throught an httpServer");
-               this._timeOutFrameNumber = StageShareManager.stage.frameRate * 2;
+               this._timeOutFrameNumber = StageShareManager.stage.frameRate * 10;
                EnterFrameDispatcher.addEventListener(this.timeOutFrameCount,"frameCount");
             }
             else
@@ -234,6 +243,10 @@ package com.ankamagames.berilia.managers
          return this._sharedDefinitionInstance;
       }
       
+      public function get modulesHashs() : Dictionary {
+         return this._modulesHashs;
+      }
+      
       public function init(filter:Array, filterInclude:Boolean) : void {
          var uri:Uri = null;
          var file:File = null;
@@ -254,9 +267,9 @@ package com.ankamagames.berilia.managers
          this._clearUi = new Array();
          this._uiFiles = new Array();
          this._modulesPaths = new Dictionary();
-         this._unInitializedModule = new Array();
+         this._unInitializedModules = new Array();
          this._loadingModule = new Dictionary();
-         this._disabledModule = [];
+         this._disabledModules = [];
          if(AirScanner.hasAir())
          {
             ProtocolFactory.addProtocol("mod",ModProtocol);
@@ -309,12 +322,17 @@ package com.ankamagames.berilia.managers
          return this._modules;
       }
       
-      public function getModule(name:String) : UiModule {
-         return this._modules[name];
+      public function getModule(name:String, includeUnInitialized:Boolean=false) : UiModule {
+         var module:UiModule = this._modules[name];
+         if((includeUnInitialized) && (!module))
+         {
+            module = this._unInitializedModules[name];
+         }
+         return module;
       }
       
-      public function get disabledModule() : Array {
-         return this._disabledModule;
+      public function get disabledModules() : Array {
+         return this._disabledModules;
       }
       
       public function reset() : void {
@@ -333,15 +351,15 @@ package com.ankamagames.berilia.managers
          {
             this._uiLoader.cancel();
          }
-         Shortcut.reset();
          TooltipManager.clearCache();
-         Berilia.getInstance().reset();
-         ApiBinder.reset();
-         KernelEventsManager.getInstance().initialize();
          for each (module in this._modules)
          {
             this.unloadModule(module.id);
          }
+         Shortcut.reset();
+         Berilia.getInstance().reset();
+         ApiBinder.reset();
+         KernelEventsManager.getInstance().initialize();
          this._modules = [];
          this._uiFileToLoad = 0;
          this._scriptNum = 0;
@@ -459,7 +477,7 @@ package com.ankamagames.berilia.managers
          BindsManager.getInstance().removeEventListenerByName("__module_" + m.id);
          KernelEventsManager.getInstance().removeEventListenerByName("__module_" + m.id);
          delete this._modules[[id]];
-         this._disabledModule[id] = m;
+         this._disabledModules[id] = m;
       }
       
       public function checkSharedDefinitionHash(hashUrl:String) : void {
@@ -494,74 +512,12 @@ package com.ankamagames.berilia.managers
       }
       
       private function launchUiCheck() : void {
-         if(_loc1_)
-         {
-            if(_loc2_)
-            {
-               while(_loc2_)
-               {
-                  break;
-               }
-               if(this._uiFiles.length)
-               {
-                  if(_loc1_)
-                  {
-                  }
-                  return;
-               }
-               if(this._uiFiles.length)
-               {
-                  return;
-               }
-               this.onAllUiChecked(null);
-               return;
-            }
-            while(true)
-            {
-               this._uiFileToLoad = this._uiFiles.length;
-               if(!_loc2_)
-               {
-                  if(!_loc2_)
-                  {
-                     if(_loc2_)
-                     {
-                        continue;
-                     }
-                  }
-                  if(this._uiFiles.length)
-                  {
-                     if(_loc1_)
-                     {
-                     }
-                     return;
-                  }
-                  if(this._uiFiles.length)
-                  {
-                     break;
-                  }
-                  this.onAllUiChecked(null);
-                  break;
-               }
-               break;
-            }
-            return;
-         }
-         if(_loc2_)
-         {
-         }
-         if(_loc1_)
-         {
-            this._uiLoader.load(this._uiFiles,null,TxtAdapter);
-            if(_loc1_)
-            {
-            }
-            return;
-         }
-         this._uiLoader.load(this._uiFiles,null,TxtAdapter);
-         if(_loc1_)
-         {
-            return;
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function processCachedFiles(files:Array) : void {
@@ -592,12 +548,128 @@ package com.ankamagames.berilia.managers
       }
       
       private function onUiLoadError(e:ResourceErrorEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: EmptyStackException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         if(_loc4_)
+         {
+            if(!_loc4_)
+            {
+               while(true)
+               {
+                  if(!_loc5_)
+                  {
+                     if(_loc4_)
+                     {
+                        if(_loc4_)
+                        {
+                           if(!_loc5_)
+                           {
+                              if(_loc4_)
+                              {
+                              }
+                           }
+                        }
+                        if(_loc4_)
+                        {
+                        }
+                     }
+                     if(_loc4_)
+                     {
+                     }
+                  }
+                  ErrorManager.addError("Impossible de charger le fichier d\'interface ");
+                  if(!_loc5_)
+                  {
+                     if(_loc4_)
+                     {
+                     }
+                     if(_loc5_)
+                     {
+                     }
+                     Berilia.getInstance().handler.process(new ModuleRessourceLoadFailedMessage(e.uri.tag,e.uri));
+                     if(!_loc5_)
+                     {
+                        break;
+                     }
+                  }
+                  else
+                  {
+                     break;
+                  }
+                  break;
+               }
+               if(_loc4_)
+               {
+               }
+               if(_loc4_)
+               {
+               }
+               if(!_loc5_)
+               {
+                  this._uiFileToLoad--;
+               }
+            }
+            while(true)
+            {
+               if(!_loc4_)
+               {
+                  if(_loc5_)
+                  {
+                  }
+                  Berilia.getInstance().handler.process(new ModuleRessourceLoadFailedMessage(e.uri.tag,e.uri));
+                  if(_loc5_)
+                  {
+                  }
+               }
+               else
+               {
+                  if(!_loc5_)
+                  {
+                     if(_loc4_)
+                     {
+                        if(_loc4_)
+                        {
+                           if(!_loc5_)
+                           {
+                              if(_loc4_)
+                              {
+                              }
+                           }
+                        }
+                        if(_loc4_)
+                        {
+                        }
+                     }
+                     if(_loc4_)
+                     {
+                     }
+                  }
+                  ErrorManager.addError("Impossible de charger le fichier d\'interface ");
+                  if(!_loc5_)
+                  {
+                     if(!_loc4_)
+                     {
+                        continue;
+                     }
+                     if(_loc5_)
+                     {
+                     }
+                     Berilia.getInstance().handler.process(new ModuleRessourceLoadFailedMessage(e.uri.tag,e.uri));
+                     if(_loc5_)
+                     {
+                     }
+                  }
+               }
+               if(_loc4_)
+               {
+               }
+               if(_loc4_)
+               {
+               }
+               if(!_loc5_)
+               {
+                  this._uiFileToLoad--;
+               }
+            }
+         }
       }
       
       private function onLoad(e:ResourceLoadedEvent) : void {
@@ -619,130 +691,12 @@ package com.ankamagames.berilia.managers
       }
       
       private function onScriptLoadFail(e:IOErrorEvent, uiModule:UiModule) : void {
-         var _loc5_:* = true;
-         if(!_loc6_)
-         {
-            if(_loc6_)
-            {
-            }
-            if(_loc6_)
-            {
-               while(true)
-               {
-                  if(!_loc6_)
-                  {
-                     if(_loc6_)
-                     {
-                     }
-                  }
-                  if(_loc5_)
-                  {
-                     _log.error("Le script du module ");
-                     if(_loc5_)
-                     {
-                        if(_loc6_)
-                        {
-                        }
-                        if(_loc5_)
-                        {
-                        }
-                        if(!_loc6_)
-                        {
-                           if(_loc5_)
-                           {
-                              this._scriptNum--;
-                           }
-                        }
-                        if(!(this._scriptNum-1))
-                        {
-                           if(_loc6_)
-                           {
-                           }
-                        }
-                        return;
-                     }
-                  }
-                  else
-                  {
-                     break;
-                  }
-                  if(_loc5_)
-                  {
-                     break;
-                  }
-                  break;
-               }
-               _log.error("Le script du module ");
-               return;
-            }
-            while(true)
-            {
-               if(_loc6_)
-               {
-                  if(_loc5_)
-                  {
-                  }
-                  if(!_loc6_)
-                  {
-                     if(_loc5_)
-                     {
-                        this._scriptNum--;
-                     }
-                  }
-                  if(!(this._scriptNum-1))
-                  {
-                     if(_loc6_)
-                     {
-                     }
-                  }
-                  return;
-               }
-               if(!_loc6_)
-               {
-                  if(_loc6_)
-                  {
-                  }
-               }
-               if(_loc5_)
-               {
-                  _log.error("Le script du module ");
-                  if(_loc5_)
-                  {
-                     if(_loc6_)
-                     {
-                        continue;
-                     }
-                     if(_loc5_)
-                     {
-                     }
-                     if(!_loc6_)
-                     {
-                        if(_loc5_)
-                        {
-                           this._scriptNum--;
-                        }
-                     }
-                     if(!(this._scriptNum-1))
-                     {
-                        if(_loc6_)
-                        {
-                        }
-                     }
-                     return;
-                  }
-               }
-               if(_loc5_)
-               {
-               }
-               if(_loc6_)
-               {
-                  return;
-               }
-               _log.error("Le script du module ");
-               return;
-            }
-         }
-         this.launchUiCheck();
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: EmptyStackException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private var _moduleScriptLoadedRef:Dictionary;
@@ -760,7 +714,7 @@ package com.ankamagames.berilia.managers
          /*
           * Decompilation error
           * Code may be obfuscated
-          * Error type: TranslateException
+          * Error type: EmptyStackException
           */
          throw new IllegalOperationError("Not decompiled due to error");
       }
@@ -769,21 +723,21 @@ package com.ankamagames.berilia.managers
          /*
           * Decompilation error
           * Code may be obfuscated
-          * Error type: EmptyStackException
+          * Error type: TranslateException
           */
          throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function onHashLoaded(e:ResourceLoadedEvent) : void {
-         var _loc6_:* = false;
-         if(!_loc6_)
+         var _loc6_:* = true;
+         if(!_loc5_)
          {
             if(_loc6_)
             {
             }
-            if(!_loc6_)
+            if(!_loc5_)
             {
-               if(!_loc6_)
+               if(_loc6_)
                {
                   loop0:
                   while(e.resource..file hasNext _loc3_)
@@ -791,9 +745,9 @@ package com.ankamagames.berilia.managers
                      if(_loc6_)
                      {
                      }
-                     if(!_loc6_)
+                     if(_loc6_)
                      {
-                        if(_loc6_)
+                        if(!_loc6_)
                         {
                            while(true)
                            {
@@ -802,7 +756,7 @@ package com.ankamagames.berilia.managers
                         }
                         while(true)
                         {
-                           if(!_loc5_)
+                           if(_loc5_)
                            {
                               break;
                            }
@@ -815,9 +769,9 @@ package com.ankamagames.berilia.managers
                      }
                      while(true)
                      {
-                        if(!_loc5_)
+                        if(_loc5_)
                         {
-                           if(_loc5_)
+                           if(!_loc5_)
                            {
                               this._modulesHashs[file.@name.toString()] = file.toString();
                               continue;

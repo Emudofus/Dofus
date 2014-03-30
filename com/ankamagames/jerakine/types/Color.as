@@ -36,7 +36,7 @@ package com.ankamagames.jerakine.types
          return toHex(hsl);
       }
       
-      public static function generateColorList(methode:int) : * {
+      public static function generateColorList(methode:int) : Array {
          var n:uint = Math.random() * 16777215;
          var motherColor:Color = new com.somerandomdude.colortoolkit.Color(n);
          switch(methode)

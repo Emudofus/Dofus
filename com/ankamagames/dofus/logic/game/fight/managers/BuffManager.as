@@ -25,6 +25,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
    
    public class BuffManager extends Object
@@ -33,6 +34,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
       public function BuffManager() {
          this._buffs = new Array();
          this._finishingBuffs = new Dictionary();
+         this.spellBuffsToIgnore = new Vector.<CastingSpell>();
          super();
          if(_self)
          {
@@ -51,6 +53,12 @@ package com.ankamagames.dofus.logic.game.fight.managers
       protected static const _log:Logger = Log.getLogger(getQualifiedClassName(BuffManager));
       
       private static var _self:BuffManager;
+      
+      private static var _buffSpellId:int = -1;
+      
+      private static var _buffTargetId:int;
+      
+      private static var _buffOrder:int;
       
       public static function getInstance() : BuffManager {
          if(!_self)
@@ -88,6 +96,17 @@ package com.ankamagames.dofus.logic.game.fight.managers
                break;
          }
          buff.id = effect.uid;
+         if((!(_buffSpellId == castingSpell.spell.id)) || (!(_buffTargetId == buff.targetId)))
+         {
+            _buffSpellId = castingSpell.spell.id;
+            _buffTargetId = buff.targetId;
+            _buffOrder = 0;
+         }
+         else
+         {
+            _buffOrder++;
+         }
+         buff.effects.order = _buffOrder;
          return buff;
       }
       
@@ -95,8 +114,11 @@ package com.ankamagames.dofus.logic.game.fight.managers
       
       private var _finishingBuffs:Dictionary;
       
+      public var spellBuffsToIgnore:Vector.<CastingSpell>;
+      
       public function destroy() : void {
          _self = null;
+         this.spellBuffsToIgnore.length = 0;
       }
       
       public function decrementDuration(targetId:int) : void {
@@ -119,6 +141,8 @@ package com.ankamagames.dofus.logic.game.fight.managers
          var buffTarget:Array = null;
          var buffItem:BasicBuff = null;
          var modified:* = false;
+         var skipBuffUpdate:* = false;
+         var spell:CastingSpell = null;
          var newBuffs:Array = new Array();
          var updateStatList:Boolean = false;
          for each (buffTarget in this._buffs)
@@ -127,6 +151,27 @@ package com.ankamagames.dofus.logic.game.fight.managers
             {
                if((incrementMode == INCREMENT_MODE_SOURCE) && (buffItem.aliveSource == targetId) || (incrementMode == INCREMENT_MODE_TARGET) && (buffItem.targetId == targetId))
                {
+                  if((incrementMode == INCREMENT_MODE_SOURCE) && (this.spellBuffsToIgnore.length))
+                  {
+                     skipBuffUpdate = false;
+                     for each (spell in this.spellBuffsToIgnore)
+                     {
+                        if((spell.castingSpellId == buffItem.castingSpell.castingSpellId) && (spell.casterId == targetId))
+                        {
+                           skipBuffUpdate = true;
+                           break;
+                        }
+                     }
+                     if(skipBuffUpdate)
+                     {
+                        if(!newBuffs.hasOwnProperty(String(buffItem.targetId)))
+                        {
+                           newBuffs[buffItem.targetId] = new Array();
+                        }
+                        newBuffs[buffItem.targetId].push(buffItem);
+                        continue;
+                     }
+                  }
                   modified = buffItem.incrementDuration(delta,dispellEffect);
                   if(buffItem.active)
                   {

@@ -37,21 +37,51 @@ package com.ankamagames.berilia.managers
       }
       
       public function removeEventListener(ge:GenericListener) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var i:String = null;
+         var j:Object = null;
+         for (i in this._aEvent)
+         {
+            for (j in this._aEvent[i])
+            {
+               if(!((this._aEvent[i] == null) || (this._aEvent[i][j] == null)))
+               {
+                  if(this._aEvent[i][j] == ge)
+                  {
+                     delete this._aEvent[i][[j]];
+                     if(!this._aEvent[i].length)
+                     {
+                        this._aEvent[i] = null;
+                        delete this._aEvent[[i]];
+                     }
+                  }
+               }
+            }
+         }
       }
       
       public function removeEventListenerByName(name:String) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var i:String = null;
+         var j:Object = null;
+         var l:GenericListener = null;
+         for (i in this._aEvent)
+         {
+            for (j in this._aEvent[i])
+            {
+               if(!((this._aEvent[i] == null) || (this._aEvent[i][j] == null)))
+               {
+                  l = this._aEvent[i][j];
+                  if(l.listener == name)
+                  {
+                     delete this._aEvent[i][[j]];
+                     if(!this._aEvent[i].length)
+                     {
+                        this._aEvent[i] = null;
+                        delete this._aEvent[[i]];
+                     }
+                  }
+               }
+            }
+         }
       }
       
       public function removeEvent(sListener:*) : void {

@@ -87,6 +87,8 @@ package com.ankamagames.dofus.kernel.sound.enum
       
       public static const FIGHT_LOSE:String = "29099";
       
+      public static const FIGHT_NEW_WAVE:String = "16119";
+      
       public static const OK_BUTTON:String = "16002";
       
       public static const PLAY_BUTTON:String = "16003";

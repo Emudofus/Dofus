@@ -31,6 +31,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
          var taxCollectorName:String = null;
          var companionInfo:FightTeamMemberCompanionInformations = null;
          super();
+         this.nbWaves = pFightTeam.teamInfos.nbWaves;
          this.fighters = new Vector.<Fighter>();
          var len:int = pFightTeam.teamInfos.teamMembers.length;
          i = 0;
@@ -96,6 +97,8 @@ package com.ankamagames.dofus.logic.game.roleplay.types
       private var _waitingCompanions:Dictionary;
       
       public var fighters:Vector.<Fighter>;
+      
+      public var nbWaves:uint;
       
       private function getCompanionFighter(pFighter:Fighter, pCompanionId:int, pCompanionGenericId:int) : Fighter {
          return new Fighter(pCompanionId,I18n.getUiText("ui.common.belonging",[Companion.getCompanionById(pCompanionGenericId).name,pFighter.name]),pFighter.level,pFighter.allianceTagName);

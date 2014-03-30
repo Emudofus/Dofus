@@ -214,6 +214,8 @@ package com.ankamagames.tiphon.display
       
       private var _isCarrying:Boolean;
       
+      private var _changeDispatched:Boolean;
+      
       public var destroyed:Boolean = false;
       
       public var overrideNextAnimation:Boolean = false;
@@ -561,6 +563,7 @@ package com.ankamagames.tiphon.display
             {
                this.restartAnimation();
             }
+            this._changeDispatched = true;
             if(this._subEntitiesList.length)
             {
                this.dispatchEvent(new TiphonEvent(TiphonEvent.RENDER_FATHER_SUCCEED,this));
@@ -571,6 +574,7 @@ package com.ankamagames.tiphon.display
             return;
          }
          this.overrideNextAnimation = false;
+         this._changeDispatched = false;
          this._lastAnimation = this._currentAnimation;
          this._currentDirection = direction;
          if(!pDisableAnimModifier)
@@ -1265,7 +1269,7 @@ package com.ankamagames.tiphon.display
             }
             if((defaultAnimation) && (!(this._currentAnimation == defaultAnimation)))
             {
-               _log.error("On ne trouve pas cette animation, on va jouer l\'animation " + defaultAnimation + "_" + this._currentDirection + " à la place.");
+               _log.error("On ne trouve cette animation, on va jouer l\'animation " + defaultAnimation + "_" + this._currentDirection + " à la place.");
                this.setAnimationAndDirection(defaultAnimation,this._currentDirection,true);
             }
             else
@@ -1500,7 +1504,11 @@ package com.ankamagames.tiphon.display
          }
          var te:TiphonEvent = new TiphonEvent(TiphonEvent.RENDER_SUCCEED,this);
          te.animationName = this._currentAnimation + "_" + this._currentDirection;
-         setTimeout(this.dispatchEvent,1,te);
+         if(!this._changeDispatched)
+         {
+            this._changeDispatched = true;
+            setTimeout(this.dispatchEvent,1,te);
+         }
       }
       
       private function updateScale() : void {

@@ -16,6 +16,7 @@ package com.ankamagames.dofus.logic.game.common.managers
    import flash.geom.Point;
    import com.ankamagames.dofus.internalDatacenter.mount.MountData;
    import com.ankamagames.dofus.datacenter.world.WorldMap;
+   import com.ankamagames.dofus.network.enums.CharacterInventoryPositionEnum;
    import com.ankamagames.dofus.datacenter.breeds.Breed;
    import com.ankamagames.dofus.misc.EntityLookAdapter;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
@@ -225,6 +226,26 @@ package com.ankamagames.dofus.logic.game.common.managers
       
       public function get isIncarnation() : Boolean {
          return EntitiesLooksManager.getInstance().isIncarnation(this.id);
+      }
+      
+      public function get isMutated() : Boolean {
+         var l:* = 0;
+         var i:* = 0;
+         var rpBuffs:Vector.<ItemWrapper> = InventoryManager.getInstance().inventory.getView("roleplayBuff").content;
+         if(rpBuffs)
+         {
+            l = rpBuffs.length;
+            i = 0;
+            while(i < l)
+            {
+               if((rpBuffs[i]) && (rpBuffs[i].typeId == 27) && (rpBuffs[i].position == CharacterInventoryPositionEnum.INVENTORY_POSITION_MUTATION))
+               {
+                  return true;
+               }
+               i++;
+            }
+         }
+         return false;
       }
       
       public function set isPartyLeader(b:Boolean) : void {

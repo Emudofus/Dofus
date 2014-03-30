@@ -3,6 +3,7 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.berilia.interfaces.IApi;
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.berilia.types.data.UiModule;
+   import flash.globalization.Collator;
    import com.ankamagames.dofus.logic.game.common.frames.JobsFrame;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.common.frames.AveragePricesFrame;
@@ -28,7 +29,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.network.types.game.interactive.InteractiveElementSkill;
    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayContextFrame;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
-   import flash.globalization.Collator;
    import com.ankamagames.jerakine.data.XmlConfig;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
@@ -44,6 +44,8 @@ package com.ankamagames.dofus.uiApi
       protected var _log:Logger;
       
       private var _module:UiModule;
+      
+      private var _stringSorter:Collator;
       
       public function set module(value:UiModule) : void {
          this._module = value;
@@ -458,8 +460,6 @@ package com.ankamagames.dofus.uiApi
          var potentialMaxOccurence:uint = 0;
          var val:uint = 0;
          var recipes:Vector.<Recipe> = new Vector.<Recipe>();
-         this._log.debug("getRecipesByJob()");
-         this._log.debug("1. Gettings jobs and calculating maxSlots...");
          knownJobIds = new Array();
          var knownJobs:Array = PlayedCharacterManager.getInstance().jobs;
          for (key in knownJobs)
@@ -489,7 +489,6 @@ package com.ankamagames.dofus.uiApi
                return recipes;
             }
          }
-         this._log.debug("2. Getting main inventory items...");
          if(fromBank)
          {
             resourceItems = InventoryManager.getInstance().bankInventory.getView("bank").content;
@@ -499,7 +498,6 @@ package com.ankamagames.dofus.uiApi
             resourceItems = InventoryManager.getInstance().inventory.getView("storage").content;
          }
          var l:int = resourceItems.length;
-         this._log.debug("  > length: " + l);
          var i:int = 0;
          while(i < l)
          {
@@ -530,10 +528,8 @@ package com.ankamagames.dofus.uiApi
          }
          if(fromBank)
          {
-            this._log.debug("2b. Getting secondary inventory items...");
             bagItems = InventoryManager.getInstance().inventory.getView("storage").content;
             l = bagItems.length;
-            this._log.debug("  > length: " + l);
             i = 0;
             while(i < l)
             {
@@ -561,7 +557,6 @@ package com.ankamagames.dofus.uiApi
                i++;
             }
          }
-         this._log.debug("3. Getting recipes...");
          if(jobId == 0)
          {
             allRecipes = Recipe.getAllRecipes();
@@ -572,8 +567,6 @@ package com.ankamagames.dofus.uiApi
          }
          l = allRecipes.length;
          var resultTypes:Dictionary = new Dictionary(true);
-         this._log.debug("4. Iterating on recipes...");
-         this._log.debug("  > length: " + l);
          i = 0;
          for(;i < l;i++)
          {
@@ -693,25 +686,24 @@ package com.ankamagames.dofus.uiApi
                continue;
             }
          }
-         this._log.debug("5. Creating type objects...");
          for each (resultTypeId in resultTypes)
          {
             filterTypes[resultTypeId] = ItemType.getItemTypeById(resultTypes[resultTypeId]);
          }
          recipes.fixed = true;
-         this._log.debug("6. Sorting recipes...");
          this.sortRecipes(recipes,sortCriteria,sortDescending?1:-1);
-         this._log.debug("7. Recipes list ready!");
-         this._log.debug("---------------------------------------------");
          return recipes;
       }
       
-      private var stringSorter:Collator;
+      public function sortRecipesByCriteria(recipes:Object, sortCriteria:String, sortDescending:Boolean) : Object {
+         this.sortRecipes(recipes,sortCriteria,sortDescending?1:-1);
+         return recipes;
+      }
       
-      private function sortRecipes(recipes:Vector.<Recipe>, criteria:String, way:int=1) : void {
-         if(!this.stringSorter)
+      private function sortRecipes(recipes:Object, criteria:String, way:int=1) : void {
+         if(!this._stringSorter)
          {
-            this.stringSorter = new Collator(XmlConfig.getInstance().getEntry("config.lang.current"));
+            this._stringSorter = new Collator(XmlConfig.getInstance().getEntry("config.lang.current"));
          }
          switch(criteria)
          {
@@ -740,7 +732,7 @@ package com.ankamagames.dofus.uiApi
             {
                return way;
             }
-            return stringSorter.compare(a.resultName,b.resultName);
+            return _stringSorter.compare(a.resultName,b.resultName);
          };
       }
       
@@ -755,7 +747,7 @@ package com.ankamagames.dofus.uiApi
             {
                return way;
             }
-            return stringSorter.compare(a.resultName,b.resultName);
+            return _stringSorter.compare(a.resultName,b.resultName);
          };
       }
       
@@ -764,6 +756,14 @@ package com.ankamagames.dofus.uiApi
          {
             var aL:* = averagePricesFrame.pricesData.items["item" + a.resultId];
             var bL:* = averagePricesFrame.pricesData.items["item" + b.resultId];
+            if(!aL)
+            {
+               aL = way == 1?int.MAX_VALUE:0;
+            }
+            if(!bL)
+            {
+               bL = way == 1?int.MAX_VALUE:0;
+            }
             if(aL < bL)
             {
                return -way;
@@ -772,7 +772,7 @@ package com.ankamagames.dofus.uiApi
             {
                return way;
             }
-            return stringSorter.compare(a.resultName,b.resultName);
+            return _stringSorter.compare(a.resultName,b.resultName);
          };
       }
       

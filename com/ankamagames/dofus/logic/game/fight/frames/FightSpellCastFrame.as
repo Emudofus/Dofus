@@ -51,8 +51,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.jerakine.types.zones.Lozenge;
    import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.zones.Custom;
-   import com.ankamagames.berilia.managers.TooltipManager;
    import com.ankamagames.berilia.types.tooltip.TooltipPlacer;
+   import com.ankamagames.berilia.managers.TooltipManager;
    import flash.events.TimerEvent;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightCastOnTargetRequestMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightCastRequestMessage;
@@ -125,6 +125,12 @@ package com.ankamagames.dofus.logic.game.fight.frames
       
       private static const FORBIDDEN_CURSOR_NAME:String = "SpellCastForbiddenCusror";
       
+      private static var _currentTargetIsTargetable:Boolean;
+      
+      public static function isCurrentTargetTargetable() : Boolean {
+         return _currentTargetIsTargetable;
+      }
+      
       public static function updateRangeAndTarget() : void {
          var castFrame:FightSpellCastFrame = Kernel.getWorker().getFrame(FightSpellCastFrame) as FightSpellCastFrame;
          if(castFrame)
@@ -159,8 +165,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
       
       private var _usedWrapper;
       
-      private var _currentTargetIsTargetable:Boolean;
-      
       private var _clearTargetTimer:Timer;
       
       private var _spellmaximumRange:uint;
@@ -169,16 +173,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
          return Priority.HIGHEST;
       }
       
-      public function get currentTargetIsTargetable() : Boolean {
-         return this._currentTargetIsTargetable;
-      }
-      
       public function get currentSpell() : Object {
          return this._spellLevel;
-      }
-      
-      public function get currentCellEntityInTargetSelection() : Boolean {
-         return SelectionManager.getInstance().isInside(FightContextFrame.currentCell,SELECTION_TARGET);
       }
       
       public function pushed() : Boolean {
@@ -345,8 +341,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
             return;
          }
          var myTurn:Boolean = fightTurnFrame.myTurn;
-         this._currentTargetIsTargetable = this.isValidCell(target);
-         if((!(target == -1)) && (this._currentTargetIsTargetable))
+         _currentTargetIsTargetable = this.isValidCell(target);
+         if((!(target == -1)) && (_currentTargetIsTargetable))
          {
             if(!this._targetSelection)
             {
@@ -505,13 +501,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
             entityInfos = fcf.entitiesFrame.getEntityInfos(entityId) as GameFightFighterInformations;
             if((!(zoneCells.indexOf(entityInfos.disposition.cellId) == -1)) && (DofusEntities.getEntity(entityId)))
             {
-               if(entityInfos.disposition.cellId == FightContextFrame.currentCell)
-               {
-                  if(TooltipManager.isVisible("tooltip_tooltipOverEntity_" + entityId))
-                  {
-                     continue;
-                  }
-               }
                targetEntities.push(entityId);
                TooltipPlacer.waitBeforeOrder("tooltip_tooltipOverEntity_" + entityId);
             }
@@ -523,6 +512,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                }
             }
          }
+         fcf.removeSpellTargetsTooltips();
          for each (entityId in targetEntities)
          {
             entityInfos = fcf.entitiesFrame.getEntityInfos(entityId) as GameFightFighterInformations;
@@ -537,6 +527,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var entityId:* = 0;
          var fcf:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
          var entitiesId:Vector.<int> = fcf.entitiesFrame.getEntitiesIdsList();
+         var overEntity:IEntity = EntitiesManager.getInstance().getEntityOnCell(FightContextFrame.currentCell,AnimatedCharacter);
          for each (entityId in entitiesId)
          {
             if((!fcf.showPermanentTooltips) || (fcf.showPermanentTooltips) && (fcf.battleFrame.targetedEntities.indexOf(entityId) == -1))
@@ -548,8 +539,15 @@ package com.ankamagames.dofus.logic.game.fight.frames
          {
             for each (entityId in fcf.battleFrame.targetedEntities)
             {
-               fcf.displayEntityTooltip(entityId);
+               if((!overEntity) || (!(entityId == overEntity.id)))
+               {
+                  fcf.displayEntityTooltip(entityId);
+               }
             }
+         }
+         if(overEntity)
+         {
+            fcf.displayEntityTooltip(overEntity.id);
          }
       }
       

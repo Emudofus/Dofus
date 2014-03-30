@@ -21,15 +21,18 @@ package com.ankamagames.dofus.network.types.game.context.fight
       
       public var teamTypeId:uint = 0;
       
+      public var nbWaves:uint = 0;
+      
       public function getTypeId() : uint {
          return 116;
       }
       
-      public function initAbstractFightTeamInformations(teamId:uint=2, leaderId:int=0, teamSide:int=0, teamTypeId:uint=0) : AbstractFightTeamInformations {
+      public function initAbstractFightTeamInformations(teamId:uint=2, leaderId:int=0, teamSide:int=0, teamTypeId:uint=0, nbWaves:uint=0) : AbstractFightTeamInformations {
          this.teamId = teamId;
          this.leaderId = leaderId;
          this.teamSide = teamSide;
          this.teamTypeId = teamTypeId;
+         this.nbWaves = nbWaves;
          return this;
       }
       
@@ -38,6 +41,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          this.leaderId = 0;
          this.teamSide = 0;
          this.teamTypeId = 0;
+         this.nbWaves = 0;
       }
       
       public function serialize(output:IDataOutput) : void {
@@ -49,6 +53,15 @@ package com.ankamagames.dofus.network.types.game.context.fight
          output.writeInt(this.leaderId);
          output.writeByte(this.teamSide);
          output.writeByte(this.teamTypeId);
+         if((this.nbWaves < 0) || (this.nbWaves > 4.294967295E9))
+         {
+            throw new Error("Forbidden value (" + this.nbWaves + ") on element nbWaves.");
+         }
+         else
+         {
+            output.writeUnsignedInt(this.nbWaves);
+            return;
+         }
       }
       
       public function deserialize(input:IDataInput) : void {
@@ -72,7 +85,15 @@ package com.ankamagames.dofus.network.types.game.context.fight
             }
             else
             {
-               return;
+               this.nbWaves = input.readUnsignedInt();
+               if((this.nbWaves < 0) || (this.nbWaves > 4.294967295E9))
+               {
+                  throw new Error("Forbidden value (" + this.nbWaves + ") on element of AbstractFightTeamInformations.nbWaves.");
+               }
+               else
+               {
+                  return;
+               }
             }
          }
       }

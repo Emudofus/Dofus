@@ -5,6 +5,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
    import com.ankamagames.jerakine.sequencer.SerialSequencer;
    import com.ankamagames.dofus.internalDatacenter.communication.ChatBubble;
    import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
+   import com.ankamagames.dofus.datacenter.spells.Spell;
    import com.ankamagames.dofus.logic.game.fight.fightEvents.FightEventsHelper;
    import com.ankamagames.dofus.logic.game.fight.types.FightEventEnum;
    import com.ankamagames.dofus.network.enums.FightSpellCastCriticalEnum;
@@ -50,7 +51,10 @@ package com.ankamagames.dofus.logic.game.fight.steps
          var seq:SerialSequencer = null;
          var bubble:ChatBubble = null;
          var fighterEntity:IDisplayable = null;
-         FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_CASTED_SPELL,[this._fighterId,this._cellId,this._sourceCellId,this._spellId,this._spellRank,this._critical],0,castingSpellId,false);
+         if(Spell.getSpellById(this._spellId).verbose_cast)
+         {
+            FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_CASTED_SPELL,[this._fighterId,this._cellId,this._sourceCellId,this._spellId,this._spellRank,this._critical],0,castingSpellId,false);
+         }
          if(this._critical != FightSpellCastCriticalEnum.NORMAL)
          {
             fighterInfos = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterId) as GameFightFighterInformations;

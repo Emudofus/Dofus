@@ -211,6 +211,8 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       private var _lastFightType:int = -1;
       
+      private var _wasSpectatorInLastFight:Boolean = false;
+      
       public var allMemberFollowPlayerId:uint = 0;
       
       private var _partyFightsInformations:Dictionary;
@@ -1611,11 +1613,12 @@ package com.ankamagames.dofus.logic.game.common.frames
                   this._isArenaRegistered = false;
                   KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaRegistrationStatusUpdate,this._isArenaRegistered,this._arenaCurrentStatus);
                }
+               this._wasSpectatorInLastFight = gfjmsg.isSpectator;
                this.cleanPartyFightNotifications();
                return false;
             case msg is FightEndingMessage:
                femsg = msg as FightEndingMessage;
-               if(this._lastFightType == FightTypeEnum.FIGHT_TYPE_PVP_ARENA)
+               if((this._lastFightType == FightTypeEnum.FIGHT_TYPE_PVP_ARENA) && (!this._wasSpectatorInLastFight))
                {
                   this._arenaCurrentStatus = PvpArenaStepEnum.ARENA_STEP_UNREGISTER;
                   this._isArenaRegistered = false;

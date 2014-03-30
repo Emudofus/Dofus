@@ -12,6 +12,7 @@ package com.ankamagames.dofus.datacenter.items
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    import com.ankamagames.dofus.datacenter.items.criterion.GroupItemCriterion;
    import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
    import com.ankamagames.dofus.datacenter.appearance.Appearance;
    import com.ankamagames.dofus.datacenter.jobs.Recipe;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
@@ -126,6 +127,8 @@ package com.ankamagames.dofus.datacenter.items
       
       private var _name:String;
       
+      private var _undiatricalName:String;
+      
       private var _description:String;
       
       private var _type:ItemType;
@@ -148,6 +151,14 @@ package com.ankamagames.dofus.datacenter.items
             this._name = I18n.getText(this.nameId);
          }
          return this._name;
+      }
+      
+      public function get undiatricalName() : String {
+         if(!this._undiatricalName)
+         {
+            this._undiatricalName = StringUtils.noAccent(this.name).toLowerCase();
+         }
+         return this._undiatricalName;
       }
       
       public function get description() : String {

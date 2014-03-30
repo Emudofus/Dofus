@@ -133,9 +133,9 @@ package com.ankamagames.dofus.logic.shield
       }
       
       private function getUsername() : String {
-         var _loc1_:* = true;
-         var _loc2_:* = false;
-         if(_loc1_)
+         var _loc1_:* = false;
+         var _loc2_:* = true;
+         if(_loc2_)
          {
          }
          return AuthentificationManager.getInstance().username.toLowerCase().split("|")[0];
@@ -238,12 +238,40 @@ package com.ankamagames.dofus.logic.shield
       }
       
       private function migrationSuccess(result:Object) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var f:File = this.getCertificateFile();
+         if(!_loc4_)
+         {
+            if(f.exists)
+            {
+               if(_loc3_)
+               {
+                  if(_loc4_)
+                  {
+                     while(_loc4_)
+                     {
+                        break;
+                     }
+                     return;
+                  }
+               }
+            }
+            while(true)
+            {
+               this.addCertificate(result.id,result.certificate);
+            }
+         }
+         while(true)
+         {
+            if(!_loc4_)
+            {
+               if(_loc4_)
+               {
+                  this.addCertificate(result.id,result.certificate);
+                  continue;
+               }
+            }
+            return;
+         }
       }
    }
 }

@@ -1,8 +1,12 @@
 package com.ankamagames.berilia.managers
 {
    import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.handlers.FocusHandler;
+   import com.ankamagames.jerakine.handlers.HumanInputHandler;
    import com.ankamagames.jerakine.interfaces.ISecurizable;
+   import flash.system.ApplicationDomain;
    import com.ankamagames.berilia.api.ReadOnlyObject;
+   import flash.geom.Point;
    import com.ankamagames.jerakine.interfaces.Secure;
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.jerakine.interfaces.IDataCenter;
@@ -36,6 +40,7 @@ package com.ankamagames.berilia.managers
          SharedSecureComponent = sharedSecureComponent as Class;
          SharedReadOnlyData = sharedReadOnlyData as Class;
          DirectAccessObject = directAccessObject as Class;
+         FocusHandler.getInstance().handler = HumanInputHandler.getInstance().handler;
       }
       
       public static function destroy(target:*) : void {
@@ -58,6 +63,7 @@ package com.ankamagames.berilia.managers
             case target is Number:
             case target is String:
             case target is Boolean:
+            case target is Point:
             case target == undefined:
             case target is Secure:
                return target;

@@ -1,6 +1,7 @@
 package com.ankamagames.berilia.types.data
 {
    import flash.display.DisplayObjectContainer;
+   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.Uri;
    
    public class Map extends Object
@@ -9,7 +10,6 @@ package com.ankamagames.berilia.types.data
       public function Map(zoom:Number, srcFolder:String, container:DisplayObjectContainer, initialWidth:uint, initialHeight:uint, chunckWidth:uint, chunckHeight:uint) {
          var area:MapArea = null;
          var i:uint = 0;
-         this.areas = [];
          super();
          this.zoom = zoom;
          this.container = container;
@@ -20,6 +20,7 @@ package com.ankamagames.berilia.types.data
          container.doubleClickEnabled = true;
          this.numXChunck = Math.ceil(initialWidth * zoom / chunckWidth);
          this.numYChunck = Math.ceil(initialHeight * zoom / chunckHeight);
+         this._areas = new Vector.<MapArea>(this.numXChunck * this.numYChunck,true);
          var chunckId:uint = 1;
          var j:uint = 0;
          while(j < this.numYChunck)
@@ -28,13 +29,15 @@ package com.ankamagames.berilia.types.data
             while(i < this.numXChunck)
             {
                area = new MapArea(new Uri(srcFolder + chunckId + ".jpg"),i * chunckWidth / zoom,j * chunckHeight / zoom,chunckWidth / zoom,chunckHeight / zoom,this);
-               this.areas.push(area);
+               this.areas[chunckId - 1] = area;
                chunckId++;
                i++;
             }
             j++;
          }
       }
+      
+      public var currentScale:Number;
       
       public var initialWidth:uint;
       
@@ -46,7 +49,11 @@ package com.ankamagames.berilia.types.data
       
       public var zoom:Number;
       
-      public var areas:Array;
+      private var _areas:Vector.<MapArea>;
+      
+      public function get areas() : Vector.<MapArea> {
+         return this._areas;
+      }
       
       public var container:DisplayObjectContainer;
       

@@ -111,101 +111,21 @@ package com.ankamagames.dofus.logic.game.common.managers
       }
       
       public function setTaxCollectorsFighters(tcList:Vector.<TaxCollectorFightersInformation>) : void {
-         var fightTime:* = 0;
-         var waitTime:* = NaN;
-         var char:Object = null;
-         var tc:TaxCollectorFightersInformation = null;
-         var tcWrapper:TaxCollectorWrapper = null;
-         var allies:Array = new Array();
-         var enemies:Array = new Array();
-         var myGuildId:int = SocialFrame.getInstance().guild.guildId;
-         this._guildTaxCollectorsInFight = new Dictionary();
-         this._allTaxCollectorsInPreFight = new Dictionary();
-         for each (tc in tcList)
-         {
-            tcWrapper = this._taxCollectors[tc.collectorId];
-            if(!tcWrapper)
-            {
-               _log.error("Tax collector " + tc.collectorId + " doesn\'t exist IS PROBLEM");
-            }
-            else
-            {
-               fightTime = tcWrapper.fightTime;
-               waitTime = tcWrapper.waitTimeForPlacement * 100;
-               allies = new Array();
-               enemies = new Array();
-               for each (char in tc.allyCharactersInformations)
-               {
-                  allies.push(char);
-               }
-               for each (char in tc.enemyCharactersInformations)
-               {
-                  enemies.push(char);
-               }
-               if((!tcWrapper.guild) || (tcWrapper.guild.guildId == myGuildId))
-               {
-                  if(this._guildTaxCollectorsInFight[tc.collectorId])
-                  {
-                     this._guildTaxCollectorsInFight[tc.collectorId].update(TYPE_TAX_COLLECTOR,tc.collectorId,allies,enemies,fightTime,waitTime,tcWrapper.nbPositionPerTeam);
-                  }
-                  else
-                  {
-                     this._guildTaxCollectorsInFight[tc.collectorId] = SocialEntityInFightWrapper.create(TYPE_TAX_COLLECTOR,tc.collectorId,allies,enemies,fightTime,waitTime,tcWrapper.nbPositionPerTeam);
-                  }
-                  this._guildTaxCollectorsInFight[tc.collectorId].addPonyFighter(tcWrapper);
-               }
-               if(tcWrapper.state != TaxCollectorStateEnum.STATE_WAITING_FOR_HELP)
-               {
-                  if(this._allTaxCollectorsInPreFight[tc.collectorId])
-                  {
-                     delete this._allTaxCollectorsInPreFight[[tc.collectorId]];
-                  }
-               }
-               else
-               {
-                  if(this._allTaxCollectorsInPreFight[tc.collectorId])
-                  {
-                     this._allTaxCollectorsInPreFight[tc.collectorId].update(TYPE_TAX_COLLECTOR,tc.collectorId,allies,enemies,fightTime,waitTime,tcWrapper.nbPositionPerTeam);
-                  }
-                  else
-                  {
-                     this._allTaxCollectorsInPreFight[tc.collectorId] = SocialEntityInFightWrapper.create(TYPE_TAX_COLLECTOR,tc.collectorId,allies,enemies,fightTime,waitTime,tcWrapper.nbPositionPerTeam);
-                  }
-                  this._allTaxCollectorsInPreFight[tc.collectorId].addPonyFighter(tcWrapper);
-               }
-            }
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function setPrismsInFight(pList:Vector.<PrismFightersInformation>) : void {
-         var allies:Array = null;
-         var enemies:Array = null;
-         var char:Object = null;
-         var fightTime:* = 0;
-         var pfi:PrismFightersInformation = null;
-         this._prismsInFight = new Dictionary();
-         for each (pfi in pList)
-         {
-            allies = new Array();
-            enemies = new Array();
-            for each (char in pfi.allyCharactersInformations)
-            {
-               allies.push(char);
-            }
-            for each (char in pfi.enemyCharactersInformations)
-            {
-               enemies.push(char);
-            }
-            fightTime = pfi.waitingForHelpInfo.timeLeftBeforeFight * 100 + getTimer();
-            if(this._prismsInFight[pfi.subAreaId])
-            {
-               this._prismsInFight[pfi.subAreaId].update(TYPE_PRISM,pfi.subAreaId,allies,enemies,fightTime,pfi.waitingForHelpInfo.waitTimeForPlacement * 100,pfi.waitingForHelpInfo.nbPositionForDefensors);
-            }
-            else
-            {
-               this._prismsInFight[pfi.subAreaId] = SocialEntityInFightWrapper.create(TYPE_PRISM,pfi.subAreaId,allies,enemies,fightTime,pfi.waitingForHelpInfo.waitTimeForPlacement * 100,pfi.waitingForHelpInfo.nbPositionForDefensors);
-            }
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function updateGuild(pMaxTaxCollectorsCount:int, pTaxCollectorsCount:int, pTaxCollectorLifePoints:int, pTaxCollectorDamagesBonuses:int, pTaxCollectorPods:int, pTaxCollectorProspecting:int, pTaxCollectorWisdom:int) : void {

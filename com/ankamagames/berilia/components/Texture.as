@@ -334,7 +334,6 @@ package com.ankamagames.berilia.components
       
       public function loadBitmapData(bmpdt:BitmapData) : void {
          this._bitmap = new Bitmap(bmpdt,"auto",true);
-         this._bitmap.smoothing = true;
          if(this._finalized)
          {
             this.reload();

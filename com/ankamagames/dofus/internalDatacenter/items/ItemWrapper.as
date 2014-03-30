@@ -340,7 +340,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          var spellEffects:Vector.<IZoneShape> = new Vector.<IZoneShape>();
          for each (i in this.effects)
          {
-            zone = new ZoneEffect(i.zoneSize,i.zoneShape);
+            zone = new ZoneEffect(uint(i.zoneSize),i.zoneShape);
             spellEffects.push(zone);
          }
          return spellEffects;

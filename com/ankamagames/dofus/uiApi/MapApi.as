@@ -12,8 +12,8 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.datacenter.world.SuperArea;
    import com.ankamagames.dofus.datacenter.world.Area;
    import __AS3__.vec.Vector;
-   import com.ankamagames.jerakine.types.positions.WorldPoint;
    import flash.geom.Point;
+   import com.ankamagames.jerakine.types.positions.WorldPoint;
    import com.ankamagames.dofus.datacenter.world.MapPosition;
    import com.ankamagames.dofus.datacenter.world.Hint;
    import flash.geom.Rectangle;
@@ -66,6 +66,10 @@ package com.ankamagames.dofus.uiApi
       
       public function getSubAreaMapIds(subAreaId:uint) : Vector.<uint> {
          return SubArea.getSubAreaById(subAreaId).mapIds;
+      }
+      
+      public function getSubAreaCenter(subAreaId:uint) : Point {
+         return SubArea.getSubAreaById(subAreaId).center;
       }
       
       public function getWorldPoint(mapId:uint) : WorldPoint {

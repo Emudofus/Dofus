@@ -5,7 +5,6 @@ package com.ankamagames.dofus.internalDatacenter.fight
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
-   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
    import com.ankamagames.jerakine.messages.Frame;
@@ -15,13 +14,11 @@ package com.ankamagames.dofus.internalDatacenter.fight
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import com.ankamagames.dofus.network.enums.TeamEnum;
-   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    
    public class FighterInformations extends Object implements IDataCenter
    {
       
       public function FighterInformations(fighterId:int) {
-         var stats:CharacterCharacteristicsInformations = null;
          super();
          var fightFrame:Frame = Kernel.getWorker().getFrame(FightContextFrame);
          if((!fightFrame) || (!(fightFrame as FightContextFrame).entitiesFrame))
@@ -59,12 +56,7 @@ package com.ankamagames.dofus.internalDatacenter.fight
                this._team = "spectator";
                break;
          }
-         if(fighterId == PlayedCharacterManager.getInstance().id)
-         {
-            stats = PlayedCharacterManager.getInstance().characteristics;
-            fighterInfos.stats.actionPoints = stats.actionPointsCurrent;
-            fighterInfos.stats.movementPoints = stats.movementPointsCurrent;
-         }
+         this._wave = fighterInfos.wave;
          this._lifePoints = fighterInfos.stats.lifePoints;
          this._maxLifePoints = fighterInfos.stats.maxLifePoints;
          this._actionPoints = fighterInfos.stats.actionPoints;
@@ -102,6 +94,8 @@ package com.ankamagames.dofus.internalDatacenter.fight
       private var _isAlive:Boolean;
       
       private var _team:String;
+      
+      private var _wave:int;
       
       private var _lifePoints:int;
       
@@ -169,6 +163,10 @@ package com.ankamagames.dofus.internalDatacenter.fight
       
       public function get team() : String {
          return this._team;
+      }
+      
+      public function get wave() : int {
+         return this._wave;
       }
       
       public function get lifePoints() : int {

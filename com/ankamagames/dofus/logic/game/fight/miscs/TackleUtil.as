@@ -158,7 +158,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
       
       public static function canBeTackler(fighter:GameFightFighterInformations, target:GameFightFighterInformations) : Boolean {
          var monster:Monster = null;
-         if((FightersStateManager.getInstance().hasState(fighter.contextualId,6)) || (FightersStateManager.getInstance().hasState(fighter.contextualId,95)) || (fighter.stats.invisibilityState == GameActionFightInvisibilityStateEnum.INVISIBLE) || (fighter.stats.invisibilityState == GameActionFightInvisibilityStateEnum.DETECTED))
+         if((FightersStateManager.getInstance().hasState(fighter.contextualId,8)) || (FightersStateManager.getInstance().hasState(fighter.contextualId,6)) || (FightersStateManager.getInstance().hasState(fighter.contextualId,95)) || (fighter.stats.invisibilityState == GameActionFightInvisibilityStateEnum.INVISIBLE) || (fighter.stats.invisibilityState == GameActionFightInvisibilityStateEnum.DETECTED))
          {
             return false;
          }

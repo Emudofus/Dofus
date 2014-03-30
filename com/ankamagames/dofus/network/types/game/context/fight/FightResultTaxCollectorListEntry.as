@@ -25,8 +25,8 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 84;
       }
       
-      public function initFightResultTaxCollectorListEntry(outcome:uint=0, rewards:FightLoot=null, id:int=0, alive:Boolean=false, level:uint=0, guildInfo:BasicGuildInformations=null, experienceForGuild:int=0) : FightResultTaxCollectorListEntry {
-         super.initFightResultFighterListEntry(outcome,rewards,id,alive);
+      public function initFightResultTaxCollectorListEntry(outcome:uint=0, wave:uint=0, rewards:FightLoot=null, id:int=0, alive:Boolean=false, level:uint=0, guildInfo:BasicGuildInformations=null, experienceForGuild:int=0) : FightResultTaxCollectorListEntry {
+         super.initFightResultFighterListEntry(outcome,wave,rewards,id,alive);
          this.level = level;
          this.guildInfo = guildInfo;
          this.experienceForGuild = experienceForGuild;

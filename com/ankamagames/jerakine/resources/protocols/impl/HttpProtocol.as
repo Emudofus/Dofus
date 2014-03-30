@@ -20,5 +20,12 @@ package com.ankamagames.jerakine.resources.protocols.impl
       
       override protected function release() : void {
       }
+      
+      override public function cancel() : void {
+         if(_adapter)
+         {
+            _adapter.free();
+         }
+      }
    }
 }

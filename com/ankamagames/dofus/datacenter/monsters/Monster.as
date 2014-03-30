@@ -64,6 +64,8 @@ package com.ankamagames.dofus.datacenter.monsters
       
       public var creatureBoneId:int;
       
+      public var canBePushed:Boolean;
+      
       private var _name:String;
       
       public function get name() : String {

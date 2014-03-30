@@ -12,6 +12,7 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.atouin.Atouin;
    import com.ankamagames.jerakine.types.events.PropertyChangeEvent;
    import com.ankamagames.tiphon.engine.Tiphon;
+   import flash.geom.Point;
    import flash.display.DisplayObject;
    import com.ankamagames.berilia.managers.SecureCenter;
    import flash.utils.getQualifiedClassName;
@@ -155,6 +156,7 @@ package com.ankamagames.dofus.uiApi
             case value is Number:
             case value is Boolean:
             case value is String:
+            case value is Point:
                return true;
          }
       }

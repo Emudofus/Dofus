@@ -25,6 +25,10 @@ package com.ankamagames.berilia.components.gridRenderer
             _color2 = parseInt(params[2],16);
             _bgColor2.color = _color2;
          }
+         if(params[3])
+         {
+            _bgAlpha = Number(params[3]);
+         }
          _defaultLineType = "default";
       }
       

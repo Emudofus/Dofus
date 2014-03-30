@@ -113,88 +113,21 @@ package com.ankamagames.berilia.types.template
       }
       
       private function matchDynamicsParts(node:XMLNode) : void {
-         var currNode:XMLNode = null;
-         var variable:TemplateVar = null;
-         var param:TemplateParam = null;
-         var i:uint = 0;
-         for(;i < node.childNodes.length;i++)
-         {
-            currNode = node.childNodes[i];
-            if(currNode.nodeName == XmlTagsEnum.TAG_VAR)
-            {
-               if(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME])
-               {
-                  variable = new TemplateVar(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME]);
-                  variable.value = currNode.firstChild.toString().replace(new RegExp("&apos;","g"),"\'");
-                  this._aVariablesStack.push(variable);
-                  currNode.removeNode();
-                  i--;
-                  continue;
-               }
-               _log.warn(currNode.nodeName + " must have [" + XmlAttributesEnum.ATTRIBUTE_NAME + "] attribute");
-            }
-            if(currNode.nodeName == XmlTagsEnum.TAG_PARAM)
-            {
-               if(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME])
-               {
-                  param = new TemplateParam(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME]);
-                  this._aTemplateParams[param.name] = param;
-                  if(currNode.hasChildNodes())
-                  {
-                     param.defaultValue = currNode.firstChild.toString();
-                  }
-                  else
-                  {
-                     param.defaultValue = "";
-                  }
-                  currNode.removeNode();
-                  i--;
-               }
-               else
-               {
-                  _log.warn(currNode.nodeName + " must have [" + XmlAttributesEnum.ATTRIBUTE_NAME + "] attribute");
-               }
-            }
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function replaceParam(txt:String, aVars:Array, prefix:String, recur:uint=1) : String {
-         var value:String = null;
-         var key:String = null;
-         var i:uint = 0;
-         if(!txt)
-         {
-            return txt;
-         }
-         var sortedParam:Array = new Array();
-         for (key in aVars)
-         {
-            sortedParam.push(key);
-         }
-         sortedParam.sort(Array.DESCENDING);
-         i = 0;
-         while(i < sortedParam.length)
-         {
-            key = sortedParam[i];
-            if(aVars[key] != null)
-            {
-               value = aVars[key].value;
-               if((!value) && (aVars[key] is TemplateParam))
-               {
-                  value = aVars[key].defaultValue;
-               }
-               if(value == null)
-               {
-                  _log.warn("No value for " + prefix + key);
-               }
-               else
-               {
-                  txt = txt.split(prefix + key).join(value);
-               }
-            }
-            i++;
-         }
-         return txt;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
    }
 }

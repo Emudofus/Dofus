@@ -19,7 +19,7 @@ package com.ankamagames.atouin.types
          add("debugLayer",false);
          add("showCellIdOnOver",false);
          add("tweentInterMap",false);
-         add("hideInterMap",AirScanner.isStreamingVersion());
+         add("hideInterMap",false);
          add("virtualPlayerJump",false);
          add("reloadLoadedMap",false);
          add("hideForeground",false);

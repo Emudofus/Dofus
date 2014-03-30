@@ -107,29 +107,12 @@ package com.ankamagames.atouin.managers
       }
       
       public function clearEntities() : void {
-         var id:String = null;
-         var i:* = 0;
-         var num:* = 0;
-         var entityId:* = 0;
-         var ts:TiphonSprite = null;
-         var entityBuffer:Array = new Array();
-         for (id in this._entities)
-         {
-            entityBuffer.push(id);
-         }
-         i = -1;
-         num = entityBuffer.length;
-         while(++i < num)
-         {
-            entityId = entityBuffer[i];
-            ts = this._entities[entityId] as TiphonSprite;
-            this.removeEntity(entityId);
-            if(ts)
-            {
-               ts.destroy();
-            }
-         }
-         this._entities = new Array();
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function get entities() : Array {
@@ -137,15 +120,12 @@ package com.ankamagames.atouin.managers
       }
       
       public function getFreeEntityId() : int {
-         while(true)
-         {
-            if(this._entities[++this._currentRandomEntity] == null)
-            {
-               break;
-            }
-            this._currentRandomEntity++;
-         }
-         return this._currentRandomEntity;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function registerInteractions(entity:IInteractive, register:Boolean) : void {

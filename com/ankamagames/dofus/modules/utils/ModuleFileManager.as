@@ -24,9 +24,9 @@ package com.ankamagames.dofus.modules.utils
          }
       }
       
-      private static const MAX_FILE_NUM:uint = 1000;
+      public static const MAX_FILE_NUM:uint = 1000;
       
-      private static const MAX_FILE_SIZE:uint = Math.pow(2,20);
+      public static const MAX_FILE_SIZE:uint = Math.pow(2,20);
       
       private static var _self:ModuleFileManager;
       

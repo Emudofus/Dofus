@@ -129,56 +129,12 @@ package com.ankamagames.atouin.types
       }
       
       public function clean(bForceCleaning:Boolean=false) : Boolean {
-         var sprite:Sprite = null;
-         var parentSprite:Sprite = null;
-         var cellReference:CellReference = null;
-         var i:uint = 0;
-         var provider:Array = null;
-         var k:String = null;
-         var p:WorldPoint = null;
-         if(!bForceCleaning)
-         {
-            provider = VisibleCellDetection.detectCell(false,this._map,WorldPoint.fromMapId(this.id),Atouin.getInstance().options.frustum,MapDisplayManager.getInstance().currentMapPoint).cell;
-         }
-         else
-         {
-            provider = new Array();
-            i = 0;
-            while(i < this._aCell.length)
-            {
-               provider[i] = i;
-               i++;
-            }
-         }
-         for (k in provider)
-         {
-            cellReference = this._aCell[k];
-            if(cellReference)
-            {
-               i = 0;
-               while(i < cellReference.listSprites.length)
-               {
-                  sprite = cellReference.listSprites[i];
-                  if(sprite)
-                  {
-                     sprite.cacheAsBitmap = false;
-                     parentSprite = Sprite(sprite.parent);
-                     parentSprite.removeChild(sprite);
-                     delete cellReference.listSprites[[i]];
-                     if(!parentSprite.numChildren)
-                     {
-                        parentSprite.parent.removeChild(parentSprite);
-                     }
-                  }
-                  i++;
-               }
-               delete this._aCell[[k]];
-            }
-         }
-         p = WorldPoint.fromMapId(this._map.id);
-         p.x = p.x - MapDisplayManager.getInstance().currentMapPoint.x;
-         p.y = p.y - MapDisplayManager.getInstance().currentMapPoint.y;
-         return (Math.abs(p.x) > 1) || (Math.abs(p.y) > 1);
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function get mapContainer() : Sprite {
@@ -325,17 +281,12 @@ package com.ankamagames.atouin.types
       }
       
       private function onEntityRendered(e:TiphonEvent) : void {
-         var d:Object = null;
-         for each (d in this._animatedElement)
-         {
-            if(d.element == e.sprite)
-            {
-               e.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityRendered);
-               this.updateAnimatedElement(d);
-               break;
-            }
-         }
-         e.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityRendered);
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function onOptionChange(e:PropertyChangeEvent) : void {
