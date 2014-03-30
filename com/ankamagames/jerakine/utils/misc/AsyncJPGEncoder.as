@@ -463,64 +463,12 @@ package com.ankamagames.jerakine.utils.misc
       }
       
       private function writeDHT() : void {
-         var i:* = 0;
-         this.byteout.writeShort(65476);
-         this.byteout.writeShort(418);
-         this.byteout.writeByte(0);
-         var I11:int = 11;
-         var I16:int = 16;
-         var I161:int = 161;
-         i = 0;
-         while(i < I16)
-         {
-            this.byteout.writeByte(this.std_dc_luminance_nrcodes[int(i + 1)]);
-            i++;
-         }
-         i = 0;
-         while(i <= I11)
-         {
-            this.byteout.writeByte(this.std_dc_luminance_values[int(i)]);
-            i++;
-         }
-         this.byteout.writeByte(16);
-         i = 0;
-         while(i < I16)
-         {
-            this.byteout.writeByte(this.std_ac_luminance_nrcodes[int(i + 1)]);
-            i++;
-         }
-         i = 0;
-         while(i <= I161)
-         {
-            this.byteout.writeByte(this.std_ac_luminance_values[int(i)]);
-            i++;
-         }
-         this.byteout.writeByte(1);
-         i = 0;
-         while(i < I16)
-         {
-            this.byteout.writeByte(this.std_dc_chrominance_nrcodes[int(i + 1)]);
-            i++;
-         }
-         i = 0;
-         while(i <= I11)
-         {
-            this.byteout.writeByte(this.std_dc_chrominance_values[int(i)]);
-            i++;
-         }
-         this.byteout.writeByte(17);
-         i = 0;
-         while(i < I16)
-         {
-            this.byteout.writeByte(this.std_ac_chrominance_nrcodes[int(i + 1)]);
-            i++;
-         }
-         i = 0;
-         while(i <= I161)
-         {
-            this.byteout.writeByte(this.std_ac_chrominance_values[int(i)]);
-            i++;
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function writeSOS() : void {
@@ -541,75 +489,12 @@ package com.ankamagames.jerakine.utils.misc
       var DU:Vector.<int>;
       
       private function processDU(CDU:Vector.<Number>, fdtbl:Vector.<Number>, DC:Number, HTDC:Vector.<BitString>, HTAC:Vector.<BitString>) : Number {
-         var pos:* = 0;
-         var lng:* = 0;
-         var startpos:* = 0;
-         var nrzeroes:* = 0;
-         var nrmarker:* = 0;
-         var EOB:BitString = HTAC[0];
-         var M16zeroes:BitString = HTAC[240];
-         var I16:int = 16;
-         var I63:int = 63;
-         var I64:int = 64;
-         var DU_DCT:Vector.<int> = this.fDCTQuant(CDU,fdtbl);
-         var j:int = 0;
-         while(j < I64)
-         {
-            this.DU[this.ZigZag[j]] = DU_DCT[j];
-            j++;
-         }
-         var Diff:int = this.DU[0] - DC;
-         var DC:Number = this.DU[0];
-         if(Diff == 0)
-         {
-            this.writeBits(HTDC[0]);
-         }
-         else
-         {
-            pos = int(32767 + Diff);
-            this.writeBits(HTDC[this.category[pos]]);
-            this.writeBits(this.bitcode[pos]);
-         }
-         var end0pos:int = 63;
-         while((end0pos > 0) && (this.DU[end0pos] == 0))
-         {
-            end0pos--;
-         }
-         if(end0pos == 0)
-         {
-            this.writeBits(EOB);
-            return DC;
-         }
-         var i:int = 1;
-         while(i <= end0pos)
-         {
-            startpos = i;
-            while((this.DU[i] == 0) && (i <= end0pos))
-            {
-               i++;
-            }
-            nrzeroes = i - startpos;
-            if(nrzeroes >= I16)
-            {
-               lng = nrzeroes >> 4;
-               nrmarker = 1;
-               while(nrmarker <= lng)
-               {
-                  this.writeBits(M16zeroes);
-                  nrmarker++;
-               }
-               nrzeroes = int(nrzeroes & 15);
-            }
-            pos = int(32767 + this.DU[i]);
-            this.writeBits(HTAC[int((nrzeroes << 4) + this.category[pos])]);
-            this.writeBits(this.bitcode[pos]);
-            i++;
-         }
-         if(end0pos != I63)
-         {
-            this.writeBits(EOB);
-         }
-         return DC;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private var YDU:Vector.<Number>;

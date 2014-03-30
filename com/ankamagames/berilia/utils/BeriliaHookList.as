@@ -27,6 +27,8 @@ package com.ankamagames.berilia.utils
       
       public static const KeyUp:Hook = new Hook("KeyUp",false);
       
+      public static const FocusChange:Hook = new Hook("FocusChange",false);
+      
       public static const DropStart:Hook = new Hook("DropStart",false);
       
       public static const DropEnd:Hook = new Hook("DropEnd",false);

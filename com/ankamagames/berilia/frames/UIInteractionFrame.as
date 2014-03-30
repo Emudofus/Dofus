@@ -7,6 +7,7 @@ package com.ankamagames.berilia.frames
    import com.ankamagames.jerakine.types.enums.Priority;
    import flash.display.DisplayObject;
    import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.jerakine.handlers.messages.FocusChangeMessage;
    import com.ankamagames.jerakine.handlers.messages.HumanInputMessage;
    import com.ankamagames.berilia.components.Grid;
    import com.ankamagames.berilia.components.messages.ComponentMessage;
@@ -89,6 +90,7 @@ package com.ankamagames.berilia.frames
       }
       
       public function process(msg:Message) : Boolean {
+         var fcmsg:FocusChangeMessage = null;
          var himsg:HumanInputMessage = null;
          var onlyGrid:* = false;
          var isGrid:* = false;
@@ -109,6 +111,23 @@ package com.ankamagames.berilia.frames
          this.currentDo = null;
          switch(true)
          {
+            case msg is FocusChangeMessage:
+               fcmsg = FocusChangeMessage(msg);
+               this.hierarchy = new Array();
+               this.currentDo = fcmsg.target;
+               while(this.currentDo != null)
+               {
+                  if(this.currentDo is UIComponent)
+                  {
+                     this.hierarchy.unshift(this.currentDo);
+                  }
+                  this.currentDo = this.currentDo.parent;
+               }
+               if(this.hierarchy.length > 0)
+               {
+                  KernelEventsManager.getInstance().processCallback(BeriliaHookList.FocusChange,SecureCenter.secure(this.hierarchy[this.hierarchy.length - 1]));
+               }
+               return true;
             case msg is HumanInputMessage:
                this._isProcessingDirectInteraction = true;
                himsg = HumanInputMessage(msg);

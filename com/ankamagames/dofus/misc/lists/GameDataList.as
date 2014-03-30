@@ -26,6 +26,7 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.datacenter.world.HintCategory;
    import com.ankamagames.dofus.datacenter.world.MapPosition;
    import com.ankamagames.dofus.datacenter.world.MapReference;
+   import com.ankamagames.dofus.datacenter.world.MapScrollAction;
    import com.ankamagames.dofus.datacenter.items.Item;
    import com.ankamagames.dofus.datacenter.communication.ChatChannel;
    import com.ankamagames.dofus.datacenter.items.Weapon;
@@ -79,6 +80,8 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.datacenter.quest.AchievementCategory;
    import com.ankamagames.dofus.datacenter.quest.AchievementObjective;
    import com.ankamagames.dofus.datacenter.quest.AchievementReward;
+   import com.ankamagames.dofus.datacenter.quest.treasureHunt.PointOfInterest;
+   import com.ankamagames.dofus.datacenter.quest.treasureHunt.PointOfInterestCategory;
    import com.ankamagames.dofus.datacenter.mounts.Mount;
    import com.ankamagames.dofus.datacenter.mounts.MountBone;
    import com.ankamagames.dofus.datacenter.mounts.MountBehavior;
@@ -176,6 +179,8 @@ package com.ankamagames.dofus.misc.lists
       public static const mapPosition:MapPosition = null;
       
       public static const mapReference:MapReference = null;
+      
+      public static const mapScrollAction:MapScrollAction = null;
       
       public static const item:Item = null;
       
@@ -282,6 +287,10 @@ package com.ankamagames.dofus.misc.lists
       public static const achievementObjective:AchievementObjective = null;
       
       public static const achievementReward:AchievementReward = null;
+      
+      public static const pointOfInterest:PointOfInterest = null;
+      
+      public static const pointOfInterestCategory:PointOfInterestCategory = null;
       
       public static const mount:Mount = null;
       

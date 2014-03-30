@@ -54,6 +54,10 @@ package com.ankamagames.dofus.datacenter.world
       public function get worldmap() : WorldMap {
          if(!this._worldmap)
          {
+            if(!this.worldmapId)
+            {
+               this.worldmapId = 1;
+            }
             this._worldmap = WorldMap.getWorldMapById(this.worldmapId);
          }
          return this._worldmap;

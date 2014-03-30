@@ -5,6 +5,7 @@ package com.ankamagames.dofus.datacenter.world
    import flash.geom.Rectangle;
    import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.ambientSounds.AmbientSound;
+   import flash.geom.Point;
    import com.ankamagames.jerakine.data.I18n;
    
    public class SubArea extends Object implements IDataCenter
@@ -87,6 +88,8 @@ package com.ankamagames.dofus.datacenter.world
       
       private var _worldMap:WorldMap;
       
+      private var _center:Point;
+      
       public function get name() : String {
          if(!this._name)
          {
@@ -120,6 +123,45 @@ package com.ankamagames.dofus.datacenter.world
       
       public function get hasCustomWorldMap() : Boolean {
          return (this.customWorldMap) && (this.customWorldMap.length > 0);
+      }
+      
+      public function get center() : Point {
+         var minX:* = 0;
+         var maxX:* = 0;
+         var minY:* = 0;
+         var maxY:* = 0;
+         var i:* = 0;
+         var posX:* = 0;
+         var posY:* = 0;
+         var nCoords:uint = this.shape.length;
+         if((!this._center) && (nCoords > 0))
+         {
+            posX = this.shape[0];
+            posY = this.shape[1];
+            minX = maxX = posX > 10000?posX - 11000:posX;
+            minY = maxY = posY > 10000?posY - 11000:posY;
+            i = 2;
+            while(i < nCoords)
+            {
+               posX = this.shape[i];
+               posY = this.shape[i + 1];
+               if(posX > 10000)
+               {
+                  posX = posX - 11000;
+               }
+               if(posY > 10000)
+               {
+                  posY = posY - 11000;
+               }
+               minX = posX < minX?posX:minX;
+               maxX = posX > maxX?posX:maxX;
+               minY = posY < minY?posY:minY;
+               maxY = posY > maxY?posY:maxY;
+               i = i + 2;
+            }
+            this._center = new Point((minX + maxX) / 2,(minY + maxY) / 2);
+         }
+         return this._center;
       }
    }
 }

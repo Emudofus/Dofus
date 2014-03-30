@@ -19,13 +19,13 @@ package com.ankamagames.berilia.utils
    public class ModuleScriptAnalyzer extends Object
    {
       
-      public function ModuleScriptAnalyzer(target:UiModule, readyFct:Function, appDomain:ApplicationDomain=null) {
+      public function ModuleScriptAnalyzer(target:UiModule, readyFct:Function, appDomain:ApplicationDomain=null, targetScriptLocation:String="") {
          var tmpList:Array = null;
          var action:String = null;
          var api:String = null;
          var hook:String = null;
-         var scriptUrl:String = null;
          var uri:Uri = null;
+         var scriptUrl:String = null;
          var mp:String = null;
          this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SINGLE_LOADER);
          this._actions = [];
@@ -53,7 +53,14 @@ package com.ankamagames.berilia.utils
          this._readyFct = readyFct;
          if(!appDomain)
          {
-            scriptUrl = target.script;
+            if(target)
+            {
+               scriptUrl = target.script;
+            }
+            else
+            {
+               scriptUrl = targetScriptLocation;
+            }
             if(ApplicationDomain.currentDomain.hasDefinition("flash.net.ServerSocket"))
             {
                mp = File.applicationDirectory.nativePath.split("\\").join("/");

@@ -160,6 +160,8 @@ package com.ankamagames.dofus.internalDatacenter.guild
       
       public var nbMembers:uint;
       
+      public var nbConnectedMembers:uint;
+      
       public var experience:Number;
       
       public var expLevelFloor:Number;

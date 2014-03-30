@@ -40,7 +40,6 @@ package com.ankamagames.dofus.logic.game.fight.types
                this.aliveSource = fightBattleFrame.currentPlayerId;
             }
             this.parentBoostUid = this.parentBoostUid;
-            trace("effectId : " + this.uid + " source : " + castingSpell.casterId + " aliveSource : " + this.aliveSource + " target : " + this.targetId + " playerId : " + fightBattleFrame.currentPlayerId);
             this.initParam(param1,param2,param3);
          }
       }

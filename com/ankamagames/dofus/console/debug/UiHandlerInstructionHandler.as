@@ -117,7 +117,7 @@ package com.ankamagames.dofus.console.debug
                {
                   ml.push([mod.id,mod.author,mod.trusted,true]);
                }
-               m = UiModuleManager.getInstance().disabledModule;
+               m = UiModuleManager.getInstance().disabledModules;
                if(m.length)
                {
                   for each (mod in m)

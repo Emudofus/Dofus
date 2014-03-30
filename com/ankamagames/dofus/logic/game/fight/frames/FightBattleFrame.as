@@ -10,10 +10,13 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
    import flash.utils.Timer;
    import com.ankamagames.dofus.logic.game.roleplay.frames.InfoEntitiesFrame;
+   import com.ankamagames.dofus.kernel.sound.type.SoundDofus;
    import com.ankamagames.jerakine.types.enums.Priority;
    import com.ankamagames.atouin.utils.DataMapProvider;
    import com.ankamagames.dofus.kernel.Kernel;
    import flash.events.TimerEvent;
+   import com.ankamagames.dofus.kernel.sound.enum.UISoundEnum;
+   import com.ankamagames.dofus.kernel.sound.TubulSoundConfiguration;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnListMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightSynchronizeMessage;
@@ -24,6 +27,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
    import com.ankamagames.dofus.network.messages.game.actions.sequence.SequenceStartMessage;
    import com.ankamagames.dofus.network.messages.game.actions.sequence.SequenceEndMessage;
+   import com.ankamagames.dofus.network.messages.game.context.fight.GameFightNewWaveMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightNewRoundMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightLeaveMessage;
    import com.ankamagames.dofus.network.messages.game.character.stats.FighterStatsListMessage;
@@ -38,7 +42,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    import com.ankamagames.dofus.types.sequences.AddGfxEntityStep;
    import com.ankamagames.dofus.kernel.sound.SoundManager;
-   import com.ankamagames.dofus.kernel.sound.enum.UISoundEnum;
    import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
@@ -46,7 +49,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import flash.utils.getTimer;
    import com.ankamagames.dofus.logic.game.fight.actions.GameFightTurnFinishAction;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightCharacterInformations;
-   import com.ankamagames.jerakine.managers.OptionManager;
    import com.ankamagames.dofus.misc.lists.FightHookList;
    import com.ankamagames.dofus.logic.game.fight.managers.FightersStateManager;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnStartPlayingMessage;
@@ -65,6 +67,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnReadyMessage;
    import flash.utils.Dictionary;
+   import com.ankamagames.dofus.logic.game.common.steps.WaitStep;
+   import com.ankamagames.dofus.logic.game.fight.steps.FightVisibilityStep;
    import __AS3__.vec.*;
    
    public class FightBattleFrame extends Object implements Frame
@@ -141,6 +145,12 @@ package com.ankamagames.dofus.logic.game.fight.frames
       
       private var _autoEndTurnTimer:Timer;
       
+      private var _newWave:Boolean;
+      
+      private var _newWaveId:int;
+      
+      private var _waveSound:SoundDofus;
+      
       public function get priority() : int {
          return Priority.HIGH;
       }
@@ -205,6 +215,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
          this._destroyed = false;
          this._autoEndTurnTimer = new Timer(60,1);
          this._autoEndTurnTimer.addEventListener(TimerEvent.TIMER_COMPLETE,this.sendAutoEndTurn);
+         this._waveSound = new SoundDofus(UISoundEnum.FIGHT_NEW_WAVE);
+         this._waveSound.busId = TubulSoundConfiguration.BUS_FIGHT_ID;
+         this._waveSound.volume = 1;
          return true;
       }
       
@@ -220,6 +233,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var entityInfos:GameContextActorInformations = null;
          var ssmsg:SequenceStartMessage = null;
          var semsg:SequenceEndMessage = null;
+         var gfnwmsg:GameFightNewWaveMessage = null;
          var gfnrmsg:GameFightNewRoundMessage = null;
          var gflmsg:GameFightLeaveMessage = null;
          var fighterInfos:GameFightFighterInformations = null;
@@ -227,6 +241,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var gfemsg:GameFightEndMessage = null;
          var maxEndRescue:uint = 0;
          var fslmsg:FighterStatsListMessage = null;
+         var fighter:GameFightFighterInformations = null;
          var currentPlayedFighterId:* = 0;
          var entity:AnimatedCharacter = null;
          var ss:SerialSequencer = null;
@@ -259,6 +274,16 @@ package com.ankamagames.dofus.logic.game.fight.frames
                return true;
             case msg is GameFightSynchronizeMessage:
                gftcimsg = msg as GameFightSynchronizeMessage;
+               if(this._newWave)
+               {
+                  for each (fighter in gftcimsg.fighters)
+                  {
+                     if((fighter.alive) && (fighter.wave == this._newWaveId) && (!FightEntitiesFrame.getCurrentInstance().getEntityInfos(fighter.contextualId)))
+                     {
+                        FightEntitiesFrame.getCurrentInstance().registerActor(fighter);
+                     }
+                  }
+               }
                if(this._executingSequence)
                {
                   this._synchroniseFighters = gftcimsg.fighters;
@@ -384,15 +409,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                }
                return true;
             case msg is GameFightTurnStartPlayingMessage:
-               if((!CurrentPlayedFighterManager.getInstance().canPlay()) && (OptionManager.getOptionManager("dofus")["endTurnWhenNothingToDo"]))
-               {
-                  action = new GameFightTurnFinishAction();
-                  Kernel.getWorker().process(action);
-               }
-               else
-               {
-                  KernelEventsManager.getInstance().processCallback(HookList.GameFightTurnStartPlaying);
-               }
+               KernelEventsManager.getInstance().processCallback(HookList.GameFightTurnStartPlaying);
                return true;
             case msg is GameFightTurnEndMessage:
                gftemsg = msg as GameFightTurnEndMessage;
@@ -466,11 +483,18 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   this.confirmTurnEnd();
                }
                return true;
+            case msg is GameFightNewWaveMessage:
+               gfnwmsg = msg as GameFightNewWaveMessage;
+               this._newWaveId = gfnwmsg.id;
+               this._newWave = true;
+               KernelEventsManager.getInstance().processCallback(FightHookList.WaveUpdated,gfnwmsg.teamId,gfnwmsg.id,gfnwmsg.nbTurnBeforeNextWave);
+               return true;
             case msg is GameFightNewRoundMessage:
                gfnrmsg = msg as GameFightNewRoundMessage;
                this._turnsCount = gfnrmsg.roundNumber;
                CurrentPlayedFighterManager.getInstance().getSpellCastManager().currentTurn = this._turnsCount - 1;
                KernelEventsManager.getInstance().processCallback(FightHookList.TurnCountUpdated,this._turnsCount);
+               BuffManager.getInstance().spellBuffsToIgnore.length = 0;
                return true;
             case msg is GameFightLeaveMessage:
                gflmsg = msg as GameFightLeaveMessage;
@@ -639,7 +663,10 @@ package com.ankamagames.dofus.logic.game.fight.frames
             {
                CurrentPlayedFighterManager.getInstance().resetPlayerSpellList();
             }
-            KernelEventsManager.getInstance().processCallback(CustomUiHookList.SpellMovementAllowed,nextCharacterId == this._masterId);
+            if(nextCharacterId == this._slaveId)
+            {
+               KernelEventsManager.getInstance().processCallback(CustomUiHookList.SpellMovementAllowed,false);
+            }
          }
       }
       
@@ -764,17 +791,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
             {
                return;
             }
-            if((!CurrentPlayedFighterManager.getInstance().canPlay()) && (OptionManager.getOptionManager("dofus")["endTurnWhenNothingToDo"]))
-            {
-               _log.info("can not play anymore, finishing turn");
-               _autoEndTurn = true;
-               _autoEndTurnTimer.reset();
-               _autoEndTurnTimer.start();
-            }
-            else
-            {
-               _autoEndTurn = false;
-            }
             if(_synchroniseFighters)
             {
                gameFightSynchronize(_synchroniseFighters);
@@ -834,7 +850,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
          if(fighterInfos2)
          {
             BuffManager.getInstance().markFinishingBuffs(this._lastPlayerId);
-            KernelEventsManager.getInstance().processCallback(HookList.GameFightTurnEnd,this._lastPlayerId);
+            fighterInfos2.stats.actionPoints = fighterInfos2.stats.maxActionPoints;
+            fighterInfos2.stats.movementPoints = fighterInfos2.stats.maxMovementPoints;
             if(this._lastPlayerId == CurrentPlayedFighterManager.getInstance().currentFighterId)
             {
                char = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
@@ -850,8 +867,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
                this._playerTargetedEntitiesList.length = 0;
                this.prepareNextPlayableCharacter(this._lastPlayerId);
             }
-            fighterInfos2.stats.actionPoints = fighterInfos2.stats.maxActionPoints;
-            fighterInfos2.stats.movementPoints = fighterInfos2.stats.maxMovementPoints;
             KernelEventsManager.getInstance().processCallback(HookList.GameFightTurnEnd,this._lastPlayerId);
          }
          var turnEnd:GameFightTurnReadyMessage = new GameFightTurnReadyMessage();
@@ -887,7 +902,11 @@ package com.ankamagames.dofus.logic.game.fight.frames
       }
       
       private function gameFightSynchronize(fighters:Vector.<GameFightFighterInformations>, synchronizeBuff:Boolean=true) : void {
+         var newWaveAppeared:* = false;
+         var newWaveMonster:* = false;
+         var newWaveMonsterIndex:* = 0;
          var fighterInfos:GameFightFighterInformations = null;
+         var sequencer:SerialSequencer = null;
          var entitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
          var fbf:FightBattleFrame = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
          var bm:BuffManager = BuffManager.getInstance();
@@ -903,8 +922,29 @@ package com.ankamagames.dofus.logic.game.fight.frames
                {
                   BuffManager.getInstance().markFinishingBuffs(fighterInfos.contextualId,true);
                }
+               newWaveMonster = (fighterInfos.wave == this._newWaveId) && (!DofusEntities.getEntity(fighterInfos.contextualId));
                entitiesFrame.updateFighter(fighterInfos,null,BuffManager.getInstance().getFinishingBuffs(fighterInfos.contextualId));
+               if(newWaveMonster)
+               {
+                  newWaveAppeared = true;
+                  (DofusEntities.getEntity(fighterInfos.contextualId) as AnimatedCharacter).visible = false;
+                  if(newWaveMonsterIndex == 0)
+                  {
+                     this._waveSound.play();
+                  }
+                  sequencer = new SerialSequencer();
+                  sequencer.addStep(new WaitStep(300 * newWaveMonsterIndex));
+                  sequencer.addStep(new AddGfxEntityStep(2715,fighterInfos.disposition.cellId));
+                  sequencer.addStep(new FightVisibilityStep(fighterInfos.contextualId,true));
+                  sequencer.start();
+                  newWaveMonsterIndex++;
+               }
             }
+         }
+         if(newWaveAppeared)
+         {
+            this._newWave = false;
+            this._newWaveId = -1;
          }
       }
    }

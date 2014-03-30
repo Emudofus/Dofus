@@ -20,6 +20,8 @@ package com.ankamagames.dofus.network.types.game.context.fight
       
       public var teamId:uint = 2;
       
+      public var wave:uint = 0;
+      
       public var alive:Boolean = false;
       
       public var stats:GameFightMinimalStats;
@@ -28,9 +30,10 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 143;
       }
       
-      public function initGameFightFighterInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, alive:Boolean=false, stats:GameFightMinimalStats=null) : GameFightFighterInformations {
+      public function initGameFightFighterInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null) : GameFightFighterInformations {
          super.initGameContextActorInformations(contextualId,look,disposition);
          this.teamId = teamId;
+         this.wave = wave;
          this.alive = alive;
          this.stats = stats;
          return this;
@@ -39,6 +42,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
       override public function reset() : void {
          super.reset();
          this.teamId = 2;
+         this.wave = 0;
          this.alive = false;
          this.stats = new GameFightMinimalStats();
       }
@@ -50,9 +54,18 @@ package com.ankamagames.dofus.network.types.game.context.fight
       public function serializeAs_GameFightFighterInformations(output:IDataOutput) : void {
          super.serializeAs_GameContextActorInformations(output);
          output.writeByte(this.teamId);
-         output.writeBoolean(this.alive);
-         output.writeShort(this.stats.getTypeId());
-         this.stats.serialize(output);
+         if((this.wave < 0) || (this.wave > 4.294967295E9))
+         {
+            throw new Error("Forbidden value (" + this.wave + ") on element wave.");
+         }
+         else
+         {
+            output.writeUnsignedInt(this.wave);
+            output.writeBoolean(this.alive);
+            output.writeShort(this.stats.getTypeId());
+            this.stats.serialize(output);
+            return;
+         }
       }
       
       override public function deserialize(input:IDataInput) : void {
@@ -68,11 +81,19 @@ package com.ankamagames.dofus.network.types.game.context.fight
          }
          else
          {
-            this.alive = input.readBoolean();
-            _id3 = input.readUnsignedShort();
-            this.stats = ProtocolTypeManager.getInstance(GameFightMinimalStats,_id3);
-            this.stats.deserialize(input);
-            return;
+            this.wave = input.readUnsignedInt();
+            if((this.wave < 0) || (this.wave > 4.294967295E9))
+            {
+               throw new Error("Forbidden value (" + this.wave + ") on element of GameFightFighterInformations.wave.");
+            }
+            else
+            {
+               this.alive = input.readBoolean();
+               _id4 = input.readUnsignedShort();
+               this.stats = ProtocolTypeManager.getInstance(GameFightMinimalStats,_id4);
+               this.stats.deserialize(input);
+               return;
+            }
          }
       }
    }

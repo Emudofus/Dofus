@@ -26,7 +26,6 @@ package com.ankamagames.dofus.console.debug
       public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
          var monsterName:String = null;
          var aqcmsg:AdminQuietCommandMessage = null;
-         loopswitch0:
          switch(cmd)
          {
             case "additem":
@@ -35,7 +34,7 @@ package com.ankamagames.dofus.console.debug
                   console.output("need 1 parameter (item ID)");
                }
                (DofusEntities.getEntity(PlayedCharacterManager.getInstance().id) as TiphonSprite).look.addSkin(parseInt(args[0]));
-               break loop0;
+               break;
             case "looklike":
                if(!_monsters)
                {

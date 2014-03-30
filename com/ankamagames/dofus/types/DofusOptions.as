@@ -5,6 +5,7 @@ package com.ankamagames.dofus.types
    import com.ankamagames.dofus.BuildInfos;
    import com.ankamagames.dofus.network.enums.BuildTypeEnum;
    import com.ankamagames.dofus.externalnotification.enums.ExternalNotificationPositionEnum;
+   import flash.geom.Point;
    
    public dynamic class DofusOptions extends OptionManager
    {
@@ -35,7 +36,6 @@ package com.ankamagames.dofus.types
          add("displayTooltips",true);
          add("allowSpellEffects",true);
          add("allowHitAnim",true);
-         add("legalAgreementEula","fr#0");
          add("legalAgreementTou","fr#0");
          add("legalAgreementModsTou","fr#0");
          add("allowLog",(!(BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE)) && (!AirScanner.isStreamingVersion()));
@@ -58,8 +58,12 @@ package com.ankamagames.dofus.types
          add("creaturesFightMode",false);
          add("warnOnGuildItemAgression",true);
          add("zoomOnMouseWheel",true);
-         add("endTurnWhenNothingToDo",true);
          add("showPermanentTargetsTooltips",false);
+         add("showDamagesPreview",true);
+         add("lastMapUiWasPocket",true);
+         add("cartographyPocketPosition",new Point(390,312));
+         add("cartographyPocketAlpha",0.6);
+         add("cartographyFlags","");
       }
    }
 }

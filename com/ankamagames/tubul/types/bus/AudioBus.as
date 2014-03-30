@@ -155,13 +155,12 @@ package com.ankamagames.tubul.types.bus
       public function playISound(newSound:ISound, pLoop:Boolean=false, pLoops:int=-1) : void {
          var isound:ISound = null;
          var existingSound:Boolean = false;
-         loop0:
          for each (isound in this._soundVector)
          {
             if(isound === newSound)
             {
                existingSound = true;
-               break loop0;
+               break;
             }
          }
          if(!existingSound)

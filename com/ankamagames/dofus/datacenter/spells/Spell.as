@@ -54,6 +54,8 @@ package com.ankamagames.dofus.datacenter.spells
       
       public var useParamCache:Boolean = true;
       
+      public var verbose_cast:Boolean;
+      
       private var _name:String;
       
       private var _description:String;

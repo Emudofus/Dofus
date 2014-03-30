@@ -139,7 +139,7 @@ package com.ankamagames.dofus.datacenter.spells
             this._spellZoneEffects = new Vector.<IZoneShape>();
             for each (i in this.effects)
             {
-               zone = new ZoneEffect(i.zoneSize,i.zoneShape);
+               zone = new ZoneEffect(uint(i.zoneSize),i.zoneShape);
                this._spellZoneEffects.push(zone);
             }
          }

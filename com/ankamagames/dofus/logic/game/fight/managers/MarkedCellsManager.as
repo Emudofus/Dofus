@@ -120,14 +120,12 @@ package com.ankamagames.dofus.logic.game.fight.managers
       }
       
       public function removeMark(markId:int) : void {
-         var s:Selection = null;
-         var selections:Vector.<Selection> = (this._marks[markId] as MarkInstance).selections;
-         for each (s in selections)
-         {
-            s.remove();
-         }
-         delete this._marks[[markId]];
-         this.updateDataMapProvider();
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function addGlyph(glyph:Glyph, markId:int) : void {
@@ -147,12 +145,33 @@ package com.ankamagames.dofus.logic.game.fight.managers
       }
       
       public function destroy() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var mark:String = null;
+         var i:* = 0;
+         var num:* = 0;
+         var glyph:String = null;
+         var bufferId:Array = new Array();
+         for (mark in this._marks)
+         {
+            bufferId.push(int(mark));
+         }
+         i = -1;
+         num = bufferId.length;
+         while(++i < num)
+         {
+            this.removeMark(bufferId[i]);
+         }
+         bufferId.length = 0;
+         for (glyph in this._glyphs)
+         {
+            bufferId.push(int(glyph));
+         }
+         i = -1;
+         num = bufferId.length;
+         while(++i < num)
+         {
+            this.removeGlyph(bufferId[i]);
+         }
+         _self = null;
       }
       
       private function getSelectionUid() : String {

@@ -113,7 +113,7 @@ package com.ankamagames.dofus.misc.lists
       
       public static const EntityMouseOut:Hook = new Hook("EntityMouseOut",false);
       
-      public static const OpenMap:Hook = new Hook("OpenMap",false);
+      public static const OpenMap:Hook = new Hook("OpenMap",true,false);
       
       public static const MapDisplay:Hook = new Hook("MapDisplay",false);
       
@@ -248,16 +248,6 @@ package com.ankamagames.dofus.misc.lists
       public static const PlayerAggression:Hook = new Hook("PlayerAggression",false);
       
       public static const JobsListUpdated:Hook = new Hook("JobsListUpdated",false);
-      
-      public static const NpcDialogCreation:Hook = new Hook("NpcDialogCreation",false);
-      
-      public static const PonyDialogCreation:Hook = new Hook("PonyDialogCreation",false);
-      
-      public static const PrismDialogCreation:Hook = new Hook("PrismDialogCreation",false);
-      
-      public static const NpcDialogCreationFailure:Hook = new Hook("NpcDialogCreationFailure",false);
-      
-      public static const NpcDialogQuestion:Hook = new Hook("NpcDialogQuestion",false);
       
       public static const SpellMovement:Hook = new Hook("SpellMovement",false);
       
@@ -412,6 +402,16 @@ package com.ankamagames.dofus.misc.lists
       public static const OpenCartographyPopup:Hook = new Hook("OpenCartographyPopup",false);
       
       public static const ContactLook:Hook = new Hook("ContactLook",false);
+      
+      public static const ModuleList:Hook = new Hook("ModuleList",false);
+      
+      public static const ModuleInstallationError:Hook = new Hook("ModuleInstallationError",false);
+      
+      public static const ModuleInstallationProgress:Hook = new Hook("ModuleInstallationProgress",false);
+      
+      public static const InstalledModuleList:Hook = new Hook("InstalledModuleList",false);
+      
+      public static const ApisHooksActionsList:Hook = new Hook("ApisHooksActionsList",false);
       
       private var _import_CustomUiHookList:CustomUiHookList = null;
    }

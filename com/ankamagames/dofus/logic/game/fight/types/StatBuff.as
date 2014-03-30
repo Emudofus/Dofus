@@ -4,9 +4,8 @@ package com.ankamagames.dofus.logic.game.fight.types
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
-   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
-   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
+   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterBaseCharacteristic;
    import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
    import com.ankamagames.dofus.logic.game.fight.frames.FightSpellCastFrame;
@@ -52,21 +51,10 @@ package com.ankamagames.dofus.logic.game.fight.types
       
       override public function onApplyed() : void {
          var tempValue:* = 0;
-         var targetCaracs:CharacterCharacteristicsInformations = null;
          var multi:* = 0;
-         if((PlayedCharacterManager.getInstance().id == targetId) || (CurrentPlayedFighterManager.getInstance().currentFighterId == targetId))
+         var targetCaracs:CharacterCharacteristicsInformations = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations(targetId);
+         if(targetCaracs)
          {
-            if(PlayedCharacterManager.getInstance().id == targetId)
-            {
-               targetCaracs = PlayedCharacterManager.getInstance().characteristics;
-            }
-            else
-            {
-               if(CurrentPlayedFighterManager.getInstance().currentFighterId == targetId)
-               {
-                  targetCaracs = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
-               }
-            }
             if(targetCaracs.hasOwnProperty(this._statName))
             {
                CharacterBaseCharacteristic(targetCaracs[this._statName]).contextModif = CharacterBaseCharacteristic(targetCaracs[this._statName]).contextModif + this.delta;
@@ -199,19 +187,9 @@ package com.ankamagames.dofus.logic.game.fight.types
          var targetCaracs:CharacterCharacteristicsInformations = null;
          var playedcharacterCharac:CharacterCharacteristicsInformations = null;
          var multi:* = 0;
-         if((PlayedCharacterManager.getInstance().id == targetId) || (CurrentPlayedFighterManager.getInstance().currentFighterId == targetId))
+         targetCaracs = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations(targetId);
+         if(targetCaracs)
          {
-            if(PlayedCharacterManager.getInstance().id == targetId)
-            {
-               targetCaracs = PlayedCharacterManager.getInstance().characteristics;
-            }
-            else
-            {
-               if(CurrentPlayedFighterManager.getInstance().currentFighterId == targetId)
-               {
-                  targetCaracs = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
-               }
-            }
             if(targetCaracs.hasOwnProperty(this._statName))
             {
                CharacterBaseCharacteristic(targetCaracs[this._statName]).contextModif = CharacterBaseCharacteristic(targetCaracs[this._statName]).contextModif - this.delta;

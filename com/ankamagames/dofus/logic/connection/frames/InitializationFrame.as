@@ -117,6 +117,7 @@ package com.ankamagames.dofus.logic.connection.frames
    import com.ankamagames.berilia.factories.TooltipsFactory;
    import com.ankamagames.berilia.types.data.TextTooltipInfo;
    import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
+   import com.ankamagames.dofus.datacenter.spells.SpellPair;
    import com.ankamagames.dofus.types.data.SpellTooltipInfo;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.internalDatacenter.items.WeaponWrapper;
@@ -129,6 +130,7 @@ package com.ankamagames.dofus.logic.connection.frames
    import com.ankamagames.dofus.logic.game.roleplay.types.MutantTooltipInformation;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayGroupMonsterInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayGroupMonsterWaveInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMerchantInformations;
    import com.ankamagames.dofus.logic.game.roleplay.types.GroundObject;
    import com.ankamagames.dofus.logic.game.roleplay.types.TaxCollectorTooltipInformation;
@@ -139,6 +141,7 @@ package com.ankamagames.dofus.logic.connection.frames
    import com.ankamagames.dofus.internalDatacenter.communication.CraftSmileyItem;
    import com.ankamagames.dofus.internalDatacenter.communication.DelayedActionItem;
    import com.ankamagames.dofus.logic.game.roleplay.types.PrismTooltipInformation;
+   import com.ankamagames.dofus.logic.game.roleplay.types.PortalTooltipInformation;
    import com.ankamagames.dofus.internalDatacenter.items.MountWrapper;
    import com.ankamagames.dofus.logic.game.roleplay.types.GameContextPaddockItemInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMountInformations;
@@ -152,6 +155,7 @@ package com.ankamagames.dofus.logic.connection.frames
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcWithQuestInformations;
    import com.ankamagames.dofus.network.types.game.context.GameRolePlayTaxCollectorInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPrismInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPortalInformations;
    import com.ankamagames.dofus.internalDatacenter.people.PartyCompanionWrapper;
    import com.ankamagames.berilia.factories.HyperlinkFactory;
    import com.ankamagames.dofus.logic.common.managers.HyperlinkDisplayArrowManager;
@@ -491,6 +495,7 @@ package com.ankamagames.dofus.logic.connection.frames
          TooltipsFactory.registerAssoc(String,"text");
          TooltipsFactory.registerAssoc(TextTooltipInfo,"textInfo");
          TooltipsFactory.registerAssoc(SpellWrapper,"spell");
+         TooltipsFactory.registerAssoc(SpellPair,"spell");
          TooltipsFactory.registerAssoc(SpellTooltipInfo,"spellBanner");
          TooltipsFactory.registerAssoc(ItemWrapper,"item");
          TooltipsFactory.registerAssoc(WeaponWrapper,"item");
@@ -503,6 +508,7 @@ package com.ankamagames.dofus.logic.connection.frames
          TooltipsFactory.registerAssoc(MutantTooltipInformation,"mutant");
          TooltipsFactory.registerAssoc(GameRolePlayNpcInformations,"npc");
          TooltipsFactory.registerAssoc(GameRolePlayGroupMonsterInformations,"monsterGroup");
+         TooltipsFactory.registerAssoc(GameRolePlayGroupMonsterWaveInformations,"monsterGroup");
          TooltipsFactory.registerAssoc(GameRolePlayMerchantInformations,"merchant");
          TooltipsFactory.registerAssoc(GroundObject,"groundObject");
          TooltipsFactory.registerAssoc(TaxCollectorTooltipInformation,"taxCollector");
@@ -513,6 +519,7 @@ package com.ankamagames.dofus.logic.connection.frames
          TooltipsFactory.registerAssoc(CraftSmileyItem,"craftSmiley");
          TooltipsFactory.registerAssoc(DelayedActionItem,"delayedAction");
          TooltipsFactory.registerAssoc(PrismTooltipInformation,"prism");
+         TooltipsFactory.registerAssoc(PortalTooltipInformation,"portal");
          TooltipsFactory.registerAssoc(Object,"mount");
          TooltipsFactory.registerAssoc(MountWrapper,"mount");
          TooltipsFactory.registerAssoc(GameContextPaddockItemInformations,"paddockItem");
@@ -533,6 +540,7 @@ package com.ankamagames.dofus.logic.connection.frames
          MenusFactory.registerAssoc(GameRolePlayNpcWithQuestInformations,"npc");
          MenusFactory.registerAssoc(GameRolePlayTaxCollectorInformations,"taxCollector");
          MenusFactory.registerAssoc(GameRolePlayPrismInformations,"prism");
+         MenusFactory.registerAssoc(GameRolePlayPortalInformations,"portal");
          MenusFactory.registerAssoc(GameContextPaddockItemInformations,"paddockItem");
          MenusFactory.registerAssoc(GameRolePlayMountInformations,"mount");
          MenusFactory.registerAssoc(String,"player");

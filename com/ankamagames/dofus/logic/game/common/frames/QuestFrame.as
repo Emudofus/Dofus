@@ -44,6 +44,18 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.achievement.AchievementRewardRequestMessage;
    import com.ankamagames.dofus.network.messages.game.achievement.AchievementRewardSuccessMessage;
    import com.ankamagames.dofus.network.messages.game.achievement.AchievementRewardErrorMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntRequestAnswerMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntMessage;
+   import com.ankamagames.dofus.internalDatacenter.quest.TreasureHuntWrapper;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntAvailableRetryCountUpdateMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntFinishedMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntGiveUpRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntGiveUpRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntDigRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntDigRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntDigRequestAnswerMessage;
    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestActiveDetailedInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestObjectiveInformations;
    import com.ankamagames.dofus.datacenter.quest.QuestStep;
@@ -59,6 +71,9 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.misc.lists.ChatHookList;
    import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
    import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+   import com.ankamagames.dofus.network.enums.TreasureHuntRequestEnum;
+   import com.ankamagames.dofus.network.enums.TreasureHuntDigRequestEnum;
+   import com.ankamagames.dofus.network.enums.TreasureHuntTypeEnum;
    import com.ankamagames.dofus.logic.game.common.actions.quest.QuestListRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.GuidedModeReturnRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.GuidedModeQuitRequestAction;
@@ -90,6 +105,8 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       private var _rewardableAchievementsVisible:Boolean;
       
+      private var _treasureHunts:Array;
+      
       public function get priority() : int {
          return Priority.NORMAL;
       }
@@ -114,9 +131,14 @@ package com.ankamagames.dofus.logic.game.common.frames
          return this._rewardableAchievements;
       }
       
+      public function getTreasureHuntById(typeId:uint) : Object {
+         return this._treasureHunts[typeId];
+      }
+      
       public function pushed() : Boolean {
          this._rewardableAchievements = new Vector.<AchievementRewardable>();
          this._finishedAchievementsIds = new Vector.<uint>();
+         this._treasureHunts = new Array();
          this._nbAllAchievements = Achievement.getAchievements().length;
          return true;
       }
@@ -161,6 +183,20 @@ package com.ankamagames.dofus.logic.game.common.frames
          var arsmsg:AchievementRewardSuccessMessage = null;
          var rewardedAchievementIndex:* = 0;
          var aremsg:AchievementRewardErrorMessage = null;
+         var thra:TreasureHuntRequestAction = null;
+         var thrmsg:TreasureHuntRequestMessage = null;
+         var thramsg:TreasureHuntRequestAnswerMessage = null;
+         var treasureHuntRequestAnswerText:String = null;
+         var thmsg:TreasureHuntMessage = null;
+         var th:TreasureHuntWrapper = null;
+         var tharcumsg:TreasureHuntAvailableRetryCountUpdateMessage = null;
+         var thfmsg:TreasureHuntFinishedMessage = null;
+         var thgura:TreasureHuntGiveUpRequestAction = null;
+         var thgurmsg:TreasureHuntGiveUpRequestMessage = null;
+         var thdra:TreasureHuntDigRequestAction = null;
+         var thdrmsg:TreasureHuntDigRequestMessage = null;
+         var thdramsg:TreasureHuntDigRequestAnswerMessage = null;
+         var treasureHuntDigAnswerText:String = null;
          var stepsInfos:QuestActiveDetailedInformations = null;
          var obj:QuestObjectiveInformations = null;
          var dialogParams:Array = null;
@@ -440,6 +476,122 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is AchievementRewardErrorMessage:
                aremsg = msg as AchievementRewardErrorMessage;
+               return true;
+            case msg is TreasureHuntRequestAction:
+               thra = msg as TreasureHuntRequestAction;
+               thrmsg = new TreasureHuntRequestMessage();
+               thrmsg.initTreasureHuntRequestMessage(thra.level,thra.questType);
+               ConnectionsHandler.getConnection().send(thrmsg);
+               return true;
+            case msg is TreasureHuntRequestAnswerMessage:
+               thramsg = msg as TreasureHuntRequestAnswerMessage;
+               if(thramsg.result == TreasureHuntRequestEnum.TREASURE_HUNT_ERROR_ALREADY_HAVE_QUEST)
+               {
+                  treasureHuntRequestAnswerText = I18n.getUiText("ui.treasureHunt.alreadyHaveQuest");
+               }
+               else
+               {
+                  if(thramsg.result == TreasureHuntRequestEnum.TREASURE_HUNT_ERROR_NO_QUEST_FOUND)
+                  {
+                     treasureHuntRequestAnswerText = I18n.getUiText("ui.treasureHunt.noQuestFound");
+                  }
+                  else
+                  {
+                     if(thramsg.result == TreasureHuntRequestEnum.TREASURE_HUNT_ERROR_UNDEFINED)
+                     {
+                        treasureHuntRequestAnswerText = I18n.getUiText("ui.popup.impossible_action");
+                     }
+                  }
+               }
+               if(treasureHuntRequestAnswerText)
+               {
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,treasureHuntRequestAnswerText,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               }
+               return true;
+            case msg is TreasureHuntMessage:
+               thmsg = msg as TreasureHuntMessage;
+               th = TreasureHuntWrapper.create(thmsg.questType,thmsg.startMapId,thmsg.checkPointCurrent,thmsg.checkPointTotal,thmsg.availableRetryCount,thmsg.stepList);
+               this._treasureHunts[thmsg.questType] = th;
+               KernelEventsManager.getInstance().processCallback(QuestHookList.TreasureHuntUpdate,th.questType);
+               return true;
+            case msg is TreasureHuntAvailableRetryCountUpdateMessage:
+               tharcumsg = msg as TreasureHuntAvailableRetryCountUpdateMessage;
+               this._treasureHunts[tharcumsg.questType].availableRetryCount = tharcumsg.availableRetryCount;
+               KernelEventsManager.getInstance().processCallback(QuestHookList.TreasureHuntAvailableRetryCountUpdate,tharcumsg.questType,tharcumsg.availableRetryCount);
+               return true;
+            case msg is TreasureHuntFinishedMessage:
+               thfmsg = msg as TreasureHuntFinishedMessage;
+               this._treasureHunts[thfmsg.questType] = null;
+               delete this._treasureHunts[[thfmsg.questType]];
+               KernelEventsManager.getInstance().processCallback(QuestHookList.TreasureHuntFinished,thfmsg.questType);
+               return true;
+            case msg is TreasureHuntGiveUpRequestAction:
+               thgura = msg as TreasureHuntGiveUpRequestAction;
+               thgurmsg = new TreasureHuntGiveUpRequestMessage();
+               thgurmsg.initTreasureHuntGiveUpRequestMessage(thgura.questType);
+               ConnectionsHandler.getConnection().send(thgurmsg);
+               return true;
+            case msg is TreasureHuntDigRequestAction:
+               thdra = msg as TreasureHuntDigRequestAction;
+               thdrmsg = new TreasureHuntDigRequestMessage();
+               thdrmsg.initTreasureHuntDigRequestMessage(thdra.questType);
+               ConnectionsHandler.getConnection().send(thdrmsg);
+               return true;
+            case msg is TreasureHuntDigRequestAnswerMessage:
+               thdramsg = msg as TreasureHuntDigRequestAnswerMessage;
+               if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_ERROR_IMPOSSIBLE)
+               {
+                  treasureHuntDigAnswerText = I18n.getUiText("ui.fight.wrongMap");
+               }
+               else
+               {
+                  if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_ERROR_UNDEFINED)
+                  {
+                     treasureHuntDigAnswerText = I18n.getUiText("ui.popup.impossible_action");
+                  }
+                  else
+                  {
+                     if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_LOST)
+                     {
+                        treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.huntFail");
+                     }
+                     else
+                     {
+                        if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_NEW_HINT)
+                        {
+                           treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.stepSuccess");
+                        }
+                        else
+                        {
+                           if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_WRONG)
+                           {
+                              treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.digFail");
+                           }
+                           else
+                           {
+                              if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_FINISHED)
+                              {
+                                 if(thdramsg.questType == TreasureHuntTypeEnum.TREASURE_HUNT_CLASSIC)
+                                 {
+                                    treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.huntSuccess");
+                                 }
+                                 else
+                                 {
+                                    if(thdramsg.questType == TreasureHuntTypeEnum.TREASURE_HUNT_PORTAL)
+                                    {
+                                       treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.portalHuntSuccess",[PlayedCharacterManager.getInstance().currentMap.outdoorX,PlayedCharacterManager.getInstance().currentMap.outdoorY]);
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+               if(treasureHuntDigAnswerText)
+               {
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,treasureHuntDigAnswerText,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               }
                return true;
          }
       }

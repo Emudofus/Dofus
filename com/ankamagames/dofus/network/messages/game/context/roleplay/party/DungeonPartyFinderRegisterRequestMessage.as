@@ -55,21 +55,12 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
       }
       
       public function serializeAs_DungeonPartyFinderRegisterRequestMessage(output:IDataOutput) : void {
-         output.writeShort(this.dungeonIds.length);
-         var _i1:uint = 0;
-         while(_i1 < this.dungeonIds.length)
-         {
-            if(this.dungeonIds[_i1] < 0)
-            {
-               throw new Error("Forbidden value (" + this.dungeonIds[_i1] + ") on element 1 (starting at 1) of dungeonIds.");
-            }
-            else
-            {
-               output.writeShort(this.dungeonIds[_i1]);
-               _i1++;
-               continue;
-            }
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ArrayIndexOutOfBoundsException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function deserialize(input:IDataInput) : void {

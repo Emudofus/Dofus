@@ -219,12 +219,9 @@ package com.ankamagames.atouin.entities.behaviours.movements
          if(!wasLinked)
          {
             firstPe = tweenData.path.path.shift();
-            if(firstPe)
-            {
-               tweenData.orientation = firstPe.orientation;
-            }
             if((this.mustChangeOrientation()) && (firstPe))
             {
+               tweenData.orientation = firstPe.orientation;
                IAnimated(oMobile).setAnimationAndDirection(tweenData.animation,firstPe.orientation);
             }
             else
@@ -260,7 +257,10 @@ package com.ankamagames.atouin.entities.behaviours.movements
             }
             tweenData.velocity = this.getVelocity(tweenData,tweenData.orientation);
             tweenData.nextCell = pe.step;
-            tweenData.orientation = pe.orientation;
+            if(this.mustChangeOrientation())
+            {
+               tweenData.orientation = pe.orientation;
+            }
             tweenData.start = getTimer();
          }
          else

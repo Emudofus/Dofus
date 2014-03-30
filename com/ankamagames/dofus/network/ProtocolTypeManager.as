@@ -117,8 +117,10 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcWithQuestInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayGroupMonsterInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayGroupMonsterWaveInformations;
    import com.ankamagames.dofus.network.types.game.context.GameRolePlayTaxCollectorInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPrismInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPortalInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOption;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionAlliance;
@@ -149,6 +151,12 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.types.game.context.MapCoordinates;
    import com.ankamagames.dofus.network.types.game.context.MapCoordinatesAndId;
    import com.ankamagames.dofus.network.types.game.context.MapCoordinatesExtended;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStep;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepFight;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepFollowDirection;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepDig;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepFollowDirectionToPOI;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.PortalInformation;
    import com.ankamagames.dofus.network.types.game.character.status.PlayerStatus;
    import com.ankamagames.dofus.network.types.game.character.status.PlayerStatusExtended;
    import com.ankamagames.dofus.network.types.game.approach.ServerSessionConstant;
@@ -311,8 +319,10 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GameRolePlayNpcInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayNpcWithQuestInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayGroupMonsterInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameRolePlayGroupMonsterWaveInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayTaxCollectorInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayPrismInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameRolePlayPortalInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayActorInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayNamedActorInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayHumanoidInformations(),true,true);
@@ -323,8 +333,10 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GameRolePlayNpcInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayNpcWithQuestInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayGroupMonsterInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameRolePlayGroupMonsterWaveInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayTaxCollectorInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayPrismInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameRolePlayPortalInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new HumanInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new HumanOption(),true,true);
          StoreDataManager.getInstance().registerClass(new HumanOptionAlliance(),true,true);
@@ -364,6 +376,12 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new MapCoordinates(),true,true);
          StoreDataManager.getInstance().registerClass(new MapCoordinatesAndId(),true,true);
          StoreDataManager.getInstance().registerClass(new MapCoordinatesExtended(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntStep(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntStepFight(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntStepFollowDirection(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntStepDig(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntStepFollowDirectionToPOI(),true,true);
+         StoreDataManager.getInstance().registerClass(new PortalInformation(),true,true);
          StoreDataManager.getInstance().registerClass(new PlayerStatus(),true,true);
          StoreDataManager.getInstance().registerClass(new PlayerStatusExtended(),true,true);
          StoreDataManager.getInstance().registerClass(new ServerSessionConstant(),true,true);

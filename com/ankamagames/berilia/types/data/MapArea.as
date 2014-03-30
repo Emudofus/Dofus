@@ -16,14 +16,13 @@ package com.ankamagames.berilia.types.data
       public function MapArea(src:Uri, x:Number, y:Number, width:Number, height:Number, parent:Map) {
          this.src = src;
          this.parent = parent;
+         this._isLoaded = false;
          super(x,y,width,height);
       }
       
       private static var _mapLoader:ParallelRessourceLoader = new ParallelRessourceLoader(10);
       
       private static var _freeBitmap:Array = [];
-      
-      public static var currentScale:Number;
       
       public var src:Uri;
       
@@ -35,8 +34,14 @@ package com.ankamagames.berilia.types.data
       
       private var _freeTimer:Timer;
       
+      private var _isLoaded:Boolean;
+      
       public function get isUsed() : Boolean {
          return this._active;
+      }
+      
+      public function get isLoaded() : Boolean {
+         return this._isLoaded;
       }
       
       public function getBitmap() : DisplayObject {
@@ -97,20 +102,23 @@ package com.ankamagames.berilia.types.data
             {
                this._bitmap.parent.removeChild(this._bitmap);
             }
-            this._bitmap.bitmapData = null;
             if(this._bitmap.bitmapData)
             {
                this._bitmap.bitmapData.dispose();
             }
+            this._bitmap.bitmapData = null;
             _freeBitmap.push(this._bitmap);
             this._bitmap = null;
+            this._isLoaded = false;
          }
       }
       
       private function onLoad(e:ResourceLoadedEvent) : void {
          var checkScale:* = false;
+         var currentScale:* = NaN;
          if((this._active) && (e.uri == this.src))
          {
+            this._isLoaded = true;
             this._bitmap.bitmapData = e.resource;
             checkScale = !(this._bitmap.width == this._bitmap.height);
             this._bitmap.width = width + 1;
@@ -119,6 +127,7 @@ package com.ankamagames.berilia.types.data
             {
                return;
             }
+            currentScale = this.parent.currentScale;
             if(isNaN(currentScale))
             {
                if(this._bitmap.scaleX == this._bitmap.scaleY)

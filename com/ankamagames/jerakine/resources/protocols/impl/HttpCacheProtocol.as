@@ -65,9 +65,20 @@ package com.ankamagames.jerakine.resources.protocols.impl
       
       private static var _buff_crc:ByteArray = new ByteArray();
       
+      private static var _urlRewritePattern;
+      
+      private static var _urlRewriteReplace;
+      
+      public static function init(replacePattern:*, replaceNeedle:*) : void {
+         _urlRewritePattern = replacePattern;
+         _urlRewriteReplace = replaceNeedle;
+      }
+      
       private var _parent:AbstractFileProtocol;
       
       private var _serverRootDir:String;
+      
+      private var _serverRootUnversionedDir:String;
       
       private var _isLoadingFilelist:Boolean = false;
       
@@ -76,7 +87,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
       public function load(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, cache:ICache, forcedAdapter:Class, singleFile:Boolean) : void {
          if(this._serverRootDir == null)
          {
-            this._serverRootDir = XmlConfig.getInstance().getEntry("config.root.path");
+            this.serverRootDir = XmlConfig.getInstance().getEntry("config.root.path");
          }
          if((_cacheFilesDirectory == "") || (!_cacheFilesDirectory))
          {
@@ -284,8 +295,13 @@ package com.ankamagames.jerakine.resources.protocols.impl
       
       private function loadDirectlyUri(uri:Uri, dispatchProgress:Boolean) : void {
          _attemptToDownloadFile[uri] = _attemptToDownloadFile[uri] == null?1:_attemptToDownloadFile[uri] + 1;
+         var realPath:String = "http://" + uri.path;
+         if(_urlRewritePattern)
+         {
+            realPath = realPath.replace(_urlRewritePattern,_urlRewriteReplace);
+         }
          this._parent.initAdapter(uri,BinaryAdapter);
-         this._parent.adapter.loadDirectly(uri,"http://" + uri.path,new ResourceObserverWrapper(this.onRemoteFileLoaded,this.onRemoteFileFailed,this.onRemoteFileProgress),dispatchProgress);
+         this._parent.adapter.loadDirectly(uri,realPath,new ResourceObserverWrapper(this.onRemoteFileLoaded,this.onRemoteFileFailed,this.onRemoteFileProgress),dispatchProgress);
       }
       
       private function onRemoteFileLoaded(uri:Uri, resourceType:uint, resource:*) : void {
@@ -318,6 +334,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
       public function getLocalPath(uri:Uri) : String {
          var newuri:String = uri.normalizedUri.split("|")[0];
          newuri = newuri.replace(this._serverRootDir,"");
+         newuri = newuri.replace(this._serverRootUnversionedDir,"");
          return File.applicationDirectory.nativePath + File.separator + newuri;
       }
       
@@ -395,7 +412,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
       }
       
       private function getPathForCrc(uri:Uri) : String {
-         return uri.normalizedUri.replace(this._serverRootDir,"");
+         return uri.normalizedUri.replace(this._serverRootDir,"").replace(this._serverRootUnversionedDir,"");
       }
       
       private function getFileIntSum(data:ByteArray) : int {
@@ -414,6 +431,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
       
       public function set serverRootDir(value:String) : void {
          this._serverRootDir = value;
+         this._serverRootUnversionedDir = value.replace(new RegExp("\\/_[0-9]*_"),"");
       }
    }
 }

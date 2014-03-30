@@ -64,15 +64,17 @@ package com.ankamagames.dofus.datacenter.effects
       
       public var hidden:Boolean;
       
-      public var zoneSize:uint;
+      public var order:int;
+      
+      public var zoneSize:Object;
       
       public var zoneShape:uint;
       
-      public var zoneMinSize:uint;
+      public var zoneMinSize:Object;
       
-      public var zoneEfficiencyPercent:int;
+      public var zoneEfficiencyPercent:Object;
       
-      public var zoneMaxEfficiency:int;
+      public var zoneMaxEfficiency:Object;
       
       private var _durationStringValue:int;
       
@@ -200,6 +202,8 @@ package com.ankamagames.dofus.datacenter.effects
          o.zoneShape = this.zoneShape;
          o.zoneSize = this.zoneSize;
          o.zoneMinSize = this.zoneMinSize;
+         o.zoneEfficiencyPercent = this.zoneEfficiencyPercent;
+         o.zoneMaxEfficiency = this.zoneMaxEfficiency;
          o.effectId = this.effectId;
          o.duration = this.duration;
          o.delay = this.delay;
@@ -207,6 +211,9 @@ package com.ankamagames.dofus.datacenter.effects
          o.group = this.group;
          o.targetId = this.targetId;
          o.targetMask = this.targetMask;
+         o.delay = this.delay;
+         o.triggers = this.triggers;
+         o.order = this.order;
          return o;
       }
       
@@ -337,7 +344,6 @@ package com.ankamagames.dofus.datacenter.effects
             this.zoneShape = this.rawZone.charCodeAt(0);
             params = this.rawZone.substr(1).split(",");
             hasMinSize = (this.zoneShape == SpellShapeEnum.C) || (this.zoneShape == SpellShapeEnum.X) || (this.zoneShape == SpellShapeEnum.Q) || (this.zoneShape == SpellShapeEnum.plus) || (this.zoneShape == SpellShapeEnum.sharp);
-            this.zoneSize = this.zoneMinSize = this.zoneEfficiencyPercent = this.zoneMaxEfficiency = 0;
             switch(params.length)
             {
                case 1:

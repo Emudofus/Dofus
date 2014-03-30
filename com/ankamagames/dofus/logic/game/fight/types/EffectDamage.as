@@ -24,6 +24,14 @@ package com.ankamagames.dofus.logic.game.fight.types
       
       public var maxCriticalDamage:int;
       
+      public var minErosionPercent:int;
+      
+      public var maxErosionPercent:int;
+      
+      public var minCriticalErosionPercent:int;
+      
+      public var maxCriticalErosionPercent:int;
+      
       public var minErosionDamage:int;
       
       public var maxErosionDamage:int;
@@ -62,6 +70,10 @@ package com.ankamagames.dofus.logic.game.fight.types
       
       public function get element() : int {
          return this._element;
+      }
+      
+      public function set element(pElement:int) : void {
+         this._element = pElement;
       }
       
       public function get random() : int {

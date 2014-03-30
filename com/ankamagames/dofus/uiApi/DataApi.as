@@ -81,6 +81,7 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.datacenter.world.WorldMap;
    import com.ankamagames.dofus.datacenter.world.HintCategory;
    import com.ankamagames.dofus.internalDatacenter.house.HouseWrapper;
+   import com.ankamagames.dofus.datacenter.spells.SpellPair;
    import com.ankamagames.dofus.datacenter.spells.SpellBomb;
    import com.ankamagames.dofus.datacenter.misc.Pack;
    import com.ankamagames.dofus.datacenter.appearance.Title;
@@ -782,6 +783,10 @@ package com.ankamagames.dofus.uiApi
             return this.entitiesFrame.housesInformations[doorId];
          }
          return null;
+      }
+      
+      public function getSpellPair(pairId:uint) : SpellPair {
+         return SpellPair.getSpellPairById(pairId);
       }
       
       public function getBomb(bombId:uint) : SpellBomb {

@@ -50,71 +50,21 @@ package com.ankamagames.berilia.types.data
       }
       
       override public function parseCSS(content:String) : void {
-         var inheritance:Object = null;
-         var regFile:RegExp = null;
-         var match:Array = null;
-         var file:String = null;
-         var i:uint = 0;
-         super.parseCSS(content);
-         var find:int = styleNames.indexOf(CSS_INHERITANCE_KEYWORD);
-         if(find != -1)
-         {
-            inheritance = getStyle(styleNames[find]);
-            if(inheritance[CSS_FILES_KEYWORD])
-            {
-               regFile = new RegExp("url\\(\'?([^\']*)\'\\)?","g");
-               match = String(inheritance[CSS_FILES_KEYWORD]).match(regFile);
-               i = 0;
-               while(i < match.length)
-               {
-                  file = String(match[i]).replace(regFile,"$1");
-                  if(-1 == this._inherit.indexOf(file))
-                  {
-                     file = LangManager.getInstance().replaceKey(file);
-                     CssManager.getInstance().askCss(file,new Callback(this.makeMerge,file));
-                     this._inherit.push(file);
-                  }
-                  i++;
-               }
-            }
-            else
-            {
-               _log.warn("property \'" + CSS_FILES_KEYWORD + "\' wasn\'t found (flash css doesn\'t support space between property name and colon, propertyName:value)");
-               dispatchEvent(new CssEvent(CssEvent.CSS_PARSED,false,false,this));
-            }
-         }
-         else
-         {
-            dispatchEvent(new CssEvent(CssEvent.CSS_PARSED,false,false,this));
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function merge(stylesheet:ExtendedStyleSheet, replace:Boolean=false) : void {
-         var localDef:Object = null;
-         var newDef:Object = null;
-         var property:String = null;
-         var i:uint = 0;
-         while(i < stylesheet.styleNames.length)
-         {
-            if(stylesheet.styleNames[i] != CSS_INHERITANCE_KEYWORD)
-            {
-               localDef = getStyle(stylesheet.styleNames[i]);
-               newDef = stylesheet.getStyle(stylesheet.styleNames[i]);
-               if(localDef)
-               {
-                  for (property in newDef)
-                  {
-                     if((localDef[property] == null) || (replace))
-                     {
-                        localDef[property] = newDef[property];
-                     }
-                  }
-                  newDef = localDef;
-               }
-               setStyle(stylesheet.styleNames[i],newDef);
-            }
-            i++;
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: ExecutionException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       override public function toString() : String {

@@ -22,8 +22,8 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 33;
       }
       
-      public function initFightTeamInformations(teamId:uint=2, leaderId:int=0, teamSide:int=0, teamTypeId:uint=0, teamMembers:Vector.<FightTeamMemberInformations>=null) : FightTeamInformations {
-         super.initAbstractFightTeamInformations(teamId,leaderId,teamSide,teamTypeId);
+      public function initFightTeamInformations(teamId:uint=2, leaderId:int=0, teamSide:int=0, teamTypeId:uint=0, nbWaves:uint=0, teamMembers:Vector.<FightTeamMemberInformations>=null) : FightTeamInformations {
+         super.initAbstractFightTeamInformations(teamId,leaderId,teamSide,teamTypeId,nbWaves);
          this.teamMembers = teamMembers;
          return this;
       }

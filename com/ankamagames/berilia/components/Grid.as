@@ -822,6 +822,27 @@ package com.ankamagames.berilia.components
          return 1;
       }
       
+      private function itemExists(o:*) : Boolean {
+         var i:* = 0;
+         var len:* = 0;
+         var data:* = undefined;
+         if(this._dataProvider)
+         {
+            len = this._dataProvider.length;
+            i = 0;
+            while(i < len)
+            {
+               data = SecureCenter.unsecure(this._dataProvider[i]);
+               if(data === SecureCenter.unsecure(o))
+               {
+                  return true;
+               }
+               i++;
+            }
+         }
+         return false;
+      }
+      
       private function initSlot() : void {
          var slot:DisplayObject = null;
          var item:GridItem = null;
@@ -925,7 +946,14 @@ package com.ankamagames.berilia.components
          }
          if(this._autoSelect == AUTOSELECT_BY_INDEX)
          {
-            this.setSelectedIndex(Math.min(this._nSelectedIndex,this._dataProvider.length - 1),SelectMethodEnum.AUTO);
+            if((((this._nSelectedItem) && (this.itemExists(this._nSelectedItem.object))) && (this._verticalScroll)) && (this._scrollBarV) && (this._scrollBarV.value >= 0))
+            {
+               this.updateFromIndex(this._scrollBarV.value);
+            }
+            else
+            {
+               this.setSelectedIndex(Math.min(this._nSelectedIndex,this._dataProvider.length - 1),SelectMethodEnum.AUTO);
+            }
          }
          else
          {

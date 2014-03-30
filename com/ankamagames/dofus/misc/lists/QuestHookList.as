@@ -44,5 +44,13 @@ package com.ankamagames.dofus.misc.lists
       public static const TitleUpdated:Hook = new Hook("TitleUpdated",false);
       
       public static const OrnamentUpdated:Hook = new Hook("OrnamentUpdated",false);
+      
+      public static const TreasureHuntUpdate:Hook = new Hook("TreasureHuntUpdate",false);
+      
+      public static const TreasureHuntFinished:Hook = new Hook("TreasureHuntFinished",false);
+      
+      public static const TreasureHuntAvailableRetryCountUpdate:Hook = new Hook("TreasureHuntAvailableRetryCountUpdate",false);
+      
+      public static const AreaFightModificatorUpdate:Hook = new Hook("AreaFightModificatorUpdate",false);
    }
 }

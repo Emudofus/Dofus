@@ -185,6 +185,10 @@ package com.ankamagames.dofus.internalDatacenter.fight
       
       public var fightInitiator:Boolean;
       
+      public var wave:int;
+      
+      public var isLastOfHisWave:Boolean = false;
+      
       public var rerollXpMultiplicator:int;
       
       public var experience:Number;

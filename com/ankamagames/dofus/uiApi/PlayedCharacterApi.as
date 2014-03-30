@@ -226,6 +226,10 @@ package com.ankamagames.dofus.uiApi
          return PlayedCharacterManager.getInstance().isIncarnation;
       }
       
+      public static function isMutated() : Boolean {
+         return PlayedCharacterManager.getInstance().isMutated;
+      }
+      
       public static function isInHouse() : Boolean {
          return PlayedCharacterManager.getInstance().isInHouse;
       }

@@ -21,8 +21,8 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 189;
       }
       
-      public function initFightResultFighterListEntry(outcome:uint=0, rewards:FightLoot=null, id:int=0, alive:Boolean=false) : FightResultFighterListEntry {
-         super.initFightResultListEntry(outcome,rewards);
+      public function initFightResultFighterListEntry(outcome:uint=0, wave:uint=0, rewards:FightLoot=null, id:int=0, alive:Boolean=false) : FightResultFighterListEntry {
+         super.initFightResultListEntry(outcome,wave,rewards);
          this.id = id;
          this.alive = alive;
          return this;

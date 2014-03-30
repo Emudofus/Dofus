@@ -27,8 +27,8 @@ package com.ankamagames.jerakine.handlers
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseRightClickOutsideMessage;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseRightClickMessage;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseDownMessage;
-   import com.ankamagames.jerakine.handlers.messages.mouse.MouseReleaseOutsideMessage;
    import flash.display.InteractiveObject;
+   import com.ankamagames.jerakine.handlers.messages.mouse.MouseReleaseOutsideMessage;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseUpMessage;
    import flash.ui.Keyboard;
    import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyDownMessage;
@@ -278,6 +278,7 @@ package com.ankamagames.jerakine.handlers
       private function onMouseDown(me:MouseEvent) : void {
          this._lastTarget = new WeakReference(me.target);
          this._handler.process(GenericPool.get(MouseDownMessage,me.target,me));
+         FocusHandler.getInstance().setFocus(InteractiveObject(me.target));
       }
       
       private function onMouseUp(me:MouseEvent) : void {
@@ -285,7 +286,6 @@ package com.ankamagames.jerakine.handlers
          {
             this._handler.process(GenericPool.get(MouseReleaseOutsideMessage,this._lastTarget.object,me));
          }
-         FocusHandler.getInstance().setFocus(InteractiveObject(me.target));
          this._handler.process(GenericPool.get(MouseUpMessage,me.target,me));
       }
       

@@ -3,6 +3,7 @@ package com.ankamagames.berilia.api
    import com.ankamagames.berilia.interfaces.IApi;
    import flash.utils.Dictionary;
    import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.berilia.components.Label;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.berilia.types.data.UiModule;
@@ -16,6 +17,8 @@ package com.ankamagames.berilia.api
    import com.ankamagames.berilia.types.graphic.GraphicContainer;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import __AS3__.vec.*;
+   import com.ankamagames.jerakine.managers.StoreDataManager;
+   import com.ankamagames.berilia.BeriliaConstants;
    import com.ankamagames.berilia.managers.BindsManager;
    import com.ankamagames.berilia.types.shortcut.Shortcut;
    import com.ankamagames.berilia.types.listener.GenericListener;
@@ -62,6 +65,8 @@ package com.ankamagames.berilia.api
       public static var MEMORY_LOG:Dictionary = new Dictionary(true);
       
       public static const _log:Logger = Log.getLogger(getQualifiedClassName(UiApi));
+      
+      private static var _label:Label;
       
       private var _module:UiModule;
       
@@ -226,7 +231,7 @@ package com.ankamagames.berilia.api
          {
             l.push(m);
          }
-         dml = UiModuleManager.getInstance().disabledModule;
+         dml = UiModuleManager.getInstance().disabledModules;
          for each (m in dml)
          {
             l.push(m);
@@ -235,23 +240,34 @@ package com.ankamagames.berilia.api
          return l;
       }
       
+      public function getModule(moduleName:String, includeUnInitialized:Boolean=false) : UiModule {
+         return UiModuleManager.getInstance().getModule(moduleName,includeUnInitialized);
+      }
+      
       public function setModuleEnable(id:String, b:Boolean) : void {
          var mods:Array = null;
          var mod:UiModule = null;
          if(b)
          {
-            mods = UiModuleManager.getInstance().disabledModule;
+            mods = UiModuleManager.getInstance().disabledModules;
          }
          else
          {
             mods = UiModuleManager.getInstance().getModules();
          }
+         var moduleFound:Boolean = false;
          for each (mod in mods)
          {
             if((mod.id == id) && (mod.enable == !b))
             {
                mod.enable = b;
+               moduleFound = true;
+               break;
             }
+         }
+         if(!moduleFound)
+         {
+            StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_MOD,id,b);
          }
       }
       
@@ -608,6 +624,18 @@ package com.ankamagames.berilia.api
             part.y = target.y + y;
          }
          return part;
+      }
+      
+      public function getTextSize(pText:String, pCss:Uri, pCssClass:String) : Rectangle {
+         if(!_label)
+         {
+            _label = this.createComponent("Label") as Label;
+         }
+         _label.css = pCss;
+         _label.cssClass = pCssClass;
+         _label.fixedWidth = false;
+         _label.text = pText;
+         return new Rectangle(0,0,_label.textWidth,_label.textHeight);
       }
       
       public function replaceParams(text:String, params:Array, replace:String="%") : String {

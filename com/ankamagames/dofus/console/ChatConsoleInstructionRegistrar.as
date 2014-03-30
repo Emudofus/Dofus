@@ -34,7 +34,7 @@ package com.ankamagames.dofus.console
          console.addHandler(["aping","ping"],new LatencyInstructionHandler());
          console.addHandler(["f","ignore","invite"],new SocialInstructionHandler());
          console.addHandler(["w","whisper","msg","t","g","p","a","r","b","m"],new MessagingInstructionHandler());
-         console.addHandler(["spectator","list","players","kick"],new FightInstructionHandler());
+         console.addHandler(["s","spectator","list","players","kick"],new FightInstructionHandler());
          console.addHandler(emoteShortcuts,new EmoteInstructionHandler());
          console.addHandler(["tab","clear"],new OptionsInstructionHandler());
          if(BuildInfos.BUILD_TYPE != BuildTypeEnum.RELEASE)

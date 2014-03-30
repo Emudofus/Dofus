@@ -21,7 +21,6 @@ package com.ankamagames.dofus.logic.game.common.managers
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightMonsterInformations;
    import com.ankamagames.dofus.datacenter.monsters.Monster;
    import com.ankamagames.tiphon.types.TiphonUtility;
-   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayHumanoidInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightCharacterInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPrismInformations;
@@ -29,6 +28,7 @@ package com.ankamagames.dofus.logic.game.common.managers
    import com.ankamagames.dofus.network.types.game.context.GameRolePlayTaxCollectorInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightTaxCollectorInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightMutantInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
    
    public class EntitiesLooksManager extends Object
    {
@@ -183,8 +183,6 @@ package com.ankamagames.dofus.logic.game.common.managers
          {
             switch(true)
             {
-               case pInfos is GameRolePlayNpcInformations:
-                  return look;
                case pInfos is GameRolePlayHumanoidInformations:
                case pInfos is GameFightCharacterInformations:
                   if(this.isIncarnation(pInfos.contextualId))
@@ -273,6 +271,8 @@ package com.ankamagames.dofus.logic.game.common.managers
                   }
                   look.setBone(fightCreatureBone);
                   break;
+               case pInfos is GameRolePlayActorInformations:
+                  return look;
             }
             look.setScales(0.9,0.9);
          }

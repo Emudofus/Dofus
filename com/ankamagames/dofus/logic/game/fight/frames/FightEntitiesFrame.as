@@ -718,6 +718,10 @@ package com.ankamagames.dofus.logic.game.fight.frames
             if(lastFighterInfo != fighterInfos)
             {
                registerActor(fighterInfos);
+               if(fighterInfos.contextualId == CurrentPlayedFighterManager.getInstance().currentFighterId)
+               {
+                  KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
+               }
             }
             ac = this.addOrUpdateActor(fighterInfos,animationModifier);
             if((!(fighterInfos.stats.invisibilityState == GameActionFightInvisibilityStateEnum.VISIBLE)) && (!(fighterInfos.stats.invisibilityState == lastInvisibilityStat)))

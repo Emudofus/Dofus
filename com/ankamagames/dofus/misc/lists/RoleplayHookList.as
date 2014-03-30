@@ -44,5 +44,19 @@ package com.ankamagames.dofus.misc.lists
       public static const ArenaFighterStatusUpdate:Hook = new Hook("ArenaFighterStatusUpdate",false);
       
       public static const ArenaUpdateRank:Hook = new Hook("ArenaUpdateRank",false);
+      
+      public static const NpcDialogCreation:Hook = new Hook("NpcDialogCreation",false);
+      
+      public static const PonyDialogCreation:Hook = new Hook("PonyDialogCreation",false);
+      
+      public static const PrismDialogCreation:Hook = new Hook("PrismDialogCreation",false);
+      
+      public static const PortalDialogCreation:Hook = new Hook("PortalDialogCreation",false);
+      
+      public static const NpcDialogCreationFailure:Hook = new Hook("NpcDialogCreationFailure",false);
+      
+      public static const NpcDialogQuestion:Hook = new Hook("NpcDialogQuestion",false);
+      
+      public static const PortalDialogQuestion:Hook = new Hook("PortalDialogQuestion",false);
    }
 }

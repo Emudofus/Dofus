@@ -248,6 +248,11 @@ package com.ankamagames.atouin.data.map
                   this.zoomScale = raw.readUnsignedShort() / 100;
                   this.zoomOffsetX = raw.readShort();
                   this.zoomOffsetY = raw.readShort();
+                  if(this.zoomScale < 1)
+                  {
+                     this.zoomScale = 1;
+                     this.zoomOffsetX = this.zoomOffsetY = 0;
+                  }
                   if(AtouinConstants.DEBUG_FILES_PARSING)
                   {
                      _log.debug("Zoom auto : " + this.zoomScale + "," + this.zoomOffsetX + "," + this.zoomOffsetY);

@@ -24,8 +24,9 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.enums.ExchangeTypeEnum;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.ExchangeHookList;
-   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNamedActorInformations;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
+   import com.ankamagames.berilia.managers.TooltipManager;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNamedActorInformations;
    import com.ankamagames.dofus.logic.game.common.actions.humanVendor.LeaveShopStockAction;
    import com.ankamagames.dofus.logic.game.common.actions.exchange.ExchangeAcceptAction;
    import com.ankamagames.dofus.logic.game.common.actions.exchange.ExchangeRefuseAction;
@@ -78,6 +79,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          var iwAdded:ItemWrapper = null;
          var eormsg:ExchangeObjectRemovedMessage = null;
          var eoma:ExchangeObjectMoveAction = null;
+         var iw:ItemWrapper = null;
          var eomvmsg:ExchangeObjectMoveMessage = null;
          var eirmsg:ExchangeIsReadyMessage = null;
          var roleplayEntitiesFrame:RoleplayEntitiesFrame = null;
@@ -148,6 +150,15 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is ExchangeObjectMoveAction:
                eoma = msg as ExchangeObjectMoveAction;
+               iw = InventoryManager.getInstance().inventory.getItem(eoma.objectUID);
+               if(!iw)
+               {
+                  iw = InventoryManager.getInstance().bankInventory.getItem(eoma.objectUID);
+               }
+               if((iw) && (iw.quantity == Math.abs(eoma.quantity)))
+               {
+                  TooltipManager.hide();
+               }
                eomvmsg = new ExchangeObjectMoveMessage();
                eomvmsg.initExchangeObjectMoveMessage(eoma.objectUID,eoma.quantity);
                ConnectionsHandler.getConnection().send(eomvmsg);

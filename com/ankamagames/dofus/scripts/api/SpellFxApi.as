@@ -47,6 +47,10 @@ package com.ankamagames.dofus.scripts.api
       }
       
       public static function HasSpellParam(spell:CastingSpell, name:String) : Boolean {
+         if((!spell) || (!spell.spell))
+         {
+            return false;
+         }
          var v:* = spell.spell.getParamByName(name,IsCriticalHit(spell));
          return (!isNaN(v)) || (!(v == null));
       }

@@ -125,6 +125,10 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.logic.game.common.actions.quest.AchievementDetailsRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.AchievementRewardRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.QuestObjectiveValidationAction;
+   import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntDigRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.PortalUseRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntGiveUpRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.GuidedModeReturnRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.GuidedModeQuitRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.alignment.SetEnablePVPRequestAction;
@@ -158,6 +162,13 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.logic.game.common.actions.tinsel.OrnamentSelectRequestAction;
    import com.ankamagames.dofus.logic.game.roleplay.actions.ShowMonstersInfoAction;
    import com.ankamagames.dofus.logic.game.common.actions.ContactLookRequestByIdAction;
+   import com.ankamagames.dofus.modules.utils.actions.ModuleListRequestAction;
+   import com.ankamagames.dofus.modules.utils.actions.ModuleInstallRequestAction;
+   import com.ankamagames.dofus.modules.utils.actions.ModuleDeleteRequestAction;
+   import com.ankamagames.dofus.modules.utils.actions.InstalledModuleListRequestAction;
+   import com.ankamagames.dofus.modules.utils.actions.InstalledModuleInfoRequestAction;
+   import com.ankamagames.dofus.modules.utils.actions.ModuleInstallConfirmAction;
+   import com.ankamagames.dofus.modules.utils.actions.ModuleInstallCancelAction;
    
    public class ApiActionList extends Object
    {
@@ -414,6 +425,14 @@ package com.ankamagames.dofus.misc.lists
       
       public static const QuestObjectiveValidation:DofusApiAction = new DofusApiAction("QuestObjectiveValidation",QuestObjectiveValidationAction);
       
+      public static const TreasureHuntRequest:DofusApiAction = new DofusApiAction("TreasureHuntRequest",TreasureHuntRequestAction);
+      
+      public static const TreasureHuntDigRequest:DofusApiAction = new DofusApiAction("TreasureHuntDigRequest",TreasureHuntDigRequestAction);
+      
+      public static const PortalUseRequest:DofusApiAction = new DofusApiAction("PortalUseRequest",PortalUseRequestAction);
+      
+      public static const TreasureHuntGiveUpRequest:DofusApiAction = new DofusApiAction("TreasureHuntGiveUpRequest",TreasureHuntGiveUpRequestAction);
+      
       public static const GuidedModeReturnRequest:DofusApiAction = new DofusApiAction("GuidedModeReturnRequest",GuidedModeReturnRequestAction);
       
       public static const GuidedModeQuitRequest:DofusApiAction = new DofusApiAction("GuidedModeQuitRequest",GuidedModeQuitRequestAction);
@@ -479,5 +498,19 @@ package com.ankamagames.dofus.misc.lists
       public static const ShowMonstersInfo:DofusApiAction = new DofusApiAction("ShowMonstersInfo",ShowMonstersInfoAction);
       
       public static const ContactLookRequestById:DofusApiAction = new DofusApiAction("ContactLookRequestById",ContactLookRequestByIdAction);
+      
+      public static const ModuleListRequest:DofusApiAction = new DofusApiAction("ModuleListRequest",ModuleListRequestAction);
+      
+      public static const ModuleInstallRequest:DofusApiAction = new DofusApiAction("ModuleInstallRequest",ModuleInstallRequestAction);
+      
+      public static const ModuleDeleteRequest:DofusApiAction = new DofusApiAction("ModuleDeleteRequest",ModuleDeleteRequestAction);
+      
+      public static const InstalledModuleListRequest:DofusApiAction = new DofusApiAction("InstalledModuleListRequest",InstalledModuleListRequestAction);
+      
+      public static const InstalledModuleInfoRequest:DofusApiAction = new DofusApiAction("InstalledModuleInfoRequest",InstalledModuleInfoRequestAction);
+      
+      public static const ModuleInstallConfirm:DofusApiAction = new DofusApiAction("ModuleInstallConfirm",ModuleInstallConfirmAction);
+      
+      public static const ModuleInstallCancel:DofusApiAction = new DofusApiAction("ModuleInstallCancel",ModuleInstallCancelAction);
    }
 }

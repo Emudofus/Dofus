@@ -36,11 +36,15 @@ package com.ankamagames.dofus.network.messages.game.guild
       
       public var creationDate:uint = 0;
       
+      public var nbTotalMembers:uint = 0;
+      
+      public var nbConnectedMembers:uint = 0;
+      
       override public function getMessageId() : uint {
          return 5557;
       }
       
-      public function initGuildInformationsGeneralMessage(enabled:Boolean=false, abandonnedPaddock:Boolean=false, level:uint=0, expLevelFloor:Number=0, experience:Number=0, expNextLevelFloor:Number=0, creationDate:uint=0) : GuildInformationsGeneralMessage {
+      public function initGuildInformationsGeneralMessage(enabled:Boolean=false, abandonnedPaddock:Boolean=false, level:uint=0, expLevelFloor:Number=0, experience:Number=0, expNextLevelFloor:Number=0, creationDate:uint=0, nbTotalMembers:uint=0, nbConnectedMembers:uint=0) : GuildInformationsGeneralMessage {
          this.enabled = enabled;
          this.abandonnedPaddock = abandonnedPaddock;
          this.level = level;
@@ -48,6 +52,8 @@ package com.ankamagames.dofus.network.messages.game.guild
          this.experience = experience;
          this.expNextLevelFloor = expNextLevelFloor;
          this.creationDate = creationDate;
+         this.nbTotalMembers = nbTotalMembers;
+         this.nbConnectedMembers = nbConnectedMembers;
          this._isInitialized = true;
          return this;
       }
@@ -60,6 +66,8 @@ package com.ankamagames.dofus.network.messages.game.guild
          this.experience = 0;
          this.expNextLevelFloor = 0;
          this.creationDate = 0;
+         this.nbTotalMembers = 0;
+         this.nbConnectedMembers = 0;
          this._isInitialized = false;
       }
       
@@ -117,7 +125,23 @@ package com.ankamagames.dofus.network.messages.game.guild
                      else
                      {
                         output.writeInt(this.creationDate);
-                        return;
+                        if(this.nbTotalMembers < 0)
+                        {
+                           throw new Error("Forbidden value (" + this.nbTotalMembers + ") on element nbTotalMembers.");
+                        }
+                        else
+                        {
+                           output.writeShort(this.nbTotalMembers);
+                           if(this.nbConnectedMembers < 0)
+                           {
+                              throw new Error("Forbidden value (" + this.nbConnectedMembers + ") on element nbConnectedMembers.");
+                           }
+                           else
+                           {
+                              output.writeShort(this.nbConnectedMembers);
+                              return;
+                           }
+                        }
                      }
                   }
                }
@@ -168,7 +192,23 @@ package com.ankamagames.dofus.network.messages.game.guild
                      }
                      else
                      {
-                        return;
+                        this.nbTotalMembers = input.readShort();
+                        if(this.nbTotalMembers < 0)
+                        {
+                           throw new Error("Forbidden value (" + this.nbTotalMembers + ") on element of GuildInformationsGeneralMessage.nbTotalMembers.");
+                        }
+                        else
+                        {
+                           this.nbConnectedMembers = input.readShort();
+                           if(this.nbConnectedMembers < 0)
+                           {
+                              throw new Error("Forbidden value (" + this.nbConnectedMembers + ") on element of GuildInformationsGeneralMessage.nbConnectedMembers.");
+                           }
+                           else
+                           {
+                              return;
+                           }
+                        }
                      }
                   }
                }

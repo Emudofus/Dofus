@@ -7,9 +7,9 @@ package com.ankamagames.dofus.logic.game.fight.types
    import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterBaseCharacteristic;
    import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
+   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
    import com.ankamagames.dofus.logic.game.fight.miscs.ActionIdConverter;
    import com.ankamagames.dofus.network.enums.CharacterSpellModificationTypeEnum;
-   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporarySpellBoostEffect;
    
    public class SpellBuff extends BasicBuff
@@ -43,7 +43,8 @@ package com.ankamagames.dofus.logic.game.fight.types
          var swToUpdate:SpellWrapper = null;
          var carac:CharacterBaseCharacteristic = null;
          var modif:CharacterSpellModification = null;
-         if(targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
+         var targetCaracs:CharacterCharacteristicsInformations = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations(targetId);
+         if(targetCaracs)
          {
             if(actionId == ActionIdConverter.ACTION_BOOST_SPELL_RANGEABLE)
             {
@@ -142,7 +143,7 @@ package com.ankamagames.dofus.logic.game.fight.types
                }
             }
             spellModifExists = false;
-            for each (spellModif in PlayedCharacterManager.getInstance().characteristics.spellModifications)
+            for each (spellModif in targetCaracs.spellModifications)
             {
                if(this.spellId == spellModif.spellId)
                {
@@ -164,7 +165,7 @@ package com.ankamagames.dofus.logic.game.fight.types
                modif.modificationType = this.modifType;
                modif.spellId = this.spellId;
                modif.value = carac;
-               PlayedCharacterManager.getInstance().characteristics.spellModifications.push(modif);
+               targetCaracs.spellModifications.push(modif);
             }
             swsToUpdate = SpellWrapper.getSpellWrappersById(this.spellId,targetId);
             for each (swToUpdate in swsToUpdate)
@@ -177,14 +178,16 @@ package com.ankamagames.dofus.logic.game.fight.types
       }
       
       override public function onRemoved() : void {
+         var targetCaracs:CharacterCharacteristicsInformations = null;
          var spellModif:CharacterSpellModification = null;
          var swsToUpdate:Array = null;
          var swToUpdate:SpellWrapper = null;
          if(!_removed)
          {
-            if(targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
+            targetCaracs = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations(targetId);
+            if(targetCaracs)
             {
-               for each (spellModif in PlayedCharacterManager.getInstance().characteristics.spellModifications)
+               for each (spellModif in targetCaracs.spellModifications)
                {
                   if(this.spellId == spellModif.spellId)
                   {

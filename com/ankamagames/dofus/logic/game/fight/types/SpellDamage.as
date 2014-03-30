@@ -17,11 +17,17 @@ package com.ankamagames.dofus.logic.game.fight.types
       
       public var invulnerableState:Boolean;
       
+      public var unhealableState:Boolean;
+      
       public var hasCriticalDamage:Boolean;
       
       public var hasCriticalShieldPointsRemoved:Boolean;
       
       public var hasCriticalLifePointsAdded:Boolean;
+      
+      public var isHealingSpell:Boolean;
+      
+      public var hasHeal:Boolean;
       
       private var _effectDamages:Vector.<EffectDamage>;
       
@@ -288,9 +294,14 @@ package com.ankamagames.dofus.logic.game.fight.types
                {
                   r = ed.random;
                   first = false;
-                  continue;
                }
-               return -1;
+               else
+               {
+                  if(ed.random != r)
+                  {
+                     return -1;
+                  }
+               }
             }
          }
          return r;
@@ -298,6 +309,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       
       public function get element() : int {
          var ed:EffectDamage = null;
+         var hasPushDamages:* = false;
          var element:int = -1;
          var first:Boolean = true;
          for each (ed in this._effectDamages)
@@ -308,10 +320,23 @@ package com.ankamagames.dofus.logic.game.fight.types
                {
                   element = ed.element;
                   first = false;
-                  continue;
                }
-               return -1;
+               else
+               {
+                  if(ed.element != element)
+                  {
+                     return -1;
+                  }
+               }
             }
+            if(ed.effectId == 5)
+            {
+               hasPushDamages = true;
+            }
+         }
+         if((!(element == -1)) && (hasPushDamages))
+         {
+            element = -1;
          }
          return element;
       }
@@ -395,50 +420,72 @@ package com.ankamagames.dofus.logic.game.fight.types
          return pRandom > 0?pRandom + "% " + effectStr:effectStr;
       }
       
+      public var effectIcons:Array;
+      
       public function toString() : String {
          var ed:EffectDamage = null;
+         var effText:String = null;
          var shieldStr:String = null;
-         var healStr:String = null;
          var dmgStr:String = null;
+         var healStr:String = null;
          var finalStr:String = "";
          var damageColor:String = this.getElementTextColor(this.element);
          var shieldColor:String = "0x9966CC";
          var healColor:int = OptionManager.getOptionManager("chat")["channelColor" + ChatActivableChannelsEnum.PSEUDO_CHANNEL_FIGHT_LOG];
-         if(this.hasRandomEffects)
+         this.effectIcons = new Array();
+         if((this.hasRandomEffects) && (!this.invulnerableState))
          {
             for each (ed in this._effectDamages)
             {
                if(ed.element != -1)
                {
-                  finalStr = finalStr + (HtmlManager.addTag(!this.damageConvertedToHeal?this.getEffectString(ed.minDamage,ed.maxDamage,ed.minCriticalDamage,ed.maxCriticalDamage,ed.hasCritical,ed.random):this.getEffectString(ed.minLifePointsAdded,ed.maxLifePointsAdded,ed.minCriticalLifePointsAdded,ed.maxCriticalLifePointsAdded,ed.hasCritical,ed.random),HtmlManager.SPAN,{"color":(!this.damageConvertedToHeal?this.getElementTextColor(ed.element):healColor)}) + "\n");
+                  if(this.damageConvertedToHeal)
+                  {
+                     this.effectIcons.push("lifePoints");
+                     effText = this.getEffectString(ed.minLifePointsAdded,ed.maxLifePointsAdded,ed.minCriticalLifePointsAdded,ed.maxCriticalLifePointsAdded,ed.hasCritical,ed.random);
+                  }
+                  else
+                  {
+                     this.effectIcons.push(null);
+                     effText = this.getEffectString(ed.minDamage,ed.maxDamage,ed.minCriticalDamage,ed.maxCriticalDamage,ed.hasCritical,ed.random);
+                  }
+                  finalStr = finalStr + (HtmlManager.addTag(effText,HtmlManager.SPAN,{"color":(!this.damageConvertedToHeal?this.getElementTextColor(ed.element):healColor)}) + "\n");
                }
             }
          }
          else
          {
-            if(!this.damageConvertedToHeal)
+            if((!this.isHealingSpell) && (!this.damageConvertedToHeal))
             {
                dmgStr = this.getEffectString(this._minDamage,this._maxDamage,this._minCriticalDamage,this._maxCriticalDamage,this.hasCriticalDamage);
                dmgStr = !this.invulnerableState?dmgStr:SpellState.getSpellStateById(56).name;
+               this.effectIcons.push(null);
                finalStr = finalStr + (HtmlManager.addTag(dmgStr,HtmlManager.SPAN,{"color":damageColor}) + "\n");
             }
-            if(!this.invulnerableState)
+            if((!this.isHealingSpell) && (!this.invulnerableState))
             {
-               if((!(this._minShieldPointsRemoved == 0)) && (!(this._maxShieldPointsRemoved == 0)) && (!(this._minCriticalShieldPointsRemoved == 0)) && (!(this._maxCriticalShieldPointsRemoved == 0)))
+               if((!(this._minShieldPointsRemoved == 0)) && (!(this._maxShieldPointsRemoved == 0)))
                {
                   shieldStr = this.getEffectString(this._minShieldPointsRemoved,this._maxShieldPointsRemoved,this._minCriticalShieldPointsRemoved,this._maxCriticalShieldPointsRemoved,this.hasCriticalShieldPointsRemoved);
                }
                if(shieldStr)
                {
+                  this.effectIcons.push(null);
                   finalStr = finalStr + (HtmlManager.addTag(shieldStr,HtmlManager.SPAN,{"color":shieldColor}) + "\n");
                }
             }
-            if((!(this.minLifePointsAdded == 0)) && (!(this.maxLifePointsAdded == 0)) && (!(this.minCriticalLifePointsAdded == 0)) && (!(this.maxCriticalLifePointsAdded == 0)))
+            if((this.hasHeal) || (this.damageConvertedToHeal))
             {
                healStr = this.getEffectString(this.minLifePointsAdded,this.maxLifePointsAdded,this.minCriticalLifePointsAdded,this.maxCriticalLifePointsAdded,this.hasCriticalLifePointsAdded);
-            }
-            if(healStr)
-            {
+               if(this.unhealableState)
+               {
+                  this.effectIcons.push(null);
+                  healStr = SpellState.getSpellStateById(76).name;
+               }
+               else
+               {
+                  this.effectIcons.push("lifePoints");
+               }
                finalStr = finalStr + HtmlManager.addTag(healStr,HtmlManager.SPAN,{"color":healColor});
             }
          }

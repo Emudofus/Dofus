@@ -92,6 +92,7 @@ package com.ankamagames.dofus.uiApi
    import flash.desktop.Clipboard;
    import flash.desktop.ClipboardFormats;
    import com.ankamagames.jerakine.utils.system.CommandLineArguments;
+   import com.ankamagames.dofus.modules.utils.ModuleInstallerFrame;
    import com.ankamagames.dofus.logic.connection.managers.AuthentificationManager;
    import com.ankamagames.dofus.misc.utils.frames.LuaScriptRecorderFrame;
    import com.ankamagames.jerakine.logger.Log;
@@ -335,7 +336,7 @@ package com.ankamagames.dofus.uiApi
       public function log(level:uint, text:*) : void {
          var ui:String = this._currentUi?this._currentUi.uiModule.name + "/" + this._currentUi.uiClass:"?";
          this._log.log(level,"[" + ui + "] " + text);
-         if((!this._module.trusted) || (BuildInfos.BUILD_TYPE >= BuildTypeEnum.TESTING))
+         if((this._module) && (!this._module.trusted) || (BuildInfos.BUILD_TYPE >= BuildTypeEnum.TESTING))
          {
             ModuleLogger.log("[" + ui + "] " + text,level);
          }
@@ -1049,6 +1050,33 @@ package com.ankamagames.dofus.uiApi
                return content;
             }
             return "";
+         }
+         
+         public function toggleModuleInstaller() : void {
+            var mif:ModuleInstallerFrame = Kernel.getWorker().getFrame(ModuleInstallerFrame) as ModuleInstallerFrame;
+            if(mif)
+            {
+               Kernel.getWorker().removeFrame(mif);
+            }
+            else
+            {
+               Kernel.getWorker().addFrame(new ModuleInstallerFrame());
+            }
+         }
+         
+         public function isUpdaterVersion2OrUnknown() : Boolean {
+            if((!CommandLineArguments.getInstance()) || (!CommandLineArguments.getInstance().hasArgument("lang")))
+            {
+               this._log.debug("Updater version : pas d\'updater");
+               return true;
+            }
+            if(!CommandLineArguments.getInstance().hasArgument("updater_version"))
+            {
+               this._log.debug("Updater version : pas de version connue");
+               return false;
+            }
+            this._log.debug("Updater version : " + CommandLineArguments.getInstance().getArgument("updater_version"));
+            return CommandLineArguments.getInstance().getArgument("updater_version") == "v2";
          }
          
          private function getAnkamaPortalUrlParams() : URLVariables {

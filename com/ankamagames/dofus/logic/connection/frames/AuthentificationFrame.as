@@ -22,6 +22,7 @@ package com.ankamagames.dofus.logic.connection.frames
    import com.ankamagames.jerakine.types.DataStoreType;
    import com.ankamagames.jerakine.network.messages.ServerConnectionFailedMessage;
    import com.ankamagames.dofus.network.messages.connection.HelloConnectMessage;
+   import com.ankamagames.dofus.network.messages.connection.IdentificationMessage;
    import com.ankamagames.dofus.network.messages.connection.IdentificationSuccessMessage;
    import com.ankamagames.dofus.network.messages.connection.IdentificationFailedForBadVersionMessage;
    import com.ankamagames.dofus.network.messages.connection.IdentificationFailedBannedMessage;
@@ -100,9 +101,7 @@ package com.ankamagames.dofus.logic.connection.frames
       }
       
       public function pushed() : Boolean {
-         var lengthEula:String = null;
          var lengthTou:String = null;
-         var newLengthEula:String = null;
          var newLengthTou:String = null;
          var files:Array = null;
          this.processInvokeArgs();
@@ -111,15 +110,9 @@ package com.ankamagames.dofus.logic.connection.frames
             PartManagerV2.getInstance().init();
             if(!AirScanner.isStreamingVersion())
             {
-               lengthEula = OptionManager.getOptionManager("dofus")["legalAgreementEula"];
                lengthTou = OptionManager.getOptionManager("dofus")["legalAgreementTou"];
-               newLengthEula = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + I18n.getUiText("ui.legal.eula").length;
                newLengthTou = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + (I18n.getUiText("ui.legal.tou1") + I18n.getUiText("ui.legal.tou2")).length;
                files = new Array();
-               if(lengthEula != newLengthEula)
-               {
-                  files.push("eula");
-               }
                if(lengthTou != newLengthTou)
                {
                   files.push("tou");
@@ -160,7 +153,7 @@ package com.ankamagames.dofus.logic.connection.frames
          var connInfo:Object = null;
          var scfMsg:ServerConnectionFailedMessage = null;
          var hcmsg:HelloConnectMessage = null;
-         var iMsg:* = undefined;
+         var iMsg:IdentificationMessage = null;
          var ismsg:IdentificationSuccessMessage = null;
          var updaterV2:Boolean = false;
          var iffbvmsg:IdentificationFailedForBadVersionMessage = null;
@@ -529,7 +522,7 @@ package com.ankamagames.dofus.logic.connection.frames
          /*
           * Decompilation error
           * Code may be obfuscated
-          * Error type: EmptyStackException
+          * Error type: TranslateException
           */
          throw new IllegalOperationError("Not decompiled due to error");
       }

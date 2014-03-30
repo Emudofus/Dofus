@@ -7,6 +7,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
    import com.ankamagames.atouin.managers.EntitiesManager;
+   import com.ankamagames.dofus.network.types.game.context.FightEntityDispositionInformations;
    
    public class FightReachableCellsMaker extends Object
    {
@@ -46,14 +47,17 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                   infos = entitiesFrame.getEntityInfos(e.id) as GameFightFighterInformations;
                   if(infos)
                   {
-                     node = new _ReachableCellStore(e.position,x,y,this._cellGrid);
-                     node.state = _ReachableCellStore.STATE_UNREACHABLE;
-                     evade = TackleUtil.getTackleForFighter(infos,this._infos);
-                     if((!node.evade) || (evade < node.evade))
+                     if(!((infos.disposition is FightEntityDispositionInformations) && (FightEntityDispositionInformations(infos.disposition).carryingCharacterId == this._infos.contextualId)))
                      {
-                        node.evade = evade;
+                        node = new _ReachableCellStore(e.position,x,y,this._cellGrid);
+                        node.state = _ReachableCellStore.STATE_UNREACHABLE;
+                        evade = TackleUtil.getTackleForFighter(infos,this._infos);
+                        if((!node.evade) || (evade < node.evade))
+                        {
+                           node.evade = evade;
+                        }
+                        this._cellGrid[x][y] = node;
                      }
-                     this._cellGrid[x][y] = node;
                   }
                }
             }

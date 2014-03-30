@@ -11,6 +11,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.actions.OpenTeamSearchAction;
    import com.ankamagames.dofus.logic.game.common.actions.OpenArenaAction;
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import com.ankamagames.dofus.logic.game.common.actions.OpenMapAction;
    import com.ankamagames.dofus.logic.game.common.actions.OpenInventoryAction;
    import com.ankamagames.dofus.network.messages.game.script.CinematicMessage;
    import com.ankamagames.dofus.network.messages.game.context.display.DisplayNumericalValueMessage;
@@ -33,7 +34,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.berilia.managers.TooltipManager;
-   import com.ankamagames.dofus.logic.game.common.actions.OpenMapAction;
+   import com.ankamagames.jerakine.managers.OptionManager;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.jerakine.entities.interfaces.IAnimated;
@@ -89,6 +90,8 @@ package com.ankamagames.dofus.logic.game.common.frames
          var tsa:OpenTeamSearchAction = null;
          var oaa:OpenArenaAction = null;
          var playerEntity:IEntity = null;
+         var oma:OpenMapAction = null;
+         var openPocketMap:* = false;
          var oia:OpenInventoryAction = null;
          var cm:CinematicMessage = null;
          var dnvmsg:DisplayNumericalValueMessage = null;
@@ -147,7 +150,13 @@ package com.ankamagames.dofus.logic.game.common.frames
                   return true;
                }
                TooltipManager.hideAll();
-               KernelEventsManager.getInstance().processCallback(HookList.OpenMap,(msg as OpenMapAction).conquest);
+               oma = msg as OpenMapAction;
+               openPocketMap = OptionManager.getOptionManager("dofus")["lastMapUiWasPocket"];
+               if(!oma.ignoreSetting)
+               {
+                  oma.pocket = openPocketMap;
+               }
+               KernelEventsManager.getInstance().processCallback(HookList.OpenMap,oma.ignoreSetting,oma.pocket,oma.conquest);
                return true;
             case msg is OpenInventoryAction:
                oia = msg as OpenInventoryAction;

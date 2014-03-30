@@ -104,28 +104,28 @@ package com.ankamagames.dofus.logic.game.common.misc
          this._itemsDict = new Dictionary();
          for each (item in items)
          {
-            itemSet = new ItemSet();
-            itemSet.item = item;
-            itemSet.masks = new Dictionary();
+            itemSet = new ItemSet(item);
             this._itemsDict[item.objectUID] = itemSet;
          }
          this.initializeViews(items);
       }
       
       public function initializeFromObjectItems(items:Vector.<ObjectItem>) : void {
-         var item:ObjectItem = null;
+         var i:* = 0;
          var iw:ItemWrapper = null;
          var itemSet:ItemSet = null;
-         var list:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
+         var item:ObjectItem = null;
          this._itemsDict = new Dictionary();
-         for each (item in items)
+         var list:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
+         var l:int = items.length;
+         i = 0;
+         while(i < l)
          {
+            item = items[i];
             iw = ItemWrapper.create(item.position,item.objectUID,item.objectGID,item.quantity,item.effects);
-            itemSet = new ItemSet();
-            itemSet.item = iw;
-            itemSet.masks = new Dictionary();
-            this._itemsDict[item.objectUID] = itemSet;
+            this._itemsDict[item.objectUID] = new ItemSet(iw);
             list.push(iw);
+            i++;
          }
          this.initializeViews(list);
       }
@@ -147,9 +147,7 @@ package com.ankamagames.dofus.logic.game.common.misc
          }
          else
          {
-            itemSet = new ItemSet();
-            itemSet.item = item;
-            itemSet.masks = new Dictionary();
+            itemSet = new ItemSet(item);
             this._itemsDict[item.objectUID] = itemSet;
             this.addItemToViews(itemSet);
          }
@@ -382,11 +380,24 @@ import flash.utils.Dictionary;
 class ItemSet extends Object
 {
    
-   function ItemSet() {
+   function ItemSet(iw:ItemWrapper) {
       super();
+      this.item = iw;
    }
    
    public var item:ItemWrapper;
    
-   public var masks:Dictionary;
+   private var _masks:Dictionary;
+   
+   public function get masks() : Dictionary {
+      if(!this._masks)
+      {
+         this._masks = new Dictionary();
+      }
+      return this._masks;
+   }
+   
+   public function set masks(value:Dictionary) : void {
+      this._masks = value;
+   }
 }

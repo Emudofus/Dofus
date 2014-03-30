@@ -146,21 +146,93 @@ package com.ankamagames.jerakine.data
       }
       
       private function getSortFunction(fieldNames:*, ascending:*) : Function {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var sortWay:Vector.<Number> = null;
+         var indexes:Vector.<Dictionary> = null;
+         var maxFieldIndex:uint = 0;
+         var fieldName:String = null;
+         if(fieldNames is String)
+         {
+            fieldNames = [fieldNames];
+         }
+         if(ascending is Boolean)
+         {
+            ascending = [ascending];
+         }
+         sortWay = new Vector.<Number>();
+         indexes = new Vector.<Dictionary>();
+         var i:uint = 0;
+         while(i < fieldNames.length)
+         {
+            fieldName = fieldNames[i];
+            if(this._searchFieldType[fieldName] == GameDataTypeEnum.I18N)
+            {
+               this.buildI18nSortIndex(fieldName);
+            }
+            else
+            {
+               this.buildSortIndex(fieldName);
+            }
+            if(ascending.length < fieldNames.length)
+            {
+               ascending.push(true);
+            }
+            sortWay.push(ascending[i]?1:-1);
+            indexes.push(this._sortIndex[fieldName]);
+            i++;
+         }
+         maxFieldIndex = fieldNames.length;
+         return function(t1:uint, t2:uint):Number
+         {
+            var fieldIndex:* = 0;
+            while(fieldIndex < maxFieldIndex)
+            {
+               if(indexes[fieldIndex][t1] < indexes[fieldIndex][t2])
+               {
+                  return -sortWay[fieldIndex];
+               }
+               if(indexes[fieldIndex][t1] > indexes[fieldIndex][t2])
+               {
+                  return sortWay[fieldIndex];
+               }
+               fieldIndex++;
+            }
+            return 0;
+         };
       }
       
       private function buildSortIndex(fieldName:String) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var v:* = undefined;
+         var idsCount:* = NaN;
+         var j:uint = 0;
+         if((this._sortIndex[fieldName]) || (!this._searchFieldIndex[fieldName]))
+         {
+            return;
+         }
+         var result:Vector.<uint> = new Vector.<uint>();
+         var itemCount:uint = this._searchFieldCount[fieldName];
+         Object(this._stream).position = this._searchFieldIndex[fieldName];
+         var ref:Dictionary = new Dictionary();
+         this._sortIndex[fieldName] = ref;
+         var type:int = this._searchFieldType[fieldName];
+         var readFct:Function = this.getReadFunction(type);
+         if(readFct == null)
+         {
+            return;
+         }
+         var id:uint = 0;
+         var quickIndexCount:uint = 0;
+         var i:uint = 0;
+         while(i++ < itemCount)
+         {
+            v = readFct();
+            idsCount = this._stream.readInt() * 0.25;
+            j = 0;
+            while(j < idsCount)
+            {
+               ref[this._stream.readInt()] = v;
+               j++;
+            }
+         }
       }
       
       private function buildI18nSortIndex(fieldName:String) : void {

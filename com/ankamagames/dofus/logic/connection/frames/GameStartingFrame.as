@@ -77,11 +77,6 @@ package com.ankamagames.dofus.logic.connection.frames
                return true;
             case msg is AgreementAgreedAction:
                aaa = AgreementAgreedAction(msg);
-               if(aaa.fileName == "eula")
-               {
-                  newLength = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + I18n.getUiText("ui.legal." + aaa.fileName).length;
-                  OptionManager.getOptionManager("dofus")["legalAgreementEula"] = newLength;
-               }
                if(aaa.fileName == "tou")
                {
                   newLength = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + (I18n.getUiText("ui.legal.tou1") + I18n.getUiText("ui.legal.tou2")).length;

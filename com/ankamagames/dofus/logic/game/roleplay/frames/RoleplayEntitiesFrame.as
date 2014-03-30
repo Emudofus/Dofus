@@ -129,16 +129,22 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
    import com.ankamagames.dofus.logic.game.roleplay.types.Fight;
    import com.ankamagames.dofus.logic.game.roleplay.types.GameContextPaddockItemInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.MonsterInGroupLightInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GroupMonsterStaticInformations;
+   import com.ankamagames.dofus.logic.game.common.frames.PartyManagementFrame;
+   import com.ankamagames.dofus.internalDatacenter.people.PartyMemberWrapper;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.AlternativeMonstersInGroupLightInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GroupMonsterStaticInformationsWithAlternatives;
    import com.ankamagames.tiphon.types.IAnimationModifier;
+   import com.ankamagames.dofus.datacenter.monsters.Monster;
    import com.ankamagames.dofus.network.types.game.look.EntityLook;
-   import com.ankamagames.dofus.network.types.game.context.roleplay.MonsterInGroupInformations;
    import com.ankamagames.dofus.network.types.game.look.IndexedEntityLook;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcWithQuestInformations;
-   import com.ankamagames.dofus.datacenter.monsters.Monster;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionFollowers;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMerchantInformations;
    import com.ankamagames.dofus.network.types.game.context.GameRolePlayTaxCollectorInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPrismInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPortalInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
    import com.ankamagames.tiphon.types.TiphonUtility;
    import com.ankamagames.atouin.managers.EntitiesManager;
@@ -1208,16 +1214,55 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          return (_entities[entityId] as FightTeam).teamType;
       }
       
+      private function getMonsterGroup(pStaticMonsterInfos:GroupMonsterStaticInformations) : Vector.<MonsterInGroupLightInformations> {
+         var newGroup:Vector.<MonsterInGroupLightInformations> = null;
+         var pmf:PartyManagementFrame = null;
+         var partyMembers:Vector.<PartyMemberWrapper> = null;
+         var nbMembers:* = 0;
+         var monsterGroup:AlternativeMonstersInGroupLightInformations = null;
+         var member:PartyMemberWrapper = null;
+         var infos:GroupMonsterStaticInformationsWithAlternatives = pStaticMonsterInfos as GroupMonsterStaticInformationsWithAlternatives;
+         if(infos)
+         {
+            pmf = Kernel.getWorker().getFrame(PartyManagementFrame) as PartyManagementFrame;
+            partyMembers = pmf.partyMembers;
+            nbMembers = partyMembers.length;
+            if((nbMembers == 0) && (PlayedCharacterManager.getInstance().hasCompanion))
+            {
+               nbMembers = 2;
+            }
+            else
+            {
+               for each (member in partyMembers)
+               {
+                  nbMembers = nbMembers + member.companions.length;
+               }
+            }
+            for each (monsterGroup in infos.alternatives)
+            {
+               if((!newGroup) || (monsterGroup.playerCount <= nbMembers))
+               {
+                  newGroup = monsterGroup.monsters;
+               }
+            }
+         }
+         return newGroup?newGroup.concat():null;
+      }
+      
       override public function addOrUpdateActor(infos:GameContextActorInformations, animationModifier:IAnimationModifier=null) : AnimatedCharacter {
          var questClip:Sprite = null;
          var q:Quest = null;
          var monstersInfos:GameRolePlayGroupMonsterInformations = null;
          var groupHasMiniBoss:* = false;
+         var i:uint = 0;
+         var underling:MonsterInGroupLightInformations = null;
+         var monster:Monster = null;
+         var monsterGrade:* = 0;
+         var monstersGroup:Vector.<MonsterInGroupLightInformations> = null;
+         var monsterInfos:MonsterInGroupLightInformations = null;
          var followersLooks:Vector.<EntityLook> = null;
          var followersSpeeds:Vector.<Number> = null;
-         var i:uint = 0;
          var entityLooks:Vector.<EntityLook> = null;
-         var underling:MonsterInGroupInformations = null;
          var option:* = undefined;
          var indexedLooks:Array = null;
          var indexedEL:IndexedEntityLook = null;
@@ -1270,15 +1315,49 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             case infos is GameRolePlayGroupMonsterInformations:
                monstersInfos = infos as GameRolePlayGroupMonsterInformations;
                groupHasMiniBoss = Monster.getMonsterById(monstersInfos.staticInfos.mainCreatureLightInfos.creatureGenericId).isMiniBoss;
-               followersLooks = Dofus.getInstance().options.showEveryMonsters?new Vector.<EntityLook>(monstersInfos.staticInfos.underlings.length,true):null;
-               followersSpeeds = followersLooks?new Vector.<Number>(followersLooks.length,true):null;
                i = 0;
+               monstersGroup = this.getMonsterGroup(monstersInfos.staticInfos);
+               if(monstersGroup)
+               {
+                  for each (monsterInfos in monstersGroup)
+                  {
+                     if(monsterInfos.creatureGenericId == monstersInfos.staticInfos.mainCreatureLightInfos.creatureGenericId)
+                     {
+                        monstersGroup.splice(monstersGroup.indexOf(monsterInfos),1);
+                        break;
+                     }
+                  }
+               }
+               followersLooks = Dofus.getInstance().options.showEveryMonsters?new Vector.<EntityLook>(!monstersGroup?monstersInfos.staticInfos.underlings.length:monstersGroup.length,true):null;
+               followersSpeeds = followersLooks?new Vector.<Number>(followersLooks.length,true):null;
                for each (underling in monstersInfos.staticInfos.underlings)
                {
                   if(followersLooks)
                   {
-                     followersSpeeds[i] = Monster.getMonsterById(underling.creatureGenericId).speedAdjust;
-                     followersLooks[i++] = underling.look;
+                     monster = Monster.getMonsterById(underling.creatureGenericId);
+                     monsterGrade = -1;
+                     if(!monstersGroup)
+                     {
+                        monsterGrade = 0;
+                     }
+                     else
+                     {
+                        for each (monsterInfos in monstersGroup)
+                        {
+                           if(monsterInfos.creatureGenericId == underling.creatureGenericId)
+                           {
+                              monstersGroup.splice(monstersGroup.indexOf(monsterInfos),1);
+                              monsterGrade = monsterInfos.grade;
+                              break;
+                           }
+                        }
+                     }
+                     if(monsterGrade >= 0)
+                     {
+                        followersSpeeds[i] = monster.speedAdjust;
+                        followersLooks[i] = EntityLookAdapter.toNetwork(TiphonEntityLook.fromString(monster.look));
+                        i++;
+                     }
                   }
                   if((!groupHasMiniBoss) && (Monster.getMonsterById(underling.creatureGenericId).isMiniBoss))
                   {
@@ -1364,9 +1443,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                break;
             case infos is GameRolePlayTaxCollectorInformations:
             case infos is GameRolePlayPrismInformations:
+            case infos is GameRolePlayPortalInformations:
                ac.allowMovementThrough = true;
                break;
             case infos is GameRolePlayNpcInformations:
+               this._npcList[infos.contextualId] = ac;
             case infos is GameContextPaddockItemInformations:
                break;
          }

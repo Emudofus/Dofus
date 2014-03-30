@@ -5,6 +5,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import flash.geom.Point;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
+   import com.ankamagames.berilia.components.Label;
    import com.ankamagames.berilia.components.Texture;
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
    import com.ankamagames.dofus.uiApi.SystemApi;
@@ -17,10 +18,12 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import flash.events.Event;
    import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.data.XmlConfig;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.atouin.messages.AdjacentMapOverMessage;
    import com.ankamagames.atouin.types.GraphicCell;
    import com.ankamagames.berilia.types.data.LinkedCursorData;
+   import com.ankamagames.dofus.datacenter.world.SubArea;
    import com.ankamagames.jerakine.entities.messages.EntityMouseOverMessage;
    import com.ankamagames.jerakine.entities.interfaces.IInteractive;
    import com.ankamagames.jerakine.interfaces.IRectangle;
@@ -60,11 +63,16 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.network.types.game.interactive.InteractiveElementWithAgeBonus;
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.berilia.managers.TooltipManager;
    import com.ankamagames.berilia.managers.LinkedCursorSpriteManager;
    import com.ankamagames.atouin.utils.CellIdConverter;
    import com.ankamagames.atouin.managers.InteractiveCellManager;
-   import com.ankamagames.atouin.AtouinConstants;
    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
+   import com.ankamagames.jerakine.data.I18n;
+   import flash.display.Sprite;
+   import com.ankamagames.atouin.AtouinConstants;
+   import com.ankamagames.berilia.managers.UiModuleManager;
+   import com.ankamagames.berilia.enums.StrataEnum;
    import com.ankamagames.jerakine.managers.OptionManager;
    import com.ankamagames.jerakine.enum.OptionEnum;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
@@ -80,15 +88,15 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.datacenter.npcs.TaxCollectorName;
    import com.ankamagames.dofus.datacenter.npcs.TaxCollectorFirstname;
    import com.ankamagames.berilia.types.data.TextTooltipInfo;
-   import com.ankamagames.jerakine.data.XmlConfig;
    import com.ankamagames.dofus.logic.game.roleplay.types.PrismTooltipInformation;
+   import com.ankamagames.dofus.logic.game.roleplay.types.PortalTooltipInformation;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPortalInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMerchantInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayGroupMonsterInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPrismInformations;
+   import com.ankamagames.dofus.logic.game.roleplay.types.GameContextPaddockItemInformations;
    import com.ankamagames.tiphon.events.TiphonEvent;
-   import com.ankamagames.berilia.managers.TooltipManager;
-   import com.ankamagames.berilia.managers.UiModuleManager;
    import com.ankamagames.berilia.types.LocationEnum;
-   import com.ankamagames.berilia.enums.StrataEnum;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNamedActorInformations;
    import com.ankamagames.berilia.factories.MenusFactory;
    import com.ankamagames.dofus.logic.game.roleplay.managers.RoleplayManager;
@@ -138,6 +146,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       
       private const _common:String = XmlConfig.getInstance().getEntry("config.ui.skin");
       
+      private var _mouseLabel:Label;
+      
       private var _mouseTop:Texture;
       
       private var _mouseBottom:Texture;
@@ -145,6 +155,14 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       private var _mouseRight:Texture;
       
       private var _mouseLeft:Texture;
+      
+      private var _mouseTopBlue:Texture;
+      
+      private var _mouseBottomBlue:Texture;
+      
+      private var _mouseRightBlue:Texture;
+      
+      private var _mouseLeftBlue:Texture;
       
       private var _texturesReady:Boolean;
       
@@ -229,6 +247,20 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          this._mouseLeft = new Texture();
          this._mouseLeft.uri = new Uri(this._common + "assets.swf|cursorLeft");
          this._mouseLeft.finalize();
+         this._mouseBottomBlue = new Texture();
+         this._mouseBottomBlue.uri = new Uri(this._common + "assets.swf|cursorBottomBlue");
+         this._mouseBottomBlue.finalize();
+         this._mouseTopBlue = new Texture();
+         this._mouseTopBlue.uri = new Uri(this._common + "assets.swf|cursorTopBlue");
+         this._mouseTopBlue.finalize();
+         this._mouseRightBlue = new Texture();
+         this._mouseRightBlue.uri = new Uri(this._common + "assets.swf|cursorRightBlue");
+         this._mouseRightBlue.finalize();
+         this._mouseLeftBlue = new Texture();
+         this._mouseLeftBlue.uri = new Uri(this._common + "assets.swf|cursorLeftBlue");
+         this._mouseLeftBlue.finalize();
+         this._mouseLabel = new Label();
+         this._mouseLabel.css = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "css/normal.css");
          this._texturesReady = true;
          return true;
       }
@@ -238,6 +270,12 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          var targetCell:Point = null;
          var cellSprite:GraphicCell = null;
          var item:LinkedCursorData = null;
+         var neighborId:* = 0;
+         var neighborSubarea:SubArea = null;
+         var subareaChange:* = false;
+         var x:* = 0;
+         var y:* = 0;
+         var info:String = null;
          var emomsg:EntityMouseOverMessage = null;
          var tooltipName:String = null;
          var entity:IInteractive = null;
@@ -275,6 +313,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          var climsg:CellClickMessage = null;
          var amcmsg:AdjacentMapClickMessage = null;
          var playedEntity:IEntity = null;
+         var text:String = null;
+         var text2:String = null;
+         var target2:Rectangle = null;
+         var param:Object = null;
          var tooltipTarget:TiphonSprite = null;
          var rider:TiphonSprite = null;
          var isCreatureMode:* = false;
@@ -369,6 +411,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                {
                   return false;
                }
+               TooltipManager.hide("subareaChange");
                LinkedCursorSpriteManager.getInstance().removeItem("changeMapCursor");
                return true;
             case msg is AdjacentMapOverMessage:
@@ -380,40 +423,104 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                targetCell = CellIdConverter.cellIdToCoord(amomsg.cellId);
                cellSprite = InteractiveCellManager.getInstance().getCell(amomsg.cellId);
                item = new LinkedCursorData();
+               if(amomsg.direction == DirectionsEnum.RIGHT)
+               {
+                  neighborId = PlayedCharacterManager.getInstance().currentMap.rightNeighbourId;
+               }
+               else
+               {
+                  if(amomsg.direction == DirectionsEnum.DOWN)
+                  {
+                     neighborId = PlayedCharacterManager.getInstance().currentMap.bottomNeighbourId;
+                  }
+                  else
+                  {
+                     if(amomsg.direction == DirectionsEnum.LEFT)
+                     {
+                        neighborId = PlayedCharacterManager.getInstance().currentMap.leftNeighbourId;
+                     }
+                     else
+                     {
+                        if(amomsg.direction == DirectionsEnum.UP)
+                        {
+                           neighborId = PlayedCharacterManager.getInstance().currentMap.topNeighbourId;
+                        }
+                     }
+                  }
+               }
+               neighborSubarea = SubArea.getSubAreaByMapId(neighborId);
+               subareaChange = false;
+               x = 0;
+               y = 0;
+               if((neighborSubarea) && (!(neighborSubarea.id == PlayedCharacterManager.getInstance().currentSubArea.id)))
+               {
+                  subareaChange = true;
+                  text = I18n.getUiText("ui.common.toward",[neighborSubarea.name]);
+                  text2 = I18n.getUiText("ui.common.level") + " " + neighborSubarea.level;
+                  this._mouseLabel.text = text.length > text2.length?text:text2;
+                  info = text + "\n" + text2;
+               }
                switch(amomsg.direction)
                {
                   case DirectionsEnum.LEFT:
-                     item.sprite = this._mouseLeft;
+                     item.sprite = subareaChange?this._mouseLeftBlue:this._mouseLeft;
                      item.lockX = true;
                      item.sprite.x = amomsg.zone.x + amomsg.zone.width / 2;
                      item.offset = new Point(0,0);
                      item.lockY = true;
                      item.sprite.y = cellSprite.y + AtouinConstants.CELL_HEIGHT / 2;
+                     if(subareaChange)
+                     {
+                        x = 0;
+                        y = item.sprite.height / 2;
+                     }
                      break;
                   case DirectionsEnum.UP:
-                     item.sprite = this._mouseTop;
+                     item.sprite = subareaChange?this._mouseTopBlue:this._mouseTop;
                      item.lockY = true;
                      item.sprite.y = amomsg.zone.y + amomsg.zone.height / 2;
                      item.offset = new Point(0,0);
                      item.lockX = true;
                      item.sprite.x = cellSprite.x + AtouinConstants.CELL_WIDTH / 2;
+                     if(subareaChange)
+                     {
+                        x = -this._mouseLabel.textWidth / 2;
+                        y = item.sprite.height + 5;
+                     }
                      break;
                   case DirectionsEnum.DOWN:
-                     item.sprite = this._mouseBottom;
+                     item.sprite = subareaChange?this._mouseBottomBlue:this._mouseBottom;
                      item.lockY = true;
                      item.sprite.y = amomsg.zone.getBounds(amomsg.zone).top;
                      item.offset = new Point(0,0);
                      item.lockX = true;
                      item.sprite.x = cellSprite.x + AtouinConstants.CELL_WIDTH / 2;
+                     if(subareaChange)
+                     {
+                        x = -this._mouseLabel.textWidth / 2;
+                        y = -item.sprite.height - this._mouseLabel.textHeight - 34;
+                     }
                      break;
                   case DirectionsEnum.RIGHT:
-                     item.sprite = this._mouseRight;
+                     item.sprite = subareaChange?this._mouseRightBlue:this._mouseRight;
                      item.lockX = true;
                      item.sprite.x = amomsg.zone.getBounds(amomsg.zone).left + amomsg.zone.width / 2;
                      item.offset = new Point(0,0);
                      item.lockY = true;
                      item.sprite.y = cellSprite.y + AtouinConstants.CELL_HEIGHT / 2;
+                     if(subareaChange)
+                     {
+                        x = -this._mouseLabel.textWidth;
+                        y = item.sprite.height / 2;
+                     }
                      break;
+               }
+               if(subareaChange)
+               {
+                  target2 = new Rectangle(item.sprite.x + x,item.sprite.y + y,1,1);
+                  param = new Object();
+                  param.classCss = "center";
+                  TooltipManager.show(info,target2,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"subareaChange",0,0,0,true,null,null,param,"Text" + neighborId,false,StrataEnum.STRATA_TOOLTIP,1);
                }
                LinkedCursorSpriteManager.getInstance().addItem("changeMapCursor",item);
                return true;
@@ -491,6 +598,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                         infos = new CharacterTooltipInformation(infos as GameRolePlayCharacterInformations,levelDiffInfo);
                         cacheName = "CharacterCache";
                         break;
+                     case infos is GameRolePlayMerchantInformations:
+                        cacheName = "MerchantCharacterCache";
+                        break;
                      case infos is GameRolePlayMutantInformations:
                         if((infos as GameRolePlayMutantInformations).humanoidInfo.restrictions.cantAttack)
                         {
@@ -549,6 +659,12 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                         allianceFrame = Kernel.getWorker().getFrame(AllianceFrame) as AllianceFrame;
                         infos = new PrismTooltipInformation(allianceFrame.getPrismSubAreaById(PlayedCharacterManager.getInstance().currentSubArea.id).alliance);
                         break;
+                     case infos is GameRolePlayPortalInformations:
+                        infos = new PortalTooltipInformation((infos as GameRolePlayPortalInformations).portal.areaId);
+                        break;
+                     case infos is GameContextPaddockItemInformations:
+                        cacheName = "PaddockItemCache";
+                        break;
                   }
                }
                if(!infos)
@@ -570,6 +686,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                         "tooltipOffset":tooltipOffset,
                         "cacheName":cacheName
                      };
+                  animatedCharacter.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityAnimRendered);
                   animatedCharacter.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityAnimRendered);
                }
                else
