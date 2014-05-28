@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItemToSell;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6038;
       }
       
-      public function initExchangeShopStockMultiMovementUpdatedMessage(objectInfoList:Vector.<ObjectItemToSell>=null) : ExchangeShopStockMultiMovementUpdatedMessage {
+      public function initExchangeShopStockMultiMovementUpdatedMessage(objectInfoList:Vector.<ObjectItemToSell> = null) : ExchangeShopStockMultiMovementUpdatedMessage {
          this.objectInfoList = objectInfoList;
          this._isInitialized = true;
          return this;

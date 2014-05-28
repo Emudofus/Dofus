@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 6445;
       }
       
-      public function initAllianceTaxCollectorDialogQuestionExtendedMessage(guildInfo:BasicGuildInformations=null, maxPods:uint=0, prospecting:uint=0, wisdom:uint=0, taxCollectorsCount:uint=0, taxCollectorAttack:int=0, kamas:uint=0, experience:Number=0, pods:uint=0, itemsValue:uint=0, alliance:BasicNamedAllianceInformations=null) : AllianceTaxCollectorDialogQuestionExtendedMessage {
+      public function initAllianceTaxCollectorDialogQuestionExtendedMessage(guildInfo:BasicGuildInformations = null, maxPods:uint = 0, prospecting:uint = 0, wisdom:uint = 0, taxCollectorsCount:uint = 0, taxCollectorAttack:int = 0, kamas:uint = 0, experience:Number = 0, pods:uint = 0, itemsValue:uint = 0, alliance:BasicNamedAllianceInformations = null) : AllianceTaxCollectorDialogQuestionExtendedMessage {
          super.initTaxCollectorDialogQuestionExtendedMessage(guildInfo,maxPods,prospecting,wisdom,taxCollectorsCount,taxCollectorAttack,kamas,experience,pods,itemsValue);
          this.alliance = alliance;
          this._isInitialized = true;

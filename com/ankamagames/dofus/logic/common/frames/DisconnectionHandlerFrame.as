@@ -28,9 +28,9 @@ package com.ankamagames.dofus.logic.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DisconnectionHandlerFrame));
+      protected static const _log:Logger;
       
-      public static var messagesAfterReset:Array = new Array();
+      public static var messagesAfterReset:Array;
       
       public function get priority() : int {
          return Priority.LOW;
@@ -123,6 +123,8 @@ package com.ankamagames.dofus.logic.common.frames
                   KernelEventsManager.getInstance().processCallback(HookList.InformationPopup,[(msg as OpenPopupAction).messageToShow]);
                }
                return true;
+            default:
+               return false;
          }
       }
       

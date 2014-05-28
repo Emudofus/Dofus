@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6002;
       }
       
-      public function initExchangeReplayMessage(count:int=0) : ExchangeReplayMessage {
+      public function initExchangeReplayMessage(count:int = 0) : ExchangeReplayMessage {
          this.count = count;
          this._isInitialized = true;
          return this;

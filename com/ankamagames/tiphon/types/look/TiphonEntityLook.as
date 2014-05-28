@@ -5,13 +5,12 @@ package com.ankamagames.tiphon.types.look
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.DefaultableColor;
    
    public class TiphonEntityLook extends Object implements EntityLookObserver, ISecurizable
    {
       
-      public function TiphonEntityLook(sLook:String=null) {
+      public function TiphonEntityLook(sLook:String = null) {
          super();
          MEMORY_LOG[this] = 1;
          if(sLook)
@@ -20,11 +19,11 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TiphonEntityLook));
+      protected static const _log:Logger;
       
-      public static function fromString(str:String, tiphonInstance:TiphonEntityLook=null) : TiphonEntityLook {
+      public static function fromString(str:String, tiphonInstance:TiphonEntityLook = null) : TiphonEntityLook {
          return EntityLookParser.fromString(str,EntityLookParser.CURRENT_FORMAT_VERSION,EntityLookParser.DEFAULT_NUMBER_BASE,tiphonInstance);
       }
       
@@ -105,7 +104,7 @@ package com.ankamagames.tiphon.types.look
          this._bone = bone;
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.boneChanged(this);
             }
@@ -116,7 +115,7 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function getSkins(byRef:Boolean=false, keepDefaultSkin:Boolean=true) : Vector.<uint> {
+      public function getSkins(byRef:Boolean = false, keepDefaultSkin:Boolean = true) : Vector.<uint> {
          if(!this._skins)
          {
             return null;
@@ -150,7 +149,7 @@ package com.ankamagames.tiphon.types.look
          this._skins = null;
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.skinsChanged(this);
             }
@@ -161,7 +160,7 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function addSkin(skin:uint, addInFirstPosition:Boolean=false) : void {
+      public function addSkin(skin:uint, addInFirstPosition:Boolean = false) : void {
          var elo:Object = null;
          if(!this._skins)
          {
@@ -177,7 +176,7 @@ package com.ankamagames.tiphon.types.look
          }
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.skinsChanged(this);
             }
@@ -202,7 +201,7 @@ package com.ankamagames.tiphon.types.look
          this._skins = this._skins.slice(0,skinPos).concat(this._skins.slice(skinPos + 1));
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.skinsChanged(this);
             }
@@ -213,7 +212,7 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function getColors(byRef:Boolean=false) : Array {
+      public function getColors(byRef:Boolean = false) : Array {
          var colorIndex:String = null;
          if(!this._colors)
          {
@@ -224,7 +223,7 @@ package com.ankamagames.tiphon.types.look
             return this._colors;
          }
          var colorsDeepCopy:Array = new Array();
-         for (colorIndex in this._colors)
+         for(colorIndex in this._colors)
          {
             colorsDeepCopy[uint(colorIndex)] = this._colors[colorIndex];
          }
@@ -252,10 +251,10 @@ package com.ankamagames.tiphon.types.look
          {
             return;
          }
-         delete this._colors[[index]];
+         delete this._colors[index];
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.colorsChanged(this);
             }
@@ -275,7 +274,7 @@ package com.ankamagames.tiphon.types.look
          this._colors = null;
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.colorsChanged(this);
             }
@@ -306,7 +305,7 @@ package com.ankamagames.tiphon.types.look
          }
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.colorsChanged(this);
             }
@@ -330,7 +329,7 @@ package com.ankamagames.tiphon.types.look
          this._scaleX = value;
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.scalesChanged(this);
             }
@@ -354,7 +353,7 @@ package com.ankamagames.tiphon.types.look
          this._scaleY = value;
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.scalesChanged(this);
             }
@@ -375,7 +374,7 @@ package com.ankamagames.tiphon.types.look
          this._scaleY = y;
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.scalesChanged(this);
             }
@@ -386,7 +385,7 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function getSubEntities(byRef:Boolean=false) : Array {
+      public function getSubEntities(byRef:Boolean = false) : Array {
          var subEntityCategory:String = null;
          var category:uint = 0;
          var subEntityIndex:String = null;
@@ -400,14 +399,14 @@ package com.ankamagames.tiphon.types.look
             return this._subEntities;
          }
          var subEntitesDeepCopy:Array = new Array();
-         for (subEntityCategory in this._subEntities)
+         for(subEntityCategory in this._subEntities)
          {
             category = uint(subEntityCategory);
             if(!subEntitesDeepCopy[category])
             {
                subEntitesDeepCopy[category] = new Array();
             }
-            for (subEntityIndex in this._subEntities[subEntityCategory])
+            for(subEntityIndex in this._subEntities[subEntityCategory])
             {
                index = uint(subEntityIndex);
                subEntitesDeepCopy[category][index] = this._subEntities[subEntityCategory][subEntityIndex];
@@ -424,7 +423,7 @@ package com.ankamagames.tiphon.types.look
             return null;
          }
          var subEntitiesDeepCopy:Array = new Array();
-         for (subEntityIndex in this._subEntities[category])
+         for(subEntityIndex in this._subEntities[category])
          {
             index = uint(subEntityIndex);
             subEntitiesDeepCopy[index] = this._subEntities[category][subEntityIndex];
@@ -445,34 +444,12 @@ package com.ankamagames.tiphon.types.look
       }
       
       public function resetSubEntities() : void {
-         var subEntityCategory:String = null;
-         var subEntityIndex:String = null;
-         var subEntity:TiphonEntityLook = null;
-         var elo:Object = null;
-         if(!this._subEntities)
-         {
-            return;
-         }
-         for (subEntityCategory in this._subEntities)
-         {
-            for (subEntityIndex in this._subEntities[subEntityCategory])
-            {
-               subEntity = this._subEntities[subEntityCategory][subEntityIndex];
-               subEntity.removeObserver(this);
-            }
-         }
-         this._subEntities = null;
-         if(!this._locked)
-         {
-            for (elo in this._observers)
-            {
-               elo.subEntitiesChanged(this);
-            }
-         }
-         else
-         {
-            this._subEntitiesChangedWhileLocked = true;
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function addSubEntity(category:uint, index:uint, subEntity:TiphonEntityLook) : void {
@@ -489,7 +466,7 @@ package com.ankamagames.tiphon.types.look
          this._subEntities[category][index] = subEntity;
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.subEntitiesChanged(this);
             }
@@ -500,20 +477,20 @@ package com.ankamagames.tiphon.types.look
          }
       }
       
-      public function removeSubEntity(category:uint, index:uint=0) : void {
+      public function removeSubEntity(category:uint, index:uint = 0) : void {
          var elo:Object = null;
          if((!this._subEntities) || (!this._subEntities[category]) || (!this._subEntities[category][index]))
          {
             return;
          }
-         delete this._subEntities[category][[index]];
+         delete this._subEntities[category][index];
          if(this._subEntities[category].length == 1)
          {
-            delete this._subEntities[[category]];
+            delete this._subEntities[category];
          }
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.subEntitiesChanged(this);
             }
@@ -537,7 +514,7 @@ package com.ankamagames.tiphon.types.look
          this._subEntitiesChangedWhileLocked = false;
       }
       
-      public function unlock(silentUnlock:Boolean=false) : void {
+      public function unlock(silentUnlock:Boolean = false) : void {
          var elo0:Object = null;
          var elo1:Object = null;
          var elo2:Object = null;
@@ -552,7 +529,7 @@ package com.ankamagames.tiphon.types.look
          {
             if(this._boneChangedWhileLocked)
             {
-               for (elo0 in this._observers)
+               for(elo0 in this._observers)
                {
                   elo0.boneChanged(this);
                }
@@ -560,7 +537,7 @@ package com.ankamagames.tiphon.types.look
             }
             if(this._skinsChangedWhileLocked)
             {
-               for (elo1 in this._observers)
+               for(elo1 in this._observers)
                {
                   elo1.skinsChanged(this);
                }
@@ -568,7 +545,7 @@ package com.ankamagames.tiphon.types.look
             }
             if(this._colorsChangedWhileLocked)
             {
-               for (elo2 in this._observers)
+               for(elo2 in this._observers)
                {
                   elo2.colorsChanged(this);
                }
@@ -576,7 +553,7 @@ package com.ankamagames.tiphon.types.look
             }
             if(this._scalesChangedWhileLocked)
             {
-               for (elo3 in this._observers)
+               for(elo3 in this._observers)
                {
                   elo3.scalesChanged(this);
                }
@@ -584,7 +561,7 @@ package com.ankamagames.tiphon.types.look
             }
             if(this._subEntitiesChangedWhileLocked)
             {
-               for (elo4 in this._observers)
+               for(elo4 in this._observers)
                {
                   elo4.subEntitiesChanged(this);
                }
@@ -606,7 +583,7 @@ package com.ankamagames.tiphon.types.look
          {
             return;
          }
-         delete this._observers[[elo]];
+         delete this._observers[elo];
       }
       
       public function toString() : String {
@@ -648,7 +625,7 @@ package com.ankamagames.tiphon.types.look
             {
                return false;
             }
-            for each (skin in this._skins)
+            for each(skin in this._skins)
             {
                if(el._skins.indexOf(skin) == -1)
                {
@@ -662,14 +639,14 @@ package com.ankamagames.tiphon.types.look
          }
          if((this._colors) && (el._colors))
          {
-            for (colorIndexStr in this._colors)
+            for(colorIndexStr in this._colors)
             {
                if(el._colors[colorIndexStr] != this._colors[colorIndexStr])
                {
                   return false;
                }
             }
-            for (colorIndexStr2 in el._colors)
+            for(colorIndexStr2 in el._colors)
             {
                if(this._colors[colorIndexStr2] != el._colors[colorIndexStr2])
                {
@@ -677,7 +654,7 @@ package com.ankamagames.tiphon.types.look
                }
             }
          }
-         for (subCat in this._subEntities)
+         for(subCat in this._subEntities)
          {
             if(this._subEntities[subCat])
             {
@@ -685,7 +662,7 @@ package com.ankamagames.tiphon.types.look
                break;
             }
          }
-         for (subCat in el._subEntities)
+         for(subCat in el._subEntities)
          {
             if(el._subEntities[subCat])
             {
@@ -699,13 +676,13 @@ package com.ankamagames.tiphon.types.look
          }
          if((this._subEntities) && (el._subEntities))
          {
-            for (subEntityCatStr in this._subEntities)
+            for(subEntityCatStr in this._subEntities)
             {
                if((!el._subEntities) || (el._subEntities[subEntityCatStr] == null))
                {
                   return false;
                }
-               for (subEntityCatIndexStr in this._subEntities[subEntityCatStr])
+               for(subEntityCatIndexStr in this._subEntities[subEntityCatStr])
                {
                   se = el._subEntities[subEntityCatStr][subEntityCatIndexStr];
                   if(se == null)
@@ -718,13 +695,13 @@ package com.ankamagames.tiphon.types.look
                   }
                }
             }
-            for (subEntityCatStr2 in el._subEntities)
+            for(subEntityCatStr2 in el._subEntities)
             {
                if((!this._subEntities) || (this._subEntities[subEntityCatStr2] == null))
                {
                   return false;
                }
-               for (subEntityCatIndexStr2 in el._subEntities[subEntityCatStr2])
+               for(subEntityCatIndexStr2 in el._subEntities[subEntityCatStr2])
                {
                   se2 = this._subEntities[subEntityCatStr2][subEntityCatIndexStr2];
                   if(se2 == null)
@@ -768,7 +745,7 @@ package com.ankamagames.tiphon.types.look
          var elo:Object = null;
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.subEntitiesChanged(this);
             }
@@ -783,7 +760,7 @@ package com.ankamagames.tiphon.types.look
          var elo:Object = null;
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.subEntitiesChanged(this);
             }
@@ -798,7 +775,7 @@ package com.ankamagames.tiphon.types.look
          var elo:Object = null;
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.subEntitiesChanged(this);
             }
@@ -813,7 +790,7 @@ package com.ankamagames.tiphon.types.look
          var elo:Object = null;
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.subEntitiesChanged(this);
             }
@@ -828,7 +805,7 @@ package com.ankamagames.tiphon.types.look
          var elo:Object = null;
          if(!this._locked)
          {
-            for (elo in this._observers)
+            for(elo in this._observers)
             {
                elo.subEntitiesChanged(this);
             }
@@ -852,10 +829,10 @@ package com.ankamagames.tiphon.types.look
          if(this._subEntities)
          {
             o._subEntities = [];
-            for (i in this._subEntities)
+            for(i in this._subEntities)
             {
                o._subEntities[i] = [];
-               for (j in this._subEntities[i])
+               for(j in this._subEntities[i])
                {
                   if(this._subEntities[i][j])
                   {

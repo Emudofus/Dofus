@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
          return 6280;
       }
       
-      public function initGameRolePlayArenaRegisterMessage(battleMode:uint=3) : GameRolePlayArenaRegisterMessage {
+      public function initGameRolePlayArenaRegisterMessage(battleMode:uint = 3) : GameRolePlayArenaRegisterMessage {
          this.battleMode = battleMode;
          this._isInitialized = true;
          return this;

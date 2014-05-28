@@ -1,12 +1,11 @@
 package com.ankamagames.jerakine.utils.benchmark.monitoring
 {
    import flash.utils.Dictionary;
-   import __AS3__.vec.*;
    
    public class MonitoredObject extends Object
    {
       
-      public function MonitoredObject(pName:String, pColor:uint, pParentList:List=null) {
+      public function MonitoredObject(pName:String, pColor:uint, pParentList:List = null) {
          super();
          this.name = pName;
          this.list = new Dictionary(true);

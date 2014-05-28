@@ -11,7 +11,7 @@ package com.ankamagames.jerakine.handlers.messages.mouse
          super();
       }
       
-      public static function create(target:InteractiveObject, mouseEvent:MouseEvent, instance:MouseMessage=null) : MouseOutMessage {
+      public static function create(target:InteractiveObject, mouseEvent:MouseEvent, instance:MouseMessage = null) : MouseOutMessage {
          if(!instance)
          {
             instance = new MouseOutMessage();

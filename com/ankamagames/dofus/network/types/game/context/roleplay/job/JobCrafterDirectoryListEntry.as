@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.job
          return 196;
       }
       
-      public function initJobCrafterDirectoryListEntry(playerInfo:JobCrafterDirectoryEntryPlayerInfo=null, jobInfo:JobCrafterDirectoryEntryJobInfo=null) : JobCrafterDirectoryListEntry {
+      public function initJobCrafterDirectoryListEntry(playerInfo:JobCrafterDirectoryEntryPlayerInfo = null, jobInfo:JobCrafterDirectoryEntryJobInfo = null) : JobCrafterDirectoryListEntry {
          this.playerInfo = playerInfo;
          this.jobInfo = jobInfo;
          return this;

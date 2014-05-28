@@ -59,12 +59,10 @@ package com.ankamagames.dofus.logic.connection.managers
       }
       
       private function onDataReceived(e:Event) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc2_:* = true;
+         var _loc3_:* = false;
+         this._haveAccess = this._rpc.getAllResultData();
+         dispatchEvent(new Event(Event.INIT));
       }
    }
 }

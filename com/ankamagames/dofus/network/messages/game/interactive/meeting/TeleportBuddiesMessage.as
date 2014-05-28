@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.meeting
          return 6289;
       }
       
-      public function initTeleportBuddiesMessage(dungeonId:uint=0) : TeleportBuddiesMessage {
+      public function initTeleportBuddiesMessage(dungeonId:uint = 0) : TeleportBuddiesMessage {
          this.dungeonId = dungeonId;
          this._isInitialized = true;
          return this;

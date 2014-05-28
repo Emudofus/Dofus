@@ -33,13 +33,13 @@ package com.ankamagames.tiphon.engine
          }
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(Tiphon));
+      private static const _log:Logger;
       
       private static var _self:Tiphon;
       
-      public static const skullLibrary:LibrariesManager = TiphonLibraries.skullLibrary;
+      public static const skullLibrary:LibrariesManager;
       
-      public static const skinLibrary:LibrariesManager = TiphonLibraries.skinLibrary;
+      public static const skinLibrary:LibrariesManager;
       
       public static function getInstance() : Tiphon {
          if(_self == null)
@@ -76,7 +76,7 @@ package com.ankamagames.tiphon.engine
          return this._toOptions;
       }
       
-      public function init(sSwfSkullPath:String, sSwfSkinPath:String, animIndexPath:String=null) : void {
+      public function init(sSwfSkullPath:String, sSwfSkinPath:String, animIndexPath:String = null) : void {
          if(sSwfSkullPath.split("://").length == 1)
          {
             sSwfSkullPath = "file://" + sSwfSkullPath;
@@ -105,33 +105,27 @@ package com.ankamagames.tiphon.engine
          this._toOptions = topt;
       }
       
-      public function handleFLAEvent(pAnimationName:String, pType:String, pParams:String, pSprite:Object=null) : void {
+      public function handleFLAEvent(pAnimationName:String, pType:String, pParams:String, pSprite:Object = null) : void {
          var tiphonSprite:TiphonSprite = pSprite as TiphonSprite;
          if(pParams == TiphonEvent.EVENT_SHOT)
          {
             tiphonSprite.onAnimationEvent(TiphonEvent.EVENT_SHOT);
          }
-         else
+         else if(pParams == TiphonEvent.EVENT_END)
          {
-            if(pParams == TiphonEvent.EVENT_END)
-            {
-               tiphonSprite.onAnimationEvent(TiphonEvent.EVENT_END);
-            }
-            else
-            {
-               if(pParams == TiphonEvent.PLAYER_STOP)
-               {
-                  tiphonSprite.onAnimationEvent(TiphonEvent.PLAYER_STOP);
-               }
-               else
-               {
-                  if(pType == TiphonEvent.PLAYANIM_EVENT)
-                  {
-                     tiphonSprite.onAnimationEvent(TiphonEvent.PLAYANIM_EVENT,pParams);
-                  }
-               }
-            }
+            tiphonSprite.onAnimationEvent(TiphonEvent.EVENT_END);
          }
+         else if(pParams == TiphonEvent.PLAYER_STOP)
+         {
+            tiphonSprite.onAnimationEvent(TiphonEvent.PLAYER_STOP);
+         }
+         else if(pType == TiphonEvent.PLAYANIM_EVENT)
+         {
+            tiphonSprite.onAnimationEvent(TiphonEvent.PLAYANIM_EVENT,pParams);
+         }
+         
+         
+         
       }
       
       public function removeEntitySound(pEntityId:IEntity) : void {

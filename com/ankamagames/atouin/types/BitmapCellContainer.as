@@ -123,6 +123,7 @@ package com.ankamagames.atouin.types
       public function addFakeChild(child:Object, data:Object, colors:Object) : void {
          this.colorTransforms[this._numChildren] = colors;
          this.datas[this._numChildren] = data;
+         var _loc4_:* = this._numChildren++;
          this.bitmaps[_loc4_] = child;
       }
    }

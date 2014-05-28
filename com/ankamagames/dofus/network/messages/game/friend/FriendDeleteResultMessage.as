@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5601;
       }
       
-      public function initFriendDeleteResultMessage(success:Boolean=false, name:String="") : FriendDeleteResultMessage {
+      public function initFriendDeleteResultMessage(success:Boolean = false, name:String = "") : FriendDeleteResultMessage {
          this.success = success;
          this.name = name;
          this._isInitialized = true;

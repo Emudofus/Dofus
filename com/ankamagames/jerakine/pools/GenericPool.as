@@ -9,7 +9,7 @@ package com.ankamagames.jerakine.pools
          super();
       }
       
-      private static var _pools:Dictionary = new Dictionary();
+      private static var _pools:Dictionary;
       
       public static function get(type:Class, ... args) : * {
          if((_pools[type]) && (_pools[type].length))

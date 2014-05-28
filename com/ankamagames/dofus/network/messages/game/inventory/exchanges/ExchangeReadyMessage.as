@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5511;
       }
       
-      public function initExchangeReadyMessage(ready:Boolean=false, step:uint=0) : ExchangeReadyMessage {
+      public function initExchangeReadyMessage(ready:Boolean = false, step:uint = 0) : ExchangeReadyMessage {
          this.ready = ready;
          this.step = step;
          this._isInitialized = true;

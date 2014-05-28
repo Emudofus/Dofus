@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.data.items
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
@@ -23,7 +22,7 @@ package com.ankamagames.dofus.network.types.game.data.items
          return 352;
       }
       
-      public function initObjectItemToSellInNpcShop(objectGID:uint=0, effects:Vector.<ObjectEffect>=null, objectPrice:uint=0, buyCriterion:String="") : ObjectItemToSellInNpcShop {
+      public function initObjectItemToSellInNpcShop(objectGID:uint = 0, effects:Vector.<ObjectEffect> = null, objectPrice:uint = 0, buyCriterion:String = "") : ObjectItemToSellInNpcShop {
          super.initObjectItemMinimalInformation(objectGID,effects);
          this.objectPrice = objectPrice;
          this.buyCriterion = buyCriterion;

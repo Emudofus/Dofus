@@ -11,7 +11,7 @@ package com.ankamagames.dofus
          super();
       }
       
-      public static const SIGNATURE_KEY_DATA:Class = Constants_SIGNATURE_KEY_DATA;
+      public static const SIGNATURE_KEY_DATA:Class;
       
       public static const LOG_UPLOAD_MODE:Boolean = false;
       
@@ -23,25 +23,25 @@ package com.ankamagames.dofus
       
       public static var FORCE_MAXIMIZED_WINDOW:Boolean = true;
       
-      public static const DATASTORE_COMPUTER_OPTIONS:DataStoreType = new DataStoreType("Dofus_ComputerOptions",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_ACCOUNT);
+      public static const DATASTORE_COMPUTER_OPTIONS:DataStoreType;
       
-      public static const DATASTORE_LANG_VERSION:DataStoreType = new DataStoreType("lastLangVersion",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_ACCOUNT);
+      public static const DATASTORE_LANG_VERSION:DataStoreType;
       
-      public static const DATASTORE_CONSOLE_CMD:DataStoreType = new DataStoreType("Dofus_ConsoleCmd",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_COMPUTER);
+      public static const DATASTORE_CONSOLE_CMD:DataStoreType;
       
-      public static const DATASTORE_MODULE_DEBUG:DataStoreType = new DataStoreType("Dofus_ModuleDebug",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_COMPUTER);
+      public static const DATASTORE_MODULE_DEBUG:DataStoreType;
       
-      public static const DATASTORE_TCHAT:DataStoreType = new DataStoreType("Dofus_Tchat",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_ACCOUNT);
+      public static const DATASTORE_TCHAT:DataStoreType;
       
-      public static const DATASTORE_TCHAT_PRIVATE:DataStoreType = new DataStoreType("Dofus_TchatPrivate",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_ACCOUNT);
+      public static const DATASTORE_TCHAT_PRIVATE:DataStoreType;
       
-      public static const SCRIPT_CACHE:Cache = new Cache(Cache.CHECK_OBJECT_COUNT,100,80);
+      public static const SCRIPT_CACHE:Cache;
       
-      public static const PRE_GAME_MODULE:Array = new Array("Ankama_Connection");
+      public static const PRE_GAME_MODULE:Array;
       
-      public static const COMMON_GAME_MODULE:Array = new Array("Ankama_Common","Ankama_Config","Ankama_Tooltips","Ankama_Console","Ankama_ContextMenu");
+      public static const COMMON_GAME_MODULE:Array;
       
-      public static const ADMIN_MODULE:Array = new Array("Ankama_Admin");
+      public static const ADMIN_MODULE:Array;
       
       public static const DETERMINIST_TACKLE:Boolean = true;
    }

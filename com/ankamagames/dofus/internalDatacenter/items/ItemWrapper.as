@@ -9,7 +9,6 @@ package com.ankamagames.dofus.internalDatacenter.items
    import com.ankamagames.jerakine.types.Uri;
    import flash.system.LoaderContext;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
@@ -36,7 +35,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(ItemWrapper));
+      private static const _log:Logger;
       
       public static const ITEM_TYPE_CERTIFICATE:uint = 97;
       
@@ -62,9 +61,9 @@ package com.ankamagames.dofus.internalDatacenter.items
       
       public static const GID_PRESET_SHORTCUT_ITEM:int = 11589;
       
-      private static const LEVEL_STEP:Array = [0,10,21,33,46,60,75,91,108,126,145,165,186,208,231,255,280,306,333,361];
+      private static const LEVEL_STEP:Array;
       
-      private static const EQUIPMENT_SUPER_TYPES:Array = [1,2,3,4,5,7,8,10,11,12,13,23];
+      private static const EQUIPMENT_SUPER_TYPES:Array;
       
       private static const OBJECT_GID_SOULSTONE:uint = 7010;
       
@@ -72,9 +71,9 @@ package com.ankamagames.dofus.internalDatacenter.items
       
       private static const OBJECT_GID_SOULSTONE_MINIBOSS:uint = 10418;
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      private static var _cache:Array = new Array();
+      private static var _cache:Array;
       
       private static var _errorIconUri:Uri;
       
@@ -86,7 +85,7 @@ package com.ankamagames.dofus.internalDatacenter.items
       
       private static var _properties:Array;
       
-      public static function create(position:uint, objectUID:uint, objectGID:uint, quantity:uint, newEffects:Vector.<ObjectEffect>, useCache:Boolean=true) : ItemWrapper {
+      public static function create(position:uint, objectUID:uint, objectGID:uint, quantity:uint, newEffects:Vector.<ObjectEffect>, useCache:Boolean = true) : ItemWrapper {
          var item:ItemWrapper = null;
          var refItem:Item = Item.getItemById(objectGID);
          if((!_cache[objectUID]) || (!useCache))
@@ -196,7 +195,7 @@ package com.ankamagames.dofus.internalDatacenter.items
       
       override public function get weight() : uint {
          var i:EffectInstance = null;
-         for each (i in this.effects)
+         for each(i in this.effects)
          {
             if(i.effectId == 1081)
             {
@@ -248,7 +247,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          {
             return true;
          }
-         for each (effect in this.effectsList)
+         for each(effect in this.effectsList)
          {
             if(effect.actionId == ACTION_ID_SPEAKING_OBJECT)
             {
@@ -268,7 +267,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          {
             return false;
          }
-         for each (effect in this.effectsList)
+         for each(effect in this.effectsList)
          {
             if(effect.actionId == ACTION_ITEM_SKIN_ITEM)
             {
@@ -338,7 +337,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          var i:EffectInstance = null;
          var zone:ZoneEffect = null;
          var spellEffects:Vector.<IZoneShape> = new Vector.<IZoneShape>();
-         for each (i in this.effects)
+         for each(i in this.effects)
          {
             zone = new ZoneEffect(uint(i.zoneSize),i.zoneShape);
             spellEffects.push(zone);
@@ -384,7 +383,7 @@ package com.ankamagames.dofus.internalDatacenter.items
             {
                if((itbt.favoriteSubAreas) && (itbt.favoriteSubAreas.length) && (itbt.favoriteSubAreasBonus))
                {
-                  for each (effect in this.effects)
+                  for each(effect in this.effects)
                   {
                      if((effect is EffectInstanceInteger) && (Effect.getEffectById(effect.effectId).bonusType == 1))
                      {
@@ -419,6 +418,8 @@ package com.ankamagames.dofus.internalDatacenter.items
                return I18n.getUiText("ui.item.boss") + I18n.getUiText("ui.common.colon") + this.shortName;
             case OBJECT_GID_SOULSTONE:
                return I18n.getUiText("ui.item.soul") + I18n.getUiText("ui.common.colon") + this.shortName;
+            default:
+               return super.name;
          }
       }
       
@@ -438,7 +439,7 @@ package com.ankamagames.dofus.internalDatacenter.items
                case OBJECT_GID_SOULSTONE:
                   bestLevel = 0;
                   bestName = null;
-                  for each (effect in this.effects)
+                  for each(effect in this.effects)
                   {
                      monster = Monster.getMonsterById(int(effect.parameter2));
                      if(monster)
@@ -460,7 +461,7 @@ package com.ankamagames.dofus.internalDatacenter.items
                   break;
                case OBJECT_GID_SOULSTONE_MINIBOSS:
                   miniboss = new Array();
-                  for each (effect in this.effects)
+                  for each(effect in this.effects)
                   {
                      monster = Monster.getMonsterById(int(effect.parameter2));
                      if((monster) && (monster.isMiniBoss))
@@ -475,7 +476,7 @@ package com.ankamagames.dofus.internalDatacenter.items
                   break;
                case OBJECT_GID_SOULSTONE_BOSS:
                   boss = new Array();
-                  for each (effect in this.effects)
+                  for each(effect in this.effects)
                   {
                      monster = Monster.getMonsterById(int(effect.parameter2));
                      if((monster) && (monster.isBoss))
@@ -523,7 +524,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          this._setCount++;
       }
       
-      public function getIconUri(pngMode:Boolean=true) : Uri {
+      public function getIconUri(pngMode:Boolean = true) : Uri {
          var iconId:String = null;
          var skinItem:Item = null;
          if((pngMode) && (this._uriPngMode))
@@ -550,18 +551,16 @@ package com.ankamagames.dofus.internalDatacenter.items
          {
             iconId = LivingObjectSkinJntMood.getLivingObjectSkin(this.livingObjectId?this.livingObjectId:this.objectGID,this.livingObjectMood,this.livingObjectSkin).toString();
          }
+         else if(this.isMimicryObject)
+         {
+            skinItem = Item.getItemById(this._mimicryItemSkinGID);
+            iconId = skinItem?skinItem.iconId.toString():"error_on_item_" + this.objectGID + ".png";
+         }
          else
          {
-            if(this.isMimicryObject)
-            {
-               skinItem = Item.getItemById(this._mimicryItemSkinGID);
-               iconId = skinItem?skinItem.iconId.toString():"error_on_item_" + this.objectGID + ".png";
-            }
-            else
-            {
-               iconId = item?item.iconId.toString():"error_on_item_" + this.objectGID + ".png";
-            }
+            iconId = item?item.iconId.toString():"error_on_item_" + this.objectGID + ".png";
          }
+         
          if(pngMode)
          {
             this._uriPngMode = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.bitmap").concat(iconId).concat(".png"));
@@ -577,7 +576,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          return this._uri;
       }
       
-      public function clone(baseClass:Class=null) : ItemWrapper {
+      public function clone(baseClass:Class = null) : ItemWrapper {
          if(baseClass == null)
          {
             baseClass = ItemWrapper;
@@ -643,6 +642,8 @@ package com.ankamagames.dofus.internalDatacenter.items
             case ACTION_ID_USE_PRESET:
                this.presetIcon = int(effect.parameter0);
                return;
+            default:
+               return;
          }
       }
       
@@ -685,7 +686,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          }
          this.exchangeAllowed = true;
          this.isOkForMultiUse = false;
-         for each (effect in updateEffects)
+         for each(effect in updateEffects)
          {
             effectInstance = ObjectEffectAdapter.fromNetwork(effect);
             if((shape) && (effectInstance.category == 2))

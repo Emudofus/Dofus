@@ -7,10 +7,10 @@ package com.ankamagames.berilia.enums
          super();
       }
       
-      public static const BASIC_SHORTCUT_KEYCODE:Array = new Array();
+      public static const BASIC_SHORTCUT_KEYCODE:Array;
       
-      public static const BASIC_SHORTCUT_NAME:Array = new Array();
+      public static const BASIC_SHORTCUT_NAME:Array;
       
-      public static const BASIC_SHORTCUT_FORBIDDEN:Array = new Array();
+      public static const BASIC_SHORTCUT_FORBIDDEN:Array;
    }
 }

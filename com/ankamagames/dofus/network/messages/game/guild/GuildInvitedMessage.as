@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5552;
       }
       
-      public function initGuildInvitedMessage(recruterId:uint=0, recruterName:String="", guildInfo:BasicGuildInformations=null) : GuildInvitedMessage {
+      public function initGuildInvitedMessage(recruterId:uint = 0, recruterName:String = "", guildInfo:BasicGuildInformations = null) : GuildInvitedMessage {
          this.recruterId = recruterId;
          this.recruterName = recruterName;
          this.guildInfo = guildInfo;

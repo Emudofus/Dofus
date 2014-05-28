@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6008;
       }
       
-      public function initExchangeObjectModifiedInBagMessage(remote:Boolean=false, object:ObjectItem=null) : ExchangeObjectModifiedInBagMessage {
+      public function initExchangeObjectModifiedInBagMessage(remote:Boolean = false, object:ObjectItem = null) : ExchangeObjectModifiedInBagMessage {
          super.initExchangeObjectMessage(remote);
          this.object = object;
          this._isInitialized = true;

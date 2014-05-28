@@ -12,12 +12,10 @@ package com.ankamagames.jerakine.managers
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.types.enums.DataStoreEnum;
    
-   use namespace flash_proxy;
-   
    public dynamic class OptionManager extends Proxy implements IEventDispatcher
    {
       
-      public function OptionManager(customName:String=null) {
+      public function OptionManager(customName:String = null) {
          this._defaultValue = new Dictionary();
          this._properties = new Dictionary();
          this._useCache = new Dictionary();
@@ -43,7 +41,7 @@ package com.ankamagames.jerakine.managers
          }
       }
       
-      private static var _optionsManager:Array = new Array();
+      private static var _optionsManager:Array;
       
       public static function getOptionManager(name:String) : OptionManager {
          var o:* = _optionsManager;
@@ -53,7 +51,7 @@ package com.ankamagames.jerakine.managers
       public static function getOptionManagers() : Array {
          var s:String = null;
          var managers:Array = [];
-         for (s in _optionsManager)
+         for(s in _optionsManager)
          {
             managers.push(s);
          }
@@ -76,7 +74,7 @@ package com.ankamagames.jerakine.managers
       
       private var _dataStore:DataStoreType;
       
-      public function add(name:String, value:*=null, useCache:Boolean=true) : void {
+      public function add(name:String, value:* = null, useCache:Boolean = true) : void {
          this._useCache[name] = useCache;
          this._defaultValue[name] = value;
          if((useCache) && (!(StoreDataManager.getInstance().getData(this._dataStore,name) == null)))
@@ -93,7 +91,7 @@ package com.ankamagames.jerakine.managers
          return this._defaultValue[name];
       }
       
-      public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false) : void {
+      public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false) : void {
          this._eventDispatcher.addEventListener(type,listener,useCapture,priority,useWeakReference);
       }
       
@@ -105,7 +103,7 @@ package com.ankamagames.jerakine.managers
          return this._eventDispatcher.hasEventListener(type);
       }
       
-      public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false) : void {
+      public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false) : void {
          this._eventDispatcher.removeEventListener(type,listener,useCapture);
       }
       
@@ -145,7 +143,7 @@ package com.ankamagames.jerakine.managers
          if(index == 0)
          {
             this._item = new Array();
-            for (x in this._properties)
+            for(x in this._properties)
             {
                this._item.push(x);
             }

@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5579;
       }
       
-      public function initPartyMemberRemoveMessage(partyId:uint=0, leavingPlayerId:uint=0) : PartyMemberRemoveMessage {
+      public function initPartyMemberRemoveMessage(partyId:uint = 0, leavingPlayerId:uint = 0) : PartyMemberRemoveMessage {
          super.initAbstractPartyEventMessage(partyId);
          this.leavingPlayerId = leavingPlayerId;
          this._isInitialized = true;

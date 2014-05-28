@@ -15,7 +15,7 @@ package com.ankamagames.atouin.data.map
          this._map = map;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CellData));
+      protected static const _log:Logger;
       
       public var id:uint;
       

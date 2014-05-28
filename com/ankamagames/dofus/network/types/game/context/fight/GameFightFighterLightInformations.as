@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 413;
       }
       
-      public function initGameFightFighterLightInformations(id:int=0, wave:int=0, level:uint=0, breed:int=0, sex:Boolean=false, alive:Boolean=false) : GameFightFighterLightInformations {
+      public function initGameFightFighterLightInformations(id:int = 0, wave:int = 0, level:uint = 0, breed:int = 0, sex:Boolean = false, alive:Boolean = false) : GameFightFighterLightInformations {
          this.id = id;
          this.wave = wave;
          this.level = level;

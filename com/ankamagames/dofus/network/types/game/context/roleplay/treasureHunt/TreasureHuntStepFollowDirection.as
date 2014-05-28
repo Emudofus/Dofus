@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt
          return 468;
       }
       
-      public function initTreasureHuntStepFollowDirection(direction:uint=1, mapCount:uint=0) : TreasureHuntStepFollowDirection {
+      public function initTreasureHuntStepFollowDirection(direction:uint = 1, mapCount:uint = 0) : TreasureHuntStepFollowDirection {
          this.direction = direction;
          this.mapCount = mapCount;
          return this;

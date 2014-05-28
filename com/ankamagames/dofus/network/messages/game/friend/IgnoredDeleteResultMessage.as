@@ -32,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5677;
       }
       
-      public function initIgnoredDeleteResultMessage(success:Boolean=false, name:String="", session:Boolean=false) : IgnoredDeleteResultMessage {
+      public function initIgnoredDeleteResultMessage(success:Boolean = false, name:String = "", session:Boolean = false) : IgnoredDeleteResultMessage {
          this.success = success;
          this.name = name;
          this.session = session;

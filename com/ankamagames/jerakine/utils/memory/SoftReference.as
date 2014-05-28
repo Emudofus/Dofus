@@ -6,7 +6,7 @@ package com.ankamagames.jerakine.utils.memory
    public class SoftReference extends Object
    {
       
-      public function SoftReference(obj:*, keptTime:uint=10000) {
+      public function SoftReference(obj:*, keptTime:uint = 10000) {
          super();
          this.value = obj;
          this.keptTime = keptTime;

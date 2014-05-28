@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 159;
       }
       
-      public function initGameRolePlayHumanoidInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, name:String="", humanoidInfo:HumanInformations=null, accountId:uint=0) : GameRolePlayHumanoidInformations {
+      public function initGameRolePlayHumanoidInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, name:String = "", humanoidInfo:HumanInformations = null, accountId:uint = 0) : GameRolePlayHumanoidInformations {
          super.initGameRolePlayNamedActorInformations(contextualId,look,disposition,name);
          this.humanoidInfo = humanoidInfo;
          this.accountId = accountId;

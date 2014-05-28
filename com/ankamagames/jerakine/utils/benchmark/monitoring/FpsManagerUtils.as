@@ -3,7 +3,6 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
    import flash.utils.Dictionary;
    import flash.utils.getTimer;
    import com.ankamagames.jerakine.utils.benchmark.monitoring.ui.Graph;
-   import __AS3__.vec.Vector;
    import flash.system.Capabilities;
    
    public class FpsManagerUtils extends Object
@@ -16,7 +15,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
       public static function countKeys(myDictionary:Dictionary) : int {
          var key:* = undefined;
          var n:int = 0;
-         for (key in myDictionary)
+         for(key in myDictionary)
          {
             n++;
          }
@@ -38,7 +37,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
       
       public static function isSpecialGraph(pIndice:String) : Boolean {
          var g:Object = null;
-         for each (g in FpsManagerConst.SPECIAL_GRAPH)
+         for each(g in FpsManagerConst.SPECIAL_GRAPH)
          {
             if(g.name == pIndice)
             {
@@ -51,7 +50,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
       public static function numberOfSpecialGraphDisplayed(graphList:Dictionary) : int {
          var g:Graph = null;
          var cpt:int = 0;
-         for each (g in graphList)
+         for each(g in graphList)
          {
             if(FpsManagerUtils.isSpecialGraph(g.indice))
             {
@@ -64,7 +63,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
       public static function getVectorMaxValue(vector:Vector.<Number>) : Number {
          var v:* = NaN;
          var value:Number = 0;
-         for each (v in vector)
+         for each(v in vector)
          {
             if(v > value)
             {

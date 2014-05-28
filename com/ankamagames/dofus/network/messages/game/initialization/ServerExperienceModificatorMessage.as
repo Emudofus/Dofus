@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.initialization
          return 6237;
       }
       
-      public function initServerExperienceModificatorMessage(experiencePercent:uint=0) : ServerExperienceModificatorMessage {
+      public function initServerExperienceModificatorMessage(experiencePercent:uint = 0) : ServerExperienceModificatorMessage {
          this.experiencePercent = experiencePercent;
          this._isInitialized = true;
          return this;

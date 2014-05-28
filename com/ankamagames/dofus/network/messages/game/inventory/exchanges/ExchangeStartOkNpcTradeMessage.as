@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5785;
       }
       
-      public function initExchangeStartOkNpcTradeMessage(npcId:int=0) : ExchangeStartOkNpcTradeMessage {
+      public function initExchangeStartOkNpcTradeMessage(npcId:int = 0) : ExchangeStartOkNpcTradeMessage {
          this.npcId = npcId;
          this._isInitialized = true;
          return this;

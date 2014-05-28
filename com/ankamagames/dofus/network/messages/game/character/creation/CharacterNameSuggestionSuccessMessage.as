@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.character.creation
          return 5544;
       }
       
-      public function initCharacterNameSuggestionSuccessMessage(suggestion:String="") : CharacterNameSuggestionSuccessMessage {
+      public function initCharacterNameSuggestionSuccessMessage(suggestion:String = "") : CharacterNameSuggestionSuccessMessage {
          this.suggestion = suggestion;
          this._isInitialized = true;
          return this;

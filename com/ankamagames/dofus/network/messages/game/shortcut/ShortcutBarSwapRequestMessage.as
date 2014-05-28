@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          return 6230;
       }
       
-      public function initShortcutBarSwapRequestMessage(barType:uint=0, firstSlot:uint=0, secondSlot:uint=0) : ShortcutBarSwapRequestMessage {
+      public function initShortcutBarSwapRequestMessage(barType:uint = 0, firstSlot:uint = 0, secondSlot:uint = 0) : ShortcutBarSwapRequestMessage {
          this.barType = barType;
          this.firstSlot = firstSlot;
          this.secondSlot = secondSlot;

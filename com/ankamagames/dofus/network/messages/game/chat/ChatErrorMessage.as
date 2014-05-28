@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 870;
       }
       
-      public function initChatErrorMessage(reason:uint=0) : ChatErrorMessage {
+      public function initChatErrorMessage(reason:uint = 0) : ChatErrorMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

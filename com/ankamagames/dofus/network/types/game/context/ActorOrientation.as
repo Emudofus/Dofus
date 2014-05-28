@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context
          return 353;
       }
       
-      public function initActorOrientation(id:int=0, direction:uint=1) : ActorOrientation {
+      public function initActorOrientation(id:int = 0, direction:uint = 1) : ActorOrientation {
          this.id = id;
          this.direction = direction;
          return this;

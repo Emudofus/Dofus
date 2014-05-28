@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.house.AccountHouseInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          return 6315;
       }
       
-      public function initAccountHouseMessage(houses:Vector.<AccountHouseInformations>=null) : AccountHouseMessage {
+      public function initAccountHouseMessage(houses:Vector.<AccountHouseInformations> = null) : AccountHouseMessage {
          this.houses = houses;
          this._isInitialized = true;
          return this;

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 6455;
       }
       
-      public function initTaxCollectorStateUpdateMessage(uniqueId:int=0, state:int=0) : TaxCollectorStateUpdateMessage {
+      public function initTaxCollectorStateUpdateMessage(uniqueId:int = 0, state:int = 0) : TaxCollectorStateUpdateMessage {
          this.uniqueId = uniqueId;
          this.state = state;
          this._isInitialized = true;

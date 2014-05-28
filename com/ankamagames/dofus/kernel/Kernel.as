@@ -102,11 +102,11 @@ package com.ankamagames.dofus.kernel
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Kernel));
+      protected static const _log:Logger;
       
       private static var _self:Kernel;
       
-      private static var _worker:Worker = new Worker();
+      private static var _worker:Worker;
       
       public static var beingInReconection:Boolean;
       
@@ -122,7 +122,7 @@ package com.ankamagames.dofus.kernel
          return _worker;
       }
       
-      public static function panic(errorId:uint=0, panicArgs:Array=null) : void {
+      public static function panic(errorId:uint = 0, panicArgs:Array = null) : void {
          var blueScreen:Sprite = null;
          var errorTitle:TextField = null;
          var errorMsg:TextField = null;
@@ -256,10 +256,10 @@ package com.ankamagames.dofus.kernel
          AlmanaxManager.getInstance();
          UiSoundManager.getInstance().playSound = SoundManager.getInstance().manager.playUISound;
          var uiSound:Array = SoundUi.getSoundUis();
-         for each (ui in uiSound)
+         for each(ui in uiSound)
          {
             UiSoundManager.getInstance().registerUi(ui.uiName,ui.openFile,ui.closeFile);
-            for each (uiElem in ui.subElements)
+            for each(uiElem in ui.subElements)
             {
                UiSoundManager.getInstance().registerUiElement(ui.uiName,uiElem.name,uiElem.hook,uiElem.file);
             }
@@ -271,7 +271,7 @@ package com.ankamagames.dofus.kernel
          }
       }
       
-      public function reset(messagesToDispatchAfter:Array=null, autoRetry:Boolean=false, reloadData:Boolean=false) : void {
+      public function reset(messagesToDispatchAfter:Array = null, autoRetry:Boolean = false, reloadData:Boolean = false) : void {
          var msg:Message = null;
          if(Constants.EVENT_MODE)
          {
@@ -305,7 +305,7 @@ package com.ankamagames.dofus.kernel
          Kernel.beingInReconection = false;
          if((!(messagesToDispatchAfter == null)) && (messagesToDispatchAfter.length > 0))
          {
-            for each (msg in messagesToDispatchAfter)
+            for each(msg in messagesToDispatchAfter)
             {
                _worker.process(msg);
             }
@@ -356,16 +356,14 @@ package com.ankamagames.dofus.kernel
             _worker.addFrame(LogFrame.getInstance(Constants.LOG_UPLOAD_MODE));
             dofusO.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onDofusOptionChange);
          }
-         else
+         else if(Constants.LOG_UPLOAD_MODE)
          {
-            if(Constants.LOG_UPLOAD_MODE)
-            {
-               popup = new SystemPopupUI("logWarning");
-               popup.title = "Attention";
-               popup.content = "Vous participez au programme d\'analyse des performances de Dofus 2.0 mais le système de log est désactivé dans les options (Options -> Support)";
-               popup.show();
-            }
+            popup = new SystemPopupUI("logWarning");
+            popup.title = "Attention";
+            popup.content = "Vous participez au programme d\'analyse des performances de Dofus 2.0 mais le système de log est désactivé dans les options (Options -> Support)";
+            popup.show();
          }
+         
       }
       
       private function onDofusOptionChange(e:PropertyChangeEvent) : void {
@@ -375,7 +373,7 @@ package com.ankamagames.dofus.kernel
          }
       }
       
-      private function addInitialFrames(firstLaunch:Boolean=false) : void {
+      private function addInitialFrames(firstLaunch:Boolean = false) : void {
          if(firstLaunch)
          {
             _worker.addFrame(new InitializationFrame());

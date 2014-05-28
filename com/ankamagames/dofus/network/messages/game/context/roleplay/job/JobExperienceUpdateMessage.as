@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 5654;
       }
       
-      public function initJobExperienceUpdateMessage(experiencesUpdate:JobExperience=null) : JobExperienceUpdateMessage {
+      public function initJobExperienceUpdateMessage(experiencesUpdate:JobExperience = null) : JobExperienceUpdateMessage {
          this.experiencesUpdate = experiencesUpdate;
          this._isInitialized = true;
          return this;

@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.interactive.skill
          return 102;
       }
       
-      public function initSkillActionDescription(skillId:uint=0) : SkillActionDescription {
+      public function initSkillActionDescription(skillId:uint = 0) : SkillActionDescription {
          this.skillId = skillId;
          return this;
       }

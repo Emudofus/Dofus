@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5583;
       }
       
-      public function initPartyCannotJoinErrorMessage(partyId:uint=0, reason:uint=0) : PartyCannotJoinErrorMessage {
+      public function initPartyCannotJoinErrorMessage(partyId:uint = 0, reason:uint = 0) : PartyCannotJoinErrorMessage {
          super.initAbstractPartyMessage(partyId);
          this.reason = reason;
          this._isInitialized = true;

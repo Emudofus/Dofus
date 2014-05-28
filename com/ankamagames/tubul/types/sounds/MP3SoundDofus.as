@@ -33,7 +33,6 @@ package com.ankamagames.tubul.types.sounds
    import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
    import com.ankamagames.tubul.enum.EnumSoundType;
    import com.ankamagames.tubul.factory.SoundFactory;
-   import __AS3__.vec.*;
    import com.ankamagames.tubul.events.LoadingSound.LoadingSoundEvent;
    import com.ankamagames.tubul.events.SoundCompleteEvent;
    import com.ankamagames.tubul.events.SoundSilenceEvent;
@@ -42,7 +41,7 @@ package com.ankamagames.tubul.types.sounds
    public class MP3SoundDofus extends Object implements ISound
    {
       
-      public function MP3SoundDofus(id:uint, uri:Uri, isStereo:Boolean=false) {
+      public function MP3SoundDofus(id:uint, uri:Uri, isStereo:Boolean = false) {
          super();
          this.initSound();
          this._uri = uri;
@@ -56,9 +55,9 @@ package com.ankamagames.tubul.types.sounds
          dicSound[this] = 1;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MP3SoundDofus));
+      protected static const _log:Logger;
       
-      protected static var cacheByteArray:Cache = new Cache(TubulConstants.BOUNDS_BYTEARRAY_CACHE,new LruGarbageCollector());
+      protected static var cacheByteArray:Cache;
       
       public static var dicSound:Dictionary;
       
@@ -265,7 +264,7 @@ package com.ankamagames.tubul.types.sounds
       public function removeEffect(pEffect:IEffect) : void {
          var effect:IEffect = null;
          var compt:uint = 0;
-         for each (effect in this._effects)
+         for each(effect in this._effects)
          {
             if(effect == pEffect)
             {
@@ -275,7 +274,7 @@ package com.ankamagames.tubul.types.sounds
          }
       }
       
-      public function play(pLoop:Boolean=false, pLoops:int=1, pFadeIn:VolumeFadeEffect=null, pFadeOut:VolumeFadeEffect=null) : void {
+      public function play(pLoop:Boolean = false, pLoops:int = 1, pFadeIn:VolumeFadeEffect = null, pFadeOut:VolumeFadeEffect = null) : void {
          var playCallback:Callback = null;
          if(this.bus == null)
          {
@@ -352,7 +351,7 @@ package com.ankamagames.tubul.types.sounds
          this._loader.load(this._uri,cache);
       }
       
-      public function stop(pFadeEffect:VolumeFadeEffect=null) : void {
+      public function stop(pFadeEffect:VolumeFadeEffect = null) : void {
          this.clearLoader();
          if(this._silence)
          {
@@ -457,7 +456,7 @@ package com.ankamagames.tubul.types.sounds
          if(size > 0)
          {
             this._onLoadingComplete.reverse();
-            for each (callback in this._onLoadingComplete)
+            for each(callback in this._onLoadingComplete)
             {
                callback.exec();
                callback = null;

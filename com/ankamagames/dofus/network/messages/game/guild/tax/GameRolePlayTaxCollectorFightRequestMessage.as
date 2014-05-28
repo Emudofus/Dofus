@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5954;
       }
       
-      public function initGameRolePlayTaxCollectorFightRequestMessage(taxCollectorId:int=0) : GameRolePlayTaxCollectorFightRequestMessage {
+      public function initGameRolePlayTaxCollectorFightRequestMessage(taxCollectorId:int = 0) : GameRolePlayTaxCollectorFightRequestMessage {
          this.taxCollectorId = taxCollectorId;
          this._isInitialized = true;
          return this;

@@ -3,7 +3,6 @@ package com.ankamagames.jerakine.types.positions
    import flash.geom.Point;
    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
    import com.ankamagames.jerakine.map.IDataMapProvider;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.errors.JerakineError;
    
    public class MapPoint extends Object
@@ -13,21 +12,21 @@ package com.ankamagames.jerakine.types.positions
          super();
       }
       
-      private static const VECTOR_RIGHT:Point = new Point(1,1);
+      private static const VECTOR_RIGHT:Point;
       
-      private static const VECTOR_DOWN_RIGHT:Point = new Point(1,0);
+      private static const VECTOR_DOWN_RIGHT:Point;
       
-      private static const VECTOR_DOWN:Point = new Point(1,-1);
+      private static const VECTOR_DOWN:Point;
       
-      private static const VECTOR_DOWN_LEFT:Point = new Point(0,-1);
+      private static const VECTOR_DOWN_LEFT:Point;
       
-      private static const VECTOR_LEFT:Point = new Point(-1,-1);
+      private static const VECTOR_LEFT:Point;
       
-      private static const VECTOR_UP_LEFT:Point = new Point(-1,0);
+      private static const VECTOR_UP_LEFT:Point;
       
-      private static const VECTOR_UP:Point = new Point(-1,1);
+      private static const VECTOR_UP:Point;
       
-      private static const VECTOR_UP_RIGHT:Point = new Point(0,1);
+      private static const VECTOR_UP_RIGHT:Point;
       
       public static const MAP_WIDTH:uint = 14;
       
@@ -35,7 +34,7 @@ package com.ankamagames.jerakine.types.positions
       
       private static var _bInit:Boolean = false;
       
-      public static var CELLPOS:Array = new Array();
+      public static var CELLPOS:Array;
       
       public static function fromCellId(cellId:uint) : MapPoint {
          var mp:MapPoint = new MapPoint();
@@ -143,59 +142,45 @@ package com.ankamagames.jerakine.types.positions
          {
             result = DirectionsEnum.RIGHT;
          }
-         else
+         else if((pt.x == VECTOR_DOWN_RIGHT.x) && (pt.y == VECTOR_DOWN_RIGHT.y))
          {
-            if((pt.x == VECTOR_DOWN_RIGHT.x) && (pt.y == VECTOR_DOWN_RIGHT.y))
-            {
-               result = DirectionsEnum.DOWN_RIGHT;
-            }
-            else
-            {
-               if((pt.x == VECTOR_DOWN.x) && (pt.y == VECTOR_DOWN.y))
-               {
-                  result = DirectionsEnum.DOWN;
-               }
-               else
-               {
-                  if((pt.x == VECTOR_DOWN_LEFT.x) && (pt.y == VECTOR_DOWN_LEFT.y))
-                  {
-                     result = DirectionsEnum.DOWN_LEFT;
-                  }
-                  else
-                  {
-                     if((pt.x == VECTOR_LEFT.x) && (pt.y == VECTOR_LEFT.y))
-                     {
-                        result = DirectionsEnum.LEFT;
-                     }
-                     else
-                     {
-                        if((pt.x == VECTOR_UP_LEFT.x) && (pt.y == VECTOR_UP_LEFT.y))
-                        {
-                           result = DirectionsEnum.UP_LEFT;
-                        }
-                        else
-                        {
-                           if((pt.x == VECTOR_UP.x) && (pt.y == VECTOR_UP.y))
-                           {
-                              result = DirectionsEnum.UP;
-                           }
-                           else
-                           {
-                              if((pt.x == VECTOR_UP_RIGHT.x) && (pt.y == VECTOR_UP_RIGHT.y))
-                              {
-                                 result = DirectionsEnum.UP_RIGHT;
-                              }
-                           }
-                        }
-                     }
-                  }
-               }
-            }
+            result = DirectionsEnum.DOWN_RIGHT;
          }
+         else if((pt.x == VECTOR_DOWN.x) && (pt.y == VECTOR_DOWN.y))
+         {
+            result = DirectionsEnum.DOWN;
+         }
+         else if((pt.x == VECTOR_DOWN_LEFT.x) && (pt.y == VECTOR_DOWN_LEFT.y))
+         {
+            result = DirectionsEnum.DOWN_LEFT;
+         }
+         else if((pt.x == VECTOR_LEFT.x) && (pt.y == VECTOR_LEFT.y))
+         {
+            result = DirectionsEnum.LEFT;
+         }
+         else if((pt.x == VECTOR_UP_LEFT.x) && (pt.y == VECTOR_UP_LEFT.y))
+         {
+            result = DirectionsEnum.UP_LEFT;
+         }
+         else if((pt.x == VECTOR_UP.x) && (pt.y == VECTOR_UP.y))
+         {
+            result = DirectionsEnum.UP;
+         }
+         else if((pt.x == VECTOR_UP_RIGHT.x) && (pt.y == VECTOR_UP_RIGHT.y))
+         {
+            result = DirectionsEnum.UP_RIGHT;
+         }
+         
+         
+         
+         
+         
+         
+         
          return result;
       }
       
-      public function advancedOrientationTo(mp:MapPoint, fourDir:Boolean=true) : uint {
+      public function advancedOrientationTo(mp:MapPoint, fourDir:Boolean = true) : uint {
          if(!mp)
          {
             return 0;
@@ -218,7 +203,7 @@ package com.ankamagames.jerakine.types.positions
          return angle;
       }
       
-      public function getNearestFreeCell(mapProvider:IDataMapProvider, allowThoughEntity:Boolean=true) : MapPoint {
+      public function getNearestFreeCell(mapProvider:IDataMapProvider, allowThoughEntity:Boolean = true) : MapPoint {
          var mp:MapPoint = null;
          var i:uint = 0;
          while(i < 8)
@@ -269,7 +254,7 @@ package com.ankamagames.jerakine.types.positions
          return null;
       }
       
-      public function getNearestFreeCellInDirection(orientation:uint, mapProvider:IDataMapProvider, allowItself:Boolean=true, allowThoughEntity:Boolean=true, forbidenCellsId:Array=null) : MapPoint {
+      public function getNearestFreeCellInDirection(orientation:uint, mapProvider:IDataMapProvider, allowItself:Boolean = true, allowThoughEntity:Boolean = true, forbidenCellsId:Array = null) : MapPoint {
          var i:* = 0;
          var speed:* = 0;
          var weight:* = 0;

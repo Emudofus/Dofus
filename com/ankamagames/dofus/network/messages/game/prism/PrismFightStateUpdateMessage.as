@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 6040;
       }
       
-      public function initPrismFightStateUpdateMessage(state:uint=0) : PrismFightStateUpdateMessage {
+      public function initPrismFightStateUpdateMessage(state:uint = 0) : PrismFightStateUpdateMessage {
          this.state = state;
          this._isInitialized = true;
          return this;

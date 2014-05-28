@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.meeting
          return 6287;
       }
       
-      public function initTeleportToBuddyOfferMessage(dungeonId:uint=0, buddyId:uint=0, timeLeft:uint=0) : TeleportToBuddyOfferMessage {
+      public function initTeleportToBuddyOfferMessage(dungeonId:uint = 0, buddyId:uint = 0, timeLeft:uint = 0) : TeleportToBuddyOfferMessage {
          this.dungeonId = dungeonId;
          this.buddyId = buddyId;
          this.timeLeft = timeLeft;

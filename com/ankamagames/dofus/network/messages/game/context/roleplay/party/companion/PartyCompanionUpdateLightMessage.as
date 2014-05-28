@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party.compa
          return 6472;
       }
       
-      public function initPartyCompanionUpdateLightMessage(partyId:uint=0, id:uint=0, lifePoints:uint=0, maxLifePoints:uint=0, prospecting:uint=0, regenRate:uint=0, indexId:uint=0) : PartyCompanionUpdateLightMessage {
+      public function initPartyCompanionUpdateLightMessage(partyId:uint = 0, id:uint = 0, lifePoints:uint = 0, maxLifePoints:uint = 0, prospecting:uint = 0, regenRate:uint = 0, indexId:uint = 0) : PartyCompanionUpdateLightMessage {
          super.initPartyUpdateLightMessage(partyId,id,lifePoints,maxLifePoints,prospecting,regenRate);
          this.indexId = indexId;
          this._isInitialized = true;

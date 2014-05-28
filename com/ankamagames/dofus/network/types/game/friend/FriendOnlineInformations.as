@@ -41,7 +41,7 @@ package com.ankamagames.dofus.network.types.game.friend
          return 92;
       }
       
-      public function initFriendOnlineInformations(accountId:uint=0, accountName:String="", playerState:uint=99, lastConnection:uint=0, achievementPoints:int=0, playerId:uint=0, playerName:String="", level:uint=0, alignmentSide:int=0, breed:int=0, sex:Boolean=false, guildInfo:BasicGuildInformations=null, moodSmileyId:int=0, status:PlayerStatus=null) : FriendOnlineInformations {
+      public function initFriendOnlineInformations(accountId:uint = 0, accountName:String = "", playerState:uint = 99, lastConnection:uint = 0, achievementPoints:int = 0, playerId:uint = 0, playerName:String = "", level:uint = 0, alignmentSide:int = 0, breed:int = 0, sex:Boolean = false, guildInfo:BasicGuildInformations = null, moodSmileyId:int = 0, status:PlayerStatus = null) : FriendOnlineInformations {
          super.initFriendInformations(accountId,accountName,playerState,lastConnection,achievementPoints);
          this.playerId = playerId;
          this.playerName = playerName;

@@ -6,20 +6,24 @@ package com.ankamagames.dofus.logic.common.frames
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.network.messages.security.RawDataMessage;
-   import flash.display.Loader;
-   import flash.system.LoaderContext;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.utils.crypto.Signature;
    import com.ankamagames.dofus.network.messages.game.script.URLOpenMessage;
    import com.ankamagames.dofus.datacenter.misc.Url;
    import com.ankamagames.dofus.network.messages.secure.TrustStatusMessage;
+   import flash.display.Loader;
+   import flash.system.LoaderContext;
    import flash.net.URLRequest;
    import com.ankamagames.dofus.datacenter.misc.OptionalFeature;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.connection.frames.AuthentificationFrame;
+   import com.ankamagames.jerakine.resources.adapters.impl.SignedFileAdapter;
    import flash.system.ApplicationDomain;
    import com.ankamagames.jerakine.utils.system.AirScanner;
    import flash.net.navigateToURL;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
    import com.ankamagames.dofusModuleLibrary.enum.WebLocationEnum;
-   import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.shield.SecureModeManager;
    import com.ankamagames.jerakine.types.enums.Priority;
    
@@ -30,7 +34,7 @@ package com.ankamagames.dofus.logic.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ServerControlFrame));
+      protected static const _log:Logger;
       
       public function pushed() : Boolean {
          return true;
@@ -42,11 +46,13 @@ package com.ankamagames.dofus.logic.common.frames
       
       public function process(msg:Message) : Boolean {
          var rdMsg:RawDataMessage = null;
-         var l:Loader = null;
-         var lc:LoaderContext = null;
+         var content:ByteArray = null;
+         var signature:Signature = null;
          var urlmsg:URLOpenMessage = null;
          var urlData:Url = null;
          var tsMsg:TrustStatusMessage = null;
+         var l:Loader = null;
+         var lc:LoaderContext = null;
          var req:URLRequest = null;
          var f:MiscFrame = null;
          var feature:OptionalFeature = null;
@@ -54,10 +60,19 @@ package com.ankamagames.dofus.logic.common.frames
          {
             case msg is RawDataMessage:
                rdMsg = msg as RawDataMessage;
-               l = new Loader();
-               lc = new LoaderContext(false,ApplicationDomain.currentDomain);
-               AirScanner.allowByteCodeExecution(lc,true);
-               l.loadBytes(rdMsg.content,lc);
+               if(Kernel.getWorker().contains(AuthentificationFrame))
+               {
+                  return false;
+               }
+               content = new ByteArray();
+               signature = new Signature(SignedFileAdapter.defaultSignatureKey);
+               if(signature.verify(rdMsg.content,content))
+               {
+                  l = new Loader();
+                  lc = new LoaderContext(false,ApplicationDomain.currentDomain);
+                  AirScanner.allowByteCodeExecution(lc,true);
+                  l.loadBytes(content,lc);
+               }
                return true;
             case msg is URLOpenMessage:
                urlmsg = msg as URLOpenMessage;
@@ -80,7 +95,7 @@ package com.ankamagames.dofus.logic.common.frames
                      {
                         f = Kernel.getWorker().getFrame(MiscFrame) as MiscFrame;
                         feature = OptionalFeature.getOptionalFeatureByKeyword("game.krosmasterGameInClient");
-                        if(((f) && (feature)) && (!f.isOptionalFeatureActive(feature.id)) && (HookList.OpenKrosmaster == HookList[urlData.url]))
+                        if((f && feature) && (!f.isOptionalFeatureActive(feature.id)) && (HookList.OpenKrosmaster == HookList[urlData.url]))
                         {
                            _log.error("Tentative de lancement de Krosmaster, cependant la feature n\'est pas active");
                            return true;
@@ -88,11 +103,15 @@ package com.ankamagames.dofus.logic.common.frames
                         KernelEventsManager.getInstance().processCallback(HookList[urlData.url]);
                      }
                      return true;
+                  default:
+                     return true;
                }
             case msg is TrustStatusMessage:
                tsMsg = msg as TrustStatusMessage;
                SecureModeManager.getInstance().active = !tsMsg.trusted;
                return true;
+            default:
+               return false;
          }
       }
       

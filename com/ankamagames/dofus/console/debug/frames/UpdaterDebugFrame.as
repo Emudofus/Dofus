@@ -24,7 +24,7 @@ package com.ankamagames.dofus.console.debug.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UpdaterDebugFrame));
+      protected static const _log:Logger;
       
       private var _partInfoCallback:Function;
       
@@ -51,7 +51,7 @@ package com.ankamagames.dofus.console.debug.frames
                plmsg = msg as PartsListMessage;
                if(this._partInfoCallback != null)
                {
-                  for each (cp in plmsg.parts)
+                  for each(cp in plmsg.parts)
                   {
                      this._partInfoCallback(cp);
                   }
@@ -73,6 +73,8 @@ package com.ankamagames.dofus.console.debug.frames
                   this._updaterSpeedCallback(dcsmsg.downloadSpeed);
                   this._updaterSpeedCallback = null;
                }
+               return false;
+            default:
                return false;
          }
       }

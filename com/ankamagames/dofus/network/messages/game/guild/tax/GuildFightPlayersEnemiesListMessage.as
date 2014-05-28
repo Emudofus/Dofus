@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5928;
       }
       
-      public function initGuildFightPlayersEnemiesListMessage(fightId:Number=0, playerInfo:Vector.<CharacterMinimalPlusLookInformations>=null) : GuildFightPlayersEnemiesListMessage {
+      public function initGuildFightPlayersEnemiesListMessage(fightId:Number = 0, playerInfo:Vector.<CharacterMinimalPlusLookInformations> = null) : GuildFightPlayersEnemiesListMessage {
          this.fightId = fightId;
          this.playerInfo = playerInfo;
          this._isInitialized = true;

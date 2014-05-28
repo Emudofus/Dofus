@@ -13,7 +13,7 @@ package com.ankamagames.tubul.types.bus
       
       public function updateObserverPosition(pEarPosition:Point) : void {
          var isound:ISound = null;
-         for each (isound in _soundVector)
+         for each(isound in _soundVector)
          {
             if(isound is LocalizedSound)
             {

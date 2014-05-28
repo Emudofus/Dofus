@@ -27,40 +27,40 @@ package com.ankamagames.dofus.misc.lists
          super();
       }
       
-      public static const PlayerFightRequest:DofusApiAction = new DofusApiAction("PlayerFightRequest",PlayerFightRequestAction);
+      public static const PlayerFightRequest:DofusApiAction;
       
-      public static const PlayerFightFriendlyAnswer:DofusApiAction = new DofusApiAction("PlayerFightFriendlyAnswer",PlayerFightFriendlyAnswerAction);
+      public static const PlayerFightFriendlyAnswer:DofusApiAction;
       
-      public static const EmotePlayRequest:DofusApiAction = new DofusApiAction("EmotePlayRequest",EmotePlayRequestAction);
+      public static const EmotePlayRequest:DofusApiAction;
       
-      public static const DisplayContextualMenu:DofusApiAction = new DofusApiAction("DisplayContextualMenu",DisplayContextualMenuAction);
+      public static const DisplayContextualMenu:DofusApiAction;
       
-      public static const ValidateSpellForget:DofusApiAction = new DofusApiAction("ValidateSpellForget",ValidateSpellForgetAction);
+      public static const ValidateSpellForget:DofusApiAction;
       
-      public static const NpcGenericActionRequest:DofusApiAction = new DofusApiAction("NpcGenericActionRequest",NpcGenericActionRequestAction);
+      public static const NpcGenericActionRequest:DofusApiAction;
       
-      public static const HouseToSellFilter:DofusApiAction = new DofusApiAction("HouseToSellFilter",HouseToSellFilterAction);
+      public static const HouseToSellFilter:DofusApiAction;
       
-      public static const PaddockToSellFilter:DofusApiAction = new DofusApiAction("PaddockToSellFilter",PaddockToSellFilterAction);
+      public static const PaddockToSellFilter:DofusApiAction;
       
-      public static const HouseToSellListRequest:DofusApiAction = new DofusApiAction("HouseToSellListRequest",HouseToSellListRequestAction);
+      public static const HouseToSellListRequest:DofusApiAction;
       
-      public static const PaddockToSellListRequest:DofusApiAction = new DofusApiAction("PaddockToSellListRequest",PaddockToSellListRequestAction);
+      public static const PaddockToSellListRequest:DofusApiAction;
       
-      public static const DungeonPartyFinderAvailableDungeons:DofusApiAction = new DofusApiAction("DungeonPartyFinderAvailableDungeons",DungeonPartyFinderAvailableDungeonsAction);
+      public static const DungeonPartyFinderAvailableDungeons:DofusApiAction;
       
-      public static const DungeonPartyFinderListen:DofusApiAction = new DofusApiAction("DungeonPartyFinderListen",DungeonPartyFinderListenAction);
+      public static const DungeonPartyFinderListen:DofusApiAction;
       
-      public static const DungeonPartyFinderRegister:DofusApiAction = new DofusApiAction("DungeonPartyFinderRegister",DungeonPartyFinderRegisterAction);
+      public static const DungeonPartyFinderRegister:DofusApiAction;
       
-      public static const ArenaRegister:DofusApiAction = new DofusApiAction("ArenaRegister",ArenaRegisterAction);
+      public static const ArenaRegister:DofusApiAction;
       
-      public static const ArenaUnregister:DofusApiAction = new DofusApiAction("ArenaUnregister",ArenaUnregisterAction);
+      public static const ArenaUnregister:DofusApiAction;
       
-      public static const ArenaFightAnswer:DofusApiAction = new DofusApiAction("ArenaFightAnswer",ArenaFightAnswerAction);
+      public static const ArenaFightAnswer:DofusApiAction;
       
-      public static const TeleportBuddiesAnswer:DofusApiAction = new DofusApiAction("TeleportBuddiesAnswer",TeleportBuddiesAnswerAction);
+      public static const TeleportBuddiesAnswer:DofusApiAction;
       
-      public static const TeleportToBuddyAnswer:DofusApiAction = new DofusApiAction("TeleportToBuddyAnswer",TeleportToBuddyAnswerAction);
+      public static const TeleportToBuddyAnswer:DofusApiAction;
    }
 }

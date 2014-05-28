@@ -7,7 +7,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import flash.display.Sprite;
    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
    import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.uiApi.PlayedCharacterApi;
    import com.ankamagames.dofus.kernel.Kernel;
    import flash.display.DisplayObjectContainer;
@@ -76,7 +75,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          this._waitList = new Vector.<uint>();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(InfoEntitiesFrame));
+      protected static const _log:Logger;
       
       private var _namesVisible:Boolean = false;
       
@@ -109,7 +108,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                {
                   this._fightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
                }
-               for each (entityId in this._fightEntitiesFrame.getEntitiesIdsList())
+               for each(entityId in this._fightEntitiesFrame.getEntitiesIdsList())
                {
                   if(entityId > 0)
                   {
@@ -201,7 +200,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                break;
             case msg is CellOverMessage:
                conmsg = msg as CellOverMessage;
-               for each (entity in EntitiesManager.getInstance().getEntitiesOnCell(conmsg.cellId))
+               for each(entity in EntitiesManager.getInstance().getEntitiesOnCell(conmsg.cellId))
                {
                   if((entity is AnimatedCharacter) && (!(entity as AnimatedCharacter).isMoving))
                   {
@@ -216,7 +215,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                break;
             case msg is CellOutMessage:
                coutMsg = msg as CellOutMessage;
-               for each (entity2 in EntitiesManager.getInstance().getEntitiesOnCell(coutMsg.cellId))
+               for each(entity2 in EntitiesManager.getInstance().getEntitiesOnCell(coutMsg.cellId))
                {
                   if(entity2 is AnimatedCharacter)
                   {
@@ -329,7 +328,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             entityId = infos.contextualId;
             de = this.getEntity(entityId);
             allianceTag = "";
-            for each (option in infos.humanoidInfo.options)
+            for each(option in infos.humanoidInfo.options)
             {
                if(option is HumanOptionAlliance)
                {
@@ -432,13 +431,13 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             this._roleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
          }
          var ids:Array = this._roleplayEntitiesFrame.playersId;
-         for each (entityId in ids)
+         for each(entityId in ids)
          {
             entityInfo = this._roleplayEntitiesFrame.getEntityInfos(entityId) as GameRolePlayCharacterInformations;
             if(entityInfo != null)
             {
                allianceTag = "";
-               for each (option in entityInfo.humanoidInfo.options)
+               for each(option in entityInfo.humanoidInfo.options)
                {
                   if(option is HumanOptionAlliance)
                   {
@@ -531,7 +530,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          }
       }
       
-      private function addEntity(entityId:int, pName:String, aTag:String="") : void {
+      private function addEntity(entityId:int, pName:String, aTag:String = "") : void {
          var lbl:Label = null;
          var ts:TiphonSprite = null;
          var de:DisplayedEntity = null;
@@ -597,7 +596,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       
       private function updateAllTooltips() : void {
          var ent:DisplayedEntity = null;
-         for each (ent in this._playersNames)
+         for each(ent in this._playersNames)
          {
             ent.target = this.getBounds(ent.entityId);
             this.updateDisplayedEntityPosition(ent);
@@ -607,7 +606,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       private function updateAllTooltipsAfterRender() : void {
          var ent:DisplayedEntity = null;
          var ac:AnimatedCharacter = null;
-         for each (ent in this._playersNames)
+         for each(ent in this._playersNames)
          {
             ac = DofusEntities.getEntity(ent.entityId) as AnimatedCharacter;
             ac.addEventListener(TiphonEvent.RENDER_FAILED,this.onUpdateEntityFail,false,0,true);
@@ -691,7 +690,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          var entity:DisplayedEntity = null;
          var ts:TiphonSprite = null;
          var t:DisplayObject = null;
-         for each (entityId in this._waitList)
+         for each(entityId in this._waitList)
          {
             entity = this.getEntity(entityId);
             if((!(entity == null)) && (!(DofusEntities.getEntity(entityId) == null)))
@@ -765,7 +764,7 @@ import com.ankamagames.jerakine.interfaces.IRectangle;
 class DisplayedEntity extends Object
 {
    
-   function DisplayedEntity(pId:int=0, pText:Label=null, pTarget:IRectangle=null, pAllianceName:String="") {
+   function DisplayedEntity(pId:int = 0, pText:Label = null, pTarget:IRectangle = null, pAllianceName:String = "") {
       super();
       this.entityId = pId;
       this.text = pText;

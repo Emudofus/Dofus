@@ -5,7 +5,6 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.berilia.types.data.BeriliaUiElementSound;
    import com.ankamagames.berilia.types.data.Hook;
    import com.ankamagames.berilia.types.graphic.GraphicContainer;
-   import __AS3__.vec.*;
    import com.ankamagames.berilia.types.graphic.UiRootContainer;
    
    public class UiSoundManager extends Object
@@ -40,7 +39,7 @@ package com.ankamagames.berilia.managers
       
       public var playSound:Function;
       
-      public function registerUi(uiName:String, openFile:String=null, closeFile:String=null) : void {
+      public function registerUi(uiName:String, openFile:String = null, closeFile:String = null) : void {
          var uiSound:BeriliaUiSound = this._registeredUi[uiName];
          if(!uiSound)
          {
@@ -69,7 +68,7 @@ package com.ankamagames.berilia.managers
          this._registeredUiElement[uiName + "::" + instanceName + "::" + hookFct] = uiElementSound;
       }
       
-      public function fromHook(target:Hook, params:Array=null) : Boolean {
+      public function fromHook(target:Hook, params:Array = null) : Boolean {
          return true;
       }
       
@@ -82,7 +81,7 @@ package com.ankamagames.berilia.managers
          }
          var uiName:String = target.getUi().name + "::";
          var uiNameLen:uint = uiName.length;
-         for (elementHash in this._registeredUiElement)
+         for(elementHash in this._registeredUiElement)
          {
             if((elementHash.substr(0,uiNameLen) == uiName) && (elementHash.substr(uiNameLen,target.name.length) == target.name))
             {

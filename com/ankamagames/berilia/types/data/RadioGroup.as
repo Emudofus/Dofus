@@ -14,7 +14,7 @@ package com.ankamagames.berilia.types.data
          this._items = new Array();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RadioGroup));
+      protected static const _log:Logger;
       
       private var _items:Array;
       
@@ -31,7 +31,7 @@ package com.ankamagames.berilia.types.data
       }
       
       public function removeItem(item:IRadioItem) : void {
-         delete this._items[[item.id]];
+         delete this._items[item.id];
       }
       
       public function destroy() : void {
@@ -49,7 +49,7 @@ package com.ankamagames.berilia.types.data
       
       public function set value(v:*) : void {
          var item:IRadioItem = null;
-         for each (item in this._items)
+         for each(item in this._items)
          {
             if(item.value == v)
             {
@@ -64,7 +64,7 @@ package com.ankamagames.berilia.types.data
          {
             return;
          }
-         for each (currentItem in this._items)
+         for each(currentItem in this._items)
          {
             if(currentItem.selected != item == currentItem)
             {

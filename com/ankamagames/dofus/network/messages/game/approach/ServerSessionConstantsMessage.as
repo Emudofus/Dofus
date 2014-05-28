@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.approach
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.approach.ServerSessionConstant;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.approach
          return 6434;
       }
       
-      public function initServerSessionConstantsMessage(variables:Vector.<ServerSessionConstant>=null) : ServerSessionConstantsMessage {
+      public function initServerSessionConstantsMessage(variables:Vector.<ServerSessionConstant> = null) : ServerSessionConstantsMessage {
          this.variables = variables;
          this._isInitialized = true;
          return this;

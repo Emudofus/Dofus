@@ -5,7 +5,7 @@ package com.ankamagames.berilia.events
    public class LinkInteractionEvent extends Event
    {
       
-      public function LinkInteractionEvent(type:String, pText:String="") {
+      public function LinkInteractionEvent(type:String, pText:String = "") {
          this.text = pText;
          super(type,false,false);
       }

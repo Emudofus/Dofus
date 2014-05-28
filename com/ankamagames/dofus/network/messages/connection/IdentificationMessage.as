@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.connection
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.version.VersionExtended;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -46,7 +45,7 @@ package com.ankamagames.dofus.network.messages.connection
          return 4;
       }
       
-      public function initIdentificationMessage(version:VersionExtended=null, lang:String="", credentials:Vector.<int>=null, serverId:int=0, autoconnect:Boolean=false, useCertificate:Boolean=false, useLoginToken:Boolean=false, sessionOptionalSalt:Number=0) : IdentificationMessage {
+      public function initIdentificationMessage(version:VersionExtended = null, lang:String = "", credentials:Vector.<int> = null, serverId:int = 0, autoconnect:Boolean = false, useCertificate:Boolean = false, useLoginToken:Boolean = false, sessionOptionalSalt:Number = 0) : IdentificationMessage {
          this.version = version;
          this.lang = lang;
          this.credentials = credentials;

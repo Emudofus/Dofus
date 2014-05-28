@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 6452;
       }
       
-      public function initPrismFightAddedMessage(fight:PrismFightersInformation=null) : PrismFightAddedMessage {
+      public function initPrismFightAddedMessage(fight:PrismFightersInformation = null) : PrismFightAddedMessage {
          this.fight = fight;
          this._isInitialized = true;
          return this;

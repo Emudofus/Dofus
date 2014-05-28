@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.friend
          return 380;
       }
       
-      public function initAbstractContactInformations(accountId:uint=0, accountName:String="") : AbstractContactInformations {
+      public function initAbstractContactInformations(accountId:uint = 0, accountName:String = "") : AbstractContactInformations {
          this.accountId = accountId;
          this.accountName = accountName;
          return this;

@@ -15,7 +15,7 @@ package com.ankamagames.atouin.data.map.elements
          this._cell = cell;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(BasicElement));
+      protected static const _log:Logger;
       
       public static function getElementFromType(type:int, cell:Cell) : BasicElement {
          switch(type)
@@ -24,6 +24,8 @@ package com.ankamagames.atouin.data.map.elements
                return new GraphicalElement(cell);
             case ElementTypesEnum.SOUND:
                return new SoundElement(cell);
+            default:
+               throw new UnknownElementError("Un élément de type inconnu " + type + " a été trouvé sur la cellule " + cell.cellId + "!");
          }
       }
       

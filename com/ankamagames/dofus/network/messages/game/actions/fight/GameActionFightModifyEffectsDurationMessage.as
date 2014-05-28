@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6304;
       }
       
-      public function initGameActionFightModifyEffectsDurationMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, delta:int=0) : GameActionFightModifyEffectsDurationMessage {
+      public function initGameActionFightModifyEffectsDurationMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, delta:int = 0) : GameActionFightModifyEffectsDurationMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this.delta = delta;

@@ -9,31 +9,30 @@ package com.ankamagames.jerakine.utils.crypto
          super();
       }
       
-      private static var CRCTable:Array = initCRCTable();
+      private static var CRCTable:Array;
       
       private static function initCRCTable() : Array {
          var crc:uint = 0;
          var j:* = 0;
          var crcTable:Array = new Array(256);
          var i:int = 0;
-         while(i < 256)
+         while(true)
          {
             crc = i;
             j = 0;
             while(j < 8)
             {
-               crc = crc & 1?crc >>> 1 ^ 3.988292384E9:crc >>> 1;
+               crc = crc >>> 1;
                j++;
             }
             crcTable[i] = crc;
             i++;
          }
-         return crcTable;
       }
       
       private var _crc32:uint;
       
-      public function update(buffer:ByteArray, offset:int=0, length:int=0) : void {
+      public function update(buffer:ByteArray, offset:int = 0, length:int = 0) : void {
          var length:int = length == 0?buffer.length:length;
          var crc:uint = ~this._crc32;
          var i:int = offset;

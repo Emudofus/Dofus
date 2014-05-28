@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 153;
       }
       
-      public function initCharacterSelectedSuccessMessage(infos:CharacterBaseInformations=null) : CharacterSelectedSuccessMessage {
+      public function initCharacterSelectedSuccessMessage(infos:CharacterBaseInformations = null) : CharacterSelectedSuccessMessage {
          this.infos = infos;
          this._isInitialized = true;
          return this;

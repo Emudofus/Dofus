@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.types.game.prism
          return 428;
       }
       
-      public function initPrismInformation(typeId:uint=0, state:uint=1, nextVulnerabilityDate:uint=0, placementDate:uint=0, rewardTokenCount:uint=0) : PrismInformation {
+      public function initPrismInformation(typeId:uint = 0, state:uint = 1, nextVulnerabilityDate:uint = 0, placementDate:uint = 0, rewardTokenCount:uint = 0) : PrismInformation {
          this.typeId = typeId;
          this.state = state;
          this.nextVulnerabilityDate = nextVulnerabilityDate;

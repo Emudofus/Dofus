@@ -177,27 +177,21 @@ package com.ankamagames.jerakine.utils.crypto
             {
                output = output + String.fromCharCode(x);
             }
-            else
+            else if(x <= 2047)
             {
-               if(x <= 2047)
-               {
-                  output = output + String.fromCharCode(192 | x >>> 6 & 31,128 | x & 63);
-               }
-               else
-               {
-                  if(x <= 65535)
-                  {
-                     output = output + String.fromCharCode(224 | x >>> 12 & 15,128 | x >>> 6 & 63,128 | x & 63);
-                  }
-                  else
-                  {
-                     if(x <= 2097151)
-                     {
-                        output = output + String.fromCharCode(240 | x >>> 18 & 7,128 | x >>> 12 & 63,128 | x >>> 6 & 63,128 | x & 63);
-                     }
-                  }
-               }
+               output = output + String.fromCharCode(192 | x >>> 6 & 31,128 | x & 63);
             }
+            else if(x <= 65535)
+            {
+               output = output + String.fromCharCode(224 | x >>> 12 & 15,128 | x >>> 6 & 63,128 | x & 63);
+            }
+            else if(x <= 2097151)
+            {
+               output = output + String.fromCharCode(240 | x >>> 18 & 7,128 | x >>> 12 & 63,128 | x >>> 6 & 63,128 | x & 63);
+            }
+            
+            
+            
          }
          return output;
       }

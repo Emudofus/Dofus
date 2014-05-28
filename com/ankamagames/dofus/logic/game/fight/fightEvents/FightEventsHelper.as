@@ -2,7 +2,6 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
 {
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.dofus.uiApi.SystemApi;
-   import __AS3__.vec.*;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
    import com.ankamagames.dofus.logic.game.fight.types.FightEventEnum;
@@ -26,23 +25,23 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FightEventsHelper));
+      protected static const _log:Logger;
       
-      private static var _fightEvents:Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent> = new Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>();
+      private static var _fightEvents:Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>;
       
-      private static var _events:Vector.<Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>> = new Vector.<Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>>();
+      private static var _events:Vector.<Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>>;
       
       private static var _joinedEvents:Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>;
       
-      private static var sysApi:SystemApi = new SystemApi();
+      private static var sysApi:SystemApi;
       
       public static var _detailsActive:Boolean;
       
       private static var _lastSpellId:int;
       
-      private static const NOT_GROUPABLE_BY_TYPE_EVENTS:Array = [FightEventEnum.FIGHTER_CASTED_SPELL];
+      private static const NOT_GROUPABLE_BY_TYPE_EVENTS:Array;
       
-      private static const SKIP_ENTITY_ALIVE_CHECK_EVENTS:Array = [FightEventEnum.FIGHTER_GOT_KILLED,FightEventEnum.FIGHTER_DEATH];
+      private static const SKIP_ENTITY_ALIVE_CHECK_EVENTS:Array;
       
       public static function reset() : void {
          _fightEvents = new Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>();
@@ -51,7 +50,7 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
          _lastSpellId = -1;
       }
       
-      public static function sendFightEvent(name:String, params:Array, fighterId:int, pCastingSpellId:int, sendNow:Boolean=false, checkParams:int=0, pFirstParamToCheck:int=1) : void {
+      public static function sendFightEvent(name:String, params:Array, fighterId:int, pCastingSpellId:int, sendNow:Boolean = false, checkParams:int = 0, pFirstParamToCheck:int = 1) : void {
          var feTackle:FightEvent = null;
          var fe:FightEvent = null;
          var fightEvent:FightEvent = new com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent(name,params,fighterId,checkParams,pCastingSpellId,_fightEvents.length,pFirstParamToCheck);
@@ -78,7 +77,7 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
                   if(name != FightEventEnum.FIGHTER_VISIBILITY_CHANGED)
                   {
                      feTackle = _joinedEvents.shift();
-                     for each (fe in _joinedEvents)
+                     for each(fe in _joinedEvents)
                      {
                         if(fe.name == FightEventEnum.FIGHTER_AP_LOST)
                         {
@@ -94,15 +93,13 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
                   }
                }
             }
-            else
+            else if(name == FightEventEnum.FIGHTER_GOT_TACKLED)
             {
-               if(name == FightEventEnum.FIGHTER_GOT_TACKLED)
-               {
-                  _joinedEvents = new Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>();
-                  _joinedEvents.push(fightEvent);
-                  return;
-               }
+               _joinedEvents = new Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>();
+               _joinedEvents.push(fightEvent);
+               return;
             }
+            
             if(name)
             {
                addFightText(fightEvent);
@@ -152,7 +149,7 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
          targetEvent.push(fightEvent);
       }
       
-      public static function sendAllFightEvent(now:Boolean=false) : void {
+      public static function sendAllFightEvent(now:Boolean = false) : void {
          if(now)
          {
             sendEvents(null);
@@ -163,7 +160,7 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
          }
       }
       
-      private static function sendEvents(pEvt:Event=null) : void {
+      private static function sendEvents(pEvt:Event = null) : void {
          StageShareManager.stage.removeEventListener(Event.ENTER_FRAME,sendEvents);
          sendFightEvent(null,null,0,-1);
          sendAllFightEvents();
@@ -174,77 +171,18 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
       }
       
       public static function groupAllEventsForDisplay(entitiesList:Dictionary) : void {
-         var eventList:Vector.<FightEvent> = null;
-         var eventBase:FightEvent = null;
-         var targetsId:Vector.<int> = null;
-         var targetEvents:String = null;
-         var type:* = 0;
-         var tmpevt:FightEvent = null;
-         var copy:Vector.<FightEvent> = null;
-         var playerTeamId:int = PlayedCharacterManager.getInstance().teamId;
-         var groupPvLostAndDeath:Vector.<int> = getTargetsWhoDiesAfterALifeLoss();
-         var eventsGroupedByTarget:Dictionary = new Dictionary();
-         while(_events.length > 0)
-         {
-            eventList = _events[0];
-            if((eventList == null) || (eventList.length == 0))
-            {
-               _events.splice(0,1);
-            }
-            else
-            {
-               eventBase = eventList[0];
-               targetsId = extractTargetsId(eventList);
-               eventsGroupedByTarget = groupFightEventsByTarget(eventList);
-               for (targetEvents in eventsGroupedByTarget)
-               {
-                  eventBase = eventsGroupedByTarget[targetEvents][0];
-                  if((eventsGroupedByTarget[targetEvents].length > 1) && ((eventBase.name == FightEventEnum.FIGHTER_LIFE_LOSS) || (eventBase.name == FightEventEnum.FIGHTER_LIFE_GAIN) || (eventBase.name == FightEventEnum.FIGHTER_SHIELD_LOSS)))
-                  {
-                     switch(eventBase.name)
-                     {
-                        case FightEventEnum.FIGHTER_LIFE_LOSS:
-                        case FightEventEnum.FIGHTER_SHIELD_LOSS:
-                           type = -1;
-                           break;
-                        case FightEventEnum.FIGHTER_LIFE_GAIN:
-                           type = 1;
-                           break;
-                     }
-                     groupByElements(eventsGroupedByTarget[targetEvents],type,_detailsActive,!(groupPvLostAndDeath.indexOf(eventBase.targetId) == -1),eventBase.castingSpellId);
-                     for each (tmpevt in eventsGroupedByTarget[targetEvents])
-                     {
-                        eventList.splice(eventList.indexOf(tmpevt),1);
-                     }
-                  }
-                  else
-                  {
-                     copy = eventList.concat();
-                     for each (eventBase in copy)
-                     {
-                        if((eventBase.name == FightEventEnum.FIGHTER_DEATH) && (!(groupPvLostAndDeath.indexOf(eventBase.targetId) == -1)))
-                        {
-                           eventList.splice(eventList.indexOf(eventBase),1);
-                        }
-                     }
-                     groupByTeam(playerTeamId,targetsId,eventList,entitiesList,groupPvLostAndDeath);
-                     copy = eventList.concat();
-                     for each (eventBase in copy)
-                     {
-                        sendFightLogToChat(eventBase,"",null,_detailsActive,(eventBase.name == FightEventEnum.FIGHTER_LIFE_LOSS) && (!(groupPvLostAndDeath.indexOf(eventBase.targetId) == -1)));
-                        eventList.splice(eventList.indexOf(eventBase),1);
-                     }
-                     copy = null;
-                  }
-               }
-            }
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public static function extractTargetsId(eventList:Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>) : Vector.<int> {
          var event:FightEvent = null;
          var targetList:Vector.<int> = new Vector.<int>();
-         for each (event in eventList)
+         for each(event in eventList)
          {
             if(targetList.indexOf(event.targetId) == -1)
             {
@@ -258,7 +196,7 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
          var event:FightEvent = null;
          var baseEvent:FightEvent = eventList[0];
          var targetList:Vector.<FightEvent> = new Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>();
-         for each (event in eventList)
+         for each(event in eventList)
          {
             if(needToGroupFightEventsData(getNumberOfParametersToCheck(baseEvent),event,baseEvent))
             {
@@ -271,7 +209,7 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
       public static function groupFightEventsByTarget(eventList:Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>) : Dictionary {
          var event:FightEvent = null;
          var dico:Dictionary = new Dictionary();
-         for each (event in eventList)
+         for each(event in eventList)
          {
             if(dico[event.targetId.toString()] == null)
             {
@@ -285,7 +223,7 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
       public static function groupSameFightEvents(pEventsList:Array, pFightEvent:com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent) : void {
          var groupOfEvent:Array = null;
          var baseEvent:FightEvent = null;
-         for each (groupOfEvent in pEventsList)
+         for each(groupOfEvent in pEventsList)
          {
             baseEvent = groupOfEvent[0];
             if(needToGroupFightEventsData(getNumberOfParametersToCheck(baseEvent),pFightEvent,baseEvent))
@@ -303,27 +241,25 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
          var targets:Vector.<int> = new Vector.<int>();
          var targetsDead:Vector.<int> = new Vector.<int>();
          var events:Vector.<Vector.<FightEvent>> = _events.concat();
-         for each (eventList in events)
+         for each(eventList in events)
          {
-            for each (fightEvent in eventList)
+            for each(fightEvent in eventList)
             {
                if(fightEvent.name == FightEventEnum.FIGHTER_LIFE_LOSS)
                {
                   targets.push(fightEvent.targetId);
                }
-               else
+               else if((fightEvent.name == FightEventEnum.FIGHTER_DEATH) && (!(targets.indexOf(fightEvent.targetId) == -1)))
                {
-                  if((fightEvent.name == FightEventEnum.FIGHTER_DEATH) && (!(targets.indexOf(fightEvent.targetId) == -1)))
-                  {
-                     targetsDead.push(fightEvent.targetId);
-                  }
+                  targetsDead.push(fightEvent.targetId);
                }
+               
             }
          }
          return targetsDead;
       }
       
-      private static function groupByElements(pvgroup:Array, pType:int, activeDetails:Boolean=true, pAddDeathInTheSameMsg:Boolean=false, pCastingSpellId:int=-1) : void {
+      private static function groupByElements(pvgroup:Array, pType:int, activeDetails:Boolean = true, pAddDeathInTheSameMsg:Boolean = false, pCastingSpellId:int = -1) : void {
          var previousElement:* = 0;
          var fe:FightEvent = null;
          var fightEventName:String = null;
@@ -331,7 +267,7 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
          var ttptsStr:String = "";
          var ttpts:int = 0;
          var isSameElement:Boolean = true;
-         for each (fe in pvgroup)
+         for each(fe in pvgroup)
          {
             if(!((!(pCastingSpellId == -1)) && (!(pCastingSpellId == fe.castingSpellId))))
             {
@@ -371,63 +307,12 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
       }
       
       private static function groupByTeam(playerTeamId:int, targets:Vector.<int>, pEventList:Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>, pEntitiesList:Dictionary, groupPvLostAndDeath:Vector.<int>) : Boolean {
-         var event:FightEvent = null;
-         var list:Vector.<int> = null;
-         var listToConcat:Vector.<FightEvent> = null;
-         var evt:FightEvent = null;
-         var team:String = null;
-         var t:Object = null;
-         if(pEventList.length == 0)
-         {
-            return false;
-         }
-         var tmpEventList:Vector.<FightEvent> = pEventList.concat();
-         while(tmpEventList.length > 1)
-         {
-            listToConcat = getGroupedListEvent(tmpEventList);
-            if(listToConcat.length <= 1)
-            {
-               continue;
-            }
-            list = new Vector.<int>();
-            for each (event in listToConcat)
-            {
-               list.push(event.targetId);
-            }
-            evt = listToConcat[0];
-            team = groupEntitiesByTeam(playerTeamId,list,pEntitiesList,SKIP_ENTITY_ALIVE_CHECK_EVENTS.indexOf(pEventList[0].name) == -1);
-            switch(team)
-            {
-               case "all":
-               case "allies":
-               case "enemies":
-                  removeEventFromEventsList(pEventList,listToConcat);
-                  if((evt.name == "fighterLifeLoss") && (!(groupPvLostAndDeath.indexOf(listToConcat[0].targetId) == -1)))
-                  {
-                     sendFightLogToChat(evt,team,null,true,true);
-                  }
-                  else
-                  {
-                     sendFightLogToChat(evt,team);
-                  }
-                  continue;
-               case "other":
-                  removeEventFromEventsList(pEventList,listToConcat);
-                  if((evt.name == "fighterLifeLoss") && (!(groupPvLostAndDeath.indexOf(listToConcat[0].targetId) == -1)))
-                  {
-                     sendFightLogToChat(evt,"",list,true,true);
-                  }
-                  else
-                  {
-                     sendFightLogToChat(evt,"",list);
-                  }
-                  continue;
-               case "none":
-                  trace("probleme de regroupement");
-                  continue;
-            }
-         }
-         return false;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public static function getGroupedListEvent(pInEventList:Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>) : Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent> {
@@ -435,7 +320,7 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
          var baseEvent:FightEvent = pInEventList[0];
          var listToConcat:Vector.<FightEvent> = new Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>();
          listToConcat.push(baseEvent);
-         for each (event in pInEventList)
+         for each(event in pInEventList)
          {
             if((listToConcat.indexOf(event) == -1) && (needToGroupFightEventsData(getNumberOfParametersToCheck(baseEvent),event,baseEvent)))
             {
@@ -448,20 +333,20 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
       
       public static function removeEventFromEventsList(pEventList:Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>, pListToRemove:Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>) : void {
          var event:FightEvent = null;
-         for each (event in pListToRemove)
+         for each(event in pListToRemove)
          {
             pEventList.splice(pEventList.indexOf(event),1);
          }
       }
       
-      public static function groupEntitiesByTeam(playerTeamId:int, targetList:Vector.<int>, entitiesList:Dictionary, checkAlive:Boolean=true) : String {
+      public static function groupEntitiesByTeam(playerTeamId:int, targetList:Vector.<int>, entitiesList:Dictionary, checkAlive:Boolean = true) : String {
          var fighterInfos:GameFightFighterInformations = null;
          var returnData:String = null;
          var alliesCount:int = 0;
          var enemiesCount:int = 0;
          var nbTotalAllies:int = 0;
          var nbTotalEnemies:int = 0;
-         for each (fighterInfos in entitiesList)
+         for each(fighterInfos in entitiesList)
          {
             if(fighterInfos != null)
             {
@@ -491,21 +376,9 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
          {
             return "all";
          }
-         if((alliesCount > 1) && (alliesCount == nbTotalAllies))
-         {
-            returnData = returnData + ((!(returnData == "")?",":"") + "allies");
-            if((enemiesCount > 0) && (enemiesCount < nbTotalEnemies))
-            {
-               returnData = returnData + ",other";
-            }
-         }
          if((enemiesCount > 1) && (enemiesCount == nbTotalEnemies))
          {
             returnData = returnData + ((!(returnData == "")?",":"") + "enemies");
-            if((alliesCount > 0) && (alliesCount < nbTotalAllies))
-            {
-               returnData = returnData + ",other";
-            }
          }
          if((returnData == "") && (targetList.length > 1))
          {
@@ -558,7 +431,7 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
          _fightEvents = new Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>();
       }
       
-      private static function sendFightLogToChat(pFightEvent:com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent, pTargetsTeam:String="", pTargetsList:Vector.<int>=null, pActiveColoration:Boolean=true, pAddDeathInTheSameMsg:Boolean=false) : void {
+      private static function sendFightLogToChat(pFightEvent:com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent, pTargetsTeam:String = "", pTargetsList:Vector.<int> = null, pActiveColoration:Boolean = true, pAddDeathInTheSameMsg:Boolean = false) : void {
          var name:String = (pFightEvent.name == FightEventEnum.FIGHTER_LIFE_LOSS) && (pAddDeathInTheSameMsg)?"fightLifeLossAndDeath":pFightEvent.name;
          var params:Array = pFightEvent.params;
          if(pActiveColoration)
@@ -597,8 +470,8 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
                color = XmlConfig.getInstance().getEntry("colors.fight.text.air");
                break;
             case 5:
+            default:
                color = "";
-               break;
          }
          if(color != "")
          {

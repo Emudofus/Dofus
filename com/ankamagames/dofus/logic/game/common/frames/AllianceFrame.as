@@ -10,7 +10,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.jerakine.types.enums.Priority;
    import com.ankamagames.dofus.internalDatacenter.conquest.PrismSubAreaWrapper;
    import com.ankamagames.dofus.internalDatacenter.conquest.PrismFightersWrapper;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.CurrentMapMessage;
    import com.ankamagames.dofus.datacenter.world.SubArea;
@@ -113,7 +112,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AllianceFrame));
+      protected static const _log:Logger;
       
       private static const SIDE_MINE:int = 0;
       
@@ -147,7 +146,7 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       private var _currentPrismsListenMode:uint;
       
-      private var _prismsListeners:Vector.<String>;
+      private var _prismsListeners:Dictionary;
       
       public function get priority() : int {
          return Priority.NORMAL;
@@ -182,7 +181,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          var defender:PrismFightersWrapper = null;
          var idx:uint = 0;
          var found:Boolean = false;
-         for each (defender in vec)
+         for each(defender in vec)
          {
             if(defender.playerCharactersInformations.id == defenderId)
             {
@@ -199,7 +198,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          _instance = this;
          this._infoJoinLeave = false;
          this._allianceDialogFrame = new AllianceDialogFrame();
-         this._prismsListeners = new Vector.<String>(0);
+         this._prismsListeners = new Dictionary();
          return true;
       }
       
@@ -267,8 +266,9 @@ package com.ankamagames.dofus.logic.game.common.frames
          var pijlract:PrismInfoJoinLeaveRequestAction = null;
          var pijlrmsg:PrismInfoJoinLeaveRequestMessage = null;
          var plract:PrismsListRegisterAction = null;
-         var listenerIndex:* = 0;
          var updateRegistration:* = false;
+         var isListeningMode:* = 0;
+         var listenMode:* = 0;
          var pbra:PrismAttackRequestAction = null;
          var pbrqmsg:PrismAttackRequestMessage = null;
          var pura:PrismUseRequestAction = null;
@@ -304,6 +304,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          var insPrism:PrismSubareaEmptyInfo = null;
          var p:SocialEntityInFightWrapper = null;
          var defender:Object = null;
+         var listenModeSaved:Object = null;
          var plrmsg:PrismsListRegisterMessage = null;
          var text2:String = null;
          var prismUpdated:PrismSubareaEmptyInfo = null;
@@ -367,17 +368,15 @@ package com.ankamagames.dofus.logic.game.common.frames
                   {
                      side = SIDE_MINE;
                   }
+                  else if(kumsg.alliances[i].allianceId == prismAllianceId)
+                  {
+                     side = SIDE_DEFENDERS;
+                  }
                   else
                   {
-                     if(kumsg.alliances[i].allianceId == prismAllianceId)
-                     {
-                        side = SIDE_DEFENDERS;
-                     }
-                     else
-                     {
-                        side = SIDE_ATTACKERS;
-                     }
+                     side = SIDE_ATTACKERS;
                   }
+                  
                   allianceOnTheHill = AllianceOnTheHillWrapper.create(kumsg.alliances[i].allianceId,kumsg.alliances[i].allianceTag,kumsg.alliances[i].allianceName,kumsg.alliances[i].allianceEmblem,kumsg.allianceNbMembers[i],kumsg.allianceRoundWeigth[i],kumsg.allianceMatchScore[i],side);
                   this._alliancesOnTheHill.push(allianceOnTheHill);
                   i++;
@@ -505,7 +504,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                rpFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
                if(rpFrame)
                {
-                  for each (pid in rpFrame.playersId)
+                  for each(pid in rpFrame.playersId)
                   {
                      rpFrame.removeIconsCategory(pid,EntityIconEnum.AVA_CATEGORY);
                   }
@@ -527,7 +526,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                allianceGuilds = new Vector.<GuildFactSheetWrapper>();
                nbAllianceMembers = 0;
                afsocialFrame = SocialFrame.getInstance();
-               for each (giai in afmsg.guilds)
+               for each(giai in afmsg.guilds)
                {
                   guildSheetForA = afsocialFrame.getGuildById(giai.guildId);
                   if(guildSheetForA)
@@ -576,7 +575,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                prismIdsList = new Vector.<uint>();
                nbMembersInAlliance = 0;
                aisocialFrame = SocialFrame.getInstance();
-               for each (gifsi in aiimsg.guilds)
+               for each(gifsi in aiimsg.guilds)
                {
                   guildSheetForMyA = aisocialFrame.getGuildById(gifsi.guildId);
                   if(guildSheetForMyA)
@@ -592,7 +591,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   myAllianceGuilds.push(guildSheetForMyA);
                   first = false;
                }
-               for each (insPrism in aiimsg.prisms)
+               for each(insPrism in aiimsg.prisms)
                {
                   if((insPrism is PrismGeolocalizedInformation) && ((insPrism as PrismGeolocalizedInformation).prism is AllianceInsiderPrismInformation))
                   {
@@ -631,9 +630,9 @@ package com.ankamagames.dofus.logic.game.common.frames
                this._autoLeaveHelpers = false;
                if((pfjlract.subAreaId == 0) && (!pfjlract.join))
                {
-                  for each (p in TaxCollectorsManager.getInstance().prismsFighters)
+                  for each(p in TaxCollectorsManager.getInstance().prismsFighters)
                   {
-                     for each (defender in p.allyCharactersInformations)
+                     for each(defender in p.allyCharactersInformations)
                      {
                         if(defender.playerCharactersInformations.id == PlayedCharacterManager.getInstance().id)
                         {
@@ -666,44 +665,54 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is PrismsListRegisterAction:
                plract = msg as PrismsListRegisterAction;
-               listenerIndex = this._prismsListeners.indexOf(plract.uiName);
                updateRegistration = false;
-               if(plract.listen != PrismListenEnum.PRISM_LISTEN_NONE)
+               isListeningMode = 0;
+               if(this._prismsListeners[plract.uiName])
                {
-                  if(listenerIndex == -1)
+                  isListeningMode = this._prismsListeners[plract.uiName];
+               }
+               listenMode = plract.listen;
+               if(listenMode != PrismListenEnum.PRISM_LISTEN_NONE)
+               {
+                  if(isListeningMode == PrismListenEnum.PRISM_LISTEN_NONE)
                   {
-                     this._prismsListeners.push(plract.uiName);
+                     this._prismsListeners[plract.uiName] = listenMode;
                   }
-                  if(this._currentPrismsListenMode == 0)
+                  if(this._currentPrismsListenMode == PrismListenEnum.PRISM_LISTEN_MINE)
                   {
-                     this._currentPrismsListenMode = plract.listen;
+                     updateRegistration = false;
                   }
                   else
                   {
-                     if(plract.listen < this._currentPrismsListenMode)
-                     {
-                        plract.listen = this._currentPrismsListenMode;
-                     }
+                     updateRegistration = true;
                   }
-                  updateRegistration = true;
                }
                else
                {
-                  if(listenerIndex != -1)
+                  if(isListeningMode > PrismListenEnum.PRISM_LISTEN_NONE)
                   {
-                     this._prismsListeners.splice(listenerIndex,1);
+                     this._prismsListeners[plract.uiName] = PrismListenEnum.PRISM_LISTEN_NONE;
                   }
-                  if(this._prismsListeners.length > 0)
+                  for each(listenModeSaved in this._prismsListeners)
                   {
-                     return true;
+                     if(listenModeSaved == PrismListenEnum.PRISM_LISTEN_MINE)
+                     {
+                        listenMode = PrismListenEnum.PRISM_LISTEN_MINE;
+                        break;
+                     }
+                     if(listenModeSaved == PrismListenEnum.PRISM_LISTEN_ALL)
+                     {
+                        listenMode = PrismListenEnum.PRISM_LISTEN_ALL;
+                     }
                   }
                   updateRegistration = true;
                }
                if(updateRegistration)
                {
                   plrmsg = new PrismsListRegisterMessage();
-                  plrmsg.initPrismsListRegisterMessage(plract.listen);
+                  plrmsg.initPrismsListRegisterMessage(listenMode);
                   ConnectionsHandler.getConnection().send(plrmsg);
+                  this._currentPrismsListenMode = listenMode;
                }
                return true;
             case msg is PrismAttackRequestAction:
@@ -777,7 +786,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is PrismsListUpdateMessage:
                plumsg = msg as PrismsListUpdateMessage;
                prismModifiedIds = new Array();
-               for each (prismUpdated in plumsg.prisms)
+               for each(prismUpdated in plumsg.prisms)
                {
                   if((prismUpdated is PrismGeolocalizedInformation) && ((prismUpdated as PrismGeolocalizedInformation).prism is AllianceInsiderPrismInformation))
                   {
@@ -792,24 +801,22 @@ package com.ankamagames.dofus.logic.game.common.frames
                         sentenceToDispatch = I18n.getUiText("ui.prism.sabotaged",[prismN,worldX + "," + worldY]);
                         KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,sentenceToDispatch,ChatActivableChannelsEnum.CHANNEL_ALLIANCE,TimeManager.getInstance().getTimestamp());
                      }
-                     else
+                     else if((aInsiderPrismU.state == PrismStateEnum.PRISM_STATE_ATTACKED) && (prismSubWUpdated) && (!(prismSubWUpdated.state == PrismStateEnum.PRISM_STATE_ATTACKED)))
                      {
-                        if((aInsiderPrismU.state == PrismStateEnum.PRISM_STATE_ATTACKED) && (prismSubWUpdated) && (!(prismSubWUpdated.state == PrismStateEnum.PRISM_STATE_ATTACKED)))
+                        sentenceToDispatch = I18n.getUiText("ui.prism.attacked",[prismN,worldX + "," + worldY]);
+                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,"{openSocial,2,2,1," + pGeoU.subAreaId + "::" + sentenceToDispatch + "}",ChatActivableChannelsEnum.CHANNEL_ALLIANCE,TimeManager.getInstance().getTimestamp());
+                        if((AirScanner.hasAir()) && (ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.PRISM_ATTACK)))
                         {
-                           sentenceToDispatch = I18n.getUiText("ui.prism.attacked",[prismN,worldX + "," + worldY]);
-                           KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,"{openSocial,2,2,1," + pGeoU.subAreaId + "::" + sentenceToDispatch + "}",ChatActivableChannelsEnum.CHANNEL_ALLIANCE,TimeManager.getInstance().getTimestamp());
-                           if((AirScanner.hasAir()) && (ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.PRISM_ATTACK)))
-                           {
-                              KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification,ExternalNotificationTypeEnum.PRISM_ATTACK,[prismN,pGeoU.worldX + "," + pGeoU.worldY]);
-                           }
-                           if(OptionManager.getOptionManager("dofus")["warnOnGuildItemAgression"])
-                           {
-                              nid = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.prism.attackedNotificationTitle"),I18n.getUiText("ui.prism.attackedNotification",[SubArea.getSubAreaById(pGeoU.subAreaId).name,pGeoU.worldX + "," + pGeoU.worldY]),NotificationTypeEnum.INVITATION,"PrismAttacked");
-                              NotificationManager.getInstance().addButtonToNotification(nid,I18n.getUiText("ui.common.join"),"OpenSocial",[2,2,[1,pGeoU.subAreaId]],false,200,0,"hook");
-                              NotificationManager.getInstance().sendNotification(nid);
-                           }
+                           KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification,ExternalNotificationTypeEnum.PRISM_ATTACK,[prismN,pGeoU.worldX + "," + pGeoU.worldY]);
+                        }
+                        if(OptionManager.getOptionManager("dofus")["warnOnGuildItemAgression"])
+                        {
+                           nid = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.prism.attackedNotificationTitle"),I18n.getUiText("ui.prism.attackedNotification",[SubArea.getSubAreaById(pGeoU.subAreaId).name,pGeoU.worldX + "," + pGeoU.worldY]),NotificationTypeEnum.INVITATION,"PrismAttacked");
+                           NotificationManager.getInstance().addButtonToNotification(nid,I18n.getUiText("ui.common.join"),"OpenSocial",[2,2,[1,pGeoU.subAreaId]],false,200,0,"hook");
+                           NotificationManager.getInstance().sendNotification(nid);
                         }
                      }
+                     
                   }
                   prismModifiedIds.push(prismUpdated.subAreaId);
                   PrismSubAreaWrapper.getFromNetwork(prismUpdated,this._alliance);
@@ -838,7 +845,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is PrismFightRemovedMessage:
                pfrmsg = msg as PrismFightRemovedMessage;
-               delete TaxCollectorsManager.getInstance().prismsFighters[[pfrmsg.subAreaId]];
+               delete TaxCollectorsManager.getInstance().prismsFighters[pfrmsg.subAreaId];
                KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInFightRemoved,pfrmsg.subAreaId);
                return true;
             case msg is PrismsInfoValidMessage:

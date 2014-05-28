@@ -60,81 +60,86 @@ package by.blooddy.crypto
          _loc11_ = 0;
          do
          {
-               _loc11_++;
-            }while(_loc11_ < 64);
-            
-            _loc11_ = 512;
+            _loc11_++;
+         }
+         while(_loc11_ < 64);
+         
+         _loc11_ = 512;
+         do
+         {
+            _loc17_ = _loc2_;
+            _loc18_ = _loc3_;
+            _loc19_ = _loc4_;
+            _loc20_ = _loc5_;
+            _loc21_ = _loc6_;
+            _loc22_ = _loc7_;
+            _loc23_ = _loc8_;
+            _loc24_ = _loc9_;
+            _loc14_ = 0;
             do
             {
-                  _loc17_ = _loc2_;
-                  _loc18_ = _loc3_;
-                  _loc19_ = _loc4_;
-                  _loc20_ = _loc5_;
-                  _loc21_ = _loc6_;
-                  _loc22_ = _loc7_;
-                  _loc23_ = _loc8_;
-                  _loc24_ = _loc9_;
-                  _loc14_ = 0;
-                  do
-                  {
-                        _loc27_ = op_li8(_loc11_ + _loc14_) /*Alchemy*/ << 24 | op_li8(_loc11_ + _loc14_ + 1) /*Alchemy*/ << 16 | op_li8(_loc11_ + _loc14_ + 2) /*Alchemy*/ << 8 | op_li8(_loc11_ + _loc14_ + 3) /*Alchemy*/;
-                        _loc29_ = _loc24_ + ((_loc21_ << 26 | _loc21_ >>> 6) ^ (_loc21_ << 21 | _loc21_ >>> 11) ^ (_loc21_ << 7 | _loc21_ >>> 25)) + (_loc21_ & _loc22_ ^ ~_loc21_ & _loc23_) + op_li32(256 + _loc14_) /*Alchemy*/ + _loc27_;
-                        _loc28_ = ((_loc17_ << 30 | _loc17_ >>> 2) ^ (_loc17_ << 19 | _loc17_ >>> 13) ^ (_loc17_ << 10 | _loc17_ >>> 22)) + (_loc17_ & _loc18_ ^ _loc17_ & _loc19_ ^ _loc18_ & _loc19_);
-                        _loc24_ = _loc23_;
-                        _loc23_ = _loc22_;
-                        _loc22_ = _loc21_;
-                        _loc21_ = _loc20_ + _loc29_;
-                        _loc20_ = _loc19_;
-                        _loc19_ = _loc18_;
-                        _loc18_ = _loc17_;
-                        _loc17_ = _loc29_ + _loc28_;
-                        _loc14_ = _loc14_ + 4;
-                     }while(_loc14_ < 64);
-                     
-                     do
-                     {
-                           _loc25_ = op_li32(_loc14_ - 8) /*Alchemy*/;
-                           _loc26_ = op_li32(_loc14_ - 60) /*Alchemy*/;
-                           _loc27_ = ((_loc25_ << 15 | _loc25_ >>> 17) ^ (_loc25_ << 13 | _loc25_ >>> 19) ^ _loc25_ >>> 10) + op_li32(_loc14_ - 28) /*Alchemy*/ + ((_loc26_ << 25 | _loc26_ >>> 7) ^ (_loc26_ << 14 | _loc26_ >>> 18) ^ _loc26_ >>> 3) + op_li32(_loc14_ - 64) /*Alchemy*/;
-                           _loc29_ = _loc24_ + ((_loc21_ << 26 | _loc21_ >>> 6) ^ (_loc21_ << 21 | _loc21_ >>> 11) ^ (_loc21_ << 7 | _loc21_ >>> 25)) + (_loc21_ & _loc22_ ^ ~_loc21_ & _loc23_) + op_li32(256 + _loc14_) /*Alchemy*/ + _loc27_;
-                           _loc28_ = ((_loc17_ << 30 | _loc17_ >>> 2) ^ (_loc17_ << 19 | _loc17_ >>> 13) ^ (_loc17_ << 10 | _loc17_ >>> 22)) + (_loc17_ & _loc18_ ^ _loc17_ & _loc19_ ^ _loc18_ & _loc19_);
-                           _loc24_ = _loc23_;
-                           _loc23_ = _loc22_;
-                           _loc22_ = _loc21_;
-                           _loc21_ = _loc20_ + _loc29_;
-                           _loc20_ = _loc19_;
-                           _loc19_ = _loc18_;
-                           _loc18_ = _loc17_;
-                           _loc17_ = _loc29_ + _loc28_;
-                           _loc14_ = _loc14_ + 4;
-                        }while(_loc14_ < 256);
-                        
-                        _loc2_ = _loc2_ + _loc17_;
-                        _loc3_ = _loc3_ + _loc18_;
-                        _loc4_ = _loc4_ + _loc19_;
-                        _loc5_ = _loc5_ + _loc20_;
-                        _loc6_ = _loc6_ + _loc21_;
-                        _loc7_ = _loc7_ + _loc22_;
-                        _loc8_ = _loc8_ + _loc23_;
-                        _loc9_ = _loc9_ + _loc24_;
-                        _loc11_ = _loc11_ + 64;
-                     }while(_loc11_ < _loc12_);
-                     
-                     _loc13_.position = 0;
-                     _loc13_.writeUTFBytes("0123456789abcdef");
-                     _loc18_ = 47;
-                     _loc11_ = 16;
-                     do
-                     {
-                           _loc17_ = op_li8(_loc11_) /*Alchemy*/;
-                           _loc18_++;
-                           _loc18_++;
-                           _loc11_++;
-                        }while(_loc11_ < 48);
-                        
-                        ApplicationDomain.currentDomain.domainMemory = _loc10_;
-                        _loc13_.position = 48;
-                        return _loc13_.readUTFBytes(64);
-                     }
-                  }
-               }
+               _loc27_ = op_li8(_loc11_ + _loc14_) /*Alchemy*/ << 24 | op_li8(_loc11_ + _loc14_ + 1) /*Alchemy*/ << 16 | op_li8(_loc11_ + _loc14_ + 2) /*Alchemy*/ << 8 | op_li8(_loc11_ + _loc14_ + 3) /*Alchemy*/;
+               _loc29_ = _loc24_ + ((_loc21_ << 26 | _loc21_ >>> 6) ^ (_loc21_ << 21 | _loc21_ >>> 11) ^ (_loc21_ << 7 | _loc21_ >>> 25)) + (_loc21_ & _loc22_ ^ ~_loc21_ & _loc23_) + op_li32(256 + _loc14_) /*Alchemy*/ + _loc27_;
+               _loc28_ = ((_loc17_ << 30 | _loc17_ >>> 2) ^ (_loc17_ << 19 | _loc17_ >>> 13) ^ (_loc17_ << 10 | _loc17_ >>> 22)) + (_loc17_ & _loc18_ ^ _loc17_ & _loc19_ ^ _loc18_ & _loc19_);
+               _loc24_ = _loc23_;
+               _loc23_ = _loc22_;
+               _loc22_ = _loc21_;
+               _loc21_ = _loc20_ + _loc29_;
+               _loc20_ = _loc19_;
+               _loc19_ = _loc18_;
+               _loc18_ = _loc17_;
+               _loc17_ = _loc29_ + _loc28_;
+               _loc14_ = _loc14_ + 4;
+            }
+            while(_loc14_ < 64);
+            
+            do
+            {
+               _loc25_ = op_li32(_loc14_ - 8) /*Alchemy*/;
+               _loc26_ = op_li32(_loc14_ - 60) /*Alchemy*/;
+               _loc27_ = ((_loc25_ << 15 | _loc25_ >>> 17) ^ (_loc25_ << 13 | _loc25_ >>> 19) ^ _loc25_ >>> 10) + op_li32(_loc14_ - 28) /*Alchemy*/ + ((_loc26_ << 25 | _loc26_ >>> 7) ^ (_loc26_ << 14 | _loc26_ >>> 18) ^ _loc26_ >>> 3) + op_li32(_loc14_ - 64) /*Alchemy*/;
+               _loc29_ = _loc24_ + ((_loc21_ << 26 | _loc21_ >>> 6) ^ (_loc21_ << 21 | _loc21_ >>> 11) ^ (_loc21_ << 7 | _loc21_ >>> 25)) + (_loc21_ & _loc22_ ^ ~_loc21_ & _loc23_) + op_li32(256 + _loc14_) /*Alchemy*/ + _loc27_;
+               _loc28_ = ((_loc17_ << 30 | _loc17_ >>> 2) ^ (_loc17_ << 19 | _loc17_ >>> 13) ^ (_loc17_ << 10 | _loc17_ >>> 22)) + (_loc17_ & _loc18_ ^ _loc17_ & _loc19_ ^ _loc18_ & _loc19_);
+               _loc24_ = _loc23_;
+               _loc23_ = _loc22_;
+               _loc22_ = _loc21_;
+               _loc21_ = _loc20_ + _loc29_;
+               _loc20_ = _loc19_;
+               _loc19_ = _loc18_;
+               _loc18_ = _loc17_;
+               _loc17_ = _loc29_ + _loc28_;
+               _loc14_ = _loc14_ + 4;
+            }
+            while(_loc14_ < 256);
+            
+            _loc2_ = _loc2_ + _loc17_;
+            _loc3_ = _loc3_ + _loc18_;
+            _loc4_ = _loc4_ + _loc19_;
+            _loc5_ = _loc5_ + _loc20_;
+            _loc6_ = _loc6_ + _loc21_;
+            _loc7_ = _loc7_ + _loc22_;
+            _loc8_ = _loc8_ + _loc23_;
+            _loc9_ = _loc9_ + _loc24_;
+            _loc11_ = _loc11_ + 64;
+         }
+         while(_loc11_ < _loc12_);
+         
+         _loc13_.position = 0;
+         _loc13_.writeUTFBytes("0123456789abcdef");
+         _loc18_ = 47;
+         _loc11_ = 16;
+         do
+         {
+            _loc17_ = op_li8(_loc11_) /*Alchemy*/;
+            _loc18_++;
+            _loc18_++;
+            _loc11_++;
+         }
+         while(_loc11_ < 48);
+         
+         ApplicationDomain.currentDomain.domainMemory = _loc10_;
+         _loc13_.position = 48;
+         return _loc13_.readUTFBytes(64);
+      }
+   }
+}

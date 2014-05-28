@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 220;
       }
       
-      public function initCurrentMapMessage(mapId:uint=0, mapKey:String="") : CurrentMapMessage {
+      public function initCurrentMapMessage(mapId:uint = 0, mapKey:String = "") : CurrentMapMessage {
          this.mapId = mapId;
          this.mapKey = mapKey;
          this._isInitialized = true;

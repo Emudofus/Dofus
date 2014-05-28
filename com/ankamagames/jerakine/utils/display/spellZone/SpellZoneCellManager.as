@@ -11,7 +11,6 @@ package com.ankamagames.jerakine.utils.display.spellZone
    import com.ankamagames.jerakine.types.zones.Cone;
    import com.ankamagames.jerakine.types.zones.HalfLozenge;
    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
-   import __AS3__.vec.*;
    
    public class SpellZoneCellManager extends Sprite
    {
@@ -90,9 +89,9 @@ package com.ankamagames.jerakine.utils.display.spellZone
       private function setLastSpellCellToNormal() : void {
          var cell:SpellZoneCell = null;
          var id:uint = 0;
-         for each (cell in this.cells)
+         for each(cell in this.cells)
          {
-            for each (id in this._spellCellsId)
+            for each(id in this._spellCellsId)
             {
                if(id == cell.cellId)
                {
@@ -104,7 +103,7 @@ package com.ankamagames.jerakine.utils.display.spellZone
       
       private function resetCells() : void {
          var cell:SpellZoneCell = null;
-         for each (cell in this.cells)
+         for each(cell in this.cells)
          {
             cell.setNormalCell();
          }
@@ -211,7 +210,7 @@ package com.ankamagames.jerakine.utils.display.spellZone
             return false;
          }
          var cellsId:Vector.<uint> = lozenge.getCells(this._centerCell.cellId);
-         for each (cellId in cellsId)
+         for each(cellId in cellsId)
          {
             if(cellId == cell.cellId)
             {
@@ -237,9 +236,9 @@ package com.ankamagames.jerakine.utils.display.spellZone
       public function setRangedCells(cellsId:Vector.<uint>) : void {
          var cell:SpellZoneCell = null;
          var id:uint = 0;
-         for each (cell in this.cells)
+         for each(cell in this.cells)
          {
-            for each (id in cellsId)
+            for each(id in cellsId)
             {
                if(id == cell.cellId)
                {
@@ -252,9 +251,9 @@ package com.ankamagames.jerakine.utils.display.spellZone
       public function setSpellZone(cellsId:Vector.<uint>) : void {
          var cell:SpellZoneCell = null;
          var id:uint = 0;
-         for each (cell in this.cells)
+         for each(cell in this.cells)
          {
-            for each (id in cellsId)
+            for each(id in cellsId)
             {
                if(id == cell.cellId)
                {
@@ -264,16 +263,16 @@ package com.ankamagames.jerakine.utils.display.spellZone
          }
       }
       
-      public function colorCell(cell:SpellZoneCell, color:uint, setDefault:Boolean=false) : void {
+      public function colorCell(cell:SpellZoneCell, color:uint, setDefault:Boolean = false) : void {
          cell.colorCell(color,setDefault);
       }
       
-      public function colorCells(cellsId:Vector.<uint>, color:uint, setDefault:Boolean=false) : void {
+      public function colorCells(cellsId:Vector.<uint>, color:uint, setDefault:Boolean = false) : void {
          var cell:SpellZoneCell = null;
          var id:uint = 0;
-         for each (cell in this.cells)
+         for each(cell in this.cells)
          {
-            for each (id in cellsId)
+            for each(id in cellsId)
             {
                if(id == cell.cellId)
                {
@@ -296,7 +295,7 @@ package com.ankamagames.jerakine.utils.display.spellZone
          var diffPosY:* = 0;
          var shapeCode:uint = 88;
          ray = 0;
-         for each (i in this._spellLevel.spellZoneEffects)
+         for each(i in this._spellLevel.spellZoneEffects)
          {
             if((!(i.zoneShape == 0)) && (i.zoneSize < 63) && ((i.zoneSize > ray) || (i.zoneSize == ray) && (shapeCode == SpellShapeEnum.P)))
             {
@@ -375,8 +374,8 @@ package com.ankamagames.jerakine.utils.display.spellZone
                shape = new Lozenge(0,63,dataMapProvider);
                break;
             case SpellShapeEnum.P:
+            default:
                shape = new Cross(0,0,dataMapProvider);
-               break;
          }
          if(this._rollOverCell)
          {

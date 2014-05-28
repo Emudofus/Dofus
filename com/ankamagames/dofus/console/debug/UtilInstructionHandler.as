@@ -6,7 +6,6 @@ package com.ankamagames.dofus.console.debug
    import flash.utils.getQualifiedClassName;
    import flash.utils.Dictionary;
    import com.ankamagames.jerakine.console.ConsoleHandler;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.monsters.Monster;
    import com.ankamagames.jerakine.managers.ErrorManager;
    import com.ankamagames.jerakine.utils.misc.StringUtils;
@@ -26,12 +25,13 @@ package com.ankamagames.dofus.console.debug
    {
       
       public function UtilInstructionHandler() {
+         this._validArgs0 = this.validArgs();
          super();
       }
       
-      public static const _log:Logger = Log.getLogger(getQualifiedClassName(UtilInstructionHandler));
+      public static const _log:Logger;
       
-      private const _validArgs0:Dictionary = this.validArgs();
+      private const _validArgs0:Dictionary;
       
       public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
          var matchMonsters:Array = null;
@@ -66,7 +66,7 @@ package com.ankamagames.dofus.console.debug
                matchMonsters = new Array();
                monsterFilter = StringUtils.noAccent(args.join(" ").toLowerCase());
                monsters = GameDataQuery.returnInstance(Monster,GameDataQuery.queryString(Monster,"name",monsterFilter));
-               for each (currentMonster in monsters)
+               for each(currentMonster in monsters)
                {
                   matchMonsters.push("\t" + currentMonster.name + " (id : " + currentMonster.id + ")");
                }
@@ -135,10 +135,12 @@ package com.ankamagames.dofus.console.debug
                return "Load a remote file containing network(s) packets";
             case "reccordpacket":
                return "Reccord network(s) packets into a file (usefull with /loadpacket command)";
+            default:
+               return "Unknown command \'" + cmd + "\'.";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          var infoClassName:String = null;
          var searchClassName:String = null;
          var arg0:String = null;
@@ -155,7 +157,7 @@ package com.ankamagames.dofus.console.debug
             case "info":
                if(paramIndex == 0)
                {
-                  for (infoClassName in this._validArgs0)
+                  for(infoClassName in this._validArgs0)
                   {
                      possibilities.push(infoClassName);
                   }
@@ -164,22 +166,20 @@ package com.ankamagames.dofus.console.debug
             case "search":
                if(paramIndex == 0)
                {
-                  for (searchClassName in this._validArgs0)
+                  for(searchClassName in this._validArgs0)
                   {
                      possibilities.push(searchClassName);
                   }
                }
-               else
+               else if(paramIndex == 1)
                {
-                  if(paramIndex == 1)
+                  arg0 = this._validArgs0[String(currentParams[0]).toLowerCase()];
+                  if(arg0)
                   {
-                     arg0 = this._validArgs0[String(currentParams[0]).toLowerCase()];
-                     if(arg0)
-                     {
-                        possibilities = this.getSimpleVariablesAndAccessors(arg0);
-                     }
+                     possibilities = this.getSimpleVariablesAndAccessors(arg0);
                   }
                }
+               
                break;
          }
          return possibilities;
@@ -190,29 +190,30 @@ package com.ankamagames.dofus.console.debug
          {
             DofusErrorHandler.manualActivation = !DofusErrorHandler.manualActivation;
          }
-         else
+         else if(args.length == 1)
          {
-            if(args.length == 1)
+            switch(args[0])
             {
-               switch(args[0])
-               {
-                  case "true":
-                     DofusErrorHandler.manualActivation = true;
-                     break;
-                  case "false":
-                     DofusErrorHandler.manualActivation = false;
-                     break;
-                  case "":
-                     DofusErrorHandler.manualActivation = !DofusErrorHandler.manualActivation;
-                     break;
-               }
-            }
-            else
-            {
-               console.output(cmd + "requires 0 or 1 argument.");
-               return;
+               case "true":
+                  DofusErrorHandler.manualActivation = true;
+                  break;
+               case "false":
+                  DofusErrorHandler.manualActivation = false;
+                  break;
+               case "":
+                  DofusErrorHandler.manualActivation = !DofusErrorHandler.manualActivation;
+                  break;
+               default:
+                  console.output("Bad arg. Argument must be true, false, or null");
+                  return;
             }
          }
+         else
+         {
+            console.output(cmd + "requires 0 or 1 argument.");
+            return;
+         }
+         
          console.output("\tReport have been " + (DofusErrorHandler.manualActivation?"enabled":"disabled") + ". Dofus need to restart.");
       }
       
@@ -222,31 +223,31 @@ package com.ankamagames.dofus.console.debug
             SOSTarget.enabled = !SOSTarget.enabled;
             console.output("\tSOS logs have been " + (SOSTarget.enabled?"enabled":"disabled") + ".");
          }
-         else
+         else if(args.length == 1)
          {
-            if(args.length == 1)
+            switch(args[0])
             {
-               switch(args[0])
-               {
-                  case "true":
-                     SOSTarget.enabled = true;
-                     console.output("\tSOS logs have been enabled.");
-                     break;
-                  case "false":
-                     SOSTarget.enabled = false;
-                     console.output("\tSOS logs have been disabled.");
-                     break;
-                  case "":
-                     SOSTarget.enabled = !SOSTarget.enabled;
-                     console.output("\tSOS logs have been " + (SOSTarget.enabled?"enabled":"disabled") + ".");
-                     break;
-               }
-            }
-            else
-            {
-               console.output(cmd + "requires 0 or 1 argument.");
+               case "true":
+                  SOSTarget.enabled = true;
+                  console.output("\tSOS logs have been enabled.");
+                  break;
+               case "false":
+                  SOSTarget.enabled = false;
+                  console.output("\tSOS logs have been disabled.");
+                  break;
+               case "":
+                  SOSTarget.enabled = !SOSTarget.enabled;
+                  console.output("\tSOS logs have been " + (SOSTarget.enabled?"enabled":"disabled") + ".");
+                  break;
+               default:
+                  console.output("Bad arg. Argument must be true, false, or null");
             }
          }
+         else
+         {
+            console.output(cmd + "requires 0 or 1 argument.");
+         }
+         
       }
       
       private function info(console:ConsoleHandler, cmd:String, args:Array) : void {
@@ -287,33 +288,31 @@ package com.ankamagames.dofus.console.debug
             hasNameField = object.hasOwnProperty("name");
             varAndAccess = this.getSimpleVariablesAndAccessors(className,true);
             varAndAccess.sort(Array.CASEINSENSITIVE);
-            for each (property in varAndAccess)
+            for each(property in varAndAccess)
             {
                currentObject = object[property];
                if(!currentObject)
                {
                   result = result + ("\t" + property + " : null\n");
                }
+               else if((currentObject is Number) || (currentObject is String))
+               {
+                  result = result + ("\t" + property + " : " + currentObject.toString() + "\n");
+               }
                else
                {
-                  if((currentObject is Number) || (currentObject is String))
+                  size = currentObject.length;
+                  if(size > 30)
                   {
-                     result = result + ("\t" + property + " : " + currentObject.toString() + "\n");
+                     currentObject = currentObject.slice(0,30);
+                     result = result + ("\t" + property + "(" + size + " element(s)) : " + currentObject.toString() + ", ...\n");
                   }
                   else
                   {
-                     size = currentObject.length;
-                     if(size > 30)
-                     {
-                        currentObject = currentObject.slice(0,30);
-                        result = result + ("\t" + property + "(" + size + " element(s)) : " + currentObject.toString() + ", ...\n");
-                     }
-                     else
-                     {
-                        result = result + ("\t" + property + "(" + size + " element(s)) : " + currentObject.toString() + "\n");
-                     }
+                     result = result + ("\t" + property + "(" + size + " element(s)) : " + currentObject.toString() + "\n");
                   }
                }
+               
             }
             result = StringUtils.cleanString(result);
             result = "\t<b>" + (hasNameField?object.name:"") + " (id : " + object.id + ")</b>\n" + result;
@@ -372,7 +371,7 @@ package com.ankamagames.dofus.console.debug
                      console.output("Bad filter. Attribute \'" + member + "\' is a Number. Use a Number filter.");
                      return;
                   }
-                  for each (currentObject in results)
+                  for each(currentObject in results)
                   {
                      if(currentObject)
                      {
@@ -384,23 +383,21 @@ package com.ankamagames.dofus.console.debug
                      }
                   }
                }
-               else
+               else if(results[0][member] is String)
                {
-                  if(results[0][member] is String)
+                  for each(currentObject in results)
                   {
-                     for each (currentObject in results)
+                     if(currentObject)
                      {
-                        if(currentObject)
+                        hasNameField = currentObject.hasOwnProperty("name");
+                        if(StringUtils.noAccent(String(currentObject[member])).toLowerCase().indexOf(StringUtils.noAccent(filter)) != -1)
                         {
-                           hasNameField = currentObject.hasOwnProperty("name");
-                           if(StringUtils.noAccent(String(currentObject[member])).toLowerCase().indexOf(StringUtils.noAccent(filter)) != -1)
-                           {
-                              matchSearch.push("\t" + (hasNameField?currentObject["name"]:"") + " (id : " + currentObject["id"] + ")");
-                           }
+                           matchSearch.push("\t" + (hasNameField?currentObject["name"]:"") + " (id : " + currentObject["id"] + ")");
                         }
                      }
                   }
                }
+               
                matchSearch.sort(Array.CASEINSENSITIVE);
                console.output(matchSearch.join("\n"));
                console.output("\tRESULT : " + matchSearch.length + " objects found");
@@ -421,7 +418,7 @@ package com.ankamagames.dofus.console.debug
          var varAndAccessors:Array = null;
          var dico:Dictionary = new Dictionary();
          var xml:XML = describeType(GameDataList);
-         for each (subXML in xml..constant)
+         for each(subXML in xml..constant)
          {
             varAndAccessors = this.getSimpleVariablesAndAccessors(String(subXML.@type));
             if(varAndAccessors.indexOf("id") != -1)
@@ -432,12 +429,12 @@ package com.ankamagames.dofus.console.debug
          return dico;
       }
       
-      private function getSimpleVariablesAndAccessors(clazz:String, addVectors:Boolean=false) : Array {
+      private function getSimpleVariablesAndAccessors(clazz:String, addVectors:Boolean = false) : Array {
          var type:String = null;
          var currentXML:XML = null;
          var result:Array = new Array();
          var xml:XML = describeType(getDefinitionByName(clazz));
-         for each (currentXML in xml..variable)
+         for each(currentXML in xml..variable)
          {
             type = String(currentXML.@type);
             if((type == "int") || (type == "uint") || (type == "Number") || (type == "String"))
@@ -455,7 +452,7 @@ package com.ankamagames.dofus.console.debug
                }
             }
          }
-         for each (currentXML in xml..accessor)
+         for each(currentXML in xml..accessor)
          {
             type = String(currentXML.@type);
             if((type == "int") || (type == "uint") || (type == "Number") || (type == "String"))
@@ -480,7 +477,7 @@ package com.ankamagames.dofus.console.debug
          var subXML:XML = null;
          var parameterType:String = null;
          var xml:XML = describeType(getDefinitionByName(clazz));
-         for each (subXML in xml..method)
+         for each(subXML in xml..method)
          {
             if((subXML.@returnType == clazz) && (XMLList(subXML.parameter).length() == 1))
             {
@@ -500,7 +497,7 @@ package com.ankamagames.dofus.console.debug
       private function getListingFunction(clazz:String) : String {
          var subXML:XML = null;
          var xml:XML = describeType(getDefinitionByName(clazz));
-         for each (subXML in xml..method)
+         for each(subXML in xml..method)
          {
             if((subXML.@returnType == "Array") && (XMLList(subXML.parameter).length() == 0))
             {

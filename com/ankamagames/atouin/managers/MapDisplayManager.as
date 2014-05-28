@@ -66,9 +66,9 @@ package com.ankamagames.atouin.managers
          }
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MapDisplayManager));
+      protected static const _log:Logger;
       
       private static var _self:MapDisplayManager;
       
@@ -130,7 +130,7 @@ package com.ankamagames.atouin.managers
          return this._currentRenderId;
       }
       
-      public function fromMap(map:Map, decryptionKey:ByteArray=null) : uint {
+      public function fromMap(map:Map, decryptionKey:ByteArray = null) : uint {
          this._currentMap = WorldPoint.fromMapId(map.id);
          var request:RenderRequest = new RenderRequest(this._currentMap,false,decryptionKey);
          this._renderRequestStack.push(request);
@@ -144,7 +144,7 @@ package com.ankamagames.atouin.managers
          return this._currentRenderId;
       }
       
-      public function display(pMap:WorldPoint, forceReloadWithoutCache:Boolean=false, decryptionKey:ByteArray=null) : uint {
+      public function display(pMap:WorldPoint, forceReloadWithoutCache:Boolean = false, decryptionKey:ByteArray = null) : uint {
          var request:RenderRequest = new RenderRequest(pMap,forceReloadWithoutCache,decryptionKey);
          _log.debug("Ask render map " + pMap.mapId + ", renderRequestID: " + request.renderId);
          this._renderRequestStack.push(request);
@@ -186,7 +186,7 @@ package com.ankamagames.atouin.managers
       public function activeIdentifiedElements(active:Boolean) : void {
          var ie:Object = null;
          var identifiedElements:Dictionary = this._renderer.identifiedElements;
-         for each (ie in identifiedElements)
+         for each(ie in identifiedElements)
          {
             ie.sprite.mouseEnabled = active;
          }
@@ -301,7 +301,7 @@ package com.ankamagames.atouin.managers
          var forceReloadWithoutCache:Boolean = request.forceReloadWithoutCache;
          Atouin.getInstance().showWorld(true);
          this._renderer.initRenderContainer(Atouin.getInstance().worldContainer);
-         if(((!forceReloadWithoutCache) && (this._currentMap)) && (this._currentMap.mapId == pMap.mapId) && (!Atouin.getInstance().options.reloadLoadedMap))
+         if((!forceReloadWithoutCache && this._currentMap) && (this._currentMap.mapId == pMap.mapId) && (!Atouin.getInstance().options.reloadLoadedMap))
          {
             this._renderRequestStack.shift();
             _log.debug("Map " + pMap.mapId + " is the same, renderRequestID: " + request.renderId);

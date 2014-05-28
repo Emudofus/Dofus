@@ -15,14 +15,12 @@ package com.ankamagames.dofus.datacenter.items.criterion
             this._mapId = PlayedCharacterManager.getInstance().currentMap.mapId;
             this._nbCharacters = uint(params[0]);
          }
-         else
+         else if(params.length == 2)
          {
-            if(params.length == 2)
-            {
-               this._mapId = int(params[0]);
-               this._nbCharacters = uint(params[1]);
-            }
+            this._mapId = int(params[0]);
+            this._nbCharacters = uint(params[1]);
          }
+         
       }
       
       private var _mapId:int;

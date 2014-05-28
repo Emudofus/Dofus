@@ -24,7 +24,6 @@ package com.ankamagames.berilia.components
    import com.ankamagames.berilia.types.data.GridItem;
    import flash.display.DisplayObject;
    import com.ankamagames.berilia.components.messages.SelectItemMessage;
-   import __AS3__.vec.*;
    import flash.events.MouseEvent;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseRightClickMessage;
@@ -75,9 +74,9 @@ package com.ankamagames.berilia.components
       
       private static var _include_MultiGridRenderer:MultiGridRenderer = null;
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Grid));
+      protected static const _log:Logger;
       
       public static const AUTOSELECT_NONE:int = 0;
       
@@ -287,20 +286,18 @@ package com.ankamagames.berilia.components
             {
                this.setSelectedIndex(Math.min(this._nSelectedIndex,this._dataProvider.length - 1),SelectMethodEnum.AUTO);
             }
-            else
+            else if(this._autoSelect == AUTOSELECT_BY_ITEM)
             {
-               if(this._autoSelect == AUTOSELECT_BY_ITEM)
+               if(this._nSelectedItem)
                {
-                  if(this._nSelectedItem)
+                  this.selectedItem = this._nSelectedItem.object;
+                  if(this.selectedItem != this._nSelectedItem.object)
                   {
-                     this.selectedItem = this._nSelectedItem.object;
-                     if(this.selectedItem != this._nSelectedItem.object)
-                     {
-                        this._nSelectedItem = null;
-                     }
+                     this._nSelectedItem = null;
                   }
                }
             }
+            
          }
       }
       
@@ -545,66 +542,64 @@ package com.ankamagames.berilia.components
                addChild(this._scrollBarH);
             }
          }
-         else
+         else if((this._slotByCol < this._totalSlotByCol) && (!(this._displayScrollbar == "never")) || (this._displayScrollbar == "always"))
          {
-            if((this._slotByCol < this._totalSlotByCol) && (!(this._displayScrollbar == "never")) || (this._displayScrollbar == "always"))
+            if(!this._scrollBarV)
             {
-               if(!this._scrollBarV)
+               this._scrollBarV = new ScrollBar();
+               addChild(this._scrollBarV);
+               this._scrollBarV.addEventListener(Event.CHANGE,this.onScroll,false,0,true);
+               this._scrollBarV.css = this._sVScrollCss;
+               this._scrollBarV.min = 0;
+               maxValue = this._totalSlotByCol - this._slotByCol;
+               if(maxValue < 0)
                {
-                  this._scrollBarV = new ScrollBar();
-                  addChild(this._scrollBarV);
-                  this._scrollBarV.addEventListener(Event.CHANGE,this.onScroll,false,0,true);
-                  this._scrollBarV.css = this._sVScrollCss;
-                  this._scrollBarV.min = 0;
-                  maxValue = this._totalSlotByCol - this._slotByCol;
-                  if(maxValue < 0)
-                  {
-                     this._scrollBarV.max = 0;
-                  }
-                  else
-                  {
-                     this._scrollBarV.max = maxValue;
-                  }
-                  this._scrollBarV.total = this._totalSlotByCol;
-                  this._scrollBarV.width = this._scrollBarSize;
-                  this._scrollBarV.height = height;
-                  this._scrollBarV.x = width - this._scrollBarV.width;
-                  this._scrollBarV.step = 1;
-                  this._scrollBarV.scrollSpeed = this._verticalScrollSpeed;
-                  this._scrollBarV.finalize();
+                  this._scrollBarV.max = 0;
                }
                else
                {
-                  maxValue = this._totalSlotByCol - this._slotByCol;
-                  if(maxValue < 0)
-                  {
-                     this._scrollBarV.max = 0;
-                  }
-                  else
-                  {
-                     this._scrollBarV.max = maxValue;
-                  }
-                  this._scrollBarV.total = this._totalSlotByCol;
-                  addChild(this._scrollBarV);
-                  this._scrollBarV.finalize();
+                  this._scrollBarV.max = maxValue;
                }
+               this._scrollBarV.total = this._totalSlotByCol;
+               this._scrollBarV.width = this._scrollBarSize;
+               this._scrollBarV.height = height;
+               this._scrollBarV.x = width - this._scrollBarV.width;
+               this._scrollBarV.step = 1;
+               this._scrollBarV.scrollSpeed = this._verticalScrollSpeed;
+               this._scrollBarV.finalize();
             }
             else
             {
-               if((this._scrollBarV) && (this._scrollBarV.parent))
+               maxValue = this._totalSlotByCol - this._slotByCol;
+               if(maxValue < 0)
                {
-                  removeChild(this._scrollBarV);
                   this._scrollBarV.max = 0;
-                  this._scrollBarV.finalize();
                }
-               if((this._scrollBarH) && (this._scrollBarH.parent))
+               else
                {
-                  removeChild(this._scrollBarH);
-                  this._scrollBarH.max = 0;
-                  this._scrollBarH.finalize();
+                  this._scrollBarV.max = maxValue;
                }
+               this._scrollBarV.total = this._totalSlotByCol;
+               addChild(this._scrollBarV);
+               this._scrollBarV.finalize();
             }
          }
+         else
+         {
+            if((this._scrollBarV) && (this._scrollBarV.parent))
+            {
+               removeChild(this._scrollBarV);
+               this._scrollBarV.max = 0;
+               this._scrollBarV.finalize();
+            }
+            if((this._scrollBarH) && (this._scrollBarH.parent))
+            {
+               removeChild(this._scrollBarH);
+               this._scrollBarH.max = 0;
+               this._scrollBarH.finalize();
+            }
+         }
+         
          if((this._hiddenCol) || (this._hiddenRow))
          {
             if(!this._mask)
@@ -751,7 +746,7 @@ package com.ankamagames.berilia.components
          return (index % this._totalSlotByRow - this._pageXOffset >= this._slotByRow) || (index % this._totalSlotByRow - this._pageXOffset < 0);
       }
       
-      public function moveTo(index:uint, force:Boolean=false) : void {
+      public function moveTo(index:uint, force:Boolean = false) : void {
          if((this.indexIsInvisibleSlot(index)) || (force))
          {
             if(this._scrollBarV)
@@ -766,21 +761,19 @@ package com.ankamagames.berilia.components
                   this.updateFromIndex(this._scrollBarV.value);
                }
             }
-            else
+            else if(this._scrollBarH)
             {
-               if(this._scrollBarH)
+               this._scrollBarH.value = index % this._totalSlotByRow;
+               if(this._scrollBarH.value < 0)
                {
-                  this._scrollBarH.value = index % this._totalSlotByRow;
-                  if(this._scrollBarH.value < 0)
-                  {
-                     this.updateFromIndex(0);
-                  }
-                  else
-                  {
-                     this.updateFromIndex(this._scrollBarH.value);
-                  }
+                  this.updateFromIndex(0);
+               }
+               else
+               {
+                  this.updateFromIndex(this._scrollBarH.value);
                }
             }
+            
          }
       }
       
@@ -792,7 +785,7 @@ package com.ankamagames.berilia.components
          return 0;
       }
       
-      public function sortOn(col:String, options:int=0) : void {
+      public function sortOn(col:String, options:int = 0) : void {
          this._sortProperty = col;
          this._dataProvider.sortOn(col,options);
          this.finalize();
@@ -1068,7 +1061,7 @@ package com.ankamagames.berilia.components
             {
                this._nSelectedItem = new WeakReference(this._dataProvider[index]);
             }
-            for each (iDes in this._items)
+            for each(iDes in this._items)
             {
                if((iDes.index == lastIndex) && (lastIndex < this._dataProvider.length))
                {
@@ -1096,20 +1089,18 @@ package com.ankamagames.berilia.components
                {
                   this._renderer.update(this._dataProvider[this._nSelectedIndex],this._nSelectedIndex,currenItem.container,true);
                }
-               else
+               else if(currenItem.index == lastIndex)
                {
-                  if(currenItem.index == lastIndex)
+                  if(lastIndex < this._dataProvider.length)
                   {
-                     if(lastIndex < this._dataProvider.length)
-                     {
-                        this._renderer.update(this._dataProvider[lastIndex],lastIndex,currenItem.container,false);
-                     }
-                     else
-                     {
-                        this._renderer.update(null,lastIndex,currenItem.container,false);
-                     }
+                     this._renderer.update(this._dataProvider[lastIndex],lastIndex,currenItem.container,false);
+                  }
+                  else
+                  {
+                     this._renderer.update(null,lastIndex,currenItem.container,false);
                   }
                }
+               
                index++;
             }
             this.moveTo(this._nSelectedIndex);
@@ -1127,7 +1118,7 @@ package com.ankamagames.berilia.components
          var i:uint = 0;
          while(i < 2)
          {
-            useScrollBar = ((i) && (this._displayScrollbar == "auto")) && (this._totalSlotByCol * this._slotHeight > height || this._totalSlotByRow * this._slotWidth > width) || (this._displayScrollbar == "always");
+            useScrollBar = (i && this._displayScrollbar == "auto") && (this._totalSlotByCol * this._slotHeight > height || this._totalSlotByRow * this._slotWidth > width) || (this._displayScrollbar == "always");
             this._avaibleSpaceX = width - ((this._verticalScroll) && (useScrollBar)?this._scrollBarSize:0);
             this._avaibleSpaceY = height - ((!this._verticalScroll) && (useScrollBar)?this._scrollBarSize:0);
             this._slotByRow = Math.floor(this._avaibleSpaceX / this._slotWidth);
@@ -1274,17 +1265,15 @@ package com.ankamagames.berilia.components
                this.moveTo(this._pageYOffset + e.delta);
             }
          }
+         else if((this._scrollBarH) && (this._scrollBarH.visible))
+         {
+            this._scrollBarH.onWheel(e);
+         }
          else
          {
-            if((this._scrollBarH) && (this._scrollBarH.visible))
-            {
-               this._scrollBarH.onWheel(e);
-            }
-            else
-            {
-               this.moveTo(this._pageXOffset + e.delta);
-            }
+            this.moveTo(this._pageXOffset + e.delta);
          }
+         
       }
       
       override public function process(msg:Message) : Boolean {
@@ -1387,17 +1376,15 @@ package com.ankamagames.berilia.components
                      {
                         this.setSelectedIndex(currentItem.index,SelectMethodEnum.CTRL_DOUBLE_CLICK);
                      }
+                     else if((AirScanner.hasAir()) && (KeyPoll.getInstance().isDown(Keyboard["ALTERNATE"]) == true))
+                     {
+                        this.setSelectedIndex(currentItem.index,SelectMethodEnum.ALT_DOUBLE_CLICK);
+                     }
                      else
                      {
-                        if((AirScanner.hasAir()) && (KeyPoll.getInstance().isDown(Keyboard["ALTERNATE"]) == true))
-                        {
-                           this.setSelectedIndex(currentItem.index,SelectMethodEnum.ALT_DOUBLE_CLICK);
-                        }
-                        else
-                        {
-                           this.setSelectedIndex(currentItem.index,SelectMethodEnum.DOUBLE_CLICK);
-                        }
+                        this.setSelectedIndex(currentItem.index,SelectMethodEnum.DOUBLE_CLICK);
                      }
+                     
                      return true;
                   }
                }
@@ -1405,7 +1392,7 @@ package com.ankamagames.berilia.components
             case msg is MouseUpMessage:
                mummsg = MouseUpMessage(msg);
                currentItem = this.getGridItem(mummsg.target);
-               if(((this._items) && (this._items[0] is GridItem)) && (GridItem(this._items[0]).container is Slot) && (!currentItem))
+               if((this._items && this._items[0] is GridItem) && (GridItem(this._items[0]).container is Slot) && (!currentItem))
                {
                   this.dispatchMessage(mummsg,this.getNearestSlot(mummsg.mouseEvent));
                }
@@ -1447,7 +1434,7 @@ package com.ankamagames.berilia.components
          return false;
       }
       
-      protected function dispatchMessage(msg:Message, handler:MessageHandler=null) : void {
+      protected function dispatchMessage(msg:Message, handler:MessageHandler = null) : void {
          if(!this.silent)
          {
             if(!handler)

@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 395;
       }
       
-      public function initMonsterInGroupLightInformations(creatureGenericId:int=0, grade:uint=0) : MonsterInGroupLightInformations {
+      public function initMonsterInGroupLightInformations(creatureGenericId:int = 0, grade:uint = 0) : MonsterInGroupLightInformations {
          this.creatureGenericId = creatureGenericId;
          this.grade = grade;
          return this;

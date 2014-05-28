@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
          return 6018;
       }
       
-      public function initPaddockSellBuyDialogMessage(bsell:Boolean=false, ownerId:uint=0, price:uint=0) : PaddockSellBuyDialogMessage {
+      public function initPaddockSellBuyDialogMessage(bsell:Boolean = false, ownerId:uint = 0, price:uint = 0) : PaddockSellBuyDialogMessage {
          this.bsell = bsell;
          this.ownerId = ownerId;
          this.price = price;

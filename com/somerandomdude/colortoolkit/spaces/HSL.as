@@ -5,7 +5,7 @@ package com.somerandomdude.colortoolkit.spaces
    public class HSL extends CoreColor implements IColorSpace
    {
       
-      public function HSL(hue:Number=0, saturation:Number=0, lightness:Number=0) {
+      public function HSL(hue:Number = 0, saturation:Number = 0, lightness:Number = 0) {
          super();
          this._hue = Math.min(360,Math.max(hue,0));
          this._saturation = Math.min(100,Math.max(saturation,0));

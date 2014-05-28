@@ -12,7 +12,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.inventory.ObjectAveragePricesMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.ObjectAveragePricesErrorMessage;
    import com.ankamagames.dofus.network.enums.GameContextEnum;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.common.frames.MiscFrame;
    import com.ankamagames.dofus.datacenter.misc.OptionalFeature;
@@ -34,7 +33,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AveragePricesFrame));
+      protected static const _log:Logger;
       
       private static var _dataStoreType:DataStoreType;
       
@@ -83,6 +82,8 @@ package com.ankamagames.dofus.logic.game.common.frames
             case pMsg is ObjectAveragePricesErrorMessage:
                oapem = pMsg as ObjectAveragePricesErrorMessage;
                return true;
+            default:
+               return false;
          }
       }
       

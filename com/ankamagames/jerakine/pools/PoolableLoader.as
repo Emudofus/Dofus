@@ -12,7 +12,7 @@ package com.ankamagames.jerakine.pools
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PoolableLoader));
+      protected static const _log:Logger;
       
       public function free() : void {
          unload();

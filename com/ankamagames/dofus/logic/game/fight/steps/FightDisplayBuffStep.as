@@ -33,23 +33,20 @@ package com.ankamagames.dofus.logic.game.fight.steps
          }
          else
          {
-            if(buffUnknown)
+            if(this._buff is StatBuff)
             {
-               if(this._buff is StatBuff)
+               statName = (this._buff as StatBuff).statName;
+               switch(statName)
                {
-                  statName = (this._buff as StatBuff).statName;
-                  switch(statName)
-                  {
-                     case "movementPoints":
-                        this._virtualStep = new FightMovementPointsVariationStep(this._buff.targetId,(this._buff as StatBuff).delta,false,false,false);
-                        break;
-                     case "actionPoints":
-                        this._virtualStep = new FightActionPointsVariationStep(this._buff.targetId,(this._buff as StatBuff).delta,false,false,false);
-                        break;
-                  }
+                  case "movementPoints":
+                     this._virtualStep = new FightMovementPointsVariationStep(this._buff.targetId,(this._buff as StatBuff).delta,false,false,false);
+                     break;
+                  case "actionPoints":
+                     this._virtualStep = new FightActionPointsVariationStep(this._buff.targetId,(this._buff as StatBuff).delta,false,false,false);
+                     break;
                }
-               BuffManager.getInstance().addBuff(this._buff);
             }
+            BuffManager.getInstance().addBuff(this._buff);
          }
          if(!this._virtualStep)
          {
@@ -62,7 +59,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          }
       }
       
-      public function stepFinished(step:ISequencable, withTimout:Boolean=false) : void {
+      public function stepFinished(step:ISequencable, withTimout:Boolean = false) : void {
          this._virtualStep.removeListener(this);
          executeCallbacks();
       }

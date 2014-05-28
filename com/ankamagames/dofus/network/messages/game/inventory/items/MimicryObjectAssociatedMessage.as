@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6462;
       }
       
-      public function initMimicryObjectAssociatedMessage(hostUID:uint=0) : MimicryObjectAssociatedMessage {
+      public function initMimicryObjectAssociatedMessage(hostUID:uint = 0) : MimicryObjectAssociatedMessage {
          this.hostUID = hostUID;
          this._isInitialized = true;
          return this;

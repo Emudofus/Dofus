@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.connection.search
          return 6143;
       }
       
-      public function initAcquaintanceSearchErrorMessage(reason:uint=0) : AcquaintanceSearchErrorMessage {
+      public function initAcquaintanceSearchErrorMessage(reason:uint = 0) : AcquaintanceSearchErrorMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

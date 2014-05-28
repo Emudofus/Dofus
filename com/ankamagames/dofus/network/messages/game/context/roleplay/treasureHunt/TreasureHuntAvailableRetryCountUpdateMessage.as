@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
          return 6491;
       }
       
-      public function initTreasureHuntAvailableRetryCountUpdateMessage(questType:uint=0, availableRetryCount:int=0) : TreasureHuntAvailableRetryCountUpdateMessage {
+      public function initTreasureHuntAvailableRetryCountUpdateMessage(questType:uint = 0, availableRetryCount:int = 0) : TreasureHuntAvailableRetryCountUpdateMessage {
          this.questType = questType;
          this.availableRetryCount = availableRetryCount;
          this._isInitialized = true;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6424;
       }
       
-      public function initGuildFactsErrorMessage(guildId:uint=0) : GuildFactsErrorMessage {
+      public function initGuildFactsErrorMessage(guildId:uint = 0) : GuildFactsErrorMessage {
          this.guildId = guildId;
          this._isInitialized = true;
          return this;

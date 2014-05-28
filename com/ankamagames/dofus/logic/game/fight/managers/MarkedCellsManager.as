@@ -9,7 +9,6 @@ package com.ankamagames.dofus.logic.game.fight.managers
    import com.ankamagames.dofus.network.types.game.actions.fight.GameActionMarkedCell;
    import com.ankamagames.dofus.logic.game.fight.types.MarkInstance;
    import com.ankamagames.atouin.types.Selection;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.Color;
    import com.ankamagames.atouin.renderers.TrapZoneRenderer;
    import com.ankamagames.atouin.enums.PlacementStrataEnums;
@@ -44,7 +43,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
       
       private static const MARK_SELECTIONS_PREFIX:String = "FightMark";
       
-      private static var _log:Logger = Log.getLogger(getQualifiedClassName(MarkedCellsManager));
+      private static var _log:Logger;
       
       private static var _self:MarkedCellsManager;
       
@@ -84,7 +83,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
                s.color = new Color(markedCell.cellColor);
                s.renderer = new TrapZoneRenderer(PlacementStrataEnums.STRATA_GLYPH);
                cellsId = new Vector.<uint>();
-               for each (gamcell in cells)
+               for each(gamcell in cells)
                {
                   cellsId.push(gamcell.cellId);
                }
@@ -92,19 +91,17 @@ package com.ankamagames.dofus.logic.game.fight.managers
                {
                   s.zone = new Cross(0,markedCell.zoneSize,DataMapProvider.getInstance());
                }
+               else if(markedCell.zoneSize > 0)
+               {
+                  s.zone = new Lozenge(0,markedCell.zoneSize,DataMapProvider.getInstance());
+               }
                else
                {
-                  if(markedCell.zoneSize > 0)
-                  {
-                     s.zone = new Lozenge(0,markedCell.zoneSize,DataMapProvider.getInstance());
-                  }
-                  else
-                  {
-                     s.zone = new Custom(cellsId);
-                  }
+                  s.zone = new Custom(cellsId);
                }
+               
                SelectionManager.getInstance().addSelection(s,this.getSelectionUid(),markedCell.cellId);
-               for each (cell in s.cells)
+               for each(cell in s.cells)
                {
                   mi.cells.push(cell);
                }
@@ -120,12 +117,14 @@ package com.ankamagames.dofus.logic.game.fight.managers
       }
       
       public function removeMark(markId:int) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var s:Selection = null;
+         var selections:Vector.<Selection> = (this._marks[markId] as MarkInstance).selections;
+         for each(s in selections)
+         {
+            s.remove();
+         }
+         delete this._marks[markId];
+         this.updateDataMapProvider();
       }
       
       public function addGlyph(glyph:Glyph, markId:int) : void {
@@ -140,7 +139,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          if(this._glyphs[markId])
          {
             Glyph(this._glyphs[markId]).remove();
-            delete this._glyphs[[markId]];
+            delete this._glyphs[markId];
          }
       }
       
@@ -150,7 +149,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          var num:* = 0;
          var glyph:String = null;
          var bufferId:Array = new Array();
-         for (mark in this._marks)
+         for(mark in this._marks)
          {
             bufferId.push(int(mark));
          }
@@ -161,7 +160,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
             this.removeMark(bufferId[i]);
          }
          bufferId.length = 0;
-         for (glyph in this._glyphs)
+         for(glyph in this._glyphs)
          {
             bufferId.push(int(glyph));
          }
@@ -182,7 +181,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          /*
           * Decompilation error
           * Code may be obfuscated
-          * Error type: ExecutionException
+          * Error type: TranslateException
           */
          throw new IllegalOperationError("Not decompiled due to error");
       }

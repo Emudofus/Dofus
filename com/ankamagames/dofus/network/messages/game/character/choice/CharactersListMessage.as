@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.game.character.choice
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
@@ -28,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 151;
       }
       
-      public function initCharactersListMessage(characters:Vector.<CharacterBaseInformations>=null, hasStartupActions:Boolean=false) : CharactersListMessage {
+      public function initCharactersListMessage(characters:Vector.<CharacterBaseInformations> = null, hasStartupActions:Boolean = false) : CharactersListMessage {
          super.initBasicCharactersListMessage(characters);
          this.hasStartupActions = hasStartupActions;
          this._isInitialized = true;

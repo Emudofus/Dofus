@@ -22,7 +22,7 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ActionsInstructionHandler));
+      protected static const _log:Logger;
       
       public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
          var actionName:String = null;
@@ -204,6 +204,8 @@ package com.ankamagames.dofus.console.debug
                return "Send a hook to the worker.";
             case "listactions":
                return "List all valid actions.";
+            default:
+               return "Unknown command \'" + cmd + "\'.";
          }
       }
       
@@ -213,7 +215,7 @@ package com.ankamagames.dofus.console.debug
          var v:String = null;
          var t:String = null;
          var params:Array = [];
-         for (iStr in data)
+         for(iStr in data)
          {
             i = parseInt(iStr);
             v = data[i];
@@ -229,14 +231,17 @@ package com.ankamagames.dofus.console.debug
             case "String":
                return value;
             case "Boolean":
-               return (value == "true") || (value == "1");
+               return value == "true" || value == "1";
             case "int":
             case "uint":
                return parseInt(value);
+            default:
+               _log.warn("Unsupported parameter type \'" + type + "\'.");
+               return value;
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          var actionsList:Array = null;
          var a:String = null;
          var possibilities:Array = [];
@@ -246,7 +251,7 @@ package com.ankamagames.dofus.console.debug
                if(paramIndex == 0)
                {
                   actionsList = DofusApiAction.getApiActionsList();
-                  for (a in actionsList)
+                  for(a in actionsList)
                   {
                      possibilities.push(a);
                   }

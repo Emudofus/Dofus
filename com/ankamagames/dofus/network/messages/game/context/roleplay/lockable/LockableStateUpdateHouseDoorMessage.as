@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.lockable
          return 5668;
       }
       
-      public function initLockableStateUpdateHouseDoorMessage(locked:Boolean=false, houseId:int=0) : LockableStateUpdateHouseDoorMessage {
+      public function initLockableStateUpdateHouseDoorMessage(locked:Boolean = false, houseId:int = 0) : LockableStateUpdateHouseDoorMessage {
          super.initLockableStateUpdateAbstractMessage(locked);
          this.houseId = houseId;
          this._isInitialized = true;

@@ -5,7 +5,7 @@ package com.somerandomdude.colortoolkit.spaces
    public class HSB extends CoreColor implements IColorSpace
    {
       
-      public function HSB(hue:Number=0, saturation:Number=0, brightness:Number=0) {
+      public function HSB(hue:Number = 0, saturation:Number = 0, brightness:Number = 0) {
          super();
          this._hue = Math.min(360,Math.max(hue,0));
          this._saturation = Math.min(100,Math.max(saturation,0));
@@ -90,17 +90,15 @@ package com.somerandomdude.colortoolkit.spaces
             {
                h = (g - b) / delta;
             }
+            else if(g == max)
+            {
+               h = 2 + (b - r) / delta;
+            }
             else
             {
-               if(g == max)
-               {
-                  h = 2 + (b - r) / delta;
-               }
-               else
-               {
-                  h = 4 + (r - g) / delta;
-               }
+               h = 4 + (r - g) / delta;
             }
+            
             h = h * 60;
             if(h < 0)
             {
@@ -141,51 +139,41 @@ package com.somerandomdude.colortoolkit.spaces
             g = t;
             b = p;
          }
-         else
+         else if(i == 1)
          {
-            if(i == 1)
-            {
-               r = q;
-               g = brightness;
-               b = p;
-            }
-            else
-            {
-               if(i == 2)
-               {
-                  r = p;
-                  g = brightness;
-                  b = t;
-               }
-               else
-               {
-                  if(i == 3)
-                  {
-                     r = p;
-                     g = q;
-                     b = brightness;
-                  }
-                  else
-                  {
-                     if(i == 4)
-                     {
-                        r = t;
-                        g = p;
-                        b = brightness;
-                     }
-                     else
-                     {
-                        if(i == 5)
-                        {
-                           r = brightness;
-                           g = p;
-                           b = q;
-                        }
-                     }
-                  }
-               }
-            }
+            r = q;
+            g = brightness;
+            b = p;
          }
+         else if(i == 2)
+         {
+            r = p;
+            g = brightness;
+            b = t;
+         }
+         else if(i == 3)
+         {
+            r = p;
+            g = q;
+            b = brightness;
+         }
+         else if(i == 4)
+         {
+            r = t;
+            g = p;
+            b = brightness;
+         }
+         else if(i == 5)
+         {
+            r = brightness;
+            g = p;
+            b = q;
+         }
+         
+         
+         
+         
+         
          r = Math.floor(r * 255);
          g = Math.floor(g * 255);
          b = Math.floor(b * 255);

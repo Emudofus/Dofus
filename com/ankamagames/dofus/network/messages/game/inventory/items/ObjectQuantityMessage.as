@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3023;
       }
       
-      public function initObjectQuantityMessage(objectUID:uint=0, quantity:uint=0) : ObjectQuantityMessage {
+      public function initObjectQuantityMessage(objectUID:uint = 0, quantity:uint = 0) : ObjectQuantityMessage {
          this.objectUID = objectUID;
          this.quantity = quantity;
          this._isInitialized = true;

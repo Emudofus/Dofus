@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(targetedPlayerId:uint, ava:Boolean, friendly:Boolean=true, launch:Boolean=false, cellId:int=-1) : PlayerFightRequestAction {
+      public static function create(targetedPlayerId:uint, ava:Boolean, friendly:Boolean = true, launch:Boolean = false, cellId:int = -1) : PlayerFightRequestAction {
          var o:PlayerFightRequestAction = new PlayerFightRequestAction();
          o.ava = ava;
          o.friendly = friendly;

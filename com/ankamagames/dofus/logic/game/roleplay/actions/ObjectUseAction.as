@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(objectUID:uint, quantity:int=1, useOnCell:Boolean=false) : ObjectUseAction {
+      public static function create(objectUID:uint, quantity:int = 1, useOnCell:Boolean = false) : ObjectUseAction {
          var a:ObjectUseAction = new ObjectUseAction();
          a.objectUID = objectUID;
          a.quantity = quantity;

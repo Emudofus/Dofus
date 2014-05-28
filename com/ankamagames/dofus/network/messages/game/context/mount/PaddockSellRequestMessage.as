@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5953;
       }
       
-      public function initPaddockSellRequestMessage(price:uint=0) : PaddockSellRequestMessage {
+      public function initPaddockSellRequestMessage(price:uint = 0) : PaddockSellRequestMessage {
          this.price = price;
          this._isInitialized = true;
          return this;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          return 6222;
       }
       
-      public function initShortcutBarRemoveErrorMessage(error:uint=0) : ShortcutBarRemoveErrorMessage {
+      public function initShortcutBarRemoveErrorMessage(error:uint = 0) : ShortcutBarRemoveErrorMessage {
          this.error = error;
          this._isInitialized = true;
          return this;

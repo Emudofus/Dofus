@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.subscriber
          return 5573;
       }
       
-      public function initSubscriptionZoneMessage(active:Boolean=false) : SubscriptionZoneMessage {
+      public function initSubscriptionZoneMessage(active:Boolean = false) : SubscriptionZoneMessage {
          this.active = active;
          this._isInitialized = true;
          return this;

@@ -12,7 +12,7 @@ package com.ankamagames.jerakine.utils.memory
       
       private static const MOD:uint = 1024;
       
-      private static const UNITS:Array = ["B","KB","MB","GB","TB","PB"];
+      private static const UNITS:Array;
       
       public static function usage() : uint {
          return System.totalMemory;

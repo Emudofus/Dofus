@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6383;
       }
       
-      public function initFriendGuildWarnOnAchievementCompleteStateMessage(enable:Boolean=false) : FriendGuildWarnOnAchievementCompleteStateMessage {
+      public function initFriendGuildWarnOnAchievementCompleteStateMessage(enable:Boolean = false) : FriendGuildWarnOnAchievementCompleteStateMessage {
          this.enable = enable;
          this._isInitialized = true;
          return this;

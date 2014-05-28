@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 6071;
       }
       
-      public function initGameContextReadyMessage(mapId:uint=0) : GameContextReadyMessage {
+      public function initGameContextReadyMessage(mapId:uint = 0) : GameContextReadyMessage {
          this.mapId = mapId;
          this._isInitialized = true;
          return this;

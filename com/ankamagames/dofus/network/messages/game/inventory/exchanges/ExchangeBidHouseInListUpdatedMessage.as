@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
@@ -26,7 +25,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6337;
       }
       
-      public function initExchangeBidHouseInListUpdatedMessage(itemUID:int=0, objGenericId:int=0, effects:Vector.<ObjectEffect>=null, prices:Vector.<uint>=null) : ExchangeBidHouseInListUpdatedMessage {
+      public function initExchangeBidHouseInListUpdatedMessage(itemUID:int = 0, objGenericId:int = 0, effects:Vector.<ObjectEffect> = null, prices:Vector.<uint> = null) : ExchangeBidHouseInListUpdatedMessage {
          super.initExchangeBidHouseInListAddedMessage(itemUID,objGenericId,effects,prices);
          this._isInitialized = true;
          return this;

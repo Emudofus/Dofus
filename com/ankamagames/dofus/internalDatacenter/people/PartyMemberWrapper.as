@@ -6,7 +6,7 @@ package com.ankamagames.dofus.internalDatacenter.people
    public class PartyMemberWrapper extends Object implements IDataCenter
    {
       
-      public function PartyMemberWrapper(id:int, name:String, status:uint, isMember:Boolean, isLeader:Boolean=false, level:int=0, entityLook:EntityLook=null, lifePoints:int=0, maxLifePoints:int=0, maxInitiative:int=0, prospecting:int=0, alignmentSide:int=0, regenRate:int=0, rank:int=0, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:int=0, breedId:int=0, companions:Array=null) {
+      public function PartyMemberWrapper(id:int, name:String, status:uint, isMember:Boolean, isLeader:Boolean = false, level:int = 0, entityLook:EntityLook = null, lifePoints:int = 0, maxLifePoints:int = 0, maxInitiative:int = 0, prospecting:int = 0, alignmentSide:int = 0, regenRate:int = 0, rank:int = 0, worldX:int = 0, worldY:int = 0, mapId:int = 0, subAreaId:int = 0, breedId:int = 0, companions:Array = null) {
          this.companions = new Array();
          super();
          this.id = id;

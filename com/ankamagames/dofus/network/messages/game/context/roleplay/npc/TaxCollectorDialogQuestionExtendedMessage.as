@@ -43,7 +43,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 5615;
       }
       
-      public function initTaxCollectorDialogQuestionExtendedMessage(guildInfo:BasicGuildInformations=null, maxPods:uint=0, prospecting:uint=0, wisdom:uint=0, taxCollectorsCount:uint=0, taxCollectorAttack:int=0, kamas:uint=0, experience:Number=0, pods:uint=0, itemsValue:uint=0) : TaxCollectorDialogQuestionExtendedMessage {
+      public function initTaxCollectorDialogQuestionExtendedMessage(guildInfo:BasicGuildInformations = null, maxPods:uint = 0, prospecting:uint = 0, wisdom:uint = 0, taxCollectorsCount:uint = 0, taxCollectorAttack:int = 0, kamas:uint = 0, experience:Number = 0, pods:uint = 0, itemsValue:uint = 0) : TaxCollectorDialogQuestionExtendedMessage {
          super.initTaxCollectorDialogQuestionBasicMessage(guildInfo);
          this.maxPods = maxPods;
          this.prospecting = prospecting;

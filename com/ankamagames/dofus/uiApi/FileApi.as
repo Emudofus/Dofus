@@ -39,7 +39,7 @@ package com.ankamagames.dofus.uiApi
       public function destroy() : void {
          var mfs:* = undefined;
          this._module = null;
-         for (mfs in this._openedFiles)
+         for(mfs in this._openedFiles)
          {
             if(mfs)
             {
@@ -56,72 +56,64 @@ package com.ankamagames.dofus.uiApi
          this._openedFiles = null;
       }
       
-      public function loadXmlFile(url:String, loadSuccessCallBack:Function, loadErrorCallBack:Function=null) : void {
+      public function loadXmlFile(url:String, loadSuccessCallBack:Function, loadErrorCallBack:Function = null) : void {
          if(FileUtils.getExtension(url).toUpperCase() != "XML")
          {
             throw new ApiError("loadXmlFile can only load file with XML extension");
          }
+         else if(!url)
+         {
+            throw new ApiError("loadXmlFile need a non-null url");
+         }
+         else if(loadSuccessCallBack == null)
+         {
+            throw new ApiError("loadXmlFile need a non-null success callback function");
+         }
          else
          {
-            if(!url)
-            {
-               throw new ApiError("loadXmlFile need a non-null url");
-            }
-            else
-            {
-               if(loadSuccessCallBack == null)
+            url = this._module.rootPath + url.replace("..","");
+            uri = new Uri(url);
+            uri.tag = 
                {
-                  throw new ApiError("loadXmlFile need a non-null success callback function");
-               }
-               else
-               {
-                  url = this._module.rootPath + url.replace("..","");
-                  uri = new Uri(url);
-                  uri.tag = 
-                     {
-                        "loadSuccessCallBack":loadSuccessCallBack,
-                        "loadErrorCallBack":loadErrorCallBack
-                     };
-                  this._loader.load(uri);
-                  return;
-               }
-            }
+                  "loadSuccessCallBack":loadSuccessCallBack,
+                  "loadErrorCallBack":loadErrorCallBack
+               };
+            this._loader.load(uri);
+            return;
          }
+         
+         
       }
       
-      public function trustedLoadXmlFile(url:String, loadSuccessCallBack:Function, loadErrorCallBack:Function=null) : void {
+      public function trustedLoadXmlFile(url:String, loadSuccessCallBack:Function, loadErrorCallBack:Function = null) : void {
          if(FileUtils.getExtension(url).toUpperCase() != "XML")
          {
             throw new ApiError("loadXmlFile can only load file with XML extension");
          }
+         else if(!url)
+         {
+            throw new ApiError("loadXmlFile need a non-null url");
+         }
+         else if(loadSuccessCallBack == null)
+         {
+            throw new ApiError("loadXmlFile need a non-null success callback function");
+         }
          else
          {
-            if(!url)
-            {
-               throw new ApiError("loadXmlFile need a non-null url");
-            }
-            else
-            {
-               if(loadSuccessCallBack == null)
+            uri = new Uri(url);
+            uri.tag = 
                {
-                  throw new ApiError("loadXmlFile need a non-null success callback function");
-               }
-               else
-               {
-                  uri = new Uri(url);
-                  uri.tag = 
-                     {
-                        "loadSuccessCallBack":loadSuccessCallBack,
-                        "loadErrorCallBack":loadErrorCallBack
-                     };
-                  this._loader.load(uri);
-                  return;
-               }
-            }
+                  "loadSuccessCallBack":loadSuccessCallBack,
+                  "loadErrorCallBack":loadErrorCallBack
+               };
+            this._loader.load(uri);
+            return;
          }
+         
+         
       }
       
-      public function openFile(url:String, openMode:String="update") : ModuleFilestream {
+      public function openFile(url:String, openMode:String = "update") : ModuleFilestream {
          var mf:ModuleFilestream = new ModuleFilestream(url,openMode,this._module);
          this._openedFiles[mf] = url;
          return mf;
@@ -136,7 +128,7 @@ package com.ankamagames.dofus.uiApi
          }
       }
       
-      public function deleteDir(url:String, recursive:Boolean=true) : void {
+      public function deleteDir(url:String, recursive:Boolean = true) : void {
          var url:String = ModuleFilestream.cleanUrl(url);
          var file:File = new File(this._module.storagePath + url);
          if((file.exists) && (file.isDirectory))
@@ -145,7 +137,7 @@ package com.ankamagames.dofus.uiApi
          }
       }
       
-      public function getDirectoryContent(url:String=null, hideFiles:Boolean=false, hideDirectories:Boolean=false) : Array {
+      public function getDirectoryContent(url:String = null, hideFiles:Boolean = false, hideDirectories:Boolean = false) : Array {
          var files:Array = null;
          var file:File = null;
          var url:String = url?ModuleFilestream.cleanUrl(url):"";
@@ -154,7 +146,7 @@ package com.ankamagames.dofus.uiApi
          if((dir.exists) && (dir.isDirectory))
          {
             files = dir.getDirectoryListing();
-            for each (file in files)
+            for each(file in files)
             {
                if((!file.isDirectory) && (!hideFiles))
                {

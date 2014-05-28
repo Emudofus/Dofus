@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 451;
       }
       
-      public function initFightTeamMemberCompanionInformations(id:int=0, companionId:int=0, level:uint=0, masterId:int=0) : FightTeamMemberCompanionInformations {
+      public function initFightTeamMemberCompanionInformations(id:int = 0, companionId:int = 0, level:uint = 0, masterId:int = 0) : FightTeamMemberCompanionInformations {
          super.initFightTeamMemberInformations(id);
          this.companionId = companionId;
          this.level = level;

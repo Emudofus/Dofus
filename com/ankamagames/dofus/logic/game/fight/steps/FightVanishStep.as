@@ -113,7 +113,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          }
       }
       
-      private function vanishFinished(e:Event=null) : void {
+      private function vanishFinished(e:Event = null) : void {
          if(this._vanishSubSequence)
          {
             this._vanishSubSequence.removeEventListener(SequencerEvent.SEQUENCE_END,this.vanishFinished);

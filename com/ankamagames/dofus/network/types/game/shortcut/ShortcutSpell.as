@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.shortcut
          return 368;
       }
       
-      public function initShortcutSpell(slot:uint=0, spellId:uint=0) : ShortcutSpell {
+      public function initShortcutSpell(slot:uint = 0, spellId:uint = 0) : ShortcutSpell {
          super.initShortcut(slot);
          this.spellId = spellId;
          return this;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5989;
       }
       
-      public function initMountSetXpRatioRequestMessage(xpRatio:uint=0) : MountSetXpRatioRequestMessage {
+      public function initMountSetXpRatioRequestMessage(xpRatio:uint = 0) : MountSetXpRatioRequestMessage {
          this.xpRatio = xpRatio;
          this._isInitialized = true;
          return this;

@@ -15,7 +15,7 @@ package com.ankamagames.jerakine.utils.memory
       
       public function get object() : * {
          var n:* = undefined;
-         for (n in this.dictionary)
+         for(n in this.dictionary)
          {
             return n;
          }

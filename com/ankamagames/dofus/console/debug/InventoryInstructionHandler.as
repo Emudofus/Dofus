@@ -5,7 +5,6 @@ package com.ankamagames.dofus.console.debug
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.console.ConsoleHandler;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.datacenter.items.Item;
    import com.ankamagames.dofus.network.messages.authorized.AdminQuietCommandMessage;
@@ -22,7 +21,7 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(InventoryInstructionHandler));
+      protected static const _log:Logger;
       
       public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
          var matchItems:Array = null;
@@ -38,7 +37,7 @@ package com.ankamagames.dofus.console.debug
          switch(cmd)
          {
             case "listinventory":
-               for each (item in InventoryManager.getInstance().realInventory)
+               for each(item in InventoryManager.getInstance().realInventory)
                {
                   console.output("[UID: " + item.objectUID + ", ID:" + item.objectGID + "] " + item.quantity + " x " + item["name"]);
                }
@@ -59,7 +58,7 @@ package com.ankamagames.dofus.console.debug
                items = GameDataQuery.returnInstance(Item,ids);
                Chrono.stop();
                Chrono.start("Add");
-               for each (currentItem in items)
+               for each(currentItem in items)
                {
                   matchItems.push("\t" + currentItem.name + " (id : " + currentItem.id + ")");
                }
@@ -73,7 +72,7 @@ package com.ankamagames.dofus.console.debug
             case "makeinventory":
                items2 = Item.getItems();
                len = parseInt(args[0],10);
-               for each (currentItem2 in items2)
+               for each(currentItem2 in items2)
                {
                   if(currentItem2)
                   {
@@ -100,10 +99,12 @@ package com.ankamagames.dofus.console.debug
                return "Search item name/id, param : [part of searched item name]";
             case "makeinventory":
                return "Create an inventory";
+            default:
+               return "Unknown command \'" + cmd + "\'.";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

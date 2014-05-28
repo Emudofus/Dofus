@@ -27,7 +27,7 @@ package com.ankamagames.dofus.factories
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RolePlayEntitiesFactory));
+      protected static const _log:Logger;
       
       private static const TEAM_CHALLENGER_LOOK:String = "{19}";
       
@@ -115,48 +115,44 @@ package com.ankamagames.dofus.factories
                      {
                         teamLook = TEAM_DEFENDER_AVA_ALLY;
                      }
-                     else
+                     else if(prismAllianceId != -1)
                      {
-                        if(prismAllianceId != -1)
+                        if(teamAllianceId == prismAllianceId)
                         {
-                           if(teamAllianceId == prismAllianceId)
-                           {
-                              teamLook = TEAM_DEFENDER_AVA_DEFENDERS;
-                           }
-                           else
-                           {
-                              teamLook = TEAM_DEFENDER_AVA_ATTACKERS;
-                           }
+                           teamLook = TEAM_DEFENDER_AVA_DEFENDERS;
                         }
                         else
                         {
                            teamLook = TEAM_DEFENDER_AVA_ATTACKERS;
                         }
                      }
+                     else
+                     {
+                        teamLook = TEAM_DEFENDER_AVA_ATTACKERS;
+                     }
+                     
                      break;
                   case TeamEnum.TEAM_CHALLENGER:
                      if((!(playerAllianceId == -1)) && (playerAllianceId == teamAllianceId))
                      {
                         teamLook = TEAM_CHALLENGER_AVA_ALLY;
                      }
-                     else
+                     else if(prismAllianceId != -1)
                      {
-                        if(prismAllianceId != -1)
+                        if(teamAllianceId == prismAllianceId)
                         {
-                           if(teamAllianceId == prismAllianceId)
-                           {
-                              teamLook = TEAM_CHALLENGER_AVA_DEFENDERS;
-                           }
-                           else
-                           {
-                              teamLook = TEAM_CHALLENGER_AVA_ATTACKERS;
-                           }
+                           teamLook = TEAM_CHALLENGER_AVA_DEFENDERS;
                         }
                         else
                         {
                            teamLook = TEAM_CHALLENGER_AVA_ATTACKERS;
                         }
                      }
+                     else
+                     {
+                        teamLook = TEAM_CHALLENGER_AVA_ATTACKERS;
+                     }
+                     
                      break;
                }
                break;
@@ -174,6 +170,16 @@ package com.ankamagames.dofus.factories
             case FightTypeEnum.FIGHT_TYPE_CHALLENGE:
                teamLook = TEAM_CHALLENGER_LOOK;
                break;
+            default:
+               switch(teamInfos.teamId)
+               {
+                  case TeamEnum.TEAM_CHALLENGER:
+                     teamLook = TEAM_CHALLENGER_LOOK;
+                     break;
+                  case TeamEnum.TEAM_DEFENDER:
+                     teamLook = TEAM_DEFENDER_LOOK;
+                     break;
+               }
          }
          var challenger:IEntity = new AnimatedCharacter(entityId,TiphonEntityLook.fromString(teamLook));
          challenger.position = position;

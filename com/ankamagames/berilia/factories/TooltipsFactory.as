@@ -13,11 +13,11 @@ package com.ankamagames.berilia.factories
          super();
       }
       
-      private static var _registeredMaker:Array = new Array();
+      private static var _registeredMaker:Array;
       
-      private static var _makerAssoc:Array = new Array();
+      private static var _makerAssoc:Array;
       
-      public static function registerMaker(makerName:String, maker:Class, scriptClass:Class=null) : void {
+      public static function registerMaker(makerName:String, maker:Class, scriptClass:Class = null) : void {
          _registeredMaker[makerName] = new TooltipData(maker,scriptClass);
       }
       
@@ -36,11 +36,11 @@ package com.ankamagames.berilia.factories
       public static function unregister(dataType:Class, maker:Class) : void {
          if(TooltipData(_registeredMaker[getQualifiedClassName(dataType)]).maker === maker)
          {
-            delete _registeredMaker[[getQualifiedClassName(dataType)]];
+            delete _registeredMaker[getQualifiedClassName(dataType)];
          }
       }
       
-      public static function create(data:*, makerName:String=null, script:Class=null, makerParam:Object=null) : Tooltip {
+      public static function create(data:*, makerName:String = null, script:Class = null, makerParam:Object = null) : Tooltip {
          var maker:* = undefined;
          var tt:Tooltip = null;
          var toolt:Object = null;

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5990;
       }
       
-      public function initGameDataPaddockObjectAddMessage(paddockItemDescription:PaddockItem=null) : GameDataPaddockObjectAddMessage {
+      public function initGameDataPaddockObjectAddMessage(paddockItemDescription:PaddockItem = null) : GameDataPaddockObjectAddMessage {
          this.paddockItemDescription = paddockItemDescription;
          this._isInitialized = true;
          return this;

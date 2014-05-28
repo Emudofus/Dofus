@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 5619;
       }
       
-      public function initTaxCollectorDialogQuestionBasicMessage(guildInfo:BasicGuildInformations=null) : TaxCollectorDialogQuestionBasicMessage {
+      public function initTaxCollectorDialogQuestionBasicMessage(guildInfo:BasicGuildInformations = null) : TaxCollectorDialogQuestionBasicMessage {
          this.guildInfo = guildInfo;
          this._isInitialized = true;
          return this;

@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.objects
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.objects
          return 5925;
       }
       
-      public function initObjectGroundListAddedMessage(cells:Vector.<uint>=null, referenceIds:Vector.<uint>=null) : ObjectGroundListAddedMessage {
+      public function initObjectGroundListAddedMessage(cells:Vector.<uint> = null, referenceIds:Vector.<uint> = null) : ObjectGroundListAddedMessage {
          this.cells = cells;
          this.referenceIds = referenceIds;
          this._isInitialized = true;

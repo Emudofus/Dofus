@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.initialization
          return 5726;
       }
       
-      public function initOnConnectionEventMessage(eventType:uint=0) : OnConnectionEventMessage {
+      public function initOnConnectionEventMessage(eventType:uint = 0) : OnConnectionEventMessage {
          this.eventType = eventType;
          this._isInitialized = true;
          return this;

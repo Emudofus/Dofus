@@ -6,7 +6,7 @@ package com.ankamagames.tubul.events
    public class SoundCompleteEvent extends Event
    {
       
-      public function SoundCompleteEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function SoundCompleteEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

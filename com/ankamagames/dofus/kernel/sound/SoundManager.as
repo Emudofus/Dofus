@@ -27,7 +27,7 @@ package com.ankamagames.dofus.kernel.sound
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SoundManager));
+      protected static const _log:Logger;
       
       private static var _self:SoundManager;
       

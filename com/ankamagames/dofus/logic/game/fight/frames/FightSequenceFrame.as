@@ -161,12 +161,11 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
    import com.ankamagames.dofus.logic.game.fight.steps.FightInvisibleTemporarilyDetectedStep;
    import com.ankamagames.dofus.logic.game.fight.steps.FightTurnListStep;
-   import __AS3__.vec.*;
    
    public class FightSequenceFrame extends Object implements Frame, ISpellCastProvider
    {
       
-      public function FightSequenceFrame(pFightBattleFrame:FightBattleFrame, parent:FightSequenceFrame=null) {
+      public function FightSequenceFrame(pFightBattleFrame:FightBattleFrame, parent:FightSequenceFrame = null) {
          super();
          this._instanceId = _currentInstanceId++;
          this._fightBattleFrame = pFightBattleFrame;
@@ -174,7 +173,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          this.clearBuffer();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FightSequenceFrame));
+      protected static const _log:Logger;
       
       private static var _lastCastingSpell:CastingSpell;
       
@@ -477,7 +476,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                if((!(gafscmsg.sourceId == playerManager.id)) && (isAlly) && (!this._castingSpell.isCriticalFail))
                {
                   isSpellKnown = false;
-                  for each (spellKnown in playerManager.spellsInventory)
+                  for each(spellKnown in playerManager.spellsInventory)
                   {
                      if(spellKnown.id == gafscmsg.spellId)
                      {
@@ -504,7 +503,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                      }
                      fightEntities = this.fightEntitiesFrame.getEntitiesDictionnary();
                      simf = Kernel.getWorker().getFrame(SpellInventoryManagementFrame) as SpellInventoryManagementFrame;
-                     for each (fighterInfos in fightEntities)
+                     for each(fighterInfos in fightEntities)
                      {
                         if((fighterInfos is GameFightCompanionInformations) && (!(gafscmsg.sourceId == fighterInfos.contextualId)) && ((fighterInfos as GameFightCompanionInformations).masterId == playerManager.id))
                         {
@@ -524,43 +523,37 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   {
                      SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_CC_OWNER);
                   }
+                  else if((playerInfos) && (sourceInfos.teamId == playerInfos.teamId))
+                  {
+                     SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_CC_ALLIED);
+                  }
                   else
                   {
-                     if((playerInfos) && (sourceInfos.teamId == playerInfos.teamId))
-                     {
-                        SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_CC_ALLIED);
-                     }
-                     else
-                     {
-                        SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_CC_ENEMY);
-                     }
+                     SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_CC_ENEMY);
                   }
+                  
                }
-               else
+               else if(gafscmsg.critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                {
-                  if(gafscmsg.critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
+                  if(gafscmsg.sourceId == playerId)
                   {
-                     if(gafscmsg.sourceId == playerId)
-                     {
-                        SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_OWNER);
-                     }
-                     else
-                     {
-                        if((playerInfos) && (sourceInfos.teamId == playerInfos.teamId))
-                        {
-                           SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_ALLIED);
-                        }
-                        else
-                        {
-                           SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_ENEMY);
-                        }
-                     }
+                     SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_OWNER);
                   }
+                  else if((playerInfos) && (sourceInfos.teamId == playerInfos.teamId))
+                  {
+                     SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_ALLIED);
+                  }
+                  else
+                  {
+                     SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_ENEMY);
+                  }
+                  
                }
+               
                target = this.fightEntitiesFrame.getEntityInfos(gafscmsg.targetId) as GameFightFighterInformations;
                if((target) && (target.disposition.cellId == -1))
                {
-                  for each (ei in this._castingSpell.spellRank.effects)
+                  for each(ei in this._castingSpell.spellRank.effects)
                   {
                      if(ei.hasOwnProperty("zoneShape"))
                      {
@@ -677,13 +670,11 @@ package com.ankamagames.dofus.logic.game.fight.frames
                      {
                         PlayedCharacterManager.getInstance().addSummonedCreature();
                      }
-                     else
+                     else if(isBomb)
                      {
-                        if(isBomb)
-                        {
-                           PlayedCharacterManager.getInstance().addSummonedBomb();
-                        }
+                        PlayedCharacterManager.getInstance().addSummonedBomb();
                      }
+                     
                   }
                   if((this._fightBattleFrame.slaveId == gafsnmsg.summon.contextualId) || (this._fightBattleFrame.masterId == gafsnmsg.summon.contextualId))
                   {
@@ -718,7 +709,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
             case msg is GameActionFightLeaveMessage:
                gaflmsg = msg as GameActionFightLeaveMessage;
                entitiesL = FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
-               for each (gcaiL in entitiesL)
+               for each(gcaiL in entitiesL)
                {
                   if(gcaiL is GameFightFighterInformations)
                   {
@@ -751,7 +742,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
             case msg is GameActionFightDeathMessage:
                gafdmsg = msg as GameActionFightDeathMessage;
                entitiesDictionnary = FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
-               for each (gcai in entitiesDictionnary)
+               for each(gcai in entitiesDictionnary)
                {
                   if(gcai is GameFightFighterInformations)
                   {
@@ -776,36 +767,32 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   {
                      SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILLED_HIMSELF);
                   }
+                  else if(sourceInfos.teamId != playerInfos.teamId)
+                  {
+                     SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILLED_BY_ENEMY);
+                  }
                   else
                   {
-                     if(sourceInfos.teamId != playerInfos.teamId)
-                     {
-                        SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILLED_BY_ENEMY);
-                     }
-                     else
-                     {
-                        SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILLED_BY_ENEMY);
-                     }
+                     SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILLED_BY_ENEMY);
                   }
+                  
                }
-               else
+               else if(gafdmsg.sourceId == playerId)
                {
-                  if(gafdmsg.sourceId == playerId)
+                  if(targetInfos.teamId != playerInfos.teamId)
                   {
-                     if(targetInfos.teamId != playerInfos.teamId)
-                     {
-                        SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILL_ENEMY);
-                     }
-                     else
-                     {
-                        SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILL_ALLY);
-                     }
+                     SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILL_ENEMY);
+                  }
+                  else
+                  {
+                     SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILL_ALLY);
                   }
                }
+               
                this.pushDeathStep(gafdmsg.targetId);
                entityInfos = FightEntitiesFrame.getCurrentInstance().getEntityInfos(gafdmsg.targetId);
                ftf = Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
-               updatePath = ((ftf) && (ftf.myTurn)) && (!(gafdmsg.targetId == playerId)) && (TackleUtil.isTackling(playerInfos,targetInfos,ftf.lastPath));
+               updatePath = (ftf && ftf.myTurn) && (!(gafdmsg.targetId == playerId)) && (TackleUtil.isTackling(playerInfos,targetInfos,ftf.lastPath));
                if(entityInfos is GameFightMonsterInformations)
                {
                   summonedEntityInfos = entityInfos as GameFightMonsterInformations;
@@ -824,22 +811,20 @@ package com.ankamagames.dofus.logic.game.fight.frames
                      SpellWrapper.refreshAllPlayerSpellHolder(PlayedCharacterManager.getInstance().id);
                   }
                }
-               else
+               else if(entityInfos is GameFightFighterInformations)
                {
-                  if(entityInfos is GameFightFighterInformations)
+                  (entityInfos as GameFightFighterInformations).alive = false;
+                  if((entityInfos as GameFightFighterInformations).stats.summoner != 0)
                   {
-                     (entityInfos as GameFightFighterInformations).alive = false;
-                     if((entityInfos as GameFightFighterInformations).stats.summoner != 0)
+                     summonedFighterEntityInfos = entityInfos as GameFightFighterInformations;
+                     if(summonedFighterEntityInfos.stats.summoner == PlayedCharacterManager.getInstance().id)
                      {
-                        summonedFighterEntityInfos = entityInfos as GameFightFighterInformations;
-                        if(summonedFighterEntityInfos.stats.summoner == PlayedCharacterManager.getInstance().id)
-                        {
-                           PlayedCharacterManager.getInstance().removeSummonedCreature();
-                           SpellWrapper.refreshAllPlayerSpellHolder(PlayedCharacterManager.getInstance().id);
-                        }
+                        PlayedCharacterManager.getInstance().removeSummonedCreature();
+                        SpellWrapper.refreshAllPlayerSpellHolder(PlayedCharacterManager.getInstance().id);
                      }
                   }
                }
+               
                fightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
                if(fightContextFrame)
                {
@@ -1032,7 +1017,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          return false;
       }
       
-      public function execute(callback:Function=null) : void {
+      public function execute(callback:Function = null) : void {
          var script:BinaryScript = null;
          var scriptRunner:SpellFxRunner = null;
          this._sequencer = new SerialSequencer(FIGHT_SEQUENCERS_CATEGORY);
@@ -1058,266 +1043,13 @@ package com.ankamagames.dofus.logic.game.fight.frames
          }
       }
       
-      private function executeBuffer(callback:Function, hadScript:Boolean, scriptSuccess:Boolean=false) : void {
-         var step:ISequencable = null;
-         var allowHitAnim:* = false;
-         var allowSpellEffects:* = false;
-         var startStep:Array = null;
-         var endStep:Array = null;
-         var removed:* = false;
-         var entityAttaqueAnimWait:Dictionary = null;
-         var lifeLoseSum:Dictionary = null;
-         var lifeLoseLastStep:Dictionary = null;
-         var shieldLoseSum:Dictionary = null;
-         var shieldLoseLastStep:Dictionary = null;
-         var i:* = 0;
-         var b:* = undefined;
-         var index:* = undefined;
-         var waitStep:WaitAnimationEventStep = null;
-         var scriptTook:uint = 0;
-         var animStep:PlayAnimationStep = null;
-         var deathStep:FightDeathStep = null;
-         var deadEntityIndex:* = 0;
-         var fapvs:FightActionPointsVariationStep = null;
-         var fspvs:FightShieldPointsVariationStep = null;
-         var flvs:FightLifeVariationStep = null;
-         var idx:* = 0;
-         var idx2:* = 0;
-         var loseLifeTarget:* = undefined;
-         var j:uint = 0;
-         if(hadScript)
-         {
-            scriptTook = getTimer() - this._scriptStarted;
-            if(!scriptSuccess)
-            {
-               _log.warn("Script failed during a fight sequence, but still took " + scriptTook + "ms.");
-            }
-            else
-            {
-               _log.info("Script successfuly executed in " + scriptTook + "ms.");
-            }
-         }
-         var cleanedBuffer:Array = [];
-         var deathStepRef:Dictionary = new Dictionary(true);
-         var hitStep:Dictionary = new Dictionary(true);
-         var loseLifeStep:Dictionary = new Dictionary(true);
-         var waitHitEnd:Boolean = false;
-         for each (step in this._stepsBuffer)
-         {
-            switch(true)
-            {
-               case step is FightMarkTriggeredStep:
-                  waitHitEnd = true;
-                  continue;
-            }
-         }
-         allowHitAnim = OptionManager.getOptionManager("dofus")["allowHitAnim"];
-         allowSpellEffects = OptionManager.getOptionManager("dofus")["allowSpellEffects"];
-         startStep = [];
-         endStep = [];
-         entityAttaqueAnimWait = new Dictionary();
-         lifeLoseSum = new Dictionary(true);
-         lifeLoseLastStep = new Dictionary(true);
-         shieldLoseSum = new Dictionary(true);
-         shieldLoseLastStep = new Dictionary(true);
-         i = this._stepsBuffer.length;
-         while(--i >= 0)
-         {
-            if((removed) && (step))
-            {
-               step.clear();
-            }
-            removed = true;
-            step = this._stepsBuffer[i];
-            switch(true)
-            {
-               case step is PlayAnimationStep:
-                  animStep = step as PlayAnimationStep;
-                  if(animStep.animation.indexOf(AnimationEnum.ANIM_HIT) != -1)
-                  {
-                     if(!allowHitAnim)
-                     {
-                        continue;
-                     }
-                     animStep.waitEvent = waitHitEnd;
-                     if(animStep.target == null)
-                     {
-                        continue;
-                     }
-                     if(deathStepRef[EntitiesManager.getInstance().getEntityID(animStep.target as IEntity)])
-                     {
-                        continue;
-                     }
-                     if(hitStep[animStep.target])
-                     {
-                        continue;
-                     }
-                     if((!(animStep.animation == AnimationEnum.ANIM_HIT)) && (!(animStep.animation == AnimationEnum.ANIM_HIT_CARRYING)) && (!animStep.target.hasAnimation(animStep.animation,1)))
-                     {
-                        animStep.animation = AnimationEnum.ANIM_HIT;
-                     }
-                     hitStep[animStep.target] = true;
-                  }
-                  if(this._castingSpell.casterId < 0)
-                  {
-                     if(entityAttaqueAnimWait[animStep.target])
-                     {
-                        cleanedBuffer.unshift(entityAttaqueAnimWait[animStep.target]);
-                        delete entityAttaqueAnimWait[[animStep.target]];
-                     }
-                     if(animStep.animation.indexOf(AnimationEnum.ANIM_ATTAQUE_BASE) != -1)
-                     {
-                        entityAttaqueAnimWait[animStep.target] = new WaitAnimationEventStep(animStep);
-                     }
-                  }
-                  break;
-               case step is FightDeathStep:
-                  deathStep = step as FightDeathStep;
-                  deathStepRef[deathStep.entityId] = true;
-                  deadEntityIndex = this._fightBattleFrame.targetedEntities.indexOf(deathStep.entityId);
-                  if(deadEntityIndex != -1)
-                  {
-                     this._fightBattleFrame.targetedEntities.splice(deadEntityIndex,1);
-                     TooltipManager.hide("tooltipOverEntity_" + deathStep.entityId);
-                  }
-                  break;
-               case step is FightActionPointsVariationStep:
-                  fapvs = step as FightActionPointsVariationStep;
-                  if(fapvs.voluntarlyUsed)
-                  {
-                     startStep.push(fapvs);
-                     removed = false;
-                     continue;
-                  }
-                  break;
-               case step is FightShieldPointsVariationStep:
-                  fspvs = step as FightShieldPointsVariationStep;
-                  if(flvs.target == null)
-                  {
-                     break;
-                  }
-                  if(shieldLoseSum[fspvs.target] == null)
-                  {
-                     shieldLoseSum[fspvs.target] = 0;
-                  }
-                  shieldLoseSum[fspvs.target] = shieldLoseSum[fspvs.target] + fspvs.value;
-                  shieldLoseLastStep[fspvs.target] = fspvs;
-                  this.showTargetTooltip(fspvs.target.id);
-                  break;
-               case step is FightLifeVariationStep:
-                  flvs = step as FightLifeVariationStep;
-                  if(flvs.target == null)
-                  {
-                     break;
-                  }
-                  if(flvs.delta < 0)
-                  {
-                     loseLifeStep[flvs.target] = flvs;
-                  }
-                  if(lifeLoseSum[flvs.target] == null)
-                  {
-                     lifeLoseSum[flvs.target] = 0;
-                  }
-                  lifeLoseSum[flvs.target] = lifeLoseSum[flvs.target] + flvs.delta;
-                  lifeLoseLastStep[flvs.target] = flvs;
-                  this.showTargetTooltip(flvs.target.id);
-                  break;
-               case step is AddGfxEntityStep:
-               case step is AddGfxInLineStep:
-               case step is ParableGfxMovementStep:
-               case step is AddWorldEntityStep:
-                  if(!allowSpellEffects)
-                  {
-                     continue;
-                  }
-                  break;
-            }
-            removed = false;
-            cleanedBuffer.unshift(step);
-         }
-         for each (b in cleanedBuffer)
-         {
-            if((b is FightLifeVariationStep) && (lifeLoseSum[b.target] == 0) && (!(shieldLoseSum[b.target] == null)))
-            {
-               b.skipTextEvent = true;
-            }
-         }
-         for (index in lifeLoseSum)
-         {
-            if((!(index == "null")) && (!(lifeLoseSum[index] == 0)))
-            {
-               idx = cleanedBuffer.indexOf(lifeLoseLastStep[index]);
-               cleanedBuffer.splice(idx,0,new FightLossAnimStep(index,lifeLoseSum[index],FightLifeVariationStep.COLOR));
-            }
-            lifeLoseLastStep[index] = -1;
-            lifeLoseSum[index] = 0;
-         }
-         for (index in shieldLoseSum)
-         {
-            if((!(index == "null")) && (!(shieldLoseSum[index] == 0)))
-            {
-               idx2 = cleanedBuffer.indexOf(shieldLoseLastStep[index]);
-               cleanedBuffer.splice(idx2,0,new FightLossAnimStep(index,shieldLoseSum[index],FightShieldPointsVariationStep.COLOR));
-            }
-            shieldLoseLastStep[index] = -1;
-            shieldLoseSum[index] = 0;
-         }
-         for each (waitStep in entityAttaqueAnimWait)
-         {
-            endStep.push(waitStep);
-         }
-         if(allowHitAnim)
-         {
-            loop6:
-            for (loseLifeTarget in loseLifeStep)
-            {
-               if(!hitStep[loseLifeTarget])
-               {
-                  j = 0;
-                  while(j < cleanedBuffer.length)
-                  {
-                     if(cleanedBuffer[j] == loseLifeStep[loseLifeTarget])
-                     {
-                        cleanedBuffer.splice(j,0,new PlayAnimationStep(loseLifeTarget as TiphonSprite,AnimationEnum.ANIM_HIT,true,false));
-                        continue loop6;
-                     }
-                     j++;
-                  }
-               }
-            }
-         }
-         cleanedBuffer = startStep.concat(cleanedBuffer).concat(endStep);
-         for each (step in cleanedBuffer)
-         {
-            this._sequencer.addStep(step);
-         }
-         this.clearBuffer();
-         if((!(callback == null)) && (!this._parent))
-         {
-            this._sequenceEndCallback = callback;
-            this._sequencer.addEventListener(SequencerEvent.SEQUENCE_END,this.onSequenceEnd);
-         }
-         _lastCastingSpell = this._castingSpell;
-         this._scriptInit = true;
-         if(!this._parent)
-         {
-            if(!this._subSequenceWaitingCount)
-            {
-               this._sequencer.start();
-            }
-            else
-            {
-               _log.warn("Waiting sub sequence init end (" + this._subSequenceWaitingCount + " seq)");
-            }
-         }
-         else
-         {
-            if(callback != null)
-            {
-               callback();
-            }
-            this._parent.subSequenceInitDone();
-         }
+      private function executeBuffer(callback:Function, hadScript:Boolean, scriptSuccess:Boolean = false) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function onSequenceEnd(e:SequencerEvent) : void {
@@ -1455,6 +1187,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
             case ActionIdConverter.ACTION_CHARACTER_MOVEMENT_POINTS_WIN:
                step = new FightMovementPointsVariationStep(fighterId,delta,false);
                break;
+            default:
+               _log.warn("Points variation with unsupported action (" + actionId + "), skipping.");
+               return;
          }
          if(this.castingSpell != null)
          {
@@ -1491,6 +1226,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
             case ActionIdConverter.ACTION_FIGHT_SPELL_DODGED_PM:
                step = new FightMovementPointsLossDodgeStep(fighterId,amount);
                break;
+            default:
+               _log.warn("Points dodge with unsupported action (" + actionId + "), skipping.");
+               return;
          }
          if(this.castingSpell != null)
          {
@@ -1508,7 +1246,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          this._stepsBuffer.push(step);
       }
       
-      private function pushDeathStep(fighterId:int, naturalDeath:Boolean=true) : void {
+      private function pushDeathStep(fighterId:int, naturalDeath:Boolean = true) : void {
          var step:FightDeathStep = new FightDeathStep(fighterId,naturalDeath);
          if(this.castingSpell != null)
          {
@@ -1724,7 +1462,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
       private function showTargetTooltip(pEntityId:int) : void {
          var fcf:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
          var entityInfos:GameFightFighterInformations = this.fightEntitiesFrame.getEntityInfos(pEntityId) as GameFightFighterInformations;
-         if((((entityInfos.alive) && (this._castingSpell)) && (this._castingSpell.casterId == PlayedCharacterManager.getInstance().id || fcf.battleFrame.playingSlaveEntity)) && (!(pEntityId == this.castingSpell.casterId)) && (this._fightBattleFrame.targetedEntities.indexOf(pEntityId) == -1))
+         if((entityInfos.alive && this._castingSpell && (this._castingSpell.casterId == PlayedCharacterManager.getInstance().id || fcf.battleFrame.playingSlaveEntity)) && (!(pEntityId == this.castingSpell.casterId)) && (this._fightBattleFrame.targetedEntities.indexOf(pEntityId) == -1))
          {
             this._fightBattleFrame.targetedEntities.push(pEntityId);
             if(OptionManager.getOptionManager("dofus")["showPermanentTargetsTooltips"] == true)

@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6065;
       }
       
-      public function initLivingObjectMessageMessage(msgId:uint=0, timeStamp:uint=0, owner:String="", objectGenericId:uint=0) : LivingObjectMessageMessage {
+      public function initLivingObjectMessageMessage(msgId:uint = 0, timeStamp:uint = 0, owner:String = "", objectGenericId:uint = 0) : LivingObjectMessageMessage {
          this.msgId = msgId;
          this.timeStamp = timeStamp;
          this.owner = owner;

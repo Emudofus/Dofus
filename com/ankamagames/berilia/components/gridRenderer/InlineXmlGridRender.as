@@ -32,7 +32,7 @@ package com.ankamagames.berilia.components.gridRenderer
          _defaultLineType = "default";
       }
       
-      override public function update(data:*, index:uint, target:DisplayObject, selected:Boolean, subIndex:uint=0) : void {
+      override public function update(data:*, index:uint, target:DisplayObject, selected:Boolean, subIndex:uint = 0) : void {
          super.update(data,index,target,selected,subIndex);
       }
       

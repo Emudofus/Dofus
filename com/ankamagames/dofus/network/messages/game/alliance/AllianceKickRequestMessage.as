@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6400;
       }
       
-      public function initAllianceKickRequestMessage(kickedId:uint=0) : AllianceKickRequestMessage {
+      public function initAllianceKickRequestMessage(kickedId:uint = 0) : AllianceKickRequestMessage {
          this.kickedId = kickedId;
          this._isInitialized = true;
          return this;

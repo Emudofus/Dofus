@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
          return 6026;
       }
       
-      public function initGameDataPlayFarmObjectAnimationMessage(cellId:Vector.<uint>=null) : GameDataPlayFarmObjectAnimationMessage {
+      public function initGameDataPlayFarmObjectAnimationMessage(cellId:Vector.<uint> = null) : GameDataPlayFarmObjectAnimationMessage {
          this.cellId = cellId;
          this._isInitialized = true;
          return this;

@@ -53,7 +53,7 @@ package com.ankamagames.jerakine.json
             this.nextToken();
             if(this.token.type == JSONTokenType.RIGHT_BRACKET)
             {
-               return a;
+               break;
             }
             if(this.token.type == JSONTokenType.COMMA)
             {
@@ -71,7 +71,7 @@ package com.ankamagames.jerakine.json
                this.tokenizer.parseError("Expecting ] or , but found " + this.token.value);
             }
          }
-         return null;
+         return a;
       }
       
       private function parseObject() : Object {
@@ -104,7 +104,7 @@ package com.ankamagames.jerakine.json
                   this.nextToken();
                   if(this.token.type == JSONTokenType.RIGHT_BRACE)
                   {
-                     return o;
+                     break;
                   }
                   if(this.token.type == JSONTokenType.COMMA)
                   {
@@ -132,7 +132,7 @@ package com.ankamagames.jerakine.json
                this.tokenizer.parseError("Expecting string but found " + this.token.value);
             }
          }
-         return null;
+         return o;
       }
       
       private function parseValue() : Object {
@@ -158,6 +158,7 @@ package com.ankamagames.jerakine.json
                   return this.token.value;
                }
                this.tokenizer.parseError("Unexpected " + this.token.value);
+            default:
                this.tokenizer.parseError("Unexpected " + this.token.value);
                return null;
          }

@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.logic.game.fight.types
 {
    import com.ankamagames.dofus.datacenter.spells.Spell;
-   import __AS3__.vec.Vector;
    import com.ankamagames.atouin.types.Selection;
    
    public class MarkInstance extends Object

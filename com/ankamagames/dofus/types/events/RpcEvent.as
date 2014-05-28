@@ -5,7 +5,7 @@ package com.ankamagames.dofus.types.events
    public class RpcEvent extends Event
    {
       
-      public function RpcEvent(type:String, method:String, result:Object=null) {
+      public function RpcEvent(type:String, method:String, result:Object = null) {
          super(type,false,false);
          this._result = result;
          this._method = method;

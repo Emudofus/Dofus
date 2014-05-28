@@ -60,106 +60,106 @@ package com.ankamagames.dofus.misc.lists
          super();
       }
       
-      public static const OpenSocial:DofusApiAction = new DofusApiAction("OpenSocial",OpenSocialAction);
+      public static const OpenSocial:DofusApiAction;
       
-      public static const FriendsListRequest:DofusApiAction = new DofusApiAction("FriendsListRequest",FriendsListRequestAction);
+      public static const FriendsListRequest:DofusApiAction;
       
-      public static const EnemiesListRequest:DofusApiAction = new DofusApiAction("EnemiesListRequest",EnemiesListRequestAction);
+      public static const EnemiesListRequest:DofusApiAction;
       
-      public static const SpouseRequest:DofusApiAction = new DofusApiAction("SpouseRequest",SpouseRequestAction);
+      public static const SpouseRequest:DofusApiAction;
       
-      public static const AddFriend:DofusApiAction = new DofusApiAction("AddFriend",AddFriendAction);
+      public static const AddFriend:DofusApiAction;
       
-      public static const AddEnemy:DofusApiAction = new DofusApiAction("AddEnemy",AddEnemyAction);
+      public static const AddEnemy:DofusApiAction;
       
-      public static const RemoveFriend:DofusApiAction = new DofusApiAction("RemoveFriend",RemoveFriendAction);
+      public static const RemoveFriend:DofusApiAction;
       
-      public static const RemoveEnemy:DofusApiAction = new DofusApiAction("RemoveEnemy",RemoveEnemyAction);
+      public static const RemoveEnemy:DofusApiAction;
       
-      public static const AddIgnored:DofusApiAction = new DofusApiAction("AddIgnored",AddIgnoredAction);
+      public static const AddIgnored:DofusApiAction;
       
-      public static const RemoveIgnored:DofusApiAction = new DofusApiAction("RemoveIgnored",RemoveIgnoredAction);
+      public static const RemoveIgnored:DofusApiAction;
       
-      public static const JoinFriend:DofusApiAction = new DofusApiAction("JoinFriend",JoinFriendAction);
+      public static const JoinFriend:DofusApiAction;
       
-      public static const JoinSpouse:DofusApiAction = new DofusApiAction("JoinSpouse",JoinSpouseAction);
+      public static const JoinSpouse:DofusApiAction;
       
-      public static const FriendSpouseFollow:DofusApiAction = new DofusApiAction("FriendSpouseFollow",FriendSpouseFollowAction);
+      public static const FriendSpouseFollow:DofusApiAction;
       
-      public static const FriendWarningSet:DofusApiAction = new DofusApiAction("FriendWarningSet",FriendWarningSetAction);
+      public static const FriendWarningSet:DofusApiAction;
       
-      public static const MemberWarningSet:DofusApiAction = new DofusApiAction("MemberWarningSet",MemberWarningSetAction);
+      public static const MemberWarningSet:DofusApiAction;
       
-      public static const FriendOrGuildMemberLevelUpWarningSet:DofusApiAction = new DofusApiAction("FriendOrGuildMemberLevelUpWarningSet",FriendOrGuildMemberLevelUpWarningSetAction);
+      public static const FriendOrGuildMemberLevelUpWarningSet:DofusApiAction;
       
-      public static const FriendGuildSetWarnOnAchievementComplete:DofusApiAction = new DofusApiAction("FriendGuildSetWarnOnAchievementComplete",FriendGuildSetWarnOnAchievementCompleteAction);
+      public static const FriendGuildSetWarnOnAchievementComplete:DofusApiAction;
       
-      public static const GuildGetInformations:DofusApiAction = new DofusApiAction("GuildGetInformations",GuildGetInformationsAction);
+      public static const GuildGetInformations:DofusApiAction;
       
-      public static const GuildCreationValid:DofusApiAction = new DofusApiAction("GuildCreationValid",GuildCreationValidAction);
+      public static const GuildCreationValid:DofusApiAction;
       
-      public static const GuildModificationValid:DofusApiAction = new DofusApiAction("GuildModificationValid",GuildModificationValidAction);
+      public static const GuildModificationValid:DofusApiAction;
       
-      public static const GuildModificationNameValid:DofusApiAction = new DofusApiAction("GuildModificationNameValid",GuildModificationNameValidAction);
+      public static const GuildModificationNameValid:DofusApiAction;
       
-      public static const GuildModificationEmblemValid:DofusApiAction = new DofusApiAction("GuildModificationEmblemValid",GuildModificationEmblemValidAction);
+      public static const GuildModificationEmblemValid:DofusApiAction;
       
-      public static const GuildInvitation:DofusApiAction = new DofusApiAction("GuildInvitation",GuildInvitationAction);
+      public static const GuildInvitation:DofusApiAction;
       
-      public static const GuildInvitationByName:DofusApiAction = new DofusApiAction("GuildInvitationByName",GuildInvitationByNameAction);
+      public static const GuildInvitationByName:DofusApiAction;
       
-      public static const GuildInvitationAnswer:DofusApiAction = new DofusApiAction("GuildInvitationAnswer",GuildInvitationAnswerAction);
+      public static const GuildInvitationAnswer:DofusApiAction;
       
-      public static const GuildKickRequest:DofusApiAction = new DofusApiAction("GuildKickRequest",GuildKickRequestAction);
+      public static const GuildKickRequest:DofusApiAction;
       
-      public static const GuildChangeMemberParameters:DofusApiAction = new DofusApiAction("GuildChangeMemberParameters",GuildChangeMemberParametersAction);
+      public static const GuildChangeMemberParameters:DofusApiAction;
       
-      public static const GuildSpellUpgradeRequest:DofusApiAction = new DofusApiAction("GuildSpellUpgradeRequest",GuildSpellUpgradeRequestAction);
+      public static const GuildSpellUpgradeRequest:DofusApiAction;
       
-      public static const GuildCharacsUpgradeRequest:DofusApiAction = new DofusApiAction("GuildCharacsUpgradeRequest",GuildCharacsUpgradeRequestAction);
+      public static const GuildCharacsUpgradeRequest:DofusApiAction;
       
-      public static const GuildFarmTeleportRequest:DofusApiAction = new DofusApiAction("GuildFarmTeleportRequest",GuildFarmTeleportRequestAction);
+      public static const GuildFarmTeleportRequest:DofusApiAction;
       
-      public static const GuildHouseTeleportRequest:DofusApiAction = new DofusApiAction("GuildHouseTeleportRequest",GuildHouseTeleportRequestAction);
+      public static const GuildHouseTeleportRequest:DofusApiAction;
       
-      public static const GuildFightJoinRequest:DofusApiAction = new DofusApiAction("GuildFightJoinRequest",GuildFightJoinRequestAction);
+      public static const GuildFightJoinRequest:DofusApiAction;
       
-      public static const GuildFightTakePlaceRequest:DofusApiAction = new DofusApiAction("GuildFightTakePlaceRequest",GuildFightTakePlaceRequestAction);
+      public static const GuildFightTakePlaceRequest:DofusApiAction;
       
-      public static const GuildFightLeaveRequest:DofusApiAction = new DofusApiAction("GuildFightLeaveRequest",GuildFightLeaveRequestAction);
+      public static const GuildFightLeaveRequest:DofusApiAction;
       
-      public static const GameRolePlayTaxCollectorFightRequest:DofusApiAction = new DofusApiAction("GameRolePlayTaxCollectorFightRequest",GameRolePlayTaxCollectorFightRequestAction);
+      public static const GameRolePlayTaxCollectorFightRequest:DofusApiAction;
       
-      public static const GuildFactsRequest:DofusApiAction = new DofusApiAction("GuildFactsRequest",GuildFactsRequestAction);
+      public static const GuildFactsRequest:DofusApiAction;
       
-      public static const GuildListRequest:DofusApiAction = new DofusApiAction("GuildListRequest",GuildListRequestAction);
+      public static const GuildListRequest:DofusApiAction;
       
-      public static const AllianceCreationValid:DofusApiAction = new DofusApiAction("AllianceCreationValid",AllianceCreationValidAction);
+      public static const AllianceCreationValid:DofusApiAction;
       
-      public static const AllianceModificationValid:DofusApiAction = new DofusApiAction("AllianceModificationValid",AllianceModificationValidAction);
+      public static const AllianceModificationValid:DofusApiAction;
       
-      public static const AllianceModificationNameAndTagValid:DofusApiAction = new DofusApiAction("AllianceModificationNameAndTagValid",AllianceModificationNameAndTagValidAction);
+      public static const AllianceModificationNameAndTagValid:DofusApiAction;
       
-      public static const AllianceModificationEmblemValid:DofusApiAction = new DofusApiAction("AllianceModificationEmblemValid",AllianceModificationEmblemValidAction);
+      public static const AllianceModificationEmblemValid:DofusApiAction;
       
-      public static const AllianceInvitation:DofusApiAction = new DofusApiAction("AllianceInvitation",AllianceInvitationAction);
+      public static const AllianceInvitation:DofusApiAction;
       
-      public static const AllianceInvitationAnswer:DofusApiAction = new DofusApiAction("AllianceInvitationAnswer",AllianceInvitationAnswerAction);
+      public static const AllianceInvitationAnswer:DofusApiAction;
       
-      public static const AllianceKickRequest:DofusApiAction = new DofusApiAction("AllianceKickRequest",AllianceKickRequestAction);
+      public static const AllianceKickRequest:DofusApiAction;
       
-      public static const AllianceFactsRequest:DofusApiAction = new DofusApiAction("AllianceFactsRequest",AllianceFactsRequestAction);
+      public static const AllianceFactsRequest:DofusApiAction;
       
-      public static const AllianceListRequest:DofusApiAction = new DofusApiAction("AllianceListRequest",AllianceListRequestAction);
+      public static const AllianceListRequest:DofusApiAction;
       
-      public static const AllianceInsiderInfoRequest:DofusApiAction = new DofusApiAction("AllianceInsiderInfoRequest",AllianceInsiderInfoRequestAction);
+      public static const AllianceInsiderInfoRequest:DofusApiAction;
       
-      public static const AllianceChangeGuildRights:DofusApiAction = new DofusApiAction("AllianceChangeGuildRights",AllianceChangeGuildRightsAction);
+      public static const AllianceChangeGuildRights:DofusApiAction;
       
-      public static const CharacterReport:DofusApiAction = new DofusApiAction("CharacterReport",CharacterReportAction);
+      public static const CharacterReport:DofusApiAction;
       
-      public static const ChatReport:DofusApiAction = new DofusApiAction("ChatReport",ChatReportAction);
+      public static const ChatReport:DofusApiAction;
       
-      public static const PlayerStatusUpdateRequest:DofusApiAction = new DofusApiAction("PlayerStatusUpdateRequest",PlayerStatusUpdateRequestAction);
+      public static const PlayerStatusUpdateRequest:DofusApiAction;
    }
 }

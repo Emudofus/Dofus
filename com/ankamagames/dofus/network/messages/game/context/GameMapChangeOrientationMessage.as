@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 946;
       }
       
-      public function initGameMapChangeOrientationMessage(orientation:ActorOrientation=null) : GameMapChangeOrientationMessage {
+      public function initGameMapChangeOrientationMessage(orientation:ActorOrientation = null) : GameMapChangeOrientationMessage {
          this.orientation = orientation;
          this._isInitialized = true;
          return this;

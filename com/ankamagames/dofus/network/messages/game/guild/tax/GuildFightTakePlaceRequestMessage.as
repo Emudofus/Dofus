@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 6235;
       }
       
-      public function initGuildFightTakePlaceRequestMessage(taxCollectorId:int=0, replacedCharacterId:int=0) : GuildFightTakePlaceRequestMessage {
+      public function initGuildFightTakePlaceRequestMessage(taxCollectorId:int = 0, replacedCharacterId:int = 0) : GuildFightTakePlaceRequestMessage {
          super.initGuildFightJoinRequestMessage(taxCollectorId);
          this.replacedCharacterId = replacedCharacterId;
          this._isInitialized = true;

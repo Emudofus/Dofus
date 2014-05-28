@@ -7,7 +7,7 @@ package com.ankamagames.atouin.messages
    public class EntityMovementCompleteMessage extends Object implements Message, ILogableMessage
    {
       
-      public function EntityMovementCompleteMessage(entity:IEntity=null) {
+      public function EntityMovementCompleteMessage(entity:IEntity = null) {
          super();
          this._entity = entity;
          if(this._entity)

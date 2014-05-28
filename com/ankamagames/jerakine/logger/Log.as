@@ -26,13 +26,13 @@ package com.ankamagames.jerakine.logger
       
       private static var _manualInit:Boolean;
       
-      private static var _targets:Array = new Array();
+      private static var _targets:Array;
       
-      private static var _loggers:Dictionary = new Dictionary();
+      private static var _loggers:Dictionary;
       
-      private static var _dispatcher:EventDispatcher = new EventDispatcher();
+      private static var _dispatcher:EventDispatcher;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Log));
+      protected static const _log:Logger;
       
       public static var exitIfNoConfigFile:Boolean = true;
       
@@ -103,7 +103,7 @@ package com.ankamagames.jerakine.logger
          var moduleClass:Object = null;
          var targetInstance:LoggingTarget = null;
          var filters:Array = new Array();
-         for each (filter in config..filter)
+         for each(filter in config..filter)
          {
             allow = true;
             try
@@ -121,12 +121,12 @@ package com.ankamagames.jerakine.logger
             ltf = new LogTargetFilter(filter.@value,allow);
             filters.push(ltf);
          }
-         for each (target in config..target)
+         for each(target in config..target)
          {
             try
             {
                moduleClass = getDefinitionByName(target.@module);
-               targetInstance = new moduleClass as Class();
+               targetInstance = new (moduleClass as Class)();
                targetInstance.filters = filters;
                if((target.hasComplexContent()) && (targetInstance is ConfigurableLoggingTarget))
                {
@@ -140,18 +140,6 @@ package com.ankamagames.jerakine.logger
                _tempTarget.getBuffer().unshift(new LogEvent("com.ankamagames.jerakine.logger.Log","Filtre invalide.",LogLevel.WARN));
                continue;
             }
-            catch(re:ReferenceError)
-            {
-               _tempTarget.getBuffer().unshift(new LogEvent("com.ankamagames.jerakine.logger.Log",re.getStackTrace(),LogLevel.WARN));
-               _tempTarget.getBuffer().unshift(new LogEvent("com.ankamagames.jerakine.logger.Log","Module " + target.@module + " introuvable.",LogLevel.WARN));
-               continue;
-            }
-            continue;
-            if((target.hasComplexContent()) && (targetInstance is ConfigurableLoggingTarget))
-            {
-               ConfigurableLoggingTarget(targetInstance).configure(target);
-            }
-            addTarget(targetInstance);
          }
       }
       
@@ -167,7 +155,7 @@ package com.ankamagames.jerakine.logger
          var bufferedEvent:LogEvent = null;
          var bufferedEvents:Array = _tempTarget.getBuffer();
          removeTarget(_tempTarget);
-         for each (bufferedEvent in bufferedEvents)
+         for each(bufferedEvent in bufferedEvents)
          {
             _dispatcher.dispatchEvent(bufferedEvent.clone());
          }

@@ -5,7 +5,7 @@ package com.ankamagames.jerakine.resources
    public class ResourceObserverWrapper extends Object implements IResourceObserver
    {
       
-      public function ResourceObserverWrapper(onLoadedCallback:Function=null, onFailedCallback:Function=null, onProgressCallback:Function=null) {
+      public function ResourceObserverWrapper(onLoadedCallback:Function = null, onFailedCallback:Function = null, onProgressCallback:Function = null) {
          super();
          this._onLoadedCallback = onLoadedCallback;
          this._onFailedCallback = onFailedCallback;

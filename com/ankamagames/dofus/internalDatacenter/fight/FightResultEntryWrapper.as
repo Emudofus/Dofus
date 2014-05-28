@@ -22,7 +22,7 @@ package com.ankamagames.dofus.internalDatacenter.fight
    public class FightResultEntryWrapper extends Object implements IDataCenter
    {
       
-      public function FightResultEntryWrapper(o:FightResultListEntry, infos:GameFightFighterInformations=null) {
+      public function FightResultEntryWrapper(o:FightResultListEntry, infos:GameFightFighterInformations = null) {
          var player:FightResultPlayerListEntry = null;
          var taxCollector:FightResultTaxCollectorListEntry = null;
          var info:GameFightTaxCollectorInformations = null;
@@ -57,60 +57,60 @@ package com.ankamagames.dofus.internalDatacenter.fight
                   this.alive = monsterInfos0.alive;
                   this.type = 1;
                }
+               else if(infos is GameFightTaxCollectorInformations)
+               {
+                  tcInfos = infos as GameFightTaxCollectorInformations;
+                  this.name = TaxCollectorFirstname.getTaxCollectorFirstnameById(tcInfos.firstNameId).firstname + " " + TaxCollectorName.getTaxCollectorNameById(tcInfos.lastNameId).name;
+                  this.level = tcInfos.level;
+                  this.id = tcInfos.contextualId;
+                  this.alive = tcInfos.alive;
+                  this.type = 2;
+               }
                else
                {
-                  if(infos is GameFightTaxCollectorInformations)
+                  this.name = (infos as GameFightFighterNamedInformations).name;
+                  this.level = player.level;
+                  this.id = player.id;
+                  this.alive = player.alive;
+                  this.type = 0;
+                  if(player.additional.length == 0)
                   {
-                     tcInfos = infos as GameFightTaxCollectorInformations;
-                     this.name = TaxCollectorFirstname.getTaxCollectorFirstnameById(tcInfos.firstNameId).firstname + " " + TaxCollectorName.getTaxCollectorNameById(tcInfos.lastNameId).name;
-                     this.level = tcInfos.level;
-                     this.id = tcInfos.contextualId;
-                     this.alive = tcInfos.alive;
-                     this.type = 2;
+                     break;
                   }
-                  else
+                  for each(addInfo in player.additional)
                   {
-                     this.name = (infos as GameFightFighterNamedInformations).name;
-                     this.level = player.level;
-                     this.id = player.id;
-                     this.alive = player.alive;
-                     this.type = 0;
-                     if(player.additional.length == 0)
+                     switch(true)
                      {
-                        break;
-                     }
-                     for each (addInfo in player.additional)
-                     {
-                        switch(true)
-                        {
-                           case addInfo is FightResultExperienceData:
-                              this.rerollXpMultiplicator = (addInfo as FightResultExperienceData).rerollExperienceMul;
-                              this.experience = (addInfo as FightResultExperienceData).experience;
-                              this.showExperience = (addInfo as FightResultExperienceData).showExperience;
-                              this.experienceLevelFloor = (addInfo as FightResultExperienceData).experienceLevelFloor;
-                              this.showExperienceLevelFloor = (addInfo as FightResultExperienceData).showExperienceLevelFloor;
-                              this.experienceNextLevelFloor = (addInfo as FightResultExperienceData).experienceNextLevelFloor;
-                              this.showExperienceNextLevelFloor = (addInfo as FightResultExperienceData).showExperienceNextLevelFloor;
-                              this.experienceFightDelta = (addInfo as FightResultExperienceData).experienceFightDelta;
-                              this.showExperienceFightDelta = (addInfo as FightResultExperienceData).showExperienceFightDelta;
-                              this.experienceForGuild = (addInfo as FightResultExperienceData).experienceForGuild;
-                              this.showExperienceForGuild = (addInfo as FightResultExperienceData).showExperienceForGuild;
-                              this.experienceForRide = (addInfo as FightResultExperienceData).experienceForMount;
-                              this.showExperienceForRide = (addInfo as FightResultExperienceData).showExperienceForMount;
-                              this.isIncarnationExperience = (addInfo as FightResultExperienceData).isIncarnationExperience;
-                              this.honorDelta = -1;
-                              continue;
-                           case addInfo is FightResultPvpData:
-                              this.grade = (addInfo as FightResultPvpData).grade;
-                              this.honor = (addInfo as FightResultPvpData).honor;
-                              this.honorDelta = (addInfo as FightResultPvpData).honorDelta;
-                              this.maxHonorForGrade = (addInfo as FightResultPvpData).maxHonorForGrade;
-                              this.minHonorForGrade = (addInfo as FightResultPvpData).minHonorForGrade;
-                              continue;
-                        }
+                        case addInfo is FightResultExperienceData:
+                           this.rerollXpMultiplicator = (addInfo as FightResultExperienceData).rerollExperienceMul;
+                           this.experience = (addInfo as FightResultExperienceData).experience;
+                           this.showExperience = (addInfo as FightResultExperienceData).showExperience;
+                           this.experienceLevelFloor = (addInfo as FightResultExperienceData).experienceLevelFloor;
+                           this.showExperienceLevelFloor = (addInfo as FightResultExperienceData).showExperienceLevelFloor;
+                           this.experienceNextLevelFloor = (addInfo as FightResultExperienceData).experienceNextLevelFloor;
+                           this.showExperienceNextLevelFloor = (addInfo as FightResultExperienceData).showExperienceNextLevelFloor;
+                           this.experienceFightDelta = (addInfo as FightResultExperienceData).experienceFightDelta;
+                           this.showExperienceFightDelta = (addInfo as FightResultExperienceData).showExperienceFightDelta;
+                           this.experienceForGuild = (addInfo as FightResultExperienceData).experienceForGuild;
+                           this.showExperienceForGuild = (addInfo as FightResultExperienceData).showExperienceForGuild;
+                           this.experienceForRide = (addInfo as FightResultExperienceData).experienceForMount;
+                           this.showExperienceForRide = (addInfo as FightResultExperienceData).showExperienceForMount;
+                           this.isIncarnationExperience = (addInfo as FightResultExperienceData).isIncarnationExperience;
+                           this.honorDelta = -1;
+                           continue;
+                        case addInfo is FightResultPvpData:
+                           this.grade = (addInfo as FightResultPvpData).grade;
+                           this.honor = (addInfo as FightResultPvpData).honor;
+                           this.honorDelta = (addInfo as FightResultPvpData).honorDelta;
+                           this.maxHonorForGrade = (addInfo as FightResultPvpData).maxHonorForGrade;
+                           this.minHonorForGrade = (addInfo as FightResultPvpData).minHonorForGrade;
+                           continue;
+                        default:
+                           continue;
                      }
                   }
                }
+               
                break;
             case o is FightResultTaxCollectorListEntry:
                taxCollector = o as FightResultTaxCollectorListEntry;
@@ -148,19 +148,17 @@ package com.ankamagames.dofus.internalDatacenter.fight
                   this.alive = monsterInfos.alive;
                   this.type = 1;
                }
-               else
+               else if(infos is GameFightCompanionInformations)
                {
-                  if(infos is GameFightCompanionInformations)
-                  {
-                     companionInfos = infos as GameFightCompanionInformations;
-                     companion = Companion.getCompanionById(companionInfos.companionGenericId);
-                     this.name = companion.name;
-                     this.level = companionInfos.level;
-                     this.id = companion.id;
-                     this.alive = companionInfos.alive;
-                     this.type = 1;
-                  }
+                  companionInfos = infos as GameFightCompanionInformations;
+                  companion = Companion.getCompanionById(companionInfos.companionGenericId);
+                  this.name = companion.name;
+                  this.level = companionInfos.level;
+                  this.id = companion.id;
+                  this.alive = companionInfos.alive;
+                  this.type = 1;
                }
+               
                break;
             case o is FightResultListEntry:
                break;

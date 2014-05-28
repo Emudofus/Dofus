@@ -12,9 +12,9 @@ package com.ankamagames.tiphon.types
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ColoredSprite));
+      protected static const _log:Logger;
       
-      private static const NEUTRAL_COLOR_TRANSFORM:ColorTransform = new ColorTransform();
+      private static const NEUTRAL_COLOR_TRANSFORM:ColorTransform;
       
       override public function init(handler:IAnimationSpriteHandler) : void {
          var colorT:ColorTransform = null;

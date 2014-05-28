@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.modificator
          return 6493;
       }
       
-      public function initAreaFightModificatorUpdateMessage(spellPairId:int=0) : AreaFightModificatorUpdateMessage {
+      public function initAreaFightModificatorUpdateMessage(spellPairId:int = 0) : AreaFightModificatorUpdateMessage {
          this.spellPairId = spellPairId;
          this._isInitialized = true;
          return this;

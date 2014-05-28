@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5628;
       }
       
-      public function initExchangeLeaveMessage(dialogType:uint=0, success:Boolean=false) : ExchangeLeaveMessage {
+      public function initExchangeLeaveMessage(dialogType:uint = 0, success:Boolean = false) : ExchangeLeaveMessage {
          super.initLeaveDialogMessage(dialogType);
          this.success = success;
          this._isInitialized = true;

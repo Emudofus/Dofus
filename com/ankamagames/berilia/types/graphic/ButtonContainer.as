@@ -30,7 +30,7 @@ package com.ankamagames.berilia.types.graphic
          mouseChildren = false;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ButtonContainer));
+      protected static const _log:Logger;
       
       private var _selected:Boolean = false;
       
@@ -250,6 +250,8 @@ package com.ankamagames.berilia.types.graphic
                   return "16006";
                }
                return "16007";
+            default:
+               return "16004";
          }
       }
       
@@ -284,13 +286,11 @@ package com.ankamagames.berilia.types.graphic
                   {
                      this._selected = !this._selected;
                   }
-                  else
+                  else if(this._radioMode)
                   {
-                     if(this._radioMode)
-                     {
-                        this._selected = true;
-                     }
+                     this._selected = true;
                   }
+                  
                   tmpState = this._selected?StatesEnum.STATE_SELECTED_OVER:StatesEnum.STATE_OVER;
                   if(!changingStateData[tmpState])
                   {
@@ -298,7 +298,7 @@ package com.ankamagames.berilia.types.graphic
                   }
                   if(!this.isMute)
                   {
-                     for each (listener in Berilia.getInstance().UISoundListeners)
+                     for each(listener in Berilia.getInstance().UISoundListeners)
                      {
                         soundToPLay = this.selectSound();
                         if(int(soundToPLay) != -1)
@@ -317,7 +317,7 @@ package com.ankamagames.berilia.types.graphic
                   {
                      if((this._playRollOverSound) && (!this.isMute))
                      {
-                        for each (listenerInterface in Berilia.getInstance().UISoundListeners)
+                        for each(listenerInterface in Berilia.getInstance().UISoundListeners)
                         {
                            listenerInterface.playUISound("16010");
                         }

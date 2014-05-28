@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5603;
       }
       
-      public function initFriendDeleteRequestMessage(accountId:uint=0) : FriendDeleteRequestMessage {
+      public function initFriendDeleteRequestMessage(accountId:uint = 0) : FriendDeleteRequestMessage {
          this.accountId = accountId;
          this._isInitialized = true;
          return this;

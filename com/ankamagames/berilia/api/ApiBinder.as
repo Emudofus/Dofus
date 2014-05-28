@@ -19,22 +19,22 @@ package com.ankamagames.berilia.api
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ApiBinder));
+      protected static const _log:Logger;
       
-      private static var _apiClass:Array = new Array();
+      private static var _apiClass:Array;
       
-      private static var _apiInstance:Array = new Array();
+      private static var _apiInstance:Array;
       
-      private static var _apiData:Array = new Array();
+      private static var _apiData:Array;
       
-      private static var _isComplexFctCache:Dictionary = new Dictionary();
+      private static var _isComplexFctCache:Dictionary;
       
       public static function addApi(name:String, apiClass:Class) : void {
          _apiClass[name] = apiClass;
       }
       
       public static function removeApi(name:String) : void {
-         delete _apiClass[[name]];
+         delete _apiClass[name];
       }
       
       public static function reset() : void {
@@ -54,7 +54,7 @@ package com.ankamagames.berilia.api
          _apiData[name] = null;
       }
       
-      public static function initApi(target:Object, module:UiModule, sharedDefinition:ApplicationDomain=null) : String {
+      public static function initApi(target:Object, module:UiModule, sharedDefinition:ApplicationDomain = null) : String {
          var api:Object = null;
          var metaTag:XML = null;
          var metaData:* = undefined;
@@ -62,9 +62,9 @@ package com.ankamagames.berilia.api
          var modName:String = null;
          addApiData("module",module);
          var desc:XML = DescribeTypeCache.typeDescription(target);
-         for each (metaTag in desc..variable)
+         for each(metaTag in desc..variable)
          {
-            for each (metaData in metaTag.metadata)
+            for each(metaData in metaTag.metadata)
             {
                if((metaData.@name == "Module") && (!UiModuleManager.getInstance().getModules()[metaData.arg.@value]))
                {
@@ -81,7 +81,7 @@ package com.ankamagames.berilia.api
             }
             else
             {
-               for each (metaData in metaTag.metadata)
+               for each(metaData in metaTag.metadata)
                {
                   if(metaData.@name == "Api")
                   {
@@ -249,7 +249,7 @@ package com.ankamagames.berilia.api
             _isComplexFctCache[cacheKey] = false;
             return false;
          }
-         for each (paramType in methodDesc..parameter..@type)
+         for each(paramType in methodDesc..parameter..@type)
          {
             if(simpleType.indexOf(paramType) == -1)
             {

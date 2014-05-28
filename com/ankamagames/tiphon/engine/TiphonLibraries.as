@@ -7,8 +7,8 @@ package com.ankamagames.tiphon.engine
          super();
       }
       
-      public static const skullLibrary:LibrariesManager = new LibrariesManager("skullLibrary",LibrariesManager.TYPE_BONE);
+      public static const skullLibrary:LibrariesManager;
       
-      public static const skinLibrary:LibrariesManager = new LibrariesManager("skinLibrary",LibrariesManager.TYPE_SKIN);
+      public static const skinLibrary:LibrariesManager;
    }
 }

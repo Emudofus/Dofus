@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight.challenge
          return 6019;
       }
       
-      public function initChallengeResultMessage(challengeId:uint=0, success:Boolean=false) : ChallengeResultMessage {
+      public function initChallengeResultMessage(challengeId:uint = 0, success:Boolean = false) : ChallengeResultMessage {
          this.challengeId = challengeId;
          this.success = success;
          this._isInitialized = true;

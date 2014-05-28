@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5794;
       }
       
-      public function initExchangeCraftInformationObjectMessage(craftResult:uint=0, objectGenericId:uint=0, playerId:uint=0) : ExchangeCraftInformationObjectMessage {
+      public function initExchangeCraftInformationObjectMessage(craftResult:uint = 0, objectGenericId:uint = 0, playerId:uint = 0) : ExchangeCraftInformationObjectMessage {
          super.initExchangeCraftResultWithObjectIdMessage(craftResult,objectGenericId);
          this.playerId = playerId;
          this._isInitialized = true;

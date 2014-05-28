@@ -17,7 +17,7 @@ package com.ankamagames.dofus.scripts
          this._fxTarget = fxTarget;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FxRunner));
+      protected static const _log:Logger;
       
       protected var _fxCaster:IEntity;
       

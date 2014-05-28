@@ -171,7 +171,7 @@ package com.ankamagames.dofus.network
          super();
       }
       
-      private static const _typesTypes:Dictionary = new Dictionary();
+      private static const _typesTypes:Dictionary;
       
       public static function getInstance(base:Class, typeId:uint) : * {
          var objType:Class = _typesTypes[typeId];

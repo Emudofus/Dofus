@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5790;
       }
       
-      public function initExchangeCraftResultMessage(craftResult:uint=0) : ExchangeCraftResultMessage {
+      public function initExchangeCraftResultMessage(craftResult:uint = 0) : ExchangeCraftResultMessage {
          this.craftResult = craftResult;
          this._isInitialized = true;
          return this;

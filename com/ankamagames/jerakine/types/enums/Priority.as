@@ -38,6 +38,8 @@ package com.ankamagames.jerakine.types.enums
                return "LOW";
             case LOWEST:
                return "LOWEST";
+            default:
+               return "UNKNOW";
          }
       }
       
@@ -58,6 +60,8 @@ package com.ankamagames.jerakine.types.enums
                return LOW;
             case "LOWEST":
                return LOWEST;
+            default:
+               return 666;
          }
       }
    }

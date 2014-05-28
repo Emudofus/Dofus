@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 5540;
       }
       
-      public function initGameActionFightMarkCellsMessage(actionId:uint=0, sourceId:int=0, mark:GameActionMark=null) : GameActionFightMarkCellsMessage {
+      public function initGameActionFightMarkCellsMessage(actionId:uint = 0, sourceId:int = 0, mark:GameActionMark = null) : GameActionFightMarkCellsMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.mark = mark;
          this._isInitialized = true;

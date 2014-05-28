@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          return 5884;
       }
       
-      public function initHouseSellFromInsideRequestMessage(amount:uint=0) : HouseSellFromInsideRequestMessage {
+      public function initHouseSellFromInsideRequestMessage(amount:uint = 0) : HouseSellFromInsideRequestMessage {
          super.initHouseSellRequestMessage(amount);
          this._isInitialized = true;
          return this;

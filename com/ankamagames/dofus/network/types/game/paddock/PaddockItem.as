@@ -22,7 +22,7 @@ package com.ankamagames.dofus.network.types.game.paddock
          return 185;
       }
       
-      public function initPaddockItem(cellId:uint=0, objectGID:uint=0, durability:ItemDurability=null) : PaddockItem {
+      public function initPaddockItem(cellId:uint = 0, objectGID:uint = 0, durability:ItemDurability = null) : PaddockItem {
          super.initObjectItemInRolePlay(cellId,objectGID);
          this.durability = durability;
          return this;

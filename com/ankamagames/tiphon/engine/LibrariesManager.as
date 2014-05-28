@@ -17,7 +17,6 @@ package com.ankamagames.tiphon.engine
    import com.ankamagames.tiphon.events.SwlEvent;
    import flash.events.Event;
    import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
    import com.ankamagames.jerakine.resources.loaders.ResourceLoaderFactory;
    import com.ankamagames.jerakine.resources.loaders.ResourceLoaderType;
@@ -42,13 +41,13 @@ package com.ankamagames.tiphon.engine
          numLM++;
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(LibrariesManager));
+      private static const _log:Logger;
       
       public static const TYPE_BONE:uint = 0;
       
       public static const TYPE_SKIN:uint = 1;
       
-      private static var _cache:InfiniteCache = new InfiniteCache();
+      private static var _cache:InfiniteCache;
       
       private static var _uri:Uri;
       
@@ -114,7 +113,7 @@ package com.ankamagames.tiphon.engine
          }
       }
       
-      public function askResource(id:uint, className:String=null, callback:Callback=null, errorCallback:Callback=null) : void {
+      public function askResource(id:uint, className:String = null, callback:Callback = null, errorCallback:Callback = null) : void {
          var gl:GraphicLibrary = null;
          var callbackUri:String = null;
          var waitCallback:Array = null;
@@ -148,7 +147,7 @@ package com.ankamagames.tiphon.engine
             }
             waitCallback = this._aWaiting[id]["ok"];
             ok = true;
-            for each (c in waitCallback)
+            for each(c in waitCallback)
             {
                if((c.method == callback.method) && (callback.args.length == c.args.length))
                {
@@ -191,12 +190,12 @@ package com.ankamagames.tiphon.engine
       public function removeResource(id:uint) : void {
          if(this._aWaiting[id])
          {
-            delete this._aWaiting[[id]];
+            delete this._aWaiting[id];
          }
-         delete this._aResources[[id]];
+         delete this._aResources[id];
       }
       
-      public function isLoaded(id:uint, animClass:String=null) : Boolean {
+      public function isLoaded(id:uint, animClass:String = null) : Boolean {
          if(this._aResources[id] == false)
          {
             return false;
@@ -213,12 +212,12 @@ package com.ankamagames.tiphon.engine
          return this._aResourceLoadFail[id];
       }
       
-      public function hasResource(id:uint, animClass:String=null) : Boolean {
+      public function hasResource(id:uint, animClass:String = null) : Boolean {
          var lib:GraphicLibrary = this._aResources[id];
          return (lib) && (lib.hasClass(animClass));
       }
       
-      public function getResourceById(resName:uint, animClass:String=null, waitForIt:Boolean=false) : Swl {
+      public function getResourceById(resName:uint, animClass:String = null, waitForIt:Boolean = false) : Swl {
          var swl:Swl = null;
          var lib:GraphicLibrary = this._aResources[resName];
          if((lib.isSingleFile) && (!waitForIt))
@@ -238,7 +237,7 @@ package com.ankamagames.tiphon.engine
          dispatchEvent(pEvt);
       }
       
-      public function hasAnim(bonesId:int, animName:String, direction:int=-1) : Boolean {
+      public function hasAnim(bonesId:int, animName:String, direction:int = -1) : Boolean {
          var animIzHere:* = false;
          var swldefanim:String = null;
          var lib:GraphicLibrary = this._aResources[bonesId];
@@ -250,7 +249,7 @@ package com.ankamagames.tiphon.engine
                _log.info("On test si une librairie contient une anim sans l\'avoir en mémoire. (bones: " + bonesId + ", anim:" + animName + ")");
                return false;
             }
-            for each (swldefanim in lib.getSwl().getDefinitions())
+            for each(swldefanim in lib.getSwl().getDefinitions())
             {
                if(swldefanim.indexOf(animName + (!(direction == -1)?"_" + direction:"")) == 0)
                {
@@ -285,14 +284,14 @@ package com.ankamagames.tiphon.engine
                }
                i++;
             }
-            for each (c in callbacksToRemove)
+            for each(c in callbacksToRemove)
             {
                this._aWaiting[tagId]["ok"].splice(this._aWaiting[tagId]["ok"].indexOf(c),1);
-               delete this._aWaitingResourceUri[[c]];
+               delete this._aWaitingResourceUri[c];
             }
             if(this._aWaiting[tagId]["ok"].length == 0)
             {
-               delete this._aWaiting[[tagId]];
+               delete this._aWaiting[tagId];
             }
          }
       }
@@ -303,7 +302,7 @@ package com.ankamagames.tiphon.engine
          var i:* = 0;
          var tagId:int = isNaN(re.uri.tag)?re.uri.tag.id:re.uri.tag;
          _log.error("Unable to load " + re.uri + " (" + re.errorMsg + ")");
-         delete this._aResources[[tagId]];
+         delete this._aResources[tagId];
          this._aResourceLoadFail[tagId] = true;
          this.addResource(tagId,_uri);
          if(this._aWaiting[tagId])
@@ -318,7 +317,7 @@ package com.ankamagames.tiphon.engine
                   (callBackList[i] as Callback).exec();
                   i++;
                }
-               delete this._aWaiting[[tagId]];
+               delete this._aWaiting[tagId];
             }
          }
       }

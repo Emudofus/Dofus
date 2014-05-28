@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
          return 301;
       }
       
-      public function initGameRolePlayShowChallengeMessage(commonsInfos:FightCommonInformations=null) : GameRolePlayShowChallengeMessage {
+      public function initGameRolePlayShowChallengeMessage(commonsInfos:FightCommonInformations = null) : GameRolePlayShowChallengeMessage {
          this.commonsInfos = commonsInfos;
          this._isInitialized = true;
          return this;

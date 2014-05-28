@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5755;
       }
       
-      public function initExchangeBidPriceMessage(genericId:uint=0, averagePrice:int=0) : ExchangeBidPriceMessage {
+      public function initExchangeBidPriceMessage(genericId:uint = 0, averagePrice:int = 0) : ExchangeBidPriceMessage {
          this.genericId = genericId;
          this.averagePrice = averagePrice;
          this._isInitialized = true;

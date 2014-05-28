@@ -22,7 +22,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 50;
       }
       
-      public function initGameFightMutantInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null, name:String="", status:PlayerStatus=null, powerLevel:uint=0) : GameFightMutantInformations {
+      public function initGameFightMutantInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, teamId:uint = 2, wave:uint = 0, alive:Boolean = false, stats:GameFightMinimalStats = null, name:String = "", status:PlayerStatus = null, powerLevel:uint = 0) : GameFightMutantInformations {
          super.initGameFightFighterNamedInformations(contextualId,look,disposition,teamId,wave,alive,stats,name,status);
          this.powerLevel = powerLevel;
          return this;

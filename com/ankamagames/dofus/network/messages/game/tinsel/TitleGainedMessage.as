@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.tinsel
          return 6364;
       }
       
-      public function initTitleGainedMessage(titleId:uint=0) : TitleGainedMessage {
+      public function initTitleGainedMessage(titleId:uint = 0) : TitleGainedMessage {
          this.titleId = titleId;
          this._isInitialized = true;
          return this;

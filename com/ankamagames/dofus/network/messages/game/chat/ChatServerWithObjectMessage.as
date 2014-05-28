@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.chat
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 883;
       }
       
-      public function initChatServerWithObjectMessage(channel:uint=0, content:String="", timestamp:uint=0, fingerprint:String="", senderId:int=0, senderName:String="", senderAccountId:int=0, objects:Vector.<ObjectItem>=null) : ChatServerWithObjectMessage {
+      public function initChatServerWithObjectMessage(channel:uint = 0, content:String = "", timestamp:uint = 0, fingerprint:String = "", senderId:int = 0, senderName:String = "", senderAccountId:int = 0, objects:Vector.<ObjectItem> = null) : ChatServerWithObjectMessage {
          super.initChatServerMessage(channel,content,timestamp,fingerprint,senderId,senderName,senderAccountId);
          this.objects = objects;
          this._isInitialized = true;

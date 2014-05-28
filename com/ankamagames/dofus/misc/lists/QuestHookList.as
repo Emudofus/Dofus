@@ -9,48 +9,48 @@ package com.ankamagames.dofus.misc.lists
          super();
       }
       
-      public static const QuestListUpdated:Hook = new Hook("QuestListUpdated",false);
+      public static const QuestListUpdated:Hook;
       
-      public static const QuestInfosUpdated:Hook = new Hook("QuestInfosUpdated",false);
+      public static const QuestInfosUpdated:Hook;
       
-      public static const QuestStarted:Hook = new Hook("QuestStarted",false);
+      public static const QuestStarted:Hook;
       
-      public static const QuestValidated:Hook = new Hook("QuestValidated",false);
+      public static const QuestValidated:Hook;
       
-      public static const QuestObjectiveValidated:Hook = new Hook("QuestObjectiveValidated",false);
+      public static const QuestObjectiveValidated:Hook;
       
-      public static const QuestStepValidated:Hook = new Hook("QuestStepValidated",false);
+      public static const QuestStepValidated:Hook;
       
-      public static const QuestStepStarted:Hook = new Hook("QuestStepStarted",false);
+      public static const QuestStepStarted:Hook;
       
-      public static const AchievementList:Hook = new Hook("AchievementList",false);
+      public static const AchievementList:Hook;
       
-      public static const AchievementDetailedList:Hook = new Hook("AchievementDetailedList",false);
+      public static const AchievementDetailedList:Hook;
       
-      public static const AchievementDetails:Hook = new Hook("AchievementDetails",false);
+      public static const AchievementDetails:Hook;
       
-      public static const AchievementFinished:Hook = new Hook("AchievementFinished",false);
+      public static const AchievementFinished:Hook;
       
-      public static const AchievementRewardSuccess:Hook = new Hook("AchievementRewardSuccess",false);
+      public static const AchievementRewardSuccess:Hook;
       
-      public static const AchievementRewardError:Hook = new Hook("AchievementRewardError",false);
+      public static const AchievementRewardError:Hook;
       
-      public static const RewardableAchievementsVisible:Hook = new Hook("RewardableAchievementsVisible",false);
+      public static const RewardableAchievementsVisible:Hook;
       
-      public static const TitlesListUpdated:Hook = new Hook("TitlesListUpdated",false);
+      public static const TitlesListUpdated:Hook;
       
-      public static const OrnamentsListUpdated:Hook = new Hook("OrnamentsListUpdated",false);
+      public static const OrnamentsListUpdated:Hook;
       
-      public static const TitleUpdated:Hook = new Hook("TitleUpdated",false);
+      public static const TitleUpdated:Hook;
       
-      public static const OrnamentUpdated:Hook = new Hook("OrnamentUpdated",false);
+      public static const OrnamentUpdated:Hook;
       
-      public static const TreasureHuntUpdate:Hook = new Hook("TreasureHuntUpdate",false);
+      public static const TreasureHuntUpdate:Hook;
       
-      public static const TreasureHuntFinished:Hook = new Hook("TreasureHuntFinished",false);
+      public static const TreasureHuntFinished:Hook;
       
-      public static const TreasureHuntAvailableRetryCountUpdate:Hook = new Hook("TreasureHuntAvailableRetryCountUpdate",false);
+      public static const TreasureHuntAvailableRetryCountUpdate:Hook;
       
-      public static const AreaFightModificatorUpdate:Hook = new Hook("AreaFightModificatorUpdate",false);
+      public static const AreaFightModificatorUpdate:Hook;
    }
 }

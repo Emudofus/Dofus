@@ -22,7 +22,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 425;
       }
       
-      public function initHumanOptionAlliance(allianceInformations:AllianceInformations=null, aggressable:uint=0) : HumanOptionAlliance {
+      public function initHumanOptionAlliance(allianceInformations:AllianceInformations = null, aggressable:uint = 0) : HumanOptionAlliance {
          this.allianceInformations = allianceInformations;
          this.aggressable = aggressable;
          return this;

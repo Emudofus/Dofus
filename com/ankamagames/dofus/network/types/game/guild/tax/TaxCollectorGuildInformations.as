@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          return 446;
       }
       
-      public function initTaxCollectorGuildInformations(guild:BasicGuildInformations=null) : TaxCollectorGuildInformations {
+      public function initTaxCollectorGuildInformations(guild:BasicGuildInformations = null) : TaxCollectorGuildInformations {
          this.guild = guild;
          return this;
       }

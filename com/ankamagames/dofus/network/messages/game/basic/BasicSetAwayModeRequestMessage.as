@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 5665;
       }
       
-      public function initBasicSetAwayModeRequestMessage(enable:Boolean=false, invisible:Boolean=false) : BasicSetAwayModeRequestMessage {
+      public function initBasicSetAwayModeRequestMessage(enable:Boolean = false, invisible:Boolean = false) : BasicSetAwayModeRequestMessage {
          this.enable = enable;
          this.invisible = invisible;
          this._isInitialized = true;

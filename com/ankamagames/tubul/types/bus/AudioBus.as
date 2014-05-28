@@ -16,7 +16,6 @@ package com.ankamagames.tubul.types.bus
    import com.ankamagames.jerakine.newCache.impl.Cache;
    import com.ankamagames.jerakine.newCache.garbage.LruGarbageCollector;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.*;
    import com.ankamagames.tubul.events.AudioBusVolumeEvent;
    import com.ankamagames.tubul.interfaces.ILocalizedSoundListener;
    import com.ankamagames.tubul.events.FadeEvent;
@@ -27,6 +26,7 @@ package com.ankamagames.tubul.types.bus
    {
       
       public function AudioBus(id:int, name:String) {
+         this._log = Log.getLogger(getQualifiedClassName(AudioBus));
          super();
          this.init(id,name);
       }
@@ -35,7 +35,7 @@ package com.ankamagames.tubul.types.bus
       
       protected static var id_sound:uint = 0;
       
-      private const _log:Logger = Log.getLogger(getQualifiedClassName(AudioBus));
+      private const _log:Logger;
       
       protected var _id:uint;
       
@@ -144,18 +144,18 @@ package com.ankamagames.tubul.types.bus
          return Math.round(this._volume * this._volumeMax * this._fadeVolume * 1000) / 1000;
       }
       
-      public function clear(pFade:VolumeFadeEffect=null) : void {
+      public function clear(pFade:VolumeFadeEffect = null) : void {
          var isound:ISound = null;
-         for each (isound in this._soundVector)
+         for each(isound in this._soundVector)
          {
             this.removeSound(isound,pFade);
          }
       }
       
-      public function playISound(newSound:ISound, pLoop:Boolean=false, pLoops:int=-1) : void {
+      public function playISound(newSound:ISound, pLoop:Boolean = false, pLoops:int = -1) : void {
          var isound:ISound = null;
          var existingSound:Boolean = false;
-         for each (isound in this._soundVector)
+         for each(isound in this._soundVector)
          {
             if(isound === newSound)
             {
@@ -184,7 +184,7 @@ package com.ankamagames.tubul.types.bus
          var resource:* = undefined;
          pISound.eventDispatcher.addEventListener(SoundCompleteEvent.SOUND_COMPLETE,this.onSoundComplete,false,EventListenerPriority.MINIMAL,true);
          var busState:String = "";
-         for each (sound3 in this.soundList)
+         for each(sound3 in this.soundList)
          {
             busState = busState + (" " + sound3.id + ";" + sound3.uri);
          }
@@ -192,7 +192,7 @@ package com.ankamagames.tubul.types.bus
          {
             this._log.warn("We have reached the maximum number of sounds playing simultaneously");
             this._log.warn("");
-            for each (bus in Tubul.getInstance().audioBusList)
+            for each(bus in Tubul.getInstance().audioBusList)
             {
                this._log.warn("Registered sounds in bus " + bus.name + " :");
                freedSpace = this.cleanBus(bus.soundList);
@@ -213,7 +213,7 @@ package com.ankamagames.tubul.types.bus
             }
          }
          this._log.warn("Registered sounds in bus " + this._name + " :");
-         for each (sound2 in this.soundList)
+         for each(sound2 in this.soundList)
          {
             this._log.warn("- " + sound2.uri);
          }
@@ -222,7 +222,7 @@ package com.ankamagames.tubul.types.bus
             return;
          }
          pISound.busId = this.id;
-         for each (effect in this._effects)
+         for each(effect in this._effects)
          {
             pISound.addEffect(effect);
          }
@@ -244,7 +244,7 @@ package com.ankamagames.tubul.types.bus
       private function cleanBus(sList:Vector.<ISound>) : Boolean {
          var sound:ISound = null;
          var freedSpace:* = false;
-         for each (sound in sList)
+         for each(sound in sList)
          {
             freedSpace = false;
             if(!sound.isPlaying)
@@ -260,7 +260,7 @@ package com.ankamagames.tubul.types.bus
       public function addEffect(pEffect:IEffect) : void {
          var effect:IEffect = null;
          var isound:ISound = null;
-         for each (effect in this._effects)
+         for each(effect in this._effects)
          {
             if(effect.name == pEffect.name)
             {
@@ -268,7 +268,7 @@ package com.ankamagames.tubul.types.bus
             }
          }
          this._effects.push(pEffect);
-         for each (isound in this._soundVector)
+         for each(isound in this._soundVector)
          {
             isound.addEffect(pEffect);
          }
@@ -278,7 +278,7 @@ package com.ankamagames.tubul.types.bus
          var effect:IEffect = null;
          var isound:ISound = null;
          var compt:uint = 0;
-         for each (effect in this._effects)
+         for each(effect in this._effects)
          {
             if(effect == pEffect)
             {
@@ -289,7 +289,7 @@ package com.ankamagames.tubul.types.bus
                compt++;
             }
          }
-         for each (isound in this._soundVector)
+         for each(isound in this._soundVector)
          {
             isound.removeEffect(pEffect);
          }
@@ -297,7 +297,7 @@ package com.ankamagames.tubul.types.bus
       
       public function play() : void {
          var isound:ISound = null;
-         for each (isound in this._soundVector)
+         for each(isound in this._soundVector)
          {
             isound.play();
          }
@@ -305,7 +305,7 @@ package com.ankamagames.tubul.types.bus
       
       public function stop() : void {
          var isound:ISound = null;
-         for each (isound in this._soundVector)
+         for each(isound in this._soundVector)
          {
             isound.stop();
          }
@@ -316,7 +316,7 @@ package com.ankamagames.tubul.types.bus
       
       public function contains(pISound:ISound) : Boolean {
          var isound:ISound = null;
-         for each (isound in this._soundVector)
+         for each(isound in this._soundVector)
          {
             if(isound.id == pISound.id)
             {
@@ -341,7 +341,7 @@ package com.ankamagames.tubul.types.bus
          this.currentFadeVolume = 1;
       }
       
-      protected function removeSound(pISound:ISound, pFade:VolumeFadeEffect=null) : uint {
+      protected function removeSound(pISound:ISound, pFade:VolumeFadeEffect = null) : uint {
          var sound3:ISound = null;
          if(!this._soundVector)
          {
@@ -362,7 +362,7 @@ package com.ankamagames.tubul.types.bus
             _log.warn("We tried to remove a non existing sound. Allready removed ? (" + pISound.uri + ")");
          }
          var busState:String = "";
-         for each (sound3 in this.soundList)
+         for each(sound3 in this.soundList)
          {
             busState = busState + (" " + sound3.id + ";" + sound3.uri);
          }
@@ -379,19 +379,17 @@ package com.ankamagames.tubul.types.bus
       protected function getOlderSound() : ISound {
          var olderSound:ISound = null;
          var isound:ISound = null;
-         for each (isound in this._soundVector)
+         for each(isound in this._soundVector)
          {
             if(olderSound == null)
             {
                olderSound = isound;
             }
-            else
+            else if(isound.id < olderSound.id)
             {
-               if(isound.id < olderSound.id)
-               {
-                  olderSound = isound;
-               }
+               olderSound = isound;
             }
+            
          }
          return olderSound;
       }
@@ -413,7 +411,7 @@ package com.ankamagames.tubul.types.bus
       protected function onSoundComplete(pEvent:SoundCompleteEvent) : void {
          var listener:ILocalizedSoundListener = null;
          this._eventDispatcher.dispatchEvent(pEvent);
-         for each (listener in Tubul.getInstance().localizedSoundListeners)
+         for each(listener in Tubul.getInstance().localizedSoundListeners)
          {
             listener.removeSoundEntity(pEvent.sound);
          }

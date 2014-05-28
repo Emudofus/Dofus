@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.handshake
          return 1;
       }
       
-      public function initProtocolRequired(requiredVersion:uint=0, currentVersion:uint=0) : ProtocolRequired {
+      public function initProtocolRequired(requiredVersion:uint = 0, currentVersion:uint = 0) : ProtocolRequired {
          this.requiredVersion = requiredVersion;
          this.currentVersion = currentVersion;
          this._isInitialized = true;

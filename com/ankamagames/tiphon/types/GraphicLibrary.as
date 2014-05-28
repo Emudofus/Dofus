@@ -11,7 +11,7 @@ package com.ankamagames.tiphon.types
    public class GraphicLibrary extends EventDispatcher
    {
       
-      public function GraphicLibrary(pGfxId:uint, isBone:Boolean=false) {
+      public function GraphicLibrary(pGfxId:uint, isBone:Boolean = false) {
          this._swl = new Dictionary();
          this._waitingSwl = new Dictionary();
          super();
@@ -38,7 +38,7 @@ package com.ankamagames.tiphon.types
          if(this._waitingSwl[url])
          {
             this._waitingSwl[url] = false;
-            delete this._waitingSwl[[url]];
+            delete this._waitingSwl[url];
             dispatchEvent(new SwlEvent(SwlEvent.SWL_LOADED,url));
          }
       }
@@ -56,7 +56,7 @@ package com.ankamagames.tiphon.types
          return !(this._swl[swlUri.toString()] == null);
       }
       
-      public function hasClassAvaible(className:String=null) : Boolean {
+      public function hasClassAvaible(className:String = null) : Boolean {
          if(this.isSingleFile)
          {
             return !(this.getSwl(className) == null);
@@ -65,7 +65,7 @@ package com.ankamagames.tiphon.types
          return (!(this._swl[swlUri.toString()] == null)) && (!(this._swl[swlUri.toString()] == false));
       }
       
-      public function hasSwl(uri:Uri=null) : Boolean {
+      public function hasSwl(uri:Uri = null) : Boolean {
          if(!uri)
          {
             return !(this._swlCount == 0);
@@ -73,7 +73,7 @@ package com.ankamagames.tiphon.types
          return !(this._swl[uri.toString()] == null);
       }
       
-      public function getSwl(className:String=null, waitForIt:Boolean=false) : Swl {
+      public function getSwl(className:String = null, waitForIt:Boolean = false) : Swl {
          var s:* = undefined;
          var swlUri:Uri = null;
          if((className) || (!this._isBone))
@@ -89,7 +89,7 @@ package com.ankamagames.tiphon.types
                return null;
             }
          }
-         for each (s in this._swl)
+         for each(s in this._swl)
          {
             if(s != false)
             {

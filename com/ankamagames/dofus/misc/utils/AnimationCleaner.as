@@ -9,7 +9,7 @@ package com.ankamagames.dofus.misc.utils
          super();
       }
       
-      public static function cleanBones1AnimName(bones:uint, anim:String=null) : String {
+      public static function cleanBones1AnimName(bones:uint, anim:String = null) : String {
          var name:String = null;
          switch(bones)
          {

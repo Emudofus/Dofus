@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 700;
       }
       
-      public function initGameFightStartingMessage(fightType:uint=0, attackerId:int=0, defenderId:int=0) : GameFightStartingMessage {
+      public function initGameFightStartingMessage(fightType:uint = 0, attackerId:int = 0, defenderId:int = 0) : GameFightStartingMessage {
          this.fightType = fightType;
          this.attackerId = attackerId;
          this.defenderId = defenderId;

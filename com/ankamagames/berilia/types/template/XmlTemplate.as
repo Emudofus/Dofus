@@ -12,7 +12,7 @@ package com.ankamagames.berilia.types.template
    public class XmlTemplate extends Object
    {
       
-      public function XmlTemplate(sXml:String=null, sFilename:String=null) {
+      public function XmlTemplate(sXml:String = null, sFilename:String = null) {
          this._aVariablesStack = new Array();
          super();
          this._filename = sFilename;
@@ -22,7 +22,7 @@ package com.ankamagames.berilia.types.template
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(XmlTemplate));
+      protected static const _log:Logger;
       
       private var _aTemplateParams:Array;
       
@@ -67,16 +67,16 @@ package com.ankamagames.berilia.types.template
          var evaluator:Evaluator = new Evaluator();
          var newXml:String = this._xDoc.toString();
          var localVar:Array = [];
-         for (key in this._aTemplateParams)
+         for(key in this._aTemplateParams)
          {
             localVar[key] = this._aTemplateParams[key];
          }
-         for (key in aVar)
+         for(key in aVar)
          {
             if(!this._aTemplateParams[key])
             {
                _log.error("Template " + this._filename + ", param " + key + " is not defined");
-               delete aVar[[key]];
+               delete aVar[key];
             }
             else
             {
@@ -113,19 +113,56 @@ package com.ankamagames.berilia.types.template
       }
       
       private function matchDynamicsParts(node:XMLNode) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var currNode:XMLNode = null;
+         var variable:TemplateVar = null;
+         var param:TemplateParam = null;
+         var i:uint = 0;
+         for(;i < node.childNodes.length;i++)
+         {
+            currNode = node.childNodes[i];
+            if(currNode.nodeName == XmlTagsEnum.TAG_VAR)
+            {
+               if(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME])
+               {
+                  variable = new TemplateVar(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME]);
+                  variable.value = currNode.firstChild.toString().replace(new RegExp("&apos;","g"),"\'");
+                  this._aVariablesStack.push(variable);
+                  currNode.removeNode();
+                  i--;
+                  continue;
+               }
+               _log.warn(currNode.nodeName + " must have [" + XmlAttributesEnum.ATTRIBUTE_NAME + "] attribute");
+            }
+            if(currNode.nodeName == XmlTagsEnum.TAG_PARAM)
+            {
+               if(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME])
+               {
+                  param = new TemplateParam(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME]);
+                  this._aTemplateParams[param.name] = param;
+                  if(currNode.hasChildNodes())
+                  {
+                     param.defaultValue = currNode.firstChild.toString();
+                  }
+                  else
+                  {
+                     param.defaultValue = "";
+                  }
+                  currNode.removeNode();
+                  i--;
+               }
+               else
+               {
+                  _log.warn(currNode.nodeName + " must have [" + XmlAttributesEnum.ATTRIBUTE_NAME + "] attribute");
+               }
+            }
+         }
       }
       
-      private function replaceParam(txt:String, aVars:Array, prefix:String, recur:uint=1) : String {
+      private function replaceParam(txt:String, aVars:Array, prefix:String, recur:uint = 1) : String {
          /*
           * Decompilation error
           * Code may be obfuscated
-          * Error type: ExecutionException
+          * Error type: TranslateException
           */
          throw new IllegalOperationError("Not decompiled due to error");
       }

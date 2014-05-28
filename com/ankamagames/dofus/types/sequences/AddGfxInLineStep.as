@@ -2,7 +2,6 @@ package com.ankamagames.dofus.types.sequences
 {
    import com.ankamagames.jerakine.sequencer.AbstractSequencable;
    import com.ankamagames.jerakine.types.positions.MapPoint;
-   import __AS3__.vec.Vector;
    import flash.geom.Point;
    import com.ankamagames.jerakine.utils.display.Dofus1Line;
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
@@ -15,7 +14,7 @@ package com.ankamagames.dofus.types.sequences
    public class AddGfxInLineStep extends AbstractSequencable
    {
       
-      public function AddGfxInLineStep(gfxId:uint, startCell:MapPoint, endCell:MapPoint, yOffset:int, mode:uint=0, scale:Number=0, addOnStartCell:Boolean=false, addOnEndCell:Boolean=false, addedCells:Vector.<uint>=null, useOnlyAddedCells:Boolean=false, showUnder:Boolean=false) {
+      public function AddGfxInLineStep(gfxId:uint, startCell:MapPoint, endCell:MapPoint, yOffset:int, mode:uint = 0, scale:Number = 0, addOnStartCell:Boolean = false, addOnEndCell:Boolean = false, addedCells:Vector.<uint> = null, useOnlyAddedCells:Boolean = false, showUnder:Boolean = false) {
          super();
          this._gfxId = gfxId;
          this._startCell = startCell;

@@ -3,7 +3,7 @@ package com.ankamagames.jerakine.types
    public class SoundEventParamWrapper extends Object
    {
       
-      public function SoundEventParamWrapper(pId:String, pVolume:uint, pRollOff:uint, pBerceauDuree:int=-1, pBerceauVol:int=-1, pBerceauFadeIn:int=-1, pBerceauFadeOut:int=-1, pNoCutSilence:Boolean=false) {
+      public function SoundEventParamWrapper(pId:String, pVolume:uint, pRollOff:uint, pBerceauDuree:int = -1, pBerceauVol:int = -1, pBerceauFadeIn:int = -1, pBerceauFadeOut:int = -1, pNoCutSilence:Boolean = false) {
          super();
          this.id = pId;
          this.volume = pVolume;

@@ -13,7 +13,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightAddSubEntityStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightAddSubEntityStep(fighterId:int, carriedEntityId:int, category:uint, slot:uint, subEntityBehaviour:ISubEntityBehavior=null) {
+      public function FightAddSubEntityStep(fighterId:int, carriedEntityId:int, category:uint, slot:uint, subEntityBehaviour:ISubEntityBehavior = null) {
          super();
          this._fighterId = fighterId;
          this._carriedEntityId = carriedEntityId;

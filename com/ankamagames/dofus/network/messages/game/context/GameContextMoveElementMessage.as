@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 253;
       }
       
-      public function initGameContextMoveElementMessage(movement:EntityMovementInformations=null) : GameContextMoveElementMessage {
+      public function initGameContextMoveElementMessage(movement:EntityMovementInformations = null) : GameContextMoveElementMessage {
          this.movement = movement;
          this._isInitialized = true;
          return this;

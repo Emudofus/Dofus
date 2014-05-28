@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 6474;
       }
       
-      public function initGameFightSpectatePlayerRequestMessage(playerId:int=0) : GameFightSpectatePlayerRequestMessage {
+      public function initGameFightSpectatePlayerRequestMessage(playerId:int = 0) : GameFightSpectatePlayerRequestMessage {
          this.playerId = playerId;
          this._isInitialized = true;
          return this;

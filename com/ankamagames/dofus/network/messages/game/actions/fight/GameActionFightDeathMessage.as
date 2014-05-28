@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 1099;
       }
       
-      public function initGameActionFightDeathMessage(actionId:uint=0, sourceId:int=0, targetId:int=0) : GameActionFightDeathMessage {
+      public function initGameActionFightDeathMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0) : GameActionFightDeathMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this._isInitialized = true;

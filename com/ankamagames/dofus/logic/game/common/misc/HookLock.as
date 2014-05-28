@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.logic.game.common.misc
 {
    import com.ankamagames.berilia.types.data.Hook;
-   import __AS3__.vec.*;
    
    public class HookLock extends Object implements IHookLock
    {
@@ -16,7 +15,7 @@ package com.ankamagames.dofus.logic.game.common.misc
       public function addHook(hook:Hook, args:Array) : void {
          var hd:HookDef = null;
          var hookDef:HookDef = new HookDef(hook,args);
-         for each (hd in this._hooks)
+         for each(hd in this._hooks)
          {
             if(hookDef.isEqual(hd))
             {
@@ -28,7 +27,7 @@ package com.ankamagames.dofus.logic.game.common.misc
       
       public function release() : void {
          var hd:HookDef = null;
-         for each (hd in this._hooks)
+         for each(hd in this._hooks)
          {
             hd.run();
          }

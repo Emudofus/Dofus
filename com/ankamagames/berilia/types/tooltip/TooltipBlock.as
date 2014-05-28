@@ -27,9 +27,9 @@ package com.ankamagames.berilia.types.tooltip
          this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onLoadError);
       }
       
-      private static const _chunckCache:Dictionary = new Dictionary();
+      private static const _chunckCache:Dictionary;
       
-      private static const _cache:Cache = Cache.create(50,new LruGarbageCollector(),getQualifiedClassName(TooltipBlock));
+      private static const _cache:Cache;
       
       protected var _log:Logger;
       

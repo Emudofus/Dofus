@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.context
          return 147;
       }
       
-      public function initTaxCollectorStaticInformations(firstNameId:uint=0, lastNameId:uint=0, guildIdentity:GuildInformations=null) : TaxCollectorStaticInformations {
+      public function initTaxCollectorStaticInformations(firstNameId:uint = 0, lastNameId:uint = 0, guildIdentity:GuildInformations = null) : TaxCollectorStaticInformations {
          this.firstNameId = firstNameId;
          this.lastNameId = lastNameId;
          this.guildIdentity = guildIdentity;

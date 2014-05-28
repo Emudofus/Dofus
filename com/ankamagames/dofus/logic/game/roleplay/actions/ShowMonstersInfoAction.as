@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(pFromShortcut:Boolean=true) : ShowMonstersInfoAction {
+      public static function create(pFromShortcut:Boolean = true) : ShowMonstersInfoAction {
          var a:ShowMonstersInfoAction = new ShowMonstersInfoAction();
          a.fromShortcut = pFromShortcut;
          return a;

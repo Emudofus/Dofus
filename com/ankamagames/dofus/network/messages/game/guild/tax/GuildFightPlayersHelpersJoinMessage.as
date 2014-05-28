@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5720;
       }
       
-      public function initGuildFightPlayersHelpersJoinMessage(fightId:Number=0, playerInfo:CharacterMinimalPlusLookInformations=null) : GuildFightPlayersHelpersJoinMessage {
+      public function initGuildFightPlayersHelpersJoinMessage(fightId:Number = 0, playerInfo:CharacterMinimalPlusLookInformations = null) : GuildFightPlayersHelpersJoinMessage {
          this.fightId = fightId;
          this.playerInfo = playerInfo;
          this._isInitialized = true;

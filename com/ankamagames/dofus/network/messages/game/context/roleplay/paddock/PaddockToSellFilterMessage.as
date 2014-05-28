@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
          return 6161;
       }
       
-      public function initPaddockToSellFilterMessage(areaId:int=0, atLeastNbMount:int=0, atLeastNbMachine:int=0, maxPrice:uint=0) : PaddockToSellFilterMessage {
+      public function initPaddockToSellFilterMessage(areaId:int = 0, atLeastNbMount:int = 0, atLeastNbMachine:int = 0, maxPrice:uint = 0) : PaddockToSellFilterMessage {
          this.areaId = areaId;
          this.atLeastNbMount = atLeastNbMount;
          this.atLeastNbMachine = atLeastNbMachine;

@@ -3,7 +3,7 @@ package com.hurlant.util.der
    public dynamic class Set extends Sequence implements IAsn1Type
    {
       
-      public function Set(type:uint=49, length:uint=0) {
+      public function Set(type:uint = 49, length:uint = 0) {
          super(type,length);
       }
       

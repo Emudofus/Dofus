@@ -11,7 +11,7 @@ package com.ankamagames.jerakine.data
          I18nFileAccessor.getInstance().overrideId(id,newId);
       }
       
-      public static function getText(id:uint, params:Array=null, replace:String="%") : String {
+      public static function getText(id:uint, params:Array = null, replace:String = "%") : String {
          if(!id)
          {
             return null;
@@ -24,7 +24,7 @@ package com.ankamagames.jerakine.data
          return replaceParams(txt,params,replace);
       }
       
-      public static function getUiText(textId:String, params:Array=null, replace:String="%") : String {
+      public static function getUiText(textId:String, params:Array = null, replace:String = "%") : String {
          var txt:String = I18nFileAccessor.getInstance().getNamedText(textId);
          if((txt == null) || (txt == "null"))
          {

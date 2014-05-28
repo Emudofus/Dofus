@@ -22,7 +22,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 419;
       }
       
-      public function initBasicAllianceInformations(allianceId:uint=0, allianceTag:String="") : BasicAllianceInformations {
+      public function initBasicAllianceInformations(allianceId:uint = 0, allianceTag:String = "") : BasicAllianceInformations {
          this.allianceId = allianceId;
          this.allianceTag = allianceTag;
          return this;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.dialog
          return 5502;
       }
       
-      public function initLeaveDialogMessage(dialogType:uint=0) : LeaveDialogMessage {
+      public function initLeaveDialogMessage(dialogType:uint = 0) : LeaveDialogMessage {
          this.dialogType = dialogType;
          this._isInitialized = true;
          return this;

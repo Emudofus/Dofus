@@ -4,7 +4,6 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
    import flash.display.Shape;
    import flash.events.MouseEvent;
    import com.ankamagames.jerakine.utils.benchmark.monitoring.FpsManagerConst;
-   import __AS3__.vec.*;
    
    public class StateButton extends Sprite
    {

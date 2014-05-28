@@ -39,6 +39,8 @@ package com.ankamagames.dofus.logic.game.fight.steps
             case GameActionMarkTypeEnum.TRAP:
                evt = FightEventEnum.TRAP_DISAPPEARED;
                break;
+            default:
+               _log.warn("Unknown mark type (" + mi.markType + ").");
          }
          FightEventsHelper.sendFightEvent(evt,[mi.associatedSpell.id],0,castingSpellId);
          MarkedCellsManager.getInstance().removeMark(this._markId);

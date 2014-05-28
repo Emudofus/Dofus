@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6447;
       }
       
-      public function initAllianceModificationEmblemValidMessage(Alliancemblem:GuildEmblem=null) : AllianceModificationEmblemValidMessage {
+      public function initAllianceModificationEmblemValidMessage(Alliancemblem:GuildEmblem = null) : AllianceModificationEmblemValidMessage {
          this.Alliancemblem = Alliancemblem;
          this._isInitialized = true;
          return this;

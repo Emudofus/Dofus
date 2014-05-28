@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 5656;
       }
       
-      public function initJobLevelUpMessage(newLevel:uint=0, jobsDescription:JobDescription=null) : JobLevelUpMessage {
+      public function initJobLevelUpMessage(newLevel:uint = 0, jobsDescription:JobDescription = null) : JobLevelUpMessage {
          this.newLevel = newLevel;
          this.jobsDescription = jobsDescription;
          this._isInitialized = true;

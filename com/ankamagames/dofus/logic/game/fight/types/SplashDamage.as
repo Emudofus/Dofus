@@ -1,7 +1,5 @@
 package com.ankamagames.dofus.logic.game.fight.types
 {
-   import __AS3__.vec.Vector;
-   
    public class SplashDamage extends Object
    {
       
@@ -18,7 +16,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          this._spellShapeEfficiencyPercent = pSpellShapeEfficiencyPercent;
          this._spellShapeMaxEfficiency = pSpellShapeMaxEfficiency;
          this._hasCritical = pHasCritical;
-         for each (ed in this._damage.effectDamages)
+         for each(ed in this._damage.effectDamages)
          {
             ed.applyDamageMultiplier(pSplashPercent / 100);
             if((!(pSplashElement == -1)) && (!(ed.element == -1)))

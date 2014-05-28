@@ -7,7 +7,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-   import __AS3__.vec.*;
    
    public class ExchangeStartedBidSellerMessage extends NetworkMessage implements INetworkMessage
    {
@@ -34,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5905;
       }
       
-      public function initExchangeStartedBidSellerMessage(sellerDescriptor:SellerBuyerDescriptor=null, objectsInfos:Vector.<ObjectItemToSellInBid>=null) : ExchangeStartedBidSellerMessage {
+      public function initExchangeStartedBidSellerMessage(sellerDescriptor:SellerBuyerDescriptor = null, objectsInfos:Vector.<ObjectItemToSellInBid> = null) : ExchangeStartedBidSellerMessage {
          this.sellerDescriptor = sellerDescriptor;
          this.objectsInfos = objectsInfos;
          this._isInitialized = true;

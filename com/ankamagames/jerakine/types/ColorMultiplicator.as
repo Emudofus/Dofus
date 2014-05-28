@@ -5,7 +5,7 @@ package com.ankamagames.jerakine.types
    public class ColorMultiplicator extends Object
    {
       
-      public function ColorMultiplicator(redComponent:int, greenComponent:int, blueComponent:int, forceCalculation:Boolean=false) {
+      public function ColorMultiplicator(redComponent:int, greenComponent:int, blueComponent:int, forceCalculation:Boolean = false) {
          super();
          MEMORY_LOG[this] = 1;
          this.red = redComponent;
@@ -17,7 +17,7 @@ package com.ankamagames.jerakine.types
          }
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
       public static function clamp(value:Number, min:Number, max:Number) : Number {
          if(value > max)

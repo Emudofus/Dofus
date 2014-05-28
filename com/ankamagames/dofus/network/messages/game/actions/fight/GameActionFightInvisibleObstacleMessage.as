@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 5820;
       }
       
-      public function initGameActionFightInvisibleObstacleMessage(actionId:uint=0, sourceId:int=0, sourceSpellId:uint=0) : GameActionFightInvisibleObstacleMessage {
+      public function initGameActionFightInvisibleObstacleMessage(actionId:uint = 0, sourceId:int = 0, sourceSpellId:uint = 0) : GameActionFightInvisibleObstacleMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.sourceSpellId = sourceSpellId;
          this._isInitialized = true;

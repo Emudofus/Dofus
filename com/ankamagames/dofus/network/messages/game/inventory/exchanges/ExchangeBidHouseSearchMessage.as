@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5806;
       }
       
-      public function initExchangeBidHouseSearchMessage(type:uint=0, genId:uint=0) : ExchangeBidHouseSearchMessage {
+      public function initExchangeBidHouseSearchMessage(type:uint = 0, genId:uint = 0) : ExchangeBidHouseSearchMessage {
          this.type = type;
          this.genId = genId;
          this._isInitialized = true;

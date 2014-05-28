@@ -6,7 +6,7 @@ package com.ankamagames.tiphon.events
    public class TiphonEvent extends Event implements ITiphonEvent
    {
       
-      public function TiphonEvent(pType:String, pSprite:*, pParams:Object=null) {
+      public function TiphonEvent(pType:String, pSprite:*, pParams:Object = null) {
          super(pType,false,false);
          this._sprite = pSprite;
          this._params = pParams;

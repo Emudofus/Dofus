@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6132;
       }
       
-      public function initGameActionFightNoSpellCastMessage(spellLevelId:uint=0) : GameActionFightNoSpellCastMessage {
+      public function initGameActionFightNoSpellCastMessage(spellLevelId:uint = 0) : GameActionFightNoSpellCastMessage {
          this.spellLevelId = spellLevelId;
          this._isInitialized = true;
          return this;

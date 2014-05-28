@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.guild
          return 87;
       }
       
-      public function initGuildEmblem(symbolShape:int=0, symbolColor:int=0, backgroundShape:int=0, backgroundColor:int=0) : GuildEmblem {
+      public function initGuildEmblem(symbolShape:int = 0, symbolColor:int = 0, backgroundShape:int = 0, backgroundColor:int = 0) : GuildEmblem {
          this.symbolShape = symbolShape;
          this.symbolColor = symbolColor;
          this.backgroundShape = backgroundShape;

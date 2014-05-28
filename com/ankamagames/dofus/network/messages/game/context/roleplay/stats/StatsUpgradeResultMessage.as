@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.stats
          return 5609;
       }
       
-      public function initStatsUpgradeResultMessage(nbCharacBoost:uint=0) : StatsUpgradeResultMessage {
+      public function initStatsUpgradeResultMessage(nbCharacBoost:uint = 0) : StatsUpgradeResultMessage {
          this.nbCharacBoost = nbCharacBoost;
          this._isInitialized = true;
          return this;

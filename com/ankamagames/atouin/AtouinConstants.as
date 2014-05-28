@@ -43,17 +43,17 @@ package com.ankamagames.atouin
       
       public static const GROUND_MAP_VERSION:int = 1;
       
-      public static const MIN_DISK_SPACE_AVAILABLE:Number = Math.pow(2,20) * 512;
+      public static const MIN_DISK_SPACE_AVAILABLE:Number;
       
       public static const PATHFINDER_MIN_X:int = 0;
       
-      public static const PATHFINDER_MAX_X:int = 33 + 1;
+      public static const PATHFINDER_MAX_X:int = 34.0;
       
       public static const PATHFINDER_MIN_Y:int = -19;
       
-      public static const PATHFINDER_MAX_Y:int = 13 + 1;
+      public static const PATHFINDER_MAX_Y:int = 14.0;
       
-      public static const VIEW_DETECT_CELL_WIDTH:int = 2 * CELL_WIDTH;
+      public static const VIEW_DETECT_CELL_WIDTH:int = 172.0;
       
       public static const MIN_MAP_X:int = -255;
       
@@ -63,10 +63,10 @@ package com.ankamagames.atouin
       
       public static const MAX_MAP_Y:int = 255;
       
-      public static const RESOLUTION_HIGH_QUALITY:Point = new Point(1276,876);
+      public static const RESOLUTION_HIGH_QUALITY:Point;
       
-      public static const RESOLUTION_MEDIUM_QUALITY:Point = new Point(957,657);
+      public static const RESOLUTION_MEDIUM_QUALITY:Point;
       
-      public static const RESOLUTION_LOW_QUALITY:Point = new Point(638,438);
+      public static const RESOLUTION_LOW_QUALITY:Point;
    }
 }

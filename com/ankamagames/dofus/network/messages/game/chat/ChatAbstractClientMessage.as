@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 850;
       }
       
-      public function initChatAbstractClientMessage(content:String="") : ChatAbstractClientMessage {
+      public function initChatAbstractClientMessage(content:String = "") : ChatAbstractClientMessage {
          this.content = content;
          this._isInitialized = true;
          return this;

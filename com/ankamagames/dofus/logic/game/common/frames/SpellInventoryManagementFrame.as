@@ -25,7 +25,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
    import com.ankamagames.dofus.misc.lists.InventoryHookList;
    import com.ankamagames.dofus.network.enums.ShortcutBarEnum;
-   import __AS3__.vec.*;
    
    public class SpellInventoryManagementFrame extends Object implements Frame
    {
@@ -36,7 +35,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpellInventoryManagementFrame));
+      protected static const _log:Logger;
       
       private var _fullSpellList:Array;
       
@@ -80,7 +79,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                playerId = PlayedCharacterManager.getInstance().id;
                this._fullSpellList[playerId] = new Array();
                idsList = new Array();
-               for each (spell in slmsg.spells)
+               for each(spell in slmsg.spells)
                {
                   this._fullSpellList[playerId].push(SpellWrapper.create(spell.position,spell.spellId,spell.spellLevel,true,PlayedCharacterManager.getInstance().id));
                   idsList.push(spell.spellId);
@@ -88,7 +87,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                if(slmsg.spellPrevisualization)
                {
                   playerBreed = Breed.getBreedById(PlayedCharacterManager.getInstance().infos.breed);
-                  for each (swBreed in playerBreed.breedSpells)
+                  for each(swBreed in playerBreed.breedSpells)
                   {
                      if(idsList.indexOf(swBreed.id) == -1)
                      {
@@ -104,7 +103,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                sscmsg = msg as SlaveSwitchContextMessage;
                slaveId = sscmsg.slaveId;
                this._fullSpellList[slaveId] = new Array();
-               for each (spellInvoc in sscmsg.slaveSpells)
+               for each(spellInvoc in sscmsg.slaveSpells)
                {
                   this._fullSpellList[slaveId].push(SpellWrapper.create(spellInvoc.position,spellInvoc.spellId,spellInvoc.spellLevel,true,slaveId));
                }
@@ -117,12 +116,12 @@ package com.ankamagames.dofus.logic.game.common.frames
                sgcds = this._spellsGlobalCooldowns[slaveId];
                if(sgcds)
                {
-                  for each (gfsc in sgcds)
+                  for each(gfsc in sgcds)
                   {
                      spellCastManager = CurrentPlayedFighterManager.getInstance().getSpellCastManagerById(slaveId);
                      gcdvalue = gfsc.cooldown;
                      spellKnown = false;
-                     for each (sw in this._fullSpellList[slaveId])
+                     for each(sw in this._fullSpellList[slaveId])
                      {
                         if(sw.spellId == gfsc.spellId)
                         {
@@ -146,12 +145,14 @@ package com.ankamagames.dofus.logic.game.common.frames
                      }
                   }
                   sgcds.length = 0;
-                  delete this._spellsGlobalCooldowns[[slaveId]];
+                  delete this._spellsGlobalCooldowns[slaveId];
                }
                KernelEventsManager.getInstance().processCallback(HookList.SpellList,this._fullSpellList[slaveId]);
                imf = Kernel.getWorker().getFrame(InventoryManagementFrame) as InventoryManagementFrame;
                InventoryManager.getInstance().shortcutBarSpells = imf.getWrappersFromShortcuts(sscmsg.shortcuts);
                KernelEventsManager.getInstance().processCallback(InventoryHookList.ShortcutBarViewContent,ShortcutBarEnum.SPELL_SHORTCUT_BAR);
+               return false;
+            default:
                return false;
          }
       }
@@ -174,10 +175,10 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       public function deleteSpellsGlobalCoolDownsData() : void {
          var id:* = undefined;
-         for (id in this._spellsGlobalCooldowns)
+         for(id in this._spellsGlobalCooldowns)
          {
             this._spellsGlobalCooldowns[id].length = 0;
-            delete this._spellsGlobalCooldowns[[id]];
+            delete this._spellsGlobalCooldowns[id];
          }
       }
    }

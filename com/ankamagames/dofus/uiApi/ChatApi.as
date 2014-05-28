@@ -8,7 +8,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.datacenter.communication.ChatChannel;
    import com.ankamagames.dofus.internalDatacenter.communication.BasicChatSentence;
    import com.ankamagames.dofus.internalDatacenter.communication.ChatSentenceWithSource;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.internalDatacenter.communication.ChatSentenceWithRecipient;
    import com.ankamagames.dofus.internalDatacenter.communication.ChatInformationSentence;
@@ -49,7 +48,7 @@ package com.ankamagames.dofus.uiApi
          var chan:* = undefined;
          var disallowed:Array = this.chatFrame.disallowedChannels;
          var list:Array = new Array();
-         for each (chan in ChatChannel.getChannels())
+         for each(chan in ChatChannel.getChannels())
          {
             if(disallowed.indexOf(chan.id) == -1)
             {
@@ -101,17 +100,17 @@ package com.ankamagames.dofus.uiApi
          return this.chatFrame.maxMessagesStored;
       }
       
-      public function newBasicChatSentence(id:uint, msg:String, channel:uint=0, time:Number=0, finger:String="") : BasicChatSentence {
+      public function newBasicChatSentence(id:uint, msg:String, channel:uint = 0, time:Number = 0, finger:String = "") : BasicChatSentence {
          var bsc:BasicChatSentence = new BasicChatSentence(id,msg,msg,channel,time,finger);
          return bsc;
       }
       
-      public function newChatSentenceWithSource(id:uint, msg:String, channel:uint=0, time:Number=0, finger:String="", senderId:uint=0, senderName:String="", objects:Vector.<ItemWrapper>=null) : ChatSentenceWithSource {
+      public function newChatSentenceWithSource(id:uint, msg:String, channel:uint = 0, time:Number = 0, finger:String = "", senderId:uint = 0, senderName:String = "", objects:Vector.<ItemWrapper> = null) : ChatSentenceWithSource {
          var csws:ChatSentenceWithSource = new ChatSentenceWithSource(id,msg,msg,channel,time,finger,senderId,senderName,objects);
          return csws;
       }
       
-      public function newChatSentenceWithRecipient(id:uint, msg:String, channel:uint=0, time:Number=0, finger:String="", senderId:uint=0, senderName:String="", receiverName:String="", receiverId:uint=0, objects:Vector.<ItemWrapper>=null) : ChatSentenceWithRecipient {
+      public function newChatSentenceWithRecipient(id:uint, msg:String, channel:uint = 0, time:Number = 0, finger:String = "", senderId:uint = 0, senderName:String = "", receiverName:String = "", receiverId:uint = 0, objects:Vector.<ItemWrapper> = null) : ChatSentenceWithRecipient {
          var cswr:ChatSentenceWithRecipient = new ChatSentenceWithRecipient(id,msg,msg,channel,time,finger,senderId,senderName,receiverName,receiverId,objects);
          return cswr;
       }
@@ -135,7 +134,7 @@ package com.ankamagames.dofus.uiApi
       public function searchChannel(chan:String) : int {
          var i:* = undefined;
          var channels:Array = ChatChannel.getChannels();
-         for (i in channels)
+         for(i in channels)
          {
             if(chan == channels[i].shortcut)
             {

@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.achievement
          return 412;
       }
       
-      public function initAchievementRewardable(id:uint=0, finishedlevel:uint=0) : AchievementRewardable {
+      public function initAchievementRewardable(id:uint = 0, finishedlevel:uint = 0) : AchievementRewardable {
          this.id = id;
          this.finishedlevel = finishedlevel;
          return this;

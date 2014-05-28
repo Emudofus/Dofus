@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5907;
       }
       
-      public function initExchangeShopStockMovementRemovedMessage(objectId:uint=0) : ExchangeShopStockMovementRemovedMessage {
+      public function initExchangeShopStockMovementRemovedMessage(objectId:uint = 0) : ExchangeShopStockMovementRemovedMessage {
          this.objectId = objectId;
          this._isInitialized = true;
          return this;

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 5821;
       }
       
-      public function initGameActionFightInvisibilityMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, state:int=0) : GameActionFightInvisibilityMessage {
+      public function initGameActionFightInvisibilityMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, state:int = 0) : GameActionFightInvisibilityMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this.state = state;

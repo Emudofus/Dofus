@@ -14,9 +14,9 @@ package com.ankamagames.tiphon.types
       
       public static var enableLiveReference:Boolean = false;
       
-      public static var liveReference:Dictionary = new Dictionary(false);
+      public static var liveReference:Dictionary;
       
-      private static const _handlerRef:Dictionary = new Dictionary(true);
+      private static const _handlerRef:Dictionary;
       
       public function updateTransform() : void {
          if(_handlerRef[this])

@@ -20,7 +20,7 @@ package com.ankamagames.dofus.misc.utils
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CustomLoadingScreen));
+      protected static const _log:Logger;
       
       public static function recover(dataStore:DataStoreType, name:String) : CustomLoadingScreen {
          var storedCustomLoadingScreen:CustomLoadingScreen = StoreDataManager.getInstance().getData(dataStore,"loading_" + name) as CustomLoadingScreen;
@@ -123,7 +123,7 @@ package com.ankamagames.dofus.misc.utils
          }
       }
       
-      public function store(storeAsCurrent:Boolean=false) : void {
+      public function store(storeAsCurrent:Boolean = false) : void {
          if(this.dataStore)
          {
             StoreDataManager.getInstance().setData(this.dataStore,"loading_" + this.name,this);

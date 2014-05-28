@@ -39,7 +39,7 @@ package com.ankamagames.jerakine.types
          {
             metaData.clearAllFile = false;
          }
-         for each (file in xml..filesVersions..file)
+         for each(file in xml..filesVersions..file)
          {
             bHaveVersionData = true;
             if((metaData.clearAllFile) || (!metaData.clearOnlyNotUpToDate) || (!checkFunction(FileUtils.getFileStartName(sUrlProvider) + "." + file..@name,file.toString())))

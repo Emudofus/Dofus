@@ -11,7 +11,7 @@ package com.ankamagames.atouin.data
    public class DefaultMap extends Map
    {
       
-      public function DefaultMap(id:uint=0) {
+      public function DefaultMap(id:uint = 0) {
          var l:* = 0;
          var cd:CellData = null;
          super();
@@ -33,7 +33,7 @@ package com.ankamagames.atouin.data
          }
       }
       
-      override public function fromRaw(raw:IDataInput, decryptionKey:ByteArray=null) : void {
+      override public function fromRaw(raw:IDataInput, decryptionKey:ByteArray = null) : void {
       }
       
       private function createLayer(id:uint) : Layer {

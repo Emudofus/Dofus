@@ -35,7 +35,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5635;
       }
       
-      public function initTaxCollectorAttackedResultMessage(deadOrAlive:Boolean=false, basicInfos:TaxCollectorBasicInformations=null, guild:BasicGuildInformations=null) : TaxCollectorAttackedResultMessage {
+      public function initTaxCollectorAttackedResultMessage(deadOrAlive:Boolean = false, basicInfos:TaxCollectorBasicInformations = null, guild:BasicGuildInformations = null) : TaxCollectorAttackedResultMessage {
          this.deadOrAlive = deadOrAlive;
          this.basicInfos = basicInfos;
          this.guild = guild;

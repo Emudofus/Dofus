@@ -38,6 +38,8 @@ package com.ankamagames.dofus.kernel.sound.utils
                return TubulSoundConfiguration.BUS_GFX_ID;
             case TubulSoundConfiguration.ID_SOUND_FIGHT_MUSIC:
                return TubulSoundConfiguration.BUS_FIGHT_MUSIC_ID;
+            default:
+               return TubulSoundConfiguration.BUS_UI_ID;
          }
       }
       
@@ -63,6 +65,8 @@ package com.ankamagames.dofus.kernel.sound.utils
                return LangManager.getInstance().getEntry("config.audio.barks");
             case TubulSoundConfiguration.BUS_GFX_ID:
                return LangManager.getInstance().getEntry("config.audio.gfx");
+            default:
+               throw new Error("The Bus Id seems not matching to any sound folder");
          }
       }
    }

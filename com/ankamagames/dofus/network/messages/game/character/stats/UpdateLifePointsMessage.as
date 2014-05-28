@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.character.stats
          return 5658;
       }
       
-      public function initUpdateLifePointsMessage(lifePoints:uint=0, maxLifePoints:uint=0) : UpdateLifePointsMessage {
+      public function initUpdateLifePointsMessage(lifePoints:uint = 0, maxLifePoints:uint = 0) : UpdateLifePointsMessage {
          this.lifePoints = lifePoints;
          this.maxLifePoints = maxLifePoints;
          this._isInitialized = true;

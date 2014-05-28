@@ -36,7 +36,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6129;
       }
       
-      public function initExchangeStartedWithPodsMessage(exchangeType:int=0, firstCharacterId:int=0, firstCharacterCurrentWeight:uint=0, firstCharacterMaxWeight:uint=0, secondCharacterId:int=0, secondCharacterCurrentWeight:uint=0, secondCharacterMaxWeight:uint=0) : ExchangeStartedWithPodsMessage {
+      public function initExchangeStartedWithPodsMessage(exchangeType:int = 0, firstCharacterId:int = 0, firstCharacterCurrentWeight:uint = 0, firstCharacterMaxWeight:uint = 0, secondCharacterId:int = 0, secondCharacterCurrentWeight:uint = 0, secondCharacterMaxWeight:uint = 0) : ExchangeStartedWithPodsMessage {
          super.initExchangeStartedMessage(exchangeType);
          this.firstCharacterId = firstCharacterId;
          this.firstCharacterCurrentWeight = firstCharacterCurrentWeight;

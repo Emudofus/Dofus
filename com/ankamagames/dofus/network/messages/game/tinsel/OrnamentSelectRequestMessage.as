@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.tinsel
          return 6374;
       }
       
-      public function initOrnamentSelectRequestMessage(ornamentId:uint=0) : OrnamentSelectRequestMessage {
+      public function initOrnamentSelectRequestMessage(ornamentId:uint = 0) : OrnamentSelectRequestMessage {
          this.ornamentId = ornamentId;
          this._isInitialized = true;
          return this;

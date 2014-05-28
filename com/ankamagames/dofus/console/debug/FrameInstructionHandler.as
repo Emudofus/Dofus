@@ -25,7 +25,7 @@ package com.ankamagames.dofus.console.debug
          {
             case "framelist":
                fl = [];
-               for each (f in Kernel.getWorker().framesList)
+               for each(f in Kernel.getWorker().framesList)
                {
                   className = getQualifiedClassName(f);
                   split = className.split("::");
@@ -45,7 +45,7 @@ package com.ankamagames.dofus.console.debug
                   console.output(args[1] + " : invalid priority (available priority are LOG, ULTIMATE_HIGHEST_DEPTH_OF_DOOM, HIGHEST, HIGH, NORMAL, LOW and LOWEST");
                   return;
                }
-               for each (f in Kernel.getWorker().framesList)
+               for each(f in Kernel.getWorker().framesList)
                {
                   className = getQualifiedClassName(f);
                   split = className.split("::");
@@ -74,10 +74,12 @@ package com.ankamagames.dofus.console.debug
                return "list all enabled frame";
             case "framepriority":
                return "overwrite a frame priority";
+            default:
+               return "Unknown command \'" + cmd + "\'.";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

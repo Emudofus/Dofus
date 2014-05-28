@@ -36,7 +36,7 @@ package com.ankamagames.dofus.network.messages.common
          return 2;
       }
       
-      public function initNetworkDataContainerMessage(content:ByteArray=null) : NetworkDataContainerMessage {
+      public function initNetworkDataContainerMessage(content:ByteArray = null) : NetworkDataContainerMessage {
          this.content = content;
          this._isInitialized = true;
          return this;

@@ -5,7 +5,7 @@ package com.ankamagames.berilia.types.data
    public class Hook extends Object
    {
       
-      public function Hook(name:String, trusted:Boolean, nativeHook:Boolean=true) {
+      public function Hook(name:String, trusted:Boolean, nativeHook:Boolean = true) {
          super();
          if(!_hookNameList)
          {
@@ -18,7 +18,7 @@ package com.ankamagames.berilia.types.data
       
       private static var _hookNameList:Array;
       
-      public static function create(name:String, trusted:Boolean, nativeHook:Boolean=true) : Hook {
+      public static function create(name:String, trusted:Boolean, nativeHook:Boolean = true) : Hook {
          var h:Hook = _hookNameList[name];
          if(h)
          {

@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5582;
       }
       
-      public function initPartyRefuseInvitationMessage(partyId:uint=0) : PartyRefuseInvitationMessage {
+      public function initPartyRefuseInvitationMessage(partyId:uint = 0) : PartyRefuseInvitationMessage {
          super.initAbstractPartyMessage(partyId);
          this._isInitialized = true;
          return this;

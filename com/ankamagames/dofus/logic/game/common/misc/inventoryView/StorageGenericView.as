@@ -7,7 +7,6 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.logic.game.common.misc.HookLock;
    import flash.utils.Dictionary;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.items.Item;
    import com.ankamagames.dofus.logic.game.common.misc.Inventory;
    import com.ankamagames.dofus.logic.game.common.managers.StorageOptionManager;
@@ -24,7 +23,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          this._hookLock = hookLock;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StorageView));
+      protected static const _log:Logger;
       
       protected var _content:Vector.<ItemWrapper>;
       
@@ -55,7 +54,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          this._typesQty = new Dictionary();
          this._types = new Dictionary();
          this._sortedContent = null;
-         for each (item in items)
+         for each(item in items)
          {
             if(this.isListening(item))
             {
@@ -113,7 +112,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
             this._typesQty[item.typeId]--;
             if(this._typesQty[item.typeId] == 0)
             {
-               delete this._types[[item.typeId]];
+               delete this._types[item.typeId];
             }
          }
          this._content.splice(idx,1);
@@ -139,26 +138,22 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
                iw.update(item.position,item.objectUID,item.objectGID,iw.quantity,item.effectsList);
                this.updateView();
             }
+            else if(item.quantity <= invisible)
+            {
+               this.removeItem(iw,invisible);
+            }
             else
             {
-               if(item.quantity <= invisible)
-               {
-                  this.removeItem(iw,invisible);
-               }
-               else
-               {
-                  iw.update(item.position,item.objectUID,item.objectGID,item.quantity - invisible,item.effectsList);
-                  this.updateView();
-               }
+               iw.update(item.position,item.objectUID,item.objectGID,item.quantity - invisible,item.effectsList);
+               this.updateView();
             }
+            
          }
-         else
+         else if(invisible < item.quantity)
          {
-            if(invisible < item.quantity)
-            {
-               this.addItem(item,invisible);
-            }
+            this.addItem(item,invisible);
          }
+         
       }
       
       public function isListening(item:ItemWrapper) : Boolean {
@@ -169,7 +164,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          return this._types;
       }
       
-      protected function getItemIndex(item:ItemWrapper, list:Vector.<ItemWrapper>=null) : int {
+      protected function getItemIndex(item:ItemWrapper, list:Vector.<ItemWrapper> = null) : int {
          var iw:ItemWrapper = null;
          if(list == null)
          {
@@ -200,7 +195,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          return 1;
       }
       
-      private function compareFunction(a:ItemWrapper, b:ItemWrapper, sortDepth:uint=0) : int {
+      private function compareFunction(a:ItemWrapper, b:ItemWrapper, sortDepth:uint = 0) : int {
          var returnValue:* = 0;
          switch(this._sortFieldsCache[sortDepth])
          {
@@ -294,6 +289,8 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
                   returnValue = a.type.name < b.type.name?1:a.type.name > b.type.name?-1:0;
                }
                break;
+            default:
+               returnValue = 0;
          }
          if(returnValue != 0)
          {
@@ -341,17 +338,15 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
             {
                this._sortRevertCache = this.sortRevert();
             }
-            else
+            else if(StorageOptionManager.getInstance().newSort)
             {
-               if(StorageOptionManager.getInstance().newSort)
-               {
-                  this._sortRevertCache = !this._sortRevertCache;
-               }
+               this._sortRevertCache = !this._sortRevertCache;
             }
+            
             if(!this._sortedContent)
             {
                this._sortedContent = new Vector.<ItemWrapper>();
-               for each (iw in this._content)
+               for each(iw in this._content)
                {
                   this._sortedContent.push(iw);
                }

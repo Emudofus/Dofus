@@ -9,8 +9,6 @@ package com.ankamagames.dofus.internalDatacenter.jobs
    import com.ankamagames.dofus.datacenter.jobs.Job;
    import flash.utils.flash_proxy;
    
-   use namespace flash_proxy;
-   
    public class JobWrapper extends Proxy implements IDataCenter, ISlotData
    {
       
@@ -18,9 +16,9 @@ package com.ankamagames.dofus.internalDatacenter.jobs
          super();
       }
       
-      private static var _cache:Array = new Array();
+      private static var _cache:Array;
       
-      public static function create(jobID:uint, useCache:Boolean=true) : JobWrapper {
+      public static function create(jobID:uint, useCache:Boolean = true) : JobWrapper {
          var job:JobWrapper = null;
          if((!_cache[jobID]) || (!useCache))
          {

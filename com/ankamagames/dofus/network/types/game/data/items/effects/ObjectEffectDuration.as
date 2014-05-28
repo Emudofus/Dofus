@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 75;
       }
       
-      public function initObjectEffectDuration(actionId:uint=0, days:uint=0, hours:uint=0, minutes:uint=0) : ObjectEffectDuration {
+      public function initObjectEffectDuration(actionId:uint = 0, days:uint = 0, hours:uint = 0, minutes:uint = 0) : ObjectEffectDuration {
          super.initObjectEffect(actionId);
          this.days = days;
          this.hours = hours;

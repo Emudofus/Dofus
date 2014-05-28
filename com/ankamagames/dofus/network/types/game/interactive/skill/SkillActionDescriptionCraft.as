@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.interactive.skill
          return 100;
       }
       
-      public function initSkillActionDescriptionCraft(skillId:uint=0, maxSlots:uint=0, probability:uint=0) : SkillActionDescriptionCraft {
+      public function initSkillActionDescriptionCraft(skillId:uint = 0, maxSlots:uint = 0, probability:uint = 0) : SkillActionDescriptionCraft {
          super.initSkillActionDescription(skillId);
          this.maxSlots = maxSlots;
          this.probability = probability;

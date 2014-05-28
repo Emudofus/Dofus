@@ -74,7 +74,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
       
       private var _last:uint;
       
-      public function display(pExternal:Boolean=false) : void {
+      public function display(pExternal:Boolean = false) : void {
          if(_instance == null)
          {
             throw new Error("FpsManager is not initialized");
@@ -177,7 +177,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
             {
                this.conn.send("app#DofusDebugger:DofusDebugConnection","updateValues",fpsValue,this._graphPanel.memory,FpsManagerUtils.getTimeFromNow(this._extensionPanel.lastGc));
                graphList = this._graphPanel.getExternalGraphs();
-               for each (o in graphList)
+               for each(o in graphList)
                {
                   if(this.conn == null)
                   {
@@ -216,7 +216,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
          this._graphPanel.memory = this._graphPanel.memory + " MB";
       }
       
-      public function startTracking(pIndice:String, pColor:uint=16777215) : void {
+      public function startTracking(pIndice:String, pColor:uint = 16777215) : void {
          this._graphPanel.startTracking(pIndice,pColor);
       }
       
@@ -224,7 +224,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
          this._graphPanel.stopTracking(pIndice);
       }
       
-      public function watchObject(o:Object, incrementParents:Boolean=false) : void {
+      public function watchObject(o:Object, incrementParents:Boolean = false) : void {
          this._extensionPanel.watchObject(o,FpsManagerUtils.getBrightRandomColor(),incrementParents);
       }
    }

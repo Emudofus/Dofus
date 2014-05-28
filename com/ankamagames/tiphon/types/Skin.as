@@ -28,11 +28,11 @@ package com.ankamagames.tiphon.types
          this._aSkinPartOrdered = new Array();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(Skin));
+      private static const _log:Logger;
       
       private static var _censoredSkin:Dictionary;
       
-      private static var _alternativeSkin:Dictionary = new Dictionary();
+      private static var _alternativeSkin:Dictionary;
       
       public static var skinPartTransformProvider:ISkinPartTransformProvider;
       
@@ -73,7 +73,7 @@ package com.ankamagames.tiphon.types
             return false;
          }
          var isComplete:Boolean = true;
-         for each (skinId in this._aSkinPartOrdered)
+         for each(skinId in this._aSkinPartOrdered)
          {
             isComplete = (isComplete) && ((Tiphon.skinLibrary.isLoaded(skinId)) || (Tiphon.skinLibrary.hasError(skinId)));
          }
@@ -100,7 +100,7 @@ package com.ankamagames.tiphon.types
          return this._partToSwl[clipName];
       }
       
-      public function add(gfxId:uint, alternativeSkinIndex:int=-1) : uint {
+      public function add(gfxId:uint, alternativeSkinIndex:int = -1) : uint {
          var oldSkinGfxId:int = -1;
          if(!_censoredSkin)
          {
@@ -213,69 +213,12 @@ package com.ankamagames.tiphon.types
       }
       
       private function processSkin() : void {
-         var gfxId:uint = 0;
-         var lib:Swl = null;
-         var classPart:Array = null;
-         var className:String = null;
-         var part:String = null;
-         var skinTransform:Dictionary = null;
-         var j:* = 0;
-         var td:TransformData = null;
-         var i:uint = 0;
-         while(i < this._aSkinPartOrdered.length)
-         {
-            gfxId = this._aSkinPartOrdered[i];
-            lib = Tiphon.skinLibrary.getResourceById(gfxId);
-            if(lib)
-            {
-               classPart = lib.getDefinitions();
-               for each (className in classPart)
-               {
-                  this._skinClass[className] = lib.getDefinition(className);
-                  this._partToSwl[className] = gfxId;
-                  delete this._skinParts[[className]];
-               }
-            }
-            i++;
-         }
-         if(this.complete)
-         {
-            this._partTransformData = new Dictionary();
-            this._transformData = new Dictionary();
-            if(skinPartTransformProvider)
-            {
-               skinPartTransformProvider.init(this);
-               loop2:
-               for (part in this._skinClass)
-               {
-                  if(this._partTransformData[part])
-                  {
-                     skinTransform = this._partTransformData[part];
-                     j = this._aSkinPartOrdered.length - 1;
-                     while(j >= -1)
-                     {
-                        gfxId = j >= 0?this._aSkinPartOrdered[j]:0;
-                        if(skinTransform[gfxId])
-                        {
-                           td = skinTransform[gfxId];
-                           this._transformData[part] = td;
-                           if(td.overrideClip)
-                           {
-                              this._transformData[td.overrideClip] = td;
-                           }
-                           continue loop2;
-                        }
-                        j--;
-                     }
-                  }
-               }
-            }
-            dispatchEvent(new Event(Event.COMPLETE));
-         }
-         else
-         {
-            dispatchEvent(new Event(ProgressEvent.PROGRESS));
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
    }
 }

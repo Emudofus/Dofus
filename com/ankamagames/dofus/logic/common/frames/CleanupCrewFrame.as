@@ -72,7 +72,7 @@ package com.ankamagames.dofus.logic.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CleanupCrewFrame));
+      protected static const _log:Logger;
       
       public function get priority() : int {
          return Priority.LOWEST;
@@ -143,6 +143,9 @@ package com.ankamagames.dofus.logic.common.frames
             case msg is PlaySoundAction:
             case msg is ShowMonstersInfoAction:
             case msg is SlaveSwitchContextMessage:
+               return true;
+            default:
+               _log.warn("[Warning] " + (getQualifiedClassName(msg) as String).split("::")[1] + " wasn\'t stopped by a frame.");
                return true;
          }
       }

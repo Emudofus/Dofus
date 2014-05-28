@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.context
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -23,7 +22,7 @@ package com.ankamagames.dofus.network.types.game.context
          return 63;
       }
       
-      public function initEntityMovementInformations(id:int=0, steps:Vector.<int>=null) : EntityMovementInformations {
+      public function initEntityMovementInformations(id:int = 0, steps:Vector.<int> = null) : EntityMovementInformations {
          this.id = id;
          this.steps = steps;
          return this;

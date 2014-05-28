@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.social
          return 432;
       }
       
-      public function initAllianceVersatileInformations(allianceId:uint=0, nbGuilds:uint=0, nbMembers:uint=0, nbSubarea:uint=0) : AllianceVersatileInformations {
+      public function initAllianceVersatileInformations(allianceId:uint = 0, nbGuilds:uint = 0, nbMembers:uint = 0, nbSubarea:uint = 0) : AllianceVersatileInformations {
          this.allianceId = allianceId;
          this.nbGuilds = nbGuilds;
          this.nbMembers = nbMembers;

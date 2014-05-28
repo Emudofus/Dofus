@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.notification
          return 6090;
       }
       
-      public function initNotificationUpdateFlagMessage(index:uint=0) : NotificationUpdateFlagMessage {
+      public function initNotificationUpdateFlagMessage(index:uint = 0) : NotificationUpdateFlagMessage {
          this.index = index;
          this._isInitialized = true;
          return this;

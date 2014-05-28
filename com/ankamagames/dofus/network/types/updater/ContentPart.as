@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.updater
          return 350;
       }
       
-      public function initContentPart(id:String="", state:uint=0) : ContentPart {
+      public function initContentPart(id:String = "", state:uint = 0) : ContentPart {
          this.id = id;
          this.state = state;
          return this;

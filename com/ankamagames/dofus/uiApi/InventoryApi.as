@@ -5,7 +5,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.berilia.types.data.UiModule;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.enums.CharacterInventoryPositionEnum;
    import com.ankamagames.jerakine.types.Uri;
    import com.ankamagames.dofus.internalDatacenter.items.MountWrapper;
@@ -39,12 +38,12 @@ package com.ankamagames.dofus.uiApi
          this._module = null;
       }
       
-      public function getStorageObjectGID(pObjectGID:uint, quantity:uint=1) : Object {
+      public function getStorageObjectGID(pObjectGID:uint, quantity:uint = 1) : Object {
          var iw:ItemWrapper = null;
          var returnItems:Array = new Array();
          var numberReturn:uint = 0;
          var inventory:Vector.<ItemWrapper> = InventoryManager.getInstance().realInventory;
-         for each (iw in inventory)
+         for each(iw in inventory)
          {
             if(!((!(iw.objectGID == pObjectGID)) || (iw.position < 63) || (iw.linked)))
             {
@@ -73,7 +72,7 @@ package com.ankamagames.dofus.uiApi
          var iw:ItemWrapper = null;
          var returnItems:Array = new Array();
          var inventory:Vector.<ItemWrapper> = InventoryManager.getInstance().realInventory;
-         for each (iw in inventory)
+         for each(iw in inventory)
          {
             if(!((!(iw.typeId == objectType)) || (iw.position < 63)))
             {
@@ -83,11 +82,11 @@ package com.ankamagames.dofus.uiApi
          return returnItems;
       }
       
-      public function getItemQty(pObjectGID:uint, pObjectUID:uint=0) : uint {
+      public function getItemQty(pObjectGID:uint, pObjectUID:uint = 0) : uint {
          var item:ItemWrapper = null;
          var quantity:uint = 0;
          var inventory:Vector.<ItemWrapper> = InventoryManager.getInstance().realInventory;
-         for each (item in inventory)
+         for each(item in inventory)
          {
             if(!((item.position < 63) || (!(item.objectGID == pObjectGID)) || (pObjectUID > 0) && (!(item.objectUID == pObjectUID))))
             {
@@ -126,22 +125,13 @@ package com.ankamagames.dofus.uiApi
          while(i < 16)
          {
             objExists = false;
-            for each (item in equipmentList)
+            for each(item in equipmentList)
             {
                if(item)
                {
                   if(item.position == i)
                   {
                      equipmentPreset[i] = item;
-                     objExists = true;
-                  }
-               }
-               else
-               {
-                  if((i == 8) && (PlayedCharacterManager.getInstance().isRidding))
-                  {
-                     mountFakeItemWrapper = MountWrapper.create();
-                     equipmentPreset[i] = mountFakeItemWrapper;
                      objExists = true;
                   }
                }
@@ -158,6 +148,8 @@ package com.ankamagames.dofus.uiApi
                   case 14:
                      emptyUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotDofus");
                      break;
+                  default:
+                     emptyUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotItem" + i);
                }
                equipmentPreset[i] = SimpleTextureWrapper.create(emptyUri);
             }
@@ -178,6 +170,8 @@ package com.ankamagames.dofus.uiApi
             case 14:
                emptyUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotDofus");
                break;
+            default:
+               emptyUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotItem" + index);
          }
          return SimpleTextureWrapper.create(emptyUri);
       }

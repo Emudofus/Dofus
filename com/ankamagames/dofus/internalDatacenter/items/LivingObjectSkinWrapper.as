@@ -17,7 +17,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(LivingObjectSkinWrapper));
+      private static const _log:Logger;
       
       public static function create(objectId:int, mood:int, skin:int) : LivingObjectSkinWrapper {
          var skinWrapper:LivingObjectSkinWrapper = new LivingObjectSkinWrapper();
@@ -87,7 +87,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          this._backGroundIconUri = bgUri;
       }
       
-      public function getIconUri(pngMode:Boolean=true) : Uri {
+      public function getIconUri(pngMode:Boolean = true) : Uri {
          var iconId:* = 0;
          var update:Boolean = false;
          if(this._uri)

@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 408;
       }
       
-      public function initHumanOptionTitle(titleId:uint=0, titleParam:String="") : HumanOptionTitle {
+      public function initHumanOptionTitle(titleId:uint = 0, titleParam:String = "") : HumanOptionTitle {
          this.titleId = titleId;
          this.titleParam = titleParam;
          return this;

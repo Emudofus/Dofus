@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.actions.fight
          return 85;
       }
       
-      public function initGameActionMarkedCell(cellId:uint=0, zoneSize:int=0, cellColor:int=0, cellsType:int=0) : GameActionMarkedCell {
+      public function initGameActionMarkedCell(cellId:uint = 0, zoneSize:int = 0, cellColor:int = 0, cellsType:int = 0) : GameActionMarkedCell {
          this.cellId = cellId;
          this.zoneSize = zoneSize;
          this.cellColor = cellColor;

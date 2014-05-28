@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 180;
       }
       
-      public function initGameRolePlayMountInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, name:String="", ownerName:String="", level:uint=0) : GameRolePlayMountInformations {
+      public function initGameRolePlayMountInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, name:String = "", ownerName:String = "", level:uint = 0) : GameRolePlayMountInformations {
          super.initGameRolePlayNamedActorInformations(contextualId,look,disposition,name);
          this.ownerName = ownerName;
          this.level = level;

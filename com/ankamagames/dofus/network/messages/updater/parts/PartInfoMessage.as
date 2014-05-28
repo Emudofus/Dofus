@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.updater.parts
          return 1508;
       }
       
-      public function initPartInfoMessage(part:ContentPart=null, installationPercent:Number=0) : PartInfoMessage {
+      public function initPartInfoMessage(part:ContentPart = null, installationPercent:Number = 0) : PartInfoMessage {
          this.part = part;
          this.installationPercent = installationPercent;
          this._isInitialized = true;

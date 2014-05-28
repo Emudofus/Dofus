@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.character.characteristic
          return 4;
       }
       
-      public function initCharacterBaseCharacteristic(base:int=0, objectsAndMountBonus:int=0, alignGiftBonus:int=0, contextModif:int=0) : CharacterBaseCharacteristic {
+      public function initCharacterBaseCharacteristic(base:int = 0, objectsAndMountBonus:int = 0, alignGiftBonus:int = 0, contextModif:int = 0) : CharacterBaseCharacteristic {
          this.base = base;
          this.objectsAndMountBonus = objectsAndMountBonus;
          this.alignGiftBonus = alignGiftBonus;

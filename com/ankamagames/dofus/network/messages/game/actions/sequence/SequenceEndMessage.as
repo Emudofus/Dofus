@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.actions.sequence
          return 956;
       }
       
-      public function initSequenceEndMessage(actionId:uint=0, authorId:int=0, sequenceType:int=0) : SequenceEndMessage {
+      public function initSequenceEndMessage(actionId:uint = 0, authorId:int = 0, sequenceType:int = 0) : SequenceEndMessage {
          this.actionId = actionId;
          this.authorId = authorId;
          this.sequenceType = sequenceType;

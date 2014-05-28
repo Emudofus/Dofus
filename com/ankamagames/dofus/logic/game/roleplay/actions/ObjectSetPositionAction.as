@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(objectUID:uint, position:uint, quantity:uint=1) : ObjectSetPositionAction {
+      public static function create(objectUID:uint, position:uint, quantity:uint = 1) : ObjectSetPositionAction {
          var a:ObjectSetPositionAction = new ObjectSetPositionAction();
          a.objectUID = objectUID;
          a.quantity = quantity;

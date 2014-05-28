@@ -34,13 +34,13 @@ package com.ankamagames.dofus.logic.common.managers
       
       private static var _animFPS:int = 25;
       
-      private static var _interval:int = 1000 / _animFPS;
+      private static var _interval:int;
       
       private static var _framePlayed:int = 0;
       
       private static var _frameNeeded:int = 0;
       
-      private static var _focusListInfo:Array = new Array();
+      private static var _focusListInfo:Array;
       
       public static var currentFps:Number;
       
@@ -96,13 +96,11 @@ package com.ankamagames.dofus.logic.common.managers
          {
             StageShareManager.stage.frameRate = PerformanceManager.BASE_FRAMERATE;
          }
-         else
+         else if((!hasAir) || (hasAir && nativeWindow) && (!nativeWindow.active))
          {
-            if((!hasAir) || ((hasAir) && (nativeWindow)) && (!nativeWindow.active))
-            {
-               StageShareManager.stage.frameRate = 12;
-            }
+            StageShareManager.stage.frameRate = 12;
          }
+         
       }
       
       private static function onActivate(e:Event) : void {

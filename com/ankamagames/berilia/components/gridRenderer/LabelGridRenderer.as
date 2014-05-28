@@ -74,7 +74,7 @@ package com.ankamagames.berilia.components.gridRenderer
          this._grid = g;
       }
       
-      public function render(data:*, index:uint, selected:Boolean, subIndex:uint=0) : DisplayObject {
+      public function render(data:*, index:uint, selected:Boolean, subIndex:uint = 0) : DisplayObject {
          var label:Label = new Label();
          label.mouseEnabled = true;
          label.useHandCursor = true;
@@ -102,7 +102,7 @@ package com.ankamagames.berilia.components.gridRenderer
          return label;
       }
       
-      public function update(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, subIndex:uint=0) : void {
+      public function update(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, subIndex:uint = 0) : void {
          var label:Label = null;
          if(dispObj is Label)
          {

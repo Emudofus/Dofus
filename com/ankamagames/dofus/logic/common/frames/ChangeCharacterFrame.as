@@ -95,6 +95,8 @@ package com.ankamagames.dofus.logic.common.frames
                   c++;
                }
                return true;
+            default:
+               return false;
          }
       }
       

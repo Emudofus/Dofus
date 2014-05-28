@@ -23,9 +23,9 @@ package com.ankamagames.dofus.misc.utils
          logLevels[LogLevel.WARN] = true;
       }
       
-      public static const LOG_FOLDER:File = File.applicationStorageDirectory.resolvePath("logs");
+      public static const LOG_FOLDER:File;
       
-      public static var logLevels:Array = [];
+      public static var logLevels:Array;
       
       override public function logEvent(event:LogEvent) : void {
          if((event is TextLogEvent) && (logLevels[event.level]))
@@ -36,7 +36,7 @@ package com.ankamagames.dofus.misc.utils
       
       public function configure(config:XML) : void {
          var level:XML = null;
-         for each (level in config..level)
+         for each(level in config..level)
          {
             if(LogLevel[level.@name.toString().toUpperCase()])
             {

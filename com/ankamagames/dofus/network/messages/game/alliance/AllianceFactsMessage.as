@@ -4,7 +4,6 @@ package com.ankamagames.dofus.network.messages.game.alliance
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.social.AllianceFactSheetInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GuildInAllianceInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -38,7 +37,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6414;
       }
       
-      public function initAllianceFactsMessage(infos:AllianceFactSheetInformations=null, guilds:Vector.<GuildInAllianceInformations>=null, controlledSubareaIds:Vector.<uint>=null) : AllianceFactsMessage {
+      public function initAllianceFactsMessage(infos:AllianceFactSheetInformations = null, guilds:Vector.<GuildInAllianceInformations> = null, controlledSubareaIds:Vector.<uint> = null) : AllianceFactsMessage {
          this.infos = infos;
          this.guilds = guilds;
          this.controlledSubareaIds = controlledSubareaIds;

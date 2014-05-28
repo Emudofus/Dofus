@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 5825;
       }
       
-      public function initGameActionFightSummonMessage(actionId:uint=0, sourceId:int=0, summon:GameFightFighterInformations=null) : GameActionFightSummonMessage {
+      public function initGameActionFightSummonMessage(actionId:uint = 0, sourceId:int = 0, summon:GameFightFighterInformations = null) : GameActionFightSummonMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.summon = summon;
          this._isInitialized = true;

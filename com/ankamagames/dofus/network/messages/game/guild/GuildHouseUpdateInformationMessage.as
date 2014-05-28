@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6181;
       }
       
-      public function initGuildHouseUpdateInformationMessage(housesInformations:HouseInformationsForGuild=null) : GuildHouseUpdateInformationMessage {
+      public function initGuildHouseUpdateInformationMessage(housesInformations:HouseInformationsForGuild = null) : GuildHouseUpdateInformationMessage {
          this.housesInformations = housesInformations;
          this._isInitialized = true;
          return this;

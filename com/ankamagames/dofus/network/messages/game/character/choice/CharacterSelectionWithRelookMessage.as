@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 6353;
       }
       
-      public function initCharacterSelectionWithRelookMessage(id:int=0, cosmeticId:uint=0) : CharacterSelectionWithRelookMessage {
+      public function initCharacterSelectionWithRelookMessage(id:int = 0, cosmeticId:uint = 0) : CharacterSelectionWithRelookMessage {
          super.initCharacterSelectionMessage(id);
          this.cosmeticId = cosmeticId;
          this._isInitialized = true;

@@ -11,13 +11,12 @@ package com.ankamagames.dofus.logic.game.fight.types
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.network.enums.FightDispellableEnum;
    import com.ankamagames.dofus.logic.game.fight.miscs.ActionIdConverter;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.network.types.game.actions.fight.AbstractFightDispellableEffect;
    
    public class BasicBuff extends Object
    {
       
-      public function BasicBuff(effect:AbstractFightDispellableEffect=null, castingSpell:CastingSpell=null, actionId:uint=0, param1:*=null, param2:*=null, param3:*=null) {
+      public function BasicBuff(effect:AbstractFightDispellableEffect = null, castingSpell:CastingSpell = null, actionId:uint = 0, param1:* = null, param2:* = null, param3:* = null) {
          var fightBattleFrame:FightBattleFrame = null;
          super();
          if(effect)
@@ -44,7 +43,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(BasicBuff));
+      protected static const _log:Logger;
       
       protected var _effect:EffectInstance;
       
@@ -154,20 +153,16 @@ package com.ankamagames.dofus.logic.game.fight.types
                {
                   playerPos = i;
                }
-               else
+               else if(fighter == currentPlayerId)
                {
-                  if(fighter == currentPlayerId)
-                  {
-                     currentPos = i;
-                  }
-                  else
-                  {
-                     if(fighter == this.source)
-                     {
-                        casterPos = i;
-                     }
-                  }
+                  currentPos = i;
                }
+               else if(fighter == this.source)
+               {
+                  casterPos = i;
+               }
+               
+               
                i++;
             }
             if(casterPos < currentPos)
@@ -212,7 +207,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          }
       }
       
-      public function canBeDispell(forceUndispellable:Boolean=false, targetBuffId:int=-2147483648, dying:Boolean=false) : Boolean {
+      public function canBeDispell(forceUndispellable:Boolean = false, targetBuffId:int = -2147483648, dying:Boolean = false) : Boolean {
          if(targetBuffId == this.id)
          {
             return true;
@@ -227,6 +222,8 @@ package com.ankamagames.dofus.logic.game.fight.types
                return (dying) || (forceUndispellable);
             case FightDispellableEnum.REALLY_NOT_DISPELLABLE:
                return targetBuffId == this.id;
+            default:
+               return false;
          }
       }
       
@@ -255,10 +252,10 @@ package com.ankamagames.dofus.logic.game.fight.types
          this._removed = false;
       }
       
-      public function equals(other:BasicBuff, osefSpell:Boolean=false) : Boolean {
+      public function equals(other:BasicBuff, osefSpell:Boolean = false) : Boolean {
          var sb1:StateBuff = null;
          var sb2:StateBuff = null;
-         if(((((!(this.targetId == other.targetId) || !(this.effects.effectId == other.actionId) || !(this.duration == other.duration) || this.effects.hasOwnProperty("delay") && other.effects.hasOwnProperty("delay") && !(this.effects.delay == other.effects.delay)) || (((this.castingSpell.spellRank && other.castingSpell.spellRank) && (!osefSpell)) && (!(this.castingSpell.spellRank.id == other.castingSpell.spellRank.id)))) || (!osefSpell && !(this.castingSpell.spell.id == other.castingSpell.spell.id))) || (!(getQualifiedClassName(this) == getQualifiedClassName(other)))) || (!(this.source == other.source)) || (this.trigger))
+         if((!(this.targetId == other.targetId) || !(this.effects.effectId == other.actionId) || !(this.duration == other.duration) || this.effects.hasOwnProperty("delay") && other.effects.hasOwnProperty("delay") && !(this.effects.delay == other.effects.delay) || this.castingSpell.spellRank && other.castingSpell.spellRank && !osefSpell && !(this.castingSpell.spellRank.id == other.castingSpell.spellRank.id) || !osefSpell && !(this.castingSpell.spell.id == other.castingSpell.spell.id) || !(getQualifiedClassName(this) == getQualifiedClassName(other))) || (!(this.source == other.source)) || (this.trigger))
          {
             return false;
          }
@@ -271,35 +268,33 @@ package com.ankamagames.dofus.logic.game.fight.types
                return false;
             }
          }
+         else if(actionIdsForSpellModificatorEffect.indexOf(thisActionId) != -1)
+         {
+            if(this.param1 != other.param1)
+            {
+               return false;
+            }
+         }
          else
          {
-            if(actionIdsForSpellModificatorEffect.indexOf(thisActionId) != -1)
+            if(thisActionId == 165)
             {
-               if(this.param1 != other.param1)
-               {
-                  return false;
-               }
+               return false;
             }
-            else
+            if((thisActionId == other.actionId) && ((thisActionId == 952) || (thisActionId == 951) || (thisActionId == 950)))
             {
-               if(thisActionId == 165)
+               sb1 = this as StateBuff;
+               sb2 = other as StateBuff;
+               if((sb1) && (sb2))
                {
-                  return false;
-               }
-               if((thisActionId == other.actionId) && ((thisActionId == 952) || (thisActionId == 951) || (thisActionId == 950)))
-               {
-                  sb1 = this as StateBuff;
-                  sb2 = other as StateBuff;
-                  if((sb1) && (sb2))
+                  if(sb1.stateId != sb2.stateId)
                   {
-                     if(sb1.stateId != sb2.stateId)
-                     {
-                        return false;
-                     }
+                     return false;
                   }
                }
             }
          }
+         
          return true;
       }
       
@@ -324,11 +319,15 @@ package com.ankamagames.dofus.logic.game.fight.types
             case 951:
             case 952:
                break;
+            default:
+               this.param1 = this.param1 + buff.param1;
+               this.param2 = this.param2 + buff.param2;
+               this.param3 = this.param3 + buff.param3;
          }
          this.refreshDescription();
       }
       
-      public function updateParam(value1:int=0, value2:int=0, value3:int=0, buffId:int=-1) : void {
+      public function updateParam(value1:int = 0, value2:int = 0, value3:int = 0, buffId:int = -1) : void {
          var stackBuff:BasicBuff = null;
          var p1:int = 0;
          var p2:int = 0;
@@ -339,35 +338,37 @@ package com.ankamagames.dofus.logic.game.fight.types
             p2 = value2;
             p3 = value3;
          }
-         else
+         else if((this.stack) && (this.stack.length < 1))
          {
-            if((this.stack) && (this.stack.length < 1))
+            for each(stackBuff in this.stack)
             {
-               for each (stackBuff in this.stack)
+               if(stackBuff.id == buffId)
                {
-                  if(stackBuff.id == buffId)
+                  switch(stackBuff.actionId)
                   {
-                     switch(stackBuff.actionId)
-                     {
-                        case 788:
-                        case 950:
-                        case 951:
-                        case 952:
-                           break;
-                     }
+                     case 788:
+                     case 950:
+                     case 951:
+                     case 952:
+                        break;
+                     default:
+                        stackBuff.param1 = value1;
+                        stackBuff.param2 = value2;
+                        stackBuff.param3 = value3;
                   }
-                  p1 = p1 + stackBuff.param1;
-                  p2 = p2 + stackBuff.param2;
-                  p3 = p3 + stackBuff.param3;
                }
-            }
-            else
-            {
-               p1 = value1;
-               p2 = value2;
-               p3 = value3;
+               p1 = p1 + stackBuff.param1;
+               p2 = p2 + stackBuff.param2;
+               p3 = p3 + stackBuff.param3;
             }
          }
+         else
+         {
+            p1 = value1;
+            p2 = value2;
+            p3 = value3;
+         }
+         
          switch(this.actionId)
          {
             case 788:
@@ -377,6 +378,10 @@ package com.ankamagames.dofus.logic.game.fight.types
             case 951:
             case 952:
                break;
+            default:
+               this.param1 = p1;
+               this.param2 = p2;
+               this.param3 = p3;
          }
          this.refreshDescription();
       }
@@ -385,7 +390,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          this._effect.forceDescriptionRefresh();
       }
       
-      public function incrementDuration(delta:int, dispellEffect:Boolean=false) : Boolean {
+      public function incrementDuration(delta:int, dispellEffect:Boolean = false) : Boolean {
          if((!dispellEffect) || (this.canBeDispell()))
          {
             if(this.duration >= 63)
@@ -413,7 +418,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          return !(this.duration == 0);
       }
       
-      public function clone(id:int=0) : BasicBuff {
+      public function clone(id:int = 0) : BasicBuff {
          var bb:BasicBuff = new BasicBuff();
          bb.id = this.uid;
          bb.uid = this.uid;

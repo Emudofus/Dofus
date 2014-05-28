@@ -47,13 +47,13 @@ package com.ankamagames.berilia.components
          this._ctrDepth = new Array();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CharacterWheel));
+      protected static const _log:Logger;
       
-      private static const _animationModifier:Dictionary = new Dictionary();
+      private static const _animationModifier:Dictionary;
       
-      private static const _skinModifier:Dictionary = new Dictionary();
+      private static const _skinModifier:Dictionary;
       
-      private static const _subEntitiesBehaviors:Dictionary = new Dictionary();
+      private static const _subEntitiesBehaviors:Dictionary;
       
       public static function setSubEntityDefaultBehavior(category:uint, behavior:ISubEntityBehavior) : void {
          _subEntitiesBehaviors[category] = behavior;
@@ -257,7 +257,7 @@ package com.ankamagames.berilia.components
          var numChildrenCtr:uint = 0;
          if(!__removed)
          {
-            for each (g in this._aMountainsCtr)
+            for each(g in this._aMountainsCtr)
             {
                g.remove();
             }
@@ -287,7 +287,7 @@ package com.ankamagames.berilia.components
             this._charaSelCtr = null;
             this._midZCtr = null;
             this._frontZCtr = null;
-            for each (behavior in _subEntitiesBehaviors)
+            for each(behavior in _subEntitiesBehaviors)
             {
                if(behavior)
                {
@@ -310,7 +310,7 @@ package com.ankamagames.berilia.components
          this.createMountainsCtrBitmap(this._aSprites[this._nSelectedChara].parent,this._nSelectedChara);
       }
       
-      public function setAnimation(animationName:String, direction:int=0) : void {
+      public function setAnimation(animationName:String, direction:int = 0) : void {
          var seq:SerialSequencer = new SerialSequencer();
          var sprite:TiphonSprite = this._aSprites[this._nSelectedChara];
          if(animationName == "AnimStatique")
@@ -326,7 +326,7 @@ package com.ankamagames.berilia.components
          }
       }
       
-      public function equipCharacter(list:Array, numDelete:int=0) : void {
+      public function equipCharacter(list:Array, numDelete:int = 0) : void {
          var bones:Array = null;
          var k:* = 0;
          var sprite:TiphonSprite = this._aSprites[this._nSelectedChara];
@@ -378,7 +378,7 @@ package com.ankamagames.berilia.components
             te.destroy();
             k++;
          }
-         for each (g in this._aMountainsCtr)
+         for each(g in this._aMountainsCtr)
          {
             g.remove();
          }
@@ -428,7 +428,7 @@ package com.ankamagames.berilia.components
                   {
                      oPerso.skinModifier = _skinModifier[oPerso.look.getBone()];
                   }
-                  for (cat in _subEntitiesBehaviors)
+                  for(cat in _subEntitiesBehaviors)
                   {
                      if(_subEntitiesBehaviors[cat])
                      {
@@ -505,13 +505,11 @@ package com.ankamagames.berilia.components
          {
             event.target.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onMoutainPartRendered);
          }
-         else
+         else if(event.type == Event.COMPLETE)
          {
-            if(event.type == Event.COMPLETE)
-            {
-               event.target.removeEventListener(Event.COMPLETE,this.onMoutainPartRendered);
-            }
+            event.target.removeEventListener(Event.COMPLETE,this.onMoutainPartRendered);
          }
+         
          if((this._aRenderePartNames[event.target.name]) && (event.target.stage))
          {
             this.createMountainsCtrBitmap(this._aRenderePartNames[event.target.name],int(event.target.name.replace("char","")));
@@ -589,14 +587,14 @@ package com.ankamagames.berilia.components
          }
          if(sens == 1)
          {
-            for each (listener in Berilia.getInstance().UISoundListeners)
+            for each(listener in Berilia.getInstance().UISoundListeners)
             {
                listener.playUISound("16079");
             }
          }
          else
          {
-            for each (listener2 in Berilia.getInstance().UISoundListeners)
+            for each(listener2 in Berilia.getInstance().UISoundListeners)
             {
                listener2.playUISound("16080");
             }

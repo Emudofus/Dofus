@@ -160,6 +160,8 @@ package com.ankamagames.berilia.utils.web
                case "metas":
                   img = img + "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADoSURBVBgZBcExblNBGAbA2ceegTRBuIKOgiihSZNTcC5LUHAihNJR0kGKCDcYJY6D3/77MdOinTvzAgCw8ysThIvn/VojIyMjIyPP+bS1sUQIV2s95pBDDvmbP/mdkft83tpYguZq5Jh/OeaYh+yzy8hTHvNlaxNNczm+la9OTlar1UdA/+C2A4trRCnD3jS8BB1obq2Gk6GU6QbQAS4BUaYSQAf4bhhKKTFdAzrAOwAxEUAH+KEM01SY3gM6wBsEAQB0gJ+maZoC3gI6iPYaAIBJsiRmHU0AALOeFC3aK2cWAACUXe7+AwO0lc9eTHYTAAAAAElFTkSuQmCC";
                   break;
+               default:
+                  img = img + "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC4SURBVCjPdZFbDsIgEEWnrsMm7oGGfZrohxvU+Iq1TyjU60Bf1pac4Yc5YS4ZAtGWBMk/drQBOVwJlZrWYkLhsB8UV9K0BUrPGy9cWbng2CtEEUmLGppPjRwpbixUKHBiZRS0p+ZGhvs4irNEvWD8heHpbsyDXznPhYFOyTjJc13olIqzZCHBouE0FRMUjA+s1gTjaRgVFpqRwC8mfoXPPEVPS7LbRaJL2y7bOifRCTEli3U7BMWgLzKlW/CuebZPAAAAAElFTkSuQmCC";
             }
          }
          return img + "\" />";
@@ -175,7 +177,7 @@ package com.ankamagames.berilia.utils.web
          {
             html = html + ("<tr><td>" + this.getImg(File(e.target).parent) + "</td><td><a href=\"" + HttpServer.getInstance().getUrlTo(this.getRelativePath(File(e.target).parent)) + "\">..</a></td><td>-</td><td>-</td></tr>");
          }
-         for each (f in e.files)
+         for each(f in e.files)
          {
             isDir = f.isDirectory;
             html = html + ("<tr>" + "<td>" + this.getImg(f) + "</td>" + "<td><a href=\"" + HttpServer.getInstance().getUrlTo(this.getRelativePath(f)) + "\">" + f.name + (isDir?"/":"") + "</a></td>" + "<td>" + this.toRFC802(f.modificationDate) + "</td>" + "<td>" + (isDir?"-":f.size) + "</td>" + "</tr>");

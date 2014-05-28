@@ -58,7 +58,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EmoticonFrame));
+      protected static const _log:Logger;
       
       private var _emotes:Array;
       
@@ -152,7 +152,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                this._emotes = new Array();
                this._emotesList.splice(0,this._emotesList.length);
                pos = 0;
-               for each (id in elmsg.emoteIds)
+               for each(id in elmsg.emoteIds)
                {
                   this._emotes.push(id);
                   emoteW = EmoteWrapper.create(id,pos);
@@ -160,7 +160,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   pos++;
                }
                KernelEventsManager.getInstance().processCallback(RoleplayHookList.EmoteListUpdated);
-               for each (shortcut in InventoryManager.getInstance().shortcutBarItems)
+               for each(shortcut in InventoryManager.getInstance().shortcutBarItems)
                {
                   if((shortcut) && (shortcut.type == 4))
                   {
@@ -178,14 +178,14 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is EmoteAddMessage:
                eamsg = msg as EmoteAddMessage;
-               for (i in this._emotes)
+               for(i in this._emotes)
                {
                   if(this._emotes[i] == eamsg.emoteId)
                   {
                      return true;
                   }
                }
-               for each (ew in this._emotesList)
+               for each(ew in this._emotesList)
                {
                   if(ew.id == eamsg.emoteId)
                   {
@@ -210,7 +210,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                addText = I18n.getUiText("ui.common.emoteAdded",[Emoticon.getEmoticonById(eamsg.emoteId).name]);
                KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,addText,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                KernelEventsManager.getInstance().processCallback(RoleplayHookList.EmoteListUpdated);
-               for each (shortcut in InventoryManager.getInstance().shortcutBarItems)
+               for each(shortcut in InventoryManager.getInstance().shortcutBarItems)
                {
                   if((shortcut) && (shortcut.type == 4) && (shortcut.id == eamsg.emoteId))
                   {
@@ -246,7 +246,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                removeText = I18n.getUiText("ui.common.emoteRemoved",[Emoticon.getEmoticonById(ermsg.emoteId).name]);
                KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,removeText,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                KernelEventsManager.getInstance().processCallback(RoleplayHookList.EmoteListUpdated);
-               for each (shortcut in InventoryManager.getInstance().shortcutBarItems)
+               for each(shortcut in InventoryManager.getInstance().shortcutBarItems)
                {
                   if((shortcut) && (shortcut.type == 4) && (shortcut.id == ermsg.emoteId))
                   {
@@ -292,7 +292,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                {
                   return true;
                }
-               delete this.roleplayEntitiesFrame.lastStaticAnimations[[epmsg.actorId]];
+               delete this.roleplayEntitiesFrame.lastStaticAnimations[epmsg.actorId];
                entityInfo = this.roleplayEntitiesFrame.getEntityInfos(epmsg.actorId);
                AccountManager.getInstance().setAccountFromId(epmsg.actorId,epmsg.accountId);
                if((entityInfo is GameRolePlayCharacterInformations) && (this.socialFrame.isIgnored(GameRolePlayCharacterInformations(entityInfo).name,epmsg.accountId)))
@@ -330,7 +330,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                {
                   return true;
                }
-               for each (actor in epmmsg.actorIds)
+               for each(actor in epmmsg.actorIds)
                {
                   mEntityInfo = this.roleplayEntitiesFrame.getEntityInfos(actor);
                   if(epmmsg.emoteId == 0)
@@ -374,6 +374,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                PlayedCharacterManager.getInstance().characteristics.maxLifePoints = lpremsg.maxLifePoints;
                KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
                return true;
+            default:
+               return false;
          }
       }
       

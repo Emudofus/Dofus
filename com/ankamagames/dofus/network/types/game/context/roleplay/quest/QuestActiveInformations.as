@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.quest
          return 381;
       }
       
-      public function initQuestActiveInformations(questId:uint=0) : QuestActiveInformations {
+      public function initQuestActiveInformations(questId:uint = 0) : QuestActiveInformations {
          this.questId = questId;
          return this;
       }

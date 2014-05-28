@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6014;
       }
       
-      public function initObjectJobAddedMessage(jobId:uint=0) : ObjectJobAddedMessage {
+      public function initObjectJobAddedMessage(jobId:uint = 0) : ObjectJobAddedMessage {
          this.jobId = jobId;
          this._isInitialized = true;
          return this;

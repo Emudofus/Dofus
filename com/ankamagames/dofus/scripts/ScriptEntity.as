@@ -29,7 +29,7 @@ package com.ankamagames.dofus.scripts
    public class ScriptEntity extends Object implements LuaPackage
    {
       
-      public function ScriptEntity(pId:int, pLook:String, pEntity:TiphonSprite=null) {
+      public function ScriptEntity(pId:int, pLook:String, pEntity:TiphonSprite = null) {
          super();
          this._id = pId;
          this._look = pLook;
@@ -221,7 +221,7 @@ package com.ankamagames.dofus.scripts
          return step;
       }
       
-      public function setAnimation(pAnimation:String, pLoop:int=1, pEndAnimation:String="") : ISequencable {
+      public function setAnimation(pAnimation:String, pLoop:int = 1, pEndAnimation:String = "") : ISequencable {
          var step:ISequencable = null;
          if(this.getEntitySprite())
          {
@@ -230,7 +230,7 @@ package com.ankamagames.dofus.scripts
          return step;
       }
       
-      public function playEmote(pEmoteId:int, pWaitForEnd:Boolean=true) : ISequencable {
+      public function playEmote(pEmoteId:int, pWaitForEnd:Boolean = true) : ISequencable {
          var step:ISequencable = null;
          if(this.getEntitySprite())
          {
@@ -239,7 +239,7 @@ package com.ankamagames.dofus.scripts
          return step;
       }
       
-      public function playSmiley(pSmileyId:int, pWaitForEnd:Boolean=true) : ISequencable {
+      public function playSmiley(pSmileyId:int, pWaitForEnd:Boolean = true) : ISequencable {
          var step:ISequencable = null;
          if(this.getEntitySprite())
          {
@@ -248,7 +248,7 @@ package com.ankamagames.dofus.scripts
          return step;
       }
       
-      public function think(pText:String, pWaitForEnd:Boolean=true) : ISequencable {
+      public function think(pText:String, pWaitForEnd:Boolean = true) : ISequencable {
          var step:ISequencable = null;
          if(this.getEntitySprite())
          {
@@ -257,7 +257,7 @@ package com.ankamagames.dofus.scripts
          return step;
       }
       
-      public function speak(pText:String, pWaitForEnd:Boolean=true) : ISequencable {
+      public function speak(pText:String, pWaitForEnd:Boolean = true) : ISequencable {
          var step:ISequencable = null;
          if(this.getEntitySprite())
          {

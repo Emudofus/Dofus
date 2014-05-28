@@ -14,7 +14,7 @@ package com.ankamagames.berilia.types.uiDefinition
          MEMORY_LOG[this] = 1;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
       public var name:String;
       

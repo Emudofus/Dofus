@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          return 372;
       }
       
-      public function initTaxCollectorLootInformations(kamas:uint=0, experience:Number=0, pods:uint=0, itemsValue:uint=0) : TaxCollectorLootInformations {
+      public function initTaxCollectorLootInformations(kamas:uint = 0, experience:Number = 0, pods:uint = 0, itemsValue:uint = 0) : TaxCollectorLootInformations {
          this.kamas = kamas;
          this.experience = experience;
          this.pods = pods;

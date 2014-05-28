@@ -10,7 +10,6 @@ package com.ankamagames.dofus.internalDatacenter.spells
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
    import com.ankamagames.berilia.managers.SlotDataHolderManager;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.spells.Spell;
    import com.ankamagames.berilia.managers.SecureCenter;
    import com.ankamagames.jerakine.logger.Log;
@@ -32,8 +31,6 @@ package com.ankamagames.dofus.internalDatacenter.spells
    import flash.utils.flash_proxy;
    import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
    
-   use namespace flash_proxy;
-   
    public dynamic class SpellWrapper extends Proxy implements ISlotData, IClonable, ICellZoneProvider, IDataCenter
    {
       
@@ -41,17 +38,17 @@ package com.ankamagames.dofus.internalDatacenter.spells
          super();
       }
       
-      private static var _cache:Array = new Array();
+      private static var _cache:Array;
       
-      private static var _playersCache:Dictionary = new Dictionary();
+      private static var _playersCache:Dictionary;
       
-      private static var _cac:Array = new Array();
+      private static var _cac:Array;
       
       private static var _errorIconUri:Uri;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpellWrapper));
+      protected static const _log:Logger;
       
-      public static function create(position:int, spellID:uint, spellLevel:int, useCache:Boolean=true, playerId:int=0) : SpellWrapper {
+      public static function create(position:int, spellID:uint, spellLevel:int, useCache:Boolean = true, playerId:int = 0) : SpellWrapper {
          var spell:SpellWrapper = null;
          var effectInstance:EffectInstance = null;
          if(spellID == 0)
@@ -65,13 +62,11 @@ package com.ankamagames.dofus.internalDatacenter.spells
             {
                spell = _cache[spellID][position];
             }
-            else
+            else if((_playersCache[playerId] && _playersCache[playerId][spellID]) && (_playersCache[playerId][spellID].length > 0) && (_playersCache[playerId][spellID][position]))
             {
-               if((_playersCache[playerId] && _playersCache[playerId][spellID]) && (_playersCache[playerId][spellID].length > 0) && (_playersCache[playerId][spellID][position]))
-               {
-                  spell = _playersCache[playerId][spellID][position];
-               }
+               spell = _playersCache[playerId][spellID][position];
             }
+            
          }
          if((spellID == 0) && (!(_cac == null)) && (_cac.length > 0) && (_cac[position]))
          {
@@ -126,12 +121,12 @@ package com.ankamagames.dofus.internalDatacenter.spells
          spell.criticalEffect = new Vector.<EffectInstance>();
          var spellData:Spell = Spell.getSpellById(spellID);
          spell._spellLevel = spellData.getSpellLevel(spellLevel);
-         for each (effectInstance in spell._spellLevel.effects)
+         for each(effectInstance in spell._spellLevel.effects)
          {
             effectInstance = effectInstance.clone();
             spell.effects.push(effectInstance);
          }
-         for each (effectInstance in spell._spellLevel.criticalEffect)
+         for each(effectInstance in spell._spellLevel.criticalEffect)
          {
             effectInstance = effectInstance.clone();
             spell.criticalEffect.push(effectInstance);
@@ -251,41 +246,21 @@ package com.ankamagames.dofus.internalDatacenter.spells
       }
       
       public static function refreshAllPlayerSpellHolder(playerId:int) : void {
-         var spell:Array = null;
-         var wrapper:SpellWrapper = null;
-         var cac:SpellWrapper = null;
-         var sdhm:SlotDataHolderManager = null;
-         for each (spell in _playersCache[playerId])
-         {
-            for each (wrapper in spell)
-            {
-               wrapper._slotDataHolderManager.refreshAll();
-            }
-         }
-         if(_cac)
-         {
-            for each (cac in _cac)
-            {
-               if(cac)
-               {
-                  sdhm = cac._slotDataHolderManager;
-                  SpellWrapper(cac)._slotDataHolderManager.refreshAll();
-               }
-            }
-         }
-         else
-         {
-            trace("CaC Semble ne pas exister");
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public static function resetAllCoolDown(playerId:int, accessKey:Object) : void {
          var spell:Array = null;
          var wrapper:SpellWrapper = null;
          SecureCenter.checkAccessKey(accessKey);
-         for each (spell in _playersCache[playerId])
+         for each(spell in _playersCache[playerId])
          {
-            for each (wrapper in spell)
+            for each(wrapper in spell)
             {
                SpellWrapper(wrapper).actualCooldown = 0;
             }
@@ -298,7 +273,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
          var i:* = 0;
          SecureCenter.checkAccessKey(accessKey);
          var temp:Array = new Array();
-         for (id in _playersCache)
+         for(id in _playersCache)
          {
             if(int(id) != playerId)
             {
@@ -309,7 +284,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
          i = -1;
          while(++i < num)
          {
-            delete _playersCache[[temp[i]]];
+            delete _playersCache[temp[i]];
          }
       }
       
@@ -553,7 +528,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
          var boostableRange:Boolean = this._spellLevel.rangeCanBeBoosted;
          if(!boostableRange)
          {
-            for each (spellModification in characteristics.spellModifications)
+            for each(spellModification in characteristics.spellModifications)
             {
                if((spellModification.spellId == this.id) && (spellModification.modificationType == CharacterSpellModificationTypeEnum.RANGEABLE))
                {
@@ -643,7 +618,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
                spellModif = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id,CharacterSpellModificationTypeEnum.CAST_LINE);
                if(spellModif)
                {
-                  return (this._spellLevel["castInLine"]) && (spellModif.value.contextModif + spellModif.value.objectsAndMountBonus + spellModif.value.base + spellModif.value.alignGiftBonus == 0);
+                  return this._spellLevel["castInLine"] && spellModif.value.contextModif + spellModif.value.objectsAndMountBonus + spellModif.value.base + spellModif.value.alignGiftBonus == 0;
                }
                return this._spellLevel["castInLine"];
             case "castInDiagonal":
@@ -652,14 +627,14 @@ package com.ankamagames.dofus.internalDatacenter.spells
                spellModif = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id,CharacterSpellModificationTypeEnum.LOS);
                if(spellModif)
                {
-                  return (this._spellLevel["castTestLos"]) && (spellModif.value.contextModif + spellModif.value.objectsAndMountBonus + spellModif.value.base + spellModif.value.alignGiftBonus == 0);
+                  return this._spellLevel["castTestLos"] && spellModif.value.contextModif + spellModif.value.objectsAndMountBonus + spellModif.value.base + spellModif.value.alignGiftBonus == 0;
                }
                return this._spellLevel["castTestLos"];
             case "rangeCanBeBoosted":
                spellModif = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id,CharacterSpellModificationTypeEnum.RANGEABLE);
                if(spellModif)
                {
-                  return (this._spellLevel["rangeCanBeBoosted"]) || (spellModif.value.contextModif + spellModif.value.objectsAndMountBonus + spellModif.value.base + spellModif.value.alignGiftBonus > 0);
+                  return this._spellLevel["rangeCanBeBoosted"] || spellModif.value.contextModif + spellModif.value.objectsAndMountBonus + spellModif.value.base + spellModif.value.alignGiftBonus > 0;
                }
                return this._spellLevel["rangeCanBeBoosted"];
             case "apCost":
@@ -679,11 +654,13 @@ package com.ankamagames.dofus.internalDatacenter.spells
             case "isSpellWeapon":
                return this.id == 0;
             case "isDefaultSpellWeapon":
-               return (this.id == 0) && (!PlayedCharacterManager.getInstance().currentWeapon);
+               return this.id == 0 && !PlayedCharacterManager.getInstance().currentWeapon;
             case "statesRequired":
                return this._spellLevel.statesRequired;
             case "statesForbidden":
                return this._spellLevel.statesForbidden;
+            default:
+               return;
          }
       }
       
@@ -741,6 +718,8 @@ package com.ankamagames.dofus.internalDatacenter.spells
             case "scriptIdCritical":
             case "spellBreed":
                return 0;
+            default:
+               return;
          }
       }
       

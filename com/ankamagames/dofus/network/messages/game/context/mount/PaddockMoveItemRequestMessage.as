@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 6052;
       }
       
-      public function initPaddockMoveItemRequestMessage(oldCellId:uint=0, newCellId:uint=0) : PaddockMoveItemRequestMessage {
+      public function initPaddockMoveItemRequestMessage(oldCellId:uint = 0, newCellId:uint = 0) : PaddockMoveItemRequestMessage {
          this.oldCellId = oldCellId;
          this.newCellId = newCellId;
          this._isInitialized = true;

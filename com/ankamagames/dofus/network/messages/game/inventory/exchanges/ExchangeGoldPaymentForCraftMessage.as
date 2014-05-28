@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5833;
       }
       
-      public function initExchangeGoldPaymentForCraftMessage(onlySuccess:Boolean=false, goldSum:uint=0) : ExchangeGoldPaymentForCraftMessage {
+      public function initExchangeGoldPaymentForCraftMessage(onlySuccess:Boolean = false, goldSum:uint = 0) : ExchangeGoldPaymentForCraftMessage {
          this.onlySuccess = onlySuccess;
          this.goldSum = goldSum;
          this._isInitialized = true;

@@ -40,7 +40,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          {
             spellCastManager = CurrentPlayedFighterManager.getInstance().getSpellCastManagerById(this._fighterId);
             playerManager = PlayedCharacterManager.getInstance();
-            for each (spellKnown in playerManager.spellsInventory)
+            for each(spellKnown in playerManager.spellsInventory)
             {
                if(spellKnown.id == this._spellId)
                {

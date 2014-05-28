@@ -53,6 +53,7 @@ package com.ankamagames.berilia.uiRender
    {
       
       public function XmlParsor() {
+         this._log = Log.getLogger(getQualifiedClassName(XmlParsor));
          this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.PARALLEL_LOADER);
          this._describeType = DescribeTypeCache.typeDescription;
          super();
@@ -60,13 +61,13 @@ package com.ankamagames.berilia.uiRender
          this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onXmlLoadError);
       }
       
-      private static var _classDescCache:Object = new Object();
+      private static var _classDescCache:Object;
       
       protected const _componentList:ComponentList = null;
       
       protected const _GridItemList:GridItemList = null;
       
-      protected const _log:Logger = Log.getLogger(getQualifiedClassName(XmlParsor));
+      protected const _log:Logger;
       
       private var _xmlDoc:XMLDocument;
       
@@ -147,14 +148,14 @@ package com.ankamagames.berilia.uiRender
                }
             }
             errorLog = "";
-            for (tag in openTag)
+            for(tag in openTag)
             {
                if((!closeTag[tag]) || (!(closeTag[tag] == openTag[tag])))
                {
                   errorLog = errorLog + ("\n - " + tag + " have no closing tag");
                }
             }
-            for (tag in closeTag)
+            for(tag in closeTag)
             {
                if((!openTag[tag]) || (!(openTag[tag] == closeTag[tag])))
                {
@@ -249,6 +250,8 @@ package com.ankamagames.berilia.uiRender
                case XmlTagsEnum.TAG_SHORTCUTS:
                   ui.shortcutsEvents = this.parseShortcutsEvent(xnNode);
                   break;
+               default:
+                  this._log.warn("[" + this._sUrl + "] " + xnNode.nodeName + " is not allow or unknow. " + this.suggest(xnNode.nodeName,[XmlTagsEnum.TAG_CONTAINER,XmlTagsEnum.TAG_STATECONTAINER,XmlTagsEnum.TAG_BUTTON,XmlTagsEnum.TAG_SHORTCUTS]));
             }
             i = i + 1;
          }
@@ -258,7 +261,7 @@ package com.ankamagames.berilia.uiRender
       
       private function cleanLocalConstants(constants:Array) : void {
          var constant:String = null;
-         for (constant in constants)
+         for(constant in constants)
          {
             LangManager.getInstance().deleteEntry("local." + constant);
          }
@@ -300,34 +303,26 @@ package com.ankamagames.berilia.uiRender
                      {
                         constants[nameAttribute] = value;
                      }
-                     else
+                     else if(typeAttribute == "NUMBER")
                      {
-                        if(typeAttribute == "NUMBER")
-                        {
-                           constants[nameAttribute] = Number(value);
-                        }
-                        else
-                        {
-                           if((typeAttribute == "UINT") || (typeAttribute == "INT"))
-                           {
-                              constants[nameAttribute] = int(value);
-                           }
-                           else
-                           {
-                              if(typeAttribute == "BOOLEAN")
-                              {
-                                 constants[nameAttribute] = value == "true";
-                              }
-                              else
-                              {
-                                 if(typeAttribute == "ARRAY")
-                                 {
-                                    constants[nameAttribute] = value.split(",");
-                                 }
-                              }
-                           }
-                        }
+                        constants[nameAttribute] = Number(value);
                      }
+                     else if((typeAttribute == "UINT") || (typeAttribute == "INT"))
+                     {
+                        constants[nameAttribute] = int(value);
+                     }
+                     else if(typeAttribute == "BOOLEAN")
+                     {
+                        constants[nameAttribute] = value == "true";
+                     }
+                     else if(typeAttribute == "ARRAY")
+                     {
+                        constants[nameAttribute] = value.split(",");
+                     }
+                     
+                     
+                     
+                     
                   }
                   else
                   {
@@ -535,6 +530,9 @@ package com.ankamagames.berilia.uiRender
                            case StatesEnum.STATE_SELECTED_CLICKED_STRING:
                               stateConst = StatesEnum.STATE_SELECTED_CLICKED;
                               break;
+                           default:
+                              possibilities = new Array(StatesEnum.STATE_CLICKED_STRING,StatesEnum.STATE_OVER_STRING,StatesEnum.STATE_SELECTED_STRING,StatesEnum.STATE_SELECTED_OVER_STRING,StatesEnum.STATE_SELECTED_CLICKED_STRING,StatesEnum.STATE_DISABLED_STRING);
+                              this._log.warn(stateType + " is not a valid state" + this.suggest(stateType,possibilities));
                         }
                      }
                      if(stateConst != 9999)
@@ -551,6 +549,8 @@ package com.ankamagames.berilia.uiRender
                      this._log.warn(XmlTagsEnum.TAG_STATE + " must have attribute [" + XmlAttributesEnum.ATTRIBUTE_TYPE + "]");
                   }
                   break;
+               default:
+                  this._log.warn(elementType + " does not allow " + xnCurrentNode.nodeName + this.suggest(xnCurrentNode.nodeName,[XmlTagsEnum.TAG_COMMON,XmlTagsEnum.TAG_STATE]));
             }
             i = i + 1;
          }
@@ -673,11 +673,11 @@ package com.ankamagames.berilia.uiRender
          }
          var xmlClassDef:XML = this._describeType(o);
          var res:Object = new Object();
-         for each (acc in xmlClassDef..accessor)
+         for each(acc in xmlClassDef..accessor)
          {
             res[acc.@name.toString()] = acc.@type.toString();
          }
-         for each (v in xmlClassDef..variable)
+         for each(v in xmlClassDef..variable)
          {
             res[v.@name.toString()] = v.@type.toString();
          }
@@ -950,6 +950,9 @@ package com.ankamagames.berilia.uiRender
                case EventEnums.EVENT_ONCOMPONENTREADY:
                   sEventClass = EventEnums.EVENT_ONCOMPONENTREADY_MSG;
                   break;
+               default:
+                  possiblilities = [EventEnums.EVENT_ONPRESS,EventEnums.EVENT_ONRELEASE,EventEnums.EVENT_ONROLLOUT,EventEnums.EVENT_ONROLLOVER,EventEnums.EVENT_ONRIGHTCLICK,EventEnums.EVENT_ONRELEASEOUTSIDE,EventEnums.EVENT_ONDOUBLECLICK,EventEnums.EVENT_ONCOLORCHANGE,EventEnums.EVENT_ONENTITYREADY,EventEnums.EVENT_ONSELECTITEM,EventEnums.EVENT_ONSELECTEMPTYITEM,EventEnums.EVENT_ONITEMROLLOVER,EventEnums.EVENT_ONITEMROLLOUT,EventEnums.EVENT_ONDROP,EventEnums.EVENT_ONWHEEL,EventEnums.EVENT_ONMOUSEUP,EventEnums.EVENT_ONMAPELEMENTROLLOUT,EventEnums.EVENT_ONMAPELEMENTROLLOVER,EventEnums.EVENT_ONMAPELEMENTRIGHTCLICK,EventEnums.EVENT_ONCREATETAB,EventEnums.EVENT_ONDELETETAB,EventEnums.EVENT_MIDDLECLICK];
+                  this._log.warn("[" + this._sUrl + "] " + xnCurrentNode.nodeName + " is an unknow event name" + this.suggest(xnCurrentNode.nodeName,possiblilities));
             }
             if(sEventClass.length)
             {
@@ -987,7 +990,7 @@ package com.ankamagames.berilia.uiRender
          return StrataEnum.STRATA_MEDIUM;
       }
       
-      private function suggest(word:String, aPossibilities:Array, max:uint=5, suggestCount:uint=3) : String {
+      private function suggest(word:String, aPossibilities:Array, max:uint = 5, suggestCount:uint = 3) : String {
          var value:* = NaN;
          var i:* = 0;
          var suggest:String = "";

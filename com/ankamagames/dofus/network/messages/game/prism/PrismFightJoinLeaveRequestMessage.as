@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 5843;
       }
       
-      public function initPrismFightJoinLeaveRequestMessage(subAreaId:uint=0, join:Boolean=false) : PrismFightJoinLeaveRequestMessage {
+      public function initPrismFightJoinLeaveRequestMessage(subAreaId:uint = 0, join:Boolean = false) : PrismFightJoinLeaveRequestMessage {
          this.subAreaId = subAreaId;
          this.join = join;
          this._isInitialized = true;

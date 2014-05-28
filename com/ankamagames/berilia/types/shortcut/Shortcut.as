@@ -11,7 +11,7 @@ package com.ankamagames.berilia.types.shortcut
    public class Shortcut extends Object implements IDataCenter
    {
       
-      public function Shortcut(name:String, textfieldEnabled:Boolean=false, description:String=null, category:ShortcutCategory=null, bindable:Boolean=true, pVisible:Boolean=true, pRequired:Boolean=false, pHoldKeys:Boolean=false, tooltipContent:String=null) {
+      public function Shortcut(name:String, textfieldEnabled:Boolean = false, description:String = null, category:ShortcutCategory = null, bindable:Boolean = true, pVisible:Boolean = true, pRequired:Boolean = false, pHoldKeys:Boolean = false, tooltipContent:String = null) {
          super();
          if(_shortcuts[name])
          {
@@ -36,11 +36,11 @@ package com.ankamagames.berilia.types.shortcut
          }
       }
       
-      private static var _shortcuts:Array = new Array();
+      private static var _shortcuts:Array;
       
       private static var _idCount:uint = 0;
       
-      private static var _datastoreType:DataStoreType = new DataStoreType("Module_Ankama_Config",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_CHARACTER);
+      private static var _datastoreType:DataStoreType;
       
       public static function reset() : void {
          BindsManager.destroy();
@@ -71,7 +71,7 @@ package com.ankamagames.berilia.types.shortcut
             {
                newData = new Dictionary();
                copy = new Array();
-               for each (s in _shortcuts)
+               for each(s in _shortcuts)
                {
                   if(s.visible)
                   {
@@ -139,7 +139,7 @@ package com.ankamagames.berilia.types.shortcut
                savedData = newData;
                StoreDataManager.getInstance().setData(_datastoreType,"openShortcutsCategory",savedData);
             }
-            for each (sc in _shortcuts)
+            for each(sc in _shortcuts)
             {
                if(sc.visible)
                {

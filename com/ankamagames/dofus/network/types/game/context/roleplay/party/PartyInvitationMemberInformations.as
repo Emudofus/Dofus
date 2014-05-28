@@ -4,7 +4,6 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.companion.PartyCompanionBaseInformations;
    import com.ankamagames.dofus.network.types.game.look.EntityLook;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
          return 376;
       }
       
-      public function initPartyInvitationMemberInformations(id:uint=0, level:uint=0, name:String="", entityLook:EntityLook=null, breed:int=0, sex:Boolean=false, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0, companions:Vector.<PartyCompanionBaseInformations>=null) : PartyInvitationMemberInformations {
+      public function initPartyInvitationMemberInformations(id:uint = 0, level:uint = 0, name:String = "", entityLook:EntityLook = null, breed:int = 0, sex:Boolean = false, worldX:int = 0, worldY:int = 0, mapId:int = 0, subAreaId:uint = 0, companions:Vector.<PartyCompanionBaseInformations> = null) : PartyInvitationMemberInformations {
          super.initCharacterBaseInformations(id,level,name,entityLook,breed,sex);
          this.worldX = worldX;
          this.worldY = worldY;

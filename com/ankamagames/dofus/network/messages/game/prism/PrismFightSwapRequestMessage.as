@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 5901;
       }
       
-      public function initPrismFightSwapRequestMessage(subAreaId:uint=0, targetId:uint=0) : PrismFightSwapRequestMessage {
+      public function initPrismFightSwapRequestMessage(subAreaId:uint = 0, targetId:uint = 0) : PrismFightSwapRequestMessage {
          this.subAreaId = subAreaId;
          this.targetId = targetId;
          this._isInitialized = true;

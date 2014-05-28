@@ -7,7 +7,7 @@ package com.somerandomdude.colortoolkit.schemes
    public dynamic class ColorList extends Array
    {
       
-      public function ColorList(numElements:int=0) {
+      public function ColorList(numElements:int = 0) {
          super(numElements);
       }
       

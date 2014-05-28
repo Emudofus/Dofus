@@ -26,7 +26,7 @@ package com.ankamagames.jerakine.utils.crypto
       
       private var _key:SignatureKey;
       
-      public function sign(data:IDataInput, includeData:Boolean=true) : ByteArray {
+      public function sign(data:IDataInput, includeData:Boolean = true) : ByteArray {
          var adaptedData:ByteArray = null;
          if(!this._key.canSign)
          {

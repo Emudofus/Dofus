@@ -69,7 +69,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import flash.utils.Dictionary;
    import com.ankamagames.dofus.logic.game.common.steps.WaitStep;
    import com.ankamagames.dofus.logic.game.fight.steps.FightVisibilityStep;
-   import __AS3__.vec.*;
    
    public class FightBattleFrame extends Object implements Frame
    {
@@ -83,7 +82,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
       
       public static const FIGHT_SEQUENCER_NAME:String = "FightBattleSequencer";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FightBattleFrame));
+      protected static const _log:Logger;
       
       private var _sequenceFrameSwitcher:FightSequenceSwitcherFrame;
       
@@ -276,7 +275,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                gftcimsg = msg as GameFightSynchronizeMessage;
                if(this._newWave)
                {
-                  for each (fighter in gftcimsg.fighters)
+                  for each(fighter in gftcimsg.fighters)
                   {
                      if((fighter.alive) && (fighter.wave == this._newWaveId) && (!FightEntitiesFrame.getCurrentInstance().getEntityInfos(fighter.contextualId)))
                      {
@@ -317,17 +316,15 @@ package com.ankamagames.dofus.logic.game.fight.frames
                {
                   BuffManager.getInstance().decrementDuration(gftsmsg.id);
                }
-               else
+               else if(msg is GameFightTurnResumeMessage)
                {
-                  if(msg is GameFightTurnResumeMessage)
+                  currentPlayedFighterId = CurrentPlayedFighterManager.getInstance().currentFighterId;
+                  if((this._slaveId) && (!(this._currentPlayerId == currentPlayedFighterId)) && ((this._slaveId == this._currentPlayerId) || (this.getNextPlayableCharacterId() == this._slaveId)))
                   {
-                     currentPlayedFighterId = CurrentPlayedFighterManager.getInstance().currentFighterId;
-                     if((this._slaveId) && (!(this._currentPlayerId == currentPlayedFighterId)) && ((this._slaveId == this._currentPlayerId) || (this.getNextPlayableCharacterId() == this._slaveId)))
-                     {
-                        this.prepareNextPlayableCharacter(this._masterId);
-                     }
+                     this.prepareNextPlayableCharacter(this._masterId);
                   }
                }
+               
                if((gftsmsg.id > 0) || (this._playingSlaveEntity))
                {
                   if((!(FightEntitiesFrame.getCurrentInstance().getEntityInfos(gftsmsg.id).disposition.cellId == -1)) && (!FightEntitiesHolder.getInstance().getEntity(gftsmsg.id)))
@@ -348,7 +345,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                }
                sapi = new SoundApi();
                deadEntityInfo = FightEntitiesFrame.getCurrentInstance().getEntityInfos(gftsmsg.id) as GameFightFighterInformations;
-               if(((gftsmsg.id == playerId) && (deadEntityInfo)) && (deadEntityInfo.alive) || (this._playingSlaveEntity))
+               if((gftsmsg.id == playerId && deadEntityInfo) && (deadEntityInfo.alive) || (this._playingSlaveEntity))
                {
                   CurrentPlayedFighterManager.getInstance().currentFighterId = gftsmsg.id;
                   if(sapi.playSoundAtTurnStart())
@@ -390,7 +387,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   {
                      fightEntitesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
                      alivePlayers = 0;
-                     for each (en in fightEntitesFrame.getEntitiesDictionnary())
+                     for each(en in fightEntitesFrame.getEntitiesDictionnary())
                      {
                         if((en is GameFightCharacterInformations) && (GameFightCharacterInformations(en).alive) && (en.contextualId > 0))
                         {
@@ -577,6 +574,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
                CurrentPlayedFighterManager.getInstance().setCharacteristicsInformations(CurrentPlayedFighterManager.getInstance().currentFighterId,fslmsg.stats);
                SpellWrapper.refreshAllPlayerSpellHolder(CurrentPlayedFighterManager.getInstance().currentFighterId);
                return true;
+            default:
+               return false;
          }
       }
       
@@ -623,7 +622,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
             this._skipTurnTimer = null;
          }
          this._destroyed = true;
-         for each (entityId in this._playerTargetedEntitiesList)
+         for each(entityId in this._playerTargetedEntitiesList)
          {
             TooltipManager.hide("tooltipOverEntity_" + entityId);
          }
@@ -640,7 +639,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          this._delayCslmsg = msg;
       }
       
-      public function prepareNextPlayableCharacter(currentCharacterId:int=0) : void {
+      public function prepareNextPlayableCharacter(currentCharacterId:int = 0) : void {
          var nextCharacterEntity:GameFightFighterInformations = null;
          var nextCharacterId:* = 0;
          if(this._slaveId)
@@ -686,13 +685,11 @@ package com.ankamagames.dofus.logic.game.fight.frames
             {
                masterIdx = i;
             }
-            else
+            else if(this._turnsList[i] == this._slaveId)
             {
-               if(this._turnsList[i] == this._slaveId)
-               {
-                  slaveIdx = i;
-               }
+               slaveIdx = i;
             }
+            
             if(this._turnsList[i] == this._currentPlayerId)
             {
                currentCharacterIdx = i;
@@ -860,7 +857,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
                CurrentPlayedFighterManager.getInstance().getSpellCastManager().nextTurn();
                SpellWrapper.refreshAllPlayerSpellHolder(this._lastPlayerId);
-               for each (entityId in this._playerTargetedEntitiesList)
+               for each(entityId in this._playerTargetedEntitiesList)
                {
                   TooltipManager.hide("tooltip_tooltipOverEntity_" + entityId);
                }
@@ -879,7 +876,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var fightContextFrame:FightContextFrame = null;
          var _holder:FightEntitiesHolder = FightEntitiesHolder.getInstance();
          var entities:Dictionary = _holder.getEntities();
-         for each (coward in entities)
+         for each(coward in entities)
          {
             (coward as AnimatedCharacter).display();
          }
@@ -901,7 +898,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          }
       }
       
-      private function gameFightSynchronize(fighters:Vector.<GameFightFighterInformations>, synchronizeBuff:Boolean=true) : void {
+      private function gameFightSynchronize(fighters:Vector.<GameFightFighterInformations>, synchronizeBuff:Boolean = true) : void {
          var newWaveAppeared:* = false;
          var newWaveMonster:* = false;
          var newWaveMonsterIndex:* = 0;
@@ -914,7 +911,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          {
             BuffManager.getInstance().synchronize();
          }
-         for each (fighterInfos in fighters)
+         for each(fighterInfos in fighters)
          {
             if(fighterInfos.alive)
             {

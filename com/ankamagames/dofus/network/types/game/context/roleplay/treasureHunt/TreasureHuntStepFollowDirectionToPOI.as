@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt
          return 461;
       }
       
-      public function initTreasureHuntStepFollowDirectionToPOI(direction:uint=1, poiLabelId:uint=0) : TreasureHuntStepFollowDirectionToPOI {
+      public function initTreasureHuntStepFollowDirectionToPOI(direction:uint = 1, poiLabelId:uint = 0) : TreasureHuntStepFollowDirectionToPOI {
          this.direction = direction;
          this.poiLabelId = poiLabelId;
          return this;

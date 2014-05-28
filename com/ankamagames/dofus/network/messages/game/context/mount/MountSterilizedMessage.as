@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5977;
       }
       
-      public function initMountSterilizedMessage(mountId:Number=0) : MountSterilizedMessage {
+      public function initMountSterilizedMessage(mountId:Number = 0) : MountSterilizedMessage {
          this.mountId = mountId;
          this._isInitialized = true;
          return this;

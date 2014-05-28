@@ -27,7 +27,7 @@ package com.ankamagames.jerakine.data
          }
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(GameDataFileAccessor));
+      private static const _log:Logger;
       
       private static var _self:GameDataFileAccessor;
       
@@ -214,7 +214,7 @@ package com.ankamagames.jerakine.data
       
       public function close() : void {
          var stream:FileStream = null;
-         for each (stream in this._streams)
+         for each(stream in this._streams)
          {
             try
             {

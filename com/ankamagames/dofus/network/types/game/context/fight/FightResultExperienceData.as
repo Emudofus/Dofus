@@ -46,7 +46,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 192;
       }
       
-      public function initFightResultExperienceData(experience:Number=0, showExperience:Boolean=false, experienceLevelFloor:Number=0, showExperienceLevelFloor:Boolean=false, experienceNextLevelFloor:Number=0, showExperienceNextLevelFloor:Boolean=false, experienceFightDelta:int=0, showExperienceFightDelta:Boolean=false, experienceForGuild:uint=0, showExperienceForGuild:Boolean=false, experienceForMount:uint=0, showExperienceForMount:Boolean=false, isIncarnationExperience:Boolean=false, rerollExperienceMul:int=0) : FightResultExperienceData {
+      public function initFightResultExperienceData(experience:Number = 0, showExperience:Boolean = false, experienceLevelFloor:Number = 0, showExperienceLevelFloor:Boolean = false, experienceNextLevelFloor:Number = 0, showExperienceNextLevelFloor:Boolean = false, experienceFightDelta:int = 0, showExperienceFightDelta:Boolean = false, experienceForGuild:uint = 0, showExperienceForGuild:Boolean = false, experienceForMount:uint = 0, showExperienceForMount:Boolean = false, isIncarnationExperience:Boolean = false, rerollExperienceMul:int = 0) : FightResultExperienceData {
          this.experience = experience;
          this.showExperience = showExperience;
          this.experienceLevelFloor = experienceLevelFloor;

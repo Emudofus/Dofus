@@ -48,10 +48,12 @@ package com.ankamagames.dofus.console.common
                return I18n.getUiText("ui.chat.console.help.ping");
             case "aping":
                return I18n.getUiText("ui.chat.console.help.aping");
+            default:
+               return I18n.getUiText("ui.chat.console.noHelp",[cmd]);
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

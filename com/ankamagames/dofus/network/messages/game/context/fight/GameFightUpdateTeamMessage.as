@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 5572;
       }
       
-      public function initGameFightUpdateTeamMessage(fightId:uint=0, team:FightTeamInformations=null) : GameFightUpdateTeamMessage {
+      public function initGameFightUpdateTeamMessage(fightId:uint = 0, team:FightTeamInformations = null) : GameFightUpdateTeamMessage {
          this.fightId = fightId;
          this.team = team;
          this._isInitialized = true;

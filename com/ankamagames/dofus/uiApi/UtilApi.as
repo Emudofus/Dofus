@@ -11,7 +11,6 @@ package com.ankamagames.dofus.uiApi
    import flash.geom.ColorTransform;
    import com.ankamagames.berilia.components.Texture;
    import flash.display.DisplayObject;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.data.XmlConfig;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    import com.ankamagames.dofus.logic.game.common.managers.EntitiesLooksManager;
@@ -53,7 +52,7 @@ package com.ankamagames.dofus.uiApi
          return CallWithParameters.callR(method,parameters);
       }
       
-      public function kamasToString(kamas:Number, unit:String="-") : String {
+      public function kamasToString(kamas:Number, unit:String = "-") : String {
          return StringUtils.kamasToString(kamas,unit);
       }
       
@@ -61,11 +60,11 @@ package com.ankamagames.dofus.uiApi
          return StringUtils.formateIntToString(val);
       }
       
-      public function stringToKamas(string:String, unit:String="-") : int {
+      public function stringToKamas(string:String, unit:String = "-") : int {
          return StringUtils.stringToKamas(string,unit);
       }
       
-      public function getTextWithParams(textId:int, params:Array, replace:String="%") : String {
+      public function getTextWithParams(textId:int, params:Array, replace:String = "%") : String {
          var msgContent:String = I18n.getText(textId);
          if(msgContent)
          {
@@ -74,7 +73,7 @@ package com.ankamagames.dofus.uiApi
          return "";
       }
       
-      public function applyTextParams(pText:String, pParams:Array, pReplace:String="%") : String {
+      public function applyTextParams(pText:String, pParams:Array, pReplace:String = "%") : String {
          return ParamsDecoder.applyParams(pText,pParams,pReplace);
       }
       
@@ -82,7 +81,7 @@ package com.ankamagames.dofus.uiApi
          return StringUtils.noAccent(str);
       }
       
-      public function changeColor(obj:Object, color:Number, depth:int, unColor:Boolean=false) : void {
+      public function changeColor(obj:Object, color:Number, depth:int, unColor:Boolean = false) : void {
          var t0:ColorTransform = null;
          var R:* = 0;
          var V:* = 0;
@@ -97,13 +96,11 @@ package com.ankamagames.dofus.uiApi
                {
                   Texture(obj).colorTransform(t0,depth);
                }
-               else
+               else if(obj is DisplayObject)
                {
-                  if(obj is DisplayObject)
-                  {
-                     DisplayObject(obj).transform.colorTransform = t0;
-                  }
+                  DisplayObject(obj).transform.colorTransform = t0;
                }
+               
             }
             else
             {
@@ -115,18 +112,16 @@ package com.ankamagames.dofus.uiApi
                {
                   Texture(obj).colorTransform(t,depth);
                }
-               else
+               else if(obj is DisplayObject)
                {
-                  if(obj is DisplayObject)
-                  {
-                     DisplayObject(obj).transform.colorTransform = t;
-                  }
+                  DisplayObject(obj).transform.colorTransform = t;
                }
+               
             }
          }
       }
       
-      public function sortOnString(list:*, field:String="") : void {
+      public function sortOnString(list:*, field:String = "") : void {
          if((!(list is Array)) && (!(list is Vector.<*>)))
          {
             this._log.error("Tried to sort something different than an Array or a Vector!");
@@ -149,7 +144,7 @@ package com.ankamagames.dofus.uiApi
          }
       }
       
-      public function sort(target:*, field:String, ascendand:Boolean=true, isNumeric:Boolean=false) : * {
+      public function sort(target:*, field:String, ascendand:Boolean = true, isNumeric:Boolean = false) : * {
          var result:* = undefined;
          var sup:int = 0;
          var inf:int = 0;
@@ -207,7 +202,7 @@ package com.ankamagames.dofus.uiApi
          {
             return null;
          }
-         var result:* = new target.constructor as Class();
+         var result:* = new (target.constructor as Class)();
          var len:uint = target.length;
          var i:uint = 0;
          if(pattern is String)
@@ -240,15 +235,15 @@ package com.ankamagames.dofus.uiApi
          return EntitiesLooksManager.getInstance().getTiphonEntityLook(pEntityId);
       }
       
-      public function getRealTiphonEntityLook(pEntityId:int, pWithoutMount:Boolean=false) : TiphonEntityLook {
+      public function getRealTiphonEntityLook(pEntityId:int, pWithoutMount:Boolean = false) : TiphonEntityLook {
          return EntitiesLooksManager.getInstance().getRealTiphonEntityLook(pEntityId,pWithoutMount);
       }
       
-      public function getLookFromContext(pEntityId:int, pForceCreature:Boolean=false) : TiphonEntityLook {
+      public function getLookFromContext(pEntityId:int, pForceCreature:Boolean = false) : TiphonEntityLook {
          return EntitiesLooksManager.getInstance().getLookFromContext(pEntityId,pForceCreature);
       }
       
-      public function getLookFromContextInfos(pInfos:GameContextActorInformations, pForceCreature:Boolean=false) : TiphonEntityLook {
+      public function getLookFromContextInfos(pInfos:GameContextActorInformations, pForceCreature:Boolean = false) : TiphonEntityLook {
          return EntitiesLooksManager.getInstance().getLookFromContextInfos(pInfos,pForceCreature);
       }
       

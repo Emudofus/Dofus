@@ -32,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.startup
          return 1304;
       }
       
-      public function initStartupActionFinishedMessage(success:Boolean=false, actionId:uint=0, automaticAction:Boolean=false) : StartupActionFinishedMessage {
+      public function initStartupActionFinishedMessage(success:Boolean = false, actionId:uint = 0, automaticAction:Boolean = false) : StartupActionFinishedMessage {
          this.success = success;
          this.actionId = actionId;
          this.automaticAction = automaticAction;

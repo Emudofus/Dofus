@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.data.items
          return 123;
       }
       
-      public function initGoldItem(sum:uint=0) : GoldItem {
+      public function initGoldItem(sum:uint = 0) : GoldItem {
          this.sum = sum;
          return this;
       }

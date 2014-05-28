@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.character.choice
          return 45;
       }
       
-      public function initCharacterBaseInformations(id:uint=0, level:uint=0, name:String="", entityLook:EntityLook=null, breed:int=0, sex:Boolean=false) : CharacterBaseInformations {
+      public function initCharacterBaseInformations(id:uint = 0, level:uint = 0, name:String = "", entityLook:EntityLook = null, breed:int = 0, sex:Boolean = false) : CharacterBaseInformations {
          super.initCharacterMinimalPlusLookInformations(id,level,name,entityLook);
          this.breed = breed;
          this.sex = sex;

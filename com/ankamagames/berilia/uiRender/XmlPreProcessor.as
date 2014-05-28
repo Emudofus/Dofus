@@ -22,7 +22,7 @@ package com.ankamagames.berilia.uiRender
          this._xDoc = xDoc;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(XmlPreProcessor));
+      protected static const _log:Logger;
       
       private var _xDoc:XMLDocument;
       
@@ -75,13 +75,11 @@ package com.ankamagames.berilia.uiRender
                currNode.removeNode();
                i--;
             }
-            else
+            else if(currNode != null)
             {
-               if(currNode != null)
-               {
-                  this.matchImport(currNode);
-               }
+               this.matchImport(currNode);
             }
+            
             i++;
          }
       }

@@ -10,12 +10,9 @@ package com.ankamagames.berilia.api
    import flash.errors.IllegalOperationError;
    import flash.utils.flash_proxy;
    import com.ankamagames.jerakine.utils.misc.CallWithParameters;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.interfaces.ISecurizable;
    import com.ankamagames.jerakine.interfaces.ICustomSecureObject;
    import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
-   
-   use namespace flash_proxy;
    
    public dynamic class ReadOnlyObject extends Proxy implements Secure
    {
@@ -25,7 +22,7 @@ package com.ankamagames.berilia.api
          SecureCenter.checkAccessKey(accessKey);
          this._object = o;
          this._getQualifiedClassName = getQualifiedClassName(o);
-         if(!((this._properties) && ((o is Array) || (o is Vector.<*>))))
+         if(!(this._properties && ((o is Array) || (o is Vector.<*>))))
          {
             this._properties = DescribeTypeCache.getVariables(this._object);
             if((_createdObjectProperties[this._getQualifiedClassName]) || (this._getQualifiedClassName == "Object"))
@@ -38,15 +35,15 @@ package com.ankamagames.berilia.api
          MEMORY_LOG[this] = 1;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      private static const _createdObjectProperties:Dictionary = new Dictionary(true);
+      private static const _createdObjectProperties:Dictionary;
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(ReadOnlyObject));
+      private static const _log:Logger;
       
-      private static const _readOnlyObjectList:Dictionary = new Dictionary(true);
+      private static const _readOnlyObjectList:Dictionary;
       
-      private static const _readOnlyObjectExist:Dictionary = new Dictionary(true);
+      private static const _readOnlyObjectExist:Dictionary;
       
       public static function create(o:Object) : ReadOnlyObject {
          var roo:* = undefined;
@@ -56,7 +53,7 @@ package com.ankamagames.berilia.api
          }
          if(_readOnlyObjectExist[o])
          {
-            for (roo in _readOnlyObjectList)
+            for(roo in _readOnlyObjectList)
             {
                if((roo) && (roo._object == o))
                {
@@ -136,6 +133,17 @@ package com.ankamagames.berilia.api
                }
                _log.error("Try to use \'indexOf\' method on a simple ReadOnlyObject.");
                return null;
+            default:
+               e = new Error();
+               if(e.getStackTrace())
+               {
+                  _log.error("Cannot call method on ReadOnlyObject : " + name + ", " + e.getStackTrace().split("at ")[2]);
+               }
+               else
+               {
+                  _log.error("Cannot call method on ReadOnlyObject : " + name + ", no stack trace available");
+               }
+               return null;
          }
       }
       
@@ -159,6 +167,8 @@ package com.ankamagames.berilia.api
                return o;
             case o is ISecurizable:
                return (o as ISecurizable).getSecureObject();
+            default:
+               return SecureCenter.secure(o);
          }
       }
       
@@ -167,7 +177,7 @@ package com.ankamagames.berilia.api
          if((index == 0) && ((this._object is Dictionary) || (this._object is Array) || (this._object is Vector.<*>) || (this._object is Vector.<uint>) || (this._object is Vector.<int>) || (this._object is Vector.<Number>) || (this._object is Vector.<Boolean>)))
          {
             this._properties = new Array();
-            for (x in this._object)
+            for(x in this._object)
             {
                this._properties.push(x);
             }
@@ -195,6 +205,8 @@ package com.ankamagames.berilia.api
                return o;
             case o is ISecurizable:
                return (o as ISecurizable).getSecureObject();
+            default:
+               return SecureCenter.secure(o);
          }
       }
       

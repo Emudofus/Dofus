@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 179;
       }
       
-      public function initBasicWhoIsNoMatchMessage(search:String="") : BasicWhoIsNoMatchMessage {
+      public function initBasicWhoIsNoMatchMessage(search:String = "") : BasicWhoIsNoMatchMessage {
          this.search = search;
          this._isInitialized = true;
          return this;

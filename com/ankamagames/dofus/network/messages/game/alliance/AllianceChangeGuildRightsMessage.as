@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6426;
       }
       
-      public function initAllianceChangeGuildRightsMessage(guildId:uint=0, rights:uint=0) : AllianceChangeGuildRightsMessage {
+      public function initAllianceChangeGuildRightsMessage(guildId:uint = 0, rights:uint = 0) : AllianceChangeGuildRightsMessage {
          this.guildId = guildId;
          this.rights = rights;
          this._isInitialized = true;

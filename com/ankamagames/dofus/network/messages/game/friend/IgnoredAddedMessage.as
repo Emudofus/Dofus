@@ -32,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5678;
       }
       
-      public function initIgnoredAddedMessage(ignoreAdded:IgnoredInformations=null, session:Boolean=false) : IgnoredAddedMessage {
+      public function initIgnoredAddedMessage(ignoreAdded:IgnoredInformations = null, session:Boolean = false) : IgnoredAddedMessage {
          this.ignoreAdded = ignoreAdded;
          this.session = session;
          this._isInitialized = true;

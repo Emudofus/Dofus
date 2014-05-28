@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.social
          return 435;
       }
       
-      public function initGuildVersatileInformations(guildId:uint=0, leaderId:uint=0, guildLevel:uint=0, nbMembers:uint=0) : GuildVersatileInformations {
+      public function initGuildVersatileInformations(guildId:uint = 0, leaderId:uint = 0, guildLevel:uint = 0, nbMembers:uint = 0) : GuildVersatileInformations {
          this.guildId = guildId;
          this.leaderId = leaderId;
          this.guildLevel = guildLevel;

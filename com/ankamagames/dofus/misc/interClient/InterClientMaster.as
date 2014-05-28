@@ -32,7 +32,7 @@ package com.ankamagames.dofus.misc.interClient
          this._lastPingTs = getTimer();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(InterClientSlave));
+      protected static const _log:Logger;
       
       private static var _receiving_lc:LocalConnection;
       

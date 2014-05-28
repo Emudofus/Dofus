@@ -46,13 +46,19 @@ package com.ankamagames.tubul.factory
                {
                   case "MP3":
                      return new LocalizedSound(_id++,pUri,isStereo);
+                  default:
+                     throw new ArgumentError("Unknown type file " + pUri.fileType.toUpperCase());
                }
             case EnumSoundType.UNLOCALIZED_SOUND:
                switch(pUri.fileType.toUpperCase())
                {
                   case "MP3":
                      return new UnlocalizedSound(_id++,pUri,isStereo);
+                  default:
+                     throw new ArgumentError("Unknown type file " + pUri.fileType.toUpperCase());
                }
+            default:
+               throw new ArgumentError("Unknown sound type " + pType + ". See EnumSoundType");
          }
       }
    }

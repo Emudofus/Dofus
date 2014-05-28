@@ -55,7 +55,7 @@ package com.ankamagames.jerakine.utils.misc
          return d[a.length][b.length];
       }
       
-      public static function suggest(word:String, aPossibility:Array, max:uint=5) : String {
+      public static function suggest(word:String, aPossibility:Array, max:uint = 5) : String {
          var res:String = null;
          var value:uint = 0;
          var min:uint = 100000;

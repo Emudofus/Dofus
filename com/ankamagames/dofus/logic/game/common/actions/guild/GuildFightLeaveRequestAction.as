@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.common.actions.guild
          super();
       }
       
-      public static function create(pTaxCollectorId:uint, pCharacterId:uint, pWarning:Boolean=false) : GuildFightLeaveRequestAction {
+      public static function create(pTaxCollectorId:uint, pCharacterId:uint, pWarning:Boolean = false) : GuildFightLeaveRequestAction {
          var action:GuildFightLeaveRequestAction = new GuildFightLeaveRequestAction();
          action.taxCollectorId = pTaxCollectorId;
          action.characterId = pCharacterId;

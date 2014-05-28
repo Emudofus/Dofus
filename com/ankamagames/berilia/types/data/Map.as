@@ -1,7 +1,6 @@
 package com.ankamagames.berilia.types.data
 {
    import flash.display.DisplayObjectContainer;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.Uri;
    
    public class Map extends Object

@@ -3,7 +3,7 @@ package com.ankamagames.jerakine.utils.errors
    public class SignatureError extends Error
    {
       
-      public function SignatureError(message:*="", id:*=0) {
+      public function SignatureError(message:* = "", id:* = 0) {
          super(message,id);
       }
       

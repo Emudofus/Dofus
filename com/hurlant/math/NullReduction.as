@@ -1,7 +1,5 @@
 package com.hurlant.math
 {
-   use namespace bi_internal;
-   
    public class NullReduction extends Object implements IReduction
    {
       

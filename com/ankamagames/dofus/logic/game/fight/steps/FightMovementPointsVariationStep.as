@@ -12,7 +12,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightMovementPointsVariationStep extends AbstractStatContextualStep implements IFightStep
    {
       
-      public function FightMovementPointsVariationStep(entityId:int, value:int, voluntarlyUsed:Boolean, updateCharacteristicManager:Boolean=true, showChatMessage:Boolean=true) {
+      public function FightMovementPointsVariationStep(entityId:int, value:int, voluntarlyUsed:Boolean, updateCharacteristicManager:Boolean = true, showChatMessage:Boolean = true) {
          super(COLOR,value > 0?"+" + value:value.toString(),entityId,BLOCKING);
          this._showChatmessage = showChatMessage;
          this._intValue = value;
@@ -64,20 +64,18 @@ package com.ankamagames.dofus.logic.game.fight.steps
             {
                FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_MP_GAINED,[_targetId,Math.abs(this._intValue)],_targetId,castingSpellId,false,2);
             }
-            else
+            else if(this._intValue < 0)
             {
-               if(this._intValue < 0)
+               if(this._voluntarlyUsed)
                {
-                  if(this._voluntarlyUsed)
-                  {
-                     FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_MP_USED,[_targetId,Math.abs(this._intValue)],_targetId,castingSpellId,false,2);
-                  }
-                  else
-                  {
-                     FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_MP_LOST,[_targetId,Math.abs(this._intValue)],_targetId,castingSpellId,false,2);
-                  }
+                  FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_MP_USED,[_targetId,Math.abs(this._intValue)],_targetId,castingSpellId,false,2);
+               }
+               else
+               {
+                  FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_MP_LOST,[_targetId,Math.abs(this._intValue)],_targetId,castingSpellId,false,2);
                }
             }
+            
          }
          if(fighterInfos.disposition.cellId != -1)
          {

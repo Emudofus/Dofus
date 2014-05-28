@@ -6,7 +6,7 @@ package com.ankamagames.berilia.types.messages
    public class ModuleRessourceLoadFailedMessage extends Object implements Message
    {
       
-      public function ModuleRessourceLoadFailedMessage(moduleName:String, uri:Uri, isImportant:Boolean=true) {
+      public function ModuleRessourceLoadFailedMessage(moduleName:String, uri:Uri, isImportant:Boolean = true) {
          super();
          this._moduleName = moduleName;
          this._uri = uri;

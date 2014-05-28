@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 6084;
       }
       
-      public function initCharacterFirstSelectionMessage(id:int=0, doTutorial:Boolean=false) : CharacterFirstSelectionMessage {
+      public function initCharacterFirstSelectionMessage(id:int = 0, doTutorial:Boolean = false) : CharacterFirstSelectionMessage {
          super.initCharacterSelectionMessage(id);
          this.doTutorial = doTutorial;
          this._isInitialized = true;

@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.look.EntityLook;
    import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -25,7 +24,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 464;
       }
       
-      public function initGameRolePlayGroupMonsterWaveInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, staticInfos:GroupMonsterStaticInformations=null, ageBonus:int=0, lootShare:int=0, alignmentSide:int=0, keyRingBonus:Boolean=false, hasHardcoreDrop:Boolean=false, hasAVARewardToken:Boolean=false, nbWaves:uint=0, alternatives:Vector.<GroupMonsterStaticInformations>=null) : GameRolePlayGroupMonsterWaveInformations {
+      public function initGameRolePlayGroupMonsterWaveInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, staticInfos:GroupMonsterStaticInformations = null, ageBonus:int = 0, lootShare:int = 0, alignmentSide:int = 0, keyRingBonus:Boolean = false, hasHardcoreDrop:Boolean = false, hasAVARewardToken:Boolean = false, nbWaves:uint = 0, alternatives:Vector.<GroupMonsterStaticInformations> = null) : GameRolePlayGroupMonsterWaveInformations {
          super.initGameRolePlayGroupMonsterInformations(contextualId,look,disposition,staticInfos,ageBonus,lootShare,alignmentSide,keyRingBonus,hasHardcoreDrop,hasAVARewardToken);
          this.nbWaves = nbWaves;
          this.alternatives = alternatives;

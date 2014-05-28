@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6457;
       }
       
-      public function initMimicryObjectEraseRequestMessage(hostUID:uint=0, hostPos:uint=0) : MimicryObjectEraseRequestMessage {
+      public function initMimicryObjectEraseRequestMessage(hostUID:uint = 0, hostPos:uint = 0) : MimicryObjectEraseRequestMessage {
          this.hostUID = hostUID;
          this.hostPos = hostPos;
          this._isInitialized = true;

@@ -6,12 +6,11 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
    import com.ankamagames.jerakine.utils.benchmark.monitoring.FpsManagerUtils;
    import flash.text.TextFormat;
    import flash.text.TextField;
-   import __AS3__.vec.*;
    
    public class Graph extends Sprite
    {
       
-      public function Graph(pName:String, pColor:uint=16777215) {
+      public function Graph(pName:String, pColor:uint = 16777215) {
          var tf:TextFormat = null;
          var _infoTf:TextField = null;
          super();

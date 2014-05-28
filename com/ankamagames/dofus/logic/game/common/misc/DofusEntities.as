@@ -4,7 +4,6 @@ package com.ankamagames.dofus.logic.game.common.misc
    import com.ankamagames.atouin.Atouin;
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.logger.Log;
    
    public class DofusEntities extends Object
@@ -16,16 +15,16 @@ package com.ankamagames.dofus.logic.game.common.misc
       
       private static const LOCALIZER_DEBUG:Boolean = true;
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(DofusEntities));
+      private static const _log:Logger;
       
-      private static var _atouin:Atouin = Atouin.getInstance();
+      private static var _atouin:Atouin;
       
-      private static var _localizers:Vector.<IEntityLocalizer> = new Vector.<IEntityLocalizer>();
+      private static var _localizers:Vector.<IEntityLocalizer>;
       
       public static function getEntity(entityId:int) : IEntity {
          var localizer:IEntityLocalizer = null;
          var foundEntity:IEntity = null;
-         for each (localizer in _localizers)
+         for each(localizer in _localizers)
          {
             foundEntity = localizer.getEntity(entityId);
             if(foundEntity)
@@ -40,7 +39,7 @@ package com.ankamagames.dofus.logic.game.common.misc
          var currentLocalizer:IEntityLocalizer = null;
          var clazz:String = getQualifiedClassName(localizer);
          var currentClazz:String = null;
-         for each (currentLocalizer in _localizers)
+         for each(currentLocalizer in _localizers)
          {
             currentClazz = getQualifiedClassName(currentLocalizer);
             if(currentClazz == clazz)

@@ -21,11 +21,11 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DtdInstructionHandler));
+      protected static const _log:Logger;
       
-      public static const DONT_IGNORE:Array = new Array("alpha","linkedTo");
+      public static const DONT_IGNORE:Array;
       
-      public static const IGNORE:Array = new Array("width","height","haveFocus");
+      public static const IGNORE:Array;
       
       private var _chCurrent:ConsoleHandler;
       
@@ -218,10 +218,12 @@ package com.ankamagames.dofus.console.debug
                return "Generate the Shortcuts DTD.";
             case "dtd":
                return "Generate a DTD for a given class or component.";
+            default:
+               return "No help for command \'" + cmd + "\'";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
       
@@ -230,7 +232,7 @@ package com.ankamagames.dofus.console.debug
          var xmlShortcuts:XML = XML(sXml);
          var sBuffer:String = "";
          var aElement:Array = new Array();
-         for each (shortcut in xmlShortcuts..bind)
+         for each(shortcut in xmlShortcuts..bind)
          {
             sBuffer = sBuffer + ("&lt;!ELEMENT " + shortcut..@name + " EMPTY &gt;\n");
             aElement.push(shortcut..@name);

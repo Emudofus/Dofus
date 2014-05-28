@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.friend
          return 78;
       }
       
-      public function initFriendInformations(accountId:uint=0, accountName:String="", playerState:uint=99, lastConnection:uint=0, achievementPoints:int=0) : FriendInformations {
+      public function initFriendInformations(accountId:uint = 0, accountName:String = "", playerState:uint = 99, lastConnection:uint = 0, achievementPoints:int = 0) : FriendInformations {
          super.initAbstractContactInformations(accountId,accountName);
          this.playerState = playerState;
          this.lastConnection = lastConnection;

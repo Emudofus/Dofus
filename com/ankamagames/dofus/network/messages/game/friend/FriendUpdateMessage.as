@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5924;
       }
       
-      public function initFriendUpdateMessage(friendUpdated:FriendInformations=null) : FriendUpdateMessage {
+      public function initFriendUpdateMessage(friendUpdated:FriendInformations = null) : FriendUpdateMessage {
          this.friendUpdated = friendUpdated;
          this._isInitialized = true;
          return this;

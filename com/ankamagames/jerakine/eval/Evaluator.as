@@ -11,7 +11,7 @@ package com.ankamagames.jerakine.eval
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Evaluator));
+      protected static const _log:Logger;
       
       private static const NUMBER:uint = 0;
       
@@ -22,167 +22,12 @@ package com.ankamagames.jerakine.eval
       }
       
       private function simpleEval(expr:String) : * {
-         var operator:Function = null;
-         var currentChar:String = null;
-         var partialOp:Array = null;
-         var lastOp:* = undefined;
-         var ok:* = false;
-         var wait:* = false;
-         var k:uint = 0;
-         var currentOperator:String = "";
-         var inQuote:Boolean = false;
-         var protect:Boolean = false;
-         var currentParam:String = "";
-         var currentType:uint = STRING;
-         var op:Array = new Array();
-         var i:uint = 0;
-         while(i < expr.length)
-         {
-            currentChar = expr.charAt(i);
-            if((currentChar == "\'") && (!protect))
-            {
-               currentType = STRING;
-               inQuote = !inQuote;
-            }
-            else
-            {
-               if(currentChar == "\\")
-               {
-                  protect = true;
-               }
-               else
-               {
-                  if(!inQuote)
-                  {
-                     switch(currentChar)
-                     {
-                        case "(":
-                        case ")":
-                        case " ":
-                        case "\t":
-                        case "\n":
-                           break;
-                        case "0":
-                        case "1":
-                        case "2":
-                        case "3":
-                        case "4":
-                        case "5":
-                        case "6":
-                        case "7":
-                        case "8":
-                        case "9":
-                           currentType = NUMBER;
-                           currentOperator = "";
-                           operator = null;
-                           currentParam = currentParam + currentChar;
-                           break;
-                        case ".":
-                           currentParam = currentParam + ".";
-                           break;
-                     }
-                  }
-                  else
-                  {
-                     currentOperator = "";
-                     operator = null;
-                     currentParam = currentParam + currentChar;
-                     protect = false;
-                  }
-               }
-            }
-            i++;
-         }
-         if(currentParam.length)
-         {
-            if(currentType == STRING)
-            {
-               op.push(currentParam);
-            }
-            else
-            {
-               op.push(parseFloat(currentParam));
-            }
-         }
-         var operatorPriority:Array = [this.divide,this.multiply,this.minus,this.plus,this.sup,this.inf,this.supOrEquals,this.infOrEquals,this.equals,this.diff,this.and,this.or,this.ternary];
-         var j:uint = 0;
-         while(j < operatorPriority.length)
-         {
-            partialOp = new Array();
-            k = 0;
-            while(k < op.length)
-            {
-               if((op[k] is Function) && (op[k] == operatorPriority[j]))
-               {
-                  lastOp = partialOp[partialOp.length - 1];
-                  if((lastOp is Number) || ((op[k] == this.plus) || (op[k] == this.ternary) || (op[k] == this.equals) || (op[k] == this.diff)) && (lastOp is String))
-                  {
-                     if((op[k + 1] is Number) || ((op[k] == this.plus) || (op[k] == this.ternary) || (op[k] == this.equals) || (op[k] == this.diff)) && (op[k + 1] is String))
-                     {
-                        if(op[k] === this.ternary)
-                        {
-                           if(op[k + 2] == this.opElse)
-                           {
-                              partialOp[partialOp.length - 1] = this.ternary(lastOp,op[k + 1],op[k + 3]);
-                              k = k + 2;
-                           }
-                           else
-                           {
-                              _log.warn("operator \':\' not found");
-                           }
-                        }
-                        else
-                        {
-                           partialOp[partialOp.length - 1] = op[k](lastOp,op[k + 1]);
-                        }
-                     }
-                     else
-                     {
-                        _log.warn("Expect Number, but find [" + op[k + 1] + "]");
-                     }
-                     k++;
-                  }
-                  else
-                  {
-                     lastOp = op[k - 1];
-                     if((lastOp is Number) || ((op[k] == this.plus) || (op[k] == this.ternary) || (op[k] == this.equals) || (op[k] == this.diff)) && (lastOp is String))
-                     {
-                        if((op[k + 1] is Number) || ((op[k] == this.plus) || (op[k] == this.ternary) || (op[k] == this.equals) || (op[k] == this.diff)) && (op[k + 1] is String))
-                        {
-                           if(op[k] === this.ternary)
-                           {
-                              if(op[k + 2] == this.opElse)
-                              {
-                                 partialOp[partialOp.length - 1] = this.ternary(lastOp,op[k + 1],op[k + 3]);
-                              }
-                              else
-                              {
-                                 _log.warn("operator \':\' not found");
-                              }
-                           }
-                           else
-                           {
-                              partialOp.push(op[k](lastOp,op[k + 1]));
-                           }
-                        }
-                        else
-                        {
-                           _log.warn("Expect Number,  but find [" + op[k + 1] + "]");
-                        }
-                        k++;
-                     }
-                  }
-               }
-               else
-               {
-                  partialOp.push(op[k]);
-               }
-               k++;
-            }
-            op = partialOp;
-            j++;
-         }
-         return op[0];
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function complexEval(expr:String) : * {

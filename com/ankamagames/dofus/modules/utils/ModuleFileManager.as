@@ -26,7 +26,7 @@ package com.ankamagames.dofus.modules.utils
       
       public static const MAX_FILE_NUM:uint = 1000;
       
-      public static const MAX_FILE_SIZE:uint = Math.pow(2,20);
+      public static const MAX_FILE_SIZE:uint;
       
       private static var _self:ModuleFileManager;
       
@@ -66,11 +66,11 @@ package com.ankamagames.dofus.modules.utils
          this._moduleFilesNum[moduleId] = this._moduleFilesNum[moduleId] + delta;
       }
       
-      public function canCreateFiles(moduleId:String, amount:uint=0) : Boolean {
+      public function canCreateFiles(moduleId:String, amount:uint = 0) : Boolean {
          return this._moduleFilesNum[moduleId] < MAX_FILE_NUM;
       }
       
-      public function canAddSize(moduleId:String, amount:uint=0) : Boolean {
+      public function canAddSize(moduleId:String, amount:uint = 0) : Boolean {
          return this._moduleSizes[moduleId] < MAX_FILE_SIZE;
       }
       
@@ -103,7 +103,7 @@ package com.ankamagames.dofus.modules.utils
          }
          var size:uint = 0;
          var files:Array = folder.getDirectoryListing();
-         for each (file in files)
+         for each(file in files)
          {
             if(file.isDirectory)
             {

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 6047;
       }
       
-      public function initJobCrafterDirectoryListRequestMessage(jobId:uint=0) : JobCrafterDirectoryListRequestMessage {
+      public function initJobCrafterDirectoryListRequestMessage(jobId:uint = 0) : JobCrafterDirectoryListRequestMessage {
          this.jobId = jobId;
          this._isInitialized = true;
          return this;

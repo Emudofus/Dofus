@@ -1,19 +1,18 @@
 package com.ankamagames.jerakine.BalanceManager
 {
    import com.ankamagames.jerakine.BalanceManager.type.BalancedObject;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.BalanceManager.events.BalanceEvent;
    
    public class BalanceManager extends Object
    {
       
-      public function BalanceManager(pItems:Array=null) {
+      public function BalanceManager(pItems:Array = null) {
          var item:Object = null;
          super();
          this.init();
          if(pItems != null)
          {
-            for each (item in pItems)
+            for each(item in pItems)
             {
                this.addItem(item);
             }
@@ -30,7 +29,7 @@ package com.ankamagames.jerakine.BalanceManager
       
       public function getItemNbCall(pItem:Object) : int {
          var obt:BalancedObject = null;
-         for each (obt in this._balancedObjects)
+         for each(obt in this._balancedObjects)
          {
             if(pItem == obt.item)
             {
@@ -42,7 +41,7 @@ package com.ankamagames.jerakine.BalanceManager
       
       public function setItemBalance(pItem:Object, pNewBalance:uint) : void {
          var bo:BalancedObject = null;
-         for each (bo in this._balancedObjects)
+         for each(bo in this._balancedObjects)
          {
             if(pItem == bo.item)
             {
@@ -52,7 +51,7 @@ package com.ankamagames.jerakine.BalanceManager
          }
       }
       
-      public function addItem(pItem:Object, pReset:Boolean=false) : void {
+      public function addItem(pItem:Object, pReset:Boolean = false) : void {
          this._balancedObjects.push(new BalancedObject(pItem));
          if(pReset)
          {
@@ -116,7 +115,7 @@ package com.ankamagames.jerakine.BalanceManager
       
       public function removeItem(pItem:Object) : void {
          var bo:BalancedObject = null;
-         for each (bo in this._balancedObjects)
+         for each(bo in this._balancedObjects)
          {
             if(bo.item == pItem)
             {
@@ -128,7 +127,7 @@ package com.ankamagames.jerakine.BalanceManager
       
       public function reset() : void {
          var bo:BalancedObject = null;
-         for each (bo in this._balancedObjects)
+         for each(bo in this._balancedObjects)
          {
             this.setItemBalance(bo.item,0);
          }
@@ -143,23 +142,23 @@ package com.ankamagames.jerakine.BalanceManager
          var objectToCall4:BalancedObject = null;
          if(this._nbCall == 0)
          {
-            for each (objectToCall in this._balancedObjects)
+            for each(objectToCall in this._balancedObjects)
             {
                objectToCall.chanceToBeCall = 1 / this._balancedObjects.length * 100;
             }
          }
          else
          {
-            for each (objectToCall2 in this._balancedObjects)
+            for each(objectToCall2 in this._balancedObjects)
             {
                objectToCall2.chanceToBeNonCall = (objectToCall2.nbCall + 1) / (this._nbCall + this._balancedObjects.length) * 100;
             }
             temp = 0;
-            for each (objectToCall3 in this._balancedObjects)
+            for each(objectToCall3 in this._balancedObjects)
             {
                temp = temp + 1 / objectToCall3.chanceToBeNonCall;
             }
-            for each (objectToCall4 in this._balancedObjects)
+            for each(objectToCall4 in this._balancedObjects)
             {
                objectToCall4.chanceToBeCall = 1 / objectToCall4.chanceToBeNonCall / temp * 100;
             }
@@ -172,7 +171,7 @@ package com.ankamagames.jerakine.BalanceManager
       
       private function resetBalance() : void {
          var bo:BalancedObject = null;
-         for each (bo in this._balancedObjects)
+         for each(bo in this._balancedObjects)
          {
             bo.nbCall = 0;
          }

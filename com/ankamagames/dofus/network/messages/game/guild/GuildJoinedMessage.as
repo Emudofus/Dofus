@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5564;
       }
       
-      public function initGuildJoinedMessage(guildInfo:GuildInformations=null, memberRights:uint=0, enabled:Boolean=false) : GuildJoinedMessage {
+      public function initGuildJoinedMessage(guildInfo:GuildInformations = null, memberRights:uint = 0, enabled:Boolean = false) : GuildJoinedMessage {
          this.guildInfo = guildInfo;
          this.memberRights = memberRights;
          this.enabled = enabled;

@@ -22,7 +22,6 @@ package com.ankamagames.dofus.logic.connection.managers
    import com.ankamagames.dofus.network.enums.ClientInstallTypeEnum;
    import com.ankamagames.dofus.network.enums.ClientTechnologyEnum;
    import com.ankamagames.jerakine.utils.crypto.RSA;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
    
    public class AuthentificationManager extends Object implements IDestroyable
@@ -41,7 +40,7 @@ package com.ankamagames.dofus.logic.connection.managers
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AuthentificationManager));
+      protected static const _log:Logger;
       
       private static var _self:AuthentificationManager;
       
@@ -155,17 +154,44 @@ package com.ankamagames.dofus.logic.connection.managers
       }
       
       private function cipherMd5String(pwd:String) : String {
+         var _loc2_:* = true;
          var _loc3_:* = false;
          return MD5.hash(pwd + this._salt);
       }
       
       private function cipherRsa(login:String, pwd:String, certificate:TrustCertificate) : Vector.<int> {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc9_:* = false;
+         var _loc10_:* = true;
+         var baOut:ByteArray = null;
+         var n:* = 0;
+         var baIn:ByteArray = new ByteArray();
+         if(certificate)
+         {
+            baIn.writeUTFBytes(this._salt);
+            baIn.writeUnsignedInt(certificate.id);
+            baIn.writeUTFBytes(certificate.hash);
+            baIn.writeByte(login.length);
+            baIn.writeUTFBytes(login);
+            baIn.writeUTFBytes(pwd);
+         }
+         else
+         {
+            baIn.writeUTFBytes(this._salt);
+            baIn.writeByte(login.length);
+            baIn.writeUTFBytes(login);
+            baIn.writeUTFBytes(pwd);
+         }
+         baOut = RSA.publicEncrypt(this._publicKey,baIn);
+         var ret:Vector.<int> = new Vector.<int>();
+         baOut.position = 0;
+         var i:int = 0;
+         while(baOut.bytesAvailable != 0)
+         {
+            n = baOut.readByte();
+            ret[i] = n;
+            i++;
+         }
+         return ret;
       }
    }
 }

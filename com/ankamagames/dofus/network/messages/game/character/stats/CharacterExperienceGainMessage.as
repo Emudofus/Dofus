@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.character.stats
          return 6321;
       }
       
-      public function initCharacterExperienceGainMessage(experienceCharacter:Number=0, experienceMount:Number=0, experienceGuild:Number=0, experienceIncarnation:Number=0) : CharacterExperienceGainMessage {
+      public function initCharacterExperienceGainMessage(experienceCharacter:Number = 0, experienceMount:Number = 0, experienceGuild:Number = 0, experienceIncarnation:Number = 0) : CharacterExperienceGainMessage {
          this.experienceCharacter = experienceCharacter;
          this.experienceMount = experienceMount;
          this.experienceGuild = experienceGuild;

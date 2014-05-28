@@ -41,9 +41,9 @@ package com.ankamagames.tubul.interfaces
       
       function get isPlaying() : Boolean;
       
-      function play(param1:Boolean=false, param2:int=0, param3:VolumeFadeEffect=null, param4:VolumeFadeEffect=null) : void;
+      function play(param1:Boolean = false, param2:int = 0, param3:VolumeFadeEffect = null, param4:VolumeFadeEffect = null) : void;
       
-      function stop(param1:VolumeFadeEffect=null) : void;
+      function stop(param1:VolumeFadeEffect = null) : void;
       
       function loadSound(param1:ICache) : void;
       

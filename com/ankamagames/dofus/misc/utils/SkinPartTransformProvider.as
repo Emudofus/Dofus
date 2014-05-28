@@ -15,7 +15,7 @@ package com.ankamagames.dofus.misc.utils
          var skinId:uint = 0;
          var sp:SkinPosition = null;
          var i:uint = 0;
-         for each (skinId in skin.skinList)
+         for each(skinId in skin.skinList)
          {
             sp = SkinPosition.getSkinPositionById(skinId);
             if(sp)

@@ -8,14 +8,14 @@ package com.ankamagames.jerakine.entities.behaviours
    public interface IMovementBehavior
    {
       
-      function move(param1:IMovable, param2:MovementPath, param3:Function=null) : void;
+      function move(param1:IMovable, param2:MovementPath, param3:Function = null) : void;
       
       function jump(param1:IMovable, param2:MapPoint) : void;
       
-      function stop(param1:IMovable, param2:Boolean=false) : void;
+      function stop(param1:IMovable, param2:Boolean = false) : void;
       
       function isMoving(param1:IMovable) : Boolean;
       
-      function synchroniseSubEntitiesPosition(param1:IMovable, param2:DisplayObject=null) : void;
+      function synchroniseSubEntitiesPosition(param1:IMovable, param2:DisplayObject = null) : void;
    }
 }

@@ -6,7 +6,7 @@ package com.ankamagames.jerakine.network.messages
    public class ExpectedSocketClosureMessage extends Object implements Message, ILogableMessage
    {
       
-      public function ExpectedSocketClosureMessage(reason:uint=0) {
+      public function ExpectedSocketClosureMessage(reason:uint = 0) {
          super();
          this.reason = reason;
       }

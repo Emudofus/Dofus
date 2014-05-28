@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5983;
       }
       
-      public function initMountRenamedMessage(mountId:Number=0, name:String="") : MountRenamedMessage {
+      public function initMountRenamedMessage(mountId:Number = 0, name:String = "") : MountRenamedMessage {
          this.mountId = mountId;
          this.name = name;
          this._isInitialized = true;

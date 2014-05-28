@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.connection
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -28,7 +27,7 @@ package com.ankamagames.dofus.network.messages.connection
          return 6469;
       }
       
-      public function initSelectedServerDataExtendedMessage(serverId:int=0, address:String="", port:uint=0, canCreateNewCharacter:Boolean=false, ticket:String="", serverIds:Vector.<uint>=null) : SelectedServerDataExtendedMessage {
+      public function initSelectedServerDataExtendedMessage(serverId:int = 0, address:String = "", port:uint = 0, canCreateNewCharacter:Boolean = false, ticket:String = "", serverIds:Vector.<uint> = null) : SelectedServerDataExtendedMessage {
          super.initSelectedServerDataMessage(serverId,address,port,canCreateNewCharacter,ticket);
          this.serverIds = serverIds;
          this._isInitialized = true;

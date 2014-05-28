@@ -4,7 +4,6 @@ package com.ankamagames.jerakine.types.zones
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.map.IDataMapProvider;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.positions.MapPoint;
    
    public class Lozenge extends Object implements IZone
@@ -17,7 +16,7 @@ package com.ankamagames.jerakine.types.zones
          this._dataMapProvider = dataMapProvider;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Lozenge));
+      protected static const _log:Logger;
       
       private var _radius:uint = 0;
       
@@ -52,7 +51,7 @@ package com.ankamagames.jerakine.types.zones
          return Math.pow(this._radius + 1,2) + Math.pow(this._radius,2);
       }
       
-      public function getCells(cellId:uint=0) : Vector.<uint> {
+      public function getCells(cellId:uint = 0) : Vector.<uint> {
          var i:* = 0;
          var j:* = 0;
          var aCells:Vector.<uint> = new Vector.<uint>();

@@ -26,7 +26,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ServerTransferFrame));
+      protected static const _log:Logger;
       
       private var _newServerLoginTicket:String;
       
@@ -80,6 +80,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                clr.initCharactersListRequestMessage();
                ConnectionsHandler.getConnection().send(clr);
                return true;
+            default:
+               return false;
          }
       }
       
@@ -92,6 +94,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                gccrm.initGameContextCreateRequestMessage();
                ConnectionsHandler.getConnection().send(gccrm);
                return true;
+            default:
+               return false;
          }
       }
       

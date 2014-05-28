@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.house
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
    import flash.utils.IDataInput;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.types.game.house
          return 111;
       }
       
-      public function initHouseInformations(houseId:uint=0, doorsOnMap:Vector.<uint>=null, ownerName:String="", isOnSale:Boolean=false, isSaleLocked:Boolean=false, modelId:uint=0) : HouseInformations {
+      public function initHouseInformations(houseId:uint = 0, doorsOnMap:Vector.<uint> = null, ownerName:String = "", isOnSale:Boolean = false, isSaleLocked:Boolean = false, modelId:uint = 0) : HouseInformations {
          this.houseId = houseId;
          this.doorsOnMap = doorsOnMap;
          this.ownerName = ownerName;

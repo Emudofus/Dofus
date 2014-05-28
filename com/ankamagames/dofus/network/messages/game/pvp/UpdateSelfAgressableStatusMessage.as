@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.pvp
          return 6456;
       }
       
-      public function initUpdateSelfAgressableStatusMessage(status:uint=0, probationTime:uint=0) : UpdateSelfAgressableStatusMessage {
+      public function initUpdateSelfAgressableStatusMessage(status:uint = 0, probationTime:uint = 0) : UpdateSelfAgressableStatusMessage {
          this.status = status;
          this.probationTime = probationTime;
          this._isInitialized = true;

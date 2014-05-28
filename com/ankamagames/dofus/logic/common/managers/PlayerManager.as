@@ -2,7 +2,6 @@ package com.ankamagames.dofus.logic.common.managers
 {
    import com.ankamagames.jerakine.interfaces.IDestroyable;
    import com.ankamagames.dofus.datacenter.servers.Server;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.connection.BasicCharacterWrapper;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
    

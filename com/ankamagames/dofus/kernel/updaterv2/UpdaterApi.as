@@ -13,7 +13,7 @@ package com.ankamagames.dofus.kernel.updaterv2
          updaterConnection.addObserver(handler);
       }
       
-      public static const updaterConnection:UpdaterConnexionHelper = new UpdaterConnexionHelper();
+      public static const updaterConnection:UpdaterConnexionHelper;
       
       public function sayHello() : void {
       }
@@ -25,12 +25,12 @@ package com.ankamagames.dofus.kernel.updaterv2
          return PartManagerV2.getInstance().hasComponent(name);
       }
       
-      public function activateComponent(name:String, activate:Boolean, projectName:String="game") : void {
+      public function activateComponent(name:String, activate:Boolean, projectName:String = "game") : void {
          var acm:ActivateComponentMessage = new ActivateComponentMessage(name,activate,projectName);
          updaterConnection.sendMessage(acm);
       }
       
-      public function getComponentList(project:String="game") : void {
+      public function getComponentList(project:String = "game") : void {
          updaterConnection.sendMessage(new GetComponentsListMessage(project));
       }
    }

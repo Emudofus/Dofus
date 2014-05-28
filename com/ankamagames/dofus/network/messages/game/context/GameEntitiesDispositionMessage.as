@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.IdentifiedEntityDispositionInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 5696;
       }
       
-      public function initGameEntitiesDispositionMessage(dispositions:Vector.<IdentifiedEntityDispositionInformations>=null) : GameEntitiesDispositionMessage {
+      public function initGameEntitiesDispositionMessage(dispositions:Vector.<IdentifiedEntityDispositionInformations> = null) : GameEntitiesDispositionMessage {
          this.dispositions = dispositions;
          this._isInitialized = true;
          return this;

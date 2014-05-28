@@ -22,9 +22,9 @@ package com.ankamagames.jerakine.types
       
       private static var COMMON_FOLDER:String;
       
-      private static var _cache:Array = [];
+      private static var _cache:Array;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CustomSharedObject));
+      protected static const _log:Logger;
       
       public static var throwException:Boolean;
       
@@ -74,7 +74,7 @@ package com.ankamagames.jerakine.types
       
       public static function closeAll() : void {
          var cso:CustomSharedObject = null;
-         for each (cso in _cache)
+         for each(cso in _cache)
          {
             if(cso)
             {

@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5523;
       }
       
-      public function initExchangeRequestedTradeMessage(exchangeType:int=0, source:uint=0, target:uint=0) : ExchangeRequestedTradeMessage {
+      public function initExchangeRequestedTradeMessage(exchangeType:int = 0, source:uint = 0, target:uint = 0) : ExchangeRequestedTradeMessage {
          super.initExchangeRequestedMessage(exchangeType);
          this.source = source;
          this.target = target;

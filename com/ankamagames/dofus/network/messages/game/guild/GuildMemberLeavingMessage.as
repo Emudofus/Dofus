@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5923;
       }
       
-      public function initGuildMemberLeavingMessage(kicked:Boolean=false, memberId:int=0) : GuildMemberLeavingMessage {
+      public function initGuildMemberLeavingMessage(kicked:Boolean = false, memberId:int = 0) : GuildMemberLeavingMessage {
          this.kicked = kicked;
          this.memberId = memberId;
          this._isInitialized = true;

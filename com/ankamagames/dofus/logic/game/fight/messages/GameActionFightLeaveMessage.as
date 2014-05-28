@@ -10,7 +10,7 @@ package com.ankamagames.dofus.logic.game.fight.messages
          super();
       }
       
-      public function initGameActionFightLeaveMessage(actionId:uint=0, sourceId:int=0, targetId:int=0) : GameActionFightLeaveMessage {
+      public function initGameActionFightLeaveMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0) : GameActionFightLeaveMessage {
          super.initGameActionFightDeathMessage(actionId,sourceId,targetId);
          return this;
       }

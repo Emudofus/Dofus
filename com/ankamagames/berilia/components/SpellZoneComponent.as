@@ -54,7 +54,7 @@ package com.ankamagames.berilia.components
          var infiniteRange:Boolean = (this._spellLevel.minimalRange == 0) && (this._spellLevel.maximalRange == 0) || (this._spellLevel.maximalRange == 63);
          var infiniteZoneEffect:Boolean = false;
          var affectOneCharacter:Boolean = true;
-         for each (zoneEffect in this._spellLevel.spellZoneEffects)
+         for each(zoneEffect in this._spellLevel.spellZoneEffects)
          {
             if(!((zoneEffect.zoneSize == 0) && (zoneEffect.zoneShape == 80)))
             {
@@ -79,7 +79,7 @@ package com.ankamagames.berilia.components
          if(this._spellLevel)
          {
             additionalRange = 0;
-            for each (shape in this._spellLevel.spellZoneEffects)
+            for each(shape in this._spellLevel.spellZoneEffects)
             {
                if((additionalRange < shape.zoneSize / 2) && (!(shape.zoneSize == 63)))
                {

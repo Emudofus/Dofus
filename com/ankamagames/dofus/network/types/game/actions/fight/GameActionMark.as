@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.actions.fight
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.types.game.actions.fight
          return 351;
       }
       
-      public function initGameActionMark(markAuthorId:int=0, markSpellId:uint=0, markId:int=0, markType:int=0, cells:Vector.<GameActionMarkedCell>=null) : GameActionMark {
+      public function initGameActionMark(markAuthorId:int = 0, markSpellId:uint = 0, markId:int = 0, markType:int = 0, cells:Vector.<GameActionMarkedCell> = null) : GameActionMark {
          this.markAuthorId = markAuthorId;
          this.markSpellId = markSpellId;
          this.markId = markId;

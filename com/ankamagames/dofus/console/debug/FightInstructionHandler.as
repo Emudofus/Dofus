@@ -71,10 +71,12 @@ package com.ankamagames.dofus.console.debug
                return "Change script parametters for given spell";
             case "setspellscript":
                return "Change script id used for given spell";
+            default:
+               return "Unknown command";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

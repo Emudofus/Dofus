@@ -2,7 +2,6 @@ package com.ankamagames.jerakine.data
 {
    import flash.utils.IDataInput;
    import flash.utils.getDefinitionByName;
-   import __AS3__.vec.*;
    
    public class GameDataClassDefinition extends Object
    {
@@ -24,7 +23,7 @@ package com.ankamagames.jerakine.data
       public function read(module:String, stream:IDataInput) : * {
          var field:GameDataField = null;
          var inst:* = new this._class();
-         for each (field in this._fields)
+         for each(field in this._fields)
          {
             inst[field.name] = field.readData(module,stream);
          }

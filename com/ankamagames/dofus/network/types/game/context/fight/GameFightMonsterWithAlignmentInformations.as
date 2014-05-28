@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 203;
       }
       
-      public function initGameFightMonsterWithAlignmentInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null, creatureGenericId:uint=0, creatureGrade:uint=0, alignmentInfos:ActorAlignmentInformations=null) : GameFightMonsterWithAlignmentInformations {
+      public function initGameFightMonsterWithAlignmentInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, teamId:uint = 2, wave:uint = 0, alive:Boolean = false, stats:GameFightMinimalStats = null, creatureGenericId:uint = 0, creatureGrade:uint = 0, alignmentInfos:ActorAlignmentInformations = null) : GameFightMonsterWithAlignmentInformations {
          super.initGameFightMonsterInformations(contextualId,look,disposition,teamId,wave,alive,stats,creatureGenericId,creatureGrade);
          this.alignmentInfos = alignmentInfos;
          return this;

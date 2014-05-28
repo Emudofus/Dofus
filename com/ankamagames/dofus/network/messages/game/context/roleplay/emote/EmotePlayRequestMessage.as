@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.emote
          return 5685;
       }
       
-      public function initEmotePlayRequestMessage(emoteId:uint=0) : EmotePlayRequestMessage {
+      public function initEmotePlayRequestMessage(emoteId:uint = 0) : EmotePlayRequestMessage {
          this.emoteId = emoteId;
          this._isInitialized = true;
          return this;

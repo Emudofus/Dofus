@@ -6,7 +6,7 @@ package com.ankamagames.tiphon.types
    public class AnimLibrary extends GraphicLibrary
    {
       
-      public function AnimLibrary(pGfxId:uint, isBone:Boolean=false) {
+      public function AnimLibrary(pGfxId:uint, isBone:Boolean = false) {
          super(pGfxId,isBone);
       }
       
@@ -14,7 +14,7 @@ package com.ankamagames.tiphon.types
          var className:String = null;
          var animInfo:Array = null;
          super.addSwl(swl,url);
-         for each (className in swl.getDefinitions())
+         for each(className in swl.getDefinitions())
          {
             if(className.indexOf("_to_") != -1)
             {

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.chat.smiley
          return 6196;
       }
       
-      public function initMoodSmileyResultMessage(resultCode:uint=1, smileyId:int=0) : MoodSmileyResultMessage {
+      public function initMoodSmileyResultMessage(resultCode:uint = 1, smileyId:int = 0) : MoodSmileyResultMessage {
          this.resultCode = resultCode;
          this.smileyId = smileyId;
          this._isInitialized = true;

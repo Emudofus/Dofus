@@ -22,7 +22,6 @@ package com.ankamagames.dofus.misc.utils.errormanager
    import flash.utils.Timer;
    import flash.events.TimerEvent;
    import flash.utils.setInterval;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.logger.Log;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
    import com.ankamagames.dofus.BuildInfos;
@@ -67,7 +66,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
       
       private static const MIN_DELAY:int = 30;
       
-      private static const MAX_DELAY:int = 5 * 60 - MIN_DELAY;
+      private static const MAX_DELAY:int = 270.0;
       
       private static var BASE_URL:String = "http://api.ankama.";
       
@@ -145,7 +144,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
          exception.isMultiAccount = reportInfo.multicompte;
          exception.date = TimeManager.getInstance().getTimestamp() / 1000;
          var frString:String = "";
-         for each (fr in Kernel.getWorker().framesList)
+         for each(fr in Kernel.getWorker().framesList)
          {
             f = getQualifiedClassName(fr).split("::");
             frString = frString + (String(f[1]?f[1]:f[0]).replace("Frame","") + ",");
@@ -161,7 +160,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
          var reg:RegExp = null;
          var outStack:String = "";
          var tmp:Array = inStack.split("\n");
-         for each (line in tmp)
+         for each(line in tmp)
          {
             lineIndex = tmp.indexOf(line);
             if(lineIndex > 0)
@@ -213,7 +212,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
          if(this._exceptionsInProgress[hash])
          {
             (this._exceptionsInProgress[hash] as DataExceptionModel).sent = true;
-            delete this._exceptionsInProgress[[hash]];
+            delete this._exceptionsInProgress[hash];
          }
          if(this.getWaitingExceptionsNumber() == 0)
          {
@@ -224,7 +223,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
       private function getWaitingExceptionsNumber() : int {
          var val:* = undefined;
          var cpt:int = 0;
-         for (val in this._exceptionsInProgress)
+         for(val in this._exceptionsInProgress)
          {
             cpt++;
          }
@@ -244,7 +243,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
          this._webService.addEventListener(RpcServiceManager.SERVER_ERROR,this.onDataSavedError);
       }
       
-      public function clearService(rpcService:RpcServiceManager=null) : void {
+      public function clearService(rpcService:RpcServiceManager = null) : void {
          if(rpcService == null)
          {
             rpcService = this._webService;
@@ -256,7 +255,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
          var rpcService:RpcServiceManager = null;
       }
       
-      public function saveException(exception:DataExceptionModel, forceSend:Boolean=false) : void {
+      public function saveException(exception:DataExceptionModel, forceSend:Boolean = false) : void {
          var v:int = 0;
          var t:Timer = null;
          if(forceSend)
@@ -282,12 +281,12 @@ package com.ankamagames.dofus.misc.utils.errormanager
       public function sendWaitingException() : void {
          var t:* = undefined;
          var exception:DataExceptionModel = null;
-         for (t in this._timersList)
+         for(t in this._timersList)
          {
             (t as Timer).stop();
             t = null;
          }
-         for each (exception in this._exceptionsList)
+         for each(exception in this._exceptionsList)
          {
             if(!exception.sent)
             {
@@ -325,7 +324,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
             return;
          }
          var d:Date = new Date();
-         for each (exception in this._exceptionsList)
+         for each(exception in this._exceptionsList)
          {
             if((!(exception == null)) && (Math.round(d.time / 1000) - exception.date <= LIMIT_REBOOT))
             {

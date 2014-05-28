@@ -29,7 +29,7 @@ package com.ankamagames.atouin.utils
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(VisibleCellDetection));
+      protected static const _log:Logger;
       
       public static function detectCell(visible:Boolean, map:Map, pMap:WorldPoint, frustum:Frustum, currentMapPoint:WorldPoint) : PartialDataMap {
          var p:Point = null;

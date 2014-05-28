@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party.companio
          return 453;
       }
       
-      public function initPartyCompanionBaseInformations(indexId:uint=0, companionGenericId:uint=0, entityLook:EntityLook=null) : PartyCompanionBaseInformations {
+      public function initPartyCompanionBaseInformations(indexId:uint = 0, companionGenericId:uint = 0, entityLook:EntityLook = null) : PartyCompanionBaseInformations {
          this.indexId = indexId;
          this.companionGenericId = companionGenericId;
          this.entityLook = entityLook;

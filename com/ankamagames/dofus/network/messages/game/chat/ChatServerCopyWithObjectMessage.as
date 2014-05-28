@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.chat
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 884;
       }
       
-      public function initChatServerCopyWithObjectMessage(channel:uint=0, content:String="", timestamp:uint=0, fingerprint:String="", receiverId:uint=0, receiverName:String="", objects:Vector.<ObjectItem>=null) : ChatServerCopyWithObjectMessage {
+      public function initChatServerCopyWithObjectMessage(channel:uint = 0, content:String = "", timestamp:uint = 0, fingerprint:String = "", receiverId:uint = 0, receiverName:String = "", objects:Vector.<ObjectItem> = null) : ChatServerCopyWithObjectMessage {
          super.initChatServerCopyMessage(channel,content,timestamp,fingerprint,receiverId,receiverName);
          this.objects = objects;
          this._isInitialized = true;

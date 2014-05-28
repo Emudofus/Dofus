@@ -27,7 +27,7 @@ package com.ankamagames.atouin.data.map
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Map));
+      protected static const _log:Logger;
       
       public var mapClass:Class;
       
@@ -121,7 +121,7 @@ package com.ankamagames.atouin.data.map
          return this._failed;
       }
       
-      public function getGfxList(skipBackground:Boolean=false) : Array {
+      public function getGfxList(skipBackground:Boolean = false) : Array {
          if(!this._gfxList)
          {
             this.computeGfxList(skipBackground);
@@ -137,7 +137,7 @@ package com.ankamagames.atouin.data.map
          return this._gfxCount[gfxId];
       }
       
-      public function fromRaw(raw:IDataInput, decryptionKey:ByteArray=null) : void {
+      public function fromRaw(raw:IDataInput, decryptionKey:ByteArray = null) : void {
          var i:int = 0;
          var header:int = 0;
          var bg:Fixture = null;
@@ -380,8 +380,8 @@ package com.ankamagames.atouin.data.map
          }
       }
       
-      private function computeGfxList(skipBackground:Boolean=false) : void {
-         var l:* = 0;
+      private function computeGfxList(skipBackground:Boolean = false) : void {
+                  var l:* = 0;
          var c:* = 0;
          var e:* = 0;
          var lsCell:Array = null;

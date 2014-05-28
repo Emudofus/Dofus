@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 711;
       }
       
-      public function initGameFightRemoveTeamMemberMessage(fightId:uint=0, teamId:uint=2, charId:int=0) : GameFightRemoveTeamMemberMessage {
+      public function initGameFightRemoveTeamMemberMessage(fightId:uint = 0, teamId:uint = 2, charId:int = 0) : GameFightRemoveTeamMemberMessage {
          this.fightId = fightId;
          this.teamId = teamId;
          this.charId = charId;

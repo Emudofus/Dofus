@@ -14,7 +14,7 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(InventoryInstructionHandler));
+      protected static const _log:Logger;
       
       public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
          switch(cmd)
@@ -37,10 +37,12 @@ package com.ankamagames.dofus.console.debug
          {
             case "floodlivingobject":
                return "Make a flood of talk from living objects.";
+            default:
+               return "Unknown command \'" + cmd + "\'.";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

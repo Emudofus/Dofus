@@ -6,7 +6,6 @@ package com.ankamagames.jerakine.tasking
    import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
    import flash.events.Event;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
-   import __AS3__.vec.*;
    
    public final class TaskingManager extends Object
    {
@@ -24,7 +23,7 @@ package com.ankamagames.jerakine.tasking
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TaskingManager));
+      protected static const _log:Logger;
       
       private static var _self:TaskingManager;
       
@@ -63,18 +62,19 @@ package com.ankamagames.jerakine.tasking
          var iter:uint = 0;
          do
          {
-               result = task.step();
-            }while((++iter < task.stepsPerFrame()) && (!result));
-            
-            if(result)
+            result = task.step();
+         }
+         while((++iter < task.stepsPerFrame()) && (!result));
+         
+         if(result)
+         {
+            this._queue.shift();
+            if(this._queue.length == 0)
             {
-               this._queue.shift();
-               if(this._queue.length == 0)
-               {
-                  EnterFrameDispatcher.removeEventListener(this.onEnterFrame);
-                  this._running = false;
-               }
+               EnterFrameDispatcher.removeEventListener(this.onEnterFrame);
+               this._running = false;
             }
          }
       }
    }
+}

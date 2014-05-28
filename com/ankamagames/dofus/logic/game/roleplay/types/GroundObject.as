@@ -14,7 +14,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
          this.object = pObject;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GroundObject));
+      protected static const _log:Logger;
       
       public var object:Item;
    }

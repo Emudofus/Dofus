@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 13;
       }
       
-      public function initFightTeamMemberCharacterInformations(id:int=0, name:String="", level:uint=0) : FightTeamMemberCharacterInformations {
+      public function initFightTeamMemberCharacterInformations(id:int = 0, name:String = "", level:uint = 0) : FightTeamMemberCharacterInformations {
          super.initFightTeamMemberInformations(id);
          this.name = name;
          this.level = level;

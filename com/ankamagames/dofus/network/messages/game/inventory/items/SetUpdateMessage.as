@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -36,7 +35,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 5503;
       }
       
-      public function initSetUpdateMessage(setId:uint=0, setObjects:Vector.<uint>=null, setEffects:Vector.<ObjectEffect>=null) : SetUpdateMessage {
+      public function initSetUpdateMessage(setId:uint = 0, setObjects:Vector.<uint> = null, setEffects:Vector.<ObjectEffect> = null) : SetUpdateMessage {
          this.setId = setId;
          this.setObjects = setObjects;
          this.setEffects = setEffects;

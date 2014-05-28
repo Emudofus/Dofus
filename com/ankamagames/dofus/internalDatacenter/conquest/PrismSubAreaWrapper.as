@@ -22,9 +22,9 @@ package com.ankamagames.dofus.internalDatacenter.conquest
          super();
       }
       
-      private static var _ref:Dictionary = new Dictionary();
+      private static var _ref:Dictionary;
       
-      private static var _cache:Array = new Array();
+      private static var _cache:Array;
       
       public static function reset() : void {
          _ref = new Dictionary();
@@ -34,7 +34,7 @@ package com.ankamagames.dofus.internalDatacenter.conquest
          return _ref;
       }
       
-      public static function getFromNetwork(msg:PrismSubareaEmptyInfo, currentPlayerAlliance:AllianceWrapper=null) : PrismSubAreaWrapper {
+      public static function getFromNetwork(msg:PrismSubareaEmptyInfo, currentPlayerAlliance:AllianceWrapper = null) : PrismSubAreaWrapper {
          var ind:* = 0;
          var pgi:PrismGeolocalizedInformation = null;
          var date:Date = null;
@@ -95,13 +95,11 @@ package com.ankamagames.dofus.internalDatacenter.conquest
                }
             }
          }
-         else
+         else if(msg.allianceId != 0)
          {
-            if(msg.allianceId != 0)
-            {
-               prism._alliance = (Kernel.getWorker().getFrame(AllianceFrame) as AllianceFrame).getAllianceById(msg.allianceId);
-            }
+            prism._alliance = (Kernel.getWorker().getFrame(AllianceFrame) as AllianceFrame).getAllianceById(msg.allianceId);
          }
+         
          if((PlayedCharacterManager.getInstance().currentSubArea) && (prism.subAreaId == PlayedCharacterManager.getInstance().currentSubArea.id))
          {
             KernelEventsManager.getInstance().processCallback(PrismHookList.KohState,prism);

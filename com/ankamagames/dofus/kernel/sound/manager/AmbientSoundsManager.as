@@ -3,7 +3,6 @@ package com.ankamagames.dofus.kernel.sound.manager
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.ambientSounds.AmbientSound;
    import com.ankamagames.tubul.interfaces.ISound;
    import com.ankamagames.jerakine.managers.OptionManager;
@@ -26,7 +25,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          this.init();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(AmbientSoundsManager));
+      private static const _log:Logger;
       
       private var _useCriterion:Boolean = false;
       
@@ -86,12 +85,12 @@ package com.ankamagames.dofus.kernel.sound.manager
          else
          {
             logText = "Cette map contient les ambiances d\'id : ";
-            for each (asound in this._ambientSounds)
+            for each(asound in this._ambientSounds)
             {
                logText = logText + (asound.id + ", ");
             }
             logText = logText + " et les musiques d\'id : ";
-            for each (asound in this._roleplayMusics)
+            for each(asound in this._roleplayMusics)
             {
                logText = logText + (asound.id + ", ");
             }
@@ -103,7 +102,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          var ambientSound:AmbientSound = null;
          var rnd:* = 0;
          var count:int = 0;
-         for each (ambientSound in this._ambientSounds)
+         for each(ambientSound in this._ambientSounds)
          {
             if((!this._useCriterion) || (ambientSound.criterionId == this._criterionID))
             {
@@ -111,7 +110,7 @@ package com.ankamagames.dofus.kernel.sound.manager
             }
          }
          rnd = int(Math.random() * count);
-         for each (ambientSound in this._ambientSounds)
+         for each(ambientSound in this._ambientSounds)
          {
             if((!this._useCriterion) || (ambientSound.criterionId == this._criterionID))
             {
@@ -124,7 +123,7 @@ package com.ankamagames.dofus.kernel.sound.manager
             }
          }
          count = 0;
-         for each (ambientSound in this._roleplayMusics)
+         for each(ambientSound in this._roleplayMusics)
          {
             if((!this._useCriterion) || (ambientSound.criterionId == this._criterionID))
             {
@@ -132,7 +131,7 @@ package com.ankamagames.dofus.kernel.sound.manager
             }
          }
          rnd = int(Math.random() * count);
-         for each (ambientSound in this._roleplayMusics)
+         for each(ambientSound in this._roleplayMusics)
          {
             if((!this._useCriterion) || (ambientSound.criterionId == this._criterionID))
             {
@@ -270,7 +269,7 @@ package com.ankamagames.dofus.kernel.sound.manager
       public function mergeSoundsArea(pAmbientSounds:Vector.<AmbientSound>) : void {
       }
       
-      public function clear(pFade:Number=0, pFadeTime:Number=0) : void {
+      public function clear(pFade:Number = 0, pFadeTime:Number = 0) : void {
          this.stopMusicAndAmbient();
       }
       

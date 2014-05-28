@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 882;
       }
       
-      public function initChatServerCopyMessage(channel:uint=0, content:String="", timestamp:uint=0, fingerprint:String="", receiverId:uint=0, receiverName:String="") : ChatServerCopyMessage {
+      public function initChatServerCopyMessage(channel:uint = 0, content:String = "", timestamp:uint = 0, fingerprint:String = "", receiverId:uint = 0, receiverName:String = "") : ChatServerCopyMessage {
          super.initChatAbstractServerMessage(channel,content,timestamp,fingerprint);
          this.receiverId = receiverId;
          this.receiverName = receiverName;

@@ -29,9 +29,9 @@ package com.ankamagames.jerakine.resources.adapters
          MEMORY_LOG[this] = 1;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AbstractLoaderAdapter));
+      protected static const _log:Logger;
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
       private var _ldr:PoolableLoader;
       

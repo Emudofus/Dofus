@@ -6,7 +6,6 @@ package com.ankamagames.dofus.internalDatacenter.mount
    import com.ankamagames.dofus.datacenter.mounts.Mount;
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.mounts.MountBehavior;
    import com.ankamagames.dofus.misc.ObjectEffectAdapter;
    
@@ -19,9 +18,9 @@ package com.ankamagames.dofus.internalDatacenter.mount
          super();
       }
       
-      private static var _dictionary_cache:Dictionary = new Dictionary();
+      private static var _dictionary_cache:Dictionary;
       
-      public static function makeMountData(o:MountClientData, cache:Boolean=true, xpRatio:uint=0) : MountData {
+      public static function makeMountData(o:MountClientData, cache:Boolean = true, xpRatio:uint = 0) : MountData {
          var ability:uint = 0;
          var nEffect:* = 0;
          var i:* = 0;
@@ -61,7 +60,7 @@ package com.ankamagames.dofus.internalDatacenter.mount
          a.unshift(o.model);
          mountData.ancestor = makeParent(a,0,-1,0);
          mountData.ability = new Array();
-         for each (ability in o.behaviors)
+         for each(ability in o.behaviors)
          {
             mountData.ability.push(MountBehavior.getMountBehaviorById(ability));
          }

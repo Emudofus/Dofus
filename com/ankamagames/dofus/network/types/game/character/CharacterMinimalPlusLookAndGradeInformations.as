@@ -20,7 +20,7 @@ package com.ankamagames.dofus.network.types.game.character
          return 193;
       }
       
-      public function initCharacterMinimalPlusLookAndGradeInformations(id:uint=0, level:uint=0, name:String="", entityLook:EntityLook=null, grade:uint=0) : CharacterMinimalPlusLookAndGradeInformations {
+      public function initCharacterMinimalPlusLookAndGradeInformations(id:uint = 0, level:uint = 0, name:String = "", entityLook:EntityLook = null, grade:uint = 0) : CharacterMinimalPlusLookAndGradeInformations {
          super.initCharacterMinimalPlusLookInformations(id,level,name,entityLook);
          this.grade = grade;
          return this;

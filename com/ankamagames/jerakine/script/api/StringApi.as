@@ -23,11 +23,11 @@ package com.ankamagames.jerakine.script.api
          return str.toUpperCase();
       }
       
-      public static function GetIndexOf(haystack:String, needle:String, startIndex:int=0) : int {
+      public static function GetIndexOf(haystack:String, needle:String, startIndex:int = 0) : int {
          return haystack.indexOf(needle,startIndex);
       }
       
-      public static function GetLastIndexOf(haystack:String, needle:String, startIndex:int=2147483647) : int {
+      public static function GetLastIndexOf(haystack:String, needle:String, startIndex:int = 2147483647) : int {
          return haystack.lastIndexOf(needle,startIndex);
       }
       

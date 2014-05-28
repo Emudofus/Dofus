@@ -40,7 +40,7 @@ package com.ankamagames.berilia.managers
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CssManager));
+      protected static const _log:Logger;
       
       private static const CSS_ARRAY_KEY:String = "cssFilesContents";
       
@@ -99,23 +99,21 @@ package com.ankamagames.berilia.managers
                this._aLoadingFile[uri.uri] = true;
             }
          }
-         else
+         else if(oFile is Array)
          {
-            if(oFile is Array)
+            i = 0;
+            while(i < (oFile as Array).length)
             {
-               i = 0;
-               while(i < (oFile as Array).length)
+               uri = new Uri(oFile[i]);
+               if((!this.exists(uri.uri)) && (!this.inQueue(uri.uri)))
                {
-                  uri = new Uri(oFile[i]);
-                  if((!this.exists(uri.uri)) && (!this.inQueue(uri.uri)))
-                  {
-                     this._aLoadingFile[uri.uri] = true;
-                     aQueue.push(uri);
-                  }
-                  i++;
+                  this._aLoadingFile[uri.uri] = true;
+                  aQueue.push(uri);
                }
+               i++;
             }
          }
+         
          if(aQueue.length)
          {
             this._loader.load(aQueue);
@@ -200,7 +198,7 @@ package com.ankamagames.berilia.managers
          if(_useCache)
          {
             aSavedCss = StoreDataManager.getInstance().getSetData(BeriliaConstants.DATASTORE_UI_CSS,CSS_ARRAY_KEY,new Array());
-            for (file in aSavedCss)
+            for(file in aSavedCss)
             {
                this.parseCss(file,aSavedCss[file]);
             }
@@ -222,7 +220,7 @@ package com.ankamagames.berilia.managers
          var files:Array = null;
          var sse:Array = null;
          var k:uint = 0;
-         for (url in this._aMultiWaiting)
+         for(url in this._aMultiWaiting)
          {
             if(this._aMultiWaiting[url])
             {
@@ -239,7 +237,7 @@ package com.ankamagames.berilia.managers
                }
                if(ok)
                {
-                  delete this._aMultiWaiting[[url]];
+                  delete this._aMultiWaiting[url];
                   files = url.split(",");
                   sse = new Array();
                   k = 0;
@@ -265,7 +263,7 @@ package com.ankamagames.berilia.managers
                Callback(this._aWaiting[url][i]).exec();
                i++;
             }
-            delete this._aWaiting[[url]];
+            delete this._aWaiting[url];
          }
       }
       
@@ -284,7 +282,7 @@ package com.ankamagames.berilia.managers
       protected function error(e:ResourceErrorEvent) : void {
          ErrorManager.addError("Impossible de trouver la feuille de style (url: " + e.uri + ")");
          this._aLoadingFile[e.uri.uri] = false;
-         delete this._aWaiting[[e.uri.uri]];
+         delete this._aWaiting[e.uri.uri];
       }
       
       private function onCssParsed(e:CssEvent) : void {

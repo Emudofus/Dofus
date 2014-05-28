@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6391;
       }
       
-      public function initAllianceCreationResultMessage(result:uint=0) : AllianceCreationResultMessage {
+      public function initAllianceCreationResultMessage(result:uint = 0) : AllianceCreationResultMessage {
          this.result = result;
          this._isInitialized = true;
          return this;

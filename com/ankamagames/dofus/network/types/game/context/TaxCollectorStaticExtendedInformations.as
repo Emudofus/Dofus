@@ -22,7 +22,7 @@ package com.ankamagames.dofus.network.types.game.context
          return 440;
       }
       
-      public function initTaxCollectorStaticExtendedInformations(firstNameId:uint=0, lastNameId:uint=0, guildIdentity:GuildInformations=null, allianceIdentity:AllianceInformations=null) : TaxCollectorStaticExtendedInformations {
+      public function initTaxCollectorStaticExtendedInformations(firstNameId:uint = 0, lastNameId:uint = 0, guildIdentity:GuildInformations = null, allianceIdentity:AllianceInformations = null) : TaxCollectorStaticExtendedInformations {
          super.initTaxCollectorStaticInformations(firstNameId,lastNameId,guildIdentity);
          this.allianceIdentity = allianceIdentity;
          return this;

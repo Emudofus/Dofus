@@ -28,7 +28,7 @@ package com.ankamagames.tiphon.display
          }
       }
       
-      public static var FRAMES:Dictionary = new Dictionary(false);
+      public static var FRAMES:Dictionary;
       
       public static function countFrames() : Object {
          var rfl:RasterizedFrameList = null;
@@ -36,7 +36,7 @@ package com.ankamagames.tiphon.display
          var i:* = 0;
          var animations:int = 0;
          var frames:int = 0;
-         for each (rfl in FRAMES)
+         for each(rfl in FRAMES)
          {
             animations++;
             num = rfl.frameList.length;
@@ -57,15 +57,15 @@ package com.ankamagames.tiphon.display
             };
       }
       
-      public static function optimize(val:int=1) : void {
+      public static function optimize(val:int = 1) : void {
          var rfl:RasterizedFrameList = null;
-         for each (rfl in FRAMES)
+         for each(rfl in FRAMES)
          {
             rfl.death = rfl.death + val;
             rfl.life = rfl.life - rfl.death;
             if(rfl.life < 1)
             {
-               delete FRAMES[[rfl.key]];
+               delete FRAMES[rfl.key];
             }
          }
       }
@@ -102,7 +102,7 @@ package com.ankamagames.tiphon.display
          }
       }
       
-      override public function gotoAndStop(frame:Object, scene:String=null) : void {
+      override public function gotoAndStop(frame:Object, scene:String = null) : void {
          var targetFrame:uint = frame as uint;
          if(targetFrame > 0)
          {
@@ -111,7 +111,7 @@ package com.ankamagames.tiphon.display
          this.displayFrame(targetFrame % this._totalFrames);
       }
       
-      override public function gotoAndPlay(frame:Object, scene:String=null) : void {
+      override public function gotoAndPlay(frame:Object, scene:String = null) : void {
          this.gotoAndStop(frame,scene);
          this.play();
       }

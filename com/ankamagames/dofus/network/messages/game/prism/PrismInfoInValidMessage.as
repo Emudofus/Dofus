@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 5859;
       }
       
-      public function initPrismInfoInValidMessage(reason:uint=0) : PrismInfoInValidMessage {
+      public function initPrismInfoInValidMessage(reason:uint = 0) : PrismInfoInValidMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

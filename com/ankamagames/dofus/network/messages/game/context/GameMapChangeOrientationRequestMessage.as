@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 945;
       }
       
-      public function initGameMapChangeOrientationRequestMessage(direction:uint=1) : GameMapChangeOrientationRequestMessage {
+      public function initGameMapChangeOrientationRequestMessage(direction:uint = 1) : GameMapChangeOrientationRequestMessage {
          this.direction = direction;
          this._isInitialized = true;
          return this;

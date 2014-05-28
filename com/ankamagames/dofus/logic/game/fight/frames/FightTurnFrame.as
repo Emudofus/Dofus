@@ -33,7 +33,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.jerakine.pathfinding.Pathfinding;
    import com.ankamagames.atouin.utils.DataMapProvider;
    import com.ankamagames.jerakine.entities.interfaces.*;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.logic.game.fight.miscs.TackleUtil;
    import com.ankamagames.atouin.renderers.MovementZoneRenderer;
    import com.ankamagames.atouin.managers.SelectionManager;
@@ -64,15 +63,15 @@ package com.ankamagames.dofus.logic.game.fight.frames
       
       private static const TAKLED_CURSOR_NAME:String = "TackledCursor";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FightTurnFrame));
+      protected static const _log:Logger;
       
       public static const SELECTION_PATH:String = "FightMovementPath";
       
       public static const SELECTION_PATH_UNREACHABLE:String = "FightMovementPathUnreachable";
       
-      private static const PATH_COLOR:Color = new Color(26112);
+      private static const PATH_COLOR:Color;
       
-      private static const PATH_UNREACHABLE_COLOR:Color = new Color(6684672);
+      private static const PATH_UNREACHABLE_COLOR:Color;
       
       private static const REMIND_TURN_DELAY:uint = 15000;
       
@@ -282,6 +281,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
             case msg is MapContainerRollOutMessage:
                this.removePath();
                return true;
+            default:
+               return false;
          }
       }
       
@@ -296,7 +297,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          return true;
       }
       
-      public function drawPath(cell:MapPoint=null) : void {
+      public function drawPath(cell:MapPoint = null) : void {
          var tackle:* = NaN;
          var mpLost:* = 0;
          var apLost:* = 0;
@@ -345,7 +346,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var lastPe:PathElement = null;
          var entitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
          var playerInfos:GameFightFighterInformations = entitiesFrame.getEntityInfos(playerEntity.id) as GameFightFighterInformations;
-         for each (pe in path.path)
+         for each(pe in path.path)
          {
             if(isFirst)
             {
@@ -490,13 +491,11 @@ package com.ankamagames.dofus.logic.game.fight.frames
             }
             LinkedCursorSpriteManager.getInstance().addItem(TAKLED_CURSOR_NAME,this._cursorData,true);
          }
-         else
+         else if(LinkedCursorSpriteManager.getInstance().getItem(TAKLED_CURSOR_NAME))
          {
-            if(LinkedCursorSpriteManager.getInstance().getItem(TAKLED_CURSOR_NAME))
-            {
-               LinkedCursorSpriteManager.getInstance().removeItem(TAKLED_CURSOR_NAME);
-            }
+            LinkedCursorSpriteManager.getInstance().removeItem(TAKLED_CURSOR_NAME);
          }
+         
          this._movementSelection.zone = new Custom(this._cells);
          SelectionManager.getInstance().update(SELECTION_PATH,0,true);
       }
@@ -555,7 +554,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var lastPe:PathElement = null;
          var realMP:int = characteristics.movementPointsCurrent;
          this._cells = new Vector.<uint>();
-         for each (pe in path.path)
+         for each(pe in path.path)
          {
             if(lastPe)
             {

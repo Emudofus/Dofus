@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5606;
       }
       
-      public function initFriendSpouseFollowWithCompassRequestMessage(enable:Boolean=false) : FriendSpouseFollowWithCompassRequestMessage {
+      public function initFriendSpouseFollowWithCompassRequestMessage(enable:Boolean = false) : FriendSpouseFollowWithCompassRequestMessage {
          this.enable = enable;
          this._isInitialized = true;
          return this;

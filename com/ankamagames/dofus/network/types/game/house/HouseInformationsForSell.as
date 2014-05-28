@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.house
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -41,7 +40,7 @@ package com.ankamagames.dofus.network.types.game.house
          return 221;
       }
       
-      public function initHouseInformationsForSell(modelId:uint=0, ownerName:String="", ownerConnected:Boolean=false, worldX:int=0, worldY:int=0, subAreaId:uint=0, nbRoom:int=0, nbChest:int=0, skillListIds:Vector.<int>=null, isLocked:Boolean=false, price:uint=0) : HouseInformationsForSell {
+      public function initHouseInformationsForSell(modelId:uint = 0, ownerName:String = "", ownerConnected:Boolean = false, worldX:int = 0, worldY:int = 0, subAreaId:uint = 0, nbRoom:int = 0, nbChest:int = 0, skillListIds:Vector.<int> = null, isLocked:Boolean = false, price:uint = 0) : HouseInformationsForSell {
          this.modelId = modelId;
          this.ownerName = ownerName;
          this.ownerConnected = ownerConnected;

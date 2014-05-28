@@ -5,7 +5,6 @@ package com.ankamagames.jerakine.messages
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import flash.utils.Dictionary;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
    import flash.events.Event;
    import com.ankamagames.jerakine.utils.benchmark.monitoring.FpsManager;
@@ -26,7 +25,7 @@ package com.ankamagames.jerakine.messages
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Worker));
+      protected static const _log:Logger;
       
       private static const DEBUG_FRAMES:Boolean = true;
       
@@ -76,7 +75,7 @@ package com.ankamagames.jerakine.messages
          return true;
       }
       
-      public function addFrame(frame:Frame, allowDuplicateFrame:Boolean=false) : void {
+      public function addFrame(frame:Frame, allowDuplicateFrame:Boolean = false) : void {
          var frameRemoving:* = false;
          var frameAdding:* = false;
          var f:Frame = null;
@@ -87,7 +86,7 @@ package com.ankamagames.jerakine.messages
             frameAdding = false;
             if(this._processingMessage)
             {
-               for each (f in this._framesToAdd)
+               for each(f in this._framesToAdd)
                {
                   if(f["constructor"] == frame["constructor"])
                   {
@@ -97,7 +96,7 @@ package com.ankamagames.jerakine.messages
                }
                if(!frameAdding)
                {
-                  for each (f2 in this._framesToRemove)
+                  for each(f2 in this._framesToRemove)
                   {
                      if(f2["constructor"] == frame["constructor"])
                      {
@@ -147,19 +146,17 @@ package com.ankamagames.jerakine.messages
          {
             this._framesToRemove.push(frame);
          }
-         else
+         else if(!this.isBeingDeleted(frame))
          {
-            if(!this.isBeingDeleted(frame))
-            {
-               this._framesBeingDeleted[frame] = true;
-               this.pullFrame(frame);
-            }
+            this._framesBeingDeleted[frame] = true;
+            this.pullFrame(frame);
          }
+         
       }
       
       private function isBeingDeleted(frame:Frame) : Boolean {
          var fr:* = undefined;
-         for (fr in this._framesBeingDeleted)
+         for(fr in this._framesBeingDeleted)
          {
             if(fr == frame)
             {
@@ -177,7 +174,7 @@ package com.ankamagames.jerakine.messages
          return this._currentFrameTypesCache[frameClass];
       }
       
-      public function pause(targetClass:Class=null, unstoppableMsgClassList:Array=null) : void {
+      public function pause(targetClass:Class = null, unstoppableMsgClassList:Array = null) : void {
          _log.info("Worker is paused, all queueable messages will be queued : ");
          this._paused = true;
          this._pauseFilter = targetClass;
@@ -193,7 +190,7 @@ package com.ankamagames.jerakine.messages
       
       private function msgIsUnstoppable(msg:Message) : Boolean {
          var msgClass:Class = null;
-         for each (msgClass in this._unstoppableMsgClassList)
+         for each(msgClass in this._unstoppableMsgClassList)
          {
             if(msg is msgClass)
             {
@@ -223,7 +220,7 @@ package com.ankamagames.jerakine.messages
             _log.info("Clearing worker (no more frames or messages in queue)");
          }
          var nonPulledFrameList:Vector.<Frame> = new Vector.<Frame>();
-         for each (frame in this._framesList)
+         for each(frame in this._framesList)
          {
             if(!frame.pulled())
             {
@@ -236,7 +233,7 @@ package com.ankamagames.jerakine.messages
          this._messagesQueue = new Vector.<Message>();
          this._pausedQueue = new Vector.<Message>();
          this._currentFrameTypesCache = new Dictionary();
-         for each (frame in nonPulledFrameList)
+         for each(frame in nonPulledFrameList)
          {
             this.pushFrame(frame);
          }
@@ -283,8 +280,8 @@ package com.ankamagames.jerakine.messages
             if(index > -1)
             {
                this._framesList.splice(index,1);
-               delete this._currentFrameTypesCache[[frame["constructor"]]];
-               delete this._framesBeingDeleted[[frame]];
+               delete this._currentFrameTypesCache[frame["constructor"]];
+               delete this._framesBeingDeleted[frame];
             }
             if(hasEventListener(FramePulledEvent.EVENT_FRAME_PULLED))
             {
@@ -333,7 +330,7 @@ package com.ankamagames.jerakine.messages
          var processed:* = false;
          var frame:Frame = null;
          this._processingMessage = true;
-         for each (frame in this._framesList)
+         for each(frame in this._framesList)
          {
             if(frame.process(msg))
             {
@@ -353,7 +350,7 @@ package com.ankamagames.jerakine.messages
          var frameToAdd:Frame = null;
          if(this._framesToRemove.length > 0)
          {
-            for each (frameToRemove in this._framesToRemove)
+            for each(frameToRemove in this._framesToRemove)
             {
                this.pullFrame(frameToRemove);
             }
@@ -361,7 +358,7 @@ package com.ankamagames.jerakine.messages
          }
          if(this._framesToAdd.length > 0)
          {
-            for each (frameToAdd in this._framesToAdd)
+            for each(frameToAdd in this._framesToAdd)
             {
                this.pushFrame(frameToAdd);
             }

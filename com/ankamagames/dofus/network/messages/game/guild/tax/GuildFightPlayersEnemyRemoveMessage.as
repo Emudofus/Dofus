@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5929;
       }
       
-      public function initGuildFightPlayersEnemyRemoveMessage(fightId:Number=0, playerId:uint=0) : GuildFightPlayersEnemyRemoveMessage {
+      public function initGuildFightPlayersEnemyRemoveMessage(fightId:Number = 0, playerId:uint = 0) : GuildFightPlayersEnemyRemoveMessage {
          this.fightId = fightId;
          this.playerId = playerId;
          this._isInitialized = true;

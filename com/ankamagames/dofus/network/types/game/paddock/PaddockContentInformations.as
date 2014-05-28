@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.paddock
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.network.types.game.paddock
          return 183;
       }
       
-      public function initPaddockContentInformations(maxOutdoorMount:uint=0, maxItems:uint=0, paddockId:int=0, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0, abandonned:Boolean=false, mountsInformations:Vector.<MountInformationsForPaddock>=null) : PaddockContentInformations {
+      public function initPaddockContentInformations(maxOutdoorMount:uint = 0, maxItems:uint = 0, paddockId:int = 0, worldX:int = 0, worldY:int = 0, mapId:int = 0, subAreaId:uint = 0, abandonned:Boolean = false, mountsInformations:Vector.<MountInformationsForPaddock> = null) : PaddockContentInformations {
          super.initPaddockInformations(maxOutdoorMount,maxItems);
          this.paddockId = paddockId;
          this.worldX = worldX;

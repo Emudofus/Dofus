@@ -19,7 +19,7 @@ package com.ankamagames.dofus.logic.game.common.managers
             _self = new FlagManager();
             phoenixes = Phoenix.getAllPhoenixes();
             _self.phoenixs = new Array();
-            for each (phoenix in phoenixes)
+            for each(phoenix in phoenixes)
             {
                _self.phoenixs.push(phoenix.mapId);
             }

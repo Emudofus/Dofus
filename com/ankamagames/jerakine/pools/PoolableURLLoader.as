@@ -10,11 +10,11 @@ package com.ankamagames.jerakine.pools
    public class PoolableURLLoader extends URLLoader implements Poolable
    {
       
-      public function PoolableURLLoader(request:URLRequest=null) {
+      public function PoolableURLLoader(request:URLRequest = null) {
          super(request);
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PoolableURLLoader));
+      protected static const _log:Logger;
       
       public function free() : void {
          try

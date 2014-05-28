@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6118;
       }
       
-      public function initAbstractGameActionFightTargetedAbilityMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, destinationCellId:int=0, critical:uint=1, silentCast:Boolean=false) : AbstractGameActionFightTargetedAbilityMessage {
+      public function initAbstractGameActionFightTargetedAbilityMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, destinationCellId:int = 0, critical:uint = 1, silentCast:Boolean = false) : AbstractGameActionFightTargetedAbilityMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this.destinationCellId = destinationCellId;

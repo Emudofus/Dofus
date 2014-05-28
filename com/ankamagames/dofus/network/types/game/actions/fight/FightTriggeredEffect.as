@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.actions.fight
          return 210;
       }
       
-      public function initFightTriggeredEffect(uid:uint=0, targetId:int=0, turnDuration:int=0, dispelable:uint=1, spellId:uint=0, parentBoostUid:uint=0, param1:int=0, param2:int=0, param3:int=0, delay:int=0) : FightTriggeredEffect {
+      public function initFightTriggeredEffect(uid:uint = 0, targetId:int = 0, turnDuration:int = 0, dispelable:uint = 1, spellId:uint = 0, parentBoostUid:uint = 0, param1:int = 0, param2:int = 0, param3:int = 0, delay:int = 0) : FightTriggeredEffect {
          super.initAbstractFightDispellableEffect(uid,targetId,turnDuration,dispelable,spellId,parentBoostUid);
          this.param1 = param1;
          this.param2 = param2;

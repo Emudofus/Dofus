@@ -24,7 +24,7 @@ package com.hurlant.util.der
          return this.type;
       }
       
-      override public function toString(radix:Number=0) : String {
+      override public function toString(radix:Number = 0) : String {
          return DER.indent + "Integer[" + this.type + "][" + this.len + "][" + super.toString(16) + "]";
       }
       

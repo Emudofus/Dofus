@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6327;
       }
       
-      public function initGuildModificationNameValidMessage(guildName:String="") : GuildModificationNameValidMessage {
+      public function initGuildModificationNameValidMessage(guildName:String = "") : GuildModificationNameValidMessage {
          this.guildName = guildName;
          this._isInitialized = true;
          return this;

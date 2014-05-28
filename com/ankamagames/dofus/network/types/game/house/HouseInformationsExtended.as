@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.types.game.house
 {
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GuildInformations;
-   import __AS3__.vec.Vector;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -22,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.house
          return 112;
       }
       
-      public function initHouseInformationsExtended(houseId:uint=0, doorsOnMap:Vector.<uint>=null, ownerName:String="", isOnSale:Boolean=false, isSaleLocked:Boolean=false, modelId:uint=0, guildInfo:GuildInformations=null) : HouseInformationsExtended {
+      public function initHouseInformationsExtended(houseId:uint = 0, doorsOnMap:Vector.<uint> = null, ownerName:String = "", isOnSale:Boolean = false, isSaleLocked:Boolean = false, modelId:uint = 0, guildInfo:GuildInformations = null) : HouseInformationsExtended {
          super.initHouseInformations(houseId,doorsOnMap,ownerName,isOnSale,isSaleLocked,modelId);
          this.guildInfo = guildInfo;
          return this;

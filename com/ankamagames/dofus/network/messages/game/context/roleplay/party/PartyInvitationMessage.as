@@ -34,7 +34,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5586;
       }
       
-      public function initPartyInvitationMessage(partyId:uint=0, partyType:uint=0, maxParticipants:uint=0, fromId:uint=0, fromName:String="", toId:uint=0) : PartyInvitationMessage {
+      public function initPartyInvitationMessage(partyId:uint = 0, partyType:uint = 0, maxParticipants:uint = 0, fromId:uint = 0, fromName:String = "", toId:uint = 0) : PartyInvitationMessage {
          super.initAbstractPartyMessage(partyId);
          this.partyType = partyType;
          this.maxParticipants = maxParticipants;

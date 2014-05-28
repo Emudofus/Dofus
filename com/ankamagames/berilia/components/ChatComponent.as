@@ -13,7 +13,6 @@ package com.ankamagames.berilia.components
    import flashx.textLayout.formats.TextLayoutFormat;
    import com.ankamagames.berilia.types.data.ExtendedStyleSheet;
    import com.ankamagames.jerakine.types.Uri;
-   import __AS3__.vec.*;
    import com.adobe.utils.StringUtil;
    import flashx.textLayout.elements.ParagraphElement;
    import com.ankamagames.jerakine.utils.benchmark.monitoring.FpsManager;
@@ -79,19 +78,19 @@ package com.ankamagames.berilia.components
          this.createTextField();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ChatComponent));
+      protected static const _log:Logger;
       
-      public static var KAMA_PATTERN:RegExp = new RegExp("(?:\\s|^)([0-9.,\\s]+\\s?)\\/k(?=\\W|$)","gi");
+      public static var KAMA_PATTERN:RegExp;
       
-      public static var TAGS_PATTERN:RegExp = new RegExp("<([a-zA-Z]+)(>|(\\s*([^>]*)+)>)(.*?)<\\/\\1>","gi");
+      public static var TAGS_PATTERN:RegExp;
       
-      public static var QUOTE_PATTERN:RegExp = new RegExp("(\'|\")","gi");
+      public static var QUOTE_PATTERN:RegExp;
       
-      public static var BOLD_PATTERN:RegExp = new RegExp("<\\/?b>","gi");
+      public static var BOLD_PATTERN:RegExp;
       
-      public static var UNDERLINE_PATTERN:RegExp = new RegExp("<\\/?u>","gi");
+      public static var UNDERLINE_PATTERN:RegExp;
       
-      public static var ITALIC_PATTERN:RegExp = new RegExp("<\\/?i>","gi");
+      public static var ITALIC_PATTERN:RegExp;
       
       private static var IMAGE_SIZE:int = 20;
       
@@ -156,7 +155,7 @@ package com.ankamagames.berilia.components
          var trigger:String = null;
          this._smiliesUri = uri;
          this._smilies = new Vector.<Smiley>();
-         for each (t in data)
+         for each(t in data)
          {
             if((!(t.triggers == null)) && (t.triggers.length > 0))
             {
@@ -263,7 +262,7 @@ package com.ankamagames.berilia.components
          this._sbScrollBar.height = this._controller.compositionHeight - this._scrollTopMargin - this._scrollBottomMargin;
       }
       
-      public function appendText(sTxt:String, style:String=null, addToChat:Boolean=true) : ParagraphElement {
+      public function appendText(sTxt:String, style:String = null, addToChat:Boolean = true) : ParagraphElement {
          FpsManager.getInstance().startTracking("chat",4972530);
          if((style) && (this._aStyleObj[style]))
          {
@@ -311,7 +310,7 @@ package com.ankamagames.berilia.components
          var sProperty:String = null;
          var oldCss:ExtendedStyleSheet = this._ssSheet;
          this._ssSheet = CssManager.getInstance().getCss(this._sCssUrl.uri);
-         for each (sProperty in this._ssSheet.styleNames)
+         for each(sProperty in this._ssSheet.styleNames)
          {
             if((!styleToDisplay) || (sProperty == this._sCssClass) || (!(this._sCssClass == styleToDisplay)) && (sProperty == "p"))
             {
@@ -325,15 +324,15 @@ package com.ankamagames.berilia.components
          this._TLFFormat = this._ssSheet.TLFTransform(this._aStyleObj[styleToDisplay]);
       }
       
-      public function setCssColor(color:String, style:String=null) : void {
+      public function setCssColor(color:String, style:String = null) : void {
          this.changeCssClassColor(color,style);
       }
       
-      public function setCssSize(size:uint, lineHeight:uint, style:String=null) : void {
+      public function setCssSize(size:uint, lineHeight:uint, style:String = null) : void {
          this.changeCssClassSize(size,lineHeight,style);
       }
       
-      private function changeCssClassSize(size:uint, lineHeight:uint, style:String=null) : void {
+      private function changeCssClassSize(size:uint, lineHeight:uint, style:String = null) : void {
          var i:* = undefined;
          if(style)
          {
@@ -341,7 +340,7 @@ package com.ankamagames.berilia.components
          }
          else
          {
-            for each (i in this._aStyleObj)
+            for each(i in this._aStyleObj)
             {
                i.fontSize = size + "px";
             }
@@ -350,7 +349,7 @@ package com.ankamagames.berilia.components
          this._textFlow.lineHeight = lineHeight;
       }
       
-      private function changeCssClassColor(color:String, style:String=null) : void {
+      private function changeCssClassColor(color:String, style:String = null) : void {
          var i:* = undefined;
          if(style)
          {
@@ -363,7 +362,7 @@ package com.ankamagames.berilia.components
          }
          else
          {
-            for each (i in this._aStyleObj)
+            for each(i in this._aStyleObj)
             {
                i.color = color;
             }
@@ -469,439 +468,341 @@ package com.ankamagames.berilia.components
          var leaf:FlowLeafElement = range.firstLeaf;
          do
          {
-               if((!(prevPara == null)) && (!(prevPara == leaf.getParagraph())))
-               {
-                  this._currentSelection = this._currentSelection + "\n";
-                  prevPara = leaf.getParagraph();
-               }
-               this._currentSelection = this._currentSelection + leaf.text;
-            }while(leaf = leaf.getNextLeaf());
+            this._currentSelection = this._currentSelection + leaf.text;
+         }
+         while(leaf = leaf.getNextLeaf());
+         
+      }
+      
+      private function onMouseOverLink(pEvt:FlowElementMouseEvent) : void {
+         var link:LinkElement = null;
+         var params:Array = null;
+         var type:String = null;
+         var data:String = null;
+         if(pEvt.flowElement is LinkElement)
+         {
+            link = pEvt.flowElement as LinkElement;
+            params = link.href.replace("event:","").split(",");
+            type = params.shift();
+            data = type + "," + Math.round(pEvt.originalEvent.stageX) + "," + Math.round(pEvt.originalEvent.stageY) + "," + params.join(",");
+            dispatchEvent(new LinkInteractionEvent(LinkInteractionEvent.ROLL_OVER,data));
+         }
+      }
+      
+      private function onMouseOutLink(pEvt:FlowElementMouseEvent) : void {
+         TooltipManager.hideAll();
+         dispatchEvent(new LinkInteractionEvent(LinkInteractionEvent.ROLL_OUT));
+      }
+      
+      private function onTextClick(pEvt:FlowElementMouseEvent) : void {
+         TooltipManager.hideAll();
+         var text:String = (pEvt.flowElement as LinkElement).href;
+         if(text != "")
+         {
+            dispatchEvent(new TextEvent(TextEvent.LINK,false,false,text.replace("event:","")));
+         }
+      }
+      
+      private var _magicbool:Boolean = true;
+      
+      private function onScroll(pEvt:Event) : void {
+         this._magicbool = false;
+         this._controller.verticalScrollPosition = this._sbScrollBar.value / this._sbScrollBar.max * this.maxScrollV * this._textFlow.lineHeight - this._controller.compositionHeight;
+      }
+      
+      private function scrollTextFlow(pEvt:Event) : void {
+         var evt:ScrollEvent = null;
+         if(pEvt is ScrollEvent)
+         {
+            evt = pEvt as ScrollEvent;
+            if(this._magicbool)
+            {
+               evt.delta = evt.delta / 3 * -1;
+               this._sbScrollBar.onWheel(pEvt,false);
+            }
+            else
+            {
+               this._magicbool = true;
+            }
+         }
+      }
+      
+      private function updateScrollBar(reset:Boolean = false) : void {
+         this._sbScrollBar.visible = true;
+         this._sbScrollBar.disabled = false;
+         this._sbScrollBar.total = this.maxScrollV;
+         this._sbScrollBar.max = this.maxScrollV - Math.floor(this._controller.compositionHeight / this._textFlow.lineHeight);
+         if(reset)
+         {
+            this._controller.verticalScrollPosition = 0;
+            this._sbScrollBar.value = 0;
+         }
+         else
+         {
+            this._sbScrollBar.value = this.scrollV;
+         }
+      }
+      
+      private function updateScrollBarPos() : void {
+         if(this._nScrollPos >= 0)
+         {
+            this._sbScrollBar.x = this._controller.compositionWidth - this._sbScrollBar.width;
+         }
+         else
+         {
+            this._sbScrollBar.x = 0;
+         }
+      }
+      
+      public function get finalized() : Boolean {
+         return this._finalized;
+      }
+      
+      public function set finalized(b:Boolean) : void {
+         this._finalized = b;
+      }
+      
+      public function finalize() : void {
+         this._sbScrollBar.finalize();
+         this.updateScrollBarPos();
+         this.updateScrollBar();
+         HyperlinkFactory.createTextClickHandler(this);
+         HyperlinkFactory.createRollOverHandler(this);
+         this._finalized = true;
+         var uiRoot:UiRootContainer = getUi();
+         if(uiRoot != null)
+         {
+            uiRoot.iAmFinalized(this);
+         }
+      }
+      
+      private function createParagraphe(text:String) : ParagraphElement {
+         this._textFlow.addEventListener(DamageEvent.DAMAGE,this.onDamage);
+         var p:ParagraphElement = new ParagraphElement();
+         p.format = this._TLFFormat;
+         p.verticalAlign = VerticalAlign.MIDDLE;
+         var result:Object = new RegExp(TAGS_PATTERN).exec(text);
+         while(result != null)
+         {
+            if(result.index > 0)
+            {
+               this.createSpan(p,text.substring(0,result.index),false);
+            }
+            this.createSpan(p,result[0],true);
+            text = text.substring(result.index + result[0].length);
+            result = new RegExp(TAGS_PATTERN).exec(text);
+         }
+         if(text.length > 0)
+         {
+            this.createSpan(p,text,false);
+         }
+         return p;
+      }
+      
+      private function onDamage(pEvt:DamageEvent) : void {
+         this._textFlow.removeEventListener(DamageEvent.DAMAGE,this.onDamage);
+         this._isDamaged = true;
+      }
+      
+      private function createLinkElement(p:ParagraphElement, oText:Object) : void {
+         var att:String = null;
+         var link:LinkElement = new LinkElement();
+         link.addEventListener(FlowElementMouseEvent.CLICK,this.onTextClick);
+         var span:SpanElement = new SpanElement();
+         var style:String = "";
+         var attributes:Array = oText[3].split(" ");
+         for each(att in attributes)
+         {
+            if(att.search("href") != -1)
+            {
+               link.href = this.getAttributeValue(att);
+            }
+            else if(att.search("style") != -1)
+            {
+               style = this.getAttributeValue(att);
+            }
             
          }
-         
-         private function onMouseOverLink(pEvt:FlowElementMouseEvent) : void {
-            var link:LinkElement = null;
-            var params:Array = null;
-            var type:String = null;
-            var data:String = null;
-            if(pEvt.flowElement is LinkElement)
+         span.fontWeight = FontWeight.BOLD;
+         span.color = this._TLFFormat.color;
+         span = HtmlManager.formateSpan(span,style);
+         span.text = oText[5].replace(BOLD_PATTERN,"").replace(UNDERLINE_PATTERN,"");
+         link.addChild(span);
+         p.addChild(link);
+      }
+      
+      private function getAttributeValue(inText:String) : String {
+         var realvalue:String = null;
+         var tmp:Array = inText.split("=");
+         tmp.shift();
+         if(tmp.length > 1)
+         {
+            realvalue = tmp.join("=");
+         }
+         else
+         {
+            realvalue = tmp[0];
+         }
+         return realvalue.replace(QUOTE_PATTERN,"");
+      }
+      
+      private function createSpan(p:ParagraphElement, sText:String, handleHtmlTags:Boolean, pStyle:String = "") : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
+      }
+      
+      private function createSpanElement(pText:String, pStyle:String) : SpanElement {
+         var span:SpanElement = new SpanElement();
+         var txt:String = pText;
+         txt = StringUtil.replace(txt,"&amp;","&");
+         txt = StringUtil.replace(txt,"&lt;","<");
+         txt = StringUtil.replace(txt,"&gt;",">");
+         span.text = txt;
+         span = HtmlManager.formateSpan(span,pStyle);
+         return span;
+      }
+      
+      private function createSpanElementsFromHtmlTags(p:ParagraphElement, pText:String, pStyle:String) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
+      }
+      
+      private var _bmpdtList:Dictionary;
+      
+      private function createImage(pUri:*, pTrigger:String) : InlineGraphicElement {
+         var inlineGraphic:InlineGraphicElement = null;
+         var imgTx:Texture = null;
+         var bmpdt:BitmapData = null;
+         var bmp:Bitmap = null;
+         var loader:Loader = null;
+         var flcomposer:IFlowComposer = null;
+         var list:Dictionary = null;
+         var ba:ByteArray = null;
+         inlineGraphic = new InlineGraphicElement(pTrigger);
+         inlineGraphic.alignmentBaseline = TextBaseline.DESCENT;
+         if(pUri is Uri)
+         {
+            imgTx = new Texture();
+            imgTx.uri = pUri;
+            imgTx.finalize();
+            inlineGraphic.source = imgTx;
+         }
+         else if(pUri is String)
+         {
+            if(this._bmpdtList[pUri] != null)
             {
-               link = pEvt.flowElement as LinkElement;
-               params = link.href.replace("event:","").split(",");
-               type = params.shift();
-               data = type + "," + Math.round(pEvt.originalEvent.stageX) + "," + Math.round(pEvt.originalEvent.stageY) + "," + params.join(",");
-               dispatchEvent(new LinkInteractionEvent(LinkInteractionEvent.ROLL_OVER,data));
-            }
-         }
-         
-         private function onMouseOutLink(pEvt:FlowElementMouseEvent) : void {
-            TooltipManager.hideAll();
-            dispatchEvent(new LinkInteractionEvent(LinkInteractionEvent.ROLL_OUT));
-         }
-         
-         private function onTextClick(pEvt:FlowElementMouseEvent) : void {
-            TooltipManager.hideAll();
-            var text:String = (pEvt.flowElement as LinkElement).href;
-            if(text != "")
-            {
-               dispatchEvent(new TextEvent(TextEvent.LINK,false,false,text.replace("event:","")));
-            }
-         }
-         
-         private var _magicbool:Boolean = true;
-         
-         private function onScroll(pEvt:Event) : void {
-            this._magicbool = false;
-            this._controller.verticalScrollPosition = this._sbScrollBar.value / this._sbScrollBar.max * this.maxScrollV * this._textFlow.lineHeight - this._controller.compositionHeight;
-         }
-         
-         private function scrollTextFlow(pEvt:Event) : void {
-            var evt:ScrollEvent = null;
-            if(pEvt is ScrollEvent)
-            {
-               evt = pEvt as ScrollEvent;
-               if(this._magicbool)
-               {
-                  evt.delta = evt.delta / 3 * -1;
-                  this._sbScrollBar.onWheel(pEvt,false);
-               }
-               else
-               {
-                  this._magicbool = true;
-               }
-            }
-         }
-         
-         private function updateScrollBar(reset:Boolean=false) : void {
-            this._sbScrollBar.visible = true;
-            this._sbScrollBar.disabled = false;
-            this._sbScrollBar.total = this.maxScrollV;
-            this._sbScrollBar.max = this.maxScrollV - Math.floor(this._controller.compositionHeight / this._textFlow.lineHeight);
-            if(reset)
-            {
-               this._controller.verticalScrollPosition = 0;
-               this._sbScrollBar.value = 0;
+               bmpdt = this._bmpdtList[pUri];
+               bmp = new Bitmap(bmpdt.clone(),"auto",true);
+               inlineGraphic.source = bmp;
             }
             else
             {
-               this._sbScrollBar.value = this.scrollV;
-            }
-         }
-         
-         private function updateScrollBarPos() : void {
-            if(this._nScrollPos >= 0)
-            {
-               this._sbScrollBar.x = this._controller.compositionWidth - this._sbScrollBar.width;
-            }
-            else
-            {
-               this._sbScrollBar.x = 0;
-            }
-         }
-         
-         public function get finalized() : Boolean {
-            return this._finalized;
-         }
-         
-         public function set finalized(b:Boolean) : void {
-            this._finalized = b;
-         }
-         
-         public function finalize() : void {
-            this._sbScrollBar.finalize();
-            this.updateScrollBarPos();
-            this.updateScrollBar();
-            HyperlinkFactory.createTextClickHandler(this);
-            HyperlinkFactory.createRollOverHandler(this);
-            this._finalized = true;
-            var uiRoot:UiRootContainer = getUi();
-            if(uiRoot != null)
-            {
-               uiRoot.iAmFinalized(this);
-            }
-         }
-         
-         private function createParagraphe(text:String) : ParagraphElement {
-            this._textFlow.addEventListener(DamageEvent.DAMAGE,this.onDamage);
-            var p:ParagraphElement = new ParagraphElement();
-            p.format = this._TLFFormat;
-            p.verticalAlign = VerticalAlign.MIDDLE;
-            var result:Object = new RegExp(TAGS_PATTERN).exec(text);
-            while(result != null)
-            {
-               if(result.index > 0)
+               loader = new Loader();
+               flcomposer = this._textFlow.flowComposer;
+               list = this._bmpdtList;
+               loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(pEvt:Event):void
                {
-                  this.createSpan(p,text.substring(0,result.index),false);
+                  var bmp:Bitmap = loader.content as Bitmap;
+                  inlineGraphic.source = bmp;
+                  list[pUri] = bmp.bitmapData;
+                  _isDamaged = true;
+               });
+               ba = this.getFile(pUri);
+               if(ba)
+               {
+                  loader.loadBytes(ba);
                }
-               this.createSpan(p,result[0],true);
-               text = text.substring(result.index + result[0].length);
-               result = new RegExp(TAGS_PATTERN).exec(text);
             }
-            if(text.length > 0)
-            {
-               this.createSpan(p,text,false);
-            }
-            return p;
          }
          
-         private function onDamage(pEvt:DamageEvent) : void {
-            this._textFlow.removeEventListener(DamageEvent.DAMAGE,this.onDamage);
-            this._isDamaged = true;
+         return inlineGraphic;
+      }
+      
+      private function getFile(uri:String) : ByteArray {
+         var fs:FileStream = null;
+         var ba:ByteArray = null;
+         var f:File = new File(uri);
+         if(f.exists)
+         {
+            fs = new FileStream();
+            fs.open(f,FileMode.READ);
+            ba = new ByteArray();
+            fs.readBytes(ba);
+            fs.close();
+            return ba;
          }
-         
-         private function createLinkElement(p:ParagraphElement, oText:Object) : void {
-            var att:String = null;
-            var link:LinkElement = new LinkElement();
-            link.addEventListener(FlowElementMouseEvent.CLICK,this.onTextClick);
-            var span:SpanElement = new SpanElement();
-            var style:String = "";
-            var attributes:Array = oText[3].split(" ");
-            for each (att in attributes)
+         return null;
+      }
+      
+      public function getLastParagrapheElement() : ParagraphElement {
+         return this._textFlow.getChildAt(this._textFlow.numChildren - 1) as ParagraphElement;
+      }
+      
+      public function insertParagraphes(data:Array) : void {
+         var p:ParagraphElement = null;
+         for each(p in data)
+         {
+            p.fontSize = this._TLFFormat.fontSize;
+            this._textFlow.addChild(p);
+         }
+         this._isDamaged = true;
+         this.scrollV = this.maxScrollV;
+         this.updateScrollBar();
+      }
+      
+      private function getSmileyFromText(sTxt:String) : Smiley {
+         var indexOfSmiley:* = 0;
+         var currentSmiley:Smiley = null;
+         var smiley:Smiley = null;
+         var trigger:String = null;
+         for each(smiley in this._smilies)
+         {
+            for each(trigger in smiley.triggers)
             {
-               if(att.search("href") != -1)
+               if(trigger != null)
                {
-                  link.href = this.getAttributeValue(att);
-               }
-               else
-               {
-                  if(att.search("style") != -1)
+                  indexOfSmiley = sTxt.toLowerCase().indexOf(trigger.toLowerCase());
+                  if(indexOfSmiley != -1)
                   {
-                     style = this.getAttributeValue(att);
-                  }
-               }
-            }
-            span.fontWeight = FontWeight.BOLD;
-            span.color = this._TLFFormat.color;
-            span = HtmlManager.formateSpan(span,style);
-            span.text = oText[5].replace(BOLD_PATTERN,"").replace(UNDERLINE_PATTERN,"");
-            link.addChild(span);
-            p.addChild(link);
-         }
-         
-         private function getAttributeValue(inText:String) : String {
-            var realvalue:String = null;
-            var tmp:Array = inText.split("=");
-            tmp.shift();
-            if(tmp.length > 1)
-            {
-               realvalue = tmp.join("=");
-            }
-            else
-            {
-               realvalue = tmp[0];
-            }
-            return realvalue.replace(QUOTE_PATTERN,"");
-         }
-         
-         private function createSpan(p:ParagraphElement, sText:String, handleHtmlTags:Boolean, pStyle:String="") : void {
-            var smiley:Smiley = null;
-            var textToShow:String = null;
-            var kamaIndex:* = 0;
-            var reg:RegExp = null;
-            var data:Object = null;
-            var sub:String = null;
-            var intValue:String = null;
-            var cursor:int = 0;
-            while(sText.length > 0)
-            {
-               smiley = this._smiliesActivated?this.getSmileyFromText(sText):null;
-               textToShow = sText.substring(0,!(smiley == null)?smiley.position:sText.length);
-               if((textToShow.length > 0) || (smiley == null))
-               {
-                  if(this._smiliesActivated)
-                  {
-                     kamaIndex = textToShow.search(KAMA_PATTERN);
-                     while(kamaIndex != -1)
+                     if(isValidSmiley(sTxt,indexOfSmiley,trigger))
                      {
-                        reg = new RegExp(KAMA_PATTERN);
-                        data = reg.exec(textToShow);
-                        sub = textToShow.substring(0,kamaIndex);
-                        if(sub != "")
+                        if((currentSmiley == null) || (!(currentSmiley == null)) && (currentSmiley.position > indexOfSmiley))
                         {
-                           intValue = StringUtil.trim(data[1]);
-                           if((intValue.indexOf(".") == -1) && (intValue.indexOf(",") == -1) && (intValue.indexOf(" ") == -1))
-                           {
-                              intValue = StringUtils.formateIntToString(parseInt(intValue));
-                           }
-                           p.addChild(this.createSpanElement(textToShow.substring(0,kamaIndex + 1) + intValue,pStyle));
-                        }
-                        p.addChild(this.createImage(new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_kama"),"/k"));
-                        textToShow = textToShow.substr(kamaIndex + data[0].length);
-                        kamaIndex = textToShow.search(KAMA_PATTERN);
-                     }
-                  }
-                  if(!handleHtmlTags)
-                  {
-                     p.addChild(this.createSpanElement(textToShow,pStyle));
-                  }
-                  else
-                  {
-                     this.createSpanElementsFromHtmlTags(p,textToShow,pStyle);
-                  }
-                  if(smiley == null)
-                  {
-                     break;
-                  }
-               }
-               if(smiley.position != -1)
-               {
-                  p.addChild(this.createImage(this._smiliesUri + smiley.pictoId + ".png",smiley.currentTrigger));
-                  sText = sText.substring(smiley.position + smiley.currentTrigger.length);
-               }
-            }
-         }
-         
-         private function createSpanElement(pText:String, pStyle:String) : SpanElement {
-            var span:SpanElement = new SpanElement();
-            var txt:String = pText;
-            txt = StringUtil.replace(txt,"&amp;","&");
-            txt = StringUtil.replace(txt,"&lt;","<");
-            txt = StringUtil.replace(txt,"&gt;",">");
-            span.text = txt;
-            span = HtmlManager.formateSpan(span,pStyle);
-            return span;
-         }
-         
-         private function createSpanElementsFromHtmlTags(p:ParagraphElement, pText:String, pStyle:String) : void {
-            var result:Object = null;
-            var style:String = null;
-            var attributes:Array = null;
-            var att:String = null;
-            result = new RegExp(TAGS_PATTERN).exec(pText);
-            while(result != null)
-            {
-               if(result.index > 0)
-               {
-                  p.addChild(this.createSpanElement(pText.substring(0,result.index),pStyle));
-               }
-               switch(result[1])
-               {
-                  case "p":
-                  case "span":
-                     attributes = result[3].split(" ");
-                     for each (att in attributes)
-                     {
-                        if(att.search("style") != -1)
-                        {
-                           style = this.getAttributeValue(att);
-                        }
-                     }
-                     this.createSpan(p,result[5],true,style == ""?pStyle:style);
-                     break;
-                  case "a":
-                     this.createLinkElement(p,result);
-                     break;
-                  case "i":
-                     this.createSpanElementsFromHtmlTags(p,result[0].replace(ITALIC_PATTERN,""),HtmlManager.addValueToInlineStyle(pStyle,"font-style","italic"));
-                     break;
-                  case "b":
-                     this.createSpanElementsFromHtmlTags(p,result[0].replace(BOLD_PATTERN,""),HtmlManager.addValueToInlineStyle(pStyle,"font-weight","bold"));
-                     break;
-                  case "u":
-                     this.createSpanElementsFromHtmlTags(p,result[0].replace(UNDERLINE_PATTERN,""),HtmlManager.addValueToInlineStyle(pStyle,"text-decoration","underline"));
-                     break;
-               }
-               pText = pText.substring(result.index + result[0].length);
-               result = new RegExp(TAGS_PATTERN).exec(pText);
-            }
-            if(pText.length > 0)
-            {
-               p.addChild(this.createSpanElement(pText,pStyle));
-            }
-         }
-         
-         private var _bmpdtList:Dictionary;
-         
-         private function createImage(pUri:*, pTrigger:String) : InlineGraphicElement {
-            var inlineGraphic:InlineGraphicElement = null;
-            var imgTx:Texture = null;
-            var bmpdt:BitmapData = null;
-            var bmp:Bitmap = null;
-            var loader:Loader = null;
-            var flcomposer:IFlowComposer = null;
-            var list:Dictionary = null;
-            var ba:ByteArray = null;
-            inlineGraphic = new InlineGraphicElement(pTrigger);
-            inlineGraphic.alignmentBaseline = TextBaseline.DESCENT;
-            if(pUri is Uri)
-            {
-               imgTx = new Texture();
-               imgTx.uri = pUri;
-               imgTx.finalize();
-               inlineGraphic.source = imgTx;
-            }
-            else
-            {
-               if(pUri is String)
-               {
-                  if(this._bmpdtList[pUri] != null)
-                  {
-                     bmpdt = this._bmpdtList[pUri];
-                     bmp = new Bitmap(bmpdt.clone(),"auto",true);
-                     inlineGraphic.source = bmp;
-                  }
-                  else
-                  {
-                     loader = new Loader();
-                     flcomposer = this._textFlow.flowComposer;
-                     list = this._bmpdtList;
-                     loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(pEvt:Event):void
-                     {
-                        var bmp:Bitmap = loader.content as Bitmap;
-                        inlineGraphic.source = bmp;
-                        list[pUri] = bmp.bitmapData;
-                        _isDamaged = true;
-                     });
-                     ba = this.getFile(pUri);
-                     if(ba)
-                     {
-                        loader.loadBytes(ba);
-                     }
-                  }
-               }
-            }
-            return inlineGraphic;
-         }
-         
-         private function getFile(uri:String) : ByteArray {
-            var fs:FileStream = null;
-            var ba:ByteArray = null;
-            var f:File = new File(uri);
-            if(f.exists)
-            {
-               fs = new FileStream();
-               fs.open(f,FileMode.READ);
-               ba = new ByteArray();
-               fs.readBytes(ba);
-               fs.close();
-               return ba;
-            }
-            return null;
-         }
-         
-         public function getLastParagrapheElement() : ParagraphElement {
-            return this._textFlow.getChildAt(this._textFlow.numChildren - 1) as ParagraphElement;
-         }
-         
-         public function insertParagraphes(data:Array) : void {
-            var p:ParagraphElement = null;
-            for each (p in data)
-            {
-               p.fontSize = this._TLFFormat.fontSize;
-               this._textFlow.addChild(p);
-            }
-            this._isDamaged = true;
-            this.scrollV = this.maxScrollV;
-            this.updateScrollBar();
-         }
-         
-         private function getSmileyFromText(sTxt:String) : Smiley {
-            var indexOfSmiley:* = 0;
-            var currentSmiley:Smiley = null;
-            var smiley:Smiley = null;
-            var trigger:String = null;
-            for each (smiley in this._smilies)
-            {
-               for each (trigger in smiley.triggers)
-               {
-                  if(trigger != null)
-                  {
-                     indexOfSmiley = sTxt.toLowerCase().indexOf(trigger.toLowerCase());
-                     if(indexOfSmiley != -1)
-                     {
-                        if(isValidSmiley(sTxt,indexOfSmiley,trigger))
-                        {
-                           if((currentSmiley == null) || (!(currentSmiley == null)) && (currentSmiley.position > indexOfSmiley))
-                           {
-                              smiley.position = indexOfSmiley;
-                              smiley.currentTrigger = trigger;
-                              currentSmiley = smiley;
-                           }
+                           smiley.position = indexOfSmiley;
+                           smiley.currentTrigger = trigger;
+                           currentSmiley = smiley;
                         }
                      }
                   }
                }
             }
-            return currentSmiley;
          }
+         return currentSmiley;
       }
    }
-   import __AS3__.vec.Vector;
+}
+class Smiley extends Object
+{
    
-   class Smiley extends Object
-   {
-      
-      function Smiley(pId:String) {
-         super();
-         this.pictoId = pId;
-         this.position = -1;
-      }
-      
-      public var pictoId:String;
-      
-      public var triggers:Vector.<String>;
-      
-      public var position:int;
-      
-      public var currentTrigger:String;
+   function Smiley(pId:String) {
+      super();
+      this.pictoId = pId;
+      this.position = -1;
    }
+   
+   public var pictoId:String;
+   
+   public var triggers:Vector.<String>;
+   
+   public var position:int;
+   
+   public var currentTrigger:String;
+}

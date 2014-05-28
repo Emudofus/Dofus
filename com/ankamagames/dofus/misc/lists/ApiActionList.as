@@ -177,340 +177,340 @@ package com.ankamagames.dofus.misc.lists
          super();
       }
       
-      public static const OpenPopup:DofusApiAction = new DofusApiAction("OpenPopup",OpenPopupAction);
+      public static const OpenPopup:DofusApiAction;
       
-      public static const BasicSwitchMode:DofusApiAction = new DofusApiAction("BasicSwitchMode",BasicSwitchModeAction);
+      public static const BasicSwitchMode:DofusApiAction;
       
-      public static const ChatCommand:DofusApiAction = new DofusApiAction("ChatCommand",ChatCommandAction);
+      public static const ChatCommand:DofusApiAction;
       
-      public static const ChatLoaded:DofusApiAction = new DofusApiAction("ChatLoaded",ChatLoadedAction);
+      public static const ChatLoaded:DofusApiAction;
       
-      public static const ClearChat:DofusApiAction = new DofusApiAction("ClearChat",ClearChatAction);
+      public static const ClearChat:DofusApiAction;
       
-      public static const AuthorizedCommand:DofusApiAction = new DofusApiAction("AuthorizedCommand",AuthorizedCommandAction);
+      public static const AuthorizedCommand:DofusApiAction;
       
-      public static const LoginValidation:DofusApiAction = new DofusApiAction("LoginValidation",LoginValidationAction);
+      public static const LoginValidation:DofusApiAction;
       
-      public static const LoginValidationWithTicket:DofusApiAction = new DofusApiAction("LoginValidationWithTicket",LoginValidationWithTicketAction);
+      public static const LoginValidationWithTicket:DofusApiAction;
       
-      public static const NicknameChoiceRequest:DofusApiAction = new DofusApiAction("NicknameChoiceRequest",NicknameChoiceRequestAction);
+      public static const NicknameChoiceRequest:DofusApiAction;
       
-      public static const ServerSelection:DofusApiAction = new DofusApiAction("ServerSelection",ServerSelectionAction);
+      public static const ServerSelection:DofusApiAction;
       
-      public static const AcquaintanceSearch:DofusApiAction = new DofusApiAction("AcquaintanceSearch",AcquaintanceSearchAction);
+      public static const AcquaintanceSearch:DofusApiAction;
       
-      public static const SubscribersGiftListRequest:DofusApiAction = new DofusApiAction("SubscribersGiftListRequest",SubscribersGiftListRequestAction);
+      public static const SubscribersGiftListRequest:DofusApiAction;
       
-      public static const NewsLoginRequest:DofusApiAction = new DofusApiAction("NewsLoginRequest",NewsLoginRequestAction);
+      public static const NewsLoginRequest:DofusApiAction;
       
-      public static const ChangeCharacter:DofusApiAction = new DofusApiAction("ChangeCharacter",ChangeCharacterAction);
+      public static const ChangeCharacter:DofusApiAction;
       
-      public static const DirectSelectionCharacter:DofusApiAction = new DofusApiAction("DirectSelectionCharacter",DirectSelectionCharacterAction);
+      public static const DirectSelectionCharacter:DofusApiAction;
       
-      public static const ChangeServer:DofusApiAction = new DofusApiAction("ChangeServer",ChangeServerAction);
+      public static const ChangeServer:DofusApiAction;
       
-      public static const QuitGame:DofusApiAction = new DofusApiAction("QuitGame",QuitGameAction);
+      public static const QuitGame:DofusApiAction;
       
-      public static const ResetGame:DofusApiAction = new DofusApiAction("ResetGame",ResetGameAction);
+      public static const ResetGame:DofusApiAction;
       
-      public static const AgreementAgreed:DofusApiAction = new DofusApiAction("AgreementAgreed",AgreementAgreedAction);
+      public static const AgreementAgreed:DofusApiAction;
       
-      public static const CharacterCreation:DofusApiAction = new DofusApiAction("CharacterCreation",CharacterCreationAction);
+      public static const CharacterCreation:DofusApiAction;
       
-      public static const CharacterDeletion:DofusApiAction = new DofusApiAction("CharacterDeletion",CharacterDeletionAction);
+      public static const CharacterDeletion:DofusApiAction;
       
-      public static const CharacterNameSuggestionRequest:DofusApiAction = new DofusApiAction("CharacterNameSuggestionRequest",CharacterNameSuggestionRequestAction);
+      public static const CharacterNameSuggestionRequest:DofusApiAction;
       
-      public static const CharacterReplayRequest:DofusApiAction = new DofusApiAction("CharacterReplayRequest",CharacterReplayRequestAction);
+      public static const CharacterReplayRequest:DofusApiAction;
       
-      public static const CharacterDeselection:DofusApiAction = new DofusApiAction("CharacterDeselection",CharacterDeselectionAction);
+      public static const CharacterDeselection:DofusApiAction;
       
-      public static const CharacterSelection:DofusApiAction = new DofusApiAction("CharacterSelection",CharacterSelectionAction);
+      public static const CharacterSelection:DofusApiAction;
       
-      public static const CharacterRecolorSelection:DofusApiAction = new DofusApiAction("CharacterRecolorSelection",CharacterRecolorSelectionAction);
+      public static const CharacterRecolorSelection:DofusApiAction;
       
-      public static const CharacterRenameSelection:DofusApiAction = new DofusApiAction("CharacterRenameSelection",CharacterRenameSelectionAction);
+      public static const CharacterRenameSelection:DofusApiAction;
       
-      public static const CharacterRelookSelection:DofusApiAction = new DofusApiAction("CharacterRelookSelection",CharacterRelookSelectionAction);
+      public static const CharacterRelookSelection:DofusApiAction;
       
-      public static const GameContextQuit:DofusApiAction = new DofusApiAction("GameContextQuit",GameContextQuitAction);
+      public static const GameContextQuit:DofusApiAction;
       
-      public static const OpenCurrentFight:DofusApiAction = new DofusApiAction("OpenCurrentFight",OpenCurrentFightAction);
+      public static const OpenCurrentFight:DofusApiAction;
       
-      public static const OpenMainMenu:DofusApiAction = new DofusApiAction("OpenMainMenu",OpenMainMenuAction);
+      public static const OpenMainMenu:DofusApiAction;
       
-      public static const OpenMount:DofusApiAction = new DofusApiAction("OpenMount",OpenMountAction);
+      public static const OpenMount:DofusApiAction;
       
-      public static const OpenInventory:DofusApiAction = new DofusApiAction("OpenInventory",OpenInventoryAction);
+      public static const OpenInventory:DofusApiAction;
       
-      public static const CloseInventory:DofusApiAction = new DofusApiAction("CloseInventory",CloseInventoryAction);
+      public static const CloseInventory:DofusApiAction;
       
-      public static const OpenMap:DofusApiAction = new DofusApiAction("OpenMap",OpenMapAction);
+      public static const OpenMap:DofusApiAction;
       
-      public static const OpenBook:DofusApiAction = new DofusApiAction("OpenBook",OpenBookAction);
+      public static const OpenBook:DofusApiAction;
       
-      public static const CloseBook:DofusApiAction = new DofusApiAction("CloseBook",CloseBookAction);
+      public static const CloseBook:DofusApiAction;
       
-      public static const OpenServerSelection:DofusApiAction = new DofusApiAction("OpenServerSelection",OpenServerSelectionAction);
+      public static const OpenServerSelection:DofusApiAction;
       
-      public static const OpenSmileys:DofusApiAction = new DofusApiAction("OpenSmileys",OpenSmileysAction);
+      public static const OpenSmileys:DofusApiAction;
       
-      public static const OpenTeamSearch:DofusApiAction = new DofusApiAction("OpenTeamSearch",OpenTeamSearchAction);
+      public static const OpenTeamSearch:DofusApiAction;
       
-      public static const OpenArena:DofusApiAction = new DofusApiAction("OpenArena",OpenArenaAction);
+      public static const OpenArena:DofusApiAction;
       
-      public static const OpenStats:DofusApiAction = new DofusApiAction("OpenStats",OpenStatsAction);
+      public static const OpenStats:DofusApiAction;
       
-      public static const IncreaseSpellLevel:DofusApiAction = new DofusApiAction("IncreaseSpellLevel",IncreaseSpellLevelAction);
+      public static const IncreaseSpellLevel:DofusApiAction;
       
-      public static const BasicWhoIsRequest:DofusApiAction = new DofusApiAction("BasicWhoIsRequest",BasicWhoIsRequestAction);
+      public static const BasicWhoIsRequest:DofusApiAction;
       
-      public static const NumericWhoIsRequest:DofusApiAction = new DofusApiAction("NumericWhoIsRequest",NumericWhoIsRequestAction);
+      public static const NumericWhoIsRequest:DofusApiAction;
       
-      public static const AddBehaviorToStack:DofusApiAction = new DofusApiAction("AddBehaviorToStack",AddBehaviorToStackAction);
+      public static const AddBehaviorToStack:DofusApiAction;
       
-      public static const RemoveBehaviorToStack:DofusApiAction = new DofusApiAction("RemoveBehaviorToStack",RemoveBehaviorToStackAction);
+      public static const RemoveBehaviorToStack:DofusApiAction;
       
-      public static const EmptyStack:DofusApiAction = new DofusApiAction("EmptyStack",EmptyStackAction);
+      public static const EmptyStack:DofusApiAction;
       
-      public static const ChallengeTargetsListRequest:DofusApiAction = new DofusApiAction("ChallengeTargetsListRequest",ChallengeTargetsListRequestAction);
+      public static const ChallengeTargetsListRequest:DofusApiAction;
       
-      public static const GameFightReady:DofusApiAction = new DofusApiAction("GameFightReady",GameFightReadyAction);
+      public static const GameFightReady:DofusApiAction;
       
-      public static const GameFightSpellCast:DofusApiAction = new DofusApiAction("GameFightSpellCast",GameFightSpellCastAction);
+      public static const GameFightSpellCast:DofusApiAction;
       
-      public static const GameFightTurnFinish:DofusApiAction = new DofusApiAction("GameFightTurnFinish",GameFightTurnFinishAction);
+      public static const GameFightTurnFinish:DofusApiAction;
       
-      public static const TimelineEntityClick:DofusApiAction = new DofusApiAction("TimelineEntityClick",TimelineEntityClickAction);
+      public static const TimelineEntityClick:DofusApiAction;
       
-      public static const GameFightPlacementPositionRequest:DofusApiAction = new DofusApiAction("GameFightPlacementPositionRequest",GameFightPlacementPositionRequestAction);
+      public static const GameFightPlacementPositionRequest:DofusApiAction;
       
-      public static const BannerEmptySlotClick:DofusApiAction = new DofusApiAction("BannerEmptySlotClick",BannerEmptySlotClickAction);
+      public static const BannerEmptySlotClick:DofusApiAction;
       
-      public static const TimelineEntityOver:DofusApiAction = new DofusApiAction("TimelineEntityOver",TimelineEntityOverAction);
+      public static const TimelineEntityOver:DofusApiAction;
       
-      public static const TimelineEntityOut:DofusApiAction = new DofusApiAction("TimelineEntityOut",TimelineEntityOutAction);
+      public static const TimelineEntityOut:DofusApiAction;
       
-      public static const ToggleDematerialization:DofusApiAction = new DofusApiAction("ToggleDematerialization",ToggleDematerializationAction);
+      public static const ToggleDematerialization:DofusApiAction;
       
-      public static const ToggleHelpWanted:DofusApiAction = new DofusApiAction("ToggleHelpWanted",ToggleHelpWantedAction);
+      public static const ToggleHelpWanted:DofusApiAction;
       
-      public static const ToggleLockFight:DofusApiAction = new DofusApiAction("ToggleLockFight",ToggleLockFightAction);
+      public static const ToggleLockFight:DofusApiAction;
       
-      public static const ToggleLockParty:DofusApiAction = new DofusApiAction("ToggleLockParty",ToggleLockPartyAction);
+      public static const ToggleLockParty:DofusApiAction;
       
-      public static const ToggleWitnessForbidden:DofusApiAction = new DofusApiAction("ToggleWitnessForbidden",ToggleWitnessForbiddenAction);
+      public static const ToggleWitnessForbidden:DofusApiAction;
       
-      public static const TogglePointCell:DofusApiAction = new DofusApiAction("TogglePointCell",TogglePointCellAction);
+      public static const TogglePointCell:DofusApiAction;
       
-      public static const GameContextKick:DofusApiAction = new DofusApiAction("GameContextKick",GameContextKickAction);
+      public static const GameContextKick:DofusApiAction;
       
-      public static const DisableAfk:DofusApiAction = new DofusApiAction("DisableAfk",DisableAfkAction);
+      public static const DisableAfk:DofusApiAction;
       
-      public static const ShowTacticMode:DofusApiAction = new DofusApiAction("ShowTacticMode",ShowTacticModeAction);
+      public static const ShowTacticMode:DofusApiAction;
       
-      public static const LeaveDialogRequest:DofusApiAction = new DofusApiAction("LeaveDialogRequest",LeaveDialogRequestAction);
+      public static const LeaveDialogRequest:DofusApiAction;
       
-      public static const TeleportRequest:DofusApiAction = new DofusApiAction("TeleportRequest",TeleportRequestAction);
+      public static const TeleportRequest:DofusApiAction;
       
-      public static const ObjectSetPosition:DofusApiAction = new DofusApiAction("ObjectSetPosition",ObjectSetPositionAction);
+      public static const ObjectSetPosition:DofusApiAction;
       
-      public static const PresetSetPosition:DofusApiAction = new DofusApiAction("PresetSetPosition",PresetSetPositionAction);
+      public static const PresetSetPosition:DofusApiAction;
       
-      public static const ObjectDrop:DofusApiAction = new DofusApiAction("ObjectDrop",ObjectDropAction);
+      public static const ObjectDrop:DofusApiAction;
       
-      public static const SpellSetPosition:DofusApiAction = new DofusApiAction("SpellSetPosition",SpellSetPositionAction);
+      public static const SpellSetPosition:DofusApiAction;
       
-      public static const StatsUpgradeRequest:DofusApiAction = new DofusApiAction("StatsUpgradeRequest",StatsUpgradeRequestAction);
+      public static const StatsUpgradeRequest:DofusApiAction;
       
-      public static const DeleteObject:DofusApiAction = new DofusApiAction("DeleteObject",DeleteObjectAction);
+      public static const DeleteObject:DofusApiAction;
       
-      public static const ObjectUse:DofusApiAction = new DofusApiAction("ObjectUse",ObjectUseAction);
+      public static const ObjectUse:DofusApiAction;
       
-      public static const InventoryPresetDelete:DofusApiAction = new DofusApiAction("InventoryPresetDelete",InventoryPresetDeleteAction);
+      public static const InventoryPresetDelete:DofusApiAction;
       
-      public static const InventoryPresetSave:DofusApiAction = new DofusApiAction("InventoryPresetSave",InventoryPresetSaveAction);
+      public static const InventoryPresetSave:DofusApiAction;
       
-      public static const InventoryPresetSaveCustom:DofusApiAction = new DofusApiAction("InventoryPresetSaveCustom",InventoryPresetSaveCustomAction);
+      public static const InventoryPresetSaveCustom:DofusApiAction;
       
-      public static const InventoryPresetUse:DofusApiAction = new DofusApiAction("InventoryPresetUse",InventoryPresetUseAction);
+      public static const InventoryPresetUse:DofusApiAction;
       
-      public static const InventoryPresetItemUpdateRequest:DofusApiAction = new DofusApiAction("InventoryPresetItemUpdateRequest",InventoryPresetItemUpdateRequestAction);
+      public static const InventoryPresetItemUpdateRequest:DofusApiAction;
       
-      public static const SwitchCreatureMode:DofusApiAction = new DofusApiAction("SwitchCreatureMode",SwitchCreatureModeAction);
+      public static const SwitchCreatureMode:DofusApiAction;
       
-      public static const NpcDialogReply:DofusApiAction = new DofusApiAction("NpcDialogReply",NpcDialogReplyAction);
+      public static const NpcDialogReply:DofusApiAction;
       
-      public static const InteractiveElementActivation:DofusApiAction = new DofusApiAction("InteractiveElementActivation",InteractiveElementActivationAction);
+      public static const InteractiveElementActivation:DofusApiAction;
       
-      public static const PivotCharacter:DofusApiAction = new DofusApiAction("PivotCharacter",PivotCharacterAction);
+      public static const PivotCharacter:DofusApiAction;
       
-      public static const ShowAllNames:DofusApiAction = new DofusApiAction("ShowAllNames",ShowAllNamesAction);
+      public static const ShowAllNames:DofusApiAction;
       
-      public static const PartyInvitation:DofusApiAction = new DofusApiAction("PartyInvitation",PartyInvitationAction);
+      public static const PartyInvitation:DofusApiAction;
       
-      public static const PartyInvitationDetailsRequest:DofusApiAction = new DofusApiAction("PartyInvitationDetailsRequest",PartyInvitationDetailsRequestAction);
+      public static const PartyInvitationDetailsRequest:DofusApiAction;
       
-      public static const PartyCancelInvitation:DofusApiAction = new DofusApiAction("PartyCancelInvitation",PartyCancelInvitationAction);
+      public static const PartyCancelInvitation:DofusApiAction;
       
-      public static const PartyAcceptInvitation:DofusApiAction = new DofusApiAction("PartyAcceptInvitation",PartyAcceptInvitationAction);
+      public static const PartyAcceptInvitation:DofusApiAction;
       
-      public static const PartyRefuseInvitation:DofusApiAction = new DofusApiAction("PartyRefuseInvitation",PartyRefuseInvitationAction);
+      public static const PartyRefuseInvitation:DofusApiAction;
       
-      public static const PartyLeaveRequest:DofusApiAction = new DofusApiAction("PartyLeaveRequest",PartyLeaveRequestAction);
+      public static const PartyLeaveRequest:DofusApiAction;
       
-      public static const PartyKickRequest:DofusApiAction = new DofusApiAction("PartyKickRequest",PartyKickRequestAction);
+      public static const PartyKickRequest:DofusApiAction;
       
-      public static const PartyAbdicateThrone:DofusApiAction = new DofusApiAction("PartyAbdicateThrone",PartyAbdicateThroneAction);
+      public static const PartyAbdicateThrone:DofusApiAction;
       
-      public static const PartyPledgeLoyaltyRequest:DofusApiAction = new DofusApiAction("PartyPledgeLoyaltyRequest",PartyPledgeLoyaltyRequestAction);
+      public static const PartyPledgeLoyaltyRequest:DofusApiAction;
       
-      public static const PartyFollowMember:DofusApiAction = new DofusApiAction("PartyFollowMember",PartyFollowMemberAction);
+      public static const PartyFollowMember:DofusApiAction;
       
-      public static const PartyAllFollowMember:DofusApiAction = new DofusApiAction("PartyAllFollowMember",PartyAllFollowMemberAction);
+      public static const PartyAllFollowMember:DofusApiAction;
       
-      public static const PartyStopFollowingMember:DofusApiAction = new DofusApiAction("PartyStopFollowingMember",PartyStopFollowingMemberAction);
+      public static const PartyStopFollowingMember:DofusApiAction;
       
-      public static const PartyAllStopFollowingMember:DofusApiAction = new DofusApiAction("PartyAllStopFollowingMember",PartyAllStopFollowingMemberAction);
+      public static const PartyAllStopFollowingMember:DofusApiAction;
       
-      public static const PartyShowMenu:DofusApiAction = new DofusApiAction("PartyShowMenu",PartyShowMenuAction);
+      public static const PartyShowMenu:DofusApiAction;
       
-      public static const MapRunningFightDetailsRequest:DofusApiAction = new DofusApiAction("MapRunningFightDetailsRequest",MapRunningFightDetailsRequestAction);
+      public static const MapRunningFightDetailsRequest:DofusApiAction;
       
-      public static const StopToListenRunningFight:DofusApiAction = new DofusApiAction("StopToListenRunningFight",StopToListenRunningFightAction);
+      public static const StopToListenRunningFight:DofusApiAction;
       
-      public static const JoinFightRequest:DofusApiAction = new DofusApiAction("JoinFightRequest",JoinFightRequestAction);
+      public static const JoinFightRequest:DofusApiAction;
       
-      public static const JoinAsSpectatorRequest:DofusApiAction = new DofusApiAction("JoinAsSpectatorRequest",JoinAsSpectatorRequestAction);
+      public static const JoinAsSpectatorRequest:DofusApiAction;
       
-      public static const GameFightSpectatePlayerRequest:DofusApiAction = new DofusApiAction("GameFightSpectatePlayerRequest",GameFightSpectatePlayerRequestAction);
+      public static const GameFightSpectatePlayerRequest:DofusApiAction;
       
-      public static const HouseGuildShare:DofusApiAction = new DofusApiAction("HouseGuildShare",HouseGuildShareAction);
+      public static const HouseGuildShare:DofusApiAction;
       
-      public static const HouseGuildRightsView:DofusApiAction = new DofusApiAction("HouseGuildRightsView",HouseGuildRightsViewAction);
+      public static const HouseGuildRightsView:DofusApiAction;
       
-      public static const HouseGuildRightsChange:DofusApiAction = new DofusApiAction("HouseGuildRightsChange",HouseGuildRightsChangeAction);
+      public static const HouseGuildRightsChange:DofusApiAction;
       
-      public static const HouseBuy:DofusApiAction = new DofusApiAction("HouseBuy",HouseBuyAction);
+      public static const HouseBuy:DofusApiAction;
       
-      public static const LeaveDialog:DofusApiAction = new DofusApiAction("LeaveDialog",LeaveDialogAction);
+      public static const LeaveDialog:DofusApiAction;
       
-      public static const HouseSell:DofusApiAction = new DofusApiAction("HouseSell",HouseSellAction);
+      public static const HouseSell:DofusApiAction;
       
-      public static const HouseSellFromInside:DofusApiAction = new DofusApiAction("HouseSellFromInside",HouseSellFromInsideAction);
+      public static const HouseSellFromInside:DofusApiAction;
       
-      public static const HouseKick:DofusApiAction = new DofusApiAction("HouseKick",HouseKickAction);
+      public static const HouseKick:DofusApiAction;
       
-      public static const HouseKickIndoorMerchant:DofusApiAction = new DofusApiAction("HouseKickIndoorMerchant",HouseKickIndoorMerchantAction);
+      public static const HouseKickIndoorMerchant:DofusApiAction;
       
-      public static const LockableChangeCode:DofusApiAction = new DofusApiAction("LockableChangeCode",LockableChangeCodeAction);
+      public static const LockableChangeCode:DofusApiAction;
       
-      public static const LockableUseCode:DofusApiAction = new DofusApiAction("LockableUseCode",LockableUseCodeAction);
+      public static const LockableUseCode:DofusApiAction;
       
-      public static const HouseLockFromInside:DofusApiAction = new DofusApiAction("HouseLockFromInside",HouseLockFromInsideAction);
+      public static const HouseLockFromInside:DofusApiAction;
       
-      public static const GameRolePlayFreeSoulRequest:DofusApiAction = new DofusApiAction("GameRolePlayFreeSoulRequest",GameRolePlayFreeSoulRequestAction);
+      public static const GameRolePlayFreeSoulRequest:DofusApiAction;
       
-      public static const QuestInfosRequest:DofusApiAction = new DofusApiAction("QuestInfosRequest",QuestInfosRequestAction);
+      public static const QuestInfosRequest:DofusApiAction;
       
-      public static const QuestListRequest:DofusApiAction = new DofusApiAction("QuestListRequest",QuestListRequestAction);
+      public static const QuestListRequest:DofusApiAction;
       
-      public static const QuestStartRequest:DofusApiAction = new DofusApiAction("QuestStartRequest",QuestStartRequestAction);
+      public static const QuestStartRequest:DofusApiAction;
       
-      public static const AchievementDetailedListRequest:DofusApiAction = new DofusApiAction("AchievementDetailedListRequest",AchievementDetailedListRequestAction);
+      public static const AchievementDetailedListRequest:DofusApiAction;
       
-      public static const AchievementDetailsRequest:DofusApiAction = new DofusApiAction("AchievementDetailsRequest",AchievementDetailsRequestAction);
+      public static const AchievementDetailsRequest:DofusApiAction;
       
-      public static const AchievementRewardRequest:DofusApiAction = new DofusApiAction("AchievementRewardRequest",AchievementRewardRequestAction);
+      public static const AchievementRewardRequest:DofusApiAction;
       
-      public static const QuestObjectiveValidation:DofusApiAction = new DofusApiAction("QuestObjectiveValidation",QuestObjectiveValidationAction);
+      public static const QuestObjectiveValidation:DofusApiAction;
       
-      public static const TreasureHuntRequest:DofusApiAction = new DofusApiAction("TreasureHuntRequest",TreasureHuntRequestAction);
+      public static const TreasureHuntRequest:DofusApiAction;
       
-      public static const TreasureHuntDigRequest:DofusApiAction = new DofusApiAction("TreasureHuntDigRequest",TreasureHuntDigRequestAction);
+      public static const TreasureHuntDigRequest:DofusApiAction;
       
-      public static const PortalUseRequest:DofusApiAction = new DofusApiAction("PortalUseRequest",PortalUseRequestAction);
+      public static const PortalUseRequest:DofusApiAction;
       
-      public static const TreasureHuntGiveUpRequest:DofusApiAction = new DofusApiAction("TreasureHuntGiveUpRequest",TreasureHuntGiveUpRequestAction);
+      public static const TreasureHuntGiveUpRequest:DofusApiAction;
       
-      public static const GuidedModeReturnRequest:DofusApiAction = new DofusApiAction("GuidedModeReturnRequest",GuidedModeReturnRequestAction);
+      public static const GuidedModeReturnRequest:DofusApiAction;
       
-      public static const GuidedModeQuitRequest:DofusApiAction = new DofusApiAction("GuidedModeQuitRequest",GuidedModeQuitRequestAction);
+      public static const GuidedModeQuitRequest:DofusApiAction;
       
-      public static const SetEnablePVPRequest:DofusApiAction = new DofusApiAction("SetEnablePVPRequest",SetEnablePVPRequestAction);
+      public static const SetEnablePVPRequest:DofusApiAction;
       
-      public static const SetEnableAVARequest:DofusApiAction = new DofusApiAction("SetEnableAVARequest",SetEnableAVARequestAction);
+      public static const SetEnableAVARequest:DofusApiAction;
       
-      public static const PrismSettingsRequest:DofusApiAction = new DofusApiAction("PrismSettingsRequest",PrismSettingsRequestAction);
+      public static const PrismSettingsRequest:DofusApiAction;
       
-      public static const PrismFightJoinLeaveRequest:DofusApiAction = new DofusApiAction("PrismFightJoinLeaveRequest",PrismFightJoinLeaveRequestAction);
+      public static const PrismFightJoinLeaveRequest:DofusApiAction;
       
-      public static const PrismFightSwapRequest:DofusApiAction = new DofusApiAction("PrismFightSwapRequest",PrismFightSwapRequestAction);
+      public static const PrismFightSwapRequest:DofusApiAction;
       
-      public static const PrismInfoJoinLeaveRequest:DofusApiAction = new DofusApiAction("PrismInfoJoinLeaveRequest",PrismInfoJoinLeaveRequestAction);
+      public static const PrismInfoJoinLeaveRequest:DofusApiAction;
       
-      public static const PrismsListRegister:DofusApiAction = new DofusApiAction("PrismsListRegister",PrismsListRegisterAction);
+      public static const PrismsListRegister:DofusApiAction;
       
-      public static const PrismAttackRequest:DofusApiAction = new DofusApiAction("PrismAttackRequest",PrismAttackRequestAction);
+      public static const PrismAttackRequest:DofusApiAction;
       
-      public static const PrismUseRequest:DofusApiAction = new DofusApiAction("PrismUseRequest",PrismUseRequestAction);
+      public static const PrismUseRequest:DofusApiAction;
       
-      public static const PrismSetSabotagedRequest:DofusApiAction = new DofusApiAction("PrismSetSabotagedRequest",PrismSetSabotagedRequestAction);
+      public static const PrismSetSabotagedRequest:DofusApiAction;
       
-      public static const ObjectUseOnCell:DofusApiAction = new DofusApiAction("ObjectUseOnCell",ObjectUseOnCellAction);
+      public static const ObjectUseOnCell:DofusApiAction;
       
-      public static const GiftAssignRequest:DofusApiAction = new DofusApiAction("GiftAssignRequest",GiftAssignRequestAction);
+      public static const GiftAssignRequest:DofusApiAction;
       
-      public static const NotificationUpdateFlag:DofusApiAction = new DofusApiAction("NotificationUpdateFlag",NotificationUpdateFlagAction);
+      public static const NotificationUpdateFlag:DofusApiAction;
       
-      public static const NotificationReset:DofusApiAction = new DofusApiAction("NotificationReset",NotificationResetAction);
+      public static const NotificationReset:DofusApiAction;
       
-      public static const StartZoom:DofusApiAction = new DofusApiAction("StartZoom",StartZoomAction);
+      public static const StartZoom:DofusApiAction;
       
-      public static const PlaySound:DofusApiAction = new DofusApiAction("PlaySound",PlaySoundAction);
+      public static const PlaySound:DofusApiAction;
       
-      public static const GetPartsList:DofusApiAction = new DofusApiAction("GetPartsList",GetPartsListAction);
+      public static const GetPartsList:DofusApiAction;
       
-      public static const DownloadPart:DofusApiAction = new DofusApiAction("DownloadPart",DownloadPartAction);
+      public static const DownloadPart:DofusApiAction;
       
-      public static const GetPartInfo:DofusApiAction = new DofusApiAction("GetPartInfo",GetPartInfoAction);
+      public static const GetPartInfo:DofusApiAction;
       
-      public static const ShortcutBarAddRequest:DofusApiAction = new DofusApiAction("ShortcutBarAddRequest",ShortcutBarAddRequestAction);
+      public static const ShortcutBarAddRequest:DofusApiAction;
       
-      public static const ShortcutBarRemoveRequest:DofusApiAction = new DofusApiAction("ShortcutBarRemoveRequest",ShortcutBarRemoveRequestAction);
+      public static const ShortcutBarRemoveRequest:DofusApiAction;
       
-      public static const ShortcutBarSwapRequest:DofusApiAction = new DofusApiAction("ShortcutBarSwapRequest",ShortcutBarSwapRequestAction);
+      public static const ShortcutBarSwapRequest:DofusApiAction;
       
-      public static const KrosmasterTokenRequest:DofusApiAction = new DofusApiAction("KrosmasterTokenRequest",KrosmasterTokenRequestAction);
+      public static const KrosmasterTokenRequest:DofusApiAction;
       
-      public static const KrosmasterInventoryRequest:DofusApiAction = new DofusApiAction("KrosmasterInventoryRequest",KrosmasterInventoryRequestAction);
+      public static const KrosmasterInventoryRequest:DofusApiAction;
       
-      public static const KrosmasterTransferRequest:DofusApiAction = new DofusApiAction("KrosmasterTransferRequest",KrosmasterTransferRequestAction);
+      public static const KrosmasterTransferRequest:DofusApiAction;
       
-      public static const KrosmasterPlayingStatus:DofusApiAction = new DofusApiAction("KrosmasterPlayingStatus",KrosmasterPlayingStatusAction);
+      public static const KrosmasterPlayingStatus:DofusApiAction;
       
-      public static const TitlesAndOrnamentsListRequest:DofusApiAction = new DofusApiAction("TitlesAndOrnamentsListRequest",TitlesAndOrnamentsListRequestAction);
+      public static const TitlesAndOrnamentsListRequest:DofusApiAction;
       
-      public static const TitleSelectRequest:DofusApiAction = new DofusApiAction("TitleSelectRequest",TitleSelectRequestAction);
+      public static const TitleSelectRequest:DofusApiAction;
       
-      public static const OrnamentSelectRequest:DofusApiAction = new DofusApiAction("OrnamentSelectRequest",OrnamentSelectRequestAction);
+      public static const OrnamentSelectRequest:DofusApiAction;
       
-      public static const ShowMonstersInfo:DofusApiAction = new DofusApiAction("ShowMonstersInfo",ShowMonstersInfoAction);
+      public static const ShowMonstersInfo:DofusApiAction;
       
-      public static const ContactLookRequestById:DofusApiAction = new DofusApiAction("ContactLookRequestById",ContactLookRequestByIdAction);
+      public static const ContactLookRequestById:DofusApiAction;
       
-      public static const ModuleListRequest:DofusApiAction = new DofusApiAction("ModuleListRequest",ModuleListRequestAction);
+      public static const ModuleListRequest:DofusApiAction;
       
-      public static const ModuleInstallRequest:DofusApiAction = new DofusApiAction("ModuleInstallRequest",ModuleInstallRequestAction);
+      public static const ModuleInstallRequest:DofusApiAction;
       
-      public static const ModuleDeleteRequest:DofusApiAction = new DofusApiAction("ModuleDeleteRequest",ModuleDeleteRequestAction);
+      public static const ModuleDeleteRequest:DofusApiAction;
       
-      public static const InstalledModuleListRequest:DofusApiAction = new DofusApiAction("InstalledModuleListRequest",InstalledModuleListRequestAction);
+      public static const InstalledModuleListRequest:DofusApiAction;
       
-      public static const InstalledModuleInfoRequest:DofusApiAction = new DofusApiAction("InstalledModuleInfoRequest",InstalledModuleInfoRequestAction);
+      public static const InstalledModuleInfoRequest:DofusApiAction;
       
-      public static const ModuleInstallConfirm:DofusApiAction = new DofusApiAction("ModuleInstallConfirm",ModuleInstallConfirmAction);
+      public static const ModuleInstallConfirm:DofusApiAction;
       
-      public static const ModuleInstallCancel:DofusApiAction = new DofusApiAction("ModuleInstallCancel",ModuleInstallCancelAction);
+      public static const ModuleInstallCancel:DofusApiAction;
    }
 }

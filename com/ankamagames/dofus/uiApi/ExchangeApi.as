@@ -50,6 +50,8 @@ package com.ankamagames.dofus.uiApi
                return "Erreur lors d\'une transaction avec une ferme";
             case ExchangeErrorEnum.SELL_ERROR:
                return "Erreur lors d\'une vente";
+            default:
+               return "Erreur d\'échange de type inconnue";
          }
       }
    }

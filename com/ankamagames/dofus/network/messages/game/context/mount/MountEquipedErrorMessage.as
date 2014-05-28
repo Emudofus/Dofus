@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5963;
       }
       
-      public function initMountEquipedErrorMessage(errorType:uint=0) : MountEquipedErrorMessage {
+      public function initMountEquipedErrorMessage(errorType:uint = 0) : MountEquipedErrorMessage {
          this.errorType = errorType;
          this._isInitialized = true;
          return this;

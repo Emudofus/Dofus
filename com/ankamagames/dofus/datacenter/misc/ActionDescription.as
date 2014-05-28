@@ -22,7 +22,7 @@ package com.ankamagames.dofus.datacenter.misc
          {
             _actionByName = new Array();
             actions = GameData.getObjects(MODULE);
-            for each (_actionByName[action.name] in actions)
+            for each(_actionByName[action.name] in actions)
             {
             }
          }

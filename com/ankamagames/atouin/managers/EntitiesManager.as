@@ -34,7 +34,7 @@ package com.ankamagames.atouin.managers
       
       private static const RANDOM_ENTITIES_ID_START:uint = 1000000;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EntitiesManager));
+      protected static const _log:Logger;
       
       private static var _self:EntitiesManager;
       
@@ -77,7 +77,7 @@ package com.ankamagames.atouin.managers
       
       public function getEntityID(entity:IEntity) : int {
          var i:String = null;
-         for (i in this._entities)
+         for(i in this._entities)
          {
             if(entity === this._entities[i])
             {
@@ -102,17 +102,34 @@ package com.ankamagames.atouin.managers
             {
                IMovable(this._entities[entityID]).stop(true);
             }
-            delete this._entities[[entityID]];
+            delete this._entities[entityID];
          }
       }
       
       public function clearEntities() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var id:String = null;
+         var i:* = 0;
+         var num:* = 0;
+         var entityId:* = 0;
+         var ts:TiphonSprite = null;
+         var entityBuffer:Array = new Array();
+         for(id in this._entities)
+         {
+            entityBuffer.push(id);
+         }
+         i = -1;
+         num = entityBuffer.length;
+         while(++i < num)
+         {
+            entityId = entityBuffer[i];
+            ts = this._entities[entityId] as TiphonSprite;
+            this.removeEntity(entityId);
+            if(ts)
+            {
+               ts.destroy();
+            }
+         }
+         this._entities = new Array();
       }
       
       public function get entities() : Array {
@@ -120,12 +137,15 @@ package com.ankamagames.atouin.managers
       }
       
       public function getFreeEntityId() : int {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         while(true)
+         {
+            if(this._entities[++this._currentRandomEntity] == null)
+            {
+               break;
+            }
+            this._currentRandomEntity++;
+         }
+         return this._currentRandomEntity;
       }
       
       private function registerInteractions(entity:IInteractive, register:Boolean) : void {
@@ -141,28 +161,26 @@ package com.ankamagames.atouin.managers
       public function registerInteraction(entity:IInteractive, interactionType:uint, enabled:Boolean) : void {
          var event:String = null;
          var events:Array = InteractionsEnum.getEvents(interactionType);
-         for each (event in events)
+         for each(event in events)
          {
             if((enabled) && (!entity.hasEventListener(event)))
             {
                entity.addEventListener(event,this.onInteraction,false,0,true);
             }
-            else
+            else if((!enabled) && (entity.hasEventListener(event)))
             {
-               if((!enabled) && (entity.hasEventListener(event)))
-               {
-                  entity.removeEventListener(event,this.onInteraction,false);
-               }
+               entity.removeEventListener(event,this.onInteraction,false);
             }
+            
          }
       }
       
-      public function getEntityOnCell(cellId:uint, oClass:*=null) : IEntity {
+      public function getEntityOnCell(cellId:uint, oClass:* = null) : IEntity {
          var e:IEntity = null;
          var i:uint = 0;
          var useFilter:Boolean = !(oClass == null);
          var isMultiFilter:Boolean = (useFilter) && (oClass is Array);
-         for each (e in this._entities)
+         for each(e in this._entities)
          {
             if((e) && (e.position) && (e.position.cellId == cellId))
             {
@@ -190,13 +208,13 @@ package com.ankamagames.atouin.managers
          return null;
       }
       
-      public function getEntitiesOnCell(cellId:uint, oClass:*=null) : Array {
+      public function getEntitiesOnCell(cellId:uint, oClass:* = null) : Array {
          var e:IEntity = null;
          var i:uint = 0;
          var useFilter:Boolean = !(oClass == null);
          var isMultiFilter:Boolean = (useFilter) && (oClass is Array);
          var result:Array = [];
-         for each (e in this._entities)
+         for each(e in this._entities)
          {
             if((e) && (e.position) && (e.position.cellId == cellId))
             {
@@ -234,7 +252,7 @@ package com.ankamagames.atouin.managers
          var ent:IEntity = null;
          if(e.propertyName == "transparentOverlayMode")
          {
-            for each (ent in this._entities)
+            for each(ent in this._entities)
             {
                if(ent is IDisplayable)
                {

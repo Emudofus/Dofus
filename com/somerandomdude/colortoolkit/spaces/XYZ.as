@@ -5,7 +5,7 @@ package com.somerandomdude.colortoolkit.spaces
    public class XYZ extends CoreColor implements IColorSpace
    {
       
-      public function XYZ(x:Number=0, y:Number=0, z:Number=0) {
+      public function XYZ(x:Number = 0, y:Number = 0, z:Number = 0) {
          super();
          this._x = x;
          this._y = y;

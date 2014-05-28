@@ -85,34 +85,30 @@ package com.ankamagames.jerakine.utils.pattern
                {
                   aStrCopyFirstPart.push(aParams[0]);
                }
+               else if((aParams[0] == 0) && (aParams[1] == 0))
+               {
+                  aStrCopyFirstPart.push(aParams[2]);
+               }
+               else if(!aParams[2])
+               {
+                  aStr.splice(aStr.indexOf("#"),2,aParams[0]);
+                  aStr.splice(aStr.indexOf("{"),1);
+                  aStr.splice(aStr.indexOf("~"),4);
+                  aStr.splice(aStr.indexOf("#"),2,aParams[1]);
+                  aStr.splice(aStr.indexOf("}"),1);
+                  aStrCopyFirstPart = aStrCopyFirstPart.concat(aStr);
+               }
                else
                {
-                  if((aParams[0] == 0) && (aParams[1] == 0))
-                  {
-                     aStrCopyFirstPart.push(aParams[2]);
-                  }
-                  else
-                  {
-                     if(!aParams[2])
-                     {
-                        aStr.splice(aStr.indexOf("#"),2,aParams[0]);
-                        aStr.splice(aStr.indexOf("{"),1);
-                        aStr.splice(aStr.indexOf("~"),4);
-                        aStr.splice(aStr.indexOf("#"),2,aParams[1]);
-                        aStr.splice(aStr.indexOf("}"),1);
-                        aStrCopyFirstPart = aStrCopyFirstPart.concat(aStr);
-                     }
-                     else
-                     {
-                        aStr.splice(aStr.indexOf("#"),2,aParams[0] + aParams[2]);
-                        aStr.splice(aStr.indexOf("{"),1);
-                        aStr.splice(aStr.indexOf("~"),4);
-                        aStr.splice(aStr.indexOf("#"),2,aParams[0] * aParams[1] + aParams[2]);
-                        aStr.splice(aStr.indexOf("}"),1);
-                        aStrCopyFirstPart = aStrCopyFirstPart.concat(aStr);
-                     }
-                  }
+                  aStr.splice(aStr.indexOf("#"),2,aParams[0] + aParams[2]);
+                  aStr.splice(aStr.indexOf("{"),1);
+                  aStr.splice(aStr.indexOf("~"),4);
+                  aStr.splice(aStr.indexOf("#"),2,aParams[0] * aParams[1] + aParams[2]);
+                  aStr.splice(aStr.indexOf("}"),1);
+                  aStrCopyFirstPart = aStrCopyFirstPart.concat(aStr);
                }
+               
+               
                returnArray = aStrCopyFirstPart.concat(aStrCopySecondPart);
             }
          }

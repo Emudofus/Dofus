@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 417;
       }
       
-      public function initAllianceInformations(allianceId:uint=0, allianceTag:String="", allianceName:String="", allianceEmblem:GuildEmblem=null) : AllianceInformations {
+      public function initAllianceInformations(allianceId:uint = 0, allianceTag:String = "", allianceName:String = "", allianceEmblem:GuildEmblem = null) : AllianceInformations {
          super.initBasicNamedAllianceInformations(allianceId,allianceTag,allianceName);
          this.allianceEmblem = allianceEmblem;
          return this;

@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.approach
          return 6029;
       }
       
-      public function initAccountLoggingKickedMessage(days:uint=0, hours:uint=0, minutes:uint=0) : AccountLoggingKickedMessage {
+      public function initAccountLoggingKickedMessage(days:uint = 0, hours:uint = 0, minutes:uint = 0) : AccountLoggingKickedMessage {
          this.days = days;
          this.hours = hours;
          this.minutes = minutes;

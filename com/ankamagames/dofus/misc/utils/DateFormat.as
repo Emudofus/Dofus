@@ -7,9 +7,9 @@ package com.ankamagames.dofus.misc.utils
          super();
       }
       
-      public static var MONTHS:Array = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      public static var MONTHS:Array;
       
-      public static var DAYS:Array = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      public static var DAYS:Array;
       
       public static function formatDate(formatStyle:String, date:Date) : String {
          var leadZero:Function = function(num:int):String
@@ -76,7 +76,7 @@ package com.ankamagames.dofus.misc.utils
          return (year % 4 == 0) && (!(year % 100 == 0)) || (year % 100 == 0);
       }
       
-      public static function numberOfDaysInMonth(month:uint, isLeapYear:Boolean=false) : uint {
+      public static function numberOfDaysInMonth(month:uint, isLeapYear:Boolean = false) : uint {
          if(month == 1)
          {
             return isLeapYear?29:28;

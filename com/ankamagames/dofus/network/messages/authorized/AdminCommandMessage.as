@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.authorized
          return 76;
       }
       
-      public function initAdminCommandMessage(content:String="") : AdminCommandMessage {
+      public function initAdminCommandMessage(content:String = "") : AdminCommandMessage {
          this.content = content;
          this._isInitialized = true;
          return this;

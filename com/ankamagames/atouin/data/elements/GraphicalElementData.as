@@ -15,7 +15,7 @@ package com.ankamagames.atouin.data.elements
          this.type = elementType;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GraphicalElementData));
+      protected static const _log:Logger;
       
       public var id:int;
       

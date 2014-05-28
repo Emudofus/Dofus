@@ -47,7 +47,7 @@ package com.ankamagames.dofus.network.types.game.guild
          return 88;
       }
       
-      public function initGuildMember(id:uint=0, level:uint=0, name:String="", breed:int=0, sex:Boolean=false, rank:uint=0, givenExperience:Number=0, experienceGivenPercent:uint=0, rights:uint=0, connected:uint=99, alignmentSide:int=0, hoursSinceLastConnection:uint=0, moodSmileyId:int=0, accountId:uint=0, achievementPoints:int=0, status:PlayerStatus=null) : GuildMember {
+      public function initGuildMember(id:uint = 0, level:uint = 0, name:String = "", breed:int = 0, sex:Boolean = false, rank:uint = 0, givenExperience:Number = 0, experienceGivenPercent:uint = 0, rights:uint = 0, connected:uint = 99, alignmentSide:int = 0, hoursSinceLastConnection:uint = 0, moodSmileyId:int = 0, accountId:uint = 0, achievementPoints:int = 0, status:PlayerStatus = null) : GuildMember {
          super.initCharacterMinimalInformations(id,level,name);
          this.breed = breed;
          this.sex = sex;

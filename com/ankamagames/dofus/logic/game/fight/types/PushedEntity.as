@@ -1,7 +1,5 @@
 package com.ankamagames.dofus.logic.game.fight.types
 {
-   import __AS3__.vec.*;
-   
    public class PushedEntity extends Object
    {
       

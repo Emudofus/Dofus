@@ -1,7 +1,6 @@
 package com.ankamagames.atouin.renderers
 {
    import com.ankamagames.atouin.utils.IZoneRenderer;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.types.Color;
    import com.ankamagames.atouin.types.DataMapContainer;
    import com.ankamagames.atouin.types.TrapZoneTile;
@@ -11,7 +10,7 @@ package com.ankamagames.atouin.renderers
    public class TrapZoneRenderer extends Object implements IZoneRenderer
    {
       
-      public function TrapZoneRenderer(nStrata:uint=10) {
+      public function TrapZoneRenderer(nStrata:uint = 10) {
          super();
          this._aZoneTile = new Array();
          this._aCellTile = new Array();
@@ -126,8 +125,8 @@ package com.ankamagames.atouin.renderers
                {
                   TrapZoneTile(this._aZoneTile[j]).remove();
                }
-               delete this._aZoneTile[[j]];
-               delete this._aCellTile[[j]];
+               delete this._aZoneTile[j];
+               delete this._aCellTile[j];
             }
             j++;
          }

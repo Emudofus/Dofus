@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6277;
       }
       
-      public function initPartyModifiableStatusMessage(partyId:uint=0, enabled:Boolean=false) : PartyModifiableStatusMessage {
+      public function initPartyModifiableStatusMessage(partyId:uint = 0, enabled:Boolean = false) : PartyModifiableStatusMessage {
          super.initAbstractPartyMessage(partyId);
          this.enabled = enabled;
          this._isInitialized = true;

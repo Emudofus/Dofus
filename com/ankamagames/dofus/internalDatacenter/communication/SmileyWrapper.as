@@ -11,8 +11,6 @@ package com.ankamagames.dofus.internalDatacenter.communication
    import flash.utils.flash_proxy;
    import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
    
-   use namespace flash_proxy;
-   
    public class SmileyWrapper extends Proxy implements IDataCenter, ISlotData
    {
       
@@ -20,11 +18,11 @@ package com.ankamagames.dofus.internalDatacenter.communication
          super();
       }
       
-      private static var _cache:Array = new Array();
+      private static var _cache:Array;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SmileyWrapper));
+      protected static const _log:Logger;
       
-      public static function create(smileyId:uint, iconId:String, order:int, useCache:Boolean=true) : SmileyWrapper {
+      public static function create(smileyId:uint, iconId:String, order:int, useCache:Boolean = true) : SmileyWrapper {
          var smiley:SmileyWrapper = null;
          if((!_cache[smileyId]) || (!useCache))
          {
@@ -137,7 +135,7 @@ package com.ankamagames.dofus.internalDatacenter.communication
       public function removeHolder(h:ISlotDataHolder) : void {
       }
       
-      public function getIconUri(pngMode:Boolean=true) : Uri {
+      public function getIconUri(pngMode:Boolean = true) : Uri {
          if(!this._uri)
          {
             this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path") + "gfx/smilies/assets.swf|" + this.iconId);

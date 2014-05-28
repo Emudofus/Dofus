@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.houses
       
       public static const MODULE:String = "Houses";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(House));
+      protected static const _log:Logger;
       
       public static function getGuildHouseById(id:int) : House {
          return GameData.getObject(MODULE,id) as House;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6217;
       }
       
-      public function initGameActionFightVanishMessage(actionId:uint=0, sourceId:int=0, targetId:int=0) : GameActionFightVanishMessage {
+      public function initGameActionFightVanishMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0) : GameActionFightVanishMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this._isInitialized = true;

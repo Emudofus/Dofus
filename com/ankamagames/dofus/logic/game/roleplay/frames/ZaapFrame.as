@@ -7,7 +7,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.network.messages.game.interactive.zaap.ZaapListMessage;
    import com.ankamagames.dofus.network.messages.game.interactive.zaap.TeleportDestinationsListMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.world.Hint;
    import com.ankamagames.dofus.logic.game.roleplay.actions.TeleportRequestAction;
    import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogMessage;
@@ -36,7 +35,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(NpcDialogFrame));
+      protected static const _log:Logger;
       
       private var _priority:int = 0;
       
@@ -92,7 +91,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   if(tdlmsg.teleporterType == TeleporterTypeEnum.TELEPORTER_SUBWAY)
                   {
                      hints = TeleportDestinationWrapper.getHintsFromMapId(tdlmsg.mapIds[i]);
-                     for each (hint in hints)
+                     for each(hint in hints)
                      {
                         destinations.push(new TeleportDestinationWrapper(tdlmsg.teleporterType,tdlmsg.mapIds[i],tdlmsg.subAreaIds[i],TeleporterTypeEnum.TELEPORTER_SUBWAY,tdlmsg.costs[i],false,hint));
                      }
@@ -129,6 +128,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   Kernel.getWorker().removeFrame(this);
                }
                return true;
+            default:
+               return false;
          }
       }
       

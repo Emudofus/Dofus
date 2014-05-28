@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.character.stats
          return 5684;
       }
       
-      public function initLifePointsRegenBeginMessage(regenRate:uint=0) : LifePointsRegenBeginMessage {
+      public function initLifePointsRegenBeginMessage(regenRate:uint = 0) : LifePointsRegenBeginMessage {
          this.regenRate = regenRate;
          this._isInitialized = true;
          return this;

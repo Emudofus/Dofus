@@ -96,7 +96,7 @@ package com.ankamagames.dofus.logic.game.common.frames
       private function onTextInput(te:TextEvent) : void {
          var len:uint = 0;
          this._globalBuffer = this._globalBuffer + te.text;
-         if(!(((te.target is TextField && TextField(te.target).parent is Input) && (Input(TextField(te.target).parent).getUi())) && (!Input(TextField(te.target).parent).getUi().uiModule.trusted)))
+         if(!((te.target is TextField && TextField(te.target).parent is Input) && (Input(TextField(te.target).parent).getUi()) && !Input(TextField(te.target).parent).getUi().uiModule.trusted))
          {
             return;
          }
@@ -180,17 +180,15 @@ package com.ankamagames.dofus.logic.game.common.frames
             {
                inputBuffer = tf.text.substring(inputBuffer.length - _passwordLength);
             }
+            else if(inputBuffer.substring(0,tf.text.length) == tf.text)
+            {
+               inputBuffer = inputBuffer.substring(tf.text.length - _passwordLength);
+            }
             else
             {
-               if(inputBuffer.substring(0,tf.text.length) == tf.text)
-               {
-                  inputBuffer = inputBuffer.substring(tf.text.length - _passwordLength);
-               }
-               else
-               {
-                  inputBuffer = tf.text;
-               }
+               inputBuffer = tf.text;
             }
+            
          }
          else
          {

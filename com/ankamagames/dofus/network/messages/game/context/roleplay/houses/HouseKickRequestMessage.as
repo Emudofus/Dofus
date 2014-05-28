@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          return 5698;
       }
       
-      public function initHouseKickRequestMessage(id:uint=0) : HouseKickRequestMessage {
+      public function initHouseKickRequestMessage(id:uint = 0) : HouseKickRequestMessage {
          this.id = id;
          this._isInitialized = true;
          return this;

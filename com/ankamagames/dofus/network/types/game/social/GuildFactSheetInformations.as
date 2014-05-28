@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.social
          return 424;
       }
       
-      public function initGuildFactSheetInformations(guildId:uint=0, guildName:String="", guildEmblem:GuildEmblem=null, leaderId:uint=0, guildLevel:uint=0, nbMembers:uint=0) : GuildFactSheetInformations {
+      public function initGuildFactSheetInformations(guildId:uint = 0, guildName:String = "", guildEmblem:GuildEmblem = null, leaderId:uint = 0, guildLevel:uint = 0, nbMembers:uint = 0) : GuildFactSheetInformations {
          super.initGuildInformations(guildId,guildName,guildEmblem);
          this.leaderId = leaderId;
          this.guildLevel = guildLevel;

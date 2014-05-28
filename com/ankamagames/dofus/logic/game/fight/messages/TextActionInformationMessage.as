@@ -5,7 +5,7 @@ package com.ankamagames.dofus.logic.game.fight.messages
    public class TextActionInformationMessage extends Object implements Message
    {
       
-      public function TextActionInformationMessage(textKey:uint, params:Array=null) {
+      public function TextActionInformationMessage(textKey:uint, params:Array = null) {
          super();
          this._textKey = textKey;
          this._params = params;

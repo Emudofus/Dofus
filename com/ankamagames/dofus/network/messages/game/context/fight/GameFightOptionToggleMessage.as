@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 707;
       }
       
-      public function initGameFightOptionToggleMessage(option:uint=3) : GameFightOptionToggleMessage {
+      public function initGameFightOptionToggleMessage(option:uint = 3) : GameFightOptionToggleMessage {
          this.option = option;
          this._isInitialized = true;
          return this;

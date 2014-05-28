@@ -3,7 +3,6 @@ package com.ankamagames.dofus.internalDatacenter.taxi
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import flash.utils.Dictionary;
    import com.ankamagames.dofus.datacenter.world.Hint;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.world.SubArea;
    import com.ankamagames.dofus.datacenter.world.Area;
    import com.ankamagames.dofus.internalDatacenter.world.WorldPointWrapper;
@@ -11,7 +10,7 @@ package com.ankamagames.dofus.internalDatacenter.taxi
    public class TeleportDestinationWrapper extends Object implements IDataCenter
    {
       
-      public function TeleportDestinationWrapper(teleporterGenericType:uint, mapId:uint, subareaId:uint, destType:uint, cost:uint, spawn:Boolean=false, hint:Hint=null) {
+      public function TeleportDestinationWrapper(teleporterGenericType:uint, mapId:uint, subareaId:uint, destType:uint, cost:uint, spawn:Boolean = false, hint:Hint = null) {
          var area:Area = null;
          super();
          this.teleporterType = teleporterGenericType;
@@ -74,7 +73,7 @@ package com.ankamagames.dofus.internalDatacenter.taxi
             hints = Hint.getHints();
             _hints = new Dictionary();
             _hintsRealMap = new Dictionary();
-            for each (hint in hints)
+            for each(hint in hints)
             {
                if(_hints.hasOwnProperty(hint.mapId))
                {

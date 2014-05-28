@@ -15,7 +15,7 @@ package com.ankamagames.dofus.datacenter.appearance
       
       public static const MODULE:String = "SkinMappings";
       
-      private static var _log:Logger = Log.getLogger(getQualifiedClassName(SkinMapping));
+      private static var _log:Logger;
       
       public static function getSkinMappingById(id:int) : SkinMapping {
          return GameData.getObject(MODULE,id) as SkinMapping;

@@ -11,9 +11,9 @@ package com.ankamagames.jerakine.types.positions
          super();
       }
       
-      private static const WORLD_ID_MAX:uint = 2 << 12;
+      private static const WORLD_ID_MAX:uint;
       
-      private static const MAP_COORDS_MAX:uint = 2 << 8;
+      private static const MAP_COORDS_MAX:uint;
       
       public static function fromMapId(mapId:uint) : WorldPoint {
          var wp:WorldPoint = new WorldPoint();

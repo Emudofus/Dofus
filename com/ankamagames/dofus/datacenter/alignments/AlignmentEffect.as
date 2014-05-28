@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.alignments
       
       public static const MODULE:String = "AlignmentEffect";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlignmentEffect));
+      protected static const _log:Logger;
       
       public static function getAlignmentEffectById(id:int) : AlignmentEffect {
          return GameData.getObject(MODULE,id) as AlignmentEffect;

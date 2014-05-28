@@ -38,7 +38,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 702;
       }
       
-      public function initGameFightJoinMessage(canBeCancelled:Boolean=false, canSayReady:Boolean=false, isSpectator:Boolean=false, isFightStarted:Boolean=false, timeMaxBeforeFightStart:uint=0, fightType:uint=0) : GameFightJoinMessage {
+      public function initGameFightJoinMessage(canBeCancelled:Boolean = false, canSayReady:Boolean = false, isSpectator:Boolean = false, isFightStarted:Boolean = false, timeMaxBeforeFightStart:uint = 0, fightType:uint = 0) : GameFightJoinMessage {
          this.canBeCancelled = canBeCancelled;
          this.canSayReady = canSayReady;
          this.isSpectator = isSpectator;

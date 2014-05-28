@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 467;
       }
       
-      public function initGameRolePlayPortalInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, portal:PortalInformation=null) : GameRolePlayPortalInformations {
+      public function initGameRolePlayPortalInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, portal:PortalInformation = null) : GameRolePlayPortalInformations {
          super.initGameRolePlayActorInformations(contextualId,look,disposition);
          this.portal = portal;
          return this;

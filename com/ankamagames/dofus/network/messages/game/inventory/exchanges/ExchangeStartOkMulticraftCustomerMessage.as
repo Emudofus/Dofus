@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5817;
       }
       
-      public function initExchangeStartOkMulticraftCustomerMessage(maxCase:uint=0, skillId:uint=0, crafterJobLevel:uint=0) : ExchangeStartOkMulticraftCustomerMessage {
+      public function initExchangeStartOkMulticraftCustomerMessage(maxCase:uint = 0, skillId:uint = 0, crafterJobLevel:uint = 0) : ExchangeStartOkMulticraftCustomerMessage {
          this.maxCase = maxCase;
          this.skillId = skillId;
          this.crafterJobLevel = crafterJobLevel;

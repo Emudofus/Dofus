@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 205;
       }
       
-      public function initGameFightSpellCooldown(spellId:int=0, cooldown:uint=0) : GameFightSpellCooldown {
+      public function initGameFightSpellCooldown(spellId:int = 0, cooldown:uint = 0) : GameFightSpellCooldown {
          this.spellId = spellId;
          this.cooldown = cooldown;
          return this;

@@ -8,7 +8,7 @@ package com.ankamagames.berilia.types.listener
    public class GenericListener extends Object
    {
       
-      public function GenericListener(sEvent:String=null, oListener:*=null, fCallback:Function=null, nSortIndex:int=0, listener_type:uint=1, listenerContext:WeakReference=null) {
+      public function GenericListener(sEvent:String = null, oListener:* = null, fCallback:Function = null, nSortIndex:int = 0, listener_type:uint = 1, listenerContext:WeakReference = null) {
          super();
          if(sEvent != null)
          {
@@ -31,7 +31,7 @@ package com.ankamagames.berilia.types.listener
       
       public static const LISTENER_TYPE_MODULE:uint = 1;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GenericListener));
+      protected static const _log:Logger;
       
       private var _sEvent:String;
       

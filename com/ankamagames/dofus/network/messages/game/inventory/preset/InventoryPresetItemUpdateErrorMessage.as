@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          return 6211;
       }
       
-      public function initInventoryPresetItemUpdateErrorMessage(code:uint=1) : InventoryPresetItemUpdateErrorMessage {
+      public function initInventoryPresetItemUpdateErrorMessage(code:uint = 1) : InventoryPresetItemUpdateErrorMessage {
          this.code = code;
          this._isInitialized = true;
          return this;

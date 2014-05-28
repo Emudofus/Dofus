@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.guild
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.paddock.PaddockContentInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5959;
       }
       
-      public function initGuildInformationsPaddocksMessage(nbPaddockMax:uint=0, paddocksInformations:Vector.<PaddockContentInformations>=null) : GuildInformationsPaddocksMessage {
+      public function initGuildInformationsPaddocksMessage(nbPaddockMax:uint = 0, paddocksInformations:Vector.<PaddockContentInformations> = null) : GuildInformationsPaddocksMessage {
          this.nbPaddockMax = nbPaddockMax;
          this.paddocksInformations = paddocksInformations;
          this._isInitialized = true;

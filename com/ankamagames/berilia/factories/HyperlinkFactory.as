@@ -29,15 +29,15 @@ package com.ankamagames.berilia.factories
       
       private static var SEPARATOR:String = "::";
       
-      private static var PROTOCOL:Dictionary = new Dictionary();
+      private static var PROTOCOL:Dictionary;
       
-      private static var PROTOCOL_TEXT:Dictionary = new Dictionary();
+      private static var PROTOCOL_TEXT:Dictionary;
       
-      private static var PROTOCOL_SHIFT:Dictionary = new Dictionary();
+      private static var PROTOCOL_SHIFT:Dictionary;
       
-      private static var PROTOCOL_BOLD:Dictionary = new Dictionary();
+      private static var PROTOCOL_BOLD:Dictionary;
       
-      private static var PROTOCOL_ROLL_OVER:Dictionary = new Dictionary();
+      private static var PROTOCOL_ROLL_OVER:Dictionary;
       
       private static var staticStyleSheet:StyleSheet;
       
@@ -59,7 +59,7 @@ package com.ankamagames.berilia.factories
          return PROTOCOL_BOLD[protocolName]?true:false;
       }
       
-      public static function createTextClickHandler(component:EventDispatcher, styleSheet:Boolean=false) : void {
+      public static function createTextClickHandler(component:EventDispatcher, styleSheet:Boolean = false) : void {
          var t:TextField = null;
          if(component is TextField)
          {
@@ -79,7 +79,7 @@ package com.ankamagames.berilia.factories
          textField.addEventListener(TextEvent.LINK,processClick);
       }
       
-      public static function decode(string:String, htmlMode:Boolean=true, textField:TextField=null) : String {
+      public static function decode(string:String, htmlMode:Boolean = true, textField:TextField = null) : String {
          var leftIndex:* = 0;
          var rightIndex:* = 0;
          var leftBlock:String = null;
@@ -206,7 +206,7 @@ package com.ankamagames.berilia.factories
          return currentText;
       }
       
-      public static function registerProtocol(name:String, callBack:Function, textCallBack:Function=null, shiftCallBack:Function=null, useBoldText:Boolean=true, rollOverCallback:Function=null) : void {
+      public static function registerProtocol(name:String, callBack:Function, textCallBack:Function = null, shiftCallBack:Function = null, useBoldText:Boolean = true, rollOverCallback:Function = null) : void {
          PROTOCOL[name] = callBack;
          if(textCallBack != null)
          {

@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.livingObjects
       
       public static const MODULE:String = "SpeakingItemsText";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpeakingItemText));
+      protected static const _log:Logger;
       
       public static function getSpeakingItemTextById(id:int) : SpeakingItemText {
          return GameData.getObject(MODULE,id) as SpeakingItemText;

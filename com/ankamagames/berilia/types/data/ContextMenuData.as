@@ -11,7 +11,7 @@ package com.ankamagames.berilia.types.data
          this.data = data;
          this.makerName = makerName;
          this.content = new UnsecureArray();
-         for each (entry in content)
+         for each(entry in content)
          {
             this.content.push(entry);
          }

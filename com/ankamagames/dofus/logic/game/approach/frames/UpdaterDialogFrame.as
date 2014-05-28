@@ -32,7 +32,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UpdaterDialogFrame));
+      protected static const _log:Logger;
       
       public function get priority() : int {
          return Priority.LOWEST;
@@ -106,6 +106,8 @@ package com.ankamagames.dofus.logic.game.approach.frames
                demsg = msg as DownloadErrorMessage;
                KernelEventsManager.getInstance().processCallback(HookList.DownloadError,demsg.errorId,demsg.message.length > 0?demsg.message:null,demsg.helpUrl.length > 0?demsg.helpUrl:null);
                return true;
+            default:
+               return false;
          }
       }
       

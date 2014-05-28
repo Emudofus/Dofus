@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 82;
       }
       
-      public function initObjectEffectMinMax(actionId:uint=0, min:uint=0, max:uint=0) : ObjectEffectMinMax {
+      public function initObjectEffectMinMax(actionId:uint = 0, min:uint = 0, max:uint = 0) : ObjectEffectMinMax {
          super.initObjectEffect(actionId);
          this.min = min;
          this.max = max;

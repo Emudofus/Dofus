@@ -18,7 +18,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FileProtocol));
+      protected static const _log:Logger;
       
       public static var localDirectory:String;
       
@@ -28,18 +28,16 @@ package com.ankamagames.jerakine.resources.protocols.impl
             singleLoadingFile[uri] = observer;
             this.loadDirectly(uri,this,dispatchProgress,forcedAdapter);
          }
+         else if(loadingFile[getUrl(uri)])
+         {
+            loadingFile[getUrl(uri)].push(observer);
+         }
          else
          {
-            if(loadingFile[getUrl(uri)])
-            {
-               loadingFile[getUrl(uri)].push(observer);
-            }
-            else
-            {
-               loadingFile[getUrl(uri)] = [observer];
-               this.loadDirectly(uri,this,dispatchProgress,forcedAdapter);
-            }
+            loadingFile[getUrl(uri)] = [observer];
+            this.loadDirectly(uri,this,dispatchProgress,forcedAdapter);
          }
+         
       }
       
       override protected function loadDirectly(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, forcedAdapter:Class) : void {
@@ -57,17 +55,15 @@ package com.ankamagames.jerakine.resources.protocols.impl
             {
                absolutePath = File.applicationDirectory.nativePath + File.separator + path;
             }
+            else if(path.indexOf("/./") != -1)
+            {
+               absolutePath = File.applicationDirectory.nativePath + File.separator + path.substr(path.indexOf("/./") + 3);
+            }
             else
             {
-               if(path.indexOf("/./") != -1)
-               {
-                  absolutePath = File.applicationDirectory.nativePath + File.separator + path.substr(path.indexOf("/./") + 3);
-               }
-               else
-               {
-                  absolutePath = path;
-               }
+               absolutePath = path;
             }
+            
             absoluteFile = new File(absolutePath);
             path = absoluteFile.url.replace("file:///","");
          }
@@ -92,20 +88,18 @@ package com.ankamagames.jerakine.resources.protocols.impl
          if(observer)
          {
             observer.onLoaded(uri,resourceType,resource);
-            delete singleLoadingFile[[uri]];
+            delete singleLoadingFile[uri];
          }
-         else
+         else if((loadingFile[getUrl(uri)]) && (loadingFile[getUrl(uri)].length))
          {
-            if((loadingFile[getUrl(uri)]) && (loadingFile[getUrl(uri)].length))
+            waiting = loadingFile[getUrl(uri)];
+            delete loadingFile[getUrl(uri)];
+            for each(observer in waiting)
             {
-               waiting = loadingFile[getUrl(uri)];
-               delete loadingFile[[getUrl(uri)]];
-               for each (observer in waiting)
-               {
-                  IResourceObserver(observer).onLoaded(uri,resourceType,resource);
-               }
+               IResourceObserver(observer).onLoaded(uri,resourceType,resource);
             }
          }
+         
       }
       
       override public function onFailed(uri:Uri, errorMsg:String, errorCode:uint) : void {
@@ -115,20 +109,18 @@ package com.ankamagames.jerakine.resources.protocols.impl
          if(observer)
          {
             observer.onFailed(uri,errorMsg,errorCode);
-            delete singleLoadingFile[[uri]];
+            delete singleLoadingFile[uri];
          }
-         else
+         else if((loadingFile[getUrl(uri)]) && (loadingFile[getUrl(uri)].length))
          {
-            if((loadingFile[getUrl(uri)]) && (loadingFile[getUrl(uri)].length))
+            waiting = loadingFile[getUrl(uri)];
+            delete loadingFile[getUrl(uri)];
+            for each(observer in waiting)
             {
-               waiting = loadingFile[getUrl(uri)];
-               delete loadingFile[[getUrl(uri)]];
-               for each (observer in waiting)
-               {
-                  IResourceObserver(observer).onFailed(uri,errorMsg,errorCode);
-               }
+               IResourceObserver(observer).onFailed(uri,errorMsg,errorCode);
             }
          }
+         
       }
       
       override public function onProgress(uri:Uri, bytesLoaded:uint, bytesTotal:uint) : void {
@@ -137,20 +129,18 @@ package com.ankamagames.jerakine.resources.protocols.impl
          if(observer)
          {
             observer.onProgress(uri,bytesLoaded,bytesTotal);
-            delete singleLoadingFile[[uri]];
+            delete singleLoadingFile[uri];
          }
-         else
+         else if((loadingFile[getUrl(uri)]) && (loadingFile[getUrl(uri)]) && (loadingFile[getUrl(uri)].length))
          {
-            if((loadingFile[getUrl(uri)]) && (loadingFile[getUrl(uri)]) && (loadingFile[getUrl(uri)].length))
+            waiting = loadingFile[getUrl(uri)];
+            delete loadingFile[getUrl(uri)];
+            for each(observer in waiting)
             {
-               waiting = loadingFile[getUrl(uri)];
-               delete loadingFile[[getUrl(uri)]];
-               for each (observer in waiting)
-               {
-                  IResourceObserver(observer).onProgress(uri,bytesLoaded,bytesTotal);
-               }
+               IResourceObserver(observer).onProgress(uri,bytesLoaded,bytesTotal);
             }
          }
+         
       }
    }
 }

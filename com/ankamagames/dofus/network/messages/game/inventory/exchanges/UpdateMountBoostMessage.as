@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.mount.UpdateMountBoost;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6179;
       }
       
-      public function initUpdateMountBoostMessage(rideId:Number=0, boostToUpdateList:Vector.<UpdateMountBoost>=null) : UpdateMountBoostMessage {
+      public function initUpdateMountBoostMessage(rideId:Number = 0, boostToUpdateList:Vector.<UpdateMountBoost> = null) : UpdateMountBoostMessage {
          this.rideId = rideId;
          this.boostToUpdateList = boostToUpdateList;
          this._isInitialized = true;

@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.game.prism
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.prism.PrismSubareaEmptyInfo;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
@@ -26,7 +25,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 6438;
       }
       
-      public function initPrismsListUpdateMessage(prisms:Vector.<PrismSubareaEmptyInfo>=null) : PrismsListUpdateMessage {
+      public function initPrismsListUpdateMessage(prisms:Vector.<PrismSubareaEmptyInfo> = null) : PrismsListUpdateMessage {
          super.initPrismsListMessage(prisms);
          this._isInitialized = true;
          return this;

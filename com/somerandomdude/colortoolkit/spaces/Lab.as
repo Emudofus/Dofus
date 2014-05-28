@@ -5,7 +5,7 @@ package com.somerandomdude.colortoolkit.spaces
    public class Lab extends CoreColor implements IColorSpace
    {
       
-      public function Lab(lightness:Number=0, a:Number=0, b:Number=0) {
+      public function Lab(lightness:Number = 0, a:Number = 0, b:Number = 0) {
          super();
          this._lightness = lightness;
          this._a = a;

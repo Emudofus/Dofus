@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 5616;
       }
       
-      public function initNpcDialogReplyMessage(replyId:uint=0) : NpcDialogReplyMessage {
+      public function initNpcDialogReplyMessage(replyId:uint = 0) : NpcDialogReplyMessage {
          this.replyId = replyId;
          this._isInitialized = true;
          return this;

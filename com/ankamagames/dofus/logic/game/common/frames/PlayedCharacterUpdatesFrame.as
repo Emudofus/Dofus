@@ -68,7 +68,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.atlas.compass.CompassUpdatePvpSeekMessage;
    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterSpellModification;
    import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
    
@@ -81,7 +80,7 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       public static var SPELL_TOOLTIP_CACHE_NUM:int = 0;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayedCharacterUpdatesFrame));
+      protected static const _log:Logger;
       
       public var setList:Array;
       
@@ -201,7 +200,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is MapComplementaryInformationsDataMessage:
                mcidmsg = msg as MapComplementaryInformationsDataMessage;
-               for each (grai in mcidmsg.actors)
+               for each(grai in mcidmsg.actors)
                {
                   grpci = grai as GameRolePlayCharacterInformations;
                   if((grpci) && (grpci.contextualId == PlayedCharacterManager.getInstance().id))
@@ -213,7 +212,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                         this.roleplayContextFrame.entitiesFrame.dispatchPlayerNewLook = true;
                      }
                      PlayedCharacterManager.getInstance().infos.entityLook = grpci.look;
-                     for each (opt in grpci.humanoidInfo.options)
+                     for each(opt in grpci.humanoidInfo.options)
                      {
                         if(opt is HumanOptionAlliance)
                         {
@@ -245,7 +244,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                position = 63;
                updated = false;
                previousCooldown = 0;
-               for each (sw in PlayedCharacterManager.getInstance().spellsInventory)
+               for each(sw in PlayedCharacterManager.getInstance().spellsInventory)
                {
                   if(sw.id == susmsg.spellId)
                   {
@@ -304,7 +303,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                      healPointEarned = (clumsg.newLevel - PlayedCharacterManager.getInstance().infos.level) * 5;
                      newSpell = new Array();
                      playerBreed = Breed.getBreedById(PlayedCharacterManager.getInstance().infos.breed);
-                     for each (swBreed in playerBreed.breedSpells)
+                     for each(swBreed in playerBreed.breedSpells)
                      {
                         obtentionLevel = swBreed.getSpellLevel(1).minPlayerLevel;
                         if((obtentionLevel <= clumsg.newLevel) && (obtentionLevel > PlayedCharacterManager.getInstance().infos.level))
@@ -324,7 +323,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                      {
                         spellObtained = false;
                         pBreed = Breed.getBreedById(PlayedCharacterManager.getInstance().infos.breed);
-                        for each (swB in pBreed.breedSpells)
+                        for each(swB in pBreed.breedSpells)
                         {
                            sl = swB.getSpellLevel(1);
                            minPlayerLevel = sl.minPlayerLevel;
@@ -359,7 +358,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                      onSameMap = false;
                      try
                      {
-                        for each (entityId in this.roleplayContextFrame.entitiesFrame.getEntitiesIdsList())
+                        for each(entityId in this.roleplayContextFrame.entitiesFrame.getEntitiesIdsList())
                         {
                            if(entityId == cluimsg.id)
                            {
@@ -483,100 +482,18 @@ package com.ankamagames.dofus.logic.game.common.frames
                }
                KernelEventsManager.getInstance().processCallback(HookList.AddMapFlag,name,legend,PlayedCharacterManager.getInstance().currentWorldMap.id,cumsg.coords.worldX,cumsg.coords.worldY,color,false);
                return true;
+            default:
+               return false;
          }
       }
       
       public function updateCharacterStatsList(cslmsg:CharacterStatsListMessage) : void {
-         var iSM:* = 0;
-         var spellIdToRefresh:* = 0;
-         var swsToUpdate:Array = null;
-         var swToUpdate:SpellWrapper = null;
-         var lastCharacteristics:CharacterCharacteristicsInformations = PlayedCharacterManager.getInstance().characteristics;
-         if((lastCharacteristics) && (lastCharacteristics.energyPoints > cslmsg.stats.energyPoints))
-         {
-            KernelEventsManager.getInstance().processCallback(TriggerHookList.PlayerIsDead);
-         }
-         if(cslmsg.stats.kamas != InventoryManager.getInstance().inventory.kamas)
-         {
-            InventoryManager.getInstance().inventory.kamas = cslmsg.stats.kamas;
-         }
-         var oldSM:Vector.<CharacterSpellModification> = lastCharacteristics?PlayedCharacterManager.getInstance().characteristics.spellModifications:null;
-         var newSM:Vector.<CharacterSpellModification> = cslmsg.stats.spellModifications;
-         var lengthSM:int = oldSM?Math.max(oldSM.length,newSM.length):newSM.length;
-         var idSpellsToRefresh:Array = new Array();
-         if(oldSM)
-         {
-            iSM = 0;
-            while(iSM < lengthSM)
-            {
-               if(oldSM.length <= iSM)
-               {
-                  if(idSpellsToRefresh.indexOf(newSM[iSM].spellId) == -1)
-                  {
-                     idSpellsToRefresh.push(newSM[iSM].spellId);
-                  }
-               }
-               else
-               {
-                  if(newSM.length <= iSM)
-                  {
-                     if(idSpellsToRefresh.indexOf(oldSM[iSM].spellId) == -1)
-                     {
-                        idSpellsToRefresh.push(oldSM[iSM].spellId);
-                     }
-                  }
-                  else
-                  {
-                     if(oldSM[iSM] != newSM[iSM])
-                     {
-                        if(idSpellsToRefresh.indexOf(newSM[iSM].spellId) == -1)
-                        {
-                           idSpellsToRefresh.push(newSM[iSM].spellId);
-                        }
-                        if(idSpellsToRefresh.indexOf(oldSM[iSM].spellId) == -1)
-                        {
-                           idSpellsToRefresh.push(oldSM[iSM].spellId);
-                        }
-                     }
-                  }
-               }
-               iSM++;
-            }
-         }
-         else
-         {
-            iSM = 0;
-            while(iSM < lengthSM)
-            {
-               idSpellsToRefresh.push(newSM[iSM].spellId);
-               iSM++;
-            }
-         }
-         PlayedCharacterManager.getInstance().characteristics = cslmsg.stats;
-         for each (spellIdToRefresh in idSpellsToRefresh)
-         {
-            swsToUpdate = SpellWrapper.getSpellWrappersById(spellIdToRefresh,PlayedCharacterManager.getInstance().id);
-            for each (swToUpdate in swsToUpdate)
-            {
-               if(swToUpdate)
-               {
-                  swToUpdate = SpellWrapper.create(swToUpdate.position,swToUpdate.spellId,swToUpdate.spellLevel,true,PlayedCharacterManager.getInstance().id);
-                  swToUpdate.versionNum++;
-               }
-            }
-         }
-         if(PlayedCharacterManager.getInstance().isFighting)
-         {
-            if(CurrentPlayedFighterManager.getInstance().isRealPlayer())
-            {
-               KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
-            }
-            SpellWrapper.refreshAllPlayerSpellHolder(PlayedCharacterManager.getInstance().id);
-         }
-         else
-         {
-            KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function pulled() : Boolean {

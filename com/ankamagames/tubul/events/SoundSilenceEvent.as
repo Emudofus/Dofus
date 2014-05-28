@@ -5,7 +5,7 @@ package com.ankamagames.tubul.events
    public class SoundSilenceEvent extends Event
    {
       
-      public function SoundSilenceEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function SoundSilenceEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 179;
       }
       
-      public function initObjectEffectMount(actionId:uint=0, mountId:uint=0, date:Number=0, modelId:uint=0) : ObjectEffectMount {
+      public function initObjectEffectMount(actionId:uint = 0, mountId:uint = 0, date:Number = 0, modelId:uint = 0) : ObjectEffectMount {
          super.initObjectEffect(actionId);
          this.mountId = mountId;
          this.date = date;

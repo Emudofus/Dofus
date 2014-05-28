@@ -13,7 +13,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(FightersStateManager));
+      private static const _log:Logger;
       
       private static var _self:FightersStateManager;
       

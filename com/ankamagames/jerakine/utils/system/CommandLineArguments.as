@@ -28,7 +28,7 @@ package com.ankamagames.jerakine.utils.system
          var key:String = null;
          if(args)
          {
-            for each (arg in args)
+            for each(arg in args)
             {
                couple = arg.split("=");
                key = couple[0].replace(new RegExp("^--?"),"");
@@ -48,7 +48,7 @@ package com.ankamagames.jerakine.utils.system
       public function toString() : String {
          var arg:String = null;
          var res:Array = [];
-         for (arg in this._arguments)
+         for(arg in this._arguments)
          {
             res.push(arg + "=" + this._arguments[arg]);
          }

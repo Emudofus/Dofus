@@ -14,8 +14,8 @@ package com.ankamagames.tubul
       
       public static const ROLLOFF_FILENAME:String = "presetsRollOff";
       
-      public static const BREED_BONES_BARKS:Uri = new Uri(LangManager.getInstance().getEntry("config.audio.barks") + BREED_BONES_FILENAME);
+      public static const BREED_BONES_BARKS:Uri;
       
-      public static const ROLLOFF_PRESET:Uri = new Uri(LangManager.getInstance().getEntry("config.audio.presets") + ROLLOFF_FILENAME + ".xml");
+      public static const ROLLOFF_PRESET:Uri;
    }
 }

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.character.deletion
          return 165;
       }
       
-      public function initCharacterDeletionRequestMessage(characterId:uint=0, secretAnswerHash:String="") : CharacterDeletionRequestMessage {
+      public function initCharacterDeletionRequestMessage(characterId:uint = 0, secretAnswerHash:String = "") : CharacterDeletionRequestMessage {
          this.characterId = characterId;
          this.secretAnswerHash = secretAnswerHash;
          this._isInitialized = true;

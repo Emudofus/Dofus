@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.interactive.skill
          return 99;
       }
       
-      public function initSkillActionDescriptionCollect(skillId:uint=0, time:uint=0, min:uint=0, max:uint=0) : SkillActionDescriptionCollect {
+      public function initSkillActionDescriptionCollect(skillId:uint = 0, time:uint = 0, min:uint = 0, max:uint = 0) : SkillActionDescriptionCollect {
          super.initSkillActionDescriptionTimed(skillId,time);
          this.min = min;
          this.max = max;

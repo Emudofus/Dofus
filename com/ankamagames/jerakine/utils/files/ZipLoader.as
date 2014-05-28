@@ -17,7 +17,7 @@ package com.ankamagames.jerakine.utils.files
    public class ZipLoader extends EventDispatcher implements ICachable
    {
       
-      public function ZipLoader(fileRequest:URLRequest=null, oExtraData:*=null) {
+      public function ZipLoader(fileRequest:URLRequest = null, oExtraData:* = null) {
          super();
          if(fileRequest)
          {

@@ -16,7 +16,7 @@ package com.ankamagames.jerakine.script.api
          return Math.floor(Math.random() * max);
       }
       
-      public static function CreatePoint(x:Number=0, y:Number=0) : Point {
+      public static function CreatePoint(x:Number = 0, y:Number = 0) : Point {
          return new Point(x,y);
       }
       
@@ -28,7 +28,7 @@ package com.ankamagames.jerakine.script.api
          return point.y;
       }
       
-      public static function CreateRectangle(x:Number=0, y:Number=0, width:Number=0, height:Number=0) : Rectangle {
+      public static function CreateRectangle(x:Number = 0, y:Number = 0, width:Number = 0, height:Number = 0) : Rectangle {
          return new Rectangle(x,y,width,height);
       }
       

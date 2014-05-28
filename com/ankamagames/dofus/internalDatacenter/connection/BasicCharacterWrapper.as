@@ -13,7 +13,7 @@ package com.ankamagames.dofus.internalDatacenter.connection
          super();
       }
       
-      public static function create(id:uint, name:String, level:uint, entityLook:EntityLook, breed:uint, sex:Boolean, deathState:uint=0, deathCount:uint=0, bonusXp:uint=0, unusable:Boolean=false) : BasicCharacterWrapper {
+      public static function create(id:uint, name:String, level:uint, entityLook:EntityLook, breed:uint, sex:Boolean, deathState:uint = 0, deathCount:uint = 0, bonusXp:uint = 0, unusable:Boolean = false) : BasicCharacterWrapper {
          var obj:BasicCharacterWrapper = new BasicCharacterWrapper();
          obj.id = id;
          obj.name = name;

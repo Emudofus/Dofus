@@ -1,6 +1,5 @@
 package com.ankamagames.tubul.interfaces
 {
-   import __AS3__.vec.Vector;
    import com.ankamagames.tubul.types.VolumeFadeEffect;
    
    public interface IAudioBus extends ISoundController
@@ -22,9 +21,9 @@ package com.ankamagames.tubul.interfaces
       
       function addISound(param1:ISound) : void;
       
-      function playISound(param1:ISound, param2:Boolean=false, param3:int=-1) : void;
+      function playISound(param1:ISound, param2:Boolean = false, param3:int = -1) : void;
       
-      function clear(param1:VolumeFadeEffect=null) : void;
+      function clear(param1:VolumeFadeEffect = null) : void;
       
       function contains(param1:ISound) : Boolean;
       

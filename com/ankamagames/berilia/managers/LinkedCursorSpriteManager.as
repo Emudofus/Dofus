@@ -27,7 +27,7 @@ package com.ankamagames.berilia.managers
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LinkedCursorSpriteManager));
+      protected static const _log:Logger;
       
       private static var _self:LinkedCursorSpriteManager;
       
@@ -49,7 +49,7 @@ package com.ankamagames.berilia.managers
          return this.items[name];
       }
       
-      public function addItem(name:String, item:LinkedCursorData, overAll:Boolean=false) : void {
+      public function addItem(name:String, item:LinkedCursorData, overAll:Boolean = false) : void {
          this._mustBeRemoved[name] = false;
          if(this.items[name])
          {
@@ -77,7 +77,7 @@ package com.ankamagames.berilia.managers
          EnterFrameDispatcher.addEventListener(this.updateCursors,"updateCursors");
       }
       
-      public function removeItem(name:String, asynch:Boolean=false) : Boolean {
+      public function removeItem(name:String, asynch:Boolean = false) : Boolean {
          if(!this.items[name])
          {
             return false;
@@ -95,13 +95,13 @@ package com.ankamagames.berilia.managers
          return true;
       }
       
-      private function updateCursors(e:*=null) : void {
+      private function updateCursors(e:* = null) : void {
          var item:LinkedCursorData = null;
          var cursorName:String = null;
          if(this._mustClean)
          {
             this._mustClean = false;
-            for (cursorName in this._mustBeRemoved)
+            for(cursorName in this._mustBeRemoved)
             {
                if((this._mustBeRemoved[cursorName]) && (this.items[cursorName]))
                {
@@ -111,7 +111,7 @@ package com.ankamagames.berilia.managers
          }
          var xMouse:int = StageShareManager.mouseX;
          var yMouse:int = StageShareManager.mouseY;
-         for each (item in this.items)
+         for each(item in this.items)
          {
             if(item)
             {
@@ -135,10 +135,10 @@ package com.ankamagames.berilia.managers
             s.parent.removeChild(s);
          }
          this.items[name] = null;
-         delete this.items[[name]];
-         delete this._mustBeRemoved[[name]];
+         delete this.items[name];
+         delete this._mustBeRemoved[name];
          var empty:Boolean = true;
-         for (o in this.items)
+         for(o in this.items)
          {
             empty = false;
          }

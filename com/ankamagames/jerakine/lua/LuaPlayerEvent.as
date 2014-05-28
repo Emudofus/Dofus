@@ -5,7 +5,7 @@ package com.ankamagames.jerakine.lua
    public class LuaPlayerEvent extends Event
    {
       
-      public function LuaPlayerEvent(pType:String, pBubbles:Boolean=false, pCancelable:Boolean=false) {
+      public function LuaPlayerEvent(pType:String, pBubbles:Boolean = false, pCancelable:Boolean = false) {
          super(pType,pBubbles,pCancelable);
       }
       

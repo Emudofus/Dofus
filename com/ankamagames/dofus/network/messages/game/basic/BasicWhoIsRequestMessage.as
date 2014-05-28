@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 181;
       }
       
-      public function initBasicWhoIsRequestMessage(verbose:Boolean=false, search:String="") : BasicWhoIsRequestMessage {
+      public function initBasicWhoIsRequestMessage(verbose:Boolean = false, search:String = "") : BasicWhoIsRequestMessage {
          this.verbose = verbose;
          this.search = search;
          this._isInitialized = true;

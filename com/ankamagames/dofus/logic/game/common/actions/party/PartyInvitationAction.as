@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.common.actions.party
          super();
       }
       
-      public static function create(name:String, dungeon:uint=0, inArena:Boolean=false) : PartyInvitationAction {
+      public static function create(name:String, dungeon:uint = 0, inArena:Boolean = false) : PartyInvitationAction {
          var a:PartyInvitationAction = new PartyInvitationAction();
          a.name = name;
          a.dungeon = dungeon;

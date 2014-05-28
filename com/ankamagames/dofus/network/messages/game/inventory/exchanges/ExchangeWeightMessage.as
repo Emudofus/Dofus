@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5793;
       }
       
-      public function initExchangeWeightMessage(currentWeight:uint=0, maxWeight:uint=0) : ExchangeWeightMessage {
+      public function initExchangeWeightMessage(currentWeight:uint = 0, maxWeight:uint = 0) : ExchangeWeightMessage {
          this.currentWeight = currentWeight;
          this.maxWeight = maxWeight;
          this._isInitialized = true;

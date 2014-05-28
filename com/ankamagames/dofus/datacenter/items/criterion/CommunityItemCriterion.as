@@ -19,6 +19,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
                return serverCommunity == criterionValue;
             case ItemCriterionOperator.DIFFERENT:
                return !(serverCommunity == criterionValue);
+            default:
+               return false;
          }
       }
       

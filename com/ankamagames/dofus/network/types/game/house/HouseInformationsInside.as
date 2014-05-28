@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.types.game.house
          return 218;
       }
       
-      public function initHouseInformationsInside(houseId:uint=0, modelId:uint=0, ownerId:int=0, ownerName:String="", worldX:int=0, worldY:int=0, price:uint=0, isLocked:Boolean=false) : HouseInformationsInside {
+      public function initHouseInformationsInside(houseId:uint = 0, modelId:uint = 0, ownerId:int = 0, ownerName:String = "", worldX:int = 0, worldY:int = 0, price:uint = 0, isLocked:Boolean = false) : HouseInformationsInside {
          this.houseId = houseId;
          this.modelId = modelId;
          this.ownerId = ownerId;

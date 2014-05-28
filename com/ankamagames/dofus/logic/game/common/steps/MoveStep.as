@@ -13,7 +13,7 @@ package com.ankamagames.dofus.logic.game.common.steps
    public class MoveStep extends AbstractSequencable
    {
       
-      public function MoveStep(pEntity:AnimatedCharacter, pArgs:Array, pMovementBehavior:IMovementBehavior=null) {
+      public function MoveStep(pEntity:AnimatedCharacter, pArgs:Array, pMovementBehavior:IMovementBehavior = null) {
          var i:* = 0;
          super();
          this._entity = pEntity;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.initialization
          return 6339;
       }
       
-      public function initCharacterCapabilitiesMessage(guildEmblemSymbolCategories:uint=0) : CharacterCapabilitiesMessage {
+      public function initCharacterCapabilitiesMessage(guildEmblemSymbolCategories:uint = 0) : CharacterCapabilitiesMessage {
          this.guildEmblemSymbolCategories = guildEmblemSymbolCategories;
          this._isInitialized = true;
          return this;

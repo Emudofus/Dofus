@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.pvp
          return 6443;
       }
       
-      public function initSetEnableAVARequestMessage(enable:Boolean=false) : SetEnableAVARequestMessage {
+      public function initSetEnableAVARequestMessage(enable:Boolean = false) : SetEnableAVARequestMessage {
          this.enable = enable;
          this._isInitialized = true;
          return this;

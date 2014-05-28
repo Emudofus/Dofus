@@ -12,13 +12,13 @@ package com.ankamagames.jerakine.sound
    public class FlashSoundSender extends AbstractFlashSound
    {
       
-      public function FlashSoundSender(lcid:uint=0) {
+      public function FlashSoundSender(lcid:uint = 0) {
          super(lcid);
          _conn.addEventListener(StatusEvent.STATUS,this.onStatus);
          _conn.addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.dispatchError);
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(FlashSoundSender));
+      private static const _log:Logger;
       
       private function dispatchError(pEvt:ErrorEvent) : void {
          dispatchEvent(pEvt);
@@ -45,6 +45,8 @@ package com.ankamagames.jerakine.sound
                   _pingTimer.start();
                }
                break;
+            default:
+               _log.fatal("status level: " + pEvt.level);
          }
       }
       

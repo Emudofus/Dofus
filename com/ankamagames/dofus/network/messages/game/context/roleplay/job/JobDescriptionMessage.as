@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.roleplay.job.JobDescription;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 5655;
       }
       
-      public function initJobDescriptionMessage(jobsDescription:Vector.<JobDescription>=null) : JobDescriptionMessage {
+      public function initJobDescriptionMessage(jobsDescription:Vector.<JobDescription> = null) : JobDescriptionMessage {
          this.jobsDescription = jobsDescription;
          this._isInitialized = true;
          return this;

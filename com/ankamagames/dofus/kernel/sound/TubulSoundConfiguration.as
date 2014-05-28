@@ -116,8 +116,8 @@ package com.ankamagames.dofus.kernel.sound
       
       private static const ROLLOFF_FILENAME:String = "presetsRollOff";
       
-      public static const ROLLOFF_PRESET:Uri = new Uri(LangManager.getInstance().getEntry("config.audio.presets") + ROLLOFF_FILENAME + ".xml");
+      public static const ROLLOFF_PRESET:Uri;
       
-      public static const fightMusicIds:Array = new Array("29001","29002","29003","29004","29005");
+      public static const fightMusicIds:Array;
    }
 }

@@ -291,7 +291,7 @@ package com.ankamagames.dofus.logic.common.frames
             return;
          }
          var avaibleCells:Array = [];
-         for each (entity in rpEF.getEntitiesDictionnary())
+         for each(entity in rpEF.getEntitiesDictionnary())
          {
             if(entity is GameRolePlayGroupMonsterInformations)
             {
@@ -336,7 +336,7 @@ package com.ankamagames.dofus.logic.common.frames
             return;
          }
          var avaibleEntities:Array = [];
-         for each (e in EntitiesManager.getInstance().entities)
+         for each(e in EntitiesManager.getInstance().entities)
          {
             if(e is IInteractive)
             {
@@ -357,9 +357,9 @@ package com.ankamagames.dofus.logic.common.frames
          var emomsg:EntityMouseOverMessage = new EntityMouseOverMessage(entity);
          Kernel.getWorker().process(emomsg);
          var avaibleElem:Array = [];
-         for each (ui in Berilia.getInstance().uiList)
+         for each(ui in Berilia.getInstance().uiList)
          {
-            for each (elem in ui.getElements())
+            for each(elem in ui.getElements())
             {
                if((elem.mouseChildren) || (elem.mouseEnabled))
                {
@@ -395,7 +395,7 @@ package com.ankamagames.dofus.logic.common.frames
          else
          {
             avaibleCells = [];
-            for each (entity in FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary())
+            for each(entity in FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary())
             {
                if((entity.contextualId < 0) && (entity is GameFightMonsterInformations))
                {

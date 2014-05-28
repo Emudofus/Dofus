@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5551;
       }
       
-      public function initGuildInvitationMessage(targetId:uint=0) : GuildInvitationMessage {
+      public function initGuildInvitationMessage(targetId:uint = 0) : GuildInvitationMessage {
          this.targetId = targetId;
          this._isInitialized = true;
          return this;

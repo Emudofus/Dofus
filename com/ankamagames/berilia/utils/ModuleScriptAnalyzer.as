@@ -19,7 +19,7 @@ package com.ankamagames.berilia.utils
    public class ModuleScriptAnalyzer extends Object
    {
       
-      public function ModuleScriptAnalyzer(target:UiModule, readyFct:Function, appDomain:ApplicationDomain=null, targetScriptLocation:String="") {
+      public function ModuleScriptAnalyzer(target:UiModule, readyFct:Function, appDomain:ApplicationDomain = null, targetScriptLocation:String = "") {
          var tmpList:Array = null;
          var action:String = null;
          var api:String = null;
@@ -36,17 +36,17 @@ package com.ankamagames.berilia.utils
          {
             _actionList = new Dictionary();
             tmpList = UiModuleManager.getInstance().sharedDefinitionInstance.getActionList();
-            for each (_actionList[action] in tmpList)
+            for each(_actionList[action] in tmpList)
             {
             }
             _apiList = new Dictionary();
             tmpList = UiModuleManager.getInstance().sharedDefinitionInstance.getApiList();
-            for each (_apiList[api] in tmpList)
+            for each(_apiList[api] in tmpList)
             {
             }
             _hookList = new Dictionary();
             tmpList = UiModuleManager.getInstance().sharedDefinitionInstance.getHookList();
-            for each (_hookList[hook] in tmpList)
+            for each(_hookList[hook] in tmpList)
             {
             }
          }
@@ -126,21 +126,21 @@ package com.ankamagames.berilia.utils
          var action:String = null;
          var hook:String = null;
          var api:String = null;
-         for each (action in _actionList)
+         for each(action in _actionList)
          {
             if(appDomain.hasDefinition("d2actions::" + action))
             {
                this._actions.push(action);
             }
          }
-         for each (hook in _hookList)
+         for each(hook in _hookList)
          {
             if(appDomain.hasDefinition("d2hooks::" + hook))
             {
                this._hooks.push(hook);
             }
          }
-         for each (api in _apiList)
+         for each(api in _apiList)
          {
             if(appDomain.hasDefinition("d2api::" + api))
             {

@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 16;
       }
       
-      public function initFightResultListEntry(outcome:uint=0, wave:uint=0, rewards:FightLoot=null) : FightResultListEntry {
+      public function initFightResultListEntry(outcome:uint = 0, wave:uint = 0, rewards:FightLoot = null) : FightResultListEntry {
          this.outcome = outcome;
          this.wave = wave;
          this.rewards = rewards;

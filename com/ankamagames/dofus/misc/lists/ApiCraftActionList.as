@@ -14,14 +14,14 @@ package com.ankamagames.dofus.misc.lists
          super();
       }
       
-      public static const JobCrafterDirectoryDefineSettings:DofusApiAction = new DofusApiAction("JobCrafterDirectoryDefineSettings",JobCrafterDirectoryDefineSettingsAction);
+      public static const JobCrafterDirectoryDefineSettings:DofusApiAction;
       
-      public static const JobCrafterDirectoryEntryRequest:DofusApiAction = new DofusApiAction("JobCrafterDirectoryEntryRequest",JobCrafterDirectoryEntryRequestAction);
+      public static const JobCrafterDirectoryEntryRequest:DofusApiAction;
       
-      public static const JobCrafterDirectoryListRequest:DofusApiAction = new DofusApiAction("JobCrafterDirectoryListRequest",JobCrafterDirectoryListRequestAction);
+      public static const JobCrafterDirectoryListRequest:DofusApiAction;
       
-      public static const JobCrafterContactLookRequest:DofusApiAction = new DofusApiAction("JobCrafterContactLookRequest",JobCrafterContactLookRequestAction);
+      public static const JobCrafterContactLookRequest:DofusApiAction;
       
-      public static const ExchangeSetCraftRecipe:DofusApiAction = new DofusApiAction("ExchangeSetCraftRecipe",ExchangeSetCraftRecipeAction);
+      public static const ExchangeSetCraftRecipe:DofusApiAction;
    }
 }

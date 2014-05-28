@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.almanax
       
       public static const MODULE:String = "AlmanaxCalendars";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlmanaxCalendar));
+      protected static const _log:Logger;
       
       public static function getAlmanaxCalendarById(id:int) : AlmanaxCalendar {
          return GameData.getObject(MODULE,id) as AlmanaxCalendar;

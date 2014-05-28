@@ -14,14 +14,14 @@ package com.ankamagames.dofus.misc.lists
          super();
       }
       
-      public static const LivingObjectDissociate:DofusApiAction = new DofusApiAction("LivingObjectDissociate",LivingObjectDissociateAction);
+      public static const LivingObjectDissociate:DofusApiAction;
       
-      public static const LivingObjectFeed:DofusApiAction = new DofusApiAction("LivingObjectFeed",LivingObjectFeedAction);
+      public static const LivingObjectFeed:DofusApiAction;
       
-      public static const LivingObjectChangeSkinRequest:DofusApiAction = new DofusApiAction("LivingObjectChangeSkinRequest",LivingObjectChangeSkinRequestAction);
+      public static const LivingObjectChangeSkinRequest:DofusApiAction;
       
-      public static const MimicryObjectFeedAndAssociateRequest:DofusApiAction = new DofusApiAction("MimicryObjectFeedAndAssociateRequest",MimicryObjectFeedAndAssociateRequestAction);
+      public static const MimicryObjectFeedAndAssociateRequest:DofusApiAction;
       
-      public static const MimicryObjectEraseRequest:DofusApiAction = new DofusApiAction("MimicryObjectEraseRequest",MimicryObjectEraseRequestAction);
+      public static const MimicryObjectEraseRequest:DofusApiAction;
    }
 }

@@ -14,7 +14,7 @@ package com.ankamagames.dofus.console.moduleLogger
    public final class ConsoleIcon extends Sprite
    {
       
-      public function ConsoleIcon(name:String, size:int=16, toolTip:String="") {
+      public function ConsoleIcon(name:String, size:int = 16, toolTip:String = "") {
          super();
          this._size = size;
          if(_assets[name])
@@ -49,57 +49,57 @@ package com.ankamagames.dofus.console.moduleLogger
          }
       }
       
-      private static const I_CANCEL:Class = ConsoleIcon_I_CANCEL;
+      private static const I_CANCEL:Class;
       
-      private static const I_DISK:Class = ConsoleIcon_I_DISK;
+      private static const I_DISK:Class;
       
-      private static const I_LIST:Class = ConsoleIcon_I_LIST;
+      private static const I_LIST:Class;
       
-      private static const I_BOOK:Class = ConsoleIcon_I_BOOK;
+      private static const I_BOOK:Class;
       
-      private static const I_TERMINAL:Class = ConsoleIcon_I_TERMINAL;
+      private static const I_TERMINAL:Class;
       
-      private static const I_SCREEN:Class = ConsoleIcon_I_SCREEN;
+      private static const I_SCREEN:Class;
       
-      private static const I_SCRIPT:Class = ConsoleIcon_I_SCRIPT;
+      private static const I_SCRIPT:Class;
       
-      private static const I_RECORD:Class = ConsoleIcon_I_RECORD;
+      private static const I_RECORD:Class;
       
-      private static const I_PAUSE:Class = ConsoleIcon_I_PAUSE;
+      private static const I_PAUSE:Class;
       
-      private static const I_WAIT:Class = ConsoleIcon_I_WAIT;
+      private static const I_WAIT:Class;
       
-      private static const I_WAITAUTO:Class = ConsoleIcon_I_WAITAUTO;
+      private static const I_WAITAUTO:Class;
       
-      private static const I_STOP:Class = ConsoleIcon_I_STOP;
+      private static const I_STOP:Class;
       
-      private static const I_PLAY:Class = ConsoleIcon_I_PLAY;
+      private static const I_PLAY:Class;
       
-      private static const I_SAVE:Class = ConsoleIcon_I_SAVE;
+      private static const I_SAVE:Class;
       
-      private static const I_MOVE_DEFAULT:Class = ConsoleIcon_I_MOVE_DEFAULT;
+      private static const I_MOVE_DEFAULT:Class;
       
-      private static const I_MOVE_WALK:Class = ConsoleIcon_I_MOVE_WALK;
+      private static const I_MOVE_WALK:Class;
       
-      private static const I_MOVE_RUN:Class = ConsoleIcon_I_MOVE_RUN;
+      private static const I_MOVE_RUN:Class;
       
-      private static const I_MOVE_TELEPORT:Class = ConsoleIcon_I_MOVE_TELEPORT;
+      private static const I_MOVE_TELEPORT:Class;
       
-      private static const I_MOVE_SLIDE:Class = ConsoleIcon_I_MOVE_SLIDE;
+      private static const I_MOVE_SLIDE:Class;
       
-      private static const I_OPEN:Class = ConsoleIcon_I_OPEN;
+      private static const I_OPEN:Class;
       
-      private static const I_CAMERA_AUTOFOLLOW:Class = ConsoleIcon_I_CAMERA_AUTOFOLLOW;
+      private static const I_CAMERA_AUTOFOLLOW:Class;
       
-      private static const I_CAMERA_ZOOM_IN:Class = ConsoleIcon_I_CAMERA_ZOOM_IN;
+      private static const I_CAMERA_ZOOM_IN:Class;
       
-      private static const I_CAMERA_ZOOM_OUT:Class = ConsoleIcon_I_CAMERA_ZOOM_OUT;
+      private static const I_CAMERA_ZOOM_OUT:Class;
       
-      private static const I_RESET_WORLD:Class = ConsoleIcon_I_RESET_WORLD;
+      private static const I_RESET_WORLD:Class;
       
-      private static const I_AUTO_RESET:Class = ConsoleIcon_I_AUTO_RESET;
+      private static const I_AUTO_RESET:Class;
       
-      private static const _assets:Dictionary = new Dictionary();
+      private static const _assets:Dictionary;
       
       private var _enabled:Boolean = true;
       
@@ -129,17 +129,15 @@ package com.ankamagames.dofus.console.moduleLogger
             this._icon.height = this._size;
             addChild(this._icon);
          }
+         else if(this._toggled)
+         {
+            this._icon.filters = [new GlowFilter(16777215,1,8,8)];
+         }
          else
          {
-            if(this._toggled)
-            {
-               this._icon.filters = [new GlowFilter(16777215,1,8,8)];
-            }
-            else
-            {
-               this._icon.filters = [];
-            }
+            this._icon.filters = [];
          }
+         
       }
       
       public function get enabled() : Boolean {
@@ -173,14 +171,12 @@ package com.ankamagames.dofus.console.moduleLogger
                addChild(this._cross);
             }
          }
-         else
+         else if(this._cross)
          {
-            if(this._cross)
-            {
-               removeChild(this._cross);
-               this._cross = null;
-            }
+            removeChild(this._cross);
+            this._cross = null;
          }
+         
       }
       
       public function changeColor(color:ColorTransform) : void {

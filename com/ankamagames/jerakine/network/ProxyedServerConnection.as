@@ -5,7 +5,7 @@ package com.ankamagames.jerakine.network
    public class ProxyedServerConnection extends ServerConnection
    {
       
-      public function ProxyedServerConnection(proxy:IConnectionProxy, host:String=null, port:int=0) {
+      public function ProxyedServerConnection(proxy:IConnectionProxy, host:String = null, port:int = 0) {
          super(host,port);
          this._proxy = proxy;
       }
@@ -20,7 +20,7 @@ package com.ankamagames.jerakine.network
          this._proxy = value;
       }
       
-      override protected function lowSend(msg:INetworkMessage, autoFlush:Boolean=true) : void {
+      override protected function lowSend(msg:INetworkMessage, autoFlush:Boolean = true) : void {
          this._proxy.processAndSend(msg,this);
          if(autoFlush)
          {

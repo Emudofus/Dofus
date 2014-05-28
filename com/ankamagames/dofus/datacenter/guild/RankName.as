@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.guild
       
       public static const MODULE:String = "RankNames";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RankName));
+      protected static const _log:Logger;
       
       public static function getRankNameById(id:int) : RankName {
          return GameData.getObject(MODULE,id) as RankName;

@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.types.game.character.characteristic
          return 215;
       }
       
-      public function initCharacterSpellModification(modificationType:uint=0, spellId:uint=0, value:CharacterBaseCharacteristic=null) : CharacterSpellModification {
+      public function initCharacterSpellModification(modificationType:uint = 0, spellId:uint = 0, value:CharacterBaseCharacteristic = null) : CharacterSpellModification {
          this.modificationType = modificationType;
          this.spellId = spellId;
          this.value = value;

@@ -106,13 +106,13 @@ package com.ankamagames.berilia.types.data
             output.writeBytes(this._output);
             this._output.position = this._output.length;
             listBuffer = new ByteArray();
-            for (uiId in this._uiListPosition)
+            for(uiId in this._uiListPosition)
             {
                listBuffer.writeUTF(uiId);
                listBuffer.writeInt(0);
             }
             listBuffer.position = 0;
-            for (uiId in this._uiListPosition)
+            for(uiId in this._uiListPosition)
             {
                listBuffer.readUTF();
                listBuffer.writeInt(this._uiListPosition[uiId] + this._output.length + listBuffer.length);

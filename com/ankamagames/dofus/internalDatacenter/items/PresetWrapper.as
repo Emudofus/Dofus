@@ -2,7 +2,6 @@ package com.ankamagames.dofus.internalDatacenter.items
 {
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.logger.Logger;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.inventory.preset.PresetItem;
    import com.ankamagames.jerakine.types.Uri;
    import com.ankamagames.jerakine.data.XmlConfig;
@@ -19,9 +18,9 @@ package com.ankamagames.dofus.internalDatacenter.items
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(PresetWrapper));
+      private static const _log:Logger;
       
-      public static function create(id:int, gfxId:int, objects:Vector.<PresetItem>, mount:Boolean=false) : PresetWrapper {
+      public static function create(id:int, gfxId:int, objects:Vector.<PresetItem>, mount:Boolean = false) : PresetWrapper {
          var emptyUri:Uri = null;
          var objExists:* = false;
          var item:PresetItem = null;
@@ -36,7 +35,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          while(i < 16)
          {
             objExists = false;
-            for each (item in objects)
+            for each(item in objects)
             {
                if(item.position == i)
                {
@@ -73,6 +72,8 @@ package com.ankamagames.dofus.internalDatacenter.items
                   case 14:
                      emptyUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotDofus");
                      break;
+                  default:
+                     emptyUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotItem" + i);
                }
                presetWrapper.objects[i] = SimpleTextureWrapper.create(emptyUri);
             }
@@ -132,7 +133,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          return this._uri;
       }
       
-      override public function getIconUri(pngMode:Boolean=true) : Uri {
+      override public function getIconUri(pngMode:Boolean = true) : Uri {
          if(!this._uri)
          {
             this._pngMode = false;
@@ -178,24 +179,24 @@ package com.ankamagames.dofus.internalDatacenter.items
                   this._objects[i].active = false;
                }
             }
-            else
+            else if((object.objGid == 0) && (object.objUid == 0))
             {
-               if((object.objGid == 0) && (object.objUid == 0))
+               switch(i)
                {
-                  switch(i)
-                  {
-                     case 9:
-                     case 10:
-                     case 11:
-                     case 12:
-                     case 13:
-                     case 14:
-                        emptyUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotDofus");
-                        break;
-                  }
-                  this._objects[i] = SimpleTextureWrapper.create(emptyUri);
+                  case 9:
+                  case 10:
+                  case 11:
+                  case 12:
+                  case 13:
+                  case 14:
+                     emptyUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotDofus");
+                     break;
+                  default:
+                     emptyUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_slotItem" + i);
                }
+               this._objects[i] = SimpleTextureWrapper.create(emptyUri);
             }
+            
          }
       }
       

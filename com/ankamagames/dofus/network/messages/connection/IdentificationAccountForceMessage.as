@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.connection
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.version.VersionExtended;
-   import __AS3__.vec.Vector;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -28,7 +27,7 @@ package com.ankamagames.dofus.network.messages.connection
          return 6119;
       }
       
-      public function initIdentificationAccountForceMessage(version:VersionExtended=null, lang:String="", credentials:Vector.<int>=null, serverId:int=0, autoconnect:Boolean=false, useCertificate:Boolean=false, useLoginToken:Boolean=false, sessionOptionalSalt:Number=0, forcedAccountLogin:String="") : IdentificationAccountForceMessage {
+      public function initIdentificationAccountForceMessage(version:VersionExtended = null, lang:String = "", credentials:Vector.<int> = null, serverId:int = 0, autoconnect:Boolean = false, useCertificate:Boolean = false, useLoginToken:Boolean = false, sessionOptionalSalt:Number = 0, forcedAccountLogin:String = "") : IdentificationAccountForceMessage {
          super.initIdentificationMessage(version,lang,credentials,serverId,autoconnect,useCertificate,useLoginToken,sessionOptionalSalt);
          this.forcedAccountLogin = forcedAccountLogin;
          this._isInitialized = true;

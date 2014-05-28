@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.alliance
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.social.AllianceFactSheetInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6408;
       }
       
-      public function initAllianceListMessage(alliances:Vector.<AllianceFactSheetInformations>=null) : AllianceListMessage {
+      public function initAllianceListMessage(alliances:Vector.<AllianceFactSheetInformations> = null) : AllianceListMessage {
          this.alliances = alliances;
          this._isInitialized = true;
          return this;

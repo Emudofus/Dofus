@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 154;
       }
       
-      public function initGameRolePlayNamedActorInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, name:String="") : GameRolePlayNamedActorInformations {
+      public function initGameRolePlayNamedActorInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, name:String = "") : GameRolePlayNamedActorInformations {
          super.initGameRolePlayActorInformations(contextualId,look,disposition);
          this.name = name;
          return this;

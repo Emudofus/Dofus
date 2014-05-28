@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 6362;
       }
       
-      public function initBasicAckMessage(seq:uint=0, lastPacketId:uint=0) : BasicAckMessage {
+      public function initBasicAckMessage(seq:uint = 0, lastPacketId:uint = 0) : BasicAckMessage {
          this.seq = seq;
          this.lastPacketId = lastPacketId;
          this._isInitialized = true;

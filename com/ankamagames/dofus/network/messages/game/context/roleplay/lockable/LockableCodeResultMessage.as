@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.lockable
          return 5672;
       }
       
-      public function initLockableCodeResultMessage(result:uint=0) : LockableCodeResultMessage {
+      public function initLockableCodeResultMessage(result:uint = 0) : LockableCodeResultMessage {
          this.result = result;
          this._isInitialized = true;
          return this;

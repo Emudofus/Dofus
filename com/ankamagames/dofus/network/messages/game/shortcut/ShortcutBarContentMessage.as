@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.shortcut
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.shortcut.Shortcut;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          return 6231;
       }
       
-      public function initShortcutBarContentMessage(barType:uint=0, shortcuts:Vector.<Shortcut>=null) : ShortcutBarContentMessage {
+      public function initShortcutBarContentMessage(barType:uint = 0, shortcuts:Vector.<Shortcut> = null) : ShortcutBarContentMessage {
          this.barType = barType;
          this.shortcuts = shortcuts;
          this._isInitialized = true;

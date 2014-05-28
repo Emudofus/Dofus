@@ -16,7 +16,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.guild.GuildVersatileInfoListMessage;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import flash.utils.getTimer;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.network.types.game.social.AllianceFactSheetInformations;
    import com.ankamagames.dofus.network.types.game.social.AllianceVersatileInformations;
    import com.ankamagames.dofus.kernel.Kernel;
@@ -50,7 +49,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          ConnectionsHandler.getHttpConnection().resetTime(this._urlGuildVersatileList);
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SocialDataFrame));
+      protected static const _log:Logger;
       
       private static const LOCAL_URL:String = "http://gameservers-www-exports.dofus2.lan/";
       
@@ -156,7 +155,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          while(i < len)
          {
             allianceIndex = -1;
-            for each (alliance in this._allianceList)
+            for each(alliance in this._allianceList)
             {
                if(alliance.allianceId == list[i].allianceId)
                {
@@ -168,18 +167,16 @@ package com.ankamagames.dofus.logic.game.common.frames
             {
                this._allianceList[allianceIndex] = AllianceWrapper.getFromNetwork(list[i]);
             }
-            else
+            else if((allianceFrame.hasAlliance) && (list[i].allianceId == allianceFrame.alliance.allianceId))
             {
-               if((allianceFrame.hasAlliance) && (list[i].allianceId == allianceFrame.alliance.allianceId))
-               {
-                  alliance = allianceFrame.alliance.clone();
-                  alliance.nbGuilds = list[i].nbGuilds;
-                  alliance.nbMembers = list[i].nbMembers;
-                  alliance.nbSubareas = list[i].nbSubarea;
-                  AllianceWrapper.updateRef(alliance.allianceId,alliance);
-                  this._allianceList.push(alliance);
-               }
+               alliance = allianceFrame.alliance.clone();
+               alliance.nbGuilds = list[i].nbGuilds;
+               alliance.nbMembers = list[i].nbMembers;
+               alliance.nbSubareas = list[i].nbSubarea;
+               AllianceWrapper.updateRef(alliance.allianceId,alliance);
+               this._allianceList.push(alliance);
             }
+            
             i++;
          }
          this._waitVersatileAllianceInfo = false;
@@ -214,7 +211,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          while(i < len)
          {
             guildIndex = -1;
-            for each (guild in this._guildList)
+            for each(guild in this._guildList)
             {
                if(guild.guildId == list[i].guildId)
                {
@@ -226,18 +223,16 @@ package com.ankamagames.dofus.logic.game.common.frames
             {
                this._guildList[guildIndex] = GuildWrapper.getFromNetwork(list[i]);
             }
-            else
+            else if((socialFrame.hasGuild) && (list[i].guildId == socialFrame.guild.guildId))
             {
-               if((socialFrame.hasGuild) && (list[i].guildId == socialFrame.guild.guildId))
-               {
-                  guild = socialFrame.guild.clone();
-                  guild.level = list[i].guildLevel;
-                  guild.leaderId = list[i].leaderId;
-                  guild.nbMembers = list[i].nbMembers;
-                  GuildWrapper.updateRef(guild.guildId,guild);
-                  this._guildList.push(guild);
-               }
+               guild = socialFrame.guild.clone();
+               guild.level = list[i].guildLevel;
+               guild.leaderId = list[i].leaderId;
+               guild.nbMembers = list[i].nbMembers;
+               GuildWrapper.updateRef(guild.guildId,guild);
+               this._guildList.push(guild);
             }
+            
             i++;
          }
          this._waitVersatileGuildInfo = false;
@@ -245,20 +240,20 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      private function dispatchGuildList(isUpdate:Boolean=false, isError:Boolean=false) : void {
+      private function dispatchGuildList(isUpdate:Boolean = false, isError:Boolean = false) : void {
          if((this._waitStaticGuildInfo) || (this._waitVersatileGuildInfo))
          {
             return;
          }
-         KernelEventsManager.getInstance().processCallback(SocialHookList.GuildList,this._guildList,isUpdate,(this._guildList == null) || (isError));
+         KernelEventsManager.getInstance().processCallback(SocialHookList.GuildList,this._guildList,isUpdate,this._guildList == null || isError);
       }
       
-      private function dispatchAllianceList(isUpdate:Boolean=false, isError:Boolean=false) : void {
+      private function dispatchAllianceList(isUpdate:Boolean = false, isError:Boolean = false) : void {
          if((this._waitStaticAllianceInfo) || (this._waitVersatileAllianceInfo))
          {
             return;
          }
-         KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceList,this._allianceList,isUpdate,(this._allianceList == null) || (isError));
+         KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceList,this._allianceList,isUpdate,this._allianceList == null || isError);
       }
       
       private function onAllianceIoError() : void {

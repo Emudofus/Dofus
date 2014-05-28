@@ -3,7 +3,6 @@ package com.ankamagames.dofus.datacenter.world
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.data.GameData;
    import flash.geom.Rectangle;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.ambientSounds.AmbientSound;
    import flash.geom.Point;
    import com.ankamagames.jerakine.data.I18n;

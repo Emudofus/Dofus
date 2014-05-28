@@ -37,7 +37,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
       }
       
       public function unholdEntity(entityId:int) : void {
-         delete this._holdedEntities[[entityId]];
+         delete this._holdedEntities[entityId];
       }
       
       public function reset() : void {
@@ -50,7 +50,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
       
       public function unregistered() : void {
          var entity:IEntity = null;
-         for each (entity in this._holdedEntities)
+         for each(entity in this._holdedEntities)
          {
             if(entity is IDisplayable)
             {

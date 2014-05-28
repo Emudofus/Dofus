@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
          return 5824;
       }
       
-      public function initPaddockPropertiesMessage(properties:PaddockInformations=null) : PaddockPropertiesMessage {
+      public function initPaddockPropertiesMessage(properties:PaddockInformations = null) : PaddockPropertiesMessage {
          this.properties = properties;
          this._isInitialized = true;
          return this;

@@ -4,7 +4,6 @@ package com.ankamagames.dofus.logic.game.common.managers
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.dofus.logic.game.common.misc.Inventory;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.logic.game.common.misc.inventoryView.BankView;
    import com.ankamagames.dofus.logic.game.common.misc.inventoryView.BankEquipementView;
@@ -47,7 +46,7 @@ package com.ankamagames.dofus.logic.game.common.managers
       
       private static var _self:InventoryManager;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(InventoryManager));
+      protected static const _log:Logger;
       
       public static function getInstance() : InventoryManager {
          if(!_self)

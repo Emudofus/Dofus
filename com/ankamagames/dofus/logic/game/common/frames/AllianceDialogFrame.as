@@ -32,7 +32,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AllianceDialogFrame));
+      protected static const _log:Logger;
       
       private var allianceEmblem:GuildEmblem;
       
@@ -111,6 +111,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                   this.leaveDialog();
                }
                return true;
+            default:
+               return false;
          }
       }
       

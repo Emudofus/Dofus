@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          return 96;
       }
       
-      public function initTaxCollectorBasicInformations(firstNameId:uint=0, lastNameId:uint=0, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0) : TaxCollectorBasicInformations {
+      public function initTaxCollectorBasicInformations(firstNameId:uint = 0, lastNameId:uint = 0, worldX:int = 0, worldY:int = 0, mapId:int = 0, subAreaId:uint = 0) : TaxCollectorBasicInformations {
          this.firstNameId = firstNameId;
          this.lastNameId = lastNameId;
          this.worldX = worldX;

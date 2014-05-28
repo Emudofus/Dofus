@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
          return 5622;
       }
       
-      public function initQuestStepInfoRequestMessage(questId:uint=0) : QuestStepInfoRequestMessage {
+      public function initQuestStepInfoRequestMessage(questId:uint = 0) : QuestStepInfoRequestMessage {
          this.questId = questId;
          this._isInitialized = true;
          return this;

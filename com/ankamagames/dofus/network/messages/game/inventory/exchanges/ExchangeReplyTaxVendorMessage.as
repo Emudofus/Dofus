@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5787;
       }
       
-      public function initExchangeReplyTaxVendorMessage(objectValue:uint=0, totalTaxValue:uint=0) : ExchangeReplyTaxVendorMessage {
+      public function initExchangeReplyTaxVendorMessage(objectValue:uint = 0, totalTaxValue:uint = 0) : ExchangeReplyTaxVendorMessage {
          this.objectValue = objectValue;
          this.totalTaxValue = totalTaxValue;
          this._isInitialized = true;

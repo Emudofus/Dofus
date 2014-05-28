@@ -24,7 +24,7 @@ package com.ankamagames.dofus.logic.game.common.managers
       
       private static var _self:AFKFightManager;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AFKFightManager));
+      protected static const _log:Logger;
       
       public static function getInstance() : AFKFightManager {
          if(!_self)

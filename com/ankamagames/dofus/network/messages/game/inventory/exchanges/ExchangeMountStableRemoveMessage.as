@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5964;
       }
       
-      public function initExchangeMountStableRemoveMessage(mountId:Number=0) : ExchangeMountStableRemoveMessage {
+      public function initExchangeMountStableRemoveMessage(mountId:Number = 0) : ExchangeMountStableRemoveMessage {
          this.mountId = mountId;
          this._isInitialized = true;
          return this;

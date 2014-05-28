@@ -69,7 +69,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                entities.push(getTacklerOnCell(MapPoint.fromCoords(x,y + 1).cellId));
             }
             evadePercent = 1;
-            for each (entity in entities)
+            for each(entity in entities)
             {
                if(entity)
                {
@@ -125,7 +125,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          var infos:GameFightFighterInformations = null;
          var entitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
          var entities:Array = EntitiesManager.getInstance().getEntitiesOnCell(cellId,AnimatedCharacter);
-         for each (entity in entities)
+         for each(entity in entities)
          {
             infos = entitiesFrame.getEntityInfos(entity.id) as GameFightFighterInformations;
             if(infos.disposition is FightEntityDispositionInformations)
@@ -139,7 +139,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          return null;
       }
       
-      public static function canBeTackled(fighter:GameFightFighterInformations, position:MapPoint=null) : Boolean {
+      public static function canBeTackled(fighter:GameFightFighterInformations, position:MapPoint = null) : Boolean {
          var fedi:FightEntityDispositionInformations = null;
          if((FightersStateManager.getInstance().hasState(fighter.contextualId,96)) || (FightersStateManager.getInstance().hasState(fighter.contextualId,6)) || (fighter.stats.invisibilityState == GameActionFightInvisibilityStateEnum.INVISIBLE) || (fighter.stats.invisibilityState == GameActionFightInvisibilityStateEnum.DETECTED))
          {
@@ -195,7 +195,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          var tackling:Boolean = false;
          if((pPlayerPath) && (canBeTackler(pTackler,pPlayer)))
          {
-            for each (pe in pPlayerPath.path)
+            for each(pe in pPlayerPath.path)
             {
                if(canBeTackled(pPlayer,pe.step))
                {

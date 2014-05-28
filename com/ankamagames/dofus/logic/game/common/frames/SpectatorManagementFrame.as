@@ -19,7 +19,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.actions.spectator.GameFightSpectatePlayerRequestAction;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightSpectatePlayerRequestMessage;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
-   import __AS3__.vec.*;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
    import com.ankamagames.dofus.logic.game.common.actions.OpenCurrentFightAction;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpectatorManagementFrame));
+      protected static const _log:Logger;
       
       private static function sortFights(a:FightExternalInformations, b:FightExternalInformations) : int {
          if(a.fightStart == b.fightStart)
@@ -82,7 +81,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is MapRunningFightListMessage:
                mrflmsg = msg as MapRunningFightListMessage;
                fights = new Vector.<FightExternalInformations>();
-               for each (f in mrflmsg.fights)
+               for each(f in mrflmsg.fights)
                {
                   fights.push(f);
                }
@@ -122,6 +121,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                gfsprmsg.initGameFightSpectatePlayerRequestMessage(gfspra.playerId);
                ConnectionsHandler.getConnection().send(gfsprmsg);
                return true;
+            default:
+               return false;
          }
       }
       

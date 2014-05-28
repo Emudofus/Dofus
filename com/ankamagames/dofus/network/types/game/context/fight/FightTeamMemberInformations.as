@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 44;
       }
       
-      public function initFightTeamMemberInformations(id:int=0) : FightTeamMemberInformations {
+      public function initFightTeamMemberInformations(id:int = 0) : FightTeamMemberInformations {
          this.id = id;
          return this;
       }

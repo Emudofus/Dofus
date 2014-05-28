@@ -23,7 +23,7 @@ package com.ankamagames.berilia.types.data
          this._id = id;
       }
       
-      public static var _elementRef:Dictionary = new Dictionary(true);
+      public static var _elementRef:Dictionary;
       
       public static function getElementById(id:String, owner:*) : MapElement {
          return _elementRef[owner]?_elementRef[owner][id]:null;
@@ -34,30 +34,16 @@ package com.ankamagames.berilia.types.data
          {
             _elementRef[owner][id].remove();
          }
-         delete _elementRef[owner][[id]];
+         delete _elementRef[owner][id];
       }
       
       public static function removeAllElements(owner:*) : void {
-         var currentOwner:* = undefined;
-         var me:MapElement = null;
-         for (currentOwner in _elementRef)
-         {
-            if((!owner) || (currentOwner == owner))
-            {
-               for each (me in _elementRef[currentOwner])
-               {
-                  me.remove();
-               }
-            }
-         }
-         if(!owner)
-         {
-            _elementRef = new Dictionary(true);
-         }
-         else
-         {
-            _elementRef[owner] = new Dictionary(true);
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public static function getOwnerElements(owner:*) : Dictionary {
@@ -92,7 +78,7 @@ package com.ankamagames.berilia.types.data
       public function remove() : void {
          if((this._owner.object) && (_elementRef[this._owner.object]))
          {
-            delete _elementRef[this._owner.object][[this._id]];
+            delete _elementRef[this._owner.object][this._id];
          }
       }
    }

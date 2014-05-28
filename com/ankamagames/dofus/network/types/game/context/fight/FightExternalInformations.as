@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.context.fight
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 117;
       }
       
-      public function initFightExternalInformations(fightId:int=0, fightType:uint=0, fightStart:uint=0, fightSpectatorLocked:Boolean=false, fightTeams:Vector.<FightTeamLightInformations>=null, fightTeamsOptions:Vector.<FightOptionsInformations>=null) : FightExternalInformations {
+      public function initFightExternalInformations(fightId:int = 0, fightType:uint = 0, fightStart:uint = 0, fightSpectatorLocked:Boolean = false, fightTeams:Vector.<FightTeamLightInformations> = null, fightTeamsOptions:Vector.<FightOptionsInformations> = null) : FightExternalInformations {
          this.fightId = fightId;
          this.fightType = fightType;
          this.fightStart = fightStart;

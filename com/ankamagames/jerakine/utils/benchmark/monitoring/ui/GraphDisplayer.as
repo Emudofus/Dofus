@@ -26,7 +26,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          this.initTexts();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GraphDisplayer));
+      protected static const _log:Logger;
       
       private var _txtSprite:Sprite;
       
@@ -81,7 +81,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          addChild(spr);
       }
       
-      public function update(graphicalUpdate:Boolean=true) : void {
+      public function update(graphicalUpdate:Boolean = true) : void {
          var py:* = 0;
          var color:uint = 0;
          var g:Graph = null;
@@ -94,7 +94,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          this._graphDisplay.bitmapData.lock();
          this._graphDisplay.bitmapData.scroll(-1,0);
          this._graphDisplay.bitmapData.fillRect(new Rectangle(px,1,1,FpsManagerConst.BOX_HEIGHT),16711680);
-         for each (g in this._graphToDisplay)
+         for each(g in this._graphToDisplay)
          {
             if(!FpsManagerUtils.isSpecialGraph(g.indice))
             {
@@ -127,7 +127,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          this._memTf.text = val;
       }
       
-      public function startTracking(pIndice:String, pColor:uint=16777215) : void {
+      public function startTracking(pIndice:String, pColor:uint = 16777215) : void {
          var graph:Graph = this._graphToDisplay[pIndice];
          if(graph == null)
          {
@@ -159,7 +159,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          }
       }
       
-      public function addConstValue(pIndice:String, cst:int=0) : void {
+      public function addConstValue(pIndice:String, cst:int = 0) : void {
          var graph:Graph = this._graphToDisplay[pIndice];
          if(graph == null)
          {
@@ -204,13 +204,11 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          {
             py = 1;
          }
-         else
+         else if(py > bottom)
          {
-            if(py > bottom)
-            {
-               py = bottom;
-            }
+            py = bottom;
          }
+         
          return py * -1 + FpsManagerConst.BOX_HEIGHT;
       }
       
@@ -224,7 +222,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
       public function getExternalGraphs() : Array {
          var g:Graph = null;
          var datas:Array = new Array();
-         for each (g in this._graphToDisplay)
+         for each(g in this._graphToDisplay)
          {
             datas.push(
                {

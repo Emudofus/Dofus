@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6241;
       }
       
-      public function initDungeonPartyFinderRegisterSuccessMessage(dungeonIds:Vector.<uint>=null) : DungeonPartyFinderRegisterSuccessMessage {
+      public function initDungeonPartyFinderRegisterSuccessMessage(dungeonIds:Vector.<uint> = null) : DungeonPartyFinderRegisterSuccessMessage {
          this.dungeonIds = dungeonIds;
          this._isInitialized = true;
          return this;

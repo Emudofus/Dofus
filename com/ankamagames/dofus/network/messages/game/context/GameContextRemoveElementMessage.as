@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 251;
       }
       
-      public function initGameContextRemoveElementMessage(id:int=0) : GameContextRemoveElementMessage {
+      public function initGameContextRemoveElementMessage(id:int = 0) : GameContextRemoveElementMessage {
          this.id = id;
          this._isInitialized = true;
          return this;

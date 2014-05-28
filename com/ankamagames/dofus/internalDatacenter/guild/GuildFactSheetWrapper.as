@@ -7,7 +7,6 @@ package com.ankamagames.dofus.internalDatacenter.guild
    import com.ankamagames.jerakine.logger.Log;
    import avmplus.getQualifiedClassName;
    import com.ankamagames.jerakine.data.I18n;
-   import __AS3__.vec.*;
    
    public class GuildFactSheetWrapper extends Object implements IDataCenter
    {
@@ -17,9 +16,9 @@ package com.ankamagames.dofus.internalDatacenter.guild
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GuildFactSheetWrapper));
+      protected static const _log:Logger;
       
-      public static function create(guildId:uint, guildName:String, guildEmblem:GuildEmblem, leaderId:uint, leaderName:String, guildLevel:uint, nbMembers:uint, creationDate:Number, members:Vector.<CharacterMinimalInformations>, nbConnectedMembers:uint=0, nbTaxCollectors:uint=0, lastActivity:Number=0, enabled:Boolean=true, allianceId:uint=0, allianceName:String="", allianceLeader:Boolean=false) : GuildFactSheetWrapper {
+      public static function create(guildId:uint, guildName:String, guildEmblem:GuildEmblem, leaderId:uint, leaderName:String, guildLevel:uint, nbMembers:uint, creationDate:Number, members:Vector.<CharacterMinimalInformations>, nbConnectedMembers:uint = 0, nbTaxCollectors:uint = 0, lastActivity:Number = 0, enabled:Boolean = true, allianceId:uint = 0, allianceName:String = "", allianceLeader:Boolean = false) : GuildFactSheetWrapper {
          var nowDate:Date = null;
          var item:GuildFactSheetWrapper = new GuildFactSheetWrapper();
          item.guildId = guildId;
@@ -118,7 +117,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          return this._leaderName;
       }
       
-      public function update(guildId:uint, guildName:String, guildEmblem:GuildEmblem, leaderId:uint, leaderName:String, guildLevel:uint, nbMembers:uint, creationDate:Number, members:Vector.<CharacterMinimalInformations>, nbConnectedMembers:uint=0, nbTaxCollectors:uint=0, lastActivity:Number=0, enabled:Boolean=true, allianceId:uint=0, allianceName:String="", allianceLeader:Boolean=false) : void {
+      public function update(guildId:uint, guildName:String, guildEmblem:GuildEmblem, leaderId:uint, leaderName:String, guildLevel:uint, nbMembers:uint, creationDate:Number, members:Vector.<CharacterMinimalInformations>, nbConnectedMembers:uint = 0, nbTaxCollectors:uint = 0, lastActivity:Number = 0, enabled:Boolean = true, allianceId:uint = 0, allianceName:String = "", allianceLeader:Boolean = false) : void {
          var nowDate:Date = null;
          this.guildId = guildId;
          this._guildName = guildName;

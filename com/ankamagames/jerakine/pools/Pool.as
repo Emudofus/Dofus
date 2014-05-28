@@ -7,7 +7,7 @@ package com.ankamagames.jerakine.pools
    public class Pool extends Object
    {
       
-      public function Pool(pooledClass:Class, initialSize:int, growSize:int, warnLimit:int=0) {
+      public function Pool(pooledClass:Class, initialSize:int, growSize:int, warnLimit:int = 0) {
          super();
          this._pooledClass = pooledClass;
          this._pool = new Array();
@@ -22,7 +22,7 @@ package com.ankamagames.jerakine.pools
          this._totalSize = initialSize;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Pool));
+      protected static const _log:Logger;
       
       private var _pooledClass:Class;
       

@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.version
          return 393;
       }
       
-      public function initVersionExtended(major:uint=0, minor:uint=0, release:uint=0, revision:uint=0, patch:uint=0, buildType:uint=0, install:uint=0, technology:uint=0) : VersionExtended {
+      public function initVersionExtended(major:uint = 0, minor:uint = 0, release:uint = 0, revision:uint = 0, patch:uint = 0, buildType:uint = 0, install:uint = 0, technology:uint = 0) : VersionExtended {
          super.initVersion(major,minor,release,revision,patch,buildType);
          this.install = install;
          this.technology = technology;

@@ -52,6 +52,7 @@ package com.ankamagames.berilia
    {
       
       public function Berilia() {
+         this._cache = new Cache(Cache.CHECK_SYSTEM_MEMORY,500000000,300000000);
          this._UISoundListeners = new Array();
          super();
          if(_self != null)
@@ -66,11 +67,11 @@ package com.ankamagames.berilia
       
       private static var _self:Berilia;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Berilia));
+      protected static const _log:Logger;
       
-      public static var _uiCache:Dictionary = new Dictionary();
+      public static var _uiCache:Dictionary;
       
-      public static var embedIcons:Class = EmbedIcons;
+      public static var embedIcons:Class;
       
       public static function getInstance() : Berilia {
          if(_self == null)
@@ -80,7 +81,7 @@ package com.ankamagames.berilia
          return _self;
       }
       
-      private const _cache:Cache = new Cache(Cache.CHECK_SYSTEM_MEMORY,500000000,300000000);
+      private const _cache:Cache;
       
       private var _UISoundListeners:Array;
       
@@ -235,7 +236,7 @@ package com.ankamagames.berilia
          FpsManager.getInstance().stopTracking("ui");
       }
       
-      public function init(docContainer:Sprite, verboseException:Boolean, applicationVersion:uint, checkModuleAuthority:Boolean=true) : void {
+      public function init(docContainer:Sprite, verboseException:Boolean, applicationVersion:uint, checkModuleAuthority:Boolean = true) : void {
          this._docMain = docContainer;
          this._docMain.mouseEnabled = false;
          this._applicationVersion = applicationVersion;
@@ -287,7 +288,7 @@ package com.ankamagames.berilia
          var ui:UiRootContainer = null;
          TimeoutHTMLLoader.resetCache();
          FpsManager.getInstance().startTracking("ui",16525567);
-         for (uiName in _uiCache)
+         for(uiName in _uiCache)
          {
             ui = _uiCache[uiName];
             this._aUiList[uiName] = ui;
@@ -295,15 +296,15 @@ package com.ankamagames.berilia
          }
          _uiCache = new Dictionary();
          tmpUiNameList = [];
-         for (n in this._aUiList)
+         for(n in this._aUiList)
          {
             tmpUiNameList.push(n);
          }
-         for each (n in tmpUiNameList)
+         for each(n in tmpUiNameList)
          {
             this.unloadUi(n);
          }
-         for each (m in UiModuleManager.getInstance().getModules())
+         for each(m in UiModuleManager.getInstance().getModules())
          {
             KernelEventsManager.getInstance().removeEvent("__module_" + m.id);
             BindsManager.getInstance().removeEvent("__module_" + m.id);
@@ -312,7 +313,7 @@ package com.ankamagames.berilia
          FpsManager.getInstance().stopTracking("ui");
       }
       
-      public function loadUi(uiModule:UiModule, uiData:UiData, sName:String, properties:*=null, bReplace:Boolean=false, nStrata:int=1, hide:Boolean=false, cacheName:String=null) : UiRootContainer {
+      public function loadUi(uiModule:UiModule, uiData:UiData, sName:String, properties:* = null, bReplace:Boolean = false, nStrata:int = 1, hide:Boolean = false, cacheName:String = null) : UiRootContainer {
          var container:UiRootContainer = null;
          var highestDepth:int = 0;
          var uiContainer:Sprite = null;
@@ -356,7 +357,7 @@ package com.ankamagames.berilia
                catch(e:Error)
                {
                   ErrorManager.addError("Impossible d\'utiliser le cache d\'interface pour " + container.name + " du module " + (container.uiModule?container.uiModule.id:"???"));
-                  delete _uiCache[[cacheName]];
+                  delete _uiCache[cacheName];
                   container.cached = false;
                   unloadUi(sName);
                }
@@ -403,7 +404,7 @@ package com.ankamagames.berilia
          if(container.strata == 1)
          {
             onTop = true;
-            for each (ui in this._aUiList)
+            for each(ui in this._aUiList)
             {
                if((ui.visible) && (ui.depth > container.depth) && (ui.strata == 1))
                {
@@ -417,7 +418,7 @@ package com.ankamagames.berilia
          }
       }
       
-      public function loadUiInside(uiData:UiData, sName:String, suiContainer:UiRootContainer, properties:*=null, bReplace:Boolean=false) : UiRootContainer {
+      public function loadUiInside(uiData:UiData, sName:String, suiContainer:UiRootContainer, properties:* = null, bReplace:Boolean = false) : UiRootContainer {
          if(bReplace)
          {
             this.unloadUi(sName);
@@ -438,7 +439,7 @@ package com.ankamagames.berilia
          }
       }
       
-      public function unloadUi(sName:String, forceUnload:Boolean=false) : Boolean {
+      public function unloadUi(sName:String, forceUnload:Boolean = false) : Boolean {
          var ui:UiRootContainer = null;
          var j:Object = null;
          var linkCursor:LinkedCursorData = null;
@@ -473,7 +474,7 @@ package com.ankamagames.berilia
             }
             this.unloadUiEvents(sName,true);
             ui.hideAfterLoading = true;
-            delete this._aUiList[[sName]];
+            delete this._aUiList[sName];
             if(ui.uiClass.unload)
             {
                try
@@ -493,7 +494,7 @@ package com.ankamagames.berilia
             return true;
          }
          ui.disableRender = true;
-         delete this._aLoadingUi[[sName]];
+         delete this._aLoadingUi[sName];
          var doIt:DisplayObject = StageShareManager.stage.focus;
          while(doIt)
          {
@@ -518,7 +519,7 @@ package com.ankamagames.berilia
                }
             }
             variables = DescribeTypeCache.getVariables(UiRootContainer(ui).uiClass,true,false);
-            for each (varName in variables)
+            for each(varName in variables)
             {
                if(UiRootContainer(ui).uiClass[varName] is Object)
                {
@@ -538,12 +539,12 @@ package com.ankamagames.berilia
             }
             UiRootContainer(ui).uiClass = null;
          }
-         for (j in UIEventManager.getInstance().instances)
+         for(j in UIEventManager.getInstance().instances)
          {
             if((!(j == "null")) && (UIEventManager.getInstance().instances[j].instance.getUi() == ui))
             {
                UIEventManager.getInstance().instances[j] = null;
-               delete UIEventManager.getInstance().instances[[j]];
+               delete UIEventManager.getInstance().instances[j];
             }
          }
          linkCursor = LinkedCursorSpriteManager.getInstance().getItem("DragAndDrop");
@@ -558,16 +559,16 @@ package com.ankamagames.berilia
             }
          }
          UiRootContainer(ui).remove();
-         for (i in ui.getElements())
+         for(i in ui.getElements())
          {
             currObj = ui.getElements()[i];
             if(currObj is GraphicContainer)
             {
                this._aContainerList[currObj["name"]] = null;
-               delete this._aContainerList[[currObj["name"]]];
+               delete this._aContainerList[currObj["name"]];
             }
             ui.getElements()[i] = null;
-            delete ui.getElements()[[i]];
+            delete ui.getElements()[i];
          }
          if(sName == "serverListSelection")
          {
@@ -583,12 +584,12 @@ package com.ankamagames.berilia
             ApiBinder.removeApiData("currentUi");
          }
          UiRootContainer(ui).free();
-         delete this._aUiList[[sName]];
+         delete this._aUiList[sName];
          this.updateHighestModalDepth();
          topUi = null;
          if((ui.strata > 0) && (ui.strata < 4))
          {
-            for each (u in this._aUiList)
+            for each(u in this._aUiList)
             {
                if(topUi == null)
                {
@@ -597,13 +598,11 @@ package com.ankamagames.berilia
                      topUi = u;
                   }
                }
-               else
+               else if((u.depth > topUi.depth) && (u.strata == 1) && (u.visible))
                {
-                  if((u.depth > topUi.depth) && (u.strata == 1) && (u.visible))
-                  {
-                     topUi = u;
-                  }
+                  topUi = u;
                }
+               
             }
             if((!StageShareManager.stage.focus) || (ui.transmitFocus) && (!((StageShareManager.stage.focus is TextField) || (StageShareManager.stage.focus is ChatTextContainer))))
             {
@@ -614,11 +613,11 @@ package com.ankamagames.berilia
          KernelEventsManager.getInstance().processCallback(BeriliaHookList.UiUnloaded,sName);
          dispatchEvent(new UiUnloadEvent(UiUnloadEvent.UNLOAD_UI_COMPLETE,sName));
          var stopTimer:int = getTimer();
-         _log.info(sName + " correctly unloaded in " + (stopTimer - startTimer) + "ms");
+         _log.info(sName + " correctly unloaded in " + (stopTimer - startTimer) + "ms \n" + new Error().getStackTrace());
          return true;
       }
       
-      public function unloadUiEvents(sName:String, useCache:Boolean=false) : void {
+      public function unloadUiEvents(sName:String, useCache:Boolean = false) : void {
          var currObj:Object = null;
          var i:Object = null;
          var j:Object = null;
@@ -627,30 +626,30 @@ package com.ankamagames.berilia
          {
             return;
          }
-         for (i in this._aUiList[sName].getElements())
+         for(i in this._aUiList[sName].getElements())
          {
             currObj = this._aUiList[sName].getElements()[i];
             if(currObj is GraphicContainer)
             {
                this._aContainerList[currObj["name"]] = null;
-               delete this._aContainerList[[currObj["name"]]];
+               delete this._aContainerList[currObj["name"]];
             }
             if(!useCache)
             {
                this._aUiList[sName].getElements()[i] = null;
-               delete this._aUiList[sName].getElements()[[i]];
+               delete this._aUiList[sName].getElements()[i];
             }
          }
          KernelEventsManager.getInstance().removeEvent(sName);
          BindsManager.getInstance().removeEvent(sName);
-         for (j in UIEventManager.getInstance().instances)
+         for(j in UIEventManager.getInstance().instances)
          {
             if((!(j == null) || !(j == "null")) && (UIEventManager.getInstance().instances[j]) && (UIEventManager.getInstance().instances[j].instance) && (UIEventManager.getInstance().instances[j].instance.topParent) && (UIEventManager.getInstance().instances[j].instance.topParent.name == sName))
             {
                if(UIEventManager.getInstance().instances[j].instance.topParent.name == sName)
                {
                   UIEventManager.getInstance().instances[j] = null;
-                  delete UIEventManager.getInstance().instances[[j]];
+                  delete UIEventManager.getInstance().instances[j];
                }
             }
          }
@@ -667,7 +666,7 @@ package com.ankamagames.berilia
       
       public function updateUiRender() : void {
          var i:String = null;
-         for (i in this.uiList)
+         for(i in this.uiList)
          {
             UiRootContainer(this.uiList[i]).render();
          }
@@ -676,7 +675,7 @@ package com.ankamagames.berilia
       public function updateUiScale() : void {
          var ui:UiRootContainer = null;
          var i:String = null;
-         for (i in this.uiList)
+         for(i in this.uiList)
          {
             ui = UiRootContainer(this.uiList[i]);
             if(ui.scalable)
@@ -701,7 +700,7 @@ package com.ankamagames.berilia
       }
       
       private function onUiLoaded(ure:UiRenderEvent) : void {
-         delete this._aLoadingUi[[ure.uiTarget.name]];
+         delete this._aLoadingUi[ure.uiTarget.name];
          this.updateHighestModalDepth();
          dispatchEvent(ure);
          KernelEventsManager.getInstance().processCallback(BeriliaHookList.UiLoaded,ure.uiTarget.name);
@@ -710,7 +709,7 @@ package com.ankamagames.berilia
       private function updateHighestModalDepth() : void {
          var uiContainer:UiRootContainer = null;
          this._highestModalDepth = -1;
-         for each (uiContainer in this._aUiList)
+         for each(uiContainer in this._aUiList)
          {
             if((uiContainer.modal) && (this._highestModalDepth < uiContainer.depth))
             {

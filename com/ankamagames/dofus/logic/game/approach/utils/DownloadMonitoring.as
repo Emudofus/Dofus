@@ -19,7 +19,7 @@ package com.ankamagames.dofus.logic.game.approach.utils
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DownloadMonitoring));
+      protected static const _log:Logger;
       
       private static var _singleton:DownloadMonitoring;
       
@@ -121,38 +121,34 @@ package com.ankamagames.dofus.logic.game.approach.utils
                this._apingCount++;
             }
          }
-         else
+         else if(this._mode == MODE_WATCH)
          {
-            if(this._mode == MODE_WATCH)
+            aping = this._connection.latencyAvg;
+            if(aping >= this.firstAping * 2)
             {
-               aping = this._connection.latencyAvg;
-               if(aping >= this.firstAping * 2)
+               if(this._downloadSpeed > 1)
                {
-                  if(this._downloadSpeed > 1)
-                  {
-                     this._downloadSpeed--;
-                     _log.info("Decrease download speed to " + this._downloadSpeed);
-                     dssrmsg = new DownloadSetSpeedRequestMessage();
-                     dssrmsg.initDownloadSetSpeedRequestMessage(this._downloadSpeed);
-                     UpdaterConnexionHandler.getConnection().send(dssrmsg);
-                  }
-               }
-               else
-               {
-                  if(aping < this.firstAping * 1.5)
-                  {
-                     if(this._downloadSpeed < 10)
-                     {
-                        this._downloadSpeed++;
-                        _log.info("Increase download speed to " + this._downloadSpeed);
-                        dssrmsg = new DownloadSetSpeedRequestMessage();
-                        dssrmsg.initDownloadSetSpeedRequestMessage(this._downloadSpeed);
-                        UpdaterConnexionHandler.getConnection().send(dssrmsg);
-                     }
-                  }
+                  this._downloadSpeed--;
+                  _log.info("Decrease download speed to " + this._downloadSpeed);
+                  dssrmsg = new DownloadSetSpeedRequestMessage();
+                  dssrmsg.initDownloadSetSpeedRequestMessage(this._downloadSpeed);
+                  UpdaterConnexionHandler.getConnection().send(dssrmsg);
                }
             }
+            else if(aping < this.firstAping * 1.5)
+            {
+               if(this._downloadSpeed < 10)
+               {
+                  this._downloadSpeed++;
+                  _log.info("Increase download speed to " + this._downloadSpeed);
+                  dssrmsg = new DownloadSetSpeedRequestMessage();
+                  dssrmsg.initDownloadSetSpeedRequestMessage(this._downloadSpeed);
+                  UpdaterConnexionHandler.getConnection().send(dssrmsg);
+               }
+            }
+            
          }
+         
       }
    }
 }

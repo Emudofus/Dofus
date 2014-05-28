@@ -7,7 +7,6 @@ package com.ankamagames.dofus.logic.game.common.misc
    import com.ankamagames.dofus.logic.game.common.managers.StorageOptionManager;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.network.enums.CharacterInventoryPositionEnum;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    
@@ -21,7 +20,7 @@ package com.ankamagames.dofus.logic.game.common.misc
          this._views = new Dictionary();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Inventory));
+      protected static const _log:Logger;
       
       public static const HIDDEN_TYPE_ID:uint = 118;
       
@@ -72,7 +71,7 @@ package com.ankamagames.dofus.logic.game.common.misc
          var view:IInventoryView = this.getView(name);
          if(view)
          {
-            delete this._views[[name]];
+            delete this._views[name];
          }
       }
       
@@ -102,7 +101,7 @@ package com.ankamagames.dofus.logic.game.common.misc
          var item:ItemWrapper = null;
          var itemSet:ItemSet = null;
          this._itemsDict = new Dictionary();
-         for each (item in items)
+         for each(item in items)
          {
             itemSet = new ItemSet(item);
             this._itemsDict[item.objectUID] = itemSet;
@@ -153,7 +152,7 @@ package com.ankamagames.dofus.logic.game.common.misc
          }
       }
       
-      public function removeItem(itemUID:int, quantity:int=-1) : void {
+      public function removeItem(itemUID:int, quantity:int = -1) : void {
          var oldItem:ItemWrapper = null;
          var itemSet:ItemSet = this._itemsDict[itemUID];
          if(!itemSet)
@@ -163,7 +162,7 @@ package com.ankamagames.dofus.logic.game.common.misc
          }
          if((quantity == -1) || (quantity == itemSet.item.quantity))
          {
-            delete this._itemsDict[[itemUID]];
+            delete this._itemsDict[itemUID];
             this.removeItemFromViews(itemSet);
          }
          else
@@ -211,20 +210,18 @@ package com.ankamagames.dofus.logic.game.common.misc
                PlayedCharacterManager.getInstance().isPetsMounting = false;
             }
          }
-         else
+         else if(iw.typeId == COMPANION_TYPE_ID)
          {
-            if(iw.typeId == COMPANION_TYPE_ID)
+            if(position == CharacterInventoryPositionEnum.INVENTORY_POSITION_COMPANION)
             {
-               if(position == CharacterInventoryPositionEnum.INVENTORY_POSITION_COMPANION)
-               {
-                  PlayedCharacterManager.getInstance().hasCompanion = true;
-               }
-               else
-               {
-                  PlayedCharacterManager.getInstance().hasCompanion = false;
-               }
+               PlayedCharacterManager.getInstance().hasCompanion = true;
+            }
+            else
+            {
+               PlayedCharacterManager.getInstance().hasCompanion = false;
             }
          }
+         
          this.modifyItem(iw);
       }
       
@@ -266,17 +263,17 @@ package com.ankamagames.dofus.logic.game.common.misc
             _log.error("On essaye de retirer le masque d\'un item qui n\'existe pas dans l\'inventaire");
             return;
          }
-         delete itemSet.masks[[name]];
+         delete itemSet.masks[name];
          this.modifyItemFromViews(itemSet,itemSet.item);
       }
       
       public function removeAllItemMasks(name:String) : void {
          var itemSet:ItemSet = null;
-         for each (itemSet in this._itemsDict)
+         for each(itemSet in this._itemsDict)
          {
             if(itemSet.masks[name])
             {
-               delete itemSet.masks[[name]];
+               delete itemSet.masks[name];
                this.modifyItemFromViews(itemSet,itemSet.item);
             }
          }
@@ -284,7 +281,7 @@ package com.ankamagames.dofus.logic.game.common.misc
       
       public function removeAllItemsMasks() : void {
          var itemSet:ItemSet = null;
-         for each (itemSet in this._itemsDict)
+         for each(itemSet in this._itemsDict)
          {
             if(itemSet.masks.length > 0)
             {
@@ -310,7 +307,7 @@ package com.ankamagames.dofus.logic.game.common.misc
       
       protected function addItemToViews(itemSet:ItemSet) : void {
          var view:IInventoryView = null;
-         for each (view in this._views)
+         for each(view in this._views)
          {
             if(view.isListening(itemSet.item))
             {
@@ -323,11 +320,11 @@ package com.ankamagames.dofus.logic.game.common.misc
          var mask:* = 0;
          var view:IInventoryView = null;
          var quantity:int = 0;
-         for each (mask in itemSet.masks)
+         for each(mask in itemSet.masks)
          {
             quantity = quantity + mask;
          }
-         for each (view in this._views)
+         for each(view in this._views)
          {
             if(view.isListening(itemSet.item))
             {
@@ -340,19 +337,17 @@ package com.ankamagames.dofus.logic.game.common.misc
                   view.addItem(itemSet.item,quantity);
                }
             }
-            else
+            else if(view.isListening(oldItem))
             {
-               if(view.isListening(oldItem))
-               {
-                  view.removeItem(oldItem,quantity);
-               }
+               view.removeItem(oldItem,quantity);
             }
+            
          }
       }
       
       protected function removeItemFromViews(itemSet:ItemSet) : void {
          var view:IInventoryView = null;
-         for each (view in this._views)
+         for each(view in this._views)
          {
             if(view.isListening(itemSet.item))
             {
@@ -363,7 +358,7 @@ package com.ankamagames.dofus.logic.game.common.misc
       
       protected function initializeViews(items:Vector.<ItemWrapper>) : void {
          var view:IInventoryView = null;
-         for each (view in this._views)
+         for each(view in this._views)
          {
             view.initialize(items);
          }

@@ -1,7 +1,5 @@
 package com.ankamagames.tiphon.engine
 {
-   import __AS3__.vec.*;
-   
    public final class SubstituteAnimationManager extends Object
    {
       
@@ -9,9 +7,9 @@ package com.ankamagames.tiphon.engine
          super();
       }
       
-      private static var _like:Vector.<String> = new Vector.<String>();
+      private static var _like:Vector.<String>;
       
-      private static var _defaultAnimations:Vector.<String> = new Vector.<String>();
+      private static var _defaultAnimations:Vector.<String>;
       
       public static function setDefaultAnimation(like:String, defaultAnim:String) : void {
          var indexLike:int = _like.indexOf(like);
@@ -28,7 +26,7 @@ package com.ankamagames.tiphon.engine
       
       public static function getDefaultAnimation(currentAnimation:String) : String {
          var like:String = null;
-         for each (like in _like)
+         for each(like in _like)
          {
             if(currentAnimation.indexOf(like) == 0)
             {

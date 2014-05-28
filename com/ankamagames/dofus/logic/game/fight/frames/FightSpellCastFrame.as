@@ -49,7 +49,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.atouin.AtouinConstants;
    import com.ankamagames.atouin.utils.DataMapProvider;
    import com.ankamagames.jerakine.types.zones.Lozenge;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.zones.Custom;
    import com.ankamagames.berilia.types.tooltip.TooltipPlacer;
    import com.ankamagames.berilia.managers.TooltipManager;
@@ -78,7 +77,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          this._cancelTimer.addEventListener(TimerEvent.TIMER,this.cancelCast);
          if((spellId) || (!PlayedCharacterManager.getInstance().currentWeapon))
          {
-            for each (i in PlayedCharacterManager.getInstance().spellsInventory)
+            for each(i in PlayedCharacterManager.getInstance().spellsInventory)
             {
                if(i.spellId == this._spellId)
                {
@@ -107,15 +106,15 @@ package com.ankamagames.dofus.logic.game.fight.frames
          this._clearTargetTimer.addEventListener(TimerEvent.TIMER,this.onClearTarget);
       }
       
-      private static const FORBIDDEN_CURSOR:Class = FightSpellCastFrame_FORBIDDEN_CURSOR;
+      private static const FORBIDDEN_CURSOR:Class;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FightSpellCastFrame));
+      protected static const _log:Logger;
       
-      private static const RANGE_COLOR:Color = new Color(5533093);
+      private static const RANGE_COLOR:Color;
       
-      private static const LOS_COLOR:Color = new Color(2241433);
+      private static const LOS_COLOR:Color;
       
-      private static const TARGET_COLOR:Color = new Color(14487842);
+      private static const TARGET_COLOR:Color;
       
       private static const SELECTION_RANGE:String = "SpellCastRange";
       
@@ -188,7 +187,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          {
             fef = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
             fighters = fef.getEntitiesDictionnary();
-            for each (actorInfos in fighters)
+            for each(actorInfos in fighters)
             {
                fighterInfos = actorInfos as GameFightFighterInformations;
                char = DofusEntities.getEntity(fighterInfos.contextualId) as AnimatedCharacter;
@@ -278,6 +277,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
             case msg is MouseUpMessage:
                this._cancelTimer.start();
                return false;
+            default:
+               return false;
          }
       }
       
@@ -291,7 +292,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          {
             fef = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
             fighters = fef.getEntitiesDictionnary();
-            for each (actorInfos in fighters)
+            for each(actorInfos in fighters)
             {
                char = DofusEntities.getEntity(actorInfos.contextualId) as AnimatedCharacter;
                if((char) && (!(actorInfos.contextualId == CurrentPlayedFighterManager.getInstance().currentFighterId)))
@@ -315,7 +316,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          return true;
       }
       
-      public function refreshTarget(force:Boolean=false) : void {
+      public function refreshTarget(force:Boolean = false) : void {
          var currentFighterId:* = 0;
          var entityInfos:GameFightFighterInformations = null;
          var renderer:ZoneDARenderer = null;
@@ -444,26 +445,22 @@ package com.ankamagames.dofus.logic.game.fight.frames
             shapePlus.allDirections = true;
             this._rangeSelection.zone = shapePlus;
          }
+         else if(this._spellLevel.castInLine)
+         {
+            this._rangeSelection.zone = new Cross(this._spellLevel.minRange,range,DataMapProvider.getInstance());
+         }
+         else if(this._spellLevel.castInDiagonal)
+         {
+            shapePlus = new Cross(this._spellLevel.minRange,range,DataMapProvider.getInstance());
+            shapePlus.diagonal = true;
+            this._rangeSelection.zone = shapePlus;
+         }
          else
          {
-            if(this._spellLevel.castInLine)
-            {
-               this._rangeSelection.zone = new Cross(this._spellLevel.minRange,range,DataMapProvider.getInstance());
-            }
-            else
-            {
-               if(this._spellLevel.castInDiagonal)
-               {
-                  shapePlus = new Cross(this._spellLevel.minRange,range,DataMapProvider.getInstance());
-                  shapePlus.diagonal = true;
-                  this._rangeSelection.zone = shapePlus;
-               }
-               else
-               {
-                  this._rangeSelection.zone = new Lozenge(this._spellLevel.minRange,range,DataMapProvider.getInstance());
-               }
-            }
+            this._rangeSelection.zone = new Lozenge(this._spellLevel.minRange,range,DataMapProvider.getInstance());
          }
+         
+         
          this._losSelection = null;
          if(testLos)
          {
@@ -496,7 +493,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var entitiesIds:Vector.<int> = fcf.entitiesFrame.getEntitiesIdsList();
          var zoneCells:Vector.<uint> = pSelection.zone.getCells(this._currentCell);
          var targetEntities:Vector.<int> = new Vector.<int>(0);
-         for each (entityId in entitiesIds)
+         for each(entityId in entitiesIds)
          {
             entityInfos = fcf.entitiesFrame.getEntityInfos(entityId) as GameFightFighterInformations;
             if((!(zoneCells.indexOf(entityInfos.disposition.cellId) == -1)) && (DofusEntities.getEntity(entityId)))
@@ -504,16 +501,14 @@ package com.ankamagames.dofus.logic.game.fight.frames
                targetEntities.push(entityId);
                TooltipPlacer.waitBeforeOrder("tooltip_tooltipOverEntity_" + entityId);
             }
-            else
+            else if((!fcf.showPermanentTooltips) || (fcf.showPermanentTooltips) && (fcf.battleFrame.targetedEntities.indexOf(entityId) == -1))
             {
-               if((!fcf.showPermanentTooltips) || (fcf.showPermanentTooltips) && (fcf.battleFrame.targetedEntities.indexOf(entityId) == -1))
-               {
-                  TooltipManager.hide("tooltipOverEntity_" + entityId);
-               }
+               TooltipManager.hide("tooltipOverEntity_" + entityId);
             }
+            
          }
          fcf.removeSpellTargetsTooltips();
-         for each (entityId in targetEntities)
+         for each(entityId in targetEntities)
          {
             entityInfos = fcf.entitiesFrame.getEntityInfos(entityId) as GameFightFighterInformations;
             if(entityInfos.alive)
@@ -528,7 +523,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var fcf:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
          var entitiesId:Vector.<int> = fcf.entitiesFrame.getEntitiesIdsList();
          var overEntity:IEntity = EntitiesManager.getInstance().getEntityOnCell(FightContextFrame.currentCell,AnimatedCharacter);
-         for each (entityId in entitiesId)
+         for each(entityId in entitiesId)
          {
             if((!fcf.showPermanentTooltips) || (fcf.showPermanentTooltips) && (fcf.battleFrame.targetedEntities.indexOf(entityId) == -1))
             {
@@ -537,7 +532,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          }
          if((fcf.showPermanentTooltips) && (fcf.battleFrame.targetedEntities.length > 0))
          {
-            for each (entityId in fcf.battleFrame.targetedEntities)
+            for each(entityId in fcf.battleFrame.targetedEntities)
             {
                if((!overEntity) || (!(entityId == overEntity.id)))
                {
@@ -562,7 +557,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          this.refreshTarget();
       }
       
-      private function castSpell(cell:uint, targetId:int=0) : void {
+      private function castSpell(cell:uint, targetId:int = 0) : void {
          var gafcotrmsg:GameActionFightCastOnTargetRequestMessage = null;
          var gafcrmsg:GameActionFightCastRequestMessage = null;
          var fightTurnFrame:FightTurnFrame = Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
@@ -581,16 +576,14 @@ package com.ankamagames.dofus.logic.game.fight.frames
             gafcotrmsg.initGameActionFightCastOnTargetRequestMessage(this._spellId,targetId);
             ConnectionsHandler.getConnection().send(gafcotrmsg);
          }
-         else
+         else if(this.isValidCell(cell))
          {
-            if(this.isValidCell(cell))
-            {
-               CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent - this._spellLevel.apCost;
-               gafcrmsg = new GameActionFightCastRequestMessage();
-               gafcrmsg.initGameActionFightCastRequestMessage(this._spellId,cell);
-               ConnectionsHandler.getConnection().send(gafcrmsg);
-            }
+            CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent - this._spellLevel.apCost;
+            gafcrmsg = new GameActionFightCastRequestMessage();
+            gafcrmsg.initGameActionFightCastRequestMessage(this._spellId,cell);
+            ConnectionsHandler.getConnection().send(gafcrmsg);
          }
+         
          this.cancelCast();
       }
       
@@ -644,7 +637,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          if(this._spellId)
          {
             spellLevel = this._spellLevel.spellLevelInfos;
-            for each (entity in EntitiesManager.getInstance().getEntitiesOnCell(cell))
+            for each(entity in EntitiesManager.getInstance().getEntitiesOnCell(cell))
             {
                if(!CurrentPlayedFighterManager.getInstance().canCastThisSpell(this._spellLevel.spellId,this._spellLevel.spellLevel,entity.id))
                {

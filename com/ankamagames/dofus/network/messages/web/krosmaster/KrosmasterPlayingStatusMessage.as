@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.web.krosmaster
          return 6347;
       }
       
-      public function initKrosmasterPlayingStatusMessage(playing:Boolean=false) : KrosmasterPlayingStatusMessage {
+      public function initKrosmasterPlayingStatusMessage(playing:Boolean = false) : KrosmasterPlayingStatusMessage {
          this.playing = playing;
          this._isInitialized = true;
          return this;

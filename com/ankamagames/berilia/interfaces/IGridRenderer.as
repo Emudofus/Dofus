@@ -10,9 +10,9 @@ package com.ankamagames.berilia.interfaces
       
       function set grid(param1:Grid) : void;
       
-      function render(param1:*, param2:uint, param3:Boolean, param4:uint=0) : DisplayObject;
+      function render(param1:*, param2:uint, param3:Boolean, param4:uint = 0) : DisplayObject;
       
-      function update(param1:*, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint=0) : void;
+      function update(param1:*, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint = 0) : void;
       
       function remove(param1:DisplayObject) : void;
       

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.connection
          return 50;
       }
       
-      public function initServerStatusUpdateMessage(server:GameServerInformations=null) : ServerStatusUpdateMessage {
+      public function initServerStatusUpdateMessage(server:GameServerInformations = null) : ServerStatusUpdateMessage {
          this.server = server;
          this._isInitialized = true;
          return this;

@@ -3,7 +3,7 @@ package com.ankamagames.jerakine.replay
    public class MouseInteraction extends Object
    {
       
-      public function MouseInteraction(target:String=null, type:String=null, x:int=0, y:int=0) {
+      public function MouseInteraction(target:String = null, type:String = null, x:int = 0, y:int = 0) {
          super();
          this.target = target;
          this.type = type;

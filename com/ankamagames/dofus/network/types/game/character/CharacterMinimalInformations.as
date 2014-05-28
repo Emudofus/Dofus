@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.character
          return 110;
       }
       
-      public function initCharacterMinimalInformations(id:uint=0, level:uint=0, name:String="") : CharacterMinimalInformations {
+      public function initCharacterMinimalInformations(id:uint = 0, level:uint = 0, name:String = "") : CharacterMinimalInformations {
          super.initAbstractCharacterInformation(id);
          this.level = level;
          this.name = name;

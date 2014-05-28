@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          return 447;
       }
       
-      public function initTaxCollectorWaitingForHelpInformations(waitingForHelpInfo:ProtectedEntityWaitingForHelpInfo=null) : TaxCollectorWaitingForHelpInformations {
+      public function initTaxCollectorWaitingForHelpInformations(waitingForHelpInfo:ProtectedEntityWaitingForHelpInfo = null) : TaxCollectorWaitingForHelpInformations {
          this.waitingForHelpInfo = waitingForHelpInfo;
          return this;
       }

@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6066;
       }
       
-      public function initLivingObjectMessageRequestMessage(msgId:uint=0, parameters:Vector.<String>=null, livingObject:uint=0) : LivingObjectMessageRequestMessage {
+      public function initLivingObjectMessageRequestMessage(msgId:uint = 0, parameters:Vector.<String> = null, livingObject:uint = 0) : LivingObjectMessageRequestMessage {
          this.msgId = msgId;
          this.parameters = parameters;
          this.livingObject = livingObject;

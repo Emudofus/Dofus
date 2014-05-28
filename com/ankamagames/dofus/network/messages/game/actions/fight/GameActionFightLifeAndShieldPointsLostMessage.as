@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6310;
       }
       
-      public function initGameActionFightLifeAndShieldPointsLostMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, loss:uint=0, permanentDamages:uint=0, shieldLoss:uint=0) : GameActionFightLifeAndShieldPointsLostMessage {
+      public function initGameActionFightLifeAndShieldPointsLostMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, loss:uint = 0, permanentDamages:uint = 0, shieldLoss:uint = 0) : GameActionFightLifeAndShieldPointsLostMessage {
          super.initGameActionFightLifePointsLostMessage(actionId,sourceId,targetId,loss,permanentDamages);
          this.shieldLoss = shieldLoss;
          this._isInitialized = true;

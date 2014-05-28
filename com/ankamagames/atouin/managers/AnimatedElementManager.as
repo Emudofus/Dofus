@@ -1,7 +1,6 @@
 package com.ankamagames.atouin.managers
 {
    import com.ankamagames.atouin.types.AnimatedElementInfo;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import flash.events.Event;
    import com.ankamagames.tiphon.display.TiphonSprite;

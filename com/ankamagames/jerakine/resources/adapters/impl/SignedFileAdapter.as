@@ -16,7 +16,7 @@ package com.ankamagames.jerakine.resources.adapters.impl
    public class SignedFileAdapter extends AbstractUrlLoaderAdapter implements IAdapter
    {
       
-      public function SignedFileAdapter(signatureKey:SignatureKey=null, rawContent:Boolean=false) {
+      public function SignedFileAdapter(signatureKey:SignatureKey = null, rawContent:Boolean = false) {
          super();
          this._rawContent = rawContent;
          if(signatureKey)

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6125;
       }
       
-      public function initExchangeCraftSlotCountIncreasedMessage(newMaxSlot:uint=0) : ExchangeCraftSlotCountIncreasedMessage {
+      public function initExchangeCraftSlotCountIncreasedMessage(newMaxSlot:uint = 0) : ExchangeCraftSlotCountIncreasedMessage {
          this.newMaxSlot = newMaxSlot;
          this._isInitialized = true;
          return this;

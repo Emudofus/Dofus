@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.types.game.prism
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.fight.ProtectedEntityWaitingForHelpInfo;
    import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.types.game.prism
          return 443;
       }
       
-      public function initPrismFightersInformation(subAreaId:uint=0, waitingForHelpInfo:ProtectedEntityWaitingForHelpInfo=null, allyCharactersInformations:Vector.<CharacterMinimalPlusLookInformations>=null, enemyCharactersInformations:Vector.<CharacterMinimalPlusLookInformations>=null) : PrismFightersInformation {
+      public function initPrismFightersInformation(subAreaId:uint = 0, waitingForHelpInfo:ProtectedEntityWaitingForHelpInfo = null, allyCharactersInformations:Vector.<CharacterMinimalPlusLookInformations> = null, enemyCharactersInformations:Vector.<CharacterMinimalPlusLookInformations> = null) : PrismFightersInformation {
          this.subAreaId = subAreaId;
          this.waitingForHelpInfo = waitingForHelpInfo;
          this.allyCharactersInformations = allyCharactersInformations;

@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -34,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5780;
       }
       
-      public function initExchangeStartOkTaxCollectorMessage(collectorId:int=0, objectsInfos:Vector.<ObjectItem>=null, goldInfo:uint=0) : ExchangeStartOkTaxCollectorMessage {
+      public function initExchangeStartOkTaxCollectorMessage(collectorId:int = 0, objectsInfos:Vector.<ObjectItem> = null, goldInfo:uint = 0) : ExchangeStartOkTaxCollectorMessage {
          this.collectorId = collectorId;
          this.objectsInfos = objectsInfos;
          this.goldInfo = goldInfo;

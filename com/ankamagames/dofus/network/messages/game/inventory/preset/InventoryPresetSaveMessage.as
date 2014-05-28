@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          return 6165;
       }
       
-      public function initInventoryPresetSaveMessage(presetId:uint=0, symbolId:uint=0, saveEquipment:Boolean=false) : InventoryPresetSaveMessage {
+      public function initInventoryPresetSaveMessage(presetId:uint = 0, symbolId:uint = 0, saveEquipment:Boolean = false) : InventoryPresetSaveMessage {
          this.presetId = presetId;
          this.symbolId = symbolId;
          this.saveEquipment = saveEquipment;

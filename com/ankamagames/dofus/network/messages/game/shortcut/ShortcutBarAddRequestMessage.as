@@ -32,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          return 6225;
       }
       
-      public function initShortcutBarAddRequestMessage(barType:uint=0, shortcut:Shortcut=null) : ShortcutBarAddRequestMessage {
+      public function initShortcutBarAddRequestMessage(barType:uint = 0, shortcut:Shortcut = null) : ShortcutBarAddRequestMessage {
          this.barType = barType;
          this.shortcut = shortcut;
          this._isInitialized = true;

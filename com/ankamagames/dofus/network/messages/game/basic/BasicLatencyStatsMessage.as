@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 5663;
       }
       
-      public function initBasicLatencyStatsMessage(latency:uint=0, sampleCount:uint=0, max:uint=0) : BasicLatencyStatsMessage {
+      public function initBasicLatencyStatsMessage(latency:uint = 0, sampleCount:uint = 0, max:uint = 0) : BasicLatencyStatsMessage {
          this.latency = latency;
          this.sampleCount = sampleCount;
          this.max = max;

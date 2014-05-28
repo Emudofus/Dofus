@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.updater.parts
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.updater.ContentPart;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.updater.parts
          return 1502;
       }
       
-      public function initPartsListMessage(parts:Vector.<ContentPart>=null) : PartsListMessage {
+      public function initPartsListMessage(parts:Vector.<ContentPart> = null) : PartsListMessage {
          this.parts = parts;
          this._isInitialized = true;
          return this;

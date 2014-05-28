@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 29;
       }
       
-      public function initGameFightMonsterInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null, creatureGenericId:uint=0, creatureGrade:uint=0) : GameFightMonsterInformations {
+      public function initGameFightMonsterInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, teamId:uint = 2, wave:uint = 0, alive:Boolean = false, stats:GameFightMinimalStats = null, creatureGenericId:uint = 0, creatureGrade:uint = 0) : GameFightMonsterInformations {
          super.initGameFightAIInformations(contextualId,look,disposition,teamId,wave,alive,stats);
          this.creatureGenericId = creatureGenericId;
          this.creatureGrade = creatureGrade;

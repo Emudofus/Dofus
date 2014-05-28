@@ -33,7 +33,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
       
       override public function get isRespected() : Boolean {
          var sp:SpellWrapper = null;
-         for each (sp in PlayedCharacterManager.getInstance().playerSpellList)
+         for each(sp in PlayedCharacterManager.getInstance().playerSpellList)
          {
             if(sp.id == this._spellId)
             {

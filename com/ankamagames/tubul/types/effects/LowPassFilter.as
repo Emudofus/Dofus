@@ -5,7 +5,7 @@ package com.ankamagames.tubul.types.effects
    public class LowPassFilter extends Object implements IEffect
    {
       
-      public function LowPassFilter(pResonance:Number=0.0, pMinFreq:Number=0.0, pMaxFreq:Number=0.0, pLfoSpeed:Number=0.0) {
+      public function LowPassFilter(pResonance:Number = 0.0, pMinFreq:Number = 0.0, pMaxFreq:Number = 0.0, pLfoSpeed:Number = 0.0) {
          super();
          this.lfoSpeedMs = pLfoSpeed;
          this.resonance = pResonance;

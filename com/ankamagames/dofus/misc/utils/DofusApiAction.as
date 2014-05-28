@@ -5,7 +5,6 @@ package com.ankamagames.dofus.misc.utils
    import com.ankamagames.dofus.datacenter.misc.ActionDescription;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.*;
    
    public class DofusApiAction extends ApiAction
    {
@@ -15,14 +14,14 @@ package com.ankamagames.dofus.misc.utils
          super(name,actionClass,true,false,0,0,false);
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DofusApiAction));
+      protected static const _log:Logger;
       
-      private static var _actionList:Vector.<DofusApiAction> = new Vector.<DofusApiAction>();
+      private static var _actionList:Vector.<DofusApiAction>;
       
       public static function updateInfo() : void {
          var action:DofusApiAction = null;
          var actiondesc:ActionDescription = null;
-         for each (action in _actionList)
+         for each(action in _actionList)
          {
             actiondesc = ActionDescription.getActionDescriptionByName(action.name);
             if(actiondesc)

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5706;
       }
       
-      public function initGuildCharacsUpgradeRequestMessage(charaTypeTarget:uint=0) : GuildCharacsUpgradeRequestMessage {
+      public function initGuildCharacsUpgradeRequestMessage(charaTypeTarget:uint = 0) : GuildCharacsUpgradeRequestMessage {
          this.charaTypeTarget = charaTypeTarget;
          this._isInitialized = true;
          return this;

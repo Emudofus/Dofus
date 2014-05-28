@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6056;
       }
       
-      public function initExchangeMountSterilizeFromPaddockMessage(name:String="", worldX:int=0, worldY:int=0, sterilizator:String="") : ExchangeMountSterilizeFromPaddockMessage {
+      public function initExchangeMountSterilizeFromPaddockMessage(name:String = "", worldX:int = 0, worldY:int = 0, sterilizator:String = "") : ExchangeMountSterilizeFromPaddockMessage {
          this.name = name;
          this.worldX = worldX;
          this.worldY = worldY;

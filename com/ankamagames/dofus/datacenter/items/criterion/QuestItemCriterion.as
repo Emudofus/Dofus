@@ -54,7 +54,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
          switch(s)
          {
             case "Qa":
-               for each (questA in questFrame.getActiveQuests())
+               for each(questA in questFrame.getActiveQuests())
                {
                   if(questA.questId == this._questId)
                   {

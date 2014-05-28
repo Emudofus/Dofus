@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItemToSellInNpcShop;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -34,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5761;
       }
       
-      public function initExchangeStartOkNpcShopMessage(npcSellerId:int=0, tokenId:uint=0, objectsInfos:Vector.<ObjectItemToSellInNpcShop>=null) : ExchangeStartOkNpcShopMessage {
+      public function initExchangeStartOkNpcShopMessage(npcSellerId:int = 0, tokenId:uint = 0, objectsInfos:Vector.<ObjectItemToSellInNpcShop> = null) : ExchangeStartOkNpcShopMessage {
          this.npcSellerId = npcSellerId;
          this.tokenId = tokenId;
          this.objectsInfos = objectsInfos;

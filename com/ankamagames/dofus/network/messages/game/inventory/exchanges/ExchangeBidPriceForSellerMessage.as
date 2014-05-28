@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6464;
       }
       
-      public function initExchangeBidPriceForSellerMessage(genericId:uint=0, averagePrice:int=0, allIdentical:Boolean=false, minimalPrices:Vector.<uint>=null) : ExchangeBidPriceForSellerMessage {
+      public function initExchangeBidPriceForSellerMessage(genericId:uint = 0, averagePrice:int = 0, allIdentical:Boolean = false, minimalPrices:Vector.<uint> = null) : ExchangeBidPriceForSellerMessage {
          super.initExchangeBidPriceMessage(genericId,averagePrice);
          this.allIdentical = allIdentical;
          this.minimalPrices = minimalPrices;

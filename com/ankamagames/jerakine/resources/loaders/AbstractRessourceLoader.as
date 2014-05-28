@@ -21,9 +21,9 @@ package com.ankamagames.jerakine.resources.loaders
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AbstractRessourceLoader));
+      protected static const _log:Logger;
       
-      public static var MEMORY_TEST:Dictionary = new Dictionary(true);
+      public static var MEMORY_TEST:Dictionary;
       
       protected static const RES_CACHE_PREFIX:String = "RES_";
       

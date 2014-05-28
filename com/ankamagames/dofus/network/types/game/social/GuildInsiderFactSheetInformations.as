@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.types.game.social
          return 423;
       }
       
-      public function initGuildInsiderFactSheetInformations(guildId:uint=0, guildName:String="", guildEmblem:GuildEmblem=null, leaderId:uint=0, guildLevel:uint=0, nbMembers:uint=0, leaderName:String="", nbConnectedMembers:uint=0, nbTaxCollectors:uint=0, lastActivity:uint=0, enabled:Boolean=false) : GuildInsiderFactSheetInformations {
+      public function initGuildInsiderFactSheetInformations(guildId:uint = 0, guildName:String = "", guildEmblem:GuildEmblem = null, leaderId:uint = 0, guildLevel:uint = 0, nbMembers:uint = 0, leaderName:String = "", nbConnectedMembers:uint = 0, nbTaxCollectors:uint = 0, lastActivity:uint = 0, enabled:Boolean = false) : GuildInsiderFactSheetInformations {
          super.initGuildFactSheetInformations(guildId,guildName,guildEmblem,leaderId,guildLevel,nbMembers);
          this.leaderName = leaderName;
          this.nbConnectedMembers = nbConnectedMembers;

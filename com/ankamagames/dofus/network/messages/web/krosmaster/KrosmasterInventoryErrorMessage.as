@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.web.krosmaster
          return 6343;
       }
       
-      public function initKrosmasterInventoryErrorMessage(reason:uint=0) : KrosmasterInventoryErrorMessage {
+      public function initKrosmasterInventoryErrorMessage(reason:uint = 0) : KrosmasterInventoryErrorMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context
          return 174;
       }
       
-      public function initMapCoordinates(worldX:int=0, worldY:int=0) : MapCoordinates {
+      public function initMapCoordinates(worldX:int = 0, worldY:int = 0) : MapCoordinates {
          this.worldX = worldX;
          this.worldY = worldY;
          return this;

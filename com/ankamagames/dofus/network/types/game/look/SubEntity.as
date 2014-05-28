@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.types.game.look
          return 54;
       }
       
-      public function initSubEntity(bindingPointCategory:uint=0, bindingPointIndex:uint=0, subEntityLook:EntityLook=null) : SubEntity {
+      public function initSubEntity(bindingPointCategory:uint = 0, bindingPointIndex:uint = 0, subEntityLook:EntityLook = null) : SubEntity {
          this.bindingPointCategory = bindingPointCategory;
          this.bindingPointIndex = bindingPointIndex;
          this.subEntityLook = subEntityLook;

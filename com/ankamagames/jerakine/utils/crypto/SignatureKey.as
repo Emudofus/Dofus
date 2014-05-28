@@ -7,7 +7,7 @@ package com.ankamagames.jerakine.utils.crypto
    public class SignatureKey extends RSAKey
    {
       
-      public function SignatureKey(N:BigInteger, E:int, D:BigInteger=null, P:BigInteger=null, Q:BigInteger=null, DP:BigInteger=null, DQ:BigInteger=null, C:BigInteger=null) {
+      public function SignatureKey(N:BigInteger, E:int, D:BigInteger = null, P:BigInteger = null, Q:BigInteger = null, DP:BigInteger = null, DQ:BigInteger = null, C:BigInteger = null) {
          super(N,E,D,P,Q,DP,DQ,C);
       }
       

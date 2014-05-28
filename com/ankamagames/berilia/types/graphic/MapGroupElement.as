@@ -110,7 +110,7 @@ package com.ankamagames.berilia.types.graphic
       
       private function getInitialPos(pIcon:Object) : Object {
          var iconPos:Object = null;
-         for each (iconPos in this._initialPos)
+         for each(iconPos in this._initialPos)
          {
             if(iconPos.icon == pIcon)
             {
@@ -129,7 +129,7 @@ package com.ankamagames.berilia.types.graphic
                "alpha":0,
                "onCompleteListener":this.shapeTweenFinished
             }));
-         for each (icon in this._initialPos)
+         for each(icon in this._initialPos)
          {
             this._tween.push(new TweenMax(icon.icon,0.2,
                {
@@ -157,7 +157,7 @@ package com.ankamagames.berilia.types.graphic
       
       private function killAllTween() : void {
          var t:TweenMax = null;
-         for each (t in this._tween)
+         for each(t in this._tween)
          {
             t.clear();
             t.gc = true;

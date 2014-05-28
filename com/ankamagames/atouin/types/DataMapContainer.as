@@ -37,7 +37,7 @@ package com.ankamagames.atouin.types
       
       private static var _aInteractiveCell:Array;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DataMapContainer));
+      protected static const _log:Logger;
       
       public static function get interactiveCell() : Array {
          return _aInteractiveCell;
@@ -87,7 +87,7 @@ package com.ankamagames.atouin.types
                         if(parentSprite)
                         {
                            parentSprite.removeChild(sprite);
-                           delete cellReference.listSprites[[i]];
+                           delete cellReference.listSprites[i];
                            if(!parentSprite.numChildren)
                            {
                               parentSprite.parent.removeChild(parentSprite);
@@ -97,7 +97,7 @@ package com.ankamagames.atouin.types
                   }
                   i++;
                }
-               delete this._aCell[[k]];
+               delete this._aCell[k];
             }
             k++;
          }
@@ -128,13 +128,57 @@ package com.ankamagames.atouin.types
          return this._aLayers[nId];
       }
       
-      public function clean(bForceCleaning:Boolean=false) : Boolean {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      public function clean(bForceCleaning:Boolean = false) : Boolean {
+         var sprite:Sprite = null;
+         var parentSprite:Sprite = null;
+         var cellReference:CellReference = null;
+         var i:uint = 0;
+         var provider:Array = null;
+         var k:String = null;
+         var p:WorldPoint = null;
+         if(!bForceCleaning)
+         {
+            provider = VisibleCellDetection.detectCell(false,this._map,WorldPoint.fromMapId(this.id),Atouin.getInstance().options.frustum,MapDisplayManager.getInstance().currentMapPoint).cell;
+         }
+         else
+         {
+            provider = new Array();
+            i = 0;
+            while(i < this._aCell.length)
+            {
+               provider[i] = i;
+               i++;
+            }
+         }
+         for(k in provider)
+         {
+            cellReference = this._aCell[k];
+            if(cellReference)
+            {
+               i = 0;
+               while(i < cellReference.listSprites.length)
+               {
+                  sprite = cellReference.listSprites[i];
+                  if(sprite)
+                  {
+                     sprite.cacheAsBitmap = false;
+                     parentSprite = Sprite(sprite.parent);
+                     parentSprite.removeChild(sprite);
+                     delete cellReference.listSprites[i];
+                     if(!parentSprite.numChildren)
+                     {
+                        parentSprite.parent.removeChild(parentSprite);
+                     }
+                  }
+                  i++;
+               }
+               delete this._aCell[k];
+            }
+         }
+         p = WorldPoint.fromMapId(this._map.id);
+         p.x = p.x - MapDisplayManager.getInstance().currentMapPoint.x;
+         p.y = p.y - MapDisplayManager.getInstance().currentMapPoint.y;
+         return (Math.abs(p.x) > 1) || (Math.abs(p.y) > 1);
       }
       
       public function get mapContainer() : Sprite {
@@ -158,7 +202,7 @@ package com.ankamagames.atouin.types
       public function setTemporaryAnimatedElementState(active:Boolean) : void {
          var d:Object = null;
          this._temporaryEnable = active;
-         for each (d in this._animatedElement)
+         for each(d in this._animatedElement)
          {
             this.updateAnimatedElement(d);
          }
@@ -166,7 +210,7 @@ package com.ankamagames.atouin.types
       
       public function updateAllAnimatedElement() : void {
          var d:Object = null;
-         for each (d in this._animatedElement)
+         for each(d in this._animatedElement)
          {
             this.updateAnimatedElement(d);
          }
@@ -247,17 +291,15 @@ package com.ankamagames.atouin.types
                   ts.setAnimation("AnimStatique");
                }
             }
+            else if(ts.getAnimation() != "AnimStart")
+            {
+               ts.setAnimation("AnimStart");
+            }
             else
             {
-               if(ts.getAnimation() != "AnimStart")
-               {
-                  ts.setAnimation("AnimStart");
-               }
-               else
-               {
-                  ts.restartAnimation();
-               }
+               ts.restartAnimation();
             }
+            
          }
          else
          {
@@ -281,12 +323,17 @@ package com.ankamagames.atouin.types
       }
       
       private function onEntityRendered(e:TiphonEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var d:Object = null;
+         for each(d in this._animatedElement)
+         {
+            if(d.element == e.sprite)
+            {
+               e.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityRendered);
+               this.updateAnimatedElement(d);
+               break;
+            }
+         }
+         e.sprite.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityRendered);
       }
       
       private function onOptionChange(e:PropertyChangeEvent) : void {
@@ -294,7 +341,7 @@ package com.ankamagames.atouin.types
          if(e.propertyName == "allowAnimatedGfx")
          {
             this._allowAnimatedGfx = e.propertyValue;
-            for each (d in this._animatedElement)
+            for each(d in this._animatedElement)
             {
                this.updateAnimatedElement(d);
             }

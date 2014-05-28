@@ -13,7 +13,7 @@ package com.ankamagames.jerakine.resources.protocols
          super();
       }
       
-      private static var _customProtocols:Dictionary = new Dictionary();
+      private static var _customProtocols:Dictionary;
       
       public static function getProtocol(uri:Uri) : IProtocol {
          var cp:* = undefined;
@@ -40,6 +40,24 @@ package com.ankamagames.jerakine.resources.protocols
                return new PakProtocol2();
             case "d2pOld":
                return new PakProtocol();
+            default:
+               customProtocol = _customProtocols[uri.protocol] as Class;
+               if(customProtocol)
+               {
+                  cp = new customProtocol();
+                  if(!(cp is IProtocol))
+                  {
+                     throw new ResourceError("Registered custom protocol for extension " + uri.protocol + " isn\'t an IProtocol class.");
+                  }
+                  else
+                  {
+                     return cp;
+                  }
+               }
+               else
+               {
+                  throw new ArgumentError("Unknown protocol \'" + uri.protocol + "\' in the URI \'" + uri + "\'.");
+               }
          }
       }
       
@@ -48,7 +66,7 @@ package com.ankamagames.jerakine.resources.protocols
       }
       
       public static function removeProtocol(protocolName:String) : void {
-         delete _customProtocols[[protocolName]];
+         delete _customProtocols[protocolName];
       }
    }
 }

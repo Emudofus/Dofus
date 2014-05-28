@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 5898;
       }
       
-      public function initNpcGenericActionRequestMessage(npcId:int=0, npcActionId:uint=0, npcMapId:int=0) : NpcGenericActionRequestMessage {
+      public function initNpcGenericActionRequestMessage(npcId:int = 0, npcActionId:uint = 0, npcMapId:int = 0) : NpcGenericActionRequestMessage {
          this.npcId = npcId;
          this.npcActionId = npcActionId;
          this.npcMapId = npcMapId;

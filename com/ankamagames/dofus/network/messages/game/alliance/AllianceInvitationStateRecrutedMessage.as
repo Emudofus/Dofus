@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6392;
       }
       
-      public function initAllianceInvitationStateRecrutedMessage(invitationState:uint=0) : AllianceInvitationStateRecrutedMessage {
+      public function initAllianceInvitationStateRecrutedMessage(invitationState:uint = 0) : AllianceInvitationStateRecrutedMessage {
          this.invitationState = invitationState;
          this._isInitialized = true;
          return this;

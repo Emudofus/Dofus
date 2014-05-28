@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.interactive.zaap
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -40,7 +39,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.zaap
          return 5960;
       }
       
-      public function initTeleportDestinationsListMessage(teleporterType:uint=0, mapIds:Vector.<uint>=null, subAreaIds:Vector.<uint>=null, costs:Vector.<uint>=null, destTeleporterType:Vector.<uint>=null) : TeleportDestinationsListMessage {
+      public function initTeleportDestinationsListMessage(teleporterType:uint = 0, mapIds:Vector.<uint> = null, subAreaIds:Vector.<uint> = null, costs:Vector.<uint> = null, destTeleporterType:Vector.<uint> = null) : TeleportDestinationsListMessage {
          this.teleporterType = teleporterType;
          this.mapIds = mapIds;
          this.subAreaIds = subAreaIds;

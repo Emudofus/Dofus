@@ -63,12 +63,37 @@ package com.hurlant.util
       }
       
       public static function decodeToByteArray(data:String) : ByteArray {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ArrayIndexOutOfBoundsException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var j:uint = 0;
+         var k:uint = 0;
+         var output:ByteArray = new ByteArray();
+         var dataBuffer:Array = new Array(4);
+         var outputBuffer:Array = new Array(3);
+         var i:uint = 0;
+         while(i < data.length)
+         {
+            j = 0;
+            while((j < 4) && (i + j < data.length))
+            {
+               dataBuffer[j] = BASE64_CHARS.indexOf(data.charAt(i + j));
+               j++;
+            }
+            outputBuffer[0] = (dataBuffer[0] << 2) + ((dataBuffer[1] & 48) >> 4);
+            outputBuffer[1] = ((dataBuffer[1] & 15) << 4) + ((dataBuffer[2] & 60) >> 2);
+            outputBuffer[2] = ((dataBuffer[2] & 3) << 6) + dataBuffer[3];
+            k = 0;
+            while(k < outputBuffer.length)
+            {
+               if(dataBuffer[k + 1] == 64)
+               {
+                  break;
+               }
+               output.writeByte(outputBuffer[k]);
+               k++;
+            }
+            i = i + 4;
+         }
+         output.position = 0;
+         return output;
       }
       
       public static function decodeToByteArrayB(data:String) : ByteArray {

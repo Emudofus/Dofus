@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.character.stats
          return 5670;
       }
       
-      public function initCharacterLevelUpMessage(newLevel:uint=0) : CharacterLevelUpMessage {
+      public function initCharacterLevelUpMessage(newLevel:uint = 0) : CharacterLevelUpMessage {
          this.newLevel = newLevel;
          this._isInitialized = true;
          return this;

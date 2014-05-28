@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5818;
       }
       
-      public function initExchangeStartOkMulticraftCrafterMessage(maxCase:uint=0, skillId:uint=0) : ExchangeStartOkMulticraftCrafterMessage {
+      public function initExchangeStartOkMulticraftCrafterMessage(maxCase:uint = 0, skillId:uint = 0) : ExchangeStartOkMulticraftCrafterMessage {
          this.maxCase = maxCase;
          this.skillId = skillId;
          this._isInitialized = true;

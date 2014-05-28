@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
          return 6485;
       }
       
-      public function initTreasureHuntDigRequestMessage(questType:uint=0) : TreasureHuntDigRequestMessage {
+      public function initTreasureHuntDigRequestMessage(questType:uint = 0) : TreasureHuntDigRequestMessage {
          this.questType = questType;
          this._isInitialized = true;
          return this;

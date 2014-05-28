@@ -5,7 +5,7 @@ package com.ankamagames.tubul.events
    public class SoundWrapperEvent extends Event
    {
       
-      public function SoundWrapperEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function SoundWrapperEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

@@ -41,7 +41,7 @@ package com.ankamagames.dofus.uiApi
          return avgPrice;
       }
       
-      public function getItemAveragePriceString(pItem:*, pAddLineBreakBefore:Boolean=false) : String {
+      public function getItemAveragePriceString(pItem:*, pAddLineBreakBefore:Boolean = false) : String {
          var averagePrice:* = 0;
          var priceAvailable:* = false;
          var str:String = "";

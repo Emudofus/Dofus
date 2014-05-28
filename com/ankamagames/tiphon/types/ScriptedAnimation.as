@@ -31,15 +31,17 @@ package com.ankamagames.tiphon.types
                case 7:
                   animationName = spriteHandler.getAnimation() + "_5";
                   break;
+               default:
+                  animationName = spriteHandler.getAnimation() + "_" + spriteHandler.getDirection();
             }
             spriteHandler.tiphonEventManager.parseLabels(currentScene,animationName);
          }
          TiphonFpsManager.addOldScriptedAnimation(this);
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ScriptedAnimation));
+      protected static const _log:Logger;
       
       public static var currentSpriteHandler:IAnimationSpriteHandler;
       
@@ -49,12 +51,7 @@ package com.ankamagames.tiphon.types
       
       private static const PLAYER_STOP:String = "STOP";
       
-      private static const EVENTS:Object = 
-         {
-            "SHOT":TiphonEvent.ANIMATION_SHOT,
-            "END":TiphonEvent.ANIMATION_END,
-            "DESTROY":TiphonEvent.ANIMATION_DESTROY
-         };
+      private static const EVENTS:Object;
       
       public var SHOT:String;
       

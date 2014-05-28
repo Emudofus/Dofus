@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5908;
       }
       
-      public function initChallengeFightJoinRefusedMessage(playerId:uint=0, reason:int=0) : ChallengeFightJoinRefusedMessage {
+      public function initChallengeFightJoinRefusedMessage(playerId:uint = 0, reason:int = 0) : ChallengeFightJoinRefusedMessage {
          this.playerId = playerId;
          this.reason = reason;
          this._isInitialized = true;

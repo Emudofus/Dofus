@@ -63,19 +63,17 @@ package com.ankamagames.dofus.logic.game.fight.steps
             {
                seq.addStep(new AddGfxEntityStep(1062,fighterInfos.disposition.cellId));
             }
-            else
+            else if(this._critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
             {
-               if(this._critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
+               bubble = new ChatBubble(I18n.getUiText("ui.fight.criticalMiss"));
+               fighterEntity = DofusEntities.getEntity(this._fighterId) as IDisplayable;
+               if(fighterEntity)
                {
-                  bubble = new ChatBubble(I18n.getUiText("ui.fight.criticalMiss"));
-                  fighterEntity = DofusEntities.getEntity(this._fighterId) as IDisplayable;
-                  if(fighterEntity)
-                  {
-                     TooltipManager.show(bubble,fighterEntity.absoluteBounds,UiModuleManager.getInstance().getModule("Ankama_Tooltips"),true,"ec" + this._fighterId,LocationEnum.POINT_BOTTOMLEFT,LocationEnum.POINT_TOPRIGHT,0,true,null,null);
-                  }
-                  seq.addStep(new AddGfxEntityStep(1070,fighterInfos.disposition.cellId));
+                  TooltipManager.show(bubble,fighterEntity.absoluteBounds,UiModuleManager.getInstance().getModule("Ankama_Tooltips"),true,"ec" + this._fighterId,LocationEnum.POINT_BOTTOMLEFT,LocationEnum.POINT_TOPRIGHT,0,true,null,null);
                }
+               seq.addStep(new AddGfxEntityStep(1070,fighterInfos.disposition.cellId));
             }
+            
             seq.start();
          }
          executeCallbacks();

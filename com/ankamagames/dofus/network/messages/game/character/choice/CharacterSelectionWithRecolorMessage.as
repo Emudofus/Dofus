@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.game.character.choice
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -28,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 6075;
       }
       
-      public function initCharacterSelectionWithRecolorMessage(id:int=0, indexedColor:Vector.<int>=null) : CharacterSelectionWithRecolorMessage {
+      public function initCharacterSelectionWithRecolorMessage(id:int = 0, indexedColor:Vector.<int> = null) : CharacterSelectionWithRecolorMessage {
          super.initCharacterSelectionMessage(id);
          this.indexedColor = indexedColor;
          this._isInitialized = true;

@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.authorized
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -35,7 +34,7 @@ package com.ankamagames.dofus.network.messages.authorized
          return 6127;
       }
       
-      public function initConsoleCommandsListMessage(aliases:Vector.<String>=null, args:Vector.<String>=null, descriptions:Vector.<String>=null) : ConsoleCommandsListMessage {
+      public function initConsoleCommandsListMessage(aliases:Vector.<String> = null, args:Vector.<String> = null, descriptions:Vector.<String> = null) : ConsoleCommandsListMessage {
          this.aliases = aliases;
          this.args = args;
          this.descriptions = descriptions;

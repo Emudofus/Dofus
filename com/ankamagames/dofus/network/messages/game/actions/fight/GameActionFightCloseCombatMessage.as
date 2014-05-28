@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6116;
       }
       
-      public function initGameActionFightCloseCombatMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, destinationCellId:int=0, critical:uint=1, silentCast:Boolean=false, weaponGenericId:uint=0) : GameActionFightCloseCombatMessage {
+      public function initGameActionFightCloseCombatMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, destinationCellId:int = 0, critical:uint = 1, silentCast:Boolean = false, weaponGenericId:uint = 0) : GameActionFightCloseCombatMessage {
          super.initAbstractGameActionFightTargetedAbilityMessage(actionId,sourceId,targetId,destinationCellId,critical,silentCast);
          this.weaponGenericId = weaponGenericId;
          this._isInitialized = true;

@@ -4,7 +4,6 @@ package com.ankamagames.dofus.logic.game.fight.types
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import flash.utils.Dictionary;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightSpellCooldown;
    import com.ankamagames.dofus.logic.game.fight.types.castSpellManager.SpellManager;
    import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
@@ -27,7 +26,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          this.entityId = entityId;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpellCastInFightManager));
+      protected static const _log:Logger;
       
       private var _spells:Dictionary;
       
@@ -44,18 +43,18 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function nextTurn() : void {
          var spell:SpellManager = null;
          this.currentTurn++;
-         for each (spell in this._spells)
+         for each(spell in this._spells)
          {
             spell.newTurn();
          }
       }
       
-      public function resetInitialCooldown(hasBeenSummoned:Boolean=false) : void {
+      public function resetInitialCooldown(hasBeenSummoned:Boolean = false) : void {
          var sm:SpellManager = null;
          var s:SpellWrapper = null;
          var spim:SpellInventoryManagementFrame = Kernel.getWorker().getFrame(SpellInventoryManagementFrame) as SpellInventoryManagementFrame;
          var spellList:Array = spim.getFullSpellListByOwnerId(this.entityId);
-         for each (s in spellList)
+         for each(s in spellList)
          {
             if(s.spellLevelInfos.initialCooldown != 0)
             {
@@ -72,78 +71,16 @@ package com.ankamagames.dofus.logic.game.fight.types
          }
       }
       
-      public function updateCooldowns(spellCooldowns:Vector.<GameFightSpellCooldown>=null) : void {
-         var spellCooldown:GameFightSpellCooldown = null;
-         var spellW:SpellWrapper = null;
-         var spellLevel:SpellLevel = null;
-         var spellCastManager:SpellCastInFightManager = null;
-         var interval:* = 0;
-         var spellModifs:SpellModificator = null;
-         var characteristics:CharacterCharacteristicsInformations = null;
-         var spellModification:CharacterSpellModification = null;
-         if((this.needCooldownUpdate) && (!spellCooldowns))
-         {
-            spellCooldowns = this._storedSpellCooldowns;
-         }
-         var playedFighterManager:CurrentPlayedFighterManager = CurrentPlayedFighterManager.getInstance();
-         var numCoolDown:int = spellCooldowns.length;
-         var k:int = 0;
-         while(k < numCoolDown)
-         {
-            spellCooldown = spellCooldowns[k];
-            spellW = SpellWrapper.getFirstSpellWrapperById(spellCooldown.spellId,this.entityId);
-            if(!spellW)
-            {
-               this.needCooldownUpdate = true;
-               this._storedSpellCooldowns = spellCooldowns;
-               return;
-            }
-            if((spellW) && (spellW.spellLevel > 0))
-            {
-               spellLevel = spellW.spell.getSpellLevel(spellW.spellLevel);
-               spellCastManager = playedFighterManager.getSpellCastManagerById(this.entityId);
-               spellCastManager.castSpell(spellW.id,spellW.spellLevel,[],false);
-               interval = spellLevel.minCastInterval;
-               if(spellCooldown.cooldown != 63)
-               {
-                  spellModifs = new SpellModificator();
-                  characteristics = PlayedCharacterManager.getInstance().characteristics;
-                  for each (spellModification in characteristics.spellModifications)
-                  {
-                     if(spellModification.spellId == spellCooldown.spellId)
-                     {
-                        switch(spellModification.modificationType)
-                        {
-                           case CharacterSpellModificationTypeEnum.CAST_INTERVAL:
-                              spellModifs.castInterval = spellModification.value;
-                              continue;
-                           case CharacterSpellModificationTypeEnum.CAST_INTERVAL_SET:
-                              spellModifs.castIntervalSet = spellModification.value;
-                              continue;
-                        }
-                     }
-                     else
-                     {
-                        continue;
-                     }
-                  }
-                  if(spellModifs.getTotalBonus(spellModifs.castIntervalSet))
-                  {
-                     interval = -spellModifs.getTotalBonus(spellModifs.castInterval) + spellModifs.getTotalBonus(spellModifs.castIntervalSet);
-                  }
-                  else
-                  {
-                     interval = interval - spellModifs.getTotalBonus(spellModifs.castInterval);
-                  }
-               }
-               spellCastManager.getSpellManagerBySpellId(spellW.id).forceLastCastTurn(this.currentTurn + spellCooldown.cooldown - interval);
-            }
-            k++;
-         }
-         this.needCooldownUpdate = false;
+      public function updateCooldowns(spellCooldowns:Vector.<GameFightSpellCooldown> = null) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
-      public function castSpell(pSpellId:uint, pSpellLevel:uint, pTargets:Array, pCountForCooldown:Boolean=true) : void {
+      public function castSpell(pSpellId:uint, pSpellLevel:uint, pTargets:Array, pCountForCooldown:Boolean = true) : void {
          if(this._spells[pSpellId] == null)
          {
             this._spells[pSpellId] = new SpellManager(this,pSpellId,pSpellLevel);

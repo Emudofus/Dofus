@@ -178,14 +178,12 @@ package com.ankamagames.dofus.console.moduleLogger
             this.excludeMode = !this.excludeMode;
             this.updateTitleText();
          }
-         else
+         else if(event.text == "active")
          {
-            if(event.text == "active")
-            {
-               this.isOn = !this.isOn;
-               this.updateTitleText();
-            }
+            this.isOn = !this.isOn;
+            this.updateTitleText();
          }
+         
          this.resize();
          dispatchEvent(new Event(Event.CHANGE));
       }
@@ -193,7 +191,7 @@ package com.ankamagames.dofus.console.moduleLogger
       private function onTextClick(event:TextEvent) : void {
       }
       
-      private function onTextChange(event:Event=null) : void {
+      private function onTextChange(event:Event = null) : void {
          if(this.excludeMode)
          {
             this._excludeText = this._filterList.text;

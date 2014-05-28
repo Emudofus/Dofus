@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5957;
       }
       
-      public function initGuildPaddockTeleportRequestMessage(paddockId:int=0) : GuildPaddockTeleportRequestMessage {
+      public function initGuildPaddockTeleportRequestMessage(paddockId:int = 0) : GuildPaddockTeleportRequestMessage {
          this.paddockId = paddockId;
          this._isInitialized = true;
          return this;

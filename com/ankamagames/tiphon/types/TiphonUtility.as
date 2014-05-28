@@ -21,34 +21,26 @@ package com.ankamagames.tiphon.types
             {
                ridderLook.setBone(44);
             }
-            else
+            else if(boneId == 1068)
             {
-               if(boneId == 1068)
-               {
-                  ridderLook.setBone(113);
-               }
-               else
-               {
-                  if(boneId == 1202)
-                  {
-                     ridderLook.setBone(453);
-                  }
-                  else
-                  {
-                     if((boneId == 1575) || (boneId == 1576) || (boneId == 2))
-                     {
-                        ridderLook.setBone(1);
-                     }
-                     else
-                     {
-                        if(boneId == 2456)
-                        {
-                           ridderLook.setBone(1107);
-                        }
-                     }
-                  }
-               }
+               ridderLook.setBone(113);
             }
+            else if(boneId == 1202)
+            {
+               ridderLook.setBone(453);
+            }
+            else if((boneId == 1575) || (boneId == 1576) || (boneId == 2))
+            {
+               ridderLook.setBone(1);
+            }
+            else if(boneId == 2456)
+            {
+               ridderLook.setBone(1107);
+            }
+            
+            
+            
+            
             return ridderLook;
          }
          return look;

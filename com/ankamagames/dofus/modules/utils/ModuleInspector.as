@@ -27,11 +27,21 @@ package com.ankamagames.dofus.modules.utils
          super();
       }
       
+      public static const whiteList:Array;
+      
       public static function checkArchiveValidity(archive:ZipFile) : Boolean {
          var entry:ZipEntry = null;
+         var dotIndex:* = 0;
+         var fileType:String = null;
          var totalSize:int = 0;
-         for each (entry in archive.entries)
+         for each(entry in archive.entries)
          {
+            dotIndex = entry.name.lastIndexOf(".");
+            fileType = entry.name.substring(dotIndex + 1);
+            if(whiteList.indexOf(fileType) == -1)
+            {
+               return false;
+            }
             totalSize = totalSize + entry.size;
          }
          return (totalSize < ModuleFileManager.MAX_FILE_SIZE) && (archive.size < ModuleFileManager.MAX_FILE_NUM);
@@ -42,7 +52,7 @@ package com.ankamagames.dofus.modules.utils
          var dmData:XML = null;
          var rfs:FileStream = null;
          var rawData:ByteArray = new ByteArray();
-         for each (entry in targetFile.getDirectoryListing())
+         for each(entry in targetFile.getDirectoryListing())
          {
             if(!entry.isDirectory)
             {
@@ -70,7 +80,7 @@ package com.ankamagames.dofus.modules.utils
          var dotIndex:* = 0;
          var fileType:String = null;
          var rawData:ByteArray = new ByteArray();
-         for each (entry in targetFile.entries)
+         for each(entry in targetFile.entries)
          {
             if(!entry.isDirectory())
             {
@@ -134,42 +144,12 @@ package com.ankamagames.dofus.modules.utils
       }
       
       public static function getScriptHookAndAction(swfContent:ByteArray) : Object {
-         var tag:DoABCTag = null;
-         var abcFile:AbcFile = null;
-         var infos:ClassInfo = null;
-         var attributesTag:FileAttributesTag = null;
-         var fileAttributesTags:Array = null;
-         var apiHookAction:* = new Object();
-         var io:SWFFileIO = new SWFFileIO();
-         var swfFile:SWFFile = io.read(swfContent);
-         apiHookAction.actions = new Array();
-         apiHookAction.apis = new Array();
-         apiHookAction.hooks = new Array();
-         for each (tag in swfFile.getTagsByType(DoABCTag))
-         {
-            abcFile = tag.abcFile;
-            for each (infos in abcFile.classInfo)
-            {
-               switch(infos.classMultiname.nameSpace.name)
-               {
-                  case "d2hooks":
-                     apiHookAction.hooks.push(infos.classMultiname.name);
-                     continue;
-                  case "d2actions":
-                     apiHookAction.actions.push(infos.classMultiname.name);
-                     continue;
-                  case "d2api":
-                     apiHookAction.apis.push(infos.classMultiname.name);
-                     continue;
-               }
-            }
-         }
-         fileAttributesTags = swfFile.getTagsByType(FileAttributesTag);
-         for each (attributesTag in fileAttributesTags)
-         {
-            apiHookAction.useNetwork = attributesTag.useNetwork;
-         }
-         return apiHookAction;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
    }
 }

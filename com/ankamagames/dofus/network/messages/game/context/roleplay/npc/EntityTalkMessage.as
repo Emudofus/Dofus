@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 6110;
       }
       
-      public function initEntityTalkMessage(entityId:int=0, textId:uint=0, parameters:Vector.<String>=null) : EntityTalkMessage {
+      public function initEntityTalkMessage(entityId:int = 0, textId:uint = 0, parameters:Vector.<String> = null) : EntityTalkMessage {
          this.entityId = entityId;
          this.textId = textId;
          this.parameters = parameters;

@@ -83,77 +83,77 @@ package com.ankamagames.berilia.enums
       
       public static const EVENT_UI_MSG:String = "com.ankamagames.berilia.components.messages::";
       
-      public static const EVENT_ONROLLOVER_MSG:String = EVENT_MOUSE_CLASS_MSG + "MouseOverMessage";
+      public static const EVENT_ONROLLOVER_MSG:String;
       
-      public static const EVENT_ONROLLOUT_MSG:String = EVENT_MOUSE_CLASS_MSG + "MouseOutMessage";
+      public static const EVENT_ONROLLOUT_MSG:String;
       
-      public static const EVENT_ONRELEASE_MSG:String = EVENT_MOUSE_CLASS_MSG + "MouseClickMessage";
+      public static const EVENT_ONRELEASE_MSG:String;
       
-      public static const EVENT_ONRIGHTCLICK_MSG:String = EVENT_MOUSE_CLASS_MSG + "MouseRightClickMessage";
+      public static const EVENT_ONRIGHTCLICK_MSG:String;
       
-      public static const EVENT_ONPRESS_MSG:String = EVENT_MOUSE_CLASS_MSG + "MouseDownMessage";
+      public static const EVENT_ONPRESS_MSG:String;
       
-      public static const EVENT_ONRELEASEOUTSIDE_MSG:String = EVENT_MOUSE_CLASS_MSG + "MouseReleaseOutsideMessage";
+      public static const EVENT_ONRELEASEOUTSIDE_MSG:String;
       
-      public static const EVENT_ONDOUBLECLICK_MSG:String = EVENT_MOUSE_CLASS_MSG + "MouseDoubleClickMessage";
+      public static const EVENT_ONDOUBLECLICK_MSG:String;
       
-      public static const EVENT_ONWHEEL_MSG:String = EVENT_MOUSE_CLASS_MSG + "MouseWheelMessage";
+      public static const EVENT_ONWHEEL_MSG:String;
       
-      public static const EVENT_ONMOUSEUP_MSG:String = EVENT_MOUSE_CLASS_MSG + "MouseUpMessage";
+      public static const EVENT_ONMOUSEUP_MSG:String;
       
-      public static const EVENT_ONTEXTCLICK_MSG:String = EVENT_UI_MSG + "TextClickMessage";
+      public static const EVENT_ONTEXTCLICK_MSG:String;
       
-      public static const EVENT_MIDDLECLICK_MSG:String = EVENT_MOUSE_CLASS_MSG + "MouseMiddleClickMessage";
+      public static const EVENT_MIDDLECLICK_MSG:String;
       
-      public static const EVENT_ONCHANGE_MSG:String = EVENT_UI_MSG + "ChangeMessage";
+      public static const EVENT_ONCHANGE_MSG:String;
       
-      public static const EVENT_ONCOLORCHANGE_MSG:String = EVENT_UI_MSG + "ColorChangeMessage";
+      public static const EVENT_ONCOLORCHANGE_MSG:String;
       
-      public static const EVENT_ONENTITYREADY_MSG:String = EVENT_UI_MSG + "EntityReadyMessage";
+      public static const EVENT_ONENTITYREADY_MSG:String;
       
-      public static const EVENT_ONSELECTITEM_MSG:String = EVENT_UI_MSG + "SelectItemMessage";
+      public static const EVENT_ONSELECTITEM_MSG:String;
       
-      public static const EVENT_ONITEMROLLOVER_MSG:String = EVENT_UI_MSG + "ItemRollOverMessage";
+      public static const EVENT_ONITEMROLLOVER_MSG:String;
       
-      public static const EVENT_ONITEMROLLOUT_MSG:String = EVENT_UI_MSG + "ItemRollOutMessage";
+      public static const EVENT_ONITEMROLLOUT_MSG:String;
       
-      public static const EVENT_ONSELECTEMPTYITEM_MSG:String = EVENT_UI_MSG + "SelectEmptyItemMessage";
+      public static const EVENT_ONSELECTEMPTYITEM_MSG:String;
       
-      public static const EVENT_ONITEMRIGHTCLICK_MSG:String = EVENT_UI_MSG + "ItemRightClickMessage";
+      public static const EVENT_ONITEMRIGHTCLICK_MSG:String;
       
-      public static const EVENT_ONDROP_MSG:String = EVENT_UI_MSG + "DropMessage";
+      public static const EVENT_ONDROP_MSG:String;
       
-      public static const EVENT_ONCREATETAB_MSG:String = EVENT_UI_MSG + "CreateTabMessage";
+      public static const EVENT_ONCREATETAB_MSG:String;
       
-      public static const EVENT_ONDELETETAB_MSG:String = EVENT_UI_MSG + "DeleteTabMessage";
+      public static const EVENT_ONDELETETAB_MSG:String;
       
-      public static const EVENT_ONRENAMETAB_MSG:String = EVENT_UI_MSG + "RenameTabMessage";
+      public static const EVENT_ONRENAMETAB_MSG:String;
       
-      public static const EVENT_ONTEXTUREREADY_MSG:String = EVENT_UI_MSG + "TextureReadyMessage";
+      public static const EVENT_ONTEXTUREREADY_MSG:String;
       
-      public static const EVENT_ONTEXTURELOADFAIL_MSG:String = EVENT_UI_MSG + "TextureLoadFailMessage";
+      public static const EVENT_ONTEXTURELOADFAIL_MSG:String;
       
-      public static const EVENT_ONMAPELEMENTROLLOVER_MSG:String = EVENT_UI_MSG + "MapElementRollOverMessage";
+      public static const EVENT_ONMAPELEMENTROLLOVER_MSG:String;
       
-      public static const EVENT_ONMAPELEMENTROLLOUT_MSG:String = EVENT_UI_MSG + "MapElementRollOutMessage";
+      public static const EVENT_ONMAPELEMENTROLLOUT_MSG:String;
       
-      public static const EVENT_ONMAPELEMENTRIGHTCLICK_MSG:String = EVENT_UI_MSG + "MapElementRightClickMessage";
+      public static const EVENT_ONMAPELEMENTRIGHTCLICK_MSG:String;
       
-      public static const EVENT_ONCOMPONENTREADY_MSG:String = EVENT_UI_MSG + "ComponentReadyMessage";
+      public static const EVENT_ONCOMPONENTREADY_MSG:String;
       
-      public static const EVENT_ONMAPMOVE_MSG:String = EVENT_UI_MSG + "MapMoveMessage";
+      public static const EVENT_ONMAPMOVE_MSG:String;
       
-      public static const EVENT_ONMAPROLLOVER_MSG:String = EVENT_UI_MSG + "MapRollOverMessage";
+      public static const EVENT_ONMAPROLLOVER_MSG:String;
       
-      public static const EVENT_ONBROWSER_SESSION_TIMEOUT_MSG:String = EVENT_UI_MSG + "BrowserSessionTimeout";
+      public static const EVENT_ONBROWSER_SESSION_TIMEOUT_MSG:String;
       
-      public static const EVENT_ONBROWSER_DOM_READY_MSG:String = EVENT_UI_MSG + "BrowserDomReady";
+      public static const EVENT_ONBROWSER_DOM_READY_MSG:String;
       
-      public static const EVENT_ONVIDEOCONNECTFAILED_MSG:String = EVENT_UI_MSG + "VideoConnectFailedMessage";
+      public static const EVENT_ONVIDEOCONNECTFAILED_MSG:String;
       
-      public static const EVENT_ONVIDEOCONNECTSUCCESS_MSG:String = EVENT_UI_MSG + "VideoConnectSuccessMessage";
+      public static const EVENT_ONVIDEOCONNECTSUCCESS_MSG:String;
       
-      public static const EVENT_ONVIDEOBUFFERCHANGE_MSG:String = EVENT_UI_MSG + "VideoBufferChangeMessage";
+      public static const EVENT_ONVIDEOBUFFERCHANGE_MSG:String;
       
       public static function convertMsgToFct(msgName:String) : String {
          switch(msgName)
@@ -230,6 +230,8 @@ package com.ankamagames.berilia.enums
                return EVENT_ONTEXTCLICK;
             case EVENT_MIDDLECLICK_MSG:
                return EVENT_MIDDLECLICK;
+            default:
+               return null;
          }
       }
    }

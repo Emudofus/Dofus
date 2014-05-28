@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItemToSellInHumanVendorShop;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5767;
       }
       
-      public function initExchangeStartOkHumanVendorMessage(sellerId:uint=0, objectsInfos:Vector.<ObjectItemToSellInHumanVendorShop>=null) : ExchangeStartOkHumanVendorMessage {
+      public function initExchangeStartOkHumanVendorMessage(sellerId:uint = 0, objectsInfos:Vector.<ObjectItemToSellInHumanVendorShop> = null) : ExchangeStartOkHumanVendorMessage {
          this.sellerId = sellerId;
          this.objectsInfos = objectsInfos;
          this._isInitialized = true;

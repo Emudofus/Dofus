@@ -7,7 +7,7 @@ package com.ankamagames.jerakine.types.events
    public class SequencerEvent extends Event
    {
       
-      public function SequencerEvent(type:String, sequencer:ISequencer=null, step:ISequencable=null) {
+      public function SequencerEvent(type:String, sequencer:ISequencer = null, step:ISequencable = null) {
          super(type,false,false);
          this._sequencer = sequencer;
          this._step = step;

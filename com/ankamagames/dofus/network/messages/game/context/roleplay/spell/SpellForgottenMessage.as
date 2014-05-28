@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.spell
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.spell
          return 5834;
       }
       
-      public function initSpellForgottenMessage(spellsId:Vector.<uint>=null, boostPoint:uint=0) : SpellForgottenMessage {
+      public function initSpellForgottenMessage(spellsId:Vector.<uint> = null, boostPoint:uint = 0) : SpellForgottenMessage {
          this.spellsId = spellsId;
          this.boostPoint = boostPoint;
          this._isInitialized = true;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.connection.register
          return 5639;
       }
       
-      public function initNicknameChoiceRequestMessage(nickname:String="") : NicknameChoiceRequestMessage {
+      public function initNicknameChoiceRequestMessage(nickname:String = "") : NicknameChoiceRequestMessage {
          this.nickname = nickname;
          this._isInitialized = true;
          return this;

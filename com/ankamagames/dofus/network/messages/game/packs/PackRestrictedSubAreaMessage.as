@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.packs
          return 6186;
       }
       
-      public function initPackRestrictedSubAreaMessage(subAreaId:uint=0) : PackRestrictedSubAreaMessage {
+      public function initPackRestrictedSubAreaMessage(subAreaId:uint = 0) : PackRestrictedSubAreaMessage {
          this.subAreaId = subAreaId;
          this._isInitialized = true;
          return this;

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          return 6224;
       }
       
-      public function initShortcutBarRemovedMessage(barType:uint=0, slot:uint=0) : ShortcutBarRemovedMessage {
+      public function initShortcutBarRemovedMessage(barType:uint = 0, slot:uint = 0) : ShortcutBarRemovedMessage {
          this.barType = barType;
          this.slot = slot;
          this._isInitialized = true;

@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -38,7 +37,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5949;
       }
       
-      public function initExchangeBidHouseInListAddedMessage(itemUID:int=0, objGenericId:int=0, effects:Vector.<ObjectEffect>=null, prices:Vector.<uint>=null) : ExchangeBidHouseInListAddedMessage {
+      public function initExchangeBidHouseInListAddedMessage(itemUID:int = 0, objGenericId:int = 0, effects:Vector.<ObjectEffect> = null, prices:Vector.<uint> = null) : ExchangeBidHouseInListAddedMessage {
          this.itemUID = itemUID;
          this.objGenericId = objGenericId;
          this.effects = effects;

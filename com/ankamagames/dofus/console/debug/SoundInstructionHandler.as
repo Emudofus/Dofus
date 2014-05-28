@@ -23,7 +23,7 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SoundInstructionHandler));
+      protected static const _log:Logger;
       
       public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
          var soundId:String = null;
@@ -132,10 +132,12 @@ package com.ankamagames.dofus.console.debug
                return "Play a sound";
             case "clearsoundcache":
                return "Nettoye les fichiers pré-cachés pour le son afin de les relire directement depuis le disque lors de la prochaine demande de lecture";
+            default:
+               return "Unknown command \'" + cmd + "\'.";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          var filter:String = null;
          var hooks:Array = null;
          var hooksList:Array = null;
@@ -152,7 +154,7 @@ package com.ankamagames.dofus.console.debug
                   filter = (currentParams) && (currentParams.length > 2)?currentParams[2].toLowerCase():"";
                   hooks = [];
                   hooksList = SoundUiHook.getSoundUiHooks();
-                  for each (hook in hooksList)
+                  for each(hook in hooksList)
                   {
                      if(hook.name.toLowerCase().indexOf(filter) != -1)
                      {
@@ -166,15 +168,15 @@ package com.ankamagames.dofus.console.debug
          return [];
       }
       
-      private function getUiList(filter:String=null) : Array {
+      private function getUiList(filter:String = null) : Array {
          var m:UiModule = null;
          var ui:UiData = null;
          var filter:String = filter.toLowerCase();
          var uiList:Array = [];
          var modList:Array = UiModuleManager.getInstance().getModules();
-         for each (m in modList)
+         for each(m in modList)
          {
-            for each (ui in m.uis)
+            for each(ui in m.uis)
             {
                if((!filter) || (!(ui.name.toLowerCase().indexOf(filter) == -1)))
                {
@@ -192,7 +194,7 @@ package com.ankamagames.dofus.console.debug
          var v:String = null;
          var t:String = null;
          var params:Array = [];
-         for (iStr in data)
+         for(iStr in data)
          {
             i = parseInt(iStr);
             v = data[i];
@@ -208,10 +210,13 @@ package com.ankamagames.dofus.console.debug
             case "String":
                return value;
             case "Boolean":
-               return (value == "true") || (value == "1");
+               return value == "true" || value == "1";
             case "int":
             case "uint":
                return parseInt(value);
+            default:
+               _log.warn("Unsupported parameter type \'" + type + "\'.");
+               return value;
          }
       }
    }

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 721;
       }
       
-      public function initGameFightLeaveMessage(charId:int=0) : GameFightLeaveMessage {
+      public function initGameFightLeaveMessage(charId:int = 0) : GameFightLeaveMessage {
          this.charId = charId;
          this._isInitialized = true;
          return this;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 5521;
       }
       
-      public function initExchangeKamaModifiedMessage(remote:Boolean=false, quantity:uint=0) : ExchangeKamaModifiedMessage {
+      public function initExchangeKamaModifiedMessage(remote:Boolean = false, quantity:uint = 0) : ExchangeKamaModifiedMessage {
          super.initExchangeObjectMessage(remote);
          this.quantity = quantity;
          this._isInitialized = true;

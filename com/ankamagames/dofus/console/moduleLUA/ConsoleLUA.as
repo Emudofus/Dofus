@@ -31,7 +31,6 @@ package com.ankamagames.dofus.console.moduleLUA
    import com.ankamagames.atouin.types.SpriteWrapper;
    import com.ankamagames.atouin.types.WorldEntitySprite;
    import com.ankamagames.atouin.Atouin;
-   import __AS3__.vec.*;
    
    public class ConsoleLUA extends Object
    {
@@ -82,45 +81,45 @@ package com.ankamagames.dofus.console.moduleLUA
       
       private static var _btnID:int = 0;
       
-      private static const BTN_RECORD:int = _btnID++;
+      private static const BTN_RECORD:int;
       
-      private static const BTN_TIMER_AUTO:int = _btnID++;
+      private static const BTN_TIMER_AUTO:int;
       
-      private static const BTN_TIMER:int = _btnID++;
+      private static const BTN_TIMER:int;
       
-      private static const BTN_MOVE_DEFAULT:int = _btnID++;
+      private static const BTN_MOVE_DEFAULT:int;
       
-      private static const BTN_MOVE_WALK:int = _btnID++;
+      private static const BTN_MOVE_WALK:int;
       
-      private static const BTN_MOVE_RUN:int = _btnID++;
+      private static const BTN_MOVE_RUN:int;
       
-      private static const BTN_MOVE_TELEPORT:int = _btnID++;
+      private static const BTN_MOVE_TELEPORT:int;
       
-      private static const BTN_MOVE_SLIDE:int = _btnID++;
+      private static const BTN_MOVE_SLIDE:int;
       
-      private static const BTN_CAMERA_AUTOFOLLOW:int = _btnID++;
+      private static const BTN_CAMERA_AUTOFOLLOW:int;
       
-      private static const BTN_CAMERA_ZOOM_IN:int = _btnID++;
+      private static const BTN_CAMERA_ZOOM_IN:int;
       
-      private static const BTN_CAMERA_ZOOM_OUT:int = _btnID++;
+      private static const BTN_CAMERA_ZOOM_OUT:int;
       
-      private static const BTN_PLAY:int = _btnID++;
+      private static const BTN_PLAY:int;
       
-      private static const BTN_STOP:int = _btnID++;
+      private static const BTN_STOP:int;
       
-      private static const BTN_AUTO_RESET:int = _btnID++;
+      private static const BTN_AUTO_RESET:int;
       
-      private static const BTN_RESET_WORLD:int = _btnID++;
+      private static const BTN_RESET_WORLD:int;
       
-      private static const BTN_OPEN:int = _btnID++;
+      private static const BTN_OPEN:int;
       
-      private static const BTN_EXPORT:int = _btnID++;
+      private static const BTN_EXPORT:int;
       
-      private static const btnIcons:Array = ["record","waitAuto","wait","moveDefault","moveWalk","moveRun","moveTeleport","moveSlide","cameraAutoFollow","cameraZoomIn","cameraZoomOut","play","stop","autoReset","resetWorld","open","save"];
+      private static const btnIcons:Array;
       
-      private static const btnToolTips:Array = ["Start/Pause recording","Record automatically \'wait\' commands","Start/Stop command \'wait\'","Set movement mode to game default","Set movement mode to walk","Set movement mode to run","Set movement mode to teleport","Set movement mode to slide","Start/Stop camera from following automatically the player","Camera zoom in","Camera zoom out","Play script","Stop recording","Toggle reset of the map at the end of a script being played","Reset map","Load script","Stop and export the script"];
+      private static const btnToolTips:Array;
       
-      public static const CONSOLE_STYLE:StyleSheet = new StyleSheet();
+      public static const CONSOLE_STYLE:StyleSheet;
       
       private static var _self:ConsoleLUA;
       
@@ -276,36 +275,32 @@ package com.ankamagames.dofus.console.moduleLUA
                }
                this._frame.start(this._btns[BTN_TIMER_AUTO].toggled);
             }
+            else if(!this._frame.running)
+            {
+               this.clearConsole();
+               this._frame.start(this._btns[BTN_TIMER_AUTO].toggled);
+               this._frame.moveType = LuaMoveEnum.MOVE_DEFAULT;
+               this._btns[BTN_MOVE_DEFAULT].toggled = this._btns[BTN_MOVE_WALK].toggled = this._btns[BTN_MOVE_RUN].toggled = this._btns[BTN_MOVE_TELEPORT].toggled = this._btns[BTN_MOVE_SLIDE].toggled = false;
+               this._btns[BTN_MOVE_DEFAULT].toggled = true;
+            }
             else
             {
-               if(!this._frame.running)
-               {
-                  this.clearConsole();
-                  this._frame.start(this._btns[BTN_TIMER_AUTO].toggled);
-                  this._frame.moveType = LuaMoveEnum.MOVE_DEFAULT;
-                  this._btns[BTN_MOVE_DEFAULT].toggled = this._btns[BTN_MOVE_WALK].toggled = this._btns[BTN_MOVE_RUN].toggled = this._btns[BTN_MOVE_TELEPORT].toggled = this._btns[BTN_MOVE_SLIDE].toggled = false;
-                  this._btns[BTN_MOVE_DEFAULT].toggled = true;
-               }
-               else
-               {
-                  pausingRecording = true;
-               }
+               pausingRecording = true;
             }
+            
             if(this._recording)
             {
                this.enableButtons(true,[BTN_RECORD,BTN_TIMER,BTN_PLAY,BTN_STOP]);
             }
+            else if(this._frame.luaScript != "")
+            {
+               this.enableButtons(true,[BTN_RECORD,BTN_PLAY]);
+            }
             else
             {
-               if(this._frame.luaScript != "")
-               {
-                  this.enableButtons(true,[BTN_RECORD,BTN_PLAY]);
-               }
-               else
-               {
-                  this.enableButtons(true,[BTN_RECORD]);
-               }
+               this.enableButtons(true,[BTN_RECORD]);
             }
+            
             if(pausingRecording)
             {
                this._frame.pause = !this._recording;
@@ -520,7 +515,7 @@ package com.ankamagames.dofus.console.moduleLUA
          }
       }
       
-      public function display(quietMode:Boolean=false) : void {
+      public function display(quietMode:Boolean = false) : void {
          if(quietMode)
          {
             return;
@@ -540,7 +535,7 @@ package com.ankamagames.dofus.console.moduleLUA
          }
       }
       
-      public function printLine(text:String, needHighlight:Boolean=true) : void {
+      public function printLine(text:String, needHighlight:Boolean = true) : void {
          if(needHighlight)
          {
             text = text.replace(new RegExp("\\r","gi"),"");
@@ -576,7 +571,7 @@ package com.ankamagames.dofus.console.moduleLUA
          this._iconList.alpha = 1;
       }
       
-      private function onResize(event:Event=null) : void {
+      private function onResize(event:Event = null) : void {
          this._backGround.graphics.clear();
          this._backGround.graphics.beginFill(BACKGROUND_COLOR);
          this._backGround.graphics.drawRect(0,0,this._window.stage.stageWidth,this._window.stage.stageHeight);
@@ -627,17 +622,15 @@ package com.ankamagames.dofus.console.moduleLUA
             {
                this._btns[i].enabled = enabled;
             }
+            else if((i >= BTN_MOVE_DEFAULT) && (i <= BTN_CAMERA_ZOOM_OUT))
+            {
+               this._btns[i].enabled = this._btns[BTN_TIMER].enabled;
+            }
             else
             {
-               if((i >= BTN_MOVE_DEFAULT) && (i <= BTN_CAMERA_ZOOM_OUT))
-               {
-                  this._btns[i].enabled = this._btns[BTN_TIMER].enabled;
-               }
-               else
-               {
-                  this._btns[i].enabled = !enabled;
-               }
+               this._btns[i].enabled = !enabled;
             }
+            
             i++;
          }
          this._btns[BTN_TIMER_AUTO].enabled = true;

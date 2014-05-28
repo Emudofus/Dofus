@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6070;
       }
       
-      public function initGameActionFightDispellableEffectMessage(actionId:uint=0, sourceId:int=0, effect:AbstractFightDispellableEffect=null) : GameActionFightDispellableEffectMessage {
+      public function initGameActionFightDispellableEffectMessage(actionId:uint = 0, sourceId:int = 0, effect:AbstractFightDispellableEffect = null) : GameActionFightDispellableEffectMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.effect = effect;
          this._isInitialized = true;

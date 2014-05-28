@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 177;
       }
       
-      public function initFightTeamMemberTaxCollectorInformations(id:int=0, firstNameId:uint=0, lastNameId:uint=0, level:uint=0, guildId:uint=0, uid:uint=0) : FightTeamMemberTaxCollectorInformations {
+      public function initFightTeamMemberTaxCollectorInformations(id:int = 0, firstNameId:uint = 0, lastNameId:uint = 0, level:uint = 0, guildId:uint = 0, uid:uint = 0) : FightTeamMemberTaxCollectorInformations {
          super.initFightTeamMemberInformations(id);
          this.firstNameId = firstNameId;
          this.lastNameId = lastNameId;

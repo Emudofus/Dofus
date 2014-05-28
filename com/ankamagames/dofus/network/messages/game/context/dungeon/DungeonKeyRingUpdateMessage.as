@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
          return 6296;
       }
       
-      public function initDungeonKeyRingUpdateMessage(dungeonId:uint=0, available:Boolean=false) : DungeonKeyRingUpdateMessage {
+      public function initDungeonKeyRingUpdateMessage(dungeonId:uint = 0, available:Boolean = false) : DungeonKeyRingUpdateMessage {
          this.dungeonId = dungeonId;
          this.available = available;
          this._isInitialized = true;

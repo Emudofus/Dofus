@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.data.items
          return 119;
       }
       
-      public function initObjectItemQuantity(objectUID:uint=0, quantity:uint=0) : ObjectItemQuantity {
+      public function initObjectItemQuantity(objectUID:uint = 0, quantity:uint = 0) : ObjectItemQuantity {
          this.objectUID = objectUID;
          this.quantity = quantity;
          return this;

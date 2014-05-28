@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.objects
          return 3014;
       }
       
-      public function initObjectGroundRemovedMessage(cell:uint=0) : ObjectGroundRemovedMessage {
+      public function initObjectGroundRemovedMessage(cell:uint = 0) : ObjectGroundRemovedMessage {
          this.cell = cell;
          this._isInitialized = true;
          return this;

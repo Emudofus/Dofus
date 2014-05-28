@@ -38,7 +38,7 @@ package com.ankamagames.dofus.types.entities
          mouseEnabled = false;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Projectile));
+      protected static const _log:Logger;
       
       public static const NORMAL_RENDERER_TYPE:uint = 0;
       
@@ -88,7 +88,7 @@ package com.ankamagames.dofus.types.entities
          return this._displayed;
       }
       
-      public function display(strata:uint=0) : void {
+      public function display(strata:uint = 0) : void {
          this._displayBehavior.display(this,strata);
          this._displayed = true;
       }

@@ -6,7 +6,6 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.logic.game.common.misc.IHookLock;
-   import __AS3__.vec.*;
    
    public class ListView extends Object implements IInventoryView
    {
@@ -17,7 +16,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          this._hookLock = hookLock;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ListView));
+      protected static const _log:Logger;
       
       protected var _view:Vector.<ItemWrapper>;
       
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
       public function initialize(items:Vector.<ItemWrapper>) : void {
          var item:ItemWrapper = null;
          this._view.splice(0,this._view.length);
-         for each (item in items)
+         for each(item in items)
          {
             this._view.push(item);
          }

@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 6135;
       }
       
-      public function initChatAdminServerMessage(channel:uint=0, content:String="", timestamp:uint=0, fingerprint:String="", senderId:int=0, senderName:String="", senderAccountId:int=0) : ChatAdminServerMessage {
+      public function initChatAdminServerMessage(channel:uint = 0, content:String = "", timestamp:uint = 0, fingerprint:String = "", senderId:int = 0, senderName:String = "", senderAccountId:int = 0) : ChatAdminServerMessage {
          super.initChatServerMessage(channel,content,timestamp,fingerprint,senderId,senderName,senderAccountId);
          this._isInitialized = true;
          return this;

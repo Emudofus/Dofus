@@ -5,7 +5,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.berilia.types.data.UiModule;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.datacenter.items.Item;
-   import __AS3__.vec.*;
    import flash.profiler.showRedrawRegions;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
@@ -47,7 +46,7 @@ package com.ankamagames.dofus.uiApi
          return inventory;
       }
       
-      public function showTrace(active:Boolean=true) : void {
+      public function showTrace(active:Boolean = true) : void {
          showRedrawRegions(active,40349);
       }
    }

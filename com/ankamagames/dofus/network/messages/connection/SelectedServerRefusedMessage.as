@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.connection
          return 41;
       }
       
-      public function initSelectedServerRefusedMessage(serverId:int=0, error:uint=1, serverStatus:uint=1) : SelectedServerRefusedMessage {
+      public function initSelectedServerRefusedMessage(serverId:int = 0, error:uint = 1, serverStatus:uint = 1) : SelectedServerRefusedMessage {
          this.serverId = serverId;
          this.error = error;
          this.serverStatus = serverStatus;

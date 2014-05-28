@@ -16,7 +16,7 @@ package com.ankamagames.jerakine.types
    public class Uri extends Object
    {
       
-      public function Uri(uri:String=null, secureMode:Boolean=true) {
+      public function Uri(uri:String = null, secureMode:Boolean = true) {
          super();
          this._secureMode = secureMode;
          if((uri) && (uri.length > 0))
@@ -26,15 +26,15 @@ package com.ankamagames.jerakine.types
          MEMORY_LOG[this] = 1;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Uri));
+      protected static const _log:Logger;
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      private static const URI_SYNTAX:RegExp = new RegExp("^(?:(?P<protocol>[a-z0-9]+)\\:\\/\\/)*(?P<path>[^\\|]*)(?|\\|)?(?|\\/)?(?P<subpath>.*)?$","i");
+      private static const URI_SYNTAX:RegExp;
       
       private static var _useSecureURI:Boolean = false;
       
-      public static var _osIsWindows:Boolean = SystemManager.getSingleton().os == OperatingSystem.WINDOWS;
+      public static var _osIsWindows:Boolean;
       
       public static function enableSecureURI() : void {
          _useSecureURI = true;
@@ -154,6 +154,8 @@ package com.ankamagames.jerakine.types
             case "pak":
             case "pak2":
                return this.replaceChar(this.uri,"\\","/");
+            default:
+               throw new IllegalOperationError("Unsupported protocol " + this._protocol + " for normalization.");
          }
       }
       
@@ -173,6 +175,8 @@ package com.ankamagames.jerakine.types
             case "pak":
             case "pak2":
                return this.replaceChar(this.toString(false),"\\","/");
+            default:
+               throw new IllegalOperationError("Unsupported protocol " + this._protocol + " for normalization.");
          }
       }
       
@@ -185,19 +189,16 @@ package com.ankamagames.jerakine.types
             dofusNativePath = unescape(File.applicationDirectory.nativePath);
             currentFile = File.applicationDirectory.resolvePath(unescape(this._path));
             stack = dofusNativePath;
-            while(true)
+            while(unescape(currentFile.nativePath) != dofusNativePath)
             {
-               if(unescape(currentFile.nativePath) == dofusNativePath)
-               {
-                  return true;
-               }
                currentFile = currentFile.parent;
-               if(!currentFile)
+               if(currentFile)
                {
-                  break;
+                  stack = stack + (" -> " + unescape(currentFile.nativePath));
+                  continue;
                }
-               stack = stack + (" -> " + unescape(currentFile.nativePath));
             }
+            return true;
          }
          catch(e:Error)
          {
@@ -207,7 +208,7 @@ package com.ankamagames.jerakine.types
          return false;
       }
       
-      public function toString(withSubPath:Boolean=true) : String {
+      public function toString(withSubPath:Boolean = true) : String {
          return this._protocol + "://" + this.path + ((withSubPath) && (this._subpath) && (this._subpath.length > 0)?"|" + this._subpath:"");
       }
       

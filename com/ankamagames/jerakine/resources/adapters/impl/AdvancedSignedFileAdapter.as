@@ -6,7 +6,7 @@ package com.ankamagames.jerakine.resources.adapters.impl
    public class AdvancedSignedFileAdapter extends SignedFileAdapter
    {
       
-      public function AdvancedSignedFileAdapter(signatureKey:SignatureKey=null) {
+      public function AdvancedSignedFileAdapter(signatureKey:SignatureKey = null) {
          super(signatureKey,true);
       }
       

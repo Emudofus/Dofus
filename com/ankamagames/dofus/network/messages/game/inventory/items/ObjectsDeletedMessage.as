@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6034;
       }
       
-      public function initObjectsDeletedMessage(objectUID:Vector.<uint>=null) : ObjectsDeletedMessage {
+      public function initObjectsDeletedMessage(objectUID:Vector.<uint> = null) : ObjectsDeletedMessage {
          this.objectUID = objectUID;
          this._isInitialized = true;
          return this;

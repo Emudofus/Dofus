@@ -9,12 +9,12 @@ package com.ankamagames.dofus.misc.lists
          super();
       }
       
-      public static const AlignmentRankUpdate:Hook = new Hook("AlignmentRankUpdate",false);
+      public static const AlignmentRankUpdate:Hook;
       
-      public static const AlignmentSubAreasList:Hook = new Hook("AlignmentSubAreasList",false);
+      public static const AlignmentSubAreasList:Hook;
       
-      public static const AlignmentAreaUpdate:Hook = new Hook("AlignmentAreaUpdate",false);
+      public static const AlignmentAreaUpdate:Hook;
       
-      public static const KohUpdate:Hook = new Hook("KohUpdate",false);
+      public static const KohUpdate:Hook;
    }
 }

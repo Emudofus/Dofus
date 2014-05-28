@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 420;
       }
       
-      public function initGuildInAllianceInformations(guildId:uint=0, guildName:String="", guildEmblem:GuildEmblem=null, guildLevel:uint=0, nbMembers:uint=0, enabled:Boolean=false) : GuildInAllianceInformations {
+      public function initGuildInAllianceInformations(guildId:uint = 0, guildName:String = "", guildEmblem:GuildEmblem = null, guildLevel:uint = 0, nbMembers:uint = 0, enabled:Boolean = false) : GuildInAllianceInformations {
          super.initGuildInformations(guildId,guildName,guildEmblem);
          this.guildLevel = guildLevel;
          this.nbMembers = nbMembers;

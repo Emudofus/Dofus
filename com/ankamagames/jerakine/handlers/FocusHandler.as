@@ -27,7 +27,7 @@ package com.ankamagames.jerakine.handlers
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FocusHandler));
+      protected static const _log:Logger;
       
       private static var _self:FocusHandler;
       

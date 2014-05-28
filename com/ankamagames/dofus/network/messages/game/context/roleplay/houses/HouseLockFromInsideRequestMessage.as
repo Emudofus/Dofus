@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          return 5885;
       }
       
-      public function initHouseLockFromInsideRequestMessage(code:String="") : HouseLockFromInsideRequestMessage {
+      public function initHouseLockFromInsideRequestMessage(code:String = "") : HouseLockFromInsideRequestMessage {
          super.initLockableChangeCodeMessage(code);
          this._isInitialized = true;
          return this;

@@ -21,7 +21,6 @@ package com.ankamagames.dofus.misc.utils.mapeditor
    import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
    import com.ankamagames.jerakine.types.Uri;
    import com.ankamagames.jerakine.resources.ResourceObserverWrapper;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.misc.EntityLookAdapter;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    import com.ankamagames.dofus.datacenter.npcs.Npc;
@@ -50,7 +49,7 @@ package com.ankamagames.dofus.misc.utils.mapeditor
          this.init();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MapEditorManager));
+      protected static const _log:Logger;
       
       private static const COLOR_CONNECTED:uint = 12579390;
       
@@ -70,7 +69,7 @@ package com.ankamagames.dofus.misc.utils.mapeditor
          this._mapEditorConnector.addEventListener(ProgressEvent.SOCKET_DATA,this.onDataProgress);
       }
       
-      private function displayPopup(txt:String, color:uint, autoClose:Boolean=false) : void {
+      private function displayPopup(txt:String, color:uint, autoClose:Boolean = false) : void {
          if(this._currentPopup)
          {
             this.closePopup();
@@ -97,7 +96,7 @@ package com.ankamagames.dofus.misc.utils.mapeditor
          }
       }
       
-      private function closePopup(e:Event=null, currentPopup:Sprite=null) : void {
+      private function closePopup(e:Event = null, currentPopup:Sprite = null) : void {
          if(!currentPopup)
          {
             currentPopup = this._currentPopup;

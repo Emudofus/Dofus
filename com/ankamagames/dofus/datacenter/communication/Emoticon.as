@@ -5,7 +5,6 @@ package com.ankamagames.dofus.datacenter.communication
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    
@@ -18,7 +17,7 @@ package com.ankamagames.dofus.datacenter.communication
       
       public static const MODULE:String = "Emoticons";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Emoticon));
+      protected static const _log:Logger;
       
       public static function getEmoticonById(id:int) : Emoticon {
          return GameData.getObject(MODULE,id) as Emoticon;

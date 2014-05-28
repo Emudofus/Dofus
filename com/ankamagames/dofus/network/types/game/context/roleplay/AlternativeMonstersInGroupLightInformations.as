@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.context.roleplay
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -23,7 +22,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 394;
       }
       
-      public function initAlternativeMonstersInGroupLightInformations(playerCount:int=0, monsters:Vector.<MonsterInGroupLightInformations>=null) : AlternativeMonstersInGroupLightInformations {
+      public function initAlternativeMonstersInGroupLightInformations(playerCount:int = 0, monsters:Vector.<MonsterInGroupLightInformations> = null) : AlternativeMonstersInGroupLightInformations {
          this.playerCount = playerCount;
          this.monsters = monsters;
          return this;

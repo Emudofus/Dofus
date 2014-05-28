@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 143;
       }
       
-      public function initGameFightFighterInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null) : GameFightFighterInformations {
+      public function initGameFightFighterInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, teamId:uint = 2, wave:uint = 0, alive:Boolean = false, stats:GameFightMinimalStats = null) : GameFightFighterInformations {
          super.initGameContextActorInformations(contextualId,look,disposition);
          this.teamId = teamId;
          this.wave = wave;

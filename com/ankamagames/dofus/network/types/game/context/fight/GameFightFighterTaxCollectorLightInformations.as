@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 457;
       }
       
-      public function initGameFightFighterTaxCollectorLightInformations(id:int=0, wave:int=0, level:uint=0, breed:int=0, sex:Boolean=false, alive:Boolean=false, firstNameId:uint=0, lastNameId:uint=0) : GameFightFighterTaxCollectorLightInformations {
+      public function initGameFightFighterTaxCollectorLightInformations(id:int = 0, wave:int = 0, level:uint = 0, breed:int = 0, sex:Boolean = false, alive:Boolean = false, firstNameId:uint = 0, lastNameId:uint = 0) : GameFightFighterTaxCollectorLightInformations {
          super.initGameFightFighterLightInformations(id,wave,level,breed,sex,alive);
          this.firstNameId = firstNameId;
          this.lastNameId = lastNameId;

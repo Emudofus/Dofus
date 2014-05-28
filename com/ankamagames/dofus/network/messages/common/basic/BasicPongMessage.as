@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.common.basic
          return 183;
       }
       
-      public function initBasicPongMessage(quiet:Boolean=false) : BasicPongMessage {
+      public function initBasicPongMessage(quiet:Boolean = false) : BasicPongMessage {
          this.quiet = quiet;
          this._isInitialized = true;
          return this;

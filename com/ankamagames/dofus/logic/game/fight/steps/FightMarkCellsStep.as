@@ -2,7 +2,6 @@ package com.ankamagames.dofus.logic.game.fight.steps
 {
    import com.ankamagames.jerakine.sequencer.AbstractSequencable;
    import com.ankamagames.dofus.datacenter.spells.SpellLevel;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.actions.fight.GameActionMarkedCell;
    import com.ankamagames.dofus.types.sequences.AddGlyphGfxStep;
    import com.ankamagames.dofus.datacenter.spells.Spell;
@@ -48,7 +47,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          {
             if(spell.getParamByName("glyphGfxId"))
             {
-               for each (cellZone in this._cells)
+               for each(cellZone in this._cells)
                {
                   step = new AddGlyphGfxStep(spell.getParamByName("glyphGfxId"),cellZone.cellId,this._markId,this._markType);
                   step.start();
@@ -67,6 +66,8 @@ package com.ankamagames.dofus.logic.game.fight.steps
                case GameActionMarkTypeEnum.TRAP:
                   evt = FightEventEnum.TRAP_APPEARED;
                   break;
+               default:
+                  _log.warn("Unknown mark type (" + mi.markType + ").");
             }
             FightEventsHelper.sendFightEvent(evt,[mi.associatedSpell.id],0,castingSpellId);
          }

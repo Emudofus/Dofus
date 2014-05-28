@@ -5,7 +5,6 @@ package com.ankamagames.dofus.types.entities
    import com.ankamagames.tiphon.types.BehaviorData;
    import com.ankamagames.tiphon.types.IAnimationModifier;
    import com.ankamagames.dofus.logic.game.fight.types.CastingSpell;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
    import com.ankamagames.dofus.types.enums.AnimationEnum;
    import com.ankamagames.dofus.logic.game.fight.frames.FightSequenceFrame;
@@ -41,7 +40,7 @@ package com.ankamagames.dofus.types.entities
          this._direction = this._parentData.direction;
          if((target.animationModifiers) && (target.animationModifiers.length))
          {
-            for each (modifier in target.animationModifiers)
+            for each(modifier in target.animationModifiers)
             {
                this._animation = modifier.getModifiedAnimation(parentData.animation,target.look);
             }
@@ -81,7 +80,7 @@ package com.ankamagames.dofus.types.entities
                   effects = cs.spellRank.effects;
                   if(effects)
                   {
-                     for each (effect in effects)
+                     for each(effect in effects)
                      {
                         if(effect.category == 2)
                         {

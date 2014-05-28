@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
          return 300;
       }
       
-      public function initGameRolePlayRemoveChallengeMessage(fightId:int=0) : GameRolePlayRemoveChallengeMessage {
+      public function initGameRolePlayRemoveChallengeMessage(fightId:int = 0) : GameRolePlayRemoveChallengeMessage {
          this.fightId = fightId;
          this._isInitialized = true;
          return this;

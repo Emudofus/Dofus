@@ -88,303 +88,300 @@ package com.ankamagames.dofus.console.debug
                s = "";
                do
                {
-                     s = I18n.getText(i++);
-                     if(s)
-                     {
-                        emptySince = 0;
-                        size = size + s.length;
-                     }
-                     else
-                     {
-                        emptySince++;
-                     }
-                  }while(emptySince < 20);
-                  
-                  console.output(size + " characters in " + (i - 1) + " entries.");
-                  break;
-               case "clear":
-                  KernelEventsManager.getInstance().processCallback(HookList.ConsoleClear);
-                  break;
-               case "config":
-                  if(!args[0])
+                  s = I18n.getText(i++);
+                  if(s)
                   {
-                     console.output("Syntax : /config <manager> [<option>]");
-                     break;
-                  }
-                  managerName = args[0];
-                  if(!OptionManager.getOptionManager(managerName))
-                  {
-                     console.output("Unknown manager \'" + managerName + "\').");
-                     break;
-                  }
-                  manager = OptionManager.getOptionManager(managerName);
-                  if(args[1])
-                  {
-                     if(manager[args[1]] != null)
-                     {
-                        val = args[2];
-                        if(val == "true")
-                        {
-                           val = true;
-                        }
-                        if(val == "false")
-                        {
-                           val = false;
-                        }
-                        if(parseInt(val).toString() == val)
-                        {
-                           val = parseInt(val);
-                        }
-                        manager[args[1]] = val;
-                     }
-                     else
-                     {
-                        console.output(args[1] + " not found on " + manager);
-                     }
+                     emptySince = 0;
+                     size = size + s.length;
                   }
                   else
                   {
-                     prop = new Array();
-                     for (name in manager)
+                     emptySince++;
+                  }
+               }
+               while(emptySince < 20);
+               
+               console.output(size + " characters in " + (i - 1) + " entries.");
+               break;
+            case "clear":
+               KernelEventsManager.getInstance().processCallback(HookList.ConsoleClear);
+               break;
+            case "config":
+               if(!args[0])
+               {
+                  console.output("Syntax : /config <manager> [<option>]");
+                  break;
+               }
+               managerName = args[0];
+               if(!OptionManager.getOptionManager(managerName))
+               {
+                  console.output("Unknown manager \'" + managerName + "\').");
+                  break;
+               }
+               manager = OptionManager.getOptionManager(managerName);
+               if(args[1])
+               {
+                  if(manager[args[1]] != null)
+                  {
+                     val = args[2];
+                     if(val == "true")
                      {
-                        prop.push(
-                           {
-                              "name":name,
-                              "value":manager[name]
-                           });
+                        val = true;
                      }
-                     prop.sortOn("name");
-                     for each (p in prop)
+                     if(val == "false")
                      {
-                        console.output(" - " + p.name + " : " + p.value);
+                        val = false;
                      }
-                  }
-                  break;
-               case "clearwebcache":
-                  TimeoutHTMLLoader.resetCache();
-                  break;
-               case "geteventmodeparams":
-                  if(args.length != 2)
-                  {
-                     console.output("Syntax : /getEventModeParams <login> <password>");
-                     return;
-                  }
-                  console.output(Base64.encode("login:" + args[0] + ",password:" + args[1]));
-                  break;
-               case "setquality":
-                  if(args.length != 1)
-                  {
-                     console.output("Current stage.quality : [" + StageShareManager.stage.quality + "]");
-                     return;
-                  }
-                  StageShareManager.stage.quality = args[0];
-                  console.output("Try set stage.qualitity to [" + args[0] + "], result : [" + StageShareManager.stage.quality + "]");
-                  break;
-               case "lowdefskin":
-                  for each (o in EntitiesManager.getInstance().entities)
-                  {
-                     if(o is TiphonSprite)
+                     if(parseInt(val).toString() == val)
                      {
-                        TiphonSprite(o).setAlternativeSkinIndex(TiphonSprite(o).getAlternativeSkinIndex() == -1?0:-1);
+                        val = parseInt(val);
                      }
-                  }
-                  break;
-               case "copylog":
-                  LogFrame.getInstance(false).duplicateLogFile();
-                  break;
-               case "savereplaylog":
-                  logFile = LogFrame.getInstance(false).duplicateLogFile();
-                  if(logFile.exists)
-                  {
-                     fsLog = new FileStream();
-                     logContent = new ByteArray();
-                     fsLog.open(logFile,FileMode.READ);
-                     fsLog.readBytes(logContent);
-                     File.desktopDirectory.save(logContent,"log.d2l");
-                  }
-                  break;
-               case "synchrosequence":
-                  if(Kernel.getWorker().contains(SynchronisationFrame))
-                  {
-                     this._synchronisationFrameInstance = Kernel.getWorker().getFrame(SynchronisationFrame) as SynchronisationFrame;
-                     Kernel.getWorker().removeFrame(this._synchronisationFrameInstance);
-                     console.output("Synchro sequence disable");
+                     manager[args[1]] = val;
                   }
                   else
                   {
-                     if(this._synchronisationFrameInstance)
-                     {
-                        console.output("Synchro sequence enable");
-                        Kernel.getWorker().addFrame(this._synchronisationFrameInstance);
-                     }
-                     else
-                     {
-                        console.output("Can\'t enable synchro sequence");
-                     }
+                     console.output(args[1] + " not found on " + manager);
                   }
-                  break;
-               case "throw":
-                  if(args[0] == "async")
+               }
+               else
+               {
+                  prop = new Array();
+                  for(name in manager)
                   {
-                     setTimeout(function():void
-                     {
-                        throw new Error("Test error");
-                     },100);
-                     break;
-                  }
-                  throw new Error("Test error");
-               case "sd":
-                  entitiesList = EntitiesManager.getInstance().entities;
-                  for each (entity in entitiesList)
-                  {
-                     if(entity)
-                     {
-                        tete = entity.getSlot("Tete");
-                        if(tete)
+                     prop.push(
                         {
-                           tete.scaleX = 2;
-                           tete.scaleY = 2;
-                        }
-                     }
+                           "name":name,
+                           "value":manager[name]
+                        });
                   }
+                  prop.sortOn("name");
+                  for each(p in prop)
+                  {
+                     console.output(" - " + p.name + " : " + p.value);
+                  }
+               }
+               break;
+            case "clearwebcache":
+               TimeoutHTMLLoader.resetCache();
+               break;
+            case "geteventmodeparams":
+               if(args.length != 2)
+               {
+                  console.output("Syntax : /getEventModeParams <login> <password>");
+                  return;
+               }
+               console.output(Base64.encode("login:" + args[0] + ",password:" + args[1]));
+               break;
+            case "setquality":
+               if(args.length != 1)
+               {
+                  console.output("Current stage.quality : [" + StageShareManager.stage.quality + "]");
+                  return;
+               }
+               StageShareManager.stage.quality = args[0];
+               console.output("Try set stage.qualitity to [" + args[0] + "], result : [" + StageShareManager.stage.quality + "]");
+               break;
+            case "lowdefskin":
+               for each(o in EntitiesManager.getInstance().entities)
+               {
+                  if(o is TiphonSprite)
+                  {
+                     TiphonSprite(o).setAlternativeSkinIndex(TiphonSprite(o).getAlternativeSkinIndex() == -1?0:-1);
+                  }
+               }
+               break;
+            case "copylog":
+               LogFrame.getInstance(false).duplicateLogFile();
+               break;
+            case "savereplaylog":
+               logFile = LogFrame.getInstance(false).duplicateLogFile();
+               if(logFile.exists)
+               {
+                  fsLog = new FileStream();
+                  logContent = new ByteArray();
+                  fsLog.open(logFile,FileMode.READ);
+                  fsLog.readBytes(logContent);
+                  File.desktopDirectory.save(logContent,"log.d2l");
+               }
+               break;
+            case "synchrosequence":
+               if(Kernel.getWorker().contains(SynchronisationFrame))
+               {
+                  this._synchronisationFrameInstance = Kernel.getWorker().getFrame(SynchronisationFrame) as SynchronisationFrame;
+                  Kernel.getWorker().removeFrame(this._synchronisationFrameInstance);
+                  console.output("Synchro sequence disable");
+               }
+               else if(this._synchronisationFrameInstance)
+               {
+                  console.output("Synchro sequence enable");
+                  Kernel.getWorker().addFrame(this._synchronisationFrameInstance);
+               }
+               else
+               {
+                  console.output("Can\'t enable synchro sequence");
+               }
+               
+               break;
+            case "throw":
+               if(args[0] == "async")
+               {
+                  setTimeout(function():void
+                  {
+                     throw new Error("Test error");
+                  },100);
                   break;
-               case "showsmilies":
-                  KernelEventsManager.getInstance().processCallback(HookList.ShowSmilies);
-                  break;
-               case "shieldmax":
-               case "shieldmoy":
-               case "shieldmin":
-                  if(cmd == "shieldmax")
+               }
+               throw new Error("Test error");
+            case "sd":
+               entitiesList = EntitiesManager.getInstance().entities;
+               for each(entity in entitiesList)
+               {
+                  if(entity)
                   {
-                     level = ShieldSecureLevel.MAX;
-                  }
-                  if(cmd == "shieldmoy")
-                  {
-                     level = ShieldSecureLevel.MEDIUM;
-                  }
-                  if(cmd == "shieldmin")
-                  {
-                     level = ShieldSecureLevel.LOW;
-                  }
-                  SecureModeManager.getInstance().shieldLevel = level;
-                  console.output("Le niveau de sécurité du shield a bien était modifié au niveau " + cmd.substr(6));
-                  break;
-               case "debugmouseover":
-                  HumanInputHandler.getInstance().debugOver = !HumanInputHandler.getInstance().debugOver;
-                  break;
-               case "idletime":
-                  if(args.length == 1)
-                  {
-                     InactivityManager.getInstance().inactivityDelay = int(args[0]) * 1000;
-                  }
-                  console.output("Temps avant inactivité : " + Math.floor(InactivityManager.getInstance().inactivityDelay / 1000) + "s");
-                  break;
-               case "setmonsterspeed":
-                  if(args.length >= 1)
-                  {
-                     monster = Monster.getMonsterById(int(args[0]));
-                  }
-                  if(args.length == 1)
-                  {
-                     console.output("Vitesse du monstre " + monster.name + " (id:" + monster.id + ") : " + monster.speedAdjust);
-                  }
-                  else
-                  {
-                     if(args.length == 2)
+                     tete = entity.getSlot("Tete");
+                     if(tete)
                      {
-                        oldValue = monster.speedAdjust;
-                        monster.speedAdjust = parseFloat(args[1]);
-                        console.output("Vitesse du monstre " + monster.name + " (id:" + monster.id + ") : " + monster.speedAdjust + " (ancienne valeur: " + oldValue + ")");
-                        monsterLook = TiphonEntityLook.fromString(monster.look);
-                        changeCount = 0;
-                        for each (sceneEntity in EntitiesManager.getInstance().entities)
-                        {
-                           if((sceneEntity is AnimatedCharacter) && (AnimatedCharacter(sceneEntity).look.getBone() == monsterLook.getBone()))
-                           {
-                              changeCount++;
-                              AnimatedCharacter(sceneEntity).speedAdjust = monster.speedAdjust;
-                           }
-                        }
-                        console.output("Nombre d\'entité sur la scene modifiées : " + changeCount);
-                     }
-                     else
-                     {
-                        console.output("Un ou deux arguments sont nécessaires : ID du monstre, 2 vitesse de -10 à +10");
+                        tete.scaleX = 2;
+                        tete.scaleY = 2;
                      }
                   }
-                  break;
-            }
-         }
-         
-         public function getHelp(cmd:String) : String {
-            switch(cmd)
-            {
-               case "log":
-                  return "Switch on/off client log process.";
-               case "i18nsize":
-                  return "Get the total size in characters of I18N datas.";
-               case "newdofus":
-                  return "Try to launch a new dofus client.";
-               case "clear":
-                  return "clear the console output";
-               case "clearwebcache":
-                  return "clear cached web browser";
-               case "geteventmodeparams":
-                  return "Get event mode config file param. param 1 : login, param 2 : password";
-               case "setquality":
-                  return "Set stage quality (no param to get actual value)";
-               case "config":
-                  return "list options in different managers if no param else set an option /config [managerName] [paramName] [paramValue]";
-               case "copylog":
-                  return "Copy current log file to xxx.copy";
-               case "savereplaylog":
-                  return I18n.getUiText("ui.chat.console.help.savereplaylog");
-               case "synchrosequence":
-                  return "Enable/disable synchro sequence";
-               case "throw":
-                  return "Throw an exception (test only) option:[async|sync]";
-               case "showsmilies":
-                  return "Activate/Deactivate smilies detection";
-               case "debugmouseover":
-                  return "Activate/Deactivate mouse over debug : It will show which objects receive event and their bounds.";
-               case "idletime":
-                  return "Set inactivity time limit (in seconds)";
-               case "setmonsterspeed":
-                  return "Ajuste la vitesse de déplacement d\'un monstre";
-            }
-         }
-         
-         public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
-            var managerName:String = null;
-            var name:String = null;
-            var possibilities:Array = [];
-            switch(cmd)
-            {
-               case "throw":
-                  possibilities = ["async","sync"];
-                  break;
-               case "setquality":
-                  possibilities = [StageQuality.LOW,StageQuality.MEDIUM,StageQuality.HIGH,StageQuality.BEST];
-                  break;
-               case "config":
-                  if(paramIndex == 0)
+               }
+               break;
+            case "showsmilies":
+               KernelEventsManager.getInstance().processCallback(HookList.ShowSmilies);
+               break;
+            case "shieldmax":
+            case "shieldmoy":
+            case "shieldmin":
+               if(cmd == "shieldmax")
+               {
+                  level = ShieldSecureLevel.MAX;
+               }
+               if(cmd == "shieldmoy")
+               {
+                  level = ShieldSecureLevel.MEDIUM;
+               }
+               if(cmd == "shieldmin")
+               {
+                  level = ShieldSecureLevel.LOW;
+               }
+               SecureModeManager.getInstance().shieldLevel = level;
+               console.output("Le niveau de sécurité du shield a bien était modifié au niveau " + cmd.substr(6));
+               break;
+            case "debugmouseover":
+               HumanInputHandler.getInstance().debugOver = !HumanInputHandler.getInstance().debugOver;
+               break;
+            case "idletime":
+               if(args.length == 1)
+               {
+                  InactivityManager.getInstance().inactivityDelay = int(args[0]) * 1000;
+               }
+               console.output("Temps avant inactivité : " + Math.floor(InactivityManager.getInstance().inactivityDelay / 1000) + "s");
+               break;
+            case "setmonsterspeed":
+               if(args.length >= 1)
+               {
+                  monster = Monster.getMonsterById(int(args[0]));
+               }
+               if(args.length == 1)
+               {
+                  console.output("Vitesse du monstre " + monster.name + " (id:" + monster.id + ") : " + monster.speedAdjust);
+               }
+               else if(args.length == 2)
+               {
+                  oldValue = monster.speedAdjust;
+                  monster.speedAdjust = parseFloat(args[1]);
+                  console.output("Vitesse du monstre " + monster.name + " (id:" + monster.id + ") : " + monster.speedAdjust + " (ancienne valeur: " + oldValue + ")");
+                  monsterLook = TiphonEntityLook.fromString(monster.look);
+                  changeCount = 0;
+                  for each(sceneEntity in EntitiesManager.getInstance().entities)
                   {
-                     possibilities = OptionManager.getOptionManagers();
-                  }
-                  else
-                  {
-                     if(paramIndex == 1)
+                     if((sceneEntity is AnimatedCharacter) && (AnimatedCharacter(sceneEntity).look.getBone() == monsterLook.getBone()))
                      {
-                        managerName = currentParams[0];
-                        for (name in OptionManager.getOptionManager(managerName))
-                        {
-                           possibilities.push(name);
-                        }
+                        changeCount++;
+                        AnimatedCharacter(sceneEntity).speedAdjust = monster.speedAdjust;
                      }
                   }
-                  break;
-            }
-            return possibilities;
+                  console.output("Nombre d\'entité sur la scene modifiées : " + changeCount);
+               }
+               else
+               {
+                  console.output("Un ou deux arguments sont nécessaires : ID du monstre, 2 vitesse de -10 à +10");
+               }
+               
+               break;
          }
       }
+      
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
+         {
+            case "log":
+               return "Switch on/off client log process.";
+            case "i18nsize":
+               return "Get the total size in characters of I18N datas.";
+            case "newdofus":
+               return "Try to launch a new dofus client.";
+            case "clear":
+               return "clear the console output";
+            case "clearwebcache":
+               return "clear cached web browser";
+            case "geteventmodeparams":
+               return "Get event mode config file param. param 1 : login, param 2 : password";
+            case "setquality":
+               return "Set stage quality (no param to get actual value)";
+            case "config":
+               return "list options in different managers if no param else set an option /config [managerName] [paramName] [paramValue]";
+            case "copylog":
+               return "Copy current log file to xxx.copy";
+            case "savereplaylog":
+               return I18n.getUiText("ui.chat.console.help.savereplaylog");
+            case "synchrosequence":
+               return "Enable/disable synchro sequence";
+            case "throw":
+               return "Throw an exception (test only) option:[async|sync]";
+            case "showsmilies":
+               return "Activate/Deactivate smilies detection";
+            case "debugmouseover":
+               return "Activate/Deactivate mouse over debug : It will show which objects receive event and their bounds.";
+            case "idletime":
+               return "Set inactivity time limit (in seconds)";
+            case "setmonsterspeed":
+               return "Ajuste la vitesse de déplacement d\'un monstre";
+            default:
+               return "No help for command \'" + cmd + "\'";
+         }
+      }
+      
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
+         var managerName:String = null;
+         var name:String = null;
+         var possibilities:Array = [];
+         switch(cmd)
+         {
+            case "throw":
+               possibilities = ["async","sync"];
+               break;
+            case "setquality":
+               possibilities = [StageQuality.LOW,StageQuality.MEDIUM,StageQuality.HIGH,StageQuality.BEST];
+               break;
+            case "config":
+               if(paramIndex == 0)
+               {
+                  possibilities = OptionManager.getOptionManagers();
+               }
+               else if(paramIndex == 1)
+               {
+                  managerName = currentParams[0];
+                  for(name in OptionManager.getOptionManager(managerName))
+                  {
+                     possibilities.push(name);
+                  }
+               }
+               
+               break;
+         }
+         return possibilities;
+      }
    }
+}

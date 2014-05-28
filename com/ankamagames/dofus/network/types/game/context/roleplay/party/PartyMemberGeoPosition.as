@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
          return 378;
       }
       
-      public function initPartyMemberGeoPosition(memberId:uint=0, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0) : PartyMemberGeoPosition {
+      public function initPartyMemberGeoPosition(memberId:uint = 0, worldX:int = 0, worldY:int = 0, mapId:int = 0, subAreaId:uint = 0) : PartyMemberGeoPosition {
          this.memberId = memberId;
          this.worldX = worldX;
          this.worldY = worldY;

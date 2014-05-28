@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 1030;
       }
       
-      public function initGameActionFightPointsVariationMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, delta:int=0) : GameActionFightPointsVariationMessage {
+      public function initGameActionFightPointsVariationMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, delta:int = 0) : GameActionFightPointsVariationMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this.delta = delta;

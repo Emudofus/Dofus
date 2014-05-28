@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.secure
          return 377;
       }
       
-      public function initTrustCertificate(id:uint=0, hash:String="") : TrustCertificate {
+      public function initTrustCertificate(id:uint = 0, hash:String = "") : TrustCertificate {
          this.id = id;
          this.hash = hash;
          return this;

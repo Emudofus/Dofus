@@ -52,7 +52,7 @@ package com.ankamagames.berilia.managers
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ThemeManager));
+      protected static const _log:Logger;
       
       private static var _self:ThemeManager;
       
@@ -236,14 +236,14 @@ package com.ankamagames.berilia.managers
             return null;
          }
          var files:Array = rootPath.getDirectoryListing();
-         for each (file in files)
+         for each(file in files)
          {
             if((!file.isDirectory) && (file.extension.toLowerCase() == "dt"))
             {
                return file;
             }
          }
-         for each (file in files)
+         for each(file in files)
          {
             if(file.isDirectory)
             {

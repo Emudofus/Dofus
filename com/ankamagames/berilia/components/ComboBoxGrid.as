@@ -47,6 +47,9 @@ package com.ankamagames.berilia.components
                   setSelectedIndex(currentItem.index,SelectMethodEnum.CLICK);
                }
                return true;
+            default:
+               super.process(msg);
+               return false;
          }
       }
    }

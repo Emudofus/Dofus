@@ -1,6 +1,5 @@
 package com.ankamagames.dofus.logic.game.common.misc
 {
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    
    public interface IInventoryView

@@ -92,7 +92,7 @@ package com.ankamagames.jerakine.managers
       public function getFontsList() : Array {
          var o:Object = null;
          var fontList:Array = new Array();
-         for each (o in this._fonts)
+         for each(o in this._fonts)
          {
             fontList.push(o.url);
          }

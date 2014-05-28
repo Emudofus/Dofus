@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 81;
       }
       
-      public function initObjectEffectLadder(actionId:uint=0, monsterFamilyId:uint=0, monsterCount:uint=0) : ObjectEffectLadder {
+      public function initObjectEffectLadder(actionId:uint = 0, monsterFamilyId:uint = 0, monsterCount:uint = 0) : ObjectEffectLadder {
          super.initObjectEffectCreature(actionId,monsterFamilyId);
          this.monsterCount = monsterCount;
          return this;

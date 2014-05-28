@@ -17,7 +17,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(WorldFrame));
+      protected static const _log:Logger;
       
       private var _settings:Array = null;
       
@@ -45,6 +45,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                afmumsg = msg as AreaFightModificatorUpdateMessage;
                KernelEventsManager.getInstance().processCallback(QuestHookList.AreaFightModificatorUpdate,afmumsg.spellPairId);
                return true;
+            default:
+               return false;
          }
       }
    }

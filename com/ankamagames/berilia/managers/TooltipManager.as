@@ -31,27 +31,27 @@ package com.ankamagames.berilia.managers
          super();
       }
       
-      protected static var _log:Logger = Log.getLogger(getQualifiedClassName(TooltipManager));
+      protected static var _log:Logger;
       
-      private static var _tooltips:Array = new Array();
+      private static var _tooltips:Array;
       
-      private static var _tooltipsStrata:Array = new Array();
+      private static var _tooltipsStrata:Array;
       
-      private static var _tooltipsDico:Dictionary = new Dictionary();
+      private static var _tooltipsDico:Dictionary;
       
       private static const TOOLTIP_UI_NAME_PREFIX:String = "tooltip_";
       
       public static const TOOLTIP_STANDAR_NAME:String = "standard";
       
-      public static var _tooltipCache:Dictionary = new Dictionary();
+      public static var _tooltipCache:Dictionary;
       
-      public static var _tooltipCacheParam:Dictionary = new Dictionary();
+      public static var _tooltipCacheParam:Dictionary;
       
       public static var defaultTooltipUiScript:Class;
       
       private static var _isInit:Boolean = false;
       
-      public static function show(data:*, target:*, uiModule:UiModule, autoHide:Boolean=true, name:String="standard", point:uint=0, relativePoint:uint=2, offset:int=3, usePrefix:Boolean=true, tooltipMaker:String=null, script:Class=null, makerParam:Object=null, cacheName:String=null, mouseEnabled:Boolean=false, strata:int=4, zoom:Number=1, alwaysDisplayed:Boolean=true) : Tooltip {
+      public static function show(data:*, target:*, uiModule:UiModule, autoHide:Boolean = true, name:String = "standard", point:uint = 0, relativePoint:uint = 2, offset:int = 3, usePrefix:Boolean = true, tooltipMaker:String = null, script:Class = null, makerParam:Object = null, cacheName:String = null, mouseEnabled:Boolean = false, strata:int = 4, zoom:Number = 1, alwaysDisplayed:Boolean = true) : Tooltip {
          var cacheNameInfo:Array = null;
          var tooltipCache:Tooltip = null;
          if(!_isInit)
@@ -72,7 +72,7 @@ package com.ankamagames.berilia.managers
          if(cacheName)
          {
             cacheNameInfo = cacheName.split("#");
-            if((_tooltipCache[cacheNameInfo[0]]) && (cacheNameInfo.length == 1) || ((_tooltipCache[cacheNameInfo[0]]) && (cacheNameInfo.length > 1)) && (_tooltipCacheParam[cacheNameInfo[0]] == cacheNameInfo[1]))
+            if((_tooltipCache[cacheNameInfo[0]]) && (cacheNameInfo.length == 1) || (_tooltipCache[cacheNameInfo[0]] && cacheNameInfo.length > 1) && (_tooltipCacheParam[cacheNameInfo[0]] == cacheNameInfo[1]))
             {
                tooltipCache = _tooltipCache[cacheNameInfo[0]] as Tooltip;
                _tooltips[name] = data;
@@ -108,7 +108,7 @@ package com.ankamagames.berilia.managers
          return tt;
       }
       
-      public static function hide(name:String="standard") : void {
+      public static function hide(name:String = "standard") : void {
          if(name == null)
          {
             name = TOOLTIP_STANDAR_NAME;
@@ -128,8 +128,8 @@ package com.ankamagames.berilia.managers
                TooltipPlacer.removeTooltipPositionByName(name);
             }
             Berilia.getInstance().unloadUi(name);
-            delete _tooltips[[name]];
-            delete _tooltipsDico[[name]];
+            delete _tooltips[name];
+            delete _tooltipsDico[name];
          }
          else
          {
@@ -141,7 +141,7 @@ package com.ankamagames.berilia.managers
          var name:String = null;
          if(pTooltip.cached)
          {
-            for (name in Berilia.getInstance().uiList)
+            for(name in Berilia.getInstance().uiList)
             {
                if(Berilia.getInstance().uiList[name] == pTooltip)
                {
@@ -151,7 +151,7 @@ package com.ankamagames.berilia.managers
          }
          else
          {
-            for (name in _tooltips)
+            for(name in _tooltips)
             {
                if((_tooltipsDico[name]) && (_tooltipsDico[name].display == pTooltip))
                {
@@ -186,7 +186,7 @@ package com.ankamagames.berilia.managers
          var name:String = null;
          var strata:* = 0;
          var ttt:Tooltip = null;
-         for (name in _tooltips)
+         for(name in _tooltips)
          {
             strata = _tooltipsStrata[name];
             ttt = _tooltipsDico[name];
@@ -200,7 +200,7 @@ package com.ankamagames.berilia.managers
       public static function clearCache() : void {
          var tt:Tooltip = null;
          var berilia:Berilia = Berilia.getInstance();
-         for each (tt in _tooltipCache)
+         for each(tt in _tooltipCache)
          {
             tt.display.cached = false;
             berilia.uiList[tt.display.name] = tt.display;
@@ -258,17 +258,15 @@ package com.ankamagames.berilia.managers
             {
                coord = new Point(realtarget.x,realtarget.y);
             }
+            else if((realtarget.hasOwnProperty("parent")) && (realtarget.parent))
+            {
+               coord = localToGlobal(realtarget.parent,new Point(realtarget.x,realtarget.y));
+            }
             else
             {
-               if((realtarget.hasOwnProperty("parent")) && (realtarget.parent))
-               {
-                  coord = localToGlobal(realtarget.parent,new Point(realtarget.x,realtarget.y));
-               }
-               else
-               {
-                  coord = realtarget.localToGlobal(new Point(realtarget.x,realtarget.y));
-               }
+               coord = realtarget.localToGlobal(new Point(realtarget.x,realtarget.y));
             }
+            
             localCoord = Berilia.getInstance().strataTooltip.globalToLocal(coord);
             sx = StageShareManager.stageScaleX;
             sy = StageShareManager.stageScaleY;
@@ -279,7 +277,7 @@ package com.ankamagames.berilia.managers
          return null;
       }
       
-      private static function localToGlobal(t:Object, p:Point=null) : Point {
+      private static function localToGlobal(t:Object, p:Point = null) : Point {
          if(!p)
          {
             p = new Point();
@@ -319,7 +317,7 @@ package com.ankamagames.berilia.managers
             return;
          }
          var containerBounds:Rectangle = ctr.getBounds(StageShareManager.stage);
-         for (name in _tooltips)
+         for(name in _tooltips)
          {
             strata = _tooltipsStrata[name];
             ttt = _tooltipsDico[name];

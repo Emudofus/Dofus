@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.actions.fight
          return 214;
       }
       
-      public function initFightTemporaryBoostStateEffect(uid:uint=0, targetId:int=0, turnDuration:int=0, dispelable:uint=1, spellId:uint=0, parentBoostUid:uint=0, delta:int=0, stateId:int=0) : FightTemporaryBoostStateEffect {
+      public function initFightTemporaryBoostStateEffect(uid:uint = 0, targetId:int = 0, turnDuration:int = 0, dispelable:uint = 1, spellId:uint = 0, parentBoostUid:uint = 0, delta:int = 0, stateId:int = 0) : FightTemporaryBoostStateEffect {
          super.initFightTemporaryBoostEffect(uid,targetId,turnDuration,dispelable,spellId,parentBoostUid,delta);
          this.stateId = stateId;
          return this;

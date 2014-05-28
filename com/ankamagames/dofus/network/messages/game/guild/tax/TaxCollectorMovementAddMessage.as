@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5917;
       }
       
-      public function initTaxCollectorMovementAddMessage(informations:TaxCollectorInformations=null) : TaxCollectorMovementAddMessage {
+      public function initTaxCollectorMovementAddMessage(informations:TaxCollectorInformations = null) : TaxCollectorMovementAddMessage {
          this.informations = informations;
          this._isInitialized = true;
          return this;

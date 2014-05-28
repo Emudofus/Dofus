@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.connection.search
          return 6144;
       }
       
-      public function initAcquaintanceSearchMessage(nickname:String="") : AcquaintanceSearchMessage {
+      public function initAcquaintanceSearchMessage(nickname:String = "") : AcquaintanceSearchMessage {
          this.nickname = nickname;
          this._isInitialized = true;
          return this;

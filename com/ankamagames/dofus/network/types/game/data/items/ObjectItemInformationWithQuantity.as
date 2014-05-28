@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.data.items
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
@@ -21,7 +20,7 @@ package com.ankamagames.dofus.network.types.game.data.items
          return 387;
       }
       
-      public function initObjectItemInformationWithQuantity(objectGID:uint=0, effects:Vector.<ObjectEffect>=null, quantity:uint=0) : ObjectItemInformationWithQuantity {
+      public function initObjectItemInformationWithQuantity(objectGID:uint = 0, effects:Vector.<ObjectEffect> = null, quantity:uint = 0) : ObjectItemInformationWithQuantity {
          super.initObjectItemMinimalInformation(objectGID,effects);
          this.quantity = quantity;
          return this;

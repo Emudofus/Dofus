@@ -11,6 +11,6 @@ package com.ankamagames.jerakine.entities.interfaces
       
       function setAnimation(param1:String) : void;
       
-      function setAnimationAndDirection(param1:String, param2:uint, param3:Boolean=false) : void;
+      function setAnimationAndDirection(param1:String, param2:uint, param3:Boolean = false) : void;
    }
 }

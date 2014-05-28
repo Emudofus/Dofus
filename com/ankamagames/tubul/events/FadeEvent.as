@@ -6,7 +6,7 @@ package com.ankamagames.tubul.events
    public class FadeEvent extends Event
    {
       
-      public function FadeEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function FadeEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

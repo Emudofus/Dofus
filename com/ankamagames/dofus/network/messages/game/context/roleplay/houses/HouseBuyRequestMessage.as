@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          return 5738;
       }
       
-      public function initHouseBuyRequestMessage(proposedPrice:uint=0) : HouseBuyRequestMessage {
+      public function initHouseBuyRequestMessage(proposedPrice:uint = 0) : HouseBuyRequestMessage {
          this.proposedPrice = proposedPrice;
          this._isInitialized = true;
          return this;

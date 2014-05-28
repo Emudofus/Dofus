@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.atlas.compass
          return 5584;
       }
       
-      public function initCompassResetMessage(type:uint=0) : CompassResetMessage {
+      public function initCompassResetMessage(type:uint = 0) : CompassResetMessage {
          this.type = type;
          this._isInitialized = true;
          return this;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5975;
       }
       
-      public function initMountInformationInPaddockRequestMessage(mapRideId:int=0) : MountInformationInPaddockRequestMessage {
+      public function initMountInformationInPaddockRequestMessage(mapRideId:int = 0) : MountInformationInPaddockRequestMessage {
          this.mapRideId = mapRideId;
          this._isInitialized = true;
          return this;

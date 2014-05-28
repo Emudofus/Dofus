@@ -33,7 +33,7 @@ package com.ankamagames.dofus.internalDatacenter.house
          return house;
       }
       
-      public static function manualCreate(typeId:int, houseId:int, ownerName:String, isOnSale:Boolean, isSaleLocked:Boolean=false) : HouseWrapper {
+      public static function manualCreate(typeId:int, houseId:int, ownerName:String, isOnSale:Boolean, isSaleLocked:Boolean = false) : HouseWrapper {
          var house:HouseWrapper = new HouseWrapper();
          var houseInfo:House = House.getGuildHouseById(typeId);
          house.houseId = houseId;

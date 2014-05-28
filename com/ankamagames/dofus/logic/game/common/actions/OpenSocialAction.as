@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(name:String=null) : OpenSocialAction {
+      public static function create(name:String = null) : OpenSocialAction {
          var a:OpenSocialAction = new OpenSocialAction();
          a.name = name;
          return a;

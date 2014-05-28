@@ -19,9 +19,9 @@ package com.ankamagames.jerakine.resources.protocols.impl
          super();
       }
       
-      private static var _streams:Dictionary = new Dictionary();
+      private static var _streams:Dictionary;
       
-      private static var _indexes:Dictionary = new Dictionary();
+      private static var _indexes:Dictionary;
       
       public function getFilesIndex(uri:Uri) : Dictionary {
          var fileStream:FileStream = _streams[uri.path];

@@ -5,7 +5,7 @@ package com.ankamagames.tubul.events
    public class LoopEvent extends Event
    {
       
-      public function LoopEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function LoopEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

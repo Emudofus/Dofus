@@ -19,7 +19,7 @@ package com.ankamagames.dofus.logic.common.managers
          super();
       }
       
-      public static function showMonster(monsterId:int, loop:int=0) : Sprite {
+      public static function showMonster(monsterId:int, loop:int = 0) : Sprite {
          var monsterClip:DisplayObject = null;
          var rect:Rectangle = null;
          var list:Dictionary = null;
@@ -28,7 +28,7 @@ package com.ankamagames.dofus.logic.common.managers
          if(roleplayEntitiesFrame)
          {
             list = roleplayEntitiesFrame.getEntitiesDictionnary();
-            for each (monster in list)
+            for each(monster in list)
             {
                if((monster is GameRolePlayGroupMonsterInformations) && ((monster.staticInfos.mainCreatureLightInfos.creatureGenericId == monsterId) || (monsterId == -1)))
                {

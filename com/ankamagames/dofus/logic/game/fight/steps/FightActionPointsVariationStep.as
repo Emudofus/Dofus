@@ -13,7 +13,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightActionPointsVariationStep extends AbstractStatContextualStep implements IFightStep
    {
       
-      public function FightActionPointsVariationStep(entityId:int, value:int, voluntarlyUsed:Boolean, updateFighterInfos:Boolean=true, showChatmessage:Boolean=true) {
+      public function FightActionPointsVariationStep(entityId:int, value:int, voluntarlyUsed:Boolean, updateFighterInfos:Boolean = true, showChatmessage:Boolean = true) {
          super(COLOR,value > 0?"+" + value:value.toString(),entityId,BLOCKING);
          this._showChatmessage = showChatmessage;
          this._intValue = value;
@@ -69,20 +69,18 @@ package com.ankamagames.dofus.logic.game.fight.steps
             {
                FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_AP_GAINED,[_targetId,Math.abs(this._intValue)],_targetId,castingSpellId,false,2);
             }
-            else
+            else if(this._intValue < 0)
             {
-               if(this._intValue < 0)
+               if(this._voluntarlyUsed)
                {
-                  if(this._voluntarlyUsed)
-                  {
-                     FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_AP_USED,[_targetId,Math.abs(this._intValue)],_targetId,castingSpellId,false,2);
-                  }
-                  else
-                  {
-                     FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_AP_LOST,[_targetId,Math.abs(this._intValue)],_targetId,castingSpellId,false,2);
-                  }
+                  FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_AP_USED,[_targetId,Math.abs(this._intValue)],_targetId,castingSpellId,false,2);
+               }
+               else
+               {
+                  FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_AP_LOST,[_targetId,Math.abs(this._intValue)],_targetId,castingSpellId,false,2);
                }
             }
+            
          }
          super.start();
       }

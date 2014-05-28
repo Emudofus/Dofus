@@ -39,9 +39,9 @@ package com.ankamagames.dofus.misc.utils
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ParamsDecoder));
+      protected static const _log:Logger;
       
-      public static function applyParams(txt:String, params:Array, replace:String="%") : String {
+      public static function applyParams(txt:String, params:Array, replace:String = "%") : String {
          var c:String = null;
          var lectureType:Boolean = false;
          var lectureId:Boolean = false;
@@ -56,78 +56,72 @@ package com.ankamagames.dofus.misc.utils
             {
                lectureType = true;
             }
-            else
+            else if(c == replace)
             {
-               if(c == replace)
+               if((i + 1 < txt.length) && (txt.charAt(i + 1) == replace))
                {
-                  if((i + 1 < txt.length) && (txt.charAt(i + 1) == replace))
-                  {
-                     lectureId = false;
-                     lectureType = false;
-                     i++;
-                  }
-                  else
-                  {
-                     lectureType = false;
-                     lectureId = true;
-                  }
+                  lectureId = false;
+                  lectureType = false;
+                  i++;
+               }
+               else
+               {
+                  lectureType = false;
+                  lectureId = true;
                }
             }
+            
             if(lectureType)
             {
                type = type + c;
             }
-            else
+            else if(lectureId)
             {
-               if(lectureId)
+               if(c == replace)
                {
-                  if(c == replace)
+                  if(id.length == 0)
                   {
-                     if(id.length == 0)
-                     {
-                        id = id + c;
-                     }
-                     else
-                     {
-                        s = s + processReplace(type,id,params);
-                        type = "";
-                        id = "" + c;
-                     }
+                     id = id + c;
                   }
                   else
                   {
-                     if((c >= "0") && (c <= "9"))
-                     {
-                        id = id + c;
-                        if(i + 1 == txt.length)
-                        {
-                           lectureId = false;
-                           s = s + processReplace(type,id,params);
-                           type = "";
-                           id = "";
-                        }
-                     }
-                     else
-                     {
-                        lectureId = false;
-                        s = s + processReplace(type,id,params);
-                        type = "";
-                        id = "";
-                        s = s + c;
-                     }
+                     s = s + processReplace(type,id,params);
+                     type = "";
+                     id = "" + c;
                   }
                }
-               else
+               else if((c >= "0") && (c <= "9"))
                {
-                  if(id != "")
+                  id = id + c;
+                  if(i + 1 == txt.length)
                   {
+                     lectureId = false;
                      s = s + processReplace(type,id,params);
                      type = "";
                      id = "";
                   }
+               }
+               else
+               {
+                  lectureId = false;
+                  s = s + processReplace(type,id,params);
+                  type = "";
+                  id = "";
                   s = s + c;
                }
+               
             }
+            else
+            {
+               if(id != "")
+               {
+                  s = s + processReplace(type,id,params);
+                  type = "";
+                  id = "";
+               }
+               s = s + c;
+            }
+            
             i++;
          }
          return s;
@@ -430,6 +424,8 @@ package com.ankamagames.dofus.misc.utils
                      newString = "";
                   }
                   break;
+               default:
+                  trace("Error ! The parameter type (" + type + ") is unknown.");
             }
          }
          return newString;

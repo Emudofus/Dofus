@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5549;
       }
       
-      public function initGuildChangeMemberParametersMessage(memberId:uint=0, rank:uint=0, experienceGivenPercent:uint=0, rights:uint=0) : GuildChangeMemberParametersMessage {
+      public function initGuildChangeMemberParametersMessage(memberId:uint = 0, rank:uint = 0, experienceGivenPercent:uint = 0, rights:uint = 0) : GuildChangeMemberParametersMessage {
          this.memberId = memberId;
          this.rank = rank;
          this.experienceGivenPercent = experienceGivenPercent;

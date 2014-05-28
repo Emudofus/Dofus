@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.objects
          return 3017;
       }
       
-      public function initObjectGroundAddedMessage(cellId:uint=0, objectGID:uint=0) : ObjectGroundAddedMessage {
+      public function initObjectGroundAddedMessage(cellId:uint = 0, objectGID:uint = 0) : ObjectGroundAddedMessage {
          this.cellId = cellId;
          this.objectGID = objectGID;
          this._isInitialized = true;

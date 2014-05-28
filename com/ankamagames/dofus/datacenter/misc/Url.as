@@ -37,52 +37,12 @@ package com.ankamagames.dofus.datacenter.misc
       public var method:String;
       
       public function get variables() : Object {
-         var split2:Array = null;
-         var it:String = null;
-         var data:URLVariables = new URLVariables();
-         var split1:Array = this.param.split(",");
-         for each (it in split1)
-         {
-            if(!((it == null) || (it == "null")))
-            {
-               split2 = it.split(":");
-               if(split2[1].charAt(0) == "#")
-               {
-                  switch(String(split2[1]).toUpperCase().substr(1))
-                  {
-                     case "TOKEN":
-                        split2[1] = AuthentificationManager.getInstance().ankamaPortalKey;
-                        break;
-                     case "LOGIN":
-                        split2[1] = AuthentificationManager.getInstance().username;
-                        break;
-                     case "NICKNAME":
-                        split2[1] = PlayerManager.getInstance().nickname;
-                        break;
-                     case "GAME":
-                        split2[1] = 1;
-                        break;
-                     case "ACCOUNT_ID":
-                        split2[1] = PlayerManager.getInstance().accountId;
-                        break;
-                     case "PLAYER_ID":
-                        split2[1] = PlayedCharacterManager.getInstance().id;
-                        break;
-                     case "SERVER_ID":
-                        split2[1] = PlayerManager.getInstance().server.id;
-                        break;
-                     case "LANG":
-                        split2[1] = XmlConfig.getInstance().getEntry("config.lang.current");
-                        break;
-                     case "THEME":
-                        split2[1] = OptionManager.getOptionManager("dofus").switchUiSkin;
-                        break;
-                  }
-               }
-               data[split2[0]] = split2[1];
-            }
-         }
-         return data;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
    }
 }

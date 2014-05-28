@@ -36,7 +36,7 @@ package com.ankamagames.jerakine.data
       
       public function init(content:Array, lang:String) : void {
          var censoredData:ICensoredDataItem = null;
-         for each (censoredData in content)
+         for each(censoredData in content)
          {
             if(censoredData.lang == lang)
             {

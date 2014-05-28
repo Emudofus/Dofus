@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6449;
       }
       
-      public function initAllianceModificationNameAndTagValidMessage(allianceName:String="", allianceTag:String="") : AllianceModificationNameAndTagValidMessage {
+      public function initAllianceModificationNameAndTagValidMessage(allianceName:String = "", allianceTag:String = "") : AllianceModificationNameAndTagValidMessage {
          this.allianceName = allianceName;
          this.allianceTag = allianceTag;
          this._isInitialized = true;

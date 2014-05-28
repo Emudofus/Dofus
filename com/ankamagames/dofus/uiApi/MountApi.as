@@ -8,7 +8,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    import com.ankamagames.dofus.misc.EntityLookAdapter;
    import com.ankamagames.dofus.datacenter.mounts.Mount;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
    

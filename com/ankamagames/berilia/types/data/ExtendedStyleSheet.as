@@ -25,7 +25,7 @@ package com.ankamagames.berilia.types.data
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ExtendedStyleSheet));
+      protected static const _log:Logger;
       
       private static const CSS_INHERITANCE_KEYWORD:String = "extends";
       
@@ -50,19 +50,50 @@ package com.ankamagames.berilia.types.data
       }
       
       override public function parseCSS(content:String) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var inheritance:Object = null;
+         var regFile:RegExp = null;
+         var match:Array = null;
+         var file:String = null;
+         var i:uint = 0;
+         super.parseCSS(content);
+         var find:int = styleNames.indexOf(CSS_INHERITANCE_KEYWORD);
+         if(find != -1)
+         {
+            inheritance = getStyle(styleNames[find]);
+            if(inheritance[CSS_FILES_KEYWORD])
+            {
+               regFile = new RegExp("url\\(\'?([^\']*)\'\\)?","g");
+               match = String(inheritance[CSS_FILES_KEYWORD]).match(regFile);
+               i = 0;
+               while(i < match.length)
+               {
+                  file = String(match[i]).replace(regFile,"$1");
+                  if(-1 == this._inherit.indexOf(file))
+                  {
+                     file = LangManager.getInstance().replaceKey(file);
+                     CssManager.getInstance().askCss(file,new Callback(this.makeMerge,file));
+                     this._inherit.push(file);
+                  }
+                  i++;
+               }
+            }
+            else
+            {
+               _log.warn("property \'" + CSS_FILES_KEYWORD + "\' wasn\'t found (flash css doesn\'t support space between property name and colon, propertyName:value)");
+               dispatchEvent(new CssEvent(CssEvent.CSS_PARSED,false,false,this));
+            }
+         }
+         else
+         {
+            dispatchEvent(new CssEvent(CssEvent.CSS_PARSED,false,false,this));
+         }
       }
       
-      public function merge(stylesheet:ExtendedStyleSheet, replace:Boolean=false) : void {
+      public function merge(stylesheet:ExtendedStyleSheet, replace:Boolean = false) : void {
          /*
           * Decompilation error
           * Code may be obfuscated
-          * Error type: ExecutionException
+          * Error type: TranslateException
           */
          throw new IllegalOperationError("Not decompiled due to error");
       }
@@ -77,7 +108,7 @@ package com.ankamagames.berilia.types.data
          {
             localDef = getStyle(styleNames[i]);
             result = result + (" [" + styleNames[i] + "]\n");
-            for (property in localDef)
+            for(property in localDef)
             {
                result = result + ("  " + property + " : " + localDef[property] + "\n");
             }

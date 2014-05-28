@@ -26,7 +26,7 @@ package com.ankamagames.dofus.types.entities
          mouseChildren = false;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RoleplayObjectEntity));
+      protected static const _log:Logger;
       
       private var _id:int;
       
@@ -80,7 +80,7 @@ package com.ankamagames.dofus.types.entities
          return InteractionsEnum.CLICK | InteractionsEnum.OUT | InteractionsEnum.OVER;
       }
       
-      public function display(strata:uint=10) : void {
+      public function display(strata:uint = 10) : void {
          this._displayBehavior.display(this,strata);
          this._displayed = true;
       }

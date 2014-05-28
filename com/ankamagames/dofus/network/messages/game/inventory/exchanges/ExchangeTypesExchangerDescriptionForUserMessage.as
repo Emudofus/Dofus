@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5765;
       }
       
-      public function initExchangeTypesExchangerDescriptionForUserMessage(typeDescription:Vector.<uint>=null) : ExchangeTypesExchangerDescriptionForUserMessage {
+      public function initExchangeTypesExchangerDescriptionForUserMessage(typeDescription:Vector.<uint> = null) : ExchangeTypesExchangerDescriptionForUserMessage {
          this.typeDescription = typeDescription;
          this._isInitialized = true;
          return this;

@@ -45,17 +45,15 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
             {
                tmpCellId = (pMsgToProcess as CellClickMessage).cellId;
             }
+            else if((pMsgToProcess is EntityClickMessage) && (this._abstractEntitiesFrame.getEntityInfos((pMsgToProcess as EntityClickMessage).entity.id) is GameRolePlayGroupMonsterInformations))
+            {
+               tmpCellId = (pMsgToProcess as EntityClickMessage).entity.position.cellId;
+            }
             else
             {
-               if((pMsgToProcess is EntityClickMessage) && (this._abstractEntitiesFrame.getEntityInfos((pMsgToProcess as EntityClickMessage).entity.id) is GameRolePlayGroupMonsterInformations))
-               {
-                  tmpCellId = (pMsgToProcess as EntityClickMessage).entity.position.cellId;
-               }
-               else
-               {
-                  return false;
-               }
+               return false;
             }
+            
             if((!(entity == null)) && (!(entity.position.cellId == tmpCellId)))
             {
                pendingMessage = pMsgToProcess;
@@ -70,24 +68,20 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
                      position = MapPoint.fromCellId(ccm.cellId);
                   }
                }
-               else
+               else if(pMsgToProcess is EntityClickMessage)
                {
-                  if(pMsgToProcess is EntityClickMessage)
-                  {
-                     position = (pMsgToProcess as EntityClickMessage).entity.position;
-                  }
+                  position = (pMsgToProcess as EntityClickMessage).entity.position;
                }
+               
                return true;
             }
          }
-         else
+         else if((pMsgToProcess is CellClickMessage) && (!PlayedCharacterManager.getInstance().isFighting) && (pMode == ALWAYS))
          {
-            if((pMsgToProcess is CellClickMessage) && (!PlayedCharacterManager.getInstance().isFighting) && (pMode == ALWAYS))
-            {
-               this._fakepos = (pMsgToProcess as CellClickMessage).cellId;
-               return true;
-            }
+            this._fakepos = (pMsgToProcess as CellClickMessage).cellId;
+            return true;
          }
+         
          return false;
       }
       
@@ -97,21 +91,19 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          {
             isAvailableToStart = false;
          }
-         else
+         else if((pMsgToProcess is CharacterMovementStoppedMessage) || (pMsgToProcess is EntityMovementStoppedMessage))
          {
-            if((pMsgToProcess is CharacterMovementStoppedMessage) || (pMsgToProcess is EntityMovementStoppedMessage))
+            this._fakepos = -1;
+            entity = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
+            if((!(entity == null)) && (entity.position.cellId == position.cellId))
             {
                this._fakepos = -1;
-               entity = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
-               if((!(entity == null)) && (entity.position.cellId == position.cellId))
-               {
-                  this._fakepos = -1;
-                  actionStarted = true;
-                  return true;
-               }
-               this._fakepos = entity.position.cellId;
+               actionStarted = true;
+               return true;
             }
+            this._fakepos = entity.position.cellId;
          }
+         
          return false;
       }
       

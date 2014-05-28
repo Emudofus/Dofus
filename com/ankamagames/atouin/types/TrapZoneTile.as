@@ -26,7 +26,7 @@ package com.ankamagames.atouin.types
       
       public var strata:uint = 10;
       
-      public function display(strata:uint=0) : void {
+      public function display(strata:uint = 0) : void {
          EntitiesDisplayManager.getInstance().displayEntity(this,MapPoint.fromCellId(this._cellId),strata);
          this._displayed = true;
       }

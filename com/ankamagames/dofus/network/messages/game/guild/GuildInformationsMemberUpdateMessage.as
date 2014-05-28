@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5597;
       }
       
-      public function initGuildInformationsMemberUpdateMessage(member:GuildMember=null) : GuildInformationsMemberUpdateMessage {
+      public function initGuildInformationsMemberUpdateMessage(member:GuildMember = null) : GuildInformationsMemberUpdateMessage {
          this.member = member;
          this._isInitialized = true;
          return this;

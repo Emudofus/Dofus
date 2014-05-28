@@ -36,9 +36,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FightPointCellFrame));
+      protected static const _log:Logger;
       
-      private static const TARGET_COLOR:Color = new Color(16548386);
+      private static const TARGET_COLOR:Color;
       
       private static const SELECTION_TARGET:String = "SpellCastTarget";
       
@@ -93,6 +93,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
             case msg is AdjacentMapClickMessage:
                this.cancelShow();
                return true;
+            default:
+               return false;
          }
       }
       

@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
 {
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.look.IndexedEntityLook;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -22,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 410;
       }
       
-      public function initHumanOptionFollowers(followingCharactersLook:Vector.<IndexedEntityLook>=null) : HumanOptionFollowers {
+      public function initHumanOptionFollowers(followingCharactersLook:Vector.<IndexedEntityLook> = null) : HumanOptionFollowers {
          this.followingCharactersLook = followingCharactersLook;
          return this;
       }

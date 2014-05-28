@@ -3,7 +3,7 @@ package com.ankamagames.jerakine.json
    public class JSONToken extends Object
    {
       
-      public function JSONToken(type:int=-1, value:Object=null) {
+      public function JSONToken(type:int = -1, value:Object = null) {
          super();
          this._type = type;
          this._value = value;

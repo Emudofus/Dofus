@@ -8,7 +8,7 @@ package com.ankamagames.berilia.types.data
    public class UiData extends Object implements IModuleUtil
    {
       
-      public function UiData(module:UiModule, name:String, file:String, uiClassName:String, uiGroupName:String=null) {
+      public function UiData(module:UiModule, name:String, file:String, uiClassName:String, uiGroupName:String = null) {
          super();
          this._module = module;
          this._name = name;

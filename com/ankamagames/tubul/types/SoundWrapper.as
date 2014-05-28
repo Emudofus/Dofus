@@ -13,7 +13,7 @@ package com.ankamagames.tubul.types
    public class SoundWrapper extends EventDispatcher
    {
       
-      public function SoundWrapper(snd:Sound, loops:int=1) {
+      public function SoundWrapper(snd:Sound, loops:int = 1) {
          super();
          this._snd = snd;
          this._loops = loops;
@@ -211,7 +211,7 @@ package com.ankamagames.tubul.types
          var stInDic:* = undefined;
          if(this._stDic)
          {
-            for (stInDic in this._stDic)
+            for(stInDic in this._stDic)
             {
                return stInDic;
             }
@@ -229,7 +229,7 @@ package com.ankamagames.tubul.types
          return st;
       }
       
-      public function notifyWhenEndOfFile(pNotify:Boolean=false, pTime:Number=-1) : void {
+      public function notifyWhenEndOfFile(pNotify:Boolean = false, pTime:Number = -1) : void {
          this._notify = pNotify;
          if((pNotify) && (pTime <= 0))
          {

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5779;
       }
       
-      public function initExchangeRequestOnTaxCollectorMessage(taxCollectorId:int=0) : ExchangeRequestOnTaxCollectorMessage {
+      public function initExchangeRequestOnTaxCollectorMessage(taxCollectorId:int = 0) : ExchangeRequestOnTaxCollectorMessage {
          this.taxCollectorId = taxCollectorId;
          this._isInitialized = true;
          return this;

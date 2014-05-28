@@ -3,7 +3,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.berilia.interfaces.IApi;
    import com.ankamagames.dofus.logic.connection.frames.ServerSelectionFrame;
    import com.ankamagames.dofus.kernel.Kernel;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.connection.GameServerInformations;
    import com.ankamagames.dofus.logic.game.approach.frames.GameServerApproachFrame;
    import com.ankamagames.dofus.logic.common.managers.PlayerManager;
@@ -55,7 +54,7 @@ package com.ankamagames.dofus.uiApi
          var availableServers:Array = new Array();
          var serversList:Array = new Array();
          var playerCommuId:int = PlayerManager.getInstance().communityId;
-         for each (commuServeur in this.serverSelectionFrame.servers)
+         for each(commuServeur in this.serverSelectionFrame.servers)
          {
             currServer = Server.getServerById(commuServeur.id);
             if(currServer)
@@ -68,7 +67,7 @@ package com.ankamagames.dofus.uiApi
          }
          if(serversList.length == 0)
          {
-            for each (internationalServer in this.serverSelectionFrame.servers)
+            for each(internationalServer in this.serverSelectionFrame.servers)
             {
                currServerI = Server.getServerById(internationalServer.id);
                if((currServerI) && (currServerI.communityId == 2))
@@ -81,7 +80,7 @@ package com.ankamagames.dofus.uiApi
          if(serversList.length > 0)
          {
             firstPop = -1;
-            for each (server in serversList)
+            for each(server in serversList)
             {
                data = Server.getServerById(server.id);
                if((server.status == 3) && (firstPop == -1))

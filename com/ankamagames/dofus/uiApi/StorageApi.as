@@ -3,7 +3,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.berilia.interfaces.IApi;
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
    import com.ankamagames.dofus.datacenter.livingObjects.Pet;
    import com.ankamagames.dofus.datacenter.mounts.RideFood;
@@ -28,11 +27,11 @@ package com.ankamagames.dofus.uiApi
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(StorageApi));
+      private static const _log:Logger;
       
-      private static var _lastItemPosition:Array = new Array();
+      private static var _lastItemPosition:Array;
       
-      public static const ITEM_TYPE_TO_SERVER_POSITION:Array = [[],[0],[1],[2,4],[3],[5],[],[15],[1],[],[6],[7],[8],[9,10,11,12,13,14],[],[20],[21],[22,23],[24,25],[26],[27],[16],[],[28]];
+      public static const ITEM_TYPE_TO_SERVER_POSITION:Array;
       
       public static function itemSuperTypeToServerPosition(superTypeId:uint) : Array {
          return ITEM_TYPE_TO_SERVER_POSITION[superTypeId];
@@ -94,7 +93,7 @@ package com.ankamagames.dofus.uiApi
          var rideFoods:Array = RideFood.getRideFoods();
          var gids:Array = new Array();
          var typeIds:Array = new Array();
-         for each (rideFood in rideFoods)
+         for each(rideFood in rideFoods)
          {
             if(rideFood.gid != 0)
             {
@@ -105,7 +104,7 @@ package com.ankamagames.dofus.uiApi
                typeIds.push(rideFood.typeId);
             }
          }
-         for each (item in inventory)
+         for each(item in inventory)
          {
             it = Item.getItemById(item.objectGID);
             if((!(gids.indexOf(item.objectGID) == -1)) || (!(typeIds.indexOf(it.typeId) == -1)))
@@ -156,7 +155,7 @@ package com.ankamagames.dofus.uiApi
          {
             equipement = getViewContent("equipment");
             freeSlot = -1;
-            for each (pos in possiblePosition)
+            for each(pos in possiblePosition)
             {
                typeId = item.typeId;
                if((equipement[pos]) && (equipement[pos].objectGID == item.objectGID) && ((!(item.typeId == 9)) || (item.belongsToSet)))
@@ -167,7 +166,7 @@ package com.ankamagames.dofus.uiApi
             }
             if(freeSlot == -1)
             {
-               for each (pos in possiblePosition)
+               for each(pos in possiblePosition)
                {
                   if(!equipement[pos])
                   {
@@ -232,7 +231,7 @@ package com.ankamagames.dofus.uiApi
          {
             return null;
          }
-         for each (entry in dict)
+         for each(entry in dict)
          {
             array.push(entry);
          }
@@ -252,7 +251,7 @@ package com.ankamagames.dofus.uiApi
          {
             return null;
          }
-         for each (entry in dict)
+         for each(entry in dict)
          {
             array.push(entry);
          }
@@ -337,7 +336,7 @@ package com.ankamagames.dofus.uiApi
       public static function enableBidHouseFilter(allowedTypes:Object, maxItemLevel:uint) : void {
          var entry:uint = 0;
          var vtypes:Vector.<uint> = new Vector.<uint>();
-         for each (entry in allowedTypes)
+         for each(entry in allowedTypes)
          {
             vtypes.push(entry);
          }

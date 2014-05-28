@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 5725;
       }
       
-      public function initLivingObjectChangeSkinRequestMessage(livingUID:uint=0, livingPosition:uint=0, skinId:uint=0) : LivingObjectChangeSkinRequestMessage {
+      public function initLivingObjectChangeSkinRequestMessage(livingUID:uint = 0, livingPosition:uint = 0, skinId:uint = 0) : LivingObjectChangeSkinRequestMessage {
          this.livingUID = livingUID;
          this.livingPosition = livingPosition;
          this.skinId = skinId;

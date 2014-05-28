@@ -25,7 +25,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SynchronisationFrame));
+      protected static const _log:Logger;
       
       private static const STEP_TIME:uint = 2000;
       
@@ -63,6 +63,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                snMsg.initSequenceNumberMessage(this._synchroStep);
                ConnectionsHandler.getConnection().send(snMsg);
                return true;
+            default:
+               return false;
          }
       }
       

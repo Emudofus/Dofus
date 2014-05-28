@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.achievement
          return 404;
       }
       
-      public function initAchievementObjective(id:uint=0, maxValue:uint=0) : AchievementObjective {
+      public function initAchievementObjective(id:uint = 0, maxValue:uint = 0) : AchievementObjective {
          this.id = id;
          this.maxValue = maxValue;
          return this;

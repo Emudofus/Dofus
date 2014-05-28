@@ -38,7 +38,7 @@ package com.ankamagames.berilia.components.gridRenderer
          this._grid = g;
       }
       
-      public function render(data:*, index:uint, selected:Boolean, subIndex:uint=0) : DisplayObject {
+      public function render(data:*, index:uint, selected:Boolean, subIndex:uint = 0) : DisplayObject {
          var entDisp:EntityDisplayer = null;
          var ctr:GraphicContainer = new GraphicContainer();
          ctr.mouseEnabled = true;
@@ -71,7 +71,7 @@ package com.ankamagames.berilia.components.gridRenderer
          return ctr;
       }
       
-      public function update(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, subIndex:uint=0) : void {
+      public function update(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, subIndex:uint = 0) : void {
          var ctr:GraphicContainer = null;
          var ed:EntityDisplayer = null;
          var entDisp:EntityDisplayer = null;
@@ -109,18 +109,16 @@ package com.ankamagames.berilia.components.gridRenderer
                   entDisp.mask = this._mask;
                }
             }
-            else
+            else if(ed)
             {
-               if(ed)
+               ctr.removeChild(ed);
+               if((this._mask) && (ctr.getChildByName(this._mask.name)))
                {
-                  ctr.removeChild(ed);
-                  if((this._mask) && (ctr.getChildByName(this._mask.name)))
-                  {
-                     ctr.removeChild(this._mask);
-                  }
-                  ed.remove();
+                  ctr.removeChild(this._mask);
                }
+               ed.remove();
             }
+            
          }
       }
       

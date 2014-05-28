@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.spells
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.data.items.SpellItem;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.spells
          return 1200;
       }
       
-      public function initSpellListMessage(spellPrevisualization:Boolean=false, spells:Vector.<SpellItem>=null) : SpellListMessage {
+      public function initSpellListMessage(spellPrevisualization:Boolean = false, spells:Vector.<SpellItem> = null) : SpellListMessage {
          this.spellPrevisualization = spellPrevisualization;
          this.spells = spells;
          this._isInitialized = true;

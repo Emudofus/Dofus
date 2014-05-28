@@ -142,13 +142,13 @@ package com.ankamagames.atouin.renderers
          this._downloadTimer.addEventListener(TimerEvent.TIMER,this.onDownloadTimer);
       }
       
-      public static var MEMORY_LOG_1:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG_1:Dictionary;
       
-      public static var MEMORY_LOG_2:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG_2:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MapRenderer));
+      protected static const _log:Logger;
       
-      public static var cachedAsBitmapElement:Array = new Array();
+      public static var cachedAsBitmapElement:Array;
       
       public static var boundingBoxElements:Array;
       
@@ -262,7 +262,7 @@ package com.ankamagames.atouin.renderers
          this._container = container;
       }
       
-      public function render(dataContainer:DataMapContainer, forceReloadWithoutCache:Boolean=false, renderId:uint=0, renderFixture:Boolean=true) : void {
+      public function render(dataContainer:DataMapContainer, forceReloadWithoutCache:Boolean = false, renderId:uint = 0, renderFixture:Boolean = true) : void {
          var uri:Uri = null;
          var isJpg:* = false;
          var nged:NormalGraphicalElementData = null;
@@ -307,30 +307,24 @@ package com.ankamagames.atouin.renderers
                {
                   this._hasGroundJPG = true;
                }
-               else
+               else if(cacheStatus == GroundCache.GROUND_CACHE_NOT_AVAILABLE)
                {
-                  if(cacheStatus == GroundCache.GROUND_CACHE_NOT_AVAILABLE)
-                  {
-                     this._hasGroundJPG = false;
-                  }
-                  else
-                  {
-                     if(cacheStatus == GroundCache.GROUND_CACHE_ERROR)
-                     {
-                        this._hasGroundJPG = false;
-                        groundCacheMode = 0;
-                        Atouin.getInstance().options.groundCacheMode = 0;
-                     }
-                     else
-                     {
-                        if(cacheStatus == GroundCache.GROUND_CACHE_SKIP)
-                        {
-                           this._skipGroundCache = true;
-                           this._hasGroundJPG = false;
-                        }
-                     }
-                  }
+                  this._hasGroundJPG = false;
                }
+               else if(cacheStatus == GroundCache.GROUND_CACHE_ERROR)
+               {
+                  this._hasGroundJPG = false;
+                  groundCacheMode = 0;
+                  Atouin.getInstance().options.groundCacheMode = 0;
+               }
+               else if(cacheStatus == GroundCache.GROUND_CACHE_SKIP)
+               {
+                  this._skipGroundCache = true;
+                  this._hasGroundJPG = false;
+               }
+               
+               
+               
             }
             else
             {
@@ -355,7 +349,7 @@ package com.ankamagames.atouin.renderers
          var gfxList:Array = this._map.getGfxList(this._hasGroundJPG);
          var lc:LoaderContext = new LoaderContext();
          AirScanner.allowByteCodeExecution(lc,true);
-         for each (elementData in gfxList)
+         for each(elementData in gfxList)
          {
             if(elementData is NormalGraphicalElementData)
             {
@@ -372,27 +366,25 @@ package com.ankamagames.atouin.renderers
                   this._cacheRef[nged.gfxId] = "RES_" + uri.toSum();
                   this._swfApplicationDomain[nged.gfxId] = applicationDomain;
                }
+               else if(this._bitmapsGfx[nged.gfxId])
+               {
+                  bitmapsGfx[nged.gfxId] = this._bitmapsGfx[nged.gfxId];
+               }
                else
                {
-                  if(this._bitmapsGfx[nged.gfxId])
-                  {
-                     bitmapsGfx[nged.gfxId] = this._bitmapsGfx[nged.gfxId];
-                  }
-                  else
-                  {
-                     isJpg = Elements.getInstance().isJpg(nged.gfxId);
-                     uri = new Uri(this._gfxPath + "/" + (isJpg?this._gfxSubPathJpg:this._gfxSubPathPng) + "/" + nged.gfxId + "." + (isJpg?"jpg":this._extension));
-                     gfxUri.push(uri);
-                     this._hasBitmapGxf = true;
-                     uri.tag = nged.gfxId;
-                     this._cacheRef[nged.gfxId] = "RES_" + uri.toSum();
-                  }
+                  isJpg = Elements.getInstance().isJpg(nged.gfxId);
+                  uri = new Uri(this._gfxPath + "/" + (isJpg?this._gfxSubPathJpg:this._gfxSubPathPng) + "/" + nged.gfxId + "." + (isJpg?"jpg":this._extension));
+                  gfxUri.push(uri);
+                  this._hasBitmapGxf = true;
+                  uri.tag = nged.gfxId;
+                  this._cacheRef[nged.gfxId] = "RES_" + uri.toSum();
                }
+               
             }
          }
          if((!this._hasGroundJPG) && (renderFixture))
          {
-            for each (bg in this._map.backgroundFixtures)
+            for each(bg in this._map.backgroundFixtures)
             {
                if(this._bitmapsGfx[bg.fixtureId])
                {
@@ -411,7 +403,7 @@ package com.ankamagames.atouin.renderers
          }
          if(renderFixture)
          {
-            for each (bg in this._map.foregroundFixtures)
+            for each(bg in this._map.foregroundFixtures)
             {
                if(this._bitmapsGfx[bg.fixtureId])
                {
@@ -492,65 +484,57 @@ package com.ankamagames.atouin.renderers
          {
             this._container.opaqueBackground = 0;
          }
-         else
+         else if((!activated) && (this._map))
          {
-            if((!activated) && (this._map))
+            if(this._renderBackgroundColor)
             {
-               if(this._renderBackgroundColor)
-               {
-                  this._container.opaqueBackground = this._map.backgroundColor;
-               }
+               this._container.opaqueBackground = this._map.backgroundColor;
             }
          }
+         
          this._tacticModeActivated = activated;
          if((!activated) && (this._layersData) && (this._layersData.length > 0))
          {
-            for each (o in this._layersData)
+            for each(o in this._layersData)
             {
                o.data.visible = true;
             }
             this._layersData = null;
          }
-         else
+         else if((activated) && (this._groundIsLoaded))
          {
-            if((activated) && (this._groundIsLoaded))
+            this._layersData = new Array();
+            o = new Object();
+            o.data = this._container.getChildAt(0);
+            o.index = 0;
+            this._layersData.push(o);
+            o.data.visible = false;
+         }
+         else if(activated)
+         {
+            this._layersData = new Array();
+            while(!(this._container.getChildAt(i) is LayerContainer))
             {
-               this._layersData = new Array();
                o = new Object();
-               o.data = this._container.getChildAt(0);
-               o.index = 0;
+               layerCtr = this._container.getChildAt(i);
+               o.data = layerCtr;
+               o.index = i;
                this._layersData.push(o);
-               o.data.visible = false;
-            }
-            else
-            {
-               if(activated)
-               {
-                  this._layersData = new Array();
-                  while(!(this._container.getChildAt(i) is LayerContainer))
-                  {
-                     o = new Object();
-                     layerCtr = this._container.getChildAt(i);
-                     o.data = layerCtr;
-                     o.index = i;
-                     this._layersData.push(o);
-                     layerCtr.visible = false;
-                     i++;
-                  }
-               }
+               layerCtr.visible = false;
+               i++;
             }
          }
+         
+         
          if((activated) && (!(this._bitmapForegroundContainer == null)))
          {
             this._bitmapForegroundContainer.visible = false;
          }
-         else
+         else if((!activated) && (!(this._bitmapForegroundContainer == null)))
          {
-            if((!activated) && (!(this._bitmapForegroundContainer == null)))
-            {
-               this._bitmapForegroundContainer.visible = true;
-            }
+            this._bitmapForegroundContainer.visible = true;
          }
+         
       }
       
       private function makeMap() : void {
@@ -597,7 +581,7 @@ package com.ankamagames.atouin.renderers
          var groundOnly:Boolean = OptionManager.getOptionManager("atouin").groundOnly;
          var lastCellId:int = 0;
          var currentCellId:uint = 0;
-         for each (layer in this._map.layers)
+         for each(layer in this._map.layers)
          {
             layerId = layer.layerId;
             if(layer.layerId != Layer.LAYER_GROUND)
@@ -677,13 +661,11 @@ package com.ankamagames.atouin.renderers
                   {
                      layerCtr.addChild(cellCtr as DisplayObject);
                   }
-                  else
+                  else if((!this._hasGroundJPG) && (groundLayer))
                   {
-                     if((!this._hasGroundJPG) && (groundLayer))
-                     {
-                        this.drawGround(groundLayerCtr,cellCtr as BitmapCellContainer);
-                     }
+                     this.drawGround(groundLayerCtr,cellCtr as BitmapCellContainer);
                   }
+                  
                   this._dataMapContainer.getCellReference(currentCellId).addSprite(cellCtr as DisplayObject);
                   this._dataMapContainer.getCellReference(currentCellId).x = cellCtr.x;
                   this._dataMapContainer.getCellReference(currentCellId).y = cellCtr.y;
@@ -722,21 +704,19 @@ package com.ankamagames.atouin.renderers
                   layerCtr.scaleX = layerCtr.scaleY = 1 / _groundGlobalScaleRatio;
                   this._container.addChild(layerCtr);
                }
-               else
+               else if((!this._hasGroundJPG) && (groundLayer))
                {
-                  if((!this._hasGroundJPG) && (groundLayer))
-                  {
-                     reelBmpDt = new BitmapData(AtouinConstants.RESOLUTION_HIGH_QUALITY.x,AtouinConstants.RESOLUTION_HIGH_QUALITY.y,!this._renderBackgroundColor,this._renderBackgroundColor?this._map.backgroundColor:0);
-                     m = new Matrix();
-                     m.scale(1 / _groundGlobalScaleRatio,1 / _groundGlobalScaleRatio);
-                     reelBmpDt.lock();
-                     reelBmpDt.draw(groundLayerCtr.bitmapData,m,null,null,null,true);
-                     reelBmpDt.unlock();
-                     tmp = new Bitmap(reelBmpDt,"auto",true);
-                     tmp.x = -_bitmapOffsetPoint.x;
-                     this._container.addChild(tmp);
-                  }
+                  reelBmpDt = new BitmapData(AtouinConstants.RESOLUTION_HIGH_QUALITY.x,AtouinConstants.RESOLUTION_HIGH_QUALITY.y,!this._renderBackgroundColor,this._renderBackgroundColor?this._map.backgroundColor:0);
+                  m = new Matrix();
+                  m.scale(1 / _groundGlobalScaleRatio,1 / _groundGlobalScaleRatio);
+                  reelBmpDt.lock();
+                  reelBmpDt.draw(groundLayerCtr.bitmapData,m,null,null,null,true);
+                  reelBmpDt.unlock();
+                  tmp = new Bitmap(reelBmpDt,"auto",true);
+                  tmp.x = -_bitmapOffsetPoint.x;
+                  this._container.addChild(tmp);
                }
+               
                if((!this._skipGroundCache) && (!this._hasGroundJPG) && (layerId == Layer.LAYER_GROUND))
                {
                   try
@@ -883,7 +863,7 @@ package com.ankamagames.atouin.renderers
          }
       }
       
-      private function addCellBitmapsElements(cell:Cell, cellCtr:ICellContainer, transparent:Boolean=false, ground:Boolean=false) : Boolean {
+      private function addCellBitmapsElements(cell:Cell, cellCtr:ICellContainer, transparent:Boolean = false, ground:Boolean = false) : Boolean {
          var elementDo:Object = null;
          var data:VisualData = null;
          var colors:Object = null;
@@ -938,52 +918,48 @@ package com.ankamagames.atouin.renderers
                            {
                               elementDo = new applicationDomain.getDefinition("FX_0")() as Sprite;
                            }
+                           else if(this._map.getGfxCount(ged.gfxId) > 1)
+                           {
+                              if(ASwf(objectInfo).content == null)
+                              {
+                                 _log.fatal("Impossible d\'afficher le picto " + ged.gfxId + " (format swf), le swf est probablement compilé en AS2");
+                                 continue;
+                              }
+                              ra = new RasterizedAnimation(ASwf(objectInfo).content as MovieClip,String(ged.gfxId));
+                              ra.gotoAndStop("1");
+                              ra.smoothing = true;
+                              elementDo = FpsControler.controlFps(ra,uint.MAX_VALUE);
+                              cacheAsBitmap = false;
+                           }
                            else
                            {
-                              if(this._map.getGfxCount(ged.gfxId) > 1)
+                              elementDo = ASwf(objectInfo).content;
+                              if(elementDo is MovieClip)
                               {
-                                 if(ASwf(objectInfo).content == null)
+                                 if(!MovieClipUtils.isSingleFrame(elementDo as MovieClip))
                                  {
-                                    _log.fatal("Impossible d\'afficher le picto " + ged.gfxId + " (format swf), le swf est probablement compilé en AS2");
-                                    continue;
-                                 }
-                                 ra = new RasterizedAnimation(ASwf(objectInfo).content as MovieClip,String(ged.gfxId));
-                                 ra.gotoAndStop("1");
-                                 ra.smoothing = true;
-                                 elementDo = FpsControler.controlFps(ra,uint.MAX_VALUE);
-                                 cacheAsBitmap = false;
-                              }
-                              else
-                              {
-                                 elementDo = ASwf(objectInfo).content;
-                                 if(elementDo is MovieClip)
-                                 {
-                                    if(!MovieClipUtils.isSingleFrame(elementDo as MovieClip))
-                                    {
-                                       cacheAsBitmap = false;
-                                    }
+                                    cacheAsBitmap = false;
                                  }
                               }
                            }
+                           
                            data.scaleX = 1;
                            data.x = data.y = 0;
                         }
+                        else if(ground)
+                        {
+                           elementDo = this._bitmapsGfx[ged.gfxId];
+                        }
                         else
                         {
-                           if(ground)
+                           elementDo = new MapGfxBitmap(this._bitmapsGfx[ged.gfxId],"never",this._useSmooth,ge.identifier);
+                           elementDo.cacheAsBitmap = this._pictoAsBitmap;
+                           if(this._pictoAsBitmap)
                            {
-                              elementDo = this._bitmapsGfx[ged.gfxId];
-                           }
-                           else
-                           {
-                              elementDo = new MapGfxBitmap(this._bitmapsGfx[ged.gfxId],"never",this._useSmooth,ge.identifier);
-                              elementDo.cacheAsBitmap = this._pictoAsBitmap;
-                              if(this._pictoAsBitmap)
-                              {
-                                 cachedAsBitmapElement.push(elementDo);
-                              }
+                              cachedAsBitmapElement.push(elementDo);
                            }
                         }
+                        
                         data.x = data.x - ged.origin.x;
                         data.y = data.y - ged.origin.y;
                         if(ged.horizontalSymmetry)
@@ -993,13 +969,11 @@ package com.ankamagames.atouin.renderers
                            {
                               data.x = data.x + ASwf(this._swfGfx[ged.gfxId]).loaderWidth;
                            }
-                           else
+                           else if(elementDo)
                            {
-                              if(elementDo)
-                              {
-                                 data.x = data.x + elementDo.width;
-                              }
+                              data.x = data.x + elementDo.width;
                            }
+                           
                         }
                         if(ged is BoundingBoxGraphicalElementData)
                         {
@@ -1171,7 +1145,7 @@ package com.ankamagames.atouin.renderers
             return;
          }
          var smoothing:Boolean = OptionManager.getOptionManager("atouin").useSmooth;
-         for each (fixture in fixtures)
+         for each(fixture in fixtures)
          {
             bmpdt = this._bitmapsGfx[fixture.fixtureId];
             if(!bmpdt)

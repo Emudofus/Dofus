@@ -34,7 +34,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightCarryCharacterStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightCarryCharacterStep(fighterId:int, carriedId:int, cellId:int=-1, noAnimation:Boolean=false) {
+      public function FightCarryCharacterStep(fighterId:int, carriedId:int, cellId:int = -1, noAnimation:Boolean = false) {
          super();
          this._fighterId = fighterId;
          this._carriedId = carriedId;
@@ -122,7 +122,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
                cellEntities = EntitiesManager.getInstance().getEntitiesOnCell(targetPosition.cellId);
                carryingEntityOnCell = false;
                carriedEntityOnCell = false;
-               for each (cellEntity in cellEntities)
+               for each(cellEntity in cellEntities)
                {
                   if((cellEntity == carriedEntity) || (cellEntity.getSubEntitySlot(2,0) == carriedEntity))
                   {
@@ -177,7 +177,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          }
       }
       
-      private function carryFinished(e:Event=null) : void {
+      private function carryFinished(e:Event = null) : void {
          if(this._carrySubSequence)
          {
             this._carrySubSequence.removeEventListener(SequencerEvent.SEQUENCE_END,this.carryFinished);
@@ -199,7 +199,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          executeCallbacks();
       }
       
-      private function restart(pEvt:Event=null) : void {
+      private function restart(pEvt:Event = null) : void {
          pEvt.currentTarget.removeEventListener(TiphonEvent.SUB_ENTITY_ADDED,this.restart);
          this.start();
       }

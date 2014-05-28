@@ -36,7 +36,7 @@ package com.ankamagames.berilia.components
       
       private static const _strReplace:String = "NoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLog";
       
-      private static var regSpace:RegExp = new RegExp("\\s","g");
+      private static var regSpace:RegExp;
       
       public static var numberStrSeparator:String;
       
@@ -238,79 +238,81 @@ package com.ankamagames.berilia.components
          var pattern1:RegExp = new RegExp(regSpace);
          do
          {
-               str2 = tmp;
-               tmp = str2.replace(pattern1,"");
-            }while(str2 != tmp);
-            
-            do
-            {
-                  str2 = tmp;
-                  tmp = str2.replace(this._numberSeparator,"");
-               }while(str2 != tmp);
-               
-               return str2;
-            }
-            
-            private function onTimerFormatDelay(e:TimerEvent) : void {
-               var newStringWithSpaces:String = null;
-               this._timerFormatDelay.removeEventListener(TimerEvent.TIMER,this.onTimerFormatDelay);
-               var caret:int = caretIndex;
-               var startText:String = _tText.text;
-               var i:int = 0;
-               this._nSelectionStart = _tText.selectionBeginIndex;
-               this._nSelectionEnd = _tText.selectionEndIndex;
-               i = 0;
-               while(i < _tText.length - 1)
-               {
-                  if((startText.charAt(i) == this._numberSeparator) || (startText.charAt(i) == " "))
-                  {
-                     if(i < caret)
-                     {
-                        caret--;
-                     }
-                     if(i < this._nSelectionStart)
-                     {
-                        this._nSelectionStart--;
-                     }
-                     if(i < this._nSelectionEnd)
-                     {
-                        this._nSelectionEnd--;
-                     }
-                  }
-                  i++;
-               }
-               var tempString:String = this.removeSpace(startText);
-               var toInt:Number = parseFloat(tempString);
-               if((toInt) && (!isNaN(toInt)))
-               {
-                  newStringWithSpaces = StringUtils.formateIntToString(toInt);
-                  i = 0;
-                  while(i < newStringWithSpaces.length - 1)
-                  {
-                     if(newStringWithSpaces.charAt(i) == this._numberSeparator)
-                     {
-                        if(i < caret)
-                        {
-                           caret++;
-                        }
-                        if(i < this._nSelectionStart)
-                        {
-                           this._nSelectionStart++;
-                        }
-                        if(i < this._nSelectionEnd)
-                        {
-                           this._nSelectionEnd++;
-                        }
-                     }
-                     i++;
-                  }
-                  super.text = newStringWithSpaces;
-                  caretIndex = caret;
-               }
-               if(this._nSelectionStart != this._nSelectionEnd)
-               {
-                  _tText.setSelection(this._nSelectionStart,this._nSelectionEnd);
-               }
-            }
+            str2 = tmp;
+            tmp = str2.replace(pattern1,"");
          }
+         while(str2 != tmp);
+         
+         do
+         {
+            str2 = tmp;
+            tmp = str2.replace(this._numberSeparator,"");
+         }
+         while(str2 != tmp);
+         
+         return str2;
       }
+      
+		private function onTimerFormatDelay(e:TimerEvent) : void {
+		   var newStringWithSpaces:String = null;
+		   this._timerFormatDelay.removeEventListener(TimerEvent.TIMER,this.onTimerFormatDelay);
+		   var caret:int = caretIndex;
+		   var startText:String = _tText.text;
+		   var i:int = 0;
+		   this._nSelectionStart = _tText.selectionBeginIndex;
+		   this._nSelectionEnd = _tText.selectionEndIndex;
+		   i = 0;
+		   while(i < _tText.length - 1)
+		   {
+			  if((startText.charAt(i) == this._numberSeparator) || (startText.charAt(i) == " "))
+			  {
+				 if(i < caret)
+				 {
+					caret--;
+				 }
+				 if(i < this._nSelectionStart)
+				 {
+					this._nSelectionStart--;
+				 }
+				 if(i < this._nSelectionEnd)
+				 {
+					this._nSelectionEnd--;
+				 }
+			  }
+			  i++;
+		   }
+		   var tempString:String = this.removeSpace(startText);
+		   var toInt:Number = parseFloat(tempString);
+		   if((toInt) && (!isNaN(toInt)))
+		   {
+			  newStringWithSpaces = StringUtils.formateIntToString(toInt);
+			  i = 0;
+			  while(i < newStringWithSpaces.length - 1)
+			  {
+				 if(newStringWithSpaces.charAt(i) == this._numberSeparator)
+				 {
+					if(i < caret)
+					{
+					   caret++;
+					}
+					if(i < this._nSelectionStart)
+					{
+					   this._nSelectionStart++;
+					}
+					if(i < this._nSelectionEnd)
+					{
+					   this._nSelectionEnd++;
+					}
+				 }
+				 i++;
+			  }
+			  super.text = newStringWithSpaces;
+			  caretIndex = caret;
+		   }
+		   if(this._nSelectionStart != this._nSelectionEnd)
+		   {
+			  _tText.setSelection(this._nSelectionStart,this._nSelectionEnd);
+		   }
+		}
+   }
+}

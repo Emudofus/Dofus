@@ -11,11 +11,11 @@ package by.blooddy.crypto.image
          Error.throwError(ArgumentError,2012,getQualifiedClassName(this));
       }
       
-      private static const _quantTables:Array = new Array();
+      private static const _quantTables:Array;
       
       private static var _jpegTable:ByteArray;
       
-      public static function getTable(quality:uint=60) : ByteArray {
+      public static function getTable(quality:uint = 60) : ByteArray {
          if(quality > 100)
          {
             Error.throwError(RangeError,2006,"quality");

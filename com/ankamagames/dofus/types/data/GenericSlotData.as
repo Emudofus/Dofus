@@ -7,7 +7,7 @@ package com.ankamagames.dofus.types.data
    public dynamic class GenericSlotData extends Object implements ISlotData
    {
       
-      public function GenericSlotData(iconUri:Uri=null, fullSizeIconUri:Uri=null, errorIconUri:Uri=null, info1:String=null, active:Boolean=true, timer:int=0) {
+      public function GenericSlotData(iconUri:Uri = null, fullSizeIconUri:Uri = null, errorIconUri:Uri = null, info1:String = null, active:Boolean = true, timer:int = 0) {
          super();
          this._iconUri = iconUri;
          this._fullSizeIconUri = fullSizeIconUri;

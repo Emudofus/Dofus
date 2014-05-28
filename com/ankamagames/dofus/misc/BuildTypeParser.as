@@ -24,6 +24,8 @@ package com.ankamagames.dofus.misc
                return "INTERNAL";
             case BuildTypeEnum.DEBUG:
                return "DEBUG";
+            default:
+               return "UNKNOWN";
          }
       }
       
@@ -42,6 +44,8 @@ package com.ankamagames.dofus.misc
                return 6724095;
             case BuildTypeEnum.DEBUG:
                return 10053375;
+            default:
+               return 16777215;
          }
       }
    }

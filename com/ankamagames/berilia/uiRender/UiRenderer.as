@@ -56,13 +56,13 @@ package com.ankamagames.berilia.uiRender
          MEMORY_LOG[this] = 1;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      public static var MEMORY_LOG_2:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG_2:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UiRenderer));
+      protected static const _log:Logger;
       
-      public static var componentsPools:Array = new Array();
+      public static var componentsPools:Array;
       
       protected var _scUi:UiRootContainer;
       
@@ -104,7 +104,7 @@ package com.ankamagames.berilia.uiRender
          return this._scriptClass;
       }
       
-      public function fileRender(sUrl:String, sName:String, scUi:UiRootContainer, oProperties:*=null) : void {
+      public function fileRender(sUrl:String, sName:String, scUi:UiRootContainer, oProperties:* = null) : void {
          this._nTimeStamp = getTimer();
          this._oProperties = oProperties;
          this._sName = sName;
@@ -116,7 +116,7 @@ package com.ankamagames.berilia.uiRender
          this._xpParser.processFile(sUrl);
       }
       
-      public function xmlRender(sXml:String, sName:String, scUi:UiRootContainer, oProperties:*=null) : void {
+      public function xmlRender(sXml:String, sName:String, scUi:UiRootContainer, oProperties:* = null) : void {
          this._nTimeStamp = getTimer();
          this._oProperties = oProperties;
          this._sName = sName;
@@ -128,7 +128,7 @@ package com.ankamagames.berilia.uiRender
          this._xpParser.processXml(sXml);
       }
       
-      public function uiRender(uiDef:UiDefinition, sName:String, scUi:UiRootContainer, oProperties:*=null) : void {
+      public function uiRender(uiDef:UiDefinition, sName:String, scUi:UiRootContainer, oProperties:* = null) : void {
          var constKey:String = null;
          MEMORY_LOG_2[oProperties] = 1;
          if(!this._nTimeStamp)
@@ -160,7 +160,7 @@ package com.ankamagames.berilia.uiRender
          }
          this._scUi.scalable = this._uiDef.scalable;
          var constants:Array = [];
-         for (constKey in this._uiDef.constants)
+         for(constKey in this._uiDef.constants)
          {
             constants[constKey] = LangManager.getInstance().replaceKey(this._uiDef.constants[constKey]);
          }
@@ -424,13 +424,13 @@ package com.ankamagames.berilia.uiRender
                this._scUi.addPostFinalizeComponent(container as FinalizableUIComponent);
                break;
             case ce is GridElement:
-               container = new getDefinitionByName(ce.className) as Class();
+               container = new (getDefinitionByName(ce.className) as Class)();
                break;
             case ce is ContainerElement:
                container = new GraphicContainer();
                break;
          }
-         for (sProperty in ce.properties)
+         for(sProperty in ce.properties)
          {
             if(ce.properties[sProperty] is String)
             {
@@ -451,7 +451,7 @@ package com.ankamagames.berilia.uiRender
          var cComponent:Class = getDefinitionByName(ce.className) as Class;
          uiComponent = new cComponent() as UIComponent;
          InternalComponentAccess.setProperty(uiComponent,"_uiRootContainer",this._scUi);
-         for (sProperty in ce.properties)
+         for(sProperty in ce.properties)
          {
             if(ce.properties[sProperty] is String)
             {
@@ -491,11 +491,11 @@ package com.ankamagames.berilia.uiRender
          }
          this._xmlClassDef = DescribeTypeCache.typeDescription(this._scUi.uiClass);
          var variables:Array = new Array();
-         for each (variable in this._xmlClassDef..variable)
+         for each(variable in this._xmlClassDef..variable)
          {
             variables[variable.@name.toString()] = true;
          }
-         for (i in this._scUi.getElements())
+         for(i in this._scUi.getElements())
          {
             sVariable = this._scUi.getElements()[i].name;
             if(variables[sVariable])

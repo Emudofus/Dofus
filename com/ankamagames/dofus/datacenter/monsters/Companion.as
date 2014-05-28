@@ -2,7 +2,6 @@ package com.ankamagames.dofus.datacenter.monsters
 {
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.data.GameData;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.data.I18n;
    
    public class Companion extends Object implements IDataCenter

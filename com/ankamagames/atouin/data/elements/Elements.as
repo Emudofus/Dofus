@@ -34,7 +34,7 @@ package com.ankamagames.atouin.data.elements
          return _self;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Elements));
+      protected static const _log:Logger;
       
       public var fileVersion:uint;
       

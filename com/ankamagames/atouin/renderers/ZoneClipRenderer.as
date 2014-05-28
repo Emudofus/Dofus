@@ -3,7 +3,6 @@ package com.ankamagames.atouin.renderers
    import com.ankamagames.atouin.utils.IZoneRenderer;
    import com.ankamagames.atouin.types.ZoneClipTile;
    import com.ankamagames.jerakine.types.Uri;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.types.Color;
    import com.ankamagames.atouin.types.DataMapContainer;
    import com.ankamagames.jerakine.utils.prng.ParkMillerCarta;
@@ -14,7 +13,7 @@ package com.ankamagames.atouin.renderers
    public class ZoneClipRenderer extends Object implements IZoneRenderer
    {
       
-      public function ZoneClipRenderer(nStrata:uint, pClipUri:String, pClipName:Array, pCurrentMap:int=-1, pNeedBorders:Boolean=false) {
+      public function ZoneClipRenderer(nStrata:uint, pClipUri:String, pClipName:Array, pCurrentMap:int = -1, pNeedBorders:Boolean = false) {
          super();
          this._aZoneTile = new Array();
          this._aCellTile = new Array();
@@ -26,7 +25,7 @@ package com.ankamagames.atouin.renderers
          Atouin.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
       }
       
-      private static var zoneTile:Array = new Array();
+      private static var zoneTile:Array;
       
       private static function getZoneTile(pUri:Uri, pClipName:String, pNeedBorders:Boolean) : ZoneClipTile {
          var zct:ZoneClipTile = null;
@@ -78,7 +77,7 @@ package com.ankamagames.atouin.renderers
       
       protected var _cells:Vector.<uint>;
       
-      public function render(cells:Vector.<uint>, oColor:Color, mapContainer:DataMapContainer, bAlpha:Boolean=false, updateStrata:Boolean=false) : void {
+      public function render(cells:Vector.<uint>, oColor:Color, mapContainer:DataMapContainer, bAlpha:Boolean = false, updateStrata:Boolean = false) : void {
          var rndNum:* = 0;
          var j:* = 0;
          var zt:ZoneClipTile = null;
@@ -168,7 +167,6 @@ package com.ankamagames.atouin.renderers
    }
 }
 import com.ankamagames.atouin.types.ZoneClipTile;
-import __AS3__.vec.*;
 
 class CachedTile extends Object
 {

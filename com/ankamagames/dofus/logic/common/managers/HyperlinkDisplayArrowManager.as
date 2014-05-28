@@ -21,7 +21,7 @@ package com.ankamagames.dofus.logic.common.managers
          super();
       }
       
-      private static const ARROW_CLIP:Class = HyperlinkDisplayArrowManager_ARROW_CLIP;
+      private static const ARROW_CLIP:Class;
       
       private static var _arrowClip:MovieClip;
       
@@ -39,9 +39,9 @@ package com.ankamagames.dofus.logic.common.managers
       
       private static var _lastReverse:int;
       
-      private static var _arrowPositions:Dictionary = new Dictionary();
+      private static var _arrowPositions:Dictionary;
       
-      public static function showArrow(uiName:String, componentName:String, pos:int=0, reverse:int=0, strata:int=5, loop:int=0) : MovieClip {
+      public static function showArrow(uiName:String, componentName:String, pos:int = 0, reverse:int = 0, strata:int = 5, loop:int = 0) : MovieClip {
          var uirc:UiRootContainer = null;
          var displayObject:DisplayObject = null;
          var rect:Rectangle = null;
@@ -88,7 +88,7 @@ package com.ankamagames.dofus.logic.common.managers
          return showAbsoluteArrow(new Rectangle(int(uiName),int(componentName)),pos,reverse,strata,loop);
       }
       
-      public static function showAbsoluteArrow(targetRect:Rectangle, pos:int=0, reverse:int=0, strata:int=5, loop:int=0) : MovieClip {
+      public static function showAbsoluteArrow(targetRect:Rectangle, pos:int = 0, reverse:int = 0, strata:int = 5, loop:int = 0) : MovieClip {
          var arrow:MovieClip = getArrow(loop == 1);
          DisplayObjectContainer(Berilia.getInstance().docMain.getChildAt(strata)).addChild(arrow);
          place(arrow,targetRect,pos);
@@ -112,7 +112,7 @@ package com.ankamagames.dofus.logic.common.managers
          _arrowPositions[pUiName + "_" + pComponentName] = pPosition;
       }
       
-      public static function showMapTransition(mapId:int, shapeOrientation:int, position:int, reverse:int=0, strata:int=5, loop:int=0) : MovieClip {
+      public static function showMapTransition(mapId:int, shapeOrientation:int, position:int, reverse:int = 0, strata:int = 5, loop:int = 0) : MovieClip {
          var arrow:MovieClip = null;
          var x:uint = 0;
          var y:uint = 0;
@@ -163,7 +163,7 @@ package com.ankamagames.dofus.logic.common.managers
          return null;
       }
       
-      public static function destroyArrow(E:Event=null) : void {
+      public static function destroyArrow(E:Event = null) : void {
          if(E)
          {
             E.currentTarget.removeEventListener(TimerEvent.TIMER,destroyArrow);
@@ -189,7 +189,7 @@ package com.ankamagames.dofus.logic.common.managers
          }
       }
       
-      private static function getArrow(loop:Boolean=false) : MovieClip {
+      private static function getArrow(loop:Boolean = false) : MovieClip {
          if(_arrowClip)
          {
             _arrowClip.gotoAndPlay(1);
@@ -231,93 +231,77 @@ package com.ankamagames.dofus.logic.common.managers
             arrow.x = int(rect.x);
             arrow.y = int(rect.y);
          }
+         else if(pos == 1)
+         {
+            arrow.scaleX = 1;
+            arrow.scaleY = 1;
+            arrow.x = int(rect.x + rect.width / 2);
+            arrow.y = int(rect.y);
+         }
+         else if(pos == 2)
+         {
+            arrow.scaleX = -1;
+            arrow.scaleY = 1;
+            arrow.x = int(rect.x + rect.width);
+            arrow.y = int(rect.y);
+         }
+         else if(pos == 3)
+         {
+            arrow.scaleX = 1;
+            arrow.scaleY = 1;
+            arrow.x = int(rect.x);
+            arrow.y = int(rect.y + rect.height / 2);
+         }
+         else if(pos == 4)
+         {
+            arrow.scaleX = 1;
+            arrow.scaleY = 1;
+            arrow.x = int(rect.x + rect.width / 2);
+            arrow.y = int(rect.y + rect.height / 2);
+         }
+         else if(pos == 5)
+         {
+            arrow.scaleX = -1;
+            arrow.scaleY = 1;
+            arrow.x = int(rect.x + rect.width);
+            arrow.y = int(rect.y + rect.height / 2);
+         }
+         else if(pos == 6)
+         {
+            arrow.scaleX = 1;
+            arrow.scaleY = -1;
+            arrow.x = int(rect.x);
+            arrow.y = int(rect.y + rect.height);
+         }
+         else if(pos == 7)
+         {
+            arrow.scaleX = 1;
+            arrow.scaleY = -1;
+            arrow.x = int(rect.x + rect.width / 2);
+            arrow.y = int(rect.y + rect.height);
+         }
+         else if(pos == 8)
+         {
+            arrow.scaleY = -1;
+            arrow.scaleX = -1;
+            arrow.x = int(rect.x + rect.width);
+            arrow.y = int(rect.y + rect.height);
+         }
          else
          {
-            if(pos == 1)
-            {
-               arrow.scaleX = 1;
-               arrow.scaleY = 1;
-               arrow.x = int(rect.x + rect.width / 2);
-               arrow.y = int(rect.y);
-            }
-            else
-            {
-               if(pos == 2)
-               {
-                  arrow.scaleX = -1;
-                  arrow.scaleY = 1;
-                  arrow.x = int(rect.x + rect.width);
-                  arrow.y = int(rect.y);
-               }
-               else
-               {
-                  if(pos == 3)
-                  {
-                     arrow.scaleX = 1;
-                     arrow.scaleY = 1;
-                     arrow.x = int(rect.x);
-                     arrow.y = int(rect.y + rect.height / 2);
-                  }
-                  else
-                  {
-                     if(pos == 4)
-                     {
-                        arrow.scaleX = 1;
-                        arrow.scaleY = 1;
-                        arrow.x = int(rect.x + rect.width / 2);
-                        arrow.y = int(rect.y + rect.height / 2);
-                     }
-                     else
-                     {
-                        if(pos == 5)
-                        {
-                           arrow.scaleX = -1;
-                           arrow.scaleY = 1;
-                           arrow.x = int(rect.x + rect.width);
-                           arrow.y = int(rect.y + rect.height / 2);
-                        }
-                        else
-                        {
-                           if(pos == 6)
-                           {
-                              arrow.scaleX = 1;
-                              arrow.scaleY = -1;
-                              arrow.x = int(rect.x);
-                              arrow.y = int(rect.y + rect.height);
-                           }
-                           else
-                           {
-                              if(pos == 7)
-                              {
-                                 arrow.scaleX = 1;
-                                 arrow.scaleY = -1;
-                                 arrow.x = int(rect.x + rect.width / 2);
-                                 arrow.y = int(rect.y + rect.height);
-                              }
-                              else
-                              {
-                                 if(pos == 8)
-                                 {
-                                    arrow.scaleY = -1;
-                                    arrow.scaleX = -1;
-                                    arrow.x = int(rect.x + rect.width);
-                                    arrow.y = int(rect.y + rect.height);
-                                 }
-                                 else
-                                 {
-                                    arrow.scaleX = 1;
-                                    arrow.scaleY = 1;
-                                    arrow.x = int(rect.x);
-                                    arrow.y = int(rect.y);
-                                 }
-                              }
-                           }
-                        }
-                     }
-                  }
-               }
-            }
+            arrow.scaleX = 1;
+            arrow.scaleY = 1;
+            arrow.x = int(rect.x);
+            arrow.y = int(rect.y);
          }
+         
+         
+         
+         
+         
+         
+         
+         
       }
    }
 }

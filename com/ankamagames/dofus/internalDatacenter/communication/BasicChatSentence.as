@@ -5,7 +5,7 @@ package com.ankamagames.dofus.internalDatacenter.communication
    public class BasicChatSentence extends Object implements IDataCenter
    {
       
-      public function BasicChatSentence(id:uint, baseMsg:String, msg:String, channel:uint=0, time:Number=0, finger:String="") {
+      public function BasicChatSentence(id:uint, baseMsg:String, msg:String, channel:uint = 0, time:Number = 0, finger:String = "") {
          super();
          this._id = id;
          this._baseMsg = baseMsg;

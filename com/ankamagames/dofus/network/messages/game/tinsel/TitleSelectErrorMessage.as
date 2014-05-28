@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.tinsel
          return 6373;
       }
       
-      public function initTitleSelectErrorMessage(reason:uint=0) : TitleSelectErrorMessage {
+      public function initTitleSelectErrorMessage(reason:uint = 0) : TitleSelectErrorMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

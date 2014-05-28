@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 72;
       }
       
-      public function initObjectEffectDate(actionId:uint=0, year:uint=0, month:uint=0, day:uint=0, hour:uint=0, minute:uint=0) : ObjectEffectDate {
+      public function initObjectEffectDate(actionId:uint = 0, year:uint = 0, month:uint = 0, day:uint = 0, hour:uint = 0, minute:uint = 0) : ObjectEffectDate {
          super.initObjectEffect(actionId);
          this.year = year;
          this.month = month;

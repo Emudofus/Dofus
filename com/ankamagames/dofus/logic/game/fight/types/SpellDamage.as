@@ -5,7 +5,6 @@ package com.ankamagames.dofus.logic.game.fight.types
    import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
    import com.ankamagames.berilia.managers.HtmlManager;
    import com.ankamagames.dofus.datacenter.spells.SpellState;
-   import __AS3__.vec.*;
    
    public class SpellDamage extends Object
    {
@@ -36,7 +35,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get minDamage() : int {
          var ed:EffectDamage = null;
          this._minDamage = 0;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             this._minDamage = this._minDamage + ed.minDamage;
          }
@@ -52,7 +51,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get maxDamage() : int {
          var ed:EffectDamage = null;
          this._maxDamage = 0;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             this._maxDamage = this._maxDamage + ed.maxDamage;
          }
@@ -68,7 +67,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get minCriticalDamage() : int {
          var ed:EffectDamage = null;
          this._minCriticalDamage = 0;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             this._minCriticalDamage = this._minCriticalDamage + ed.minCriticalDamage;
          }
@@ -84,7 +83,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get maxCriticalDamage() : int {
          var ed:EffectDamage = null;
          this._maxCriticalDamage = 0;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             this._maxCriticalDamage = this._maxCriticalDamage + ed.maxCriticalDamage;
          }
@@ -98,7 +97,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get minErosionDamage() : int {
          var minErosion:* = 0;
          var ed:EffectDamage = null;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             minErosion = minErosion + ed.minErosionDamage;
          }
@@ -108,7 +107,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get maxErosionDamage() : int {
          var maxErosion:* = 0;
          var ed:EffectDamage = null;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             maxErosion = maxErosion + ed.maxErosionDamage;
          }
@@ -118,7 +117,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get minCriticalErosionDamage() : int {
          var minCriticalErosion:* = 0;
          var ed:EffectDamage = null;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             minCriticalErosion = minCriticalErosion + ed.minCriticalErosionDamage;
          }
@@ -128,7 +127,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get maxCriticalErosionDamage() : int {
          var maxCriticalErosion:* = 0;
          var ed:EffectDamage = null;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             maxCriticalErosion = maxCriticalErosion + ed.maxCriticalErosionDamage;
          }
@@ -140,7 +139,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get minShieldPointsRemoved() : int {
          var ed:EffectDamage = null;
          this._minShieldPointsRemoved = 0;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             this._minShieldPointsRemoved = this._minShieldPointsRemoved + ed.minShieldPointsRemoved;
          }
@@ -156,7 +155,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get maxShieldPointsRemoved() : int {
          var ed:EffectDamage = null;
          this._maxShieldPointsRemoved = 0;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             this._maxShieldPointsRemoved = this._maxShieldPointsRemoved + ed.maxShieldPointsRemoved;
          }
@@ -172,7 +171,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get minCriticalShieldPointsRemoved() : int {
          var ed:EffectDamage = null;
          this._minCriticalShieldPointsRemoved = 0;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             this._minCriticalShieldPointsRemoved = this._minCriticalShieldPointsRemoved + ed.minCriticalShieldPointsRemoved;
          }
@@ -188,7 +187,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get maxCriticalShieldPointsRemoved() : int {
          var ed:EffectDamage = null;
          this._maxCriticalShieldPointsRemoved = 0;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             this._maxCriticalShieldPointsRemoved = this._maxCriticalShieldPointsRemoved + ed.maxCriticalShieldPointsRemoved;
          }
@@ -202,7 +201,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get minLifePointsAdded() : int {
          var minLife:* = 0;
          var ed:EffectDamage = null;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             minLife = minLife + ed.minLifePointsAdded;
          }
@@ -212,7 +211,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get maxLifePointsAdded() : int {
          var maxLife:* = 0;
          var ed:EffectDamage = null;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             maxLife = maxLife + ed.maxLifePointsAdded;
          }
@@ -222,7 +221,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get minCriticalLifePointsAdded() : int {
          var minCriticalLife:* = 0;
          var ed:EffectDamage = null;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             minCriticalLife = minCriticalLife + ed.minCriticalLifePointsAdded;
          }
@@ -232,7 +231,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get maxCriticalLifePointsAdded() : int {
          var maxCriticalLife:* = 0;
          var ed:EffectDamage = null;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             maxCriticalLife = maxCriticalLife + ed.maxCriticalLifePointsAdded;
          }
@@ -242,7 +241,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get lifePointsAddedBasedOnLifePercent() : int {
          var lifePointsFromPercent:* = 0;
          var ed:EffectDamage = null;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             lifePointsFromPercent = lifePointsFromPercent + ed.lifePointsAddedBasedOnLifePercent;
          }
@@ -252,7 +251,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       public function get criticalLifePointsAddedBasedOnLifePercent() : int {
          var criticalLifePointsFromPercent:* = 0;
          var ed:EffectDamage = null;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             criticalLifePointsFromPercent = criticalLifePointsFromPercent + ed.criticalLifePointsAddedBasedOnLifePercent;
          }
@@ -272,7 +271,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       
       public function get hasRandomEffects() : Boolean {
          var ed:EffectDamage = null;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             if(ed.random > 0)
             {
@@ -286,7 +285,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          var ed:EffectDamage = null;
          var r:int = -1;
          var first:Boolean = true;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             if(ed.random > 0)
             {
@@ -295,13 +294,11 @@ package com.ankamagames.dofus.logic.game.fight.types
                   r = ed.random;
                   first = false;
                }
-               else
+               else if(ed.random != r)
                {
-                  if(ed.random != r)
-                  {
-                     return -1;
-                  }
+                  return -1;
                }
+               
             }
          }
          return r;
@@ -312,7 +309,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          var hasPushDamages:* = false;
          var element:int = -1;
          var first:Boolean = true;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             if(ed.element != -1)
             {
@@ -321,13 +318,11 @@ package com.ankamagames.dofus.logic.game.fight.types
                   element = ed.element;
                   first = false;
                }
-               else
+               else if(ed.element != element)
                {
-                  if(ed.element != element)
-                  {
-                     return -1;
-                  }
+                  return -1;
                }
+               
             }
             if(ed.effectId == 5)
             {
@@ -343,7 +338,7 @@ package com.ankamagames.dofus.logic.game.fight.types
       
       private function get damageConvertedToHeal() : Boolean {
          var ed:EffectDamage = null;
-         for each (ed in this._effectDamages)
+         for each(ed in this._effectDamages)
          {
             if(ed.damageConvertedToHeal)
             {
@@ -383,7 +378,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          return XmlConfig.getInstance().getEntry("colors." + color);
       }
       
-      private function getEffectString(pMin:int, pMax:int, pMinCritical:int, pMaxCritical:int, pHasCritical:Boolean, pRandom:int=0) : String {
+      private function getEffectString(pMin:int, pMax:int, pMinCritical:int, pMaxCritical:int, pHasCritical:Boolean, pRandom:int = 0) : String {
          var normal:String = null;
          var critical:String = null;
          var effectStr:String = "";
@@ -435,7 +430,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          this.effectIcons = new Array();
          if((this.hasRandomEffects) && (!this.invulnerableState))
          {
-            for each (ed in this._effectDamages)
+            for each(ed in this._effectDamages)
             {
                if(ed.element != -1)
                {

@@ -5,7 +5,6 @@ package com.ankamagames.dofus.scripts.api
    import com.ankamagames.dofus.datacenter.items.Item;
    import com.ankamagames.jerakine.sequencer.ISequencable;
    import com.ankamagames.dofus.logic.game.fight.steps.IFightStep;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.types.entities.ExplosionEntity;
    import com.ankamagames.jerakine.types.Uri;
    import com.ankamagames.tiphon.TiphonConstants;
@@ -67,7 +66,7 @@ package com.ankamagames.dofus.scripts.api
          var stepInside:ISequencable = null;
          var fightStepInside:IFightStep = null;
          var steps:Vector.<IFightStep> = new Vector.<IFightStep>(0,false);
-         for each (stepInside in runner.stepsBuffer)
+         for each(stepInside in runner.stepsBuffer)
          {
             if(stepInside is IFightStep)
             {
@@ -93,7 +92,7 @@ package com.ankamagames.dofus.scripts.api
          var stepInside:ISequencable = null;
          var index:int = -1;
          var currentIndex:uint = 0;
-         for each (stepInside in runner.stepsBuffer)
+         for each(stepInside in runner.stepsBuffer)
          {
             if(stepInside == referenceStep)
             {
@@ -114,7 +113,7 @@ package com.ankamagames.dofus.scripts.api
          var stepInside:ISequencable = null;
          var index:int = -1;
          var currentIndex:uint = 0;
-         for each (stepInside in runner.stepsBuffer)
+         for each(stepInside in runner.stepsBuffer)
          {
             if(stepInside == referenceStep)
             {

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6401;
       }
       
-      public function initAllianceInvitationAnswerMessage(accept:Boolean=false) : AllianceInvitationAnswerMessage {
+      public function initAllianceInvitationAnswerMessage(accept:Boolean = false) : AllianceInvitationAnswerMessage {
          this.accept = accept;
          this._isInitialized = true;
          return this;

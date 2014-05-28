@@ -3,7 +3,6 @@ package com.ankamagames.dofus.datacenter.quest
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.data.I18n;
-   import __AS3__.vec.*;
    
    public class AchievementCategory extends Object implements IDataCenter
    {

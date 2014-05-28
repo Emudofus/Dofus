@@ -17,7 +17,7 @@ package com.ankamagames.dofus.network.types.game.friend
          return 106;
       }
       
-      public function initIgnoredInformations(accountId:uint=0, accountName:String="") : IgnoredInformations {
+      public function initIgnoredInformations(accountId:uint = 0, accountName:String = "") : IgnoredInformations {
          super.initAbstractContactInformations(accountId,accountName);
          return this;
       }

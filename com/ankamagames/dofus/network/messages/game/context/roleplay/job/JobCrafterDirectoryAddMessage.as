@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 5651;
       }
       
-      public function initJobCrafterDirectoryAddMessage(listEntry:JobCrafterDirectoryListEntry=null) : JobCrafterDirectoryAddMessage {
+      public function initJobCrafterDirectoryAddMessage(listEntry:JobCrafterDirectoryListEntry = null) : JobCrafterDirectoryAddMessage {
          this.listEntry = listEntry;
          this._isInitialized = true;
          return this;

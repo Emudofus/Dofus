@@ -3,7 +3,6 @@ package com.ankamagames.dofus.internalDatacenter.fight
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.dofus.network.types.game.context.fight.FightLoot;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
    
    public class FightLootWrapper extends Object implements IDataCenter

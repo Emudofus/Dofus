@@ -15,7 +15,7 @@ package com.ankamagames.dofus.datacenter.breeds
       
       public static const MODULE:String = "Heads";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Head));
+      protected static const _log:Logger;
       
       public static function getHeadById(id:int) : Head {
          return GameData.getObject(MODULE,id) as Head;
@@ -29,7 +29,7 @@ package com.ankamagames.dofus.datacenter.breeds
          var head:Head = null;
          var heads:Array = GameData.getObjects(MODULE);
          var result:Array = [];
-         for each (head in heads)
+         for each(head in heads)
          {
             if((head.breed == breed) && (head.gender == gender))
             {

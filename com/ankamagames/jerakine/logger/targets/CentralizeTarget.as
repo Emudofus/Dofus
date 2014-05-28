@@ -12,9 +12,9 @@ package com.ankamagames.jerakine.logger.targets
          super();
       }
       
-      private static var _socket:Socket = new Socket();
+      private static var _socket:Socket;
       
-      private static var _history:Array = new Array();
+      private static var _history:Array;
       
       private static var _connecting:Boolean = false;
       
@@ -53,7 +53,7 @@ package com.ankamagames.jerakine.logger.targets
       private function onSocket(e:Event) : void {
          var o:LoggerHistoryElement = null;
          _connecting = false;
-         for each (o in _history)
+         for each(o in _history)
          {
             this.send(o.level,o.message);
          }

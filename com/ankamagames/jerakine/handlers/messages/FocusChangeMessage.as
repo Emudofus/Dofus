@@ -10,7 +10,7 @@ package com.ankamagames.jerakine.handlers.messages
          super();
       }
       
-      public static function create(target:InteractiveObject, instance:FocusChangeMessage=null) : FocusChangeMessage {
+      public static function create(target:InteractiveObject, instance:FocusChangeMessage = null) : FocusChangeMessage {
          if(!instance)
          {
             instance = new FocusChangeMessage();

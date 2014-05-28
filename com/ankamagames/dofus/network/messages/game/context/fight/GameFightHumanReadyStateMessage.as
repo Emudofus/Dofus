@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 740;
       }
       
-      public function initGameFightHumanReadyStateMessage(characterId:uint=0, isReady:Boolean=false) : GameFightHumanReadyStateMessage {
+      public function initGameFightHumanReadyStateMessage(characterId:uint = 0, isReady:Boolean = false) : GameFightHumanReadyStateMessage {
          this.characterId = characterId;
          this.isReady = isReady;
          this._isInitialized = true;

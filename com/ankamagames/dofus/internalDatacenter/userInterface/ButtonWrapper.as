@@ -11,8 +11,6 @@ package com.ankamagames.dofus.internalDatacenter.userInterface
    import flash.utils.flash_proxy;
    import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
    
-   use namespace flash_proxy;
-   
    public class ButtonWrapper extends Proxy implements IDataCenter, ISlotData
    {
       
@@ -20,9 +18,9 @@ package com.ankamagames.dofus.internalDatacenter.userInterface
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ButtonWrapper));
+      protected static const _log:Logger;
       
-      public static function create(buttonId:uint, position:int, uriName:String, callback:Function, name:String, shortcut:String="") : ButtonWrapper {
+      public static function create(buttonId:uint, position:int, uriName:String, callback:Function, name:String, shortcut:String = "") : ButtonWrapper {
          var button:ButtonWrapper = new ButtonWrapper();
          button.id = buttonId;
          button.position = position;
@@ -130,7 +128,7 @@ package com.ankamagames.dofus.internalDatacenter.userInterface
       public function removeHolder(h:ISlotDataHolder) : void {
       }
       
-      public function getIconUri(pngMode:Boolean=true) : Uri {
+      public function getIconUri(pngMode:Boolean = true) : Uri {
          return this.iconUri;
       }
    }

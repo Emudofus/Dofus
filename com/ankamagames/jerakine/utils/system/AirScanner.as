@@ -16,7 +16,7 @@ package com.ankamagames.jerakine.utils.system
       
       private static var _isStreaming:Boolean;
       
-      public static function init(pIsStreaming:Boolean=false) : void {
+      public static function init(pIsStreaming:Boolean = false) : void {
          if(!_initialized)
          {
             initialize();

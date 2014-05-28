@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6389;
       }
       
-      public function initExchangeSetCraftRecipeMessage(objectGID:uint=0) : ExchangeSetCraftRecipeMessage {
+      public function initExchangeSetCraftRecipeMessage(objectGID:uint = 0) : ExchangeSetCraftRecipeMessage {
          this.objectGID = objectGID;
          this._isInitialized = true;
          return this;

@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6236;
       }
       
-      public function initExchangeStartedWithStorageMessage(exchangeType:int=0, storageMaxSlot:uint=0) : ExchangeStartedWithStorageMessage {
+      public function initExchangeStartedWithStorageMessage(exchangeType:int = 0, storageMaxSlot:uint = 0) : ExchangeStartedWithStorageMessage {
          super.initExchangeStartedMessage(exchangeType);
          this.storageMaxSlot = storageMaxSlot;
          this._isInitialized = true;

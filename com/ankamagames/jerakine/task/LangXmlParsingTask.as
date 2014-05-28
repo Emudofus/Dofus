@@ -14,7 +14,7 @@ package com.ankamagames.jerakine.task
    public class LangXmlParsingTask extends SplittedTask
    {
       
-      public function LangXmlParsingTask(aFiles:Array, sUrlProvider:String, parseReference:Boolean=true) {
+      public function LangXmlParsingTask(aFiles:Array, sUrlProvider:String, parseReference:Boolean = true) {
          super();
          this._nCurrentIndex = 0;
          this._aFiles = aFiles;
@@ -22,7 +22,7 @@ package com.ankamagames.jerakine.task
          this._parseReference = parseReference;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LangXmlParsingTask));
+      protected static const _log:Logger;
       
       private var _nCurrentIndex:uint;
       
@@ -79,7 +79,7 @@ package com.ankamagames.jerakine.task
             xml = new XML(sXml);
             LangManager.getInstance().category[sCategory] = true;
             StoreDataManager.getInstance().getSetData(JerakineConstants.DATASTORE_LANG,"langCategory",LangManager.getInstance().category);
-            for each (entry in xml..entry)
+            for each(entry in xml..entry)
             {
                if(this._parseReference)
                {

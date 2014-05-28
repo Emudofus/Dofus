@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.context.roleplay.quest
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -24,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.quest
          return 384;
       }
       
-      public function initGameRolePlayNpcQuestFlag(questsToValidId:Vector.<uint>=null, questsToStartId:Vector.<uint>=null) : GameRolePlayNpcQuestFlag {
+      public function initGameRolePlayNpcQuestFlag(questsToValidId:Vector.<uint> = null, questsToStartId:Vector.<uint> = null) : GameRolePlayNpcQuestFlag {
          this.questsToValidId = questsToValidId;
          this.questsToStartId = questsToStartId;
          return this;

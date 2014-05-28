@@ -18,7 +18,7 @@ package com.ankamagames.dofus.types.entities
          this.id = nId;
       }
       
-      override public function move(path:MovementPath, callback:Function=null) : void {
+      override public function move(path:MovementPath, callback:Function = null) : void {
          if(!path.start.equals(position))
          {
             _log.warn("Unsynchronized position for entity " + id + ", jumping from " + position + " to " + path.start + ".");

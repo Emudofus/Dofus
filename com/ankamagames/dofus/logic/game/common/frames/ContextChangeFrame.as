@@ -25,7 +25,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ContextChangeFrame));
+      protected static const _log:Logger;
       
       public function get priority() : int {
          return Priority.LOW;
@@ -52,12 +52,16 @@ package com.ankamagames.dofus.logic.game.common.frames
                      Kernel.getWorker().addFrame(new FightContextFrame());
                      KernelEventsManager.getInstance().processCallback(HookList.ContextChanged,GameContextEnum.FIGHT);
                      break;
+                  default:
+                     Kernel.panic(PanicMessages.WRONG_CONTEXT_CREATED,[gccmsg.context]);
                }
                return true;
             case msg is GameContextQuitAction:
                gcqmsg = new GameContextQuitMessage();
                ConnectionsHandler.getConnection().send(gcqmsg);
                return true;
+            default:
+               return false;
          }
       }
       

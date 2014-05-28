@@ -14,7 +14,7 @@ package com.ankamagames.dofus.logic.game.fight.types
    public class StateBuff extends BasicBuff
    {
       
-      public function StateBuff(effect:FightTemporaryBoostStateEffect=null, castingSpell:CastingSpell=null, actionId:uint=0) {
+      public function StateBuff(effect:FightTemporaryBoostStateEffect = null, castingSpell:CastingSpell = null, actionId:uint = 0) {
          if(effect)
          {
             super(effect,castingSpell,actionId,effect.stateId,null,null);
@@ -23,7 +23,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StateBuff));
+      protected static const _log:Logger;
       
       private var _statName:String;
       
@@ -65,7 +65,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          super.onRemoved();
       }
       
-      override public function clone(id:int=0) : BasicBuff {
+      override public function clone(id:int = 0) : BasicBuff {
          var sb:StateBuff = new StateBuff();
          sb._statName = this._statName;
          sb.stateId = this.stateId;

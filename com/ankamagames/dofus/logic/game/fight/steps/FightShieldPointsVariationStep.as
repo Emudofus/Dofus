@@ -44,17 +44,15 @@ package com.ankamagames.dofus.logic.game.fight.steps
          {
             FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_SHIELD_LOSS,[_targetId,Math.abs(this._intValue),this._actionId],_targetId,castingSpellId);
          }
+         else if(this._intValue > 0)
+         {
+            FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_SHIELD_GAIN,[_targetId,Math.abs(this._intValue)],_targetId,castingSpellId);
+         }
          else
          {
-            if(this._intValue > 0)
-            {
-               FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_SHIELD_GAIN,[_targetId,Math.abs(this._intValue)],_targetId,castingSpellId);
-            }
-            else
-            {
-               FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_NO_CHANGE,[_targetId],_targetId,castingSpellId);
-            }
+            FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_NO_CHANGE,[_targetId],_targetId,castingSpellId);
          }
+         
          super.start();
       }
    }

@@ -7,7 +7,7 @@ package com.ankamagames.jerakine.types
    public class DefaultableColor extends Color implements IExternalizable
    {
       
-      public function DefaultableColor(c:uint=0) {
+      public function DefaultableColor(c:uint = 0) {
          super(c);
       }
       

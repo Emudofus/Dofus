@@ -21,19 +21,19 @@ package com.ankamagames.dofus.misc.utils
    public class Camera extends Object
    {
       
-      public function Camera(pZoom:Number=1) {
+      public function Camera(pZoom:Number = 1) {
          super();
          this._zoom = pZoom;
          this._container = Atouin.getInstance().rootContainer;
       }
       
-      private static const CENTER_X:Number = StageShareManager.startWidth / 2;
+      private static const CENTER_X:Number;
       
-      private static const CENTER_Y:Number = (StageShareManager.startHeight - 163) / 2;
+      private static const CENTER_Y:Number;
       
-      private static const LASTCELL_X:Number = AtouinConstants.MAP_WIDTH * AtouinConstants.CELL_WIDTH;
+      private static const LASTCELL_X:Number = 1204.0;
       
-      private static const LASTCELL_Y:Number = AtouinConstants.MAP_HEIGHT * AtouinConstants.CELL_HEIGHT;
+      private static const LASTCELL_Y:Number = 860.0;
       
       private static const MIN_SCALE:Number = 1;
       
@@ -137,13 +137,11 @@ package com.ankamagames.dofus.misc.utils
                   finalX = -pTargetX * pTargetZoom + CENTER_X;
                }
             }
-            else
+            else if(pTargetX < CENTER_X / pTargetZoom)
             {
-               if(pTargetX < CENTER_X / pTargetZoom)
-               {
-                  finalX = 0;
-               }
+               finalX = 0;
             }
+            
             if((LASTCELL_Y - pTargetY) * pTargetZoom < LASTCELL_Y / 2)
             {
                finalY = finalY + (CENTER_Y - (876 - OFFSCREEN_Y - pTargetY) * pTargetZoom);
@@ -153,13 +151,11 @@ package com.ankamagames.dofus.misc.utils
                }
                finalY = finalY + OFFSCREEN_Y;
             }
-            else
+            else if(pTargetY < CENTER_Y / pTargetZoom)
             {
-               if(pTargetY < CENTER_Y / pTargetZoom)
-               {
-                  finalY = 0;
-               }
+               finalY = 0;
             }
+            
             this._container.x = finalX;
             this._container.y = finalY;
             Atouin.getInstance().currentZoom = pTargetZoom;

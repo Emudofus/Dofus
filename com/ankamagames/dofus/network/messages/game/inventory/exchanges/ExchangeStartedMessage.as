@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5512;
       }
       
-      public function initExchangeStartedMessage(exchangeType:int=0) : ExchangeStartedMessage {
+      public function initExchangeStartedMessage(exchangeType:int = 0) : ExchangeStartedMessage {
          this.exchangeType = exchangeType;
          this._isInitialized = true;
          return this;

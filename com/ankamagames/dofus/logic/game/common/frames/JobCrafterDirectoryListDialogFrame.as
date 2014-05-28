@@ -38,7 +38,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(JobsFrame));
+      protected static const _log:Logger;
       
       private var _crafterList:Array = null;
       
@@ -95,7 +95,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is JobCrafterDirectoryListMessage:
                jcdlmsg = msg as JobCrafterDirectoryListMessage;
                this._crafterList = new Array();
-               for each (entry in jcdlmsg.listEntries)
+               for each(entry in jcdlmsg.listEntries)
                {
                   this._crafterList.push(CraftsmanWrapper.create(entry));
                }
@@ -118,7 +118,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is JobCrafterDirectoryAddMessage:
                jcdamsg = msg as JobCrafterDirectoryAddMessage;
-               for (iCrafter in this._crafterList)
+               for(iCrafter in this._crafterList)
                {
                   if(jcdamsg.listEntry.playerInfo.playerId == this._crafterList[iCrafter].playerId)
                   {
@@ -140,6 +140,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                   Kernel.getWorker().removeFrame(this);
                }
                return true;
+            default:
+               return false;
          }
       }
       

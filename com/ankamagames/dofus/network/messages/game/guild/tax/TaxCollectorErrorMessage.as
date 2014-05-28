@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5634;
       }
       
-      public function initTaxCollectorErrorMessage(reason:int=0) : TaxCollectorErrorMessage {
+      public function initTaxCollectorErrorMessage(reason:int = 0) : TaxCollectorErrorMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

@@ -5,7 +5,7 @@ package com.ankamagames.jerakine.types
    public class DataStoreType extends Object
    {
       
-      public function DataStoreType(sCategory:String, bPersistant:Boolean, nLocation:Number=NaN, nBind:Number=NaN) {
+      public function DataStoreType(sCategory:String, bPersistant:Boolean, nLocation:Number = undefined, nBind:Number = undefined) {
          super();
          this._sCategory = sCategory;
          this._bPersistant = bPersistant;

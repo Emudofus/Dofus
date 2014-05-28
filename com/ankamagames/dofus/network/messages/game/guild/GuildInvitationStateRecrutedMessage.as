@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5548;
       }
       
-      public function initGuildInvitationStateRecrutedMessage(invitationState:uint=0) : GuildInvitationStateRecrutedMessage {
+      public function initGuildInvitationStateRecrutedMessage(invitationState:uint = 0) : GuildInvitationStateRecrutedMessage {
          this.invitationState = invitationState;
          this._isInitialized = true;
          return this;

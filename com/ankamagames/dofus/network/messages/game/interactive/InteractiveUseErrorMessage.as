@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.interactive
          return 6384;
       }
       
-      public function initInteractiveUseErrorMessage(elemId:uint=0, skillInstanceUid:uint=0) : InteractiveUseErrorMessage {
+      public function initInteractiveUseErrorMessage(elemId:uint = 0, skillInstanceUid:uint = 0) : InteractiveUseErrorMessage {
          this.elemId = elemId;
          this.skillInstanceUid = skillInstanceUid;
          this._isInitialized = true;

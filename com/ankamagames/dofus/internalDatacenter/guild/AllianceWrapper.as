@@ -12,7 +12,6 @@ package com.ankamagames.dofus.internalDatacenter.guild
    import com.ankamagames.dofus.network.types.game.context.roleplay.AllianceInformations;
    import com.ankamagames.dofus.network.types.game.social.AllianceFactSheetInformations;
    import com.ankamagames.jerakine.data.I18n;
-   import __AS3__.vec.*;
    
    public class AllianceWrapper extends Object implements IDataCenter
    {
@@ -25,11 +24,11 @@ package com.ankamagames.dofus.internalDatacenter.guild
       
       public static const IS_BOSS:String = "isBoss";
       
-      public static const allianceRights:Array = new Array(IS_BOSS);
+      public static const allianceRights:Array;
       
-      public static var _rightDictionnary:Dictionary = new Dictionary();
+      public static var _rightDictionnary:Dictionary;
       
-      private static var _ref:Dictionary = new Dictionary();
+      private static var _ref:Dictionary;
       
       public static function getAllianceById(id:int) : AllianceWrapper {
          return _ref[id];
@@ -133,7 +132,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          return aw;
       }
       
-      public static function create(pAllianceId:uint, pAllianceTag:String, pAllianceName:String, pAllianceEmblem:GuildEmblem, creationDate:Number=0, nbGuilds:uint=0, nbMembers:uint=0, guilds:Vector.<GuildFactSheetWrapper>=null, prismIds:Vector.<uint>=null) : AllianceWrapper {
+      public static function create(pAllianceId:uint, pAllianceTag:String, pAllianceName:String, pAllianceEmblem:GuildEmblem, creationDate:Number = 0, nbGuilds:uint = 0, nbMembers:uint = 0, guilds:Vector.<GuildFactSheetWrapper> = null, prismIds:Vector.<uint> = null) : AllianceWrapper {
          var item:AllianceWrapper = null;
          var g:GuildFactSheetWrapper = null;
          item = new AllianceWrapper();
@@ -162,7 +161,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
             item.prismIds = prismIds;
          }
          item.enabled = false;
-         for each (g in guilds)
+         for each(g in guilds)
          {
             if(g.enabled)
             {
@@ -178,10 +177,10 @@ package com.ankamagames.dofus.internalDatacenter.guild
          var wantToSet:* = false;
          var pRight:String = null;
          var rightNumber:Number = 0;
-         for each (right in allianceRights)
+         for each(right in allianceRights)
          {
             wantToSet = false;
-            for each (pRight in pRightsIDs)
+            for each(pRight in pRightsIDs)
             {
                if(pRight == right)
                {
@@ -269,7 +268,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          return wrapper;
       }
       
-      public function update(pAllianceId:uint, pAllianceTag:String, pAllianceName:String, pAllianceEmblem:GuildEmblem, creationDate:Number=0, nbGuilds:uint=0, nbMembers:uint=0, guilds:Vector.<GuildFactSheetWrapper>=null, prismIds:Vector.<uint>=null) : void {
+      public function update(pAllianceId:uint, pAllianceTag:String, pAllianceName:String, pAllianceEmblem:GuildEmblem, creationDate:Number = 0, nbGuilds:uint = 0, nbMembers:uint = 0, guilds:Vector.<GuildFactSheetWrapper> = null, prismIds:Vector.<uint> = null) : void {
          var g:GuildFactSheetWrapper = null;
          this.allianceId = pAllianceId;
          this._allianceTag = pAllianceTag;
@@ -293,7 +292,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
             this.prismIds = prismIds;
          }
          this.enabled = false;
-         for each (g in guilds)
+         for each(g in guilds)
          {
             if(g.enabled)
             {

@@ -5,7 +5,7 @@ package com.ankamagames.tiphon.events
    public class AnimationEvent extends Event
    {
       
-      public function AnimationEvent(type:String, pId:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function AnimationEvent(type:String, pId:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
          this._id = pId;
       }

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.chat.channel
          return 890;
       }
       
-      public function initChannelEnablingMessage(channel:uint=0, enable:Boolean=false) : ChannelEnablingMessage {
+      public function initChannelEnablingMessage(channel:uint = 0, enable:Boolean = false) : ChannelEnablingMessage {
          this.channel = channel;
          this.enable = enable;
          this._isInitialized = true;

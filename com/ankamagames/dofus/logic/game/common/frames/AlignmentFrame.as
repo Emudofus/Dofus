@@ -20,7 +20,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlignmentFrame));
+      protected static const _log:Logger;
       
       private var _alignmentRank:int = -1;
       
@@ -56,6 +56,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                   KernelEventsManager.getInstance().processCallback(AlignmentHookList.AlignmentRankUpdate,arumsg.alignmentRank);
                }
                return true;
+            default:
+               return false;
          }
       }
       

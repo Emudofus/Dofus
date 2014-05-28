@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.approach
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.approach
          return 6305;
       }
       
-      public function initServerOptionalFeaturesMessage(features:Vector.<uint>=null) : ServerOptionalFeaturesMessage {
+      public function initServerOptionalFeaturesMessage(features:Vector.<uint> = null) : ServerOptionalFeaturesMessage {
          this.features = features;
          this._isInitialized = true;
          return this;

@@ -10,7 +10,7 @@ package com.ankamagames.jerakine.handlers.messages.keyboard
          super();
       }
       
-      public static function create(target:InteractiveObject, keyboardEvent:KeyboardEvent, instance:KeyboardMessage=null) : KeyboardKeyUpMessage {
+      public static function create(target:InteractiveObject, keyboardEvent:KeyboardEvent, instance:KeyboardMessage = null) : KeyboardKeyUpMessage {
          if(!instance)
          {
             instance = new KeyboardKeyUpMessage();

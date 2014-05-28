@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.context.roleplay.quest
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -22,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.quest
          return 386;
       }
       
-      public function initQuestObjectiveInformationsWithCompletion(objectiveId:uint=0, objectiveStatus:Boolean=false, dialogParams:Vector.<String>=null, curCompletion:uint=0, maxCompletion:uint=0) : QuestObjectiveInformationsWithCompletion {
+      public function initQuestObjectiveInformationsWithCompletion(objectiveId:uint = 0, objectiveStatus:Boolean = false, dialogParams:Vector.<String> = null, curCompletion:uint = 0, maxCompletion:uint = 0) : QuestObjectiveInformationsWithCompletion {
          super.initQuestObjectiveInformations(objectiveId,objectiveStatus,dialogParams);
          this.curCompletion = curCompletion;
          this.maxCompletion = maxCompletion;

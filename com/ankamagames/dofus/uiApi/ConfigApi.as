@@ -158,6 +158,8 @@ package com.ankamagames.dofus.uiApi
             case value is String:
             case value is Point:
                return true;
+            default:
+               return false;
          }
       }
       
@@ -193,6 +195,8 @@ package com.ankamagames.dofus.uiApi
             case e.watchedClassInstance is ChatOptions:
                className = "chat";
                break;
+            default:
+               className = getQualifiedClassName(e.watchedClassInstance);
          }
          KernelEventsManager.getInstance().processCallback(HookList.ConfigPropertyChange,className,e.propertyName,newValue,oldValue);
       }

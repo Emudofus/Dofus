@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 5657;
       }
       
-      public function initJobUnlearntMessage(jobId:uint=0) : JobUnlearntMessage {
+      public function initJobUnlearntMessage(jobId:uint = 0) : JobUnlearntMessage {
          this.jobId = jobId;
          this._isInitialized = true;
          return this;

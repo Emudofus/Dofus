@@ -7,15 +7,15 @@ package com.ankamagames.jerakine.map
       
       function get height() : int;
       
-      function pointLos(param1:int, param2:int, param3:Boolean=true) : Boolean;
+      function pointLos(param1:int, param2:int, param3:Boolean = true) : Boolean;
       
-      function pointMov(param1:int, param2:int, param3:Boolean=true, param4:int=-1) : Boolean;
+      function pointMov(param1:int, param2:int, param3:Boolean = true, param4:int = -1) : Boolean;
       
       function farmCell(param1:int, param2:int) : Boolean;
       
       function pointSpecialEffects(param1:int, param2:int) : uint;
       
-      function pointWeight(param1:int, param2:int, param3:Boolean=true) : Number;
+      function pointWeight(param1:int, param2:int, param3:Boolean = true) : Number;
       
       function hasEntity(param1:int, param2:int) : Boolean;
       

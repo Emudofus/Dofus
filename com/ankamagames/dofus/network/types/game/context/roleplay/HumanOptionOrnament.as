@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 411;
       }
       
-      public function initHumanOptionOrnament(ornamentId:uint=0) : HumanOptionOrnament {
+      public function initHumanOptionOrnament(ornamentId:uint = 0) : HumanOptionOrnament {
          this.ornamentId = ornamentId;
          return this;
       }

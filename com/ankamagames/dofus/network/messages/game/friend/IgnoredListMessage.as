@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.friend
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.friend.IgnoredInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5674;
       }
       
-      public function initIgnoredListMessage(ignoredList:Vector.<IgnoredInformations>=null) : IgnoredListMessage {
+      public function initIgnoredListMessage(ignoredList:Vector.<IgnoredInformations> = null) : IgnoredListMessage {
          this.ignoredList = ignoredList;
          this._isInitialized = true;
          return this;

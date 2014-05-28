@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.game.context.roleplay
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.house.HouseInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
    import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
@@ -35,7 +34,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 6268;
       }
       
-      public function initMapComplementaryInformationsWithCoordsMessage(subAreaId:uint=0, mapId:uint=0, houses:Vector.<HouseInformations>=null, actors:Vector.<GameRolePlayActorInformations>=null, interactiveElements:Vector.<InteractiveElement>=null, statedElements:Vector.<StatedElement>=null, obstacles:Vector.<MapObstacle>=null, fights:Vector.<FightCommonInformations>=null, worldX:int=0, worldY:int=0) : MapComplementaryInformationsWithCoordsMessage {
+      public function initMapComplementaryInformationsWithCoordsMessage(subAreaId:uint = 0, mapId:uint = 0, houses:Vector.<HouseInformations> = null, actors:Vector.<GameRolePlayActorInformations> = null, interactiveElements:Vector.<InteractiveElement> = null, statedElements:Vector.<StatedElement> = null, obstacles:Vector.<MapObstacle> = null, fights:Vector.<FightCommonInformations> = null, worldX:int = 0, worldY:int = 0) : MapComplementaryInformationsWithCoordsMessage {
          super.initMapComplementaryInformationsDataMessage(subAreaId,mapId,houses,actors,interactiveElements,statedElements,obstacles,fights);
          this.worldX = worldX;
          this.worldY = worldY;

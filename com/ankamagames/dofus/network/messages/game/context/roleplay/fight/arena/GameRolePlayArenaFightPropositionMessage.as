@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
          return 6276;
       }
       
-      public function initGameRolePlayArenaFightPropositionMessage(fightId:uint=0, alliesId:Vector.<uint>=null, duration:uint=0) : GameRolePlayArenaFightPropositionMessage {
+      public function initGameRolePlayArenaFightPropositionMessage(fightId:uint = 0, alliesId:Vector.<uint> = null, duration:uint = 0) : GameRolePlayArenaFightPropositionMessage {
          this.fightId = fightId;
          this.alliesId = alliesId;
          this.duration = duration;

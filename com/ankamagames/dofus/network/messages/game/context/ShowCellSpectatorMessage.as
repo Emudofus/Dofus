@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 6158;
       }
       
-      public function initShowCellSpectatorMessage(sourceId:int=0, cellId:uint=0, playerName:String="") : ShowCellSpectatorMessage {
+      public function initShowCellSpectatorMessage(sourceId:int = 0, cellId:uint = 0, playerName:String = "") : ShowCellSpectatorMessage {
          super.initShowCellMessage(sourceId,cellId);
          this.playerName = playerName;
          this._isInitialized = true;

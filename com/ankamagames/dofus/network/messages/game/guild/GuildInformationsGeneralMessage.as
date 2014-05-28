@@ -44,7 +44,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5557;
       }
       
-      public function initGuildInformationsGeneralMessage(enabled:Boolean=false, abandonnedPaddock:Boolean=false, level:uint=0, expLevelFloor:Number=0, experience:Number=0, expNextLevelFloor:Number=0, creationDate:uint=0, nbTotalMembers:uint=0, nbConnectedMembers:uint=0) : GuildInformationsGeneralMessage {
+      public function initGuildInformationsGeneralMessage(enabled:Boolean = false, abandonnedPaddock:Boolean = false, level:uint = 0, expLevelFloor:Number = 0, experience:Number = 0, expNextLevelFloor:Number = 0, creationDate:uint = 0, nbTotalMembers:uint = 0, nbConnectedMembers:uint = 0) : GuildInformationsGeneralMessage {
          this.enabled = enabled;
          this.abandonnedPaddock = abandonnedPaddock;
          this.level = level;

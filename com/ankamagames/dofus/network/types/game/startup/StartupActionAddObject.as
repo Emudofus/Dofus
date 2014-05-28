@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.types.game.startup
 {
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItemInformationWithQuantity;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.types.game.startup
          return 52;
       }
       
-      public function initStartupActionAddObject(uid:uint=0, title:String="", text:String="", descUrl:String="", pictureUrl:String="", items:Vector.<ObjectItemInformationWithQuantity>=null) : StartupActionAddObject {
+      public function initStartupActionAddObject(uid:uint = 0, title:String = "", text:String = "", descUrl:String = "", pictureUrl:String = "", items:Vector.<ObjectItemInformationWithQuantity> = null) : StartupActionAddObject {
          this.uid = uid;
          this.title = title;
          this.text = text;

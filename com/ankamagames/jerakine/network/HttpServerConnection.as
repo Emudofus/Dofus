@@ -24,7 +24,7 @@ package com.ankamagames.jerakine.network
          this.init();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(HttpServerConnection));
+      protected static const _log:Logger;
       
       private var _loader:IResourceLoader;
       
@@ -41,10 +41,10 @@ package com.ankamagames.jerakine.network
       public var handler:MessageHandler;
       
       public function resetTime(uri:Uri) : void {
-         delete this._requestTimestamp[[uri.toString()]];
+         delete this._requestTimestamp[uri.toString()];
       }
       
-      public function request(uri:Uri, errorCallback:Function=null, cacheLife:uint=0) : Boolean {
+      public function request(uri:Uri, errorCallback:Function = null, cacheLife:uint = 0) : Boolean {
          var lastRequestTime:Number = this._requestTimestamp[uri.toString()];
          if((lastRequestTime) && (getTimer() - lastRequestTime < cacheLife))
          {
@@ -74,7 +74,7 @@ package com.ankamagames.jerakine.network
       public function removeFromWhiteList(classRef:Class) : void {
          if(this._whiteList[classRef])
          {
-            delete this._whiteList[[classRef]];
+            delete this._whiteList[classRef];
             this._whiteListCount--;
          }
       }
@@ -159,23 +159,21 @@ package com.ankamagames.jerakine.network
                   this.receive(INetworkDataContainerMessage(msg).content,uri);
                }
             }
+            else if((!this._whiteListCount) || (this._whiteList[Object(msg).constructor]))
+            {
+               _log.info("Dispatch " + msg + " from " + uri);
+               this.handler.process(msg);
+            }
             else
             {
-               if((!this._whiteListCount) || (this._whiteList[Object(msg).constructor]))
-               {
-                  _log.info("Dispatch " + msg + " from " + uri);
-                  this.handler.process(msg);
-               }
-               else
-               {
-                  _log.error("Packet " + msg + " cannot be used from a web server (uri: " + uri.toString() + ")");
-               }
+               _log.error("Packet " + msg + " cannot be used from a web server (uri: " + uri.toString() + ")");
             }
+            
          }
       }
       
       private function onReceive(e:ResourceLoadedEvent) : void {
-         delete this._errorCallback[[e.uri]];
+         delete this._errorCallback[e.uri];
          var ts:Number = getTimer();
          this.receive(e.resource as ByteArray,e.uri);
          _log.info("Network packet parsed in " + (getTimer() - ts) + " ms");
@@ -187,7 +185,7 @@ package com.ankamagames.jerakine.network
          {
             this._errorCallback[e.uri](e.uri);
          }
-         delete this._errorCallback[[e.uri]];
+         delete this._errorCallback[e.uri];
       }
    }
 }

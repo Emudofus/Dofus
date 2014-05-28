@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.security
          return 6154;
       }
       
-      public function initCheckFileRequestMessage(filename:String="", type:uint=0) : CheckFileRequestMessage {
+      public function initCheckFileRequestMessage(filename:String = "", type:uint = 0) : CheckFileRequestMessage {
          this.filename = filename;
          this.type = type;
          this._isInitialized = true;

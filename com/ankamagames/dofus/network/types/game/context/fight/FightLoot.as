@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.context.fight
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -23,7 +22,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 41;
       }
       
-      public function initFightLoot(objects:Vector.<uint>=null, kamas:uint=0) : FightLoot {
+      public function initFightLoot(objects:Vector.<uint> = null, kamas:uint = 0) : FightLoot {
          this.objects = objects;
          this.kamas = kamas;
          return this;

@@ -76,7 +76,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CommonUiFrame));
+      protected static const _log:Logger;
       
       private var _dnvmsgs:Dictionary;
       
@@ -201,6 +201,9 @@ package com.ankamagames.dofus.logic.game.common.frames
                         this.displayNumericalValue(entity,dnvmsg,color);
                      }
                      return true;
+                  default:
+                     _log.warn("DisplayNumericalValueMessage with unsupported type : " + dnvmsg.type);
+                     return false;
                }
             case msg is DelayedSystemMessageDisplayMessage:
                dsmdmsg = msg as DelayedSystemMessageDisplayMessage;
@@ -234,7 +237,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   return true;
                }
                param = new Array();
-               for each (prm in etmsg.parameters)
+               for each(prm in etmsg.parameters)
                {
                   param.push(prm);
                }
@@ -287,8 +290,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                      text = I18n.getUiText("ui.payzone.limitVendor");
                      break;
                   case SubscriptionRequiredEnum.LIMITED_TO_SUBSCRIBER:
+                  default:
                      text = I18n.getUiText("ui.payzone.limit");
-                     break;
                }
                KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,text,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                KernelEventsManager.getInstance().processCallback(HookList.NonSubscriberPopup);
@@ -350,6 +353,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                gfotmsg4.initGameFightOptionToggleMessage(option4);
                ConnectionsHandler.getConnection().send(gfotmsg4);
                return true;
+            default:
+               return false;
          }
       }
       
@@ -366,10 +371,10 @@ package com.ankamagames.dofus.logic.game.common.frames
          pTimerEvent.currentTarget.removeEventListener(TimerEvent.TIMER,this.onAnimEnd);
          var dnvmsg:DisplayNumericalValueMessage = this._dnvmsgs[pTimerEvent.currentTarget];
          this.displayNumericalValue(DofusEntities.getEntity(dnvmsg.entityId),dnvmsg,7615756,1,1500);
-         delete this._dnvmsgs[[pTimerEvent.currentTarget]];
+         delete this._dnvmsgs[pTimerEvent.currentTarget];
       }
       
-      private function displayNumericalValue(pEntity:IEntity, pMsg:DisplayNumericalValueMessage, pColor:uint, pScrollSpeed:Number=1, pScrollDuration:uint=2500) : void {
+      private function displayNumericalValue(pEntity:IEntity, pMsg:DisplayNumericalValueMessage, pColor:uint, pScrollSpeed:Number = 1, pScrollDuration:uint = 2500) : void {
          this.displayValue(pEntity,pMsg.value.toString(),pColor,pScrollSpeed,pScrollDuration);
          var dnvwabmsg:DisplayNumericalValueWithAgeBonusMessage = pMsg as DisplayNumericalValueWithAgeBonusMessage;
          if(dnvwabmsg)
@@ -393,7 +398,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          var textId:uint = 0;
          var commonMod:Object = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
          var a:Array = new Array();
-         for each (i in msg.parameters)
+         for each(i in msg.parameters)
          {
             a.push(i);
          }

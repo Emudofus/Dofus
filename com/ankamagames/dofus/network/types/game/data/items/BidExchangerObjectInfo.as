@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.types.game.data.items
 {
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
@@ -28,7 +27,7 @@ package com.ankamagames.dofus.network.types.game.data.items
          return 122;
       }
       
-      public function initBidExchangerObjectInfo(objectUID:uint=0, effects:Vector.<ObjectEffect>=null, prices:Vector.<uint>=null) : BidExchangerObjectInfo {
+      public function initBidExchangerObjectInfo(objectUID:uint = 0, effects:Vector.<ObjectEffect> = null, prices:Vector.<uint> = null) : BidExchangerObjectInfo {
          this.objectUID = objectUID;
          this.effects = effects;
          this.prices = prices;

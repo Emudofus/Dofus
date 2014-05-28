@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.context
          return 217;
       }
       
-      public function initFightEntityDispositionInformations(cellId:int=0, direction:uint=1, carryingCharacterId:int=0) : FightEntityDispositionInformations {
+      public function initFightEntityDispositionInformations(cellId:int = 0, direction:uint = 1, carryingCharacterId:int = 0) : FightEntityDispositionInformations {
          super.initEntityDispositionInformations(cellId,direction);
          this.carryingCharacterId = carryingCharacterId;
          return this;

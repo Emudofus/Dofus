@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 1010;
       }
       
-      public function initGameActionFightSpellCastMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, destinationCellId:int=0, critical:uint=1, silentCast:Boolean=false, spellId:uint=0, spellLevel:uint=0) : GameActionFightSpellCastMessage {
+      public function initGameActionFightSpellCastMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, destinationCellId:int = 0, critical:uint = 1, silentCast:Boolean = false, spellId:uint = 0, spellLevel:uint = 0) : GameActionFightSpellCastMessage {
          super.initAbstractGameActionFightTargetedAbilityMessage(actionId,sourceId,targetId,destinationCellId,critical,silentCast);
          this.spellId = spellId;
          this.spellLevel = spellLevel;

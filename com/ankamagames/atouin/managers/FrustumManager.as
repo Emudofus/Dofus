@@ -11,7 +11,6 @@ package com.ankamagames.atouin.managers
    import flash.display.Sprite;
    import flash.geom.Point;
    import com.ankamagames.atouin.AtouinConstants;
-   import __AS3__.vec.*;
    import flash.display.Bitmap;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import flash.display.BitmapData;
@@ -43,7 +42,7 @@ package com.ankamagames.atouin.managers
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FrustumManager));
+      protected static const _log:Logger;
       
       private static var _self:FrustumManager;
       
@@ -135,6 +134,8 @@ package com.ankamagames.atouin.managers
                return this._shapeRight;
             case DirectionsEnum.DOWN:
                return this._shapeBottom;
+            default:
+               return null;
          }
       }
       
@@ -293,7 +294,7 @@ package com.ankamagames.atouin.managers
          }
       }
       
-      private function findCustomNearestCell(target:Sprite, localMousePosition:Point=null) : Object {
+      private function findCustomNearestCell(target:Sprite, localMousePosition:Point = null) : Object {
          var cellList:Array = null;
          var p:Point = null;
          var d:* = NaN;
@@ -363,7 +364,7 @@ package com.ankamagames.atouin.managers
             };
       }
       
-      private function findNearestCell(target:Sprite, localMousePosition:Point=null) : Object {
+      private function findNearestCell(target:Sprite, localMousePosition:Point = null) : Object {
          var x:* = 0;
          var y:* = 0;
          var sx:* = 0;
@@ -427,7 +428,7 @@ package com.ankamagames.atouin.managers
                {
                   cellData = currentMap.cells[cellId] as CellData;
                   mapChangeData = cellData.mapChangeData;
-                  if((mapChangeData) && ((target == this._shapeRight) && ((mapChangeData & 1) || (((cellId + 1) % (AtouinConstants.MAP_WIDTH * 2) == 0) && (mapChangeData & 2)) || ((cellId + 1) % (AtouinConstants.MAP_WIDTH * 2) == 0) && (mapChangeData & 128)) || (target == this._shapeLeft) && (((x == -y) && (mapChangeData & 8)) || (mapChangeData & 16) || (x == -y) && (mapChangeData & 32))))
+                  if((mapChangeData) && ((target == this._shapeRight) && (mapChangeData & 1 || (cellId + 1) % (AtouinConstants.MAP_WIDTH * 2) == 0 && mapChangeData & 2 || (cellId + 1) % (AtouinConstants.MAP_WIDTH * 2) == 0 && mapChangeData & 128) || (target == this._shapeLeft) && (x == -y && mapChangeData & 8 || mapChangeData & 16 || x == -y && mapChangeData & 32)))
                   {
                      sx = x;
                      sy = y;
@@ -457,7 +458,7 @@ package com.ankamagames.atouin.managers
                {
                   cellData = currentMap.cells[cellId] as CellData;
                   mapChangeData = cellData.mapChangeData;
-                  if((mapChangeData) && ((target == this._shapeTop) && (((cellId < AtouinConstants.MAP_WIDTH) && (mapChangeData & 32)) || (mapChangeData & 64) || (cellId < AtouinConstants.MAP_WIDTH) && (mapChangeData & 128)) || (target == this._shapeBottom) && (((cellId >= AtouinConstants.MAP_CELLS_COUNT - AtouinConstants.MAP_WIDTH) && (mapChangeData & 2)) || (mapChangeData & 4) || (cellId >= AtouinConstants.MAP_CELLS_COUNT - AtouinConstants.MAP_WIDTH) && (mapChangeData & 8))))
+                  if((mapChangeData) && ((target == this._shapeTop) && (cellId < AtouinConstants.MAP_WIDTH && mapChangeData & 32 || mapChangeData & 64 || cellId < AtouinConstants.MAP_WIDTH && mapChangeData & 128) || (target == this._shapeBottom) && (cellId >= AtouinConstants.MAP_CELLS_COUNT - AtouinConstants.MAP_WIDTH && mapChangeData & 2 || mapChangeData & 4 || cellId >= AtouinConstants.MAP_CELLS_COUNT - AtouinConstants.MAP_WIDTH && mapChangeData & 8)))
                   {
                      sx = x;
                      sy = y;

@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.updater.parts
          return 1513;
       }
       
-      public function initDownloadErrorMessage(errorId:uint=0, message:String="", helpUrl:String="") : DownloadErrorMessage {
+      public function initDownloadErrorMessage(errorId:uint = 0, message:String = "", helpUrl:String = "") : DownloadErrorMessage {
          this.errorId = errorId;
          this.message = message;
          this.helpUrl = helpUrl;

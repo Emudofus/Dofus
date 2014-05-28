@@ -42,9 +42,9 @@ package com.ankamagames.dofus.modules.utils
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AuthentificationFrame));
+      protected static const _log:Logger;
       
-      private static const _priority:int = Priority.NORMAL;
+      private static const _priority:int = 0;
       
       private var _loader:IResourceLoader;
       
@@ -143,6 +143,8 @@ package com.ankamagames.dofus.modules.utils
                this._pendingZipDm = null;
                KernelEventsManager.getInstance().processCallback(HookList.ModuleInstallationProgress,-1);
                return true;
+            default:
+               return false;
          }
       }
       
@@ -162,13 +164,15 @@ package com.ankamagames.dofus.modules.utils
                this._pendingZipToInstall = e.resource;
                this.getZippedModuleInformations(e.resource);
                break;
+            default:
+               KernelEventsManager.getInstance().processCallback(HookList.ModuleInstallationError,2);
          }
       }
       
       private function processJsonList(jsonArray:*) : void {
          var moduleEntry:* = undefined;
          var moduleDm:XML = null;
-         for each (moduleEntry in jsonArray)
+         for each(moduleEntry in jsonArray)
          {
             moduleDm = this._installedModuleDm[moduleEntry.author + "_" + moduleEntry.name];
             if(moduleDm)
@@ -197,7 +201,7 @@ package com.ankamagames.dofus.modules.utils
          }
          this._pendingZipDm = dmData;
          var scriptName:String = dmData.script;
-         for each (entry in zipFile.entries)
+         for each(entry in zipFile.entries)
          {
             if(entry.name == scriptName)
             {
@@ -230,7 +234,7 @@ package com.ankamagames.dofus.modules.utils
          instalModuleDirectory.createDirectory();
          var fileNumber:int = this._pendingZipToInstall.entries.length;
          var totalTreatedFile:int = 0;
-         for each (entry in this._pendingZipToInstall.entries)
+         for each(entry in this._pendingZipToInstall.entries)
          {
             totalTreatedFile++;
             unzipedFile = new File(instalModuleDirectory.nativePath + File.separator + entry.name);
@@ -281,7 +285,7 @@ package com.ankamagames.dofus.modules.utils
          }
          var fileNumber:int = this._pendingZipToInstall.entries.length;
          var totalTreatedFile:int = 0;
-         for each (entry in this._pendingZipToInstall.entries)
+         for each(entry in this._pendingZipToInstall.entries)
          {
             totalTreatedFile++;
             unzipedFile = new File(updateModuleDirectory.nativePath + File.separator + entry.name);
@@ -296,24 +300,22 @@ package com.ankamagames.dofus.modules.utils
                   this.writeZipEntry(unzipedData,entry,writeStream,unzipedFile,this._pendingZipToInstall);
                }
             }
-            else
+            else if(!entry.isDirectory())
             {
-               if(!entry.isDirectory())
+               buffer = new ByteArray();
+               readStream = new FileStream();
+               readStream.open(unzipedFile,FileMode.READ);
+               readStream.readBytes(buffer,0,readStream.bytesAvailable);
+               readStream.close();
+               fileCrc.update(buffer,0,buffer.bytesAvailable);
+               fileCrcValue = fileCrc.getValue();
+               if(fileCrcValue != entry.crc)
                {
-                  buffer = new ByteArray();
-                  readStream = new FileStream();
-                  readStream.open(unzipedFile,FileMode.READ);
-                  readStream.readBytes(buffer,0,readStream.bytesAvailable);
-                  readStream.close();
-                  fileCrc.update(buffer,0,buffer.bytesAvailable);
-                  fileCrcValue = fileCrc.getValue();
-                  if(fileCrcValue != entry.crc)
-                  {
-                     unzipedFile.deleteFile();
-                     this.writeZipEntry(unzipedData,entry,writeStream,unzipedFile,this._pendingZipToInstall);
-                  }
+                  unzipedFile.deleteFile();
+                  this.writeZipEntry(unzipedData,entry,writeStream,unzipedFile,this._pendingZipToInstall);
                }
             }
+            
          }
          if(totalTreatedFile == fileNumber)
          {
@@ -353,7 +355,7 @@ package com.ankamagames.dofus.modules.utils
          var isTrusted:* = false;
          var rootFile:File = this._modulesDirectory;
          var allModulesDm:XML = <Root></Root>;
-         for each (subDir in rootFile.getDirectoryListing())
+         for each(subDir in rootFile.getDirectoryListing())
          {
             if(subDir.isDirectory)
             {

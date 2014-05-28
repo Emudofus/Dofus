@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 5892;
       }
       
-      public function initPrismFightDefenderLeaveMessage(subAreaId:uint=0, fightId:Number=0, fighterToRemoveId:uint=0) : PrismFightDefenderLeaveMessage {
+      public function initPrismFightDefenderLeaveMessage(subAreaId:uint = 0, fightId:Number = 0, fighterToRemoveId:uint = 0) : PrismFightDefenderLeaveMessage {
          this.subAreaId = subAreaId;
          this.fightId = fightId;
          this.fighterToRemoveId = fighterToRemoveId;

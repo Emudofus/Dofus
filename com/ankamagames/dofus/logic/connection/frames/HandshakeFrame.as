@@ -29,7 +29,7 @@ package com.ankamagames.dofus.logic.connection.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(HandshakeFrame));
+      protected static const _log:Logger;
       
       private var _timeOutTimer:Timer;
       
@@ -76,6 +76,8 @@ package com.ankamagames.dofus.logic.connection.frames
                this._timeOutTimer.addEventListener(TimerEvent.TIMER_COMPLETE,this.onTimeOut);
                this._timeOutTimer.start();
                return true;
+            default:
+               return false;
          }
       }
       

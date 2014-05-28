@@ -2,7 +2,6 @@ package com.ankamagames.dofus.datacenter.appearance
 {
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.data.GameData;
-   import __AS3__.vec.Vector;
    import com.ankamagames.tiphon.types.TransformData;
    
    public class SkinPosition extends Object implements IDataCenter

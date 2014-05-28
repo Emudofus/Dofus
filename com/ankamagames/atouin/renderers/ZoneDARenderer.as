@@ -5,7 +5,6 @@ package com.ankamagames.atouin.renderers
    import com.ankamagames.atouin.types.ZoneTile;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.types.Color;
    import com.ankamagames.atouin.types.DataMapContainer;
    import flash.geom.ColorTransform;
@@ -16,7 +15,7 @@ package com.ankamagames.atouin.renderers
    public class ZoneDARenderer extends Object implements IZoneRenderer
    {
       
-      public function ZoneDARenderer(nStrata:uint=0, alpha:Number=1, fixedStrata:Boolean=false) {
+      public function ZoneDARenderer(nStrata:uint = 0, alpha:Number = 1, fixedStrata:Boolean = false) {
          super();
          this._aZoneTile = new Array();
          this._aCellTile = new Array();
@@ -26,9 +25,9 @@ package com.ankamagames.atouin.renderers
          this._alpha = alpha;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ZoneDARenderer));
+      protected static const _log:Logger;
       
-      private static var zoneTileCache:Array = new Array();
+      private static var zoneTileCache:Array;
       
       private static function getZoneTile() : ZoneTile {
          if(zoneTileCache.length)

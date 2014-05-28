@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.fight
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.fight.FightResultListEntry;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -37,7 +36,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 720;
       }
       
-      public function initGameFightEndMessage(duration:uint=0, ageBonus:int=0, lootShareLimitMalus:int=0, results:Vector.<FightResultListEntry>=null) : GameFightEndMessage {
+      public function initGameFightEndMessage(duration:uint = 0, ageBonus:int = 0, lootShareLimitMalus:int = 0, results:Vector.<FightResultListEntry> = null) : GameFightEndMessage {
          this.duration = duration;
          this.ageBonus = ageBonus;
          this.lootShareLimitMalus = lootShareLimitMalus;

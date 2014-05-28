@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.context.fight
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
@@ -24,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 24;
       }
       
-      public function initFightResultPlayerListEntry(outcome:uint=0, wave:uint=0, rewards:FightLoot=null, id:int=0, alive:Boolean=false, level:uint=0, additional:Vector.<FightResultAdditionalData>=null) : FightResultPlayerListEntry {
+      public function initFightResultPlayerListEntry(outcome:uint = 0, wave:uint = 0, rewards:FightLoot = null, id:int = 0, alive:Boolean = false, level:uint = 0, additional:Vector.<FightResultAdditionalData> = null) : FightResultPlayerListEntry {
          super.initFightResultFighterListEntry(outcome,wave,rewards,id,alive);
          this.level = level;
          this.additional = additional;

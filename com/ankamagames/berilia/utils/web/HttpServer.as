@@ -27,7 +27,7 @@ package com.ankamagames.berilia.utils.web
       
       private static var _self:HttpServer;
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(HttpServer));
+      private static const _log:Logger;
       
       public static function getInstance() : HttpServer {
          if(!_self)
@@ -56,7 +56,7 @@ package com.ankamagames.berilia.utils.web
             return true;
          }
          this._sockets = new Array();
-         this._server = new getDefinitionByName("flash.net.ServerSocket") as Class();
+         this._server = new (getDefinitionByName("flash.net.ServerSocket") as Class)();
          this._server.addEventListener(Event.CONNECT,this.onConnect);
          var tryCount:uint = 100;
          var currentPort:uint = 1100;
@@ -87,7 +87,7 @@ package com.ankamagames.berilia.utils.web
       
       public function close() : void {
          var httpSocket:HttpSocket = null;
-         for each (httpSocket in this._sockets)
+         for each(httpSocket in this._sockets)
          {
             httpSocket.tearDown();
          }

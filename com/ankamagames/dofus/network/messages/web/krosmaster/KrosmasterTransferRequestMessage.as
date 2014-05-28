@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.web.krosmaster
          return 6349;
       }
       
-      public function initKrosmasterTransferRequestMessage(uid:String="") : KrosmasterTransferRequestMessage {
+      public function initKrosmasterTransferRequestMessage(uid:String = "") : KrosmasterTransferRequestMessage {
          this.uid = uid;
          this._isInitialized = true;
          return this;

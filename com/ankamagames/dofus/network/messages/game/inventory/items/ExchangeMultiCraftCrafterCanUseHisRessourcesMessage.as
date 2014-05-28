@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6020;
       }
       
-      public function initExchangeMultiCraftCrafterCanUseHisRessourcesMessage(allowed:Boolean=false) : ExchangeMultiCraftCrafterCanUseHisRessourcesMessage {
+      public function initExchangeMultiCraftCrafterCanUseHisRessourcesMessage(allowed:Boolean = false) : ExchangeMultiCraftCrafterCanUseHisRessourcesMessage {
          this.allowed = allowed;
          this._isInitialized = true;
          return this;

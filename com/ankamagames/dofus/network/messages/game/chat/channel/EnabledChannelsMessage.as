@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.chat.channel
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.chat.channel
          return 892;
       }
       
-      public function initEnabledChannelsMessage(channels:Vector.<uint>=null, disallowed:Vector.<uint>=null) : EnabledChannelsMessage {
+      public function initEnabledChannelsMessage(channels:Vector.<uint> = null, disallowed:Vector.<uint> = null) : EnabledChannelsMessage {
          this.channels = channels;
          this.disallowed = disallowed;
          this._isInitialized = true;

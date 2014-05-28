@@ -32,9 +32,9 @@ package com.ankamagames.berilia.managers
       
       protected static var DirectAccessObject:Class;
       
-      public static const ACCESS_KEY:Object = new Object();
+      public static const ACCESS_KEY:Object;
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(SecureCenter));
+      private static const _log:Logger;
       
       public static function init(sharedSecureComponent:Object, sharedReadOnlyData:Object, directAccessObject:Object) : void {
          SharedSecureComponent = sharedSecureComponent as Class;
@@ -52,7 +52,7 @@ package com.ankamagames.berilia.managers
          }
       }
       
-      public static function secure(target:*, trusted:Boolean=false) : * {
+      public static function secure(target:*, trusted:Boolean = false) : * {
          var iDataCenter:* = undefined;
          var iModuleUtil:* = undefined;
          switch(true)
@@ -70,10 +70,10 @@ package com.ankamagames.berilia.managers
          }
       }
       
-      public static function secureContent(target:Array, trusted:Boolean=false) : Array {
+      public static function secureContent(target:Array, trusted:Boolean = false) : Array {
          var key:* = undefined;
          var result:Array = [];
-         for (key in target)
+         for(key in target)
          {
             result[key] = secure(target[key],trusted);
          }
@@ -101,13 +101,15 @@ package com.ankamagames.berilia.managers
                   var result:* = CallWithParameters.callR(target,args);
                   return unsecure(result);
                };
+            default:
+               return target;
          }
       }
       
       public static function unsecureContent(target:Array) : Array {
          var key:* = undefined;
          var result:Array = [];
-         for (key in target)
+         for(key in target)
          {
             result[key] = unsecure(target[key]);
          }

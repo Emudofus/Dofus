@@ -5,7 +5,6 @@ package com.ankamagames.dofus.datacenter.livingObjects
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    
    public class SpeakingItemsTrigger extends Object implements IDataCenter
    {
@@ -16,7 +15,7 @@ package com.ankamagames.dofus.datacenter.livingObjects
       
       public static const MODULE:String = "SpeakingItemsTriggers";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpeakingItemsTrigger));
+      protected static const _log:Logger;
       
       public static function getSpeakingItemsTriggerById(id:int) : SpeakingItemsTrigger {
          return GameData.getObject(MODULE,id) as SpeakingItemsTrigger;

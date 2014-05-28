@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 455;
       }
       
-      public function initGameFightFighterMonsterLightInformations(id:int=0, wave:int=0, level:uint=0, breed:int=0, sex:Boolean=false, alive:Boolean=false, creatureGenericId:uint=0) : GameFightFighterMonsterLightInformations {
+      public function initGameFightFighterMonsterLightInformations(id:int = 0, wave:int = 0, level:uint = 0, breed:int = 0, sex:Boolean = false, alive:Boolean = false, creatureGenericId:uint = 0) : GameFightFighterMonsterLightInformations {
          super.initGameFightFighterLightInformations(id,wave,level,breed,sex,alive);
          this.creatureGenericId = creatureGenericId;
          return this;

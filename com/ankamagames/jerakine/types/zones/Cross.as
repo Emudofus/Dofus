@@ -4,7 +4,6 @@ package com.ankamagames.jerakine.types.zones
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.map.IDataMapProvider;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
    import com.ankamagames.jerakine.types.positions.MapPoint;
    
@@ -19,7 +18,7 @@ package com.ankamagames.jerakine.types.zones
          this._dataMapProvider = dataMapProvider;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Cross));
+      protected static const _log:Logger;
       
       private var _radius:uint = 0;
       
@@ -85,7 +84,7 @@ package com.ankamagames.jerakine.types.zones
       
       public var onlyPerpendicular:Boolean = false;
       
-      public function getCells(cellId:uint=0) : Vector.<uint> {
+      public function getCells(cellId:uint = 0) : Vector.<uint> {
          var aCells:Vector.<uint> = new Vector.<uint>();
          if(this._minRadius == 0)
          {

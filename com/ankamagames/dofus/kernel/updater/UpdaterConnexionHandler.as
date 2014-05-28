@@ -37,19 +37,17 @@ package com.ankamagames.dofus.kernel.updater
                _log.debug("Using port " + CommandLineArguments.getInstance().getArgument("update-server-port") + " send by server");
                _currentConnection.connect("localhost",int(CommandLineArguments.getInstance().getArgument("update-server-port")));
             }
-            else
+            else if(!AirScanner.isStreamingVersion())
             {
-               if(!AirScanner.isStreamingVersion())
-               {
-                  _currentConnection.connect("localhost",4242);
-               }
+               _currentConnection.connect("localhost",4242);
             }
+            
             return;
          }
          throw new Error("La classe UpdaterConnexionHandler est un singleton");
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UpdaterConnexionHandler));
+      protected static const _log:Logger;
       
       private static var _self:UpdaterConnexionHandler;
       

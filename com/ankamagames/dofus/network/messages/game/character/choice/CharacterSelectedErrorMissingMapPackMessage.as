@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 6300;
       }
       
-      public function initCharacterSelectedErrorMissingMapPackMessage(subAreaId:uint=0) : CharacterSelectedErrorMissingMapPackMessage {
+      public function initCharacterSelectedErrorMissingMapPackMessage(subAreaId:uint = 0) : CharacterSelectedErrorMissingMapPackMessage {
          this.subAreaId = subAreaId;
          this._isInitialized = true;
          return this;

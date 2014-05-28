@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 851;
       }
       
-      public function initChatClientPrivateMessage(content:String="", receiver:String="") : ChatClientPrivateMessage {
+      public function initChatClientPrivateMessage(content:String = "", receiver:String = "") : ChatClientPrivateMessage {
          super.initChatAbstractClientMessage(content);
          this.receiver = receiver;
          this._isInitialized = true;

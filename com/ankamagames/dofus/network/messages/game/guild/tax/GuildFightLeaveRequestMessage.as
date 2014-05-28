@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5715;
       }
       
-      public function initGuildFightLeaveRequestMessage(taxCollectorId:int=0, characterId:uint=0) : GuildFightLeaveRequestMessage {
+      public function initGuildFightLeaveRequestMessage(taxCollectorId:int = 0, characterId:uint = 0) : GuildFightLeaveRequestMessage {
          this.taxCollectorId = taxCollectorId;
          this.characterId = characterId;
          this._isInitialized = true;

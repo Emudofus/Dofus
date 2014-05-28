@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight.character
          return 6218;
       }
       
-      public function initGameFightShowFighterRandomStaticPoseMessage(informations:GameFightFighterInformations=null) : GameFightShowFighterRandomStaticPoseMessage {
+      public function initGameFightShowFighterRandomStaticPoseMessage(informations:GameFightFighterInformations = null) : GameFightShowFighterRandomStaticPoseMessage {
          super.initGameFightShowFighterMessage(informations);
          this._isInitialized = true;
          return this;

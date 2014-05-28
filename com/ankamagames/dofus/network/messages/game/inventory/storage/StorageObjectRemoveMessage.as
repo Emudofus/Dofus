@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.storage
          return 5648;
       }
       
-      public function initStorageObjectRemoveMessage(objectUID:uint=0) : StorageObjectRemoveMessage {
+      public function initStorageObjectRemoveMessage(objectUID:uint = 0) : StorageObjectRemoveMessage {
          this.objectUID = objectUID;
          this._isInitialized = true;
          return this;

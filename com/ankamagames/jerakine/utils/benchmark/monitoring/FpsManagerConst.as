@@ -23,15 +23,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
       
       public static var PLAYER_VERSION:int;
       
-      public static const SPECIAL_GRAPH:Array = [
-         {
-            "name":"frames",
-            "color":16777215
-         },
-         {
-            "name":"fps_ref",
-            "color":13325419
-         }];
+      public static const SPECIAL_GRAPH:Array;
       
       public static const SPECIAL_GRAPH_POS:int = 50;
    }

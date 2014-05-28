@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.alignments
       
       public static const MODULE:String = "AlignmentOrder";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlignmentOrder));
+      protected static const _log:Logger;
       
       public static function getAlignmentOrderById(id:int) : AlignmentOrder {
          return GameData.getObject(MODULE,id) as AlignmentOrder;

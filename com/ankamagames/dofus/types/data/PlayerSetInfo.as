@@ -2,7 +2,6 @@ package com.ankamagames.dofus.types.data
 {
    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.items.ItemSet;
    import com.ankamagames.dofus.misc.ObjectEffectAdapter;
    

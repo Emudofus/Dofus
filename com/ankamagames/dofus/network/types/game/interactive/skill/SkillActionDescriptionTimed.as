@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.interactive.skill
          return 103;
       }
       
-      public function initSkillActionDescriptionTimed(skillId:uint=0, time:uint=0) : SkillActionDescriptionTimed {
+      public function initSkillActionDescriptionTimed(skillId:uint = 0, time:uint = 0) : SkillActionDescriptionTimed {
          super.initSkillActionDescription(skillId);
          this.time = time;
          return this;

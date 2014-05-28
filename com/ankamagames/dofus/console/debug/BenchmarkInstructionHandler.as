@@ -149,7 +149,7 @@ package com.ankamagames.dofus.console.debug
                showScalezone = false;
                flattenCells = true;
                showBlockMvt = true;
-               for each (arg in args)
+               for each(arg in args)
                {
                   valueTab = arg.split("=");
                   if(valueTab != null)
@@ -159,55 +159,41 @@ package com.ankamagames.dofus.console.debug
                      {
                         showFightZone = cmdValue.toLowerCase() == "true"?true:false;
                      }
-                     else
+                     else if((!(arg.search("clearcache") == -1)) && (valueTab.length > 1))
                      {
-                        if((!(arg.search("clearcache") == -1)) && (valueTab.length > 1))
-                        {
-                           useCache = cmdValue.toLowerCase() == "true"?false:true;
-                        }
-                        else
-                        {
-                           if((!(arg.search("mode") == -1)) && (valueTab.length > 1))
-                           {
-                              typeZone = cmdValue.toLowerCase() == "rp"?1:0;
-                           }
-                           else
-                           {
-                              if((!(arg.search("interactivecells") == -1)) && (valueTab.length > 1))
-                              {
-                                 showInteractiveCells = cmdValue.toLowerCase() == "true"?true:false;
-                              }
-                              else
-                              {
-                                 if((!(arg.search("scalezone") == -1)) && (valueTab.length > 1))
-                                 {
-                                    showScalezone = cmdValue.toLowerCase() == "true"?true:false;
-                                 }
-                                 else
-                                 {
-                                    if((!(arg.search("show") == -1)) && (valueTab.length > 1))
-                                    {
-                                       showTacticMode = cmdValue.toLowerCase() == "true"?true:false;
-                                    }
-                                    else
-                                    {
-                                       if((!(arg.search("flattencells") == -1)) && (valueTab.length > 1))
-                                       {
-                                          flattenCells = cmdValue.toLowerCase() == "true"?true:false;
-                                       }
-                                       else
-                                       {
-                                          if((!(arg.search("blocLDV") == -1)) && (valueTab.length > 1))
-                                          {
-                                             showBlockMvt = cmdValue.toLowerCase() == "true"?true:false;
-                                          }
-                                       }
-                                    }
-                                 }
-                              }
-                           }
-                        }
+                        useCache = cmdValue.toLowerCase() == "true"?false:true;
                      }
+                     else if((!(arg.search("mode") == -1)) && (valueTab.length > 1))
+                     {
+                        typeZone = cmdValue.toLowerCase() == "rp"?1:0;
+                     }
+                     else if((!(arg.search("interactivecells") == -1)) && (valueTab.length > 1))
+                     {
+                        showInteractiveCells = cmdValue.toLowerCase() == "true"?true:false;
+                     }
+                     else if((!(arg.search("scalezone") == -1)) && (valueTab.length > 1))
+                     {
+                        showScalezone = cmdValue.toLowerCase() == "true"?true:false;
+                     }
+                     else if((!(arg.search("show") == -1)) && (valueTab.length > 1))
+                     {
+                        showTacticMode = cmdValue.toLowerCase() == "true"?true:false;
+                     }
+                     else if((!(arg.search("flattencells") == -1)) && (valueTab.length > 1))
+                     {
+                        flattenCells = cmdValue.toLowerCase() == "true"?true:false;
+                     }
+                     else if((!(arg.search("blocLDV") == -1)) && (valueTab.length > 1))
+                     {
+                        showBlockMvt = cmdValue.toLowerCase() == "true"?true:false;
+                     }
+                     
+                     
+                     
+                     
+                     
+                     
+                     
                   }
                }
                if(showTacticMode)
@@ -241,10 +227,12 @@ package com.ankamagames.dofus.console.debug
                return "Active/Désactive l\'exécution rapide des anims funs.";
             case "tacticmode":
                return "Active/Désactive le mode tactique" + "\n    show=[true|false]" + "\n    clearcache=[true|false]" + "\n    mode=[fight|RP]" + "\n    interactivecells=[true|false] " + "\n    fightzone=[true|false]" + "\n    scalezone=[true|false]" + "\n    flattencells=[true|false]";
+            default:
+               return "Unknow command";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          var animEntity:TiphonSprite = null;
          var list:Array = null;
          var animList:Array = null;
@@ -257,7 +245,7 @@ package com.ankamagames.dofus.console.debug
                animEntity = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id) as TiphonSprite;
                list = animEntity.animationList;
                animList = [];
-               for each (anim in list)
+               for each(anim in list)
                {
                   if(anim.indexOf("Anim") != -1)
                   {
@@ -266,6 +254,8 @@ package com.ankamagames.dofus.console.debug
                }
                animList.sort();
                return animList;
+            default:
+               return [];
          }
       }
    }

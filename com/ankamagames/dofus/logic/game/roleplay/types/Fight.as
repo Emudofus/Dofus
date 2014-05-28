@@ -3,7 +3,6 @@ package com.ankamagames.dofus.logic.game.roleplay.types
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    
    public class Fight extends Object
    {
@@ -14,7 +13,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
          this.teams = teams;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Fight));
+      protected static const _log:Logger;
       
       public var fightId:uint;
       
@@ -22,7 +21,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
       
       public function getTeamByType(teamType:uint) : FightTeam {
          var team:FightTeam = null;
-         for each (team in this.teams)
+         for each(team in this.teams)
          {
             if(team.teamType == teamType)
             {
@@ -34,7 +33,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
       
       public function getTeamById(teamId:uint) : FightTeam {
          var team:FightTeam = null;
-         for each (team in this.teams)
+         for each(team in this.teams)
          {
             if(team.teamInfos.teamId == teamId)
             {

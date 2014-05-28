@@ -26,9 +26,9 @@ package com.ankamagames.dofus.scripts.api
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FxApi));
+      protected static const _log:Logger;
       
-      public static const ANIMEVENT_SHOT:String = TiphonEvent.ANIMATION_SHOT;
+      public static const ANIMEVENT_SHOT:String = "SHOT";
       
       public static function GetCurrentTargetedCell(runner:FxRunner) : MapPoint {
          return runner.target;
@@ -42,7 +42,7 @@ package com.ankamagames.dofus.scripts.api
          return runner.caster.id == PlayedCharacterManager.getInstance().id;
       }
       
-      public static function GetOrientationTo(fromPoint:MapPoint, toPoint:MapPoint, use4Dir:Boolean=true) : uint {
+      public static function GetOrientationTo(fromPoint:MapPoint, toPoint:MapPoint, use4Dir:Boolean = true) : uint {
          return fromPoint.advancedOrientationTo(toPoint,use4Dir);
       }
       
@@ -80,7 +80,7 @@ package com.ankamagames.dofus.scripts.api
          return entity.position;
       }
       
-      public static function CreateGfxEntity(gfxId:uint, cell:MapPoint, randomRotationMin:Number=0, randomRotationMax:Number=0, randomFlip:Boolean=false, startPlayingOnlyWhenDisplayed:Boolean=true) : IEntity {
+      public static function CreateGfxEntity(gfxId:uint, cell:MapPoint, randomRotationMin:Number = 0, randomRotationMax:Number = 0, randomFlip:Boolean = false, startPlayingOnlyWhenDisplayed:Boolean = true) : IEntity {
          var id:int = -10000;
          while(DofusEntities.getEntity(id))
          {

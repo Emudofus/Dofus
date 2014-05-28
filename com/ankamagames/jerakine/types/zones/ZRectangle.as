@@ -1,7 +1,6 @@
 package com.ankamagames.jerakine.types.zones
 {
    import com.ankamagames.jerakine.map.IDataMapProvider;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.positions.MapPoint;
    
    public class ZRectangle extends Object implements IZone
@@ -60,7 +59,7 @@ package com.ankamagames.jerakine.types.zones
          return Math.pow(this._radius + this._radius2 + 1,2);
       }
       
-      public function getCells(cellId:uint=0) : Vector.<uint> {
+      public function getCells(cellId:uint = 0) : Vector.<uint> {
          var i:* = 0;
          var j:* = 0;
          var aCells:Vector.<uint> = new Vector.<uint>();

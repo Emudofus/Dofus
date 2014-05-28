@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 5525;
       }
       
-      public function initGameActionFightSlideMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, startCellId:int=0, endCellId:int=0) : GameActionFightSlideMessage {
+      public function initGameActionFightSlideMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, startCellId:int = 0, endCellId:int = 0) : GameActionFightSlideMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this.startCellId = startCellId;

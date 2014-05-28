@@ -4,7 +4,6 @@ package com.ankamagames.dofus.network.messages.game.guild
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.social.GuildFactSheetInformations;
    import com.ankamagames.dofus.network.types.game.character.CharacterMinimalInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -41,7 +40,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6415;
       }
       
-      public function initGuildFactsMessage(infos:GuildFactSheetInformations=null, creationDate:uint=0, nbTaxCollectors:uint=0, enabled:Boolean=false, members:Vector.<CharacterMinimalInformations>=null) : GuildFactsMessage {
+      public function initGuildFactsMessage(infos:GuildFactSheetInformations = null, creationDate:uint = 0, nbTaxCollectors:uint = 0, enabled:Boolean = false, members:Vector.<CharacterMinimalInformations> = null) : GuildFactsMessage {
          this.infos = infos;
          this.creationDate = creationDate;
          this.nbTaxCollectors = nbTaxCollectors;

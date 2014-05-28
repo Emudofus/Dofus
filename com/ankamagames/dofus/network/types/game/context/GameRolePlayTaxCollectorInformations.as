@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.types.game.context
          return 148;
       }
       
-      public function initGameRolePlayTaxCollectorInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, identification:TaxCollectorStaticInformations=null, guildLevel:uint=0, taxCollectorAttack:int=0) : GameRolePlayTaxCollectorInformations {
+      public function initGameRolePlayTaxCollectorInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, identification:TaxCollectorStaticInformations = null, guildLevel:uint = 0, taxCollectorAttack:int = 0) : GameRolePlayTaxCollectorInformations {
          super.initGameRolePlayActorInformations(contextualId,look,disposition);
          this.identification = identification;
          this.guildLevel = guildLevel;

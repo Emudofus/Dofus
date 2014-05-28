@@ -2,7 +2,6 @@ package com.ankamagames.dofus.datacenter.world
 {
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.data.GameData;
-   import __AS3__.vec.*;
    
    public class MapCoordinates extends Object implements IDataCenter
    {
@@ -13,7 +12,7 @@ package com.ankamagames.dofus.datacenter.world
       
       public static const MODULE:String = "MapCoordinates";
       
-      private static const UNDEFINED_COORD:int = int.MIN_VALUE;
+      private static const UNDEFINED_COORD:int = -2147483648;
       
       public static function getMapCoordinatesByCompressedCoords(compressedCoords:uint) : MapCoordinates {
          return GameData.getObject(MODULE,compressedCoords) as MapCoordinates;

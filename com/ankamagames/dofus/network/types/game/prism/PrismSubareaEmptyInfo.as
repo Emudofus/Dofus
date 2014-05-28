@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.prism
          return 438;
       }
       
-      public function initPrismSubareaEmptyInfo(subAreaId:uint=0, allianceId:uint=0) : PrismSubareaEmptyInfo {
+      public function initPrismSubareaEmptyInfo(subAreaId:uint = 0, allianceId:uint = 0) : PrismSubareaEmptyInfo {
          this.subAreaId = subAreaId;
          this.allianceId = allianceId;
          return this;

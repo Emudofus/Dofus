@@ -15,11 +15,11 @@ package com.ankamagames.dofus.types.enums
       
       public static const ANIM_ATTAQUE_BASE:String = "AnimAttaque";
       
-      public static const ANIM_ATTAQUE0:String = ANIM_ATTAQUE_BASE + "0";
+      public static const ANIM_ATTAQUE0:String;
       
-      public static const ANIM_ATTAQUE1:String = ANIM_ATTAQUE_BASE + "1";
+      public static const ANIM_ATTAQUE1:String;
       
-      public static const ANIM_ATTAQUE2:String = ANIM_ATTAQUE_BASE + "2";
+      public static const ANIM_ATTAQUE2:String;
       
       public static const ANIM_HIT:String = "AnimHit";
       

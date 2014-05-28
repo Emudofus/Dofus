@@ -1,6 +1,5 @@
 package com.ankamagames.tubul.interfaces
 {
-   import __AS3__.vec.Vector;
    import com.ankamagames.tubul.types.VolumeFadeEffect;
    
    public interface ISoundController extends IEventDispatcher

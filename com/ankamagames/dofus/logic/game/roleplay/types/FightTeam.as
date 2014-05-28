@@ -10,7 +10,6 @@ package com.ankamagames.dofus.logic.game.roleplay.types
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberInformations;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.common.frames.PartyManagementFrame;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberCharacterInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.FightOptionsInformations;
    import com.ankamagames.dofus.misc.EntityLookAdapter;
@@ -34,7 +33,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
          this.teamOptions[FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY] = teamOptions.isRestrictedToPartyOnly;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FightTeam));
+      protected static const _log:Logger;
       
       public var fight:Fight;
       
@@ -52,11 +51,11 @@ package com.ankamagames.dofus.logic.game.roleplay.types
          var teamHasGroupMember:Boolean = false;
          var pmf:PartyManagementFrame = Kernel.getWorker().getFrame(PartyManagementFrame) as PartyManagementFrame;
          var partyMemberNames:Vector.<String> = new Vector.<String>();
-         for each (partyMember in pmf.partyMembers)
+         for each(partyMember in pmf.partyMembers)
          {
             partyMemberNames.push(partyMember.name);
          }
-         for each (fightTeamMember in this.teamInfos.teamMembers)
+         for each(fightTeamMember in this.teamInfos.teamMembers)
          {
             if((fightTeamMember) && (fightTeamMember is FightTeamMemberCharacterInformations) && (!(partyMemberNames.indexOf(FightTeamMemberCharacterInformations(fightTeamMember).name) == -1)))
             {
@@ -70,7 +69,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
       public function hasOptions() : Boolean {
          var opt:* = undefined;
          var hasOptions:Boolean = false;
-         for (opt in this.teamOptions)
+         for(opt in this.teamOptions)
          {
             if(this.teamOptions[opt])
             {

@@ -16,7 +16,7 @@ package com.ankamagames.tubul.types
          this.setSilence(pSilenceMin,pSilenceMax);
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SoundSilence));
+      protected static const _log:Logger;
       
       private var _silenceMin:Number;
       

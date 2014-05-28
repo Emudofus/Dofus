@@ -13,7 +13,7 @@ package com.ankamagames.berilia.types.tooltip
    public class Tooltip extends Object
    {
       
-      public function Tooltip(base:Uri, container:Uri, separator:Uri=null) {
+      public function Tooltip(base:Uri, container:Uri, separator:Uri = null) {
          this._log = Log.getLogger(getQualifiedClassName(Tooltip));
          this._callbacks = new Array();
          super();
@@ -37,7 +37,7 @@ package com.ankamagames.berilia.types.tooltip
          MEMORY_LOG[this] = 1;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
       protected var _log:Logger;
       
@@ -109,7 +109,7 @@ package com.ankamagames.berilia.types.tooltip
       private function makeTooltip() : void {
          var block:TooltipBlock = null;
          var result:Array = new Array();
-         for each (block in this._blocks)
+         for each(block in this._blocks)
          {
             if((block.content) && (block.content.length))
             {

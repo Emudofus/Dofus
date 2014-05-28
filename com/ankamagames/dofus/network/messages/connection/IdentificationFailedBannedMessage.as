@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.connection
          return 6174;
       }
       
-      public function initIdentificationFailedBannedMessage(reason:uint=99, banEndDate:Number=0) : IdentificationFailedBannedMessage {
+      public function initIdentificationFailedBannedMessage(reason:uint = 99, banEndDate:Number = 0) : IdentificationFailedBannedMessage {
          super.initIdentificationFailedMessage(reason);
          this.banEndDate = banEndDate;
          this._isInitialized = true;

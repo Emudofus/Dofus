@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 719;
       }
       
-      public function initGameFightTurnEndMessage(id:int=0) : GameFightTurnEndMessage {
+      public function initGameFightTurnEndMessage(id:int = 0) : GameFightTurnEndMessage {
          this.id = id;
          this._isInitialized = true;
          return this;

@@ -43,7 +43,7 @@ package com.ankamagames.jerakine.utils.system
          return this._cpu;
       }
       
-      public function notifyUser(always:Boolean=false) : void {
+      public function notifyUser(always:Boolean = false) : void {
          var currentWindow:NativeWindow = null;
          try
          {
@@ -63,18 +63,6 @@ package com.ankamagames.jerakine.utils.system
          catch(e:Error)
          {
          }
-         return;
-         if((always) || (!currentWindow.active))
-         {
-            if(this.os == OperatingSystem.MAC_OS)
-            {
-               DockIcon(NativeApplication.nativeApplication.icon).bounce(NotificationType.CRITICAL);
-            }
-            else
-            {
-               currentWindow.notifyUser(NotificationType.CRITICAL);
-            }
-         }
       }
       
       private function parseSystemInfo() : void {
@@ -84,22 +72,18 @@ package com.ankamagames.jerakine.utils.system
             this._os = OperatingSystem.LINUX;
             this._version = "unknow";
          }
-         else
+         else if(cos.substr(0,OperatingSystem.MAC_OS.length) == OperatingSystem.MAC_OS)
          {
-            if(cos.substr(0,OperatingSystem.MAC_OS.length) == OperatingSystem.MAC_OS)
-            {
-               this._os = OperatingSystem.MAC_OS;
-               this._version = cos.substr(OperatingSystem.MAC_OS.length + 1);
-            }
-            else
-            {
-               if(cos.substr(0,OperatingSystem.WINDOWS.length) == OperatingSystem.WINDOWS)
-               {
-                  this._os = OperatingSystem.WINDOWS;
-                  this._version = cos.substr(OperatingSystem.WINDOWS.length + 1);
-               }
-            }
+            this._os = OperatingSystem.MAC_OS;
+            this._version = cos.substr(OperatingSystem.MAC_OS.length + 1);
          }
+         else if(cos.substr(0,OperatingSystem.WINDOWS.length) == OperatingSystem.WINDOWS)
+         {
+            this._os = OperatingSystem.WINDOWS;
+            this._version = cos.substr(OperatingSystem.WINDOWS.length + 1);
+         }
+         
+         
          this._cpu = Capabilities.cpuArchitecture;
       }
    }

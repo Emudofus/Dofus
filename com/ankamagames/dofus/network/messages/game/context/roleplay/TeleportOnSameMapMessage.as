@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 6048;
       }
       
-      public function initTeleportOnSameMapMessage(targetId:int=0, cellId:uint=0) : TeleportOnSameMapMessage {
+      public function initTeleportOnSameMapMessage(targetId:int = 0, cellId:uint = 0) : TeleportOnSameMapMessage {
          this.targetId = targetId;
          this.cellId = cellId;
          this._isInitialized = true;

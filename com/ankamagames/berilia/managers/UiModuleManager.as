@@ -19,7 +19,6 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.berilia.utils.ModFlashProtocol;
    import com.ankamagames.jerakine.managers.LangManager;
    import com.ankamagames.jerakine.managers.ErrorManager;
-   import __AS3__.vec.Vector;
    import com.ankamagames.berilia.types.data.UiModule;
    import com.ankamagames.berilia.types.shortcut.Shortcut;
    import com.ankamagames.berilia.Berilia;
@@ -73,7 +72,7 @@ package com.ankamagames.berilia.managers
    public class UiModuleManager extends Object
    {
       
-      public function UiModuleManager(dontUseLocalServer:Boolean=false) {
+      public function UiModuleManager(dontUseLocalServer:Boolean = false) {
          this._regImport = new RegExp("<Import *url *= *\"([^\"]*)","g");
          this._modulesHashs = new Dictionary();
          this._moduleScriptLoadedRef = new Dictionary();
@@ -109,11 +108,11 @@ package com.ankamagames.berilia.managers
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UiModuleManager));
+      protected static const _log:Logger;
       
       private static var _self:UiModuleManager;
       
-      public static function getInstance(dontUseLocalServer:Boolean=false) : UiModuleManager {
+      public static function getInstance(dontUseLocalServer:Boolean = false) : UiModuleManager {
          if(!_self)
          {
             _self = new UiModuleManager(dontUseLocalServer);
@@ -292,7 +291,7 @@ package com.ankamagames.berilia.managers
          BindsManager.getInstance().initialize();
          if(this._modulesRoot.exists)
          {
-            for each (file in this._modulesRoot.getDirectoryListing())
+            for each(file in this._modulesRoot.getDirectoryListing())
             {
                if(!((!file.isDirectory) || (file.name.charAt(0) == ".")))
                {
@@ -312,7 +311,7 @@ package com.ankamagames.berilia.managers
          this._resetState = false;
          this._modules = new Array();
          this._modulesPaths = new Dictionary();
-         for each (this._modules[m.id] in moduleList)
+         for each(this._modules[m.id] in moduleList)
          {
             this._modulesPaths[m.id] = m.rootPath;
          }
@@ -322,7 +321,7 @@ package com.ankamagames.berilia.managers
          return this._modules;
       }
       
-      public function getModule(name:String, includeUnInitialized:Boolean=false) : UiModule {
+      public function getModule(name:String, includeUnInitialized:Boolean = false) : UiModule {
          var module:UiModule = this._modules[name];
          if((includeUnInitialized) && (!module))
          {
@@ -352,7 +351,7 @@ package com.ankamagames.berilia.managers
             this._uiLoader.cancel();
          }
          TooltipManager.clearCache();
-         for each (module in this._modules)
+         for each(module in this._modules)
          {
             this.unloadModule(module.id);
          }
@@ -428,7 +427,7 @@ package com.ankamagames.berilia.managers
             return;
          }
          var moduleUiInstances:Array = [];
-         for each (uiCtr in Berilia.getInstance().uiList)
+         for each(uiCtr in Berilia.getInstance().uiList)
          {
             _log.trace("UI " + uiCtr.name + " >> " + uiCtr.uiModule.id + " (@" + uiCtr.uiModule.instanceId + ")");
             if(uiCtr.uiModule == m)
@@ -436,16 +435,16 @@ package com.ankamagames.berilia.managers
                moduleUiInstances.push(uiCtr.name);
             }
          }
-         for each (ui in moduleUiInstances)
+         for each(ui in moduleUiInstances)
          {
             Berilia.getInstance().unloadUi(ui);
          }
-         for each (group in m.groups)
+         for each(group in m.groups)
          {
             UiGroupManager.getInstance().removeGroup(group.name);
          }
          variables = DescribeTypeCache.getVariables(m.mainClass,true);
-         for each (varName in variables)
+         for each(varName in variables)
          {
             if(m.mainClass[varName] is Object)
             {
@@ -476,7 +475,7 @@ package com.ankamagames.berilia.managers
          }
          BindsManager.getInstance().removeEventListenerByName("__module_" + m.id);
          KernelEventsManager.getInstance().removeEventListenerByName("__module_" + m.id);
-         delete this._modules[[id]];
+         delete this._modules[id];
          this._disabledModules[id] = m;
       }
       
@@ -485,200 +484,166 @@ package com.ankamagames.berilia.managers
       }
       
       private function onTimeOut() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc1_:* = false;
+         var _loc2_:* = true;
+         _log.error("SharedDefinition load Timeout");
+         this.switchToNoHttpMode();
+         EnterFrameDispatcher.removeEventListener(this.timeOutFrameCount);
       }
       
       private function timeOutFrameCount(e:Event) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
-      }
-      
-      private function launchModule() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: EmptyStackException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
-      }
-      
-      private function launchUiCheck() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
-      }
-      
-      private function processCachedFiles(files:Array) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: EmptyStackException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
-      }
-      
-      private function onLoadError(e:ResourceErrorEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: EmptyStackException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
-      }
-      
-      private function switchToNoHttpMode() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
-      }
-      
-      private function onUiLoadError(e:ResourceErrorEvent) : void {
-         if(_loc4_)
+         var _loc4_:* = false;
+         var _loc5_:* = true;
+         this._timeOutFrameNumber--;
+         if(this._timeOutFrameNumber <= 0)
          {
-            if(!_loc4_)
-            {
-               while(true)
-               {
-                  if(!_loc5_)
-                  {
-                     if(_loc4_)
-                     {
-                        if(_loc4_)
-                        {
-                           if(!_loc5_)
-                           {
-                              if(_loc4_)
-                              {
-                              }
-                           }
-                        }
-                        if(_loc4_)
-                        {
-                        }
-                     }
-                     if(_loc4_)
-                     {
-                     }
-                  }
-                  ErrorManager.addError("Impossible de charger le fichier d\'interface ");
-                  if(!_loc5_)
-                  {
-                     if(_loc4_)
-                     {
-                     }
-                     if(_loc5_)
-                     {
-                     }
-                     Berilia.getInstance().handler.process(new ModuleRessourceLoadFailedMessage(e.uri.tag,e.uri));
-                     if(!_loc5_)
-                     {
-                        break;
-                     }
-                  }
-                  else
-                  {
-                     break;
-                  }
-                  break;
-               }
-               if(_loc4_)
-               {
-               }
-               if(_loc4_)
-               {
-               }
-               if(!_loc5_)
-               {
-                  this._uiFileToLoad--;
-               }
-            }
-            while(true)
-            {
-               if(!_loc4_)
-               {
-                  if(_loc5_)
-                  {
-                  }
-                  Berilia.getInstance().handler.process(new ModuleRessourceLoadFailedMessage(e.uri.tag,e.uri));
-                  if(_loc5_)
-                  {
-                  }
-               }
-               else
-               {
-                  if(!_loc5_)
-                  {
-                     if(_loc4_)
-                     {
-                        if(_loc4_)
-                        {
-                           if(!_loc5_)
-                           {
-                              if(_loc4_)
-                              {
-                              }
-                           }
-                        }
-                        if(_loc4_)
-                        {
-                        }
-                     }
-                     if(_loc4_)
-                     {
-                     }
-                  }
-                  ErrorManager.addError("Impossible de charger le fichier d\'interface ");
-                  if(!_loc5_)
-                  {
-                     if(!_loc4_)
-                     {
-                        continue;
-                     }
-                     if(_loc5_)
-                     {
-                     }
-                     Berilia.getInstance().handler.process(new ModuleRessourceLoadFailedMessage(e.uri.tag,e.uri));
-                     if(_loc5_)
-                     {
-                     }
-                  }
-               }
-               if(_loc4_)
-               {
-               }
-               if(_loc4_)
-               {
-               }
-               if(!_loc5_)
-               {
-                  this._uiFileToLoad--;
-               }
-            }
+            this.onTimeOut();
          }
       }
       
+      private function launchModule() : void {
+         var _loc10_:* = true;
+         var _loc11_:* = false;
+         var module:UiModule = null;
+         var missingName:String = null;
+         var missingModule:UiModule = null;
+         var notLoaded:Array = null;
+         var m:UiModule = null;
+         var ts:uint = 0;
+         this._moduleLaunchWaitForSharedDefinition = false;
+         var modules:Array = new Array();
+         for each(module in this._unInitializedModules)
+         {
+            if(module.trusted)
+            {
+               modules.unshift(module);
+            }
+            else
+            {
+               modules.push(module);
+            }
+         }
+         while(modules.length > 0)
+         {
+            notLoaded = new Array();
+            for each(m in modules)
+            {
+               ApiBinder.addApiData("currentUi",null);
+               missingName = ApiBinder.initApi(m.mainClass,m,this._sharedDefinition);
+               if(missingName)
+               {
+                  missingModule = m;
+                  notLoaded.push(m);
+               }
+               else if(m.mainClass)
+               {
+                  delete this._unInitializedModules[m.id];
+                  ts = getTimer();
+                  ErrorManager.tryFunction(m.mainClass.main,null,"Une erreur est survenue lors de l\'appel à la fonction main() du module " + m.id);
+               }
+               else
+               {
+                  _log.error("Impossible d\'instancier la classe principale du module " + m.id);
+               }
+               
+            }
+            if(notLoaded.length == modules.length)
+            {
+               ErrorManager.addError("Le module " + missingModule.id + " demande une référence vers un module inexistant : " + missingName);
+            }
+            modules = notLoaded;
+         }
+         Berilia.getInstance().handler.process(new AllModulesLoadedMessage());
+      }
+      
+      private function launchUiCheck() : void {
+         var _loc1_:* = false;
+         var _loc2_:* = true;
+         this._uiFileToLoad = this._uiFiles.length;
+         if(this._uiFiles.length)
+         {
+            this._uiLoader.load(this._uiFiles,null,TxtAdapter);
+         }
+         else
+         {
+            this.onAllUiChecked(null);
+         }
+      }
+      
+      private function processCachedFiles(files:Array) : void {
+         var _loc8_:* = true;
+         var _loc9_:* = false;
+         var uri:Uri = null;
+         var file:Uri = null;
+         var c:ICache = null;
+         for each(file in files)
+         {
+         }
+      }
+      
+      private function onLoadError(e:ResourceErrorEvent) : void {
+         var _loc5_:* = true;
+         var _loc6_:* = false;
+         _log.error("onLoadError() - " + e.errorMsg);
+         var sduri:Uri = new Uri(HttpServer.getInstance().getUrlTo("SharedDefinitions.swf"));
+         if(e.uri == sduri)
+         {
+            this.switchToNoHttpMode();
+         }
+         else if(e.uri.fileType != "metas")
+         {
+            Berilia.getInstance().handler.process(new ModuleRessourceLoadFailedMessage(e.uri.tag,e.uri));
+         }
+         
+         if(e.uri == sduri)
+         {
+            return;
+         }
+      }
+      
+      private function switchToNoHttpMode() : void {
+         var _loc2_:* = true;
+         var _loc3_:* = false;
+         this._useHttpServer = false;
+         _log.fatal("Failed Loading SharedDefinitions, Going no HttpServer Style !");
+         this._sharedDefinitionLoader.cancel();
+         var sharedDefUri:Uri = new Uri("SharedDefinitions.swf");
+         sharedDefUri.loaderContext = new LoaderContext(false,new ApplicationDomain());
+         this.sharedDefinitionContainer = sharedDefUri;
+      }
+      
+      private function onUiLoadError(e:ResourceErrorEvent) : void {
+         var _loc4_:* = true;
+         var _loc5_:* = false;
+         ErrorManager.addError("Impossible de charger le fichier d\'interface " + e.uri + " (" + e.errorMsg + ")");
+         Berilia.getInstance().handler.process(new ModuleRessourceLoadFailedMessage(e.uri.tag,e.uri));
+         this._uiFileToLoad--;
+      }
+      
       private function onLoad(e:ResourceLoadedEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: EmptyStackException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc3_:* = false;
+         var _loc4_:* = true;
+         if(this._resetState)
+         {
+            return;
+         }
+         switch(e.uri.fileType.toLowerCase())
+         {
+            case "swf":
+            case "swfs":
+               this.onScriptLoad(e);
+               break;
+            case "d2ui":
+            case "dm":
+               this.onDMLoad(e);
+               break;
+            case "xml":
+               this.onShortcutLoad(e);
+               break;
+            case "metas":
+               this.onHashLoaded(e);
+               break;
+         }
       }
       
       private function onDMLoad(e:ResourceLoadedEvent) : void {
@@ -691,100 +656,104 @@ package com.ankamagames.berilia.managers
       }
       
       private function onScriptLoadFail(e:IOErrorEvent, uiModule:UiModule) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: EmptyStackException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc5_:* = false;
+         var _loc6_:* = true;
+         _log.error("Le script du module " + uiModule.id + " est introuvable");
+         if(!--this._scriptNum)
+         {
+            this.launchUiCheck();
+         }
       }
       
       private var _moduleScriptLoadedRef:Dictionary;
       
       private function onScriptLoad(e:ResourceLoadedEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc5_:* = false;
+         var _loc6_:* = true;
+         var uiModule:UiModule = this._unInitializedModules[e.uri.tag];
+         var moduleLoader:Loader = new Loader();
+         this._moduleScriptLoadedRef[moduleLoader] = uiModule;
+         var lc:LoaderContext = new LoaderContext(false,new ApplicationDomain(this._sharedDefinition));
+         AirScanner.allowByteCodeExecution(lc,true);
+         moduleLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.onModuleScriptLoaded);
+         moduleLoader.loadBytes(e.resource as ByteArray,lc);
       }
       
-      private function onModuleScriptLoaded(e:Event, uiModule:UiModule=null) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: EmptyStackException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      private function onModuleScriptLoaded(e:Event, uiModule:UiModule = null) : void {
+         var _loc6_:* = true;
+         var _loc7_:* = false;
+         var l:Loader = LoaderInfo(e.target).loader;
+         l.contentLoaderInfo.removeEventListener(Event.COMPLETE,this.onModuleScriptLoaded);
+         if(!uiModule)
+         {
+            uiModule = this._moduleScriptLoadedRef[l];
+         }
+         delete this._loadingModule[uiModule];
+         _log.trace("Load script " + uiModule.id + ", " + (this._moduleCount - this._scriptNum + 1) + "/" + this._moduleCount);
+         uiModule.loader = l;
+         uiModule.applicationDomain = l.contentLoaderInfo.applicationDomain;
+         uiModule.mainClass = l.content;
+         this._modules[uiModule.id] = uiModule;
+         delete this._disabledModules[uiModule.id];
+         Berilia.getInstance().handler.process(new ModuleLoadedMessage(uiModule.id));
+         if(!--this._scriptNum)
+         {
+            this.launchUiCheck();
+         }
       }
       
       private function onShortcutLoad(e:ResourceLoadedEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc14_:* = true;
+         var _loc15_:* = false;
+         var category:XML = null;
+         var cat:ShortcutCategory = null;
+         var permanent:* = false;
+         var visible:* = false;
+         var required:* = false;
+         var holdKeys:* = false;
+         var shortcut:XML = null;
+         var shortcutsXml:XML = e.resource;
+         for each(category in shortcutsXml..category)
+         {
+            cat = ShortcutCategory.create(category.@name,LangManager.getInstance().replaceKey(category.@description));
+            for each(shortcut in category..shortcut)
+            {
+               if((!shortcut.@name) || (!shortcut.@name.toString().length))
+               {
+                  ErrorManager.addError("Le fichier de raccourci est mal formé, il manque la priopriété name dans le fichier " + e.uri);
+                  return;
+               }
+               permanent = false;
+               if((shortcut.@permanent) && (shortcut.@permanent == "true"))
+               {
+                  permanent = true;
+               }
+               visible = true;
+               if((shortcut.@visible) && (shortcut.@visible == "false"))
+               {
+                  visible = false;
+               }
+               required = false;
+               if((shortcut.@required) && (shortcut.@required == "true"))
+               {
+                  required = true;
+               }
+               holdKeys = false;
+               if((shortcut.@holdKeys) && (shortcut.@holdKeys == "true"))
+               {
+                  holdKeys = true;
+               }
+            }
+         }
       }
       
       private function onHashLoaded(e:ResourceLoadedEvent) : void {
-         var _loc6_:* = true;
-         if(!_loc5_)
+         var _loc5_:* = true;
+         var _loc6_:* = false;
+         var file:XML = null;
+         for each(file in e.resource..file)
          {
-            if(_loc6_)
-            {
-            }
-            if(!_loc5_)
-            {
-               if(_loc6_)
-               {
-                  loop0:
-                  while(e.resource..file hasNext _loc3_)
-                  {
-                     if(_loc6_)
-                     {
-                     }
-                     if(_loc6_)
-                     {
-                        if(!_loc6_)
-                        {
-                           while(true)
-                           {
-                              this._modulesHashs[file.@name.toString()] = file.toString();
-                           }
-                        }
-                        while(true)
-                        {
-                           if(_loc5_)
-                           {
-                              break;
-                           }
-                           this._modulesHashs[file.@name.toString()] = file.toString();
-                        }
-                        if(_loc5_)
-                        {
-                        }
-                        continue;
-                     }
-                     while(true)
-                     {
-                        if(_loc5_)
-                        {
-                           if(!_loc5_)
-                           {
-                              this._modulesHashs[file.@name.toString()] = file.toString();
-                              continue;
-                           }
-                        }
-                        if(_loc5_)
-                        {
-                        }
-                        continue loop0;
-                     }
-                  }
-               }
-            }
+            this._modulesHashs[file.@name.toString()] = file.toString();
          }
       }
       
@@ -798,65 +767,63 @@ package com.ankamagames.berilia.managers
       }
       
       private function parseNextXml() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc5_:* = true;
+         var _loc6_:* = false;
+         var uiData:UiData = null;
+         var xmlParsor:XmlParsor = null;
+         this._unparsedXmlCount = this._unparsedXml.length;
+         if(this._unparsedXml.length)
+         {
+            if(this._parserAvaibleCount)
+            {
+               this._parserAvaibleCount--;
+               uiData = this._unparsedXml.shift() as UiData;
+               xmlParsor = new XmlParsor();
+               xmlParsor.rootPath = uiData.module.rootPath;
+               xmlParsor.addEventListener(Event.COMPLETE,this.onXmlParsed,false,0,true);
+               xmlParsor.addEventListener(ParsingErrorEvent.ERROR,this.onXmlParsingError);
+               xmlParsor.processFile(uiData.file);
+            }
+         }
+         else
+         {
+            BindsManager.getInstance().checkBinds();
+            Berilia.getInstance().handler.process(new AllUiXmlParsedMessage());
+            if((!this._useSharedDefinition) || (this._sharedDefinition))
+            {
+               this.launchModule();
+            }
+            else
+            {
+               this._moduleLaunchWaitForSharedDefinition = true;
+            }
+         }
       }
       
       private function onXmlParsed(e:ParsorEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc4_:* = false;
+         var _loc5_:* = true;
+         if(e.uiDefinition)
+         {
+            e.uiDefinition.name = XmlParsor(e.target).url;
+            UiRenderManager.getInstance().setUiDefinition(e.uiDefinition);
+            Berilia.getInstance().handler.process(new UiXmlParsedMessage(e.uiDefinition.name));
+         }
+         this._parserAvaibleCount++;
+         this.parseNextXml();
       }
       
       private function onXmlParsingError(e:ParsingErrorEvent) : void {
+         var _loc2_:* = true;
          var _loc3_:* = false;
-         if(!_loc3_)
-         {
-            if(_loc3_)
-            {
-               while(_loc3_)
-               {
-                  break;
-               }
-               return;
-            }
-            while(true)
-            {
-               if(_loc2_)
-               {
-               }
-               Berilia.getInstance().handler.process(new UiXmlParsedErrorMessage(e.url,e.msg));
-            }
-         }
-         while(true)
-         {
-            if(_loc2_)
-            {
-               if(_loc3_)
-               {
-                  if(_loc2_)
-                  {
-                  }
-                  Berilia.getInstance().handler.process(new UiXmlParsedErrorMessage(e.url,e.msg));
-                  continue;
-               }
-            }
-            return;
-         }
+         Berilia.getInstance().handler.process(new UiXmlParsedErrorMessage(e.url,e.msg));
       }
       
       private function onUiLoaded(e:ResourceLoadedEvent) : void {
          /*
           * Decompilation error
           * Code may be obfuscated
-          * Error type: EmptyStackException
+          * Error type: TranslateException
           */
          throw new IllegalOperationError("Not decompiled due to error");
       }
@@ -864,21 +831,70 @@ package com.ankamagames.berilia.managers
       private var _uiLoaded:Dictionary;
       
       private function searchDmFile(rootPath:File) : File {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: EmptyStackException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc7_:* = false;
+         var _loc8_:* = true;
+         var file:File = null;
+         var dm:File = null;
+         if(rootPath.nativePath.indexOf(".svn") != -1)
+         {
+            return null;
+         }
+         var files:Array = rootPath.getDirectoryListing();
+         for each(file in files)
+         {
+            if((!file.isDirectory) && (file.extension))
+            {
+               if(file.extension.toLowerCase() == "d2ui")
+               {
+                  return file;
+               }
+               if((!dm) && (file.extension.toLowerCase() == "dm"))
+               {
+                  dm = file;
+               }
+            }
+         }
+         if(dm)
+         {
+            return dm;
+         }
+         for each(file in files)
+         {
+            if(file.isDirectory)
+            {
+               dm = this.searchDmFile(file);
+               if(dm)
+               {
+                  break;
+               }
+            }
+         }
+         return dm;
       }
       
       private function onSharedDefinitionLoad(e:ResourceLoadedEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc6_:* = false;
+         var _loc7_:* = true;
+         EnterFrameDispatcher.removeEventListener(this.timeOutFrameCount);
+         var aswf:ASwf = e.resource as ASwf;
+         this._sharedDefinition = aswf.applicationDomain;
+         var sharedSecureComponent:Object = this._sharedDefinition.getDefinition("d2components::SecureComponent");
+         sharedSecureComponent.init(SecureCenter.ACCESS_KEY,SecureCenter.unsecureContent,SecureCenter.secure,SecureCenter.unsecure,DescribeTypeCache.getVariables);
+         var sharedReadOnlyData:Object = this._sharedDefinition.getDefinition("utils::ReadOnlyData");
+         sharedReadOnlyData.init(SecureCenter.ACCESS_KEY,SecureCenter.unsecureContent,SecureCenter.secure,SecureCenter.unsecure);
+         var directAccessObject:Object = this._sharedDefinition.getDefinition("utils::DirectAccessObject");
+         directAccessObject.init(SecureCenter.ACCESS_KEY);
+         SecureCenter.init(sharedSecureComponent,sharedReadOnlyData,directAccessObject);
+         this._sharedDefinitionInstance = Object(aswf.content);
+         this._loadModuleFunction = Object(aswf.content).loadModule;
+         if(this._waitingInit)
+         {
+            this.init(this._filter,this._filterInclude);
+         }
+         if(this._moduleLaunchWaitForSharedDefinition)
+         {
+            this.launchModule();
+         }
       }
       
       private var _loadModuleFunction:Function;

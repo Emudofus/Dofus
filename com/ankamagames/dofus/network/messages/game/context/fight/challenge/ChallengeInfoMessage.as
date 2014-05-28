@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight.challenge
          return 6022;
       }
       
-      public function initChallengeInfoMessage(challengeId:uint=0, targetId:int=0, xpBonus:uint=0, dropBonus:uint=0) : ChallengeInfoMessage {
+      public function initChallengeInfoMessage(challengeId:uint = 0, targetId:int = 0, xpBonus:uint = 0, dropBonus:uint = 0) : ChallengeInfoMessage {
          this.challengeId = challengeId;
          this.targetId = targetId;
          this.xpBonus = xpBonus;

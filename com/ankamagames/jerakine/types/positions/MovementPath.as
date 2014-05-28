@@ -2,7 +2,6 @@ package com.ankamagames.jerakine.types.positions
 {
    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
    import com.ankamagames.jerakine.utils.errors.JerakineError;
-   import __AS3__.vec.*;
    
    public class MovementPath extends Object
    {
@@ -74,7 +73,7 @@ package com.ankamagames.jerakine.types.positions
          return this._aPath[index];
       }
       
-      public function deletePoint(index:uint, deleteCount:uint=1) : void {
+      public function deletePoint(index:uint, deleteCount:uint = 1) : void {
          if(deleteCount == 0)
          {
             this._aPath.splice(index);
@@ -118,67 +117,12 @@ package com.ankamagames.jerakine.types.positions
       }
       
       public function fill() : void {
-         var elem:* = 0;
-         var pFinal:PathElement = null;
-         var pe:PathElement = null;
-         if(this._aPath.length > 0)
-         {
-            elem = 0;
-            pFinal = new PathElement();
-            pFinal.orientation = 0;
-            pFinal.step = this._oEnd;
-            this._aPath.push(pFinal);
-            while(elem < this._aPath.length - 1)
-            {
-               if((Math.abs(this._aPath[elem].step.x - this._aPath[elem + 1].step.x) > 1) || (Math.abs(this._aPath[elem].step.y - this._aPath[elem + 1].step.y) > 1))
-               {
-                  pe = new PathElement();
-                  pe.orientation = this._aPath[elem].orientation;
-                  switch(pe.orientation)
-                  {
-                     case DirectionsEnum.RIGHT:
-                        pe.step = MapPoint.fromCoords(this._aPath[elem].step.x + 1,this._aPath[elem].step.y + 1);
-                        break;
-                     case DirectionsEnum.DOWN_RIGHT:
-                        pe.step = MapPoint.fromCoords(this._aPath[elem].step.x + 1,this._aPath[elem].step.y);
-                        break;
-                     case DirectionsEnum.DOWN:
-                        pe.step = MapPoint.fromCoords(this._aPath[elem].step.x + 1,this._aPath[elem].step.y - 1);
-                        break;
-                     case DirectionsEnum.DOWN_LEFT:
-                        pe.step = MapPoint.fromCoords(this._aPath[elem].step.x,this._aPath[elem].step.y - 1);
-                        break;
-                     case DirectionsEnum.LEFT:
-                        pe.step = MapPoint.fromCoords(this._aPath[elem].step.x - 1,this._aPath[elem].step.y - 1);
-                        break;
-                     case DirectionsEnum.UP_LEFT:
-                        pe.step = MapPoint.fromCoords(this._aPath[elem].step.x - 1,this._aPath[elem].step.y);
-                        break;
-                     case DirectionsEnum.UP:
-                        pe.step = MapPoint.fromCoords(this._aPath[elem].step.x - 1,this._aPath[elem].step.y + 1);
-                        break;
-                     case DirectionsEnum.UP_RIGHT:
-                        pe.step = MapPoint.fromCoords(this._aPath[elem].step.x,this._aPath[elem].step.y + 1);
-                        break;
-                  }
-                  this._aPath.splice(elem + 1,0,pe);
-                  elem++;
-               }
-               else
-               {
-                  elem++;
-               }
-               if(elem > MAX_PATH_LENGTH)
-               {
-                  throw new JerakineError("Path too long. Maybe an orientation problem?");
-               }
-               else
-               {
-                  continue;
-               }
-            }
-         }
-         this._aPath.pop();
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function getCells() : Vector.<uint> {

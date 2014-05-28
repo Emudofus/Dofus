@@ -20,7 +20,7 @@ package com.ankamagames.dofus.network.types.game.character.choice
          return 399;
       }
       
-      public function initCharacterToRelookInformation(id:uint=0, cosmeticId:uint=0) : CharacterToRelookInformation {
+      public function initCharacterToRelookInformation(id:uint = 0, cosmeticId:uint = 0) : CharacterToRelookInformation {
          super.initAbstractCharacterInformation(id);
          this.cosmeticId = cosmeticId;
          return this;

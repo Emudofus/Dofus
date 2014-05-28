@@ -105,13 +105,11 @@ package com.ankamagames.dofus.console.moduleLogger
          {
             value = 0;
          }
-         else
+         else if(value > maxValue)
          {
-            if(value > maxValue)
-            {
-               value = maxValue;
-            }
+            value = maxValue;
          }
+         
          this._scrollBar.x = value;
          this.updateTextPosition();
          mouseEvent.updateAfterEvent();

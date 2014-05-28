@@ -14,12 +14,11 @@ package com.ankamagames.berilia.types.data
    import com.ankamagames.berilia.managers.UiModuleManager;
    import com.ankamagames.berilia.managers.UiGroupManager;
    import com.ankamagames.berilia.utils.errors.BeriliaError;
-   import __AS3__.vec.*;
    
    public class UiModule extends Object implements IModuleUtil
    {
       
-      public function UiModule(id:String=null, name:String=null, version:String=null, gameVersion:String=null, author:String=null, shortDescription:String=null, description:String=null, iconUri:String=null, script:String=null, shortcuts:String=null, uis:Array=null, cachedFiles:Array=null, activated:Boolean=false) {
+      public function UiModule(id:String = null, name:String = null, version:String = null, gameVersion:String = null, author:String = null, shortDescription:String = null, description:String = null, iconUri:String = null, script:String = null, shortcuts:String = null, uis:Array = null, cachedFiles:Array = null, activated:Boolean = false) {
          var ui:UiData = null;
          this._instanceId = ++ID_COUNT;
          this._apiScriptAnalyserCallback = new Dictionary();
@@ -39,7 +38,7 @@ package com.ankamagames.berilia.types.data
          this._id = id;
          this._uis = new Array();
          this._cachedFiles = cachedFiles?cachedFiles:new Array();
-         for each (this._uis[ui.name] in uis)
+         for each(this._uis[ui.name] in uis)
          {
          }
          this._apiList = new Vector.<Object>();
@@ -47,9 +46,9 @@ package com.ankamagames.berilia.types.data
       
       private static var ID_COUNT:uint = 0;
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UiModule));
+      protected static const _log:Logger;
       
       public static function createFromXml(xml:XML, nativePath:String, id:String) : UiModule {
          var um:UiModule = new UiModule();
@@ -211,7 +210,7 @@ package com.ankamagames.berilia.types.data
          else
          {
             this._enable = false;
-            for each (uiGroup in this._groups)
+            for each(uiGroup in this._groups)
             {
                UiGroupManager.getInstance().removeGroup(uiGroup.name);
             }
@@ -243,7 +242,7 @@ package com.ankamagames.berilia.types.data
          }
          else
          {
-            for each (ui in this.uis)
+            for each(ui in this.uis)
             {
                if((appDomain) && (appDomain.hasDefinition(ui.uiClassName)))
                {
@@ -381,15 +380,15 @@ package com.ankamagames.berilia.types.data
       
       private function onScriptAnalyserReady() : void {
          var f:Function = null;
-         for each (f in this._actionScriptAnalyserCallback)
+         for each(f in this._actionScriptAnalyserCallback)
          {
             f(this._scriptAnalyser.actions);
          }
-         for each (f in this._hookScriptAnalyserCallback)
+         for each(f in this._hookScriptAnalyserCallback)
          {
             f(this._scriptAnalyser.hooks);
          }
-         for each (f in this._apiScriptAnalyserCallback)
+         for each(f in this._apiScriptAnalyserCallback)
          {
             f(this._scriptAnalyser.apis);
          }

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          return 6170;
       }
       
-      public function initInventoryPresetSaveResultMessage(presetId:uint=0, code:uint=2) : InventoryPresetSaveResultMessage {
+      public function initInventoryPresetSaveResultMessage(presetId:uint = 0, code:uint = 2) : InventoryPresetSaveResultMessage {
          this.presetId = presetId;
          this.code = code;
          this._isInitialized = true;

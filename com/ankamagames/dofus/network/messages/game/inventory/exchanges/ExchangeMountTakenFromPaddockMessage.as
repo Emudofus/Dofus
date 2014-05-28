@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5994;
       }
       
-      public function initExchangeMountTakenFromPaddockMessage(name:String="", worldX:int=0, worldY:int=0, ownername:String="") : ExchangeMountTakenFromPaddockMessage {
+      public function initExchangeMountTakenFromPaddockMessage(name:String = "", worldX:int = 0, worldY:int = 0, ownername:String = "") : ExchangeMountTakenFromPaddockMessage {
          this.name = name;
          this.worldX = worldX;
          this.worldY = worldY;

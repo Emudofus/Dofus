@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.notification
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.context.notification
          return 6103;
       }
       
-      public function initNotificationByServerMessage(id:uint=0, parameters:Vector.<String>=null, forceOpen:Boolean=false) : NotificationByServerMessage {
+      public function initNotificationByServerMessage(id:uint = 0, parameters:Vector.<String> = null, forceOpen:Boolean = false) : NotificationByServerMessage {
          this.id = id;
          this.parameters = parameters;
          this.forceOpen = forceOpen;

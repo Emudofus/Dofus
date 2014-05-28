@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 6317;
       }
       
-      public function initSequenceNumberMessage(number:uint=0) : SequenceNumberMessage {
+      public function initSequenceNumberMessage(number:uint = 0) : SequenceNumberMessage {
          this.number = number;
          this._isInitialized = true;
          return this;

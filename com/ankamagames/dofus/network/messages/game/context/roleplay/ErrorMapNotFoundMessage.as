@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 6197;
       }
       
-      public function initErrorMapNotFoundMessage(mapId:uint=0) : ErrorMapNotFoundMessage {
+      public function initErrorMapNotFoundMessage(mapId:uint = 0) : ErrorMapNotFoundMessage {
          this.mapId = mapId;
          this._isInitialized = true;
          return this;

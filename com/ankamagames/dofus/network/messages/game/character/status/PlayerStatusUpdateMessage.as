@@ -34,7 +34,7 @@ package com.ankamagames.dofus.network.messages.game.character.status
          return 6386;
       }
       
-      public function initPlayerStatusUpdateMessage(accountId:uint=0, playerId:uint=0, status:PlayerStatus=null) : PlayerStatusUpdateMessage {
+      public function initPlayerStatusUpdateMessage(accountId:uint = 0, playerId:uint = 0, status:PlayerStatus = null) : PlayerStatusUpdateMessage {
          this.accountId = accountId;
          this.playerId = playerId;
          this.status = status;

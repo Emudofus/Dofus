@@ -14,9 +14,9 @@ package com.ankamagames.jerakine.resources.protocols
          super();
       }
       
-      private static var _loadingFile:Dictionary = new Dictionary(true);
+      private static var _loadingFile:Dictionary;
       
-      private static var _singleLoadingFile:Dictionary = new Dictionary(true);
+      private static var _singleLoadingFile:Dictionary;
       
       public function initAdapter(uri:Uri, forcedAdapter:Class) : void {
          getAdapter(uri,forcedAdapter);

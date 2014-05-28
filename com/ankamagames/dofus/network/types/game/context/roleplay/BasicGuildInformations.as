@@ -22,7 +22,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 365;
       }
       
-      public function initBasicGuildInformations(guildId:uint=0, guildName:String="") : BasicGuildInformations {
+      public function initBasicGuildInformations(guildId:uint = 0, guildName:String = "") : BasicGuildInformations {
          this.guildId = guildId;
          this.guildName = guildName;
          return this;

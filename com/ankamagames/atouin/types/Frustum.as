@@ -10,7 +10,7 @@ package com.ankamagames.atouin.types
    public class Frustum extends Rectangle
    {
       
-      public function Frustum(marginRight:uint=0, marginTop:uint=0, marginLeft:uint=0, marginBottom:uint=0) {
+      public function Frustum(marginRight:uint = 0, marginTop:uint = 0, marginLeft:uint = 0, marginBottom:uint = 0) {
          super();
          this._marginTop = marginTop;
          this._marginRight = marginRight;
@@ -19,13 +19,13 @@ package com.ankamagames.atouin.types
          this.refresh();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Frustum));
+      protected static const _log:Logger;
       
-      public static const MAX_WIDTH:Number = (AtouinConstants.MAP_WIDTH + 0.5) * AtouinConstants.CELL_WIDTH;
+      public static const MAX_WIDTH:Number = 1247.0;
       
-      public static const MAX_HEIGHT:Number = (AtouinConstants.MAP_HEIGHT + 0.5) * AtouinConstants.CELL_HEIGHT;
+      public static const MAX_HEIGHT:Number = 881.5;
       
-      public static const RATIO:Number = MAX_WIDTH / MAX_HEIGHT;
+      public static const RATIO:Number = 1.4146341463414633;
       
       private var _marginLeft:int;
       
@@ -60,46 +60,38 @@ package com.ankamagames.atouin.types
          {
             divX = (this._marginLeft + this._marginRight) / this._marginLeft;
          }
+         else if(this._marginLeft)
+         {
+            divX = 2 + xSpace / this._marginLeft;
+         }
+         else if(this._marginRight)
+         {
+            divX = 2 - xSpace / this._marginRight;
+         }
          else
          {
-            if(this._marginLeft)
-            {
-               divX = 2 + xSpace / this._marginLeft;
-            }
-            else
-            {
-               if(this._marginRight)
-               {
-                  divX = 2 - xSpace / this._marginRight;
-               }
-               else
-               {
-                  divX = 2;
-               }
-            }
+            divX = 2;
          }
+         
+         
          if((this._marginTop) && (this._marginBottom))
          {
             divY = (this._marginTop + this._marginBottom) / this._marginTop;
          }
+         else if(this._marginTop)
+         {
+            divY = 2 + ySpace / this._marginTop;
+         }
+         else if(this._marginBottom)
+         {
+            divY = ySpace / this._marginBottom - 2;
+         }
          else
          {
-            if(this._marginTop)
-            {
-               divY = 2 + ySpace / this._marginTop;
-            }
-            else
-            {
-               if(this._marginBottom)
-               {
-                  divY = ySpace / this._marginBottom - 2;
-               }
-               else
-               {
-                  divY = 2;
-               }
-            }
+            divY = 2;
          }
+         
+         
          x = xSpace / divX;
          y = ySpace / divY;
          return this;

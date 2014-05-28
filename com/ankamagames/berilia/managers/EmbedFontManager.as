@@ -40,7 +40,7 @@ package com.ankamagames.berilia.managers
       
       private static var _self:EmbedFontManager;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EmbedFontManager));
+      protected static const _log:Logger;
       
       public static function getInstance() : EmbedFontManager {
          if(_self == null)
@@ -97,7 +97,7 @@ package com.ankamagames.berilia.managers
             return;
          }
          var aQueue:Array = new Array();
-         for each (font in this._loadingFonts)
+         for each(font in this._loadingFonts)
          {
             aQueue.push(new Uri(font));
          }

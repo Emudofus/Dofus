@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.storage
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.storage
          return 6036;
       }
       
-      public function initStorageObjectsUpdateMessage(objectList:Vector.<ObjectItem>=null) : StorageObjectsUpdateMessage {
+      public function initStorageObjectsUpdateMessage(objectList:Vector.<ObjectItem> = null) : StorageObjectsUpdateMessage {
          this.objectList = objectList;
          this._isInitialized = true;
          return this;

@@ -5,7 +5,7 @@ package com.ankamagames.jerakine.BalanceManager.events
    public class BalanceEvent extends Event
    {
       
-      public function BalanceEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function BalanceEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

@@ -3,7 +3,6 @@ package com.ankamagames.jerakine.types.zones
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    
    public class Custom extends Object implements IZone
    {
@@ -13,7 +12,7 @@ package com.ankamagames.jerakine.types.zones
          this._aCells = cells;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Custom));
+      protected static const _log:Logger;
       
       private var _aCells:Vector.<uint>;
       
@@ -42,7 +41,7 @@ package com.ankamagames.jerakine.types.zones
          return null;
       }
       
-      public function getCells(cellId:uint=0) : Vector.<uint> {
+      public function getCells(cellId:uint = 0) : Vector.<uint> {
          return this._aCells;
       }
    }

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.misc.utils
          this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onLoad);
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CustomLoadingScreenManager));
+      protected static const _log:Logger;
       
       private static var _singleton:CustomLoadingScreenManager;
       
@@ -106,7 +106,7 @@ package com.ankamagames.dofus.misc.utils
                   return;
                }
                screens = new Array();
-               for each (loadingScreenXml in xml..loadingScreen)
+               for each(loadingScreenXml in xml..loadingScreen)
                {
                   oldLoadingScreen = CustomLoadingScreen.recover(this._dataStore,loadingScreenXml.@name);
                   loadingScreen = CustomLoadingScreen.loadFromXml(loadingScreenXml);

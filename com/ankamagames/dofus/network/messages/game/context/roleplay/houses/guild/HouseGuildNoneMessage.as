@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses.guil
          return 5701;
       }
       
-      public function initHouseGuildNoneMessage(houseId:uint=0) : HouseGuildNoneMessage {
+      public function initHouseGuildNoneMessage(houseId:uint = 0) : HouseGuildNoneMessage {
          this.houseId = houseId;
          this._isInitialized = true;
          return this;

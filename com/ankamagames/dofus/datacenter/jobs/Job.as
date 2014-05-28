@@ -4,7 +4,6 @@ package com.ankamagames.dofus.datacenter.jobs
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.dofus.datacenter.items.Item;
    import com.ankamagames.jerakine.data.I18n;
-   import __AS3__.vec.*;
    
    public class Job extends Object implements IDataCenter
    {

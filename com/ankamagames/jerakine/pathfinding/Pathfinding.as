@@ -26,7 +26,7 @@ package com.ankamagames.jerakine.pathfinding
       
       private static var _maxY:int;
       
-      protected static var _log:Logger = Log.getLogger(getQualifiedClassName(Pathfinding));
+      protected static var _log:Logger;
       
       private static var _self:Pathfinding;
       
@@ -37,7 +37,7 @@ package com.ankamagames.jerakine.pathfinding
          _maxY = maxY;
       }
       
-      public static function findPath(map:IDataMapProvider, start:MapPoint, end:MapPoint, allowDiag:Boolean=true, bAllowTroughEntity:Boolean=true, callBack:Function=null, args:Array=null, bIsFighting:Boolean=false) : MovementPath {
+      public static function findPath(map:IDataMapProvider, start:MapPoint, end:MapPoint, allowDiag:Boolean = true, bAllowTroughEntity:Boolean = true, callBack:Function = null, args:Array = null, bIsFighting:Boolean = false) : MovementPath {
          return new Pathfinding().processFindPath(map,start,end,allowDiag,bAllowTroughEntity,callBack,args,bIsFighting);
       }
       
@@ -103,7 +103,7 @@ package com.ankamagames.jerakine.pathfinding
       
       private var _previousCellId:int;
       
-      public function processFindPath(map:IDataMapProvider, start:MapPoint, end:MapPoint, allowDiag:Boolean=true, bAllowTroughEntity:Boolean=true, callBack:Function=null, args:Array=null, bIsFighting:Boolean=false) : MovementPath {
+      public function processFindPath(map:IDataMapProvider, start:MapPoint, end:MapPoint, allowDiag:Boolean = true, bAllowTroughEntity:Boolean = true, callBack:Function = null, args:Array = null, bIsFighting:Boolean = false) : MovementPath {
          this._callBackFunction = callBack;
          this._argsFunction = args;
          this._movPath = new MovementPath();
@@ -406,73 +406,63 @@ package com.ankamagames.jerakine.pathfinding
                {
                   returnPathOpti.push(returnPath[k]);
                   this._previousCellId = returnPath[k].cellId;
-                  if(((returnPath[k + 2]) && (MapPoint(returnPath[k]).distanceToCell(returnPath[k + 2]) == 1)) && (!this._map.isChangeZone(returnPath[k].cellId,returnPath[k + 1].cellId)) && (!this._map.isChangeZone(returnPath[k + 1].cellId,returnPath[k + 2].cellId)))
+                  if((returnPath[k + 2] && MapPoint(returnPath[k]).distanceToCell(returnPath[k + 2]) == 1) && (!this._map.isChangeZone(returnPath[k].cellId,returnPath[k + 1].cellId)) && (!this._map.isChangeZone(returnPath[k + 1].cellId,returnPath[k + 2].cellId)))
                   {
                      k++;
                   }
-                  else
+                  else if((returnPath[k + 3]) && (MapPoint(returnPath[k]).distanceToCell(returnPath[k + 3]) == 2))
                   {
-                     if((returnPath[k + 3]) && (MapPoint(returnPath[k]).distanceToCell(returnPath[k + 3]) == 2))
+                     kX = returnPath[k].x;
+                     kY = returnPath[k].y;
+                     nextX = returnPath[k + 3].x;
+                     nextY = returnPath[k + 3].y;
+                     interX = kX + Math.round((nextX - kX) / 2);
+                     interY = kY + Math.round((nextY - kY) / 2);
+                     if((this._map.pointMov(interX,interY,true,this._previousCellId)) && (this._map.pointWeight(interX,interY) < 2))
                      {
-                        kX = returnPath[k].x;
-                        kY = returnPath[k].y;
-                        nextX = returnPath[k + 3].x;
-                        nextY = returnPath[k + 3].y;
-                        interX = kX + Math.round((nextX - kX) / 2);
-                        interY = kY + Math.round((nextY - kY) / 2);
-                        if((this._map.pointMov(interX,interY,true,this._previousCellId)) && (this._map.pointWeight(interX,interY) < 2))
-                        {
-                           tmpMapPoint = MapPoint.fromCoords(interX,interY);
-                           returnPathOpti.push(tmpMapPoint);
-                           this._previousCellId = tmpMapPoint.cellId;
-                           k++;
-                           k++;
-                        }
-                     }
-                     else
-                     {
-                        if((returnPath[k + 2]) && (MapPoint(returnPath[k]).distanceToCell(returnPath[k + 2]) == 2))
-                        {
-                           kX = returnPath[k].x;
-                           kY = returnPath[k].y;
-                           nextX = returnPath[k + 2].x;
-                           nextY = returnPath[k + 2].y;
-                           interX = returnPath[k + 1].x;
-                           interY = returnPath[k + 1].y;
-                           if((kX + kY == nextX + nextY) && (!(kX - kY == interX - interY)) && (!this._map.isChangeZone(MapPoint.fromCoords(kX,kY).cellId,MapPoint.fromCoords(interX,interY).cellId)) && (!this._map.isChangeZone(MapPoint.fromCoords(interX,interY).cellId,MapPoint.fromCoords(nextX,nextY).cellId)))
-                           {
-                              k++;
-                           }
-                           else
-                           {
-                              if((kX - kY == nextX - nextY) && (!(kX - kY == interX - interY)) && (!this._map.isChangeZone(MapPoint.fromCoords(kX,kY).cellId,MapPoint.fromCoords(interX,interY).cellId)) && (!this._map.isChangeZone(MapPoint.fromCoords(interX,interY).cellId,MapPoint.fromCoords(nextX,nextY).cellId)))
-                              {
-                                 k++;
-                              }
-                              else
-                              {
-                                 if((kX == nextX) && (!(kX == interX)) && (this._map.pointWeight(kX,interY) < 2) && (this._map.pointMov(kX,interY,this._bAllowTroughEntity,this._previousCellId)))
-                                 {
-                                    tmpMapPoint = MapPoint.fromCoords(kX,interY);
-                                    returnPathOpti.push(tmpMapPoint);
-                                    this._previousCellId = tmpMapPoint.cellId;
-                                    k++;
-                                 }
-                                 else
-                                 {
-                                    if((kY == nextY) && (!(kY == interY)) && (this._map.pointWeight(interX,kY) < 2) && (this._map.pointMov(interX,kY,this._bAllowTroughEntity,this._previousCellId)))
-                                    {
-                                       tmpMapPoint = MapPoint.fromCoords(interX,kY);
-                                       returnPathOpti.push(tmpMapPoint);
-                                       this._previousCellId = tmpMapPoint.cellId;
-                                       k++;
-                                    }
-                                 }
-                              }
-                           }
-                        }
+                        tmpMapPoint = MapPoint.fromCoords(interX,interY);
+                        returnPathOpti.push(tmpMapPoint);
+                        this._previousCellId = tmpMapPoint.cellId;
+                        k++;
+                        k++;
                      }
                   }
+                  else if((returnPath[k + 2]) && (MapPoint(returnPath[k]).distanceToCell(returnPath[k + 2]) == 2))
+                  {
+                     kX = returnPath[k].x;
+                     kY = returnPath[k].y;
+                     nextX = returnPath[k + 2].x;
+                     nextY = returnPath[k + 2].y;
+                     interX = returnPath[k + 1].x;
+                     interY = returnPath[k + 1].y;
+                     if((kX + kY == nextX + nextY) && (!(kX - kY == interX - interY)) && (!this._map.isChangeZone(MapPoint.fromCoords(kX,kY).cellId,MapPoint.fromCoords(interX,interY).cellId)) && (!this._map.isChangeZone(MapPoint.fromCoords(interX,interY).cellId,MapPoint.fromCoords(nextX,nextY).cellId)))
+                     {
+                        k++;
+                     }
+                     else if((kX - kY == nextX - nextY) && (!(kX - kY == interX - interY)) && (!this._map.isChangeZone(MapPoint.fromCoords(kX,kY).cellId,MapPoint.fromCoords(interX,interY).cellId)) && (!this._map.isChangeZone(MapPoint.fromCoords(interX,interY).cellId,MapPoint.fromCoords(nextX,nextY).cellId)))
+                     {
+                        k++;
+                     }
+                     else if((kX == nextX) && (!(kX == interX)) && (this._map.pointWeight(kX,interY) < 2) && (this._map.pointMov(kX,interY,this._bAllowTroughEntity,this._previousCellId)))
+                     {
+                        tmpMapPoint = MapPoint.fromCoords(kX,interY);
+                        returnPathOpti.push(tmpMapPoint);
+                        this._previousCellId = tmpMapPoint.cellId;
+                        k++;
+                     }
+                     else if((kY == nextY) && (!(kY == interY)) && (this._map.pointWeight(interX,kY) < 2) && (this._map.pointMov(interX,kY,this._bAllowTroughEntity,this._previousCellId)))
+                     {
+                        tmpMapPoint = MapPoint.fromCoords(interX,kY);
+                        returnPathOpti.push(tmpMapPoint);
+                        this._previousCellId = tmpMapPoint.cellId;
+                        k++;
+                     }
+                     
+                     
+                     
+                  }
+                  
+                  
                   k++;
                }
                returnPath = returnPathOpti;

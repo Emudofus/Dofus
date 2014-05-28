@@ -5,7 +5,6 @@ package com.ankamagames.dofus.datacenter.servers
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.data.I18n;
    
    public class ServerCommunity extends Object implements IDataCenter
@@ -17,7 +16,7 @@ package com.ankamagames.dofus.datacenter.servers
       
       public static const MODULE:String = "ServerCommunities";
       
-      private static var _log:Logger = Log.getLogger(getQualifiedClassName(ServerCommunity));
+      private static var _log:Logger;
       
       public static function getServerCommunityById(id:int) : ServerCommunity {
          return GameData.getObject(MODULE,id) as ServerCommunity;

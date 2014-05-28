@@ -7,7 +7,7 @@ package com.ankamagames.dofus.logic.connection.actions
          super();
       }
       
-      public static function create(ticket:String, autoSelectServer:Boolean, serverId:uint=0) : LoginValidationWithTicketAction {
+      public static function create(ticket:String, autoSelectServer:Boolean, serverId:uint = 0) : LoginValidationWithTicketAction {
          var a:LoginValidationWithTicketAction = new LoginValidationWithTicketAction();
          a.password = "";
          a.username = "";

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
          return 6492;
       }
       
-      public function initPortalUseRequestMessage(portalId:uint=0) : PortalUseRequestMessage {
+      public function initPortalUseRequestMessage(portalId:uint = 0) : PortalUseRequestMessage {
          this.portalId = portalId;
          this._isInitialized = true;
          return this;

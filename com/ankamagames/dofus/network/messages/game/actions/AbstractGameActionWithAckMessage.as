@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.actions
          return 1001;
       }
       
-      public function initAbstractGameActionWithAckMessage(actionId:uint=0, sourceId:int=0, waitAckId:int=0) : AbstractGameActionWithAckMessage {
+      public function initAbstractGameActionWithAckMessage(actionId:uint = 0, sourceId:int = 0, waitAckId:int = 0) : AbstractGameActionWithAckMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.waitAckId = waitAckId;
          this._isInitialized = true;

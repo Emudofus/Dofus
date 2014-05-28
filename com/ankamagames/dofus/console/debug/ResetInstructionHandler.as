@@ -26,10 +26,12 @@ package com.ankamagames.dofus.console.debug
          {
             case "reset":
                return "Resets the Kernel and restart the game.";
+            default:
+               return "Unknown command \'" + cmd + "\'.";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

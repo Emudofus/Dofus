@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6180;
       }
       
-      public function initGuildHouseRemoveMessage(houseId:uint=0) : GuildHouseRemoveMessage {
+      public function initGuildHouseRemoveMessage(houseId:uint = 0) : GuildHouseRemoveMessage {
          this.houseId = houseId;
          this._isInitialized = true;
          return this;

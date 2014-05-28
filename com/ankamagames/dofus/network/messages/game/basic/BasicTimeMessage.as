@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 175;
       }
       
-      public function initBasicTimeMessage(timestamp:uint=0, timezoneOffset:int=0) : BasicTimeMessage {
+      public function initBasicTimeMessage(timestamp:uint = 0, timezoneOffset:int = 0) : BasicTimeMessage {
          this.timestamp = timestamp;
          this.timezoneOffset = timezoneOffset;
          this._isInitialized = true;

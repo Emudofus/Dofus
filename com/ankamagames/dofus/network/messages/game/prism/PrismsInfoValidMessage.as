@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.prism
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.prism.PrismFightersInformation;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 6451;
       }
       
-      public function initPrismsInfoValidMessage(fights:Vector.<PrismFightersInformation>=null) : PrismsInfoValidMessage {
+      public function initPrismsInfoValidMessage(fights:Vector.<PrismFightersInformation> = null) : PrismsInfoValidMessage {
          this.fights = fights;
          this._isInitialized = true;
          return this;

@@ -22,7 +22,6 @@ package com.ankamagames.tubul
    import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
    import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
    import com.ankamagames.tubul.types.RollOffPreset;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.resources.adapters.AdapterFactory;
    import com.ankamagames.tubul.resources.adapters.MP3Adapter;
    import com.ankamagames.jerakine.resources.loaders.ResourceLoaderFactory;
@@ -45,7 +44,7 @@ package com.ankamagames.tubul
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Tubul));
+      protected static const _log:Logger;
       
       private static var _self:Tubul;
       
@@ -86,7 +85,7 @@ package com.ankamagames.tubul
       public function get totalPlayingSounds() : uint {
          var bus:IAudioBus = null;
          var sounds:uint = 0;
-         for each (bus in this._audioBusList)
+         for each(bus in this._audioBusList)
          {
             sounds = sounds + bus.soundList.length;
          }
@@ -104,7 +103,7 @@ package com.ankamagames.tubul
       public function set earPosition(pPosition:Point) : void {
          var bus:IAudioBus = null;
          this._earPosition = pPosition;
-         for each (bus in this._audioBusList)
+         for each(bus in this._audioBusList)
          {
             if(bus is LocalizedBus)
             {
@@ -128,9 +127,9 @@ package com.ankamagames.tubul
       public function getSoundById(pSoundID:int) : ISound {
          var bus:IAudioBus = null;
          var sound:ISound = null;
-         for each (bus in this.audioBusList)
+         for each(bus in this.audioBusList)
          {
-            for each (sound in bus.soundList)
+            for each(sound in bus.soundList)
             {
                if(sound.id == pSoundID)
                {
@@ -141,7 +140,7 @@ package com.ankamagames.tubul
          return null;
       }
       
-      public function activate(bValue:Boolean=true) : void {
+      public function activate(bValue:Boolean = true) : void {
          if(this.isActive)
          {
             _log.info("Tubul is now ACTIVATED");
@@ -161,7 +160,7 @@ package com.ankamagames.tubul
          var e:PropertyChangeEvent = null;
          this._tuOptions = topt;
          this._tuOptions.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
-         for (propertyKey in this._tuOptions)
+         for(propertyKey in this._tuOptions)
          {
             e = new PropertyChangeEvent(this._tuOptions,propertyKey,this._tuOptions[propertyKey],this._tuOptions[propertyKey]);
          }
@@ -188,7 +187,7 @@ package com.ankamagames.tubul
       
       public function clearCache() : void {
          var bus:IAudioBus = null;
-         for each (bus in this._busDictionary)
+         for each(bus in this._busDictionary)
          {
             bus.clearCache();
          }
@@ -215,7 +214,7 @@ package com.ankamagames.tubul
          {
             bus = this._busDictionary[pBusID];
             bus.eventDispatcher.addEventListener(AudioBusEvent.REMOVE_SOUND_IN_BUS,this.onRemoveSoundInBus);
-            delete this._busDictionary[[pBusID]];
+            delete this._busDictionary[pBusID];
             size = this._audioBusList.length;
             i = 0;
             while(i < size)
@@ -239,7 +238,7 @@ package com.ankamagames.tubul
          {
             return;
          }
-         for each (key in this._busDictionary)
+         for each(key in this._busDictionary)
          {
             this.removeBus(key.id);
          }
@@ -306,10 +305,10 @@ package com.ankamagames.tubul
          var bus:IAudioBus = null;
          var sound:ISound = null;
          _log.debug("--------------- dumpPlayingSounds --------------------");
-         for each (bus in this._audioBusList)
+         for each(bus in this._audioBusList)
          {
             _log.debug(bus.name);
-            for each (sound in bus.soundList)
+            for each(sound in bus.soundList)
             {
                _log.debug("-> " + sound.uri);
             }
@@ -319,7 +318,7 @@ package com.ankamagames.tubul
       
       private function resetTubul() : void {
          var bus:IAudioBus = null;
-         for each (bus in this._audioBusList)
+         for each(bus in this._audioBusList)
          {
             bus.clear();
          }
@@ -335,7 +334,7 @@ package com.ankamagames.tubul
          {
             this._rollOffPresets = new Array();
          }
-         for each (preset in presets)
+         for each(preset in presets)
          {
             rollOffPreset = new RollOffPreset(uint(preset.GainMax),uint(preset.DistMax),uint(preset.DistMaxSat));
             this._rollOffPresets[preset.@id] = rollOffPreset;
@@ -373,13 +372,11 @@ package com.ankamagames.tubul
          {
             this.retriveRollOffPresets(pEvent.resource);
          }
-         else
+         else if(!this._XMLSoundFilesDictionary[fileName])
          {
-            if(!this._XMLSoundFilesDictionary[fileName])
-            {
-               this._XMLSoundFilesDictionary[fileName] = pEvent.resource;
-            }
+            this._XMLSoundFilesDictionary[fileName] = pEvent.resource;
          }
+         
       }
       
       private function onXMLSoundsFailed(pEvent:ResourceErrorEvent) : void {

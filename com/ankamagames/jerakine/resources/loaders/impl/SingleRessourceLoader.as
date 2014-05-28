@@ -21,38 +21,34 @@ package com.ankamagames.jerakine.resources.loaders.impl
       
       private var _protocol:IProtocol;
       
-      public function load(uri:*, cache:ICache=null, forcedAdapter:Class=null, singleFile:Boolean=false) : void {
+      public function load(uri:*, cache:ICache = null, forcedAdapter:Class = null, singleFile:Boolean = false) : void {
          if(this._uri != null)
          {
             throw new IllegalOperationError("A single ressource loader can\'t handle more than one load at a time.");
          }
+         else if(uri == null)
+         {
+            throw new ArgumentError("Can\'t load a null uri.");
+         }
+         else if(!(uri is Uri))
+         {
+            throw new ArgumentError("Can\'t load an array of URIs when using a LOADER_SINGLE loader.");
+         }
          else
          {
-            if(uri == null)
+            this._uri = uri;
+            _cache = cache;
+            _completed = false;
+            _filesTotal = 1;
+            if(!checkCache(this._uri))
             {
-               throw new ArgumentError("Can\'t load a null uri.");
+               this._protocol = ProtocolFactory.getProtocol(this._uri);
+               this._protocol.load(this._uri,this,hasEventListener(ResourceProgressEvent.PROGRESS),_cache,forcedAdapter,singleFile);
             }
-            else
-            {
-               if(!(uri is Uri))
-               {
-                  throw new ArgumentError("Can\'t load an array of URIs when using a LOADER_SINGLE loader.");
-               }
-               else
-               {
-                  this._uri = uri;
-                  _cache = cache;
-                  _completed = false;
-                  _filesTotal = 1;
-                  if(!checkCache(this._uri))
-                  {
-                     this._protocol = ProtocolFactory.getProtocol(this._uri);
-                     this._protocol.load(this._uri,this,hasEventListener(ResourceProgressEvent.PROGRESS),_cache,forcedAdapter,singleFile);
-                  }
-                  return;
-               }
-            }
+            return;
          }
+         
+         
       }
       
       override public function cancel() : void {

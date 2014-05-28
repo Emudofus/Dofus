@@ -14,7 +14,6 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.berilia.types.event.UiRenderEvent;
    import flash.events.TimerEvent;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
-   import __AS3__.vec.*;
    
    public class KernelEventsManager extends GenericEventsManager
    {
@@ -82,7 +81,7 @@ package com.ankamagames.berilia.managers
          var boxedParam:Array = SecureCenter.secureContent(args);
          var num:int = 0;
          var loadingUi:Array = Berilia.getInstance().loadingUi;
-         for (s in loadingUi)
+         for(s in loadingUi)
          {
             num++;
             if(Berilia.getInstance().loadingUi[s])
@@ -101,11 +100,11 @@ package com.ankamagames.berilia.managers
          }
          ModuleLogger.log(hook,args);
          var tmpListner:Array = [];
-         for each (e in _aEvent[hook.name])
+         for each(e in _aEvent[hook.name])
          {
             tmpListner.push(e);
          }
-         for each (e in tmpListner)
+         for each(e in tmpListner)
          {
             if(e)
             {
@@ -145,7 +144,7 @@ package com.ankamagames.berilia.managers
          {
             hook = this._aLoadingUi[e.uiTarget.name][i].hook;
             args = this._aLoadingUi[e.uiTarget.name][i].args;
-            for (s in _aEvent[hook.name])
+            for(s in _aEvent[hook.name])
             {
                if(_aEvent[hook.name][s])
                {
@@ -162,7 +161,7 @@ package com.ankamagames.berilia.managers
             }
             i++;
          }
-         delete this._aLoadingUi[[e.uiTarget.name]];
+         delete this._aLoadingUi[e.uiTarget.name];
       }
       
       private function throwAsyncError(e:TimerEvent) : void {

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.report
          return 6079;
       }
       
-      public function initCharacterReportMessage(reportedId:uint=0, reason:uint=0) : CharacterReportMessage {
+      public function initCharacterReportMessage(reportedId:uint = 0, reason:uint = 0) : CharacterReportMessage {
          this.reportedId = reportedId;
          this.reason = reason;
          this._isInitialized = true;

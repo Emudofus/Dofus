@@ -39,7 +39,7 @@ package com.ankamagames.dofus.uiApi
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TooltipApi));
+      protected static const _log:Logger;
       
       private var _module:UiModule;
       
@@ -81,38 +81,36 @@ package com.ankamagames.dofus.uiApi
          }
       }
       
-      public function createTooltip(baseUri:String, containerUri:String, separatorUri:String=null) : Tooltip {
+      public function createTooltip(baseUri:String, containerUri:String, separatorUri:String = null) : Tooltip {
          var t:Tooltip = null;
          if(baseUri.substr(-4,4) != ".txt")
          {
             throw new ApiError("ChunkData support only [.txt] file, found " + baseUri);
          }
+         else if(containerUri.substr(-4,4) != ".txt")
+         {
+            throw new ApiError("ChunkData support only [.txt] file, found " + containerUri);
+         }
          else
          {
-            if(containerUri.substr(-4,4) != ".txt")
+            if(separatorUri)
             {
-               throw new ApiError("ChunkData support only [.txt] file, found " + containerUri);
-            }
-            else
-            {
-               if(separatorUri)
+               if(separatorUri.substr(-4,4) != ".txt")
                {
-                  if(separatorUri.substr(-4,4) != ".txt")
-                  {
-                     throw new ApiError("ChunkData support only [.txt] file, found " + separatorUri);
-                  }
-                  else
-                  {
-                     t = new Tooltip(new Uri(this._module.rootPath + "/" + baseUri),new Uri(this._module.rootPath + "/" + containerUri),new Uri(this._module.rootPath + "/" + separatorUri));
-                  }
+                  throw new ApiError("ChunkData support only [.txt] file, found " + separatorUri);
                }
                else
                {
-                  t = new Tooltip(new Uri(this._module.rootPath + "/" + baseUri),new Uri(this._module.rootPath + "/" + containerUri));
+                  t = new Tooltip(new Uri(this._module.rootPath + "/" + baseUri),new Uri(this._module.rootPath + "/" + containerUri),new Uri(this._module.rootPath + "/" + separatorUri));
                }
-               return t;
             }
+            else
+            {
+               t = new Tooltip(new Uri(this._module.rootPath + "/" + baseUri),new Uri(this._module.rootPath + "/" + containerUri));
+            }
+            return t;
          }
+         
       }
       
       public function createTooltipBlock(onAllChunkLoadedCallback:Function, contentGetter:Function) : TooltipBlock {
@@ -126,7 +124,7 @@ package com.ankamagames.dofus.uiApi
          TooltipsFactory.registerAssoc(targetClass,makerName);
       }
       
-      public function registerTooltipMaker(makerName:String, makerClass:Class, scriptClass:Class=null) : void {
+      public function registerTooltipMaker(makerName:String, makerClass:Class, scriptClass:Class = null) : void {
          if(CheckCompatibility.isCompatible(ITooltipMaker,makerClass))
          {
             TooltipsFactory.registerMaker(makerName,makerClass,scriptClass);
@@ -147,7 +145,7 @@ package com.ankamagames.dofus.uiApi
          }
       }
       
-      public function place(target:*, point:uint=6, relativePoint:uint=0, offset:int=3, checkSuperposition:Boolean=false, cellId:int=-1, alwaysDisplayed:Boolean=true) : void {
+      public function place(target:*, point:uint = 6, relativePoint:uint = 0, offset:int = 3, checkSuperposition:Boolean = false, cellId:int = -1, alwaysDisplayed:Boolean = true) : void {
          if((target) && (CheckCompatibility.isCompatible(IRectangle,target)))
          {
             if(this._currentUi.ready)
@@ -179,11 +177,11 @@ package com.ankamagames.dofus.uiApi
          return null;
       }
       
-      public function getSpellTooltipInfo(spellWrapper:SpellWrapper, shortcutKey:String=null) : Object {
+      public function getSpellTooltipInfo(spellWrapper:SpellWrapper, shortcutKey:String = null) : Object {
          return new SpellTooltipInfo(spellWrapper,shortcutKey);
       }
       
-      public function getItemTooltipInfo(itemWrapper:ItemWrapper, shortcutKey:String=null) : Object {
+      public function getItemTooltipInfo(itemWrapper:ItemWrapper, shortcutKey:String = null) : Object {
          return new ItemTooltipInfo(itemWrapper,shortcutKey);
       }
       
@@ -195,7 +193,7 @@ package com.ankamagames.dofus.uiApi
          PlayedCharacterUpdatesFrame.SPELL_TOOLTIP_CACHE_NUM++;
       }
       
-      public function createTooltipRectangle(x:Number=0, y:Number=0, width:Number=0, height:Number=0) : TooltipRectangle {
+      public function createTooltipRectangle(x:Number = 0, y:Number = 0, width:Number = 0, height:Number = 0) : TooltipRectangle {
          return new TooltipRectangle(x,y,width,height);
       }
       
@@ -211,7 +209,7 @@ package com.ankamagames.dofus.uiApi
          var currentUi:UiRootContainer = pEvent.currentTarget as UiRootContainer;
          currentUi.removeEventListener(UiRenderEvent.UIRenderComplete,this.onTooltipReady);
          (this._ttCallbacks[currentUi] as Callback).exec();
-         delete this._ttCallbacks[[currentUi]];
+         delete this._ttCallbacks[currentUi];
       }
    }
 }

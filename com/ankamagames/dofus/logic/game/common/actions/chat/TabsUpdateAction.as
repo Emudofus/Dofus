@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.common.actions.chat
          super();
       }
       
-      public static function create(tabs:Array=null, tabsNames:Array=null) : TabsUpdateAction {
+      public static function create(tabs:Array = null, tabsNames:Array = null) : TabsUpdateAction {
          var a:TabsUpdateAction = new TabsUpdateAction();
          a.tabs = tabs;
          a.tabsNames = tabsNames;

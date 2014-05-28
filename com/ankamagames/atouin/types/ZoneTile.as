@@ -24,7 +24,7 @@ package com.ankamagames.atouin.types
          mouseChildren = false;
       }
       
-      private static const _cell:Class = ZoneTile__cell;
+      private static const _cell:Class;
       
       private var _displayBehavior:IDisplayBehavior;
       
@@ -86,7 +86,7 @@ package com.ankamagames.atouin.types
          this._cellId = nValue;
       }
       
-      public function display(wishedStrata:uint=0) : void {
+      public function display(wishedStrata:uint = 0) : void {
          if(this.text)
          {
             if(!this.format)

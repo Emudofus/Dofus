@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          return 6226;
       }
       
-      public function initShortcutBarSwapErrorMessage(error:uint=0) : ShortcutBarSwapErrorMessage {
+      public function initShortcutBarSwapErrorMessage(error:uint = 0) : ShortcutBarSwapErrorMessage {
          this.error = error;
          this._isInitialized = true;
          return this;

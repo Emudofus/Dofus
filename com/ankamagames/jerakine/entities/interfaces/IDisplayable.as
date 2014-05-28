@@ -14,7 +14,7 @@ package com.ankamagames.jerakine.entities.interfaces
       
       function get absoluteBounds() : IRectangle;
       
-      function display(param1:uint=0) : void;
+      function display(param1:uint = 0) : void;
       
       function remove() : void;
    }

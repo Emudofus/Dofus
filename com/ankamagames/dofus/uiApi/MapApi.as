@@ -11,7 +11,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.datacenter.world.SuperArea;
    import com.ankamagames.dofus.datacenter.world.Area;
-   import __AS3__.vec.Vector;
    import flash.geom.Point;
    import com.ankamagames.jerakine.types.positions.WorldPoint;
    import com.ankamagames.dofus.datacenter.world.MapPosition;
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.uiApi
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MapApi));
+      protected static const _log:Logger;
       
       public function getCurrentSubArea() : SubArea {
          var frame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
@@ -97,7 +96,7 @@ package com.ankamagames.dofus.uiApi
          var hints:Array = Hint.getHints() as Array;
          var res:Array = new Array();
          var i:int = 0;
-         for each (hint in hints)
+         for each(hint in hints)
          {
             if(hint)
             {
@@ -161,7 +160,7 @@ package com.ankamagames.dofus.uiApi
          return false;
       }
       
-      public function movePlayer(x:int, y:int, world:int=-1) : void {
+      public function movePlayer(x:int, y:int, world:int = -1) : void {
          var wp:WorldPoint = null;
          var currentWorldId:uint = 0;
          var superAreaId:uint = 0;
@@ -189,7 +188,7 @@ package com.ankamagames.dofus.uiApi
             subAreaId = PlayedCharacterManager.getInstance().currentSubArea.id;
             currentMapIsOutDoor = MapPosition.getMapPositionById(PlayedCharacterManager.getInstance().currentMap.mapId).outdoor;
             maps = [];
-            for each (mapId in mapIds)
+            for each(mapId in mapIds)
             {
                mapPosition = MapPosition.getMapPositionById(mapId);
                trace(mapPosition.id + " : " + mapPosition.hasPriorityOnWorldmap);
@@ -240,7 +239,7 @@ package com.ankamagames.dofus.uiApi
                {
                   order = order + 50;
                }
-               if(((mapPosition.subArea) && (mapPosition.subArea.area)) && (mapPosition.subArea.area.superArea) && (mapPosition.subArea.area.superArea.id == superAreaId))
+               if((mapPosition.subArea && mapPosition.subArea.area) && (mapPosition.subArea.area.superArea) && (mapPosition.subArea.area.superArea.id == superAreaId))
                {
                   order = order + 25;
                }
@@ -296,7 +295,7 @@ package com.ankamagames.dofus.uiApi
          var dx:* = 0;
          var dy:* = 0;
          var minDist:int = -1;
-         for each (mapId in FlagManager.getInstance().phoenixs)
+         for each(mapId in FlagManager.getInstance().phoenixs)
          {
             mapPos = MapPosition.getMapPositionById(mapId);
             if(mapPos.worldMap == PlayedCharacterManager.getInstance().currentWorldMap.id)
@@ -309,14 +308,12 @@ package com.ankamagames.dofus.uiApi
                   minDist = dist;
                   closestPhoenixMapId = mapId;
                }
-               else
+               else if((dist < minDist) || (dist == 0))
                {
-                  if((dist < minDist) || (dist == 0))
-                  {
-                     minDist = dist;
-                     closestPhoenixMapId = mapId;
-                  }
+                  minDist = dist;
+                  closestPhoenixMapId = mapId;
                }
+               
             }
          }
          return closestPhoenixMapId;

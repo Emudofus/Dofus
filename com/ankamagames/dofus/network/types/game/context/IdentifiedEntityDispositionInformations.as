@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.context
          return 107;
       }
       
-      public function initIdentifiedEntityDispositionInformations(cellId:int=0, direction:uint=1, id:int=0) : IdentifiedEntityDispositionInformations {
+      public function initIdentifiedEntityDispositionInformations(cellId:int = 0, direction:uint = 1, id:int = 0) : IdentifiedEntityDispositionInformations {
          super.initEntityDispositionInformations(cellId,direction);
          this.id = id;
          return this;

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5945;
       }
       
-      public function initExchangeBidHouseItemAddOkMessage(itemInfo:ObjectItemToSellInBid=null) : ExchangeBidHouseItemAddOkMessage {
+      public function initExchangeBidHouseItemAddOkMessage(itemInfo:ObjectItemToSellInBid = null) : ExchangeBidHouseItemAddOkMessage {
          this.itemInfo = itemInfo;
          this._isInitialized = true;
          return this;

@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.display
          return 5808;
       }
       
-      public function initDisplayNumericalValueMessage(entityId:int=0, value:int=0, type:uint=0) : DisplayNumericalValueMessage {
+      public function initDisplayNumericalValueMessage(entityId:int = 0, value:int = 0, type:uint = 0) : DisplayNumericalValueMessage {
          this.entityId = entityId;
          this.value = value;
          this.type = type;

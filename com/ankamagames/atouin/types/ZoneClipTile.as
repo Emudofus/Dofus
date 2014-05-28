@@ -26,7 +26,7 @@ package com.ankamagames.atouin.types
    public class ZoneClipTile extends Sprite implements IDisplayable, ITransparency
    {
       
-      public function ZoneClipTile(pUri:Uri, pClipName:String="Bloc", pNeedBorders:Boolean=false) {
+      public function ZoneClipTile(pUri:Uri, pClipName:String = "Bloc", pNeedBorders:Boolean = false) {
          var o:LoadedTile = null;
          this._borderSprites = new Array();
          super();
@@ -46,32 +46,30 @@ package com.ankamagames.atouin.types
             loader.addEventListener(ResourceLoadedEvent.LOADED,this.onClipLoaded);
             loader.load(this._uri,null,AdvancedSwfAdapter);
          }
-         else
+         else if((this._currentRessource.getClip(this._clipName) == null) || (this._currentRessource.getClip(this._clipName).clip == null))
          {
-            if((this._currentRessource.getClip(this._clipName) == null) || (this._currentRessource.getClip(this._clipName).clip == null))
+            if(!this._currentRessource.appDomain)
             {
-               if(!this._currentRessource.appDomain)
-               {
-                  loader.addEventListener(ResourceLoadedEvent.LOADED,this.onClipLoaded);
-               }
-               else
-               {
-                  this._currentRessource.addClip(this._clipName,this._currentRessource.appDomain.getDefinition(this._clipName));
-                  this.display();
-               }
+               loader.addEventListener(ResourceLoadedEvent.LOADED,this.onClipLoaded);
             }
             else
             {
+               this._currentRessource.addClip(this._clipName,this._currentRessource.appDomain.getDefinition(this._clipName));
                this.display();
             }
          }
+         else
+         {
+            this.display();
+         }
+         
       }
       
-      private static var clips:Array = new Array();
+      private static var clips:Array;
       
       private static var loader:IResourceLoader;
       
-      private static var no_z_render_strata:Sprite = new Sprite();
+      private static var no_z_render_strata:Sprite;
       
       private static const BORDER_CLIP:String = "BlocageMvt";
       
@@ -131,13 +129,11 @@ package com.ankamagames.atouin.types
             o.addClip(this._clipName,appDomain.getDefinition(this._clipName));
             clips.push(o);
          }
-         else
+         else if((o.getClip(this._clipName) == null) || (o.getClip(this._clipName).clip == null))
          {
-            if((o.getClip(this._clipName) == null) || (o.getClip(this._clipName).clip == null))
-            {
-               o.addClip(this._clipName,appDomain.getDefinition(this._clipName));
-            }
+            o.addClip(this._clipName,appDomain.getDefinition(this._clipName));
          }
+         
          if(!o.appDomain)
          {
             o.appDomain = appDomain;
@@ -150,7 +146,7 @@ package com.ankamagames.atouin.types
          }
       }
       
-      public function display(wishedStrata:uint=0) : void {
+      public function display(wishedStrata:uint = 0) : void {
          var r:Object = null;
          var spr:Sprite = null;
          var isLeftCol:* = false;
@@ -185,17 +181,15 @@ package com.ankamagames.atouin.types
                   this._borderSprites.push(spr);
                   addChildAt(spr,0);
                }
-               else
+               else if((isRightCol) && (!isEvenRow))
                {
-                  if((isRightCol) && (!isEvenRow))
-                  {
-                     spr = this.getFakeTile();
-                     spr.x = AtouinConstants.CELL_HALF_WIDTH;
-                     spr.y = -AtouinConstants.CELL_HALF_HEIGHT;
-                     this._borderSprites.push(spr);
-                     addChildAt(spr,0);
-                  }
+                  spr = this.getFakeTile();
+                  spr.x = AtouinConstants.CELL_HALF_WIDTH;
+                  spr.y = -AtouinConstants.CELL_HALF_HEIGHT;
+                  this._borderSprites.push(spr);
+                  addChildAt(spr,0);
                }
+               
                if(this.cellId < 14)
                {
                   spr = this.getFakeTile();
@@ -204,17 +198,15 @@ package com.ankamagames.atouin.types
                   this._borderSprites.push(spr);
                   addChildAt(spr,0);
                }
-               else
+               else if(this.cellId > 545)
                {
-                  if(this.cellId > 545)
-                  {
-                     spr = this.getFakeTile();
-                     spr.x = -AtouinConstants.CELL_HALF_WIDTH;
-                     spr.y = AtouinConstants.CELL_HALF_HEIGHT;
-                     this._borderSprites.push(spr);
-                     addChild(spr);
-                  }
+                  spr = this.getFakeTile();
+                  spr.x = -AtouinConstants.CELL_HALF_WIDTH;
+                  spr.y = AtouinConstants.CELL_HALF_HEIGHT;
+                  this._borderSprites.push(spr);
+                  addChild(spr);
                }
+               
                if(this.cellId == 532)
                {
                   spr2 = this.getFakeTile();
@@ -223,17 +215,15 @@ package com.ankamagames.atouin.types
                   this._borderSprites.push(spr2);
                   addChild(spr2);
                }
-               else
+               else if(this.cellId == 559)
                {
-                  if(this.cellId == 559)
-                  {
-                     spr3 = this.getFakeTile();
-                     spr3.x = AtouinConstants.CELL_HALF_WIDTH;
-                     spr3.y = AtouinConstants.CELL_HALF_HEIGHT;
-                     this._borderSprites.push(spr3);
-                     addChild(spr3);
-                  }
+                  spr3 = this.getFakeTile();
+                  spr3.x = AtouinConstants.CELL_HALF_WIDTH;
+                  spr3.y = AtouinConstants.CELL_HALF_HEIGHT;
+                  this._borderSprites.push(spr3);
+                  addChild(spr3);
                }
+               
             }
             if(this.strata != PlacementStrataEnums.STRATA_NO_Z_ORDER)
             {
@@ -369,7 +359,7 @@ class LoadedTile extends Object
    
    private var _clips:Array;
    
-   public function addClip(pName:String, pClip:Object=null) : void {
+   public function addClip(pName:String, pClip:Object = null) : void {
       var o:Object = this.getClip(pName);
       if(o == null)
       {
@@ -386,7 +376,7 @@ class LoadedTile extends Object
    
    public function getClip(pName:String) : Object {
       var o:Object = null;
-      for each (o in this._clips)
+      for each(o in this._clips)
       {
          if(o.clipName == pName)
          {

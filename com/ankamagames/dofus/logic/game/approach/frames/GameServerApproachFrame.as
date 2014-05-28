@@ -80,7 +80,6 @@ package com.ankamagames.dofus.logic.game.approach.frames
    import flash.utils.setTimeout;
    import com.ankamagames.dofus.logic.common.managers.PlayerManager;
    import com.ankamagames.jerakine.data.I18n;
-   import __AS3__.vec.*;
    import com.ankamagames.berilia.Berilia;
    import com.ankamagames.dofus.network.ProtocolConstantsEnum;
    import by.blooddy.crypto.MD5;
@@ -156,9 +155,9 @@ package com.ankamagames.dofus.logic.game.approach.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GameServerApproachFrame));
+      protected static const _log:Logger;
       
-      private static var _changeLogLoader:Loader = new Loader();
+      private static var _changeLogLoader:Loader;
       
       private static function onChangeLogError(e:IOErrorEvent) : void {
          trace("fail");
@@ -360,7 +359,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                if(msg is CharactersListWithModificationsMessage)
                {
                   clwrmsg = msg as CharactersListWithModificationsMessage;
-                  for each (ctrci in clwrmsg.charactersToRecolor)
+                  for each(ctrci in clwrmsg.charactersToRecolor)
                   {
                      charColors = new Array(-1,-1,-1,-1,-1);
                      num = ctrci.colors.length;
@@ -382,15 +381,15 @@ package com.ankamagames.dofus.logic.game.approach.frames
                            "colors":charColors
                         };
                   }
-                  for each (ctrni in clwrmsg.charactersToRename)
+                  for each(ctrni in clwrmsg.charactersToRename)
                   {
                      this._charactersToRenameList.push(ctrni);
                   }
-                  for each (ctrli in clwrmsg.charactersToRelook)
+                  for each(ctrli in clwrmsg.charactersToRelook)
                   {
                      this._charactersToRelookList[ctrli.id] = ctrli;
                   }
-                  for each (ctrid in clwrmsg.unusableCharacters)
+                  for each(ctrid in clwrmsg.unusableCharacters)
                   {
                      unusableCharacters.push(ctrid);
                   }
@@ -400,7 +399,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                server = PlayerManager.getInstance().server;
                if(server.gameTypeId == 1)
                {
-                  for each (chi in clmsg.characters)
+                  for each(chi in clmsg.characters)
                   {
                      if(unusableCharacters.indexOf(chi.id) != -1)
                      {
@@ -412,14 +411,14 @@ package com.ankamagames.dofus.logic.game.approach.frames
                }
                else
                {
-                  for each (cbi in clmsg.characters)
+                  for each(cbi in clmsg.characters)
                   {
                      if(unusableCharacters.indexOf(cbi.id) != -1)
                      {
                         unusable = true;
                      }
                      bonusXp = 1;
-                     for each (cbi2 in clmsg.characters)
+                     for each(cbi2 in clmsg.characters)
                      {
                         if((!(cbi2.id == cbi.id)) && (cbi2.level > cbi.level) && (bonusXp < 4))
                         {
@@ -441,38 +440,36 @@ package com.ankamagames.dofus.logic.game.approach.frames
                      ConnectionsHandler.getConnection().send(saem);
                      openCharsList = false;
                   }
-                  else
+                  else if(((Dofus.getInstance().options && Dofus.getInstance().options.autoConnectType == 2) || (PlayerManager.getInstance().autoConnectOfASpecificCharacterId > -1)) && (PlayerManager.getInstance().allowAutoConnectCharacter))
                   {
-                     if((((Dofus.getInstance().options) && (Dofus.getInstance().options.autoConnectType == 2)) || (PlayerManager.getInstance().autoConnectOfASpecificCharacterId > -1)) && (PlayerManager.getInstance().allowAutoConnectCharacter))
+                     charToConnectSpecificallyId = PlayerManager.getInstance().autoConnectOfASpecificCharacterId;
+                     if(charToConnectSpecificallyId == -1)
                      {
-                        charToConnectSpecificallyId = PlayerManager.getInstance().autoConnectOfASpecificCharacterId;
-                        if(charToConnectSpecificallyId == -1)
+                        charToConnect = this._charactersList[0];
+                     }
+                     else
+                     {
+                        for each(ctc in this._charactersList)
                         {
-                           charToConnect = this._charactersList[0];
-                        }
-                        else
-                        {
-                           for each (ctc in this._charactersList)
+                           if(ctc.id == charToConnectSpecificallyId)
                            {
-                              if(ctc.id == charToConnectSpecificallyId)
-                              {
-                                 charToConnect = ctc;
-                                 break;
-                              }
+                              charToConnect = ctc;
+                              break;
                            }
                         }
-                        if((charToConnect) && ((!(server.gameTypeId == 1)) || (charToConnect.deathState == 0)) && (!SecureModeManager.getInstance().active) && (!this.isCharacterWaitingForChange(charToConnect.id)))
-                        {
-                           openCharsList = false;
-                           this._kernel.processCallback(HookList.CharactersListUpdated,this._charactersList);
-                           fakacsa = new CharacterSelectionAction();
-                           fakacsa.btutoriel = false;
-                           fakacsa.characterId = charToConnect.id;
-                           this.process(fakacsa);
-                           PlayerManager.getInstance().allowAutoConnectCharacter = false;
-                        }
+                     }
+                     if((charToConnect) && ((!(server.gameTypeId == 1)) || (charToConnect.deathState == 0)) && (!SecureModeManager.getInstance().active) && (!this.isCharacterWaitingForChange(charToConnect.id)))
+                     {
+                        openCharsList = false;
+                        this._kernel.processCallback(HookList.CharactersListUpdated,this._charactersList);
+                        fakacsa = new CharacterSelectionAction();
+                        fakacsa.btutoriel = false;
+                        fakacsa.characterId = charToConnect.id;
+                        this.process(fakacsa);
+                        PlayerManager.getInstance().allowAutoConnectCharacter = false;
                      }
                   }
+                  
                   if(openCharsList)
                   {
                      if(!Berilia.getInstance().getUi("characterSelection"))
@@ -496,7 +493,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                this._charactersList = new Vector.<BasicCharacterWrapper>();
                if(PlayerManager.getInstance().server.gameTypeId == 1)
                {
-                  for each (bChi in bclmsg.characters)
+                  for each(bChi in bclmsg.characters)
                   {
                      b = BasicCharacterWrapper.create(bChi.id,bChi.name,bChi.level,bChi.entityLook,bChi.breed,bChi.sex,bChi.deathState,bChi.deathCount,1,false);
                      this._charactersList.push(b);
@@ -504,7 +501,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                }
                else
                {
-                  for each (bCbi in bclmsg.characters)
+                  for each(bCbi in bclmsg.characters)
                   {
                      b = BasicCharacterWrapper.create(bCbi.id,bCbi.name,bCbi.level,bCbi.entityLook,bCbi.breed,bCbi.sex,0,0,1,false);
                      this._charactersList.push(b);
@@ -526,7 +523,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                cca = msg as CharacterCreationAction;
                ccmsg = new CharacterCreationRequestMessage();
                colors = new Vector.<int>();
-               for each (c in cca.colors)
+               for each(c in cca.colors)
                {
                   colors.push(c);
                }
@@ -554,20 +551,16 @@ package com.ankamagames.dofus.logic.game.approach.frames
                {
                   reason = "TooManyDeletion";
                }
-               else
+               else if(cdemsg.reason == CharacterDeletionErrorEnum.DEL_ERR_BAD_SECRET_ANSWER)
                {
-                  if(cdemsg.reason == CharacterDeletionErrorEnum.DEL_ERR_BAD_SECRET_ANSWER)
-                  {
-                     reason = "WrongAnswer";
-                  }
-                  else
-                  {
-                     if(cdemsg.reason == CharacterDeletionErrorEnum.DEL_ERR_RESTRICED_ZONE)
-                     {
-                        reason = "UnsecureMode";
-                     }
-                  }
+                  reason = "WrongAnswer";
                }
+               else if(cdemsg.reason == CharacterDeletionErrorEnum.DEL_ERR_RESTRICED_ZONE)
+               {
+                  reason = "UnsecureMode";
+               }
+               
+               
                this._kernel.processCallback(HookList.CharacterDeletionError,reason);
                return true;
             case msg is CharacterNameSuggestionRequestAction:
@@ -596,7 +589,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
             case msg is CharacterRecolorSelectionAction:
                if(PlayerManager.getInstance().server.gameTypeId == 1)
                {
-                  for each (persoc in this._charactersList)
+                  for each(persoc in this._charactersList)
                   {
                      if(persoc.id == (msg as CharacterRecolorSelectionAction).characterId)
                      {
@@ -604,17 +597,15 @@ package com.ankamagames.dofus.logic.game.approach.frames
                         {
                            isReplay = true;
                         }
+                        else if(persoc.deathState == 0)
+                        {
+                           isReplay = false;
+                        }
                         else
                         {
-                           if(persoc.deathState == 0)
-                           {
-                              isReplay = false;
-                           }
-                           else
-                           {
-                              this.commonMod.openPopup(I18n.getUiText("ui.common.error"),I18n.getUiText("ui.common.cantSelectThisCharacterLimb"),[I18n.getUiText("ui.common.ok")]);
-                           }
+                           this.commonMod.openPopup(I18n.getUiText("ui.common.error"),I18n.getUiText("ui.common.cantSelectThisCharacterLimb"),[I18n.getUiText("ui.common.ok")]);
                         }
+                        
                      }
                   }
                }
@@ -655,7 +646,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
             case msg is CharacterRenameSelectionAction:
                if(PlayerManager.getInstance().server.gameTypeId == 1)
                {
-                  for each (person in this._charactersList)
+                  for each(person in this._charactersList)
                   {
                      if(person.id == (msg as CharacterRenameSelectionAction).characterId)
                      {
@@ -663,17 +654,15 @@ package com.ankamagames.dofus.logic.game.approach.frames
                         {
                            isReplay = true;
                         }
+                        else if(person.deathState == 0)
+                        {
+                           isReplay = false;
+                        }
                         else
                         {
-                           if(person.deathState == 0)
-                           {
-                              isReplay = false;
-                           }
-                           else
-                           {
-                              this.commonMod.openPopup(I18n.getUiText("ui.common.error"),I18n.getUiText("ui.common.cantSelectThisCharacterLimb"),[I18n.getUiText("ui.common.ok")]);
-                           }
+                           this.commonMod.openPopup(I18n.getUiText("ui.common.error"),I18n.getUiText("ui.common.cantSelectThisCharacterLimb"),[I18n.getUiText("ui.common.ok")]);
                         }
+                        
                      }
                   }
                }
@@ -700,7 +689,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                crlsa = msg as CharacterRelookSelectionAction;
                if(PlayerManager.getInstance().server.gameTypeId == 1)
                {
-                  for each (person2 in this._charactersList)
+                  for each(person2 in this._charactersList)
                   {
                      if(person2.id == crlsa.characterId)
                      {
@@ -708,17 +697,15 @@ package com.ankamagames.dofus.logic.game.approach.frames
                         {
                            isReplay = true;
                         }
+                        else if(person2.deathState == 0)
+                        {
+                           isReplay = false;
+                        }
                         else
                         {
-                           if(person2.deathState == 0)
-                           {
-                              isReplay = false;
-                           }
-                           else
-                           {
-                              this.commonMod.openPopup(I18n.getUiText("ui.common.error"),I18n.getUiText("ui.common.cantSelectThisCharacterLimb"),[I18n.getUiText("ui.common.ok")]);
-                           }
+                           this.commonMod.openPopup(I18n.getUiText("ui.common.error"),I18n.getUiText("ui.common.cantSelectThisCharacterLimb"),[I18n.getUiText("ui.common.ok")]);
                         }
+                        
                      }
                   }
                }
@@ -757,19 +744,17 @@ package com.ankamagames.dofus.logic.game.approach.frames
                   bTutorial = (msg as CharacterSelectionAction).btutoriel;
                   isReplay = false;
                }
-               else
+               else if(msg is CharacterReplayRequestAction)
                {
-                  if(msg is CharacterReplayRequestAction)
-                  {
-                     characterId = (msg as CharacterReplayRequestAction).characterId;
-                     bTutorial = false;
-                     isReplay = true;
-                  }
+                  characterId = (msg as CharacterReplayRequestAction).characterId;
+                  bTutorial = false;
+                  isReplay = true;
                }
+               
                this._requestedCharacterId = characterId;
                if(this._charactersToRecolorList[characterId])
                {
-                  for each (perso in this._charactersList)
+                  for each(perso in this._charactersList)
                   {
                      if(perso.id == characterId)
                      {
@@ -778,59 +763,53 @@ package com.ankamagames.dofus.logic.game.approach.frames
                   }
                   this._kernel.processCallback(HookList.CharacterCreationStart,new Array("recolor",charToColor,this._charactersToRecolorList[characterId].colors));
                }
+               else if(this._charactersToRenameList.indexOf(characterId) != -1)
+               {
+                  for each(perso in this._charactersList)
+                  {
+                     if(perso.id == characterId)
+                     {
+                        charToRename2 = perso;
+                     }
+                  }
+                  this._kernel.processCallback(HookList.CharacterCreationStart,new Array("rename",charToRename2));
+               }
+               else if(this._charactersToRelookList[characterId])
+               {
+                  for each(perso in this._charactersList)
+                  {
+                     if(perso.id == characterId)
+                     {
+                        charToRelook = perso;
+                     }
+                  }
+                  this._kernel.processCallback(HookList.CharacterCreationStart,new Array("relook",charToRelook,this._charactersToRelookList[characterId].cosmeticId));
+               }
                else
                {
-                  if(this._charactersToRenameList.indexOf(characterId) != -1)
+                  firstSelection = bTutorial;
+                  if(bTutorial)
                   {
-                     for each (perso in this._charactersList)
-                     {
-                        if(perso.id == characterId)
-                        {
-                           charToRename2 = perso;
-                        }
-                     }
-                     this._kernel.processCallback(HookList.CharacterCreationStart,new Array("rename",charToRename2));
+                     cfsmsg = new CharacterFirstSelectionMessage();
+                     cfsmsg.initCharacterFirstSelectionMessage(characterId,true);
+                     ConnectionsHandler.getConnection().send(cfsmsg);
+                  }
+                  else if(isReplay)
+                  {
+                     crrmsg = new CharacterReplayRequestMessage();
+                     crrmsg.initCharacterReplayRequestMessage(characterId);
+                     ConnectionsHandler.getConnection().send(crrmsg);
                   }
                   else
                   {
-                     if(this._charactersToRelookList[characterId])
-                     {
-                        for each (perso in this._charactersList)
-                        {
-                           if(perso.id == characterId)
-                           {
-                              charToRelook = perso;
-                           }
-                        }
-                        this._kernel.processCallback(HookList.CharacterCreationStart,new Array("relook",charToRelook,this._charactersToRelookList[characterId].cosmeticId));
-                     }
-                     else
-                     {
-                        firstSelection = bTutorial;
-                        if(bTutorial)
-                        {
-                           cfsmsg = new CharacterFirstSelectionMessage();
-                           cfsmsg.initCharacterFirstSelectionMessage(characterId,true);
-                           ConnectionsHandler.getConnection().send(cfsmsg);
-                        }
-                        else
-                        {
-                           if(isReplay)
-                           {
-                              crrmsg = new CharacterReplayRequestMessage();
-                              crrmsg.initCharacterReplayRequestMessage(characterId);
-                              ConnectionsHandler.getConnection().send(crrmsg);
-                           }
-                           else
-                           {
-                              csmsg = new CharacterSelectionMessage();
-                              csmsg.initCharacterSelectionMessage(characterId);
-                              ConnectionsHandler.getConnection().send(csmsg);
-                           }
-                        }
-                     }
+                     csmsg = new CharacterSelectionMessage();
+                     csmsg.initCharacterSelectionMessage(characterId);
+                     ConnectionsHandler.getConnection().send(csmsg);
                   }
+                  
                }
+               
+               
                return true;
             case msg is CharacterSelectedSuccessMessage:
                cssmsg = msg as CharacterSelectedSuccessMessage;
@@ -970,10 +949,10 @@ package com.ankamagames.dofus.logic.game.approach.frames
                return true;
             case msg is StartupActionsListMessage:
                salm = msg as StartupActionsListMessage;
-               for each (gift in salm.actions)
+               for each(gift in salm.actions)
                {
                   _items = new Array();
-                  for each (item in gift.items)
+                  for each(item in gift.items)
                   {
                      iw = ItemWrapper.create(0,0,item.objectGID,item.quantity,item.effects,false);
                      _items.push(iw);
@@ -990,7 +969,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                if(this._giftList.length)
                {
                   charaListMinusDeadPeople = new Array();
-                  for each (perso in this._charactersList)
+                  for each(perso in this._charactersList)
                   {
                      if((!perso.deathState) || (perso.deathState == 0))
                      {
@@ -1001,17 +980,15 @@ package com.ankamagames.dofus.logic.game.approach.frames
                   {
                      this._kernel.processCallback(HookList.GiftList,this._giftList,charaListMinusDeadPeople);
                   }
+                  else if(!Berilia.getInstance().getUi("characterSelection"))
+                  {
+                     this._kernel.processCallback(HookList.CharacterSelectionStart,this._charactersList);
+                  }
                   else
                   {
-                     if(!Berilia.getInstance().getUi("characterSelection"))
-                     {
-                        this._kernel.processCallback(HookList.CharacterSelectionStart,this._charactersList);
-                     }
-                     else
-                     {
-                        this._kernel.processCallback(HookList.CharactersListUpdated,this._charactersList);
-                     }
+                     this._kernel.processCallback(HookList.CharactersListUpdated,this._charactersList);
                   }
+                  
                }
                else
                {
@@ -1051,6 +1028,8 @@ package com.ankamagames.dofus.logic.game.approach.frames
                   cmdIndex++;
                }
                return true;
+            default:
+               return false;
          }
       }
       

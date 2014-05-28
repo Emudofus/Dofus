@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5605;
       }
       
-      public function initFriendJoinRequestMessage(name:String="") : FriendJoinRequestMessage {
+      public function initFriendJoinRequestMessage(name:String = "") : FriendJoinRequestMessage {
          this.name = name;
          this._isInitialized = true;
          return this;

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 5612;
       }
       
-      public function initShowCellMessage(sourceId:int=0, cellId:uint=0) : ShowCellMessage {
+      public function initShowCellMessage(sourceId:int = 0, cellId:uint = 0) : ShowCellMessage {
          this.sourceId = sourceId;
          this.cellId = cellId;
          this._isInitialized = true;

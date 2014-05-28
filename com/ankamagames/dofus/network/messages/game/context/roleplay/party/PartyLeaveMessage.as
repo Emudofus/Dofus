@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5594;
       }
       
-      public function initPartyLeaveMessage(partyId:uint=0) : PartyLeaveMessage {
+      public function initPartyLeaveMessage(partyId:uint = 0) : PartyLeaveMessage {
          super.initAbstractPartyMessage(partyId);
          this._isInitialized = true;
          return this;

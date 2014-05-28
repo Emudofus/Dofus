@@ -3,7 +3,7 @@ package com.ankamagames.jerakine.sequencer
    public class DebugStep extends AbstractSequencable implements ISequencableListener
    {
       
-      public function DebugStep(message:String, subStep:ISequencable=null) {
+      public function DebugStep(message:String, subStep:ISequencable = null) {
          super();
          this._message = message;
          this._subStep = subStep;
@@ -26,7 +26,7 @@ package com.ankamagames.jerakine.sequencer
          }
       }
       
-      public function stepFinished(step:ISequencable, withTimout:Boolean=false) : void {
+      public function stepFinished(step:ISequencable, withTimout:Boolean = false) : void {
          if(this._subStep)
          {
             this._subStep.removeListener(this);

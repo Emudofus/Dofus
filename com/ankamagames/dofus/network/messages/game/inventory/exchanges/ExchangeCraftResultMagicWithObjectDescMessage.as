@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6188;
       }
       
-      public function initExchangeCraftResultMagicWithObjectDescMessage(craftResult:uint=0, objectInfo:ObjectItemNotInContainer=null, magicPoolStatus:int=0) : ExchangeCraftResultMagicWithObjectDescMessage {
+      public function initExchangeCraftResultMagicWithObjectDescMessage(craftResult:uint = 0, objectInfo:ObjectItemNotInContainer = null, magicPoolStatus:int = 0) : ExchangeCraftResultMagicWithObjectDescMessage {
          super.initExchangeCraftResultWithObjectDescMessage(craftResult,objectInfo);
          this.magicPoolStatus = magicPoolStatus;
          this._isInitialized = true;

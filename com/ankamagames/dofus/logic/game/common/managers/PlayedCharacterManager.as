@@ -8,7 +8,6 @@ package com.ankamagames.dofus.logic.game.common.managers
    import com.ankamagames.dofus.network.types.game.character.restriction.ActorRestrictionsInformations;
    import com.ankamagames.dofus.network.types.game.look.EntityLook;
    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.internalDatacenter.items.WeaponWrapper;
    import com.ankamagames.dofus.internalDatacenter.world.WorldPointWrapper;
@@ -41,7 +40,7 @@ package com.ankamagames.dofus.logic.game.common.managers
       
       private static var _self:PlayedCharacterManager;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayedCharacterManager));
+      protected static const _log:Logger;
       
       public static function getInstance() : PlayedCharacterManager {
          if(_self == null)
@@ -269,7 +268,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          var look:TiphonEntityLook = EntityLookAdapter.fromNetwork(this.infos.entityLook);
          var isCreature:Boolean = false;
          var breeds:Array = Breed.getBreeds();
-         for each (breed in breeds)
+         for each(breed in breeds)
          {
             if(breed.creatureBonesId == look.getBone())
             {
@@ -362,31 +361,27 @@ package com.ankamagames.dofus.logic.game.common.managers
          {
             diff = 1 * type;
          }
-         else
+         else if(targetLevel < playerLevel)
          {
-            if(targetLevel < playerLevel)
+            if(targetLevel / playerLevel < 1.2)
             {
-               if(targetLevel / playerLevel < 1.2)
-               {
-                  diff = 0;
-               }
-               else
-               {
-                  diff = 1 * type;
-               }
+               diff = 0;
             }
             else
             {
-               if(playerLevel / targetLevel < 1.2)
-               {
-                  diff = 0;
-               }
-               else
-               {
-                  diff = 1 * type;
-               }
+               diff = 1 * type;
             }
          }
+         else if(playerLevel / targetLevel < 1.2)
+         {
+            diff = 0;
+         }
+         else
+         {
+            diff = 1 * type;
+         }
+         
+         
          return diff;
       }
    }

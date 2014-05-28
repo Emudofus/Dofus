@@ -100,6 +100,8 @@ package com.ankamagames.jerakine.utils.misc
                return method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11],parameters[12],parameters[13]);
             case 15:
                return method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11],parameters[12],parameters[13],parameters[14]);
+            default:
+               return;
          }
       }
       
@@ -140,6 +142,8 @@ package com.ankamagames.jerakine.utils.misc
                return new callClass(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11],parameters[12],parameters[13]);
             case 15:
                return new callClass(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11],parameters[12],parameters[13],parameters[14]);
+            default:
+               return;
          }
       }
    }

@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.interactive
          return 220;
       }
       
-      public function initInteractiveElementNamedSkill(skillId:uint=0, skillInstanceUid:uint=0, nameId:uint=0) : InteractiveElementNamedSkill {
+      public function initInteractiveElementNamedSkill(skillId:uint = 0, skillInstanceUid:uint = 0, nameId:uint = 0) : InteractiveElementNamedSkill {
          super.initInteractiveElementSkill(skillId,skillInstanceUid);
          this.nameId = nameId;
          return this;

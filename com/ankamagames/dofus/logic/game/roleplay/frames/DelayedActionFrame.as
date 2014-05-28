@@ -107,13 +107,13 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          if(this._delayedActionEntities[id])
          {
             TooltipManager.hide(this._delayedActionEntities[id]);
-            delete this._delayedActionEntities[[id]];
+            delete this._delayedActionEntities[id];
          }
       }
       
       private function removeAll() : void {
          var id:* = undefined;
-         for (id in this._delayedActionEntities)
+         for(id in this._delayedActionEntities)
          {
             this.removeEntity(id);
          }

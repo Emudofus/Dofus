@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.startup
          return 1303;
       }
       
-      public function initStartupActionsObjetAttributionMessage(actionId:uint=0, characterId:uint=0) : StartupActionsObjetAttributionMessage {
+      public function initStartupActionsObjetAttributionMessage(actionId:uint = 0, characterId:uint = 0) : StartupActionsObjetAttributionMessage {
          this.actionId = actionId;
          this.characterId = characterId;
          this._isInitialized = true;

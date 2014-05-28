@@ -39,7 +39,7 @@ package com.ankamagames.jerakine.data
       
       private var _overrideProvider:Uri;
       
-      public function initI18n(language:String, metaFileListe:Uri, clearAll:Boolean=false, overrideProvider:Uri=null) : void {
+      public function initI18n(language:String, metaFileListe:Uri, clearAll:Boolean = false, overrideProvider:Uri = null) : void {
          this._language = language;
          this._overrideProvider = overrideProvider;
          super.init(metaFileListe,clearAll);
@@ -75,7 +75,7 @@ package com.ankamagames.jerakine.data
             case "meta":
                meta = LangMetaData.fromXml(e.resource,e.uri.uri,this.checkFileVersion);
                realCount = 0;
-               for (file in meta.clearFile)
+               for(file in meta.clearFile)
                {
                   if(file.indexOf("_" + this._language) != -1)
                   {
@@ -98,6 +98,8 @@ package com.ankamagames.jerakine.data
                   dispatchEvent(new Event(Event.COMPLETE));
                }
                break;
+            default:
+               super.onLoaded(e);
          }
       }
    }

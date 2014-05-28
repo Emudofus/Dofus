@@ -41,6 +41,8 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                return AnimationEnum.ANIM_MORT_CARRYING;
             case AnimationEnum.ANIM_TACLE:
                return AnimationEnum.ANIM_TACLE_CARRYING;
+            default:
+               return animation;
          }
       }
    }

@@ -35,7 +35,7 @@ package com.ankamagames.dofus.uiApi
          return TimeManager.getInstance().getUtcTimestamp();
       }
       
-      public function getClock(time:Number=0, unchanged:Boolean=false, useTimezoneOffset:Boolean=false) : String {
+      public function getClock(time:Number = 0, unchanged:Boolean = false, useTimezoneOffset:Boolean = false) : String {
          return TimeManager.getInstance().formatClock(time,unchanged,useTimezoneOffset);
       }
       
@@ -44,27 +44,27 @@ package com.ankamagames.dofus.uiApi
          return [time[0],time[1]];
       }
       
-      public function getDate(time:Number=0, useTimezoneOffset:Boolean=false) : String {
+      public function getDate(time:Number = 0, useTimezoneOffset:Boolean = false) : String {
          return TimeManager.getInstance().formatDateIRL(time,useTimezoneOffset);
       }
       
-      public function getDofusDate(time:Number=0) : String {
+      public function getDofusDate(time:Number = 0) : String {
          return TimeManager.getInstance().formatDateIG(time);
       }
       
-      public function getDofusDay(time:Number=0) : int {
+      public function getDofusDay(time:Number = 0) : int {
          return TimeManager.getInstance().getDateIG(time)[0];
       }
       
-      public function getDofusMonth(time:Number=0) : String {
+      public function getDofusMonth(time:Number = 0) : String {
          return TimeManager.getInstance().getDateIG(time)[1];
       }
       
-      public function getDofusYear(time:Number=0) : String {
+      public function getDofusYear(time:Number = 0) : String {
          return TimeManager.getInstance().getDateIG(time)[2];
       }
       
-      public function getDurationTimeSinceEpoch(pTime:Number=0) : Number {
+      public function getDurationTimeSinceEpoch(pTime:Number = 0) : Number {
          var date:Date = new Date();
          var dateTime:Number = date.getTime() / 1000;
          var timezoneOffset:Number = TimeManager.getInstance().timezoneOffset / 1000;
@@ -72,11 +72,11 @@ package com.ankamagames.dofus.uiApi
          return Math.floor(dateTime - pTime + timezoneOffset - serverTimeLag);
       }
       
-      public function getDuration(time:Number, second:Boolean=false) : String {
+      public function getDuration(time:Number, second:Boolean = false) : String {
          return TimeManager.getInstance().getDuration(time,second);
       }
       
-      public function getShortDuration(time:Number, second:Boolean=false) : String {
+      public function getShortDuration(time:Number, second:Boolean = false) : String {
          return TimeManager.getInstance().getDuration(time,true,second);
       }
       

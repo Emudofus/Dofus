@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.common.actions.chat
          super();
       }
       
-      public static function create(msg:String, channel:uint=0, receiverName:String="", objects:Array=null) : ChatTextOutputAction {
+      public static function create(msg:String, channel:uint = 0, receiverName:String = "", objects:Array = null) : ChatTextOutputAction {
          var a:ChatTextOutputAction = new ChatTextOutputAction();
          a.content = msg;
          a.channel = channel;

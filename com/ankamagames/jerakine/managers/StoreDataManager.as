@@ -15,7 +15,6 @@ package com.ankamagames.jerakine.managers
    import flash.utils.getDefinitionByName;
    import com.ankamagames.jerakine.JerakineConstants;
    import com.ankamagames.jerakine.utils.crypto.Base64;
-   import __AS3__.vec.*;
    import flash.net.ObjectEncoding;
    import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
@@ -42,7 +41,7 @@ package com.ankamagames.jerakine.managers
             aClass = this.getData(JerakineConstants.DATASTORE_CLASS_ALIAS,"classAliasList");
             nonVectorClass = [];
             vectorClass = [];
-            for (s in aClass)
+            for(s in aClass)
             {
                className = Base64.decode(s);
                _log.logDirectly(new RegisterClassLogEvent(className));
@@ -61,7 +60,7 @@ package com.ankamagames.jerakine.managers
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StoreDataManager));
+      protected static const _log:Logger;
       
       private static var _self:StoreDataManager;
       
@@ -108,7 +107,7 @@ package com.ankamagames.jerakine.managers
          return null;
       }
       
-      public function registerClass(oInstance:*, deepClassScan:Boolean=false, keepClassInSo:Boolean=true) : void {
+      public function registerClass(oInstance:*, deepClassScan:Boolean = false, keepClassInSo:Boolean = true) : void {
          var className:String = null;
          var sAlias:String = null;
          var aClassAlias:Array = null;
@@ -120,84 +119,82 @@ package com.ankamagames.jerakine.managers
          {
             throw new ArgumentError("Can\'t store a customized IExternalizable in a shared object.");
          }
+         else if(oInstance is Secure)
+         {
+            throw new ArgumentError("Can\'t store a Secure class");
+         }
          else
          {
-            if(oInstance is Secure)
+            if(this.isComplexType(oInstance))
             {
-               throw new ArgumentError("Can\'t store a Secure class");
-            }
-            else
-            {
-               if(this.isComplexType(oInstance))
+               className = getQualifiedClassName(oInstance);
+               if(this._aRegisteredClassAlias[className] == null)
                {
-                  className = getQualifiedClassName(oInstance);
-                  if(this._aRegisteredClassAlias[className] == null)
+                  sAlias = MD5.hash(className);
+                  _log.logDirectly(new RegisterClassLogEvent(className));
+                  try
                   {
-                     sAlias = MD5.hash(className);
-                     _log.logDirectly(new RegisterClassLogEvent(className));
-                     try
-                     {
-                        registerClassAlias(sAlias,Class(getDefinitionByName(className)));
-                        _log.warn("Register " + className);
-                     }
-                     catch(e:Error)
-                     {
-                        _aRegisteredClassAlias[className] = true;
-                        _log.fatal("Impossible de trouver la classe " + className + " dans l\'application domain courant");
-                        return;
-                     }
-                     if(keepClassInSo)
-                     {
-                        aClassAlias = this.getSetData(JerakineConstants.DATASTORE_CLASS_ALIAS,"classAliasList",new Array());
-                        aClassAlias[Base64.encode(className)] = sAlias;
-                        this.setData(JerakineConstants.DATASTORE_CLASS_ALIAS,"classAliasList",aClassAlias);
-                     }
-                     this._aRegisteredClassAlias[className] = true;
+                     registerClassAlias(sAlias,Class(getDefinitionByName(className)));
+                     _log.warn("Register " + className);
                   }
-                  else
+                  catch(e:Error)
                   {
+                     _aRegisteredClassAlias[className] = true;
+                     _log.fatal("Impossible de trouver la classe " + className + " dans l\'application domain courant");
                      return;
                   }
+                  if(keepClassInSo)
+                  {
+                     aClassAlias = this.getSetData(JerakineConstants.DATASTORE_CLASS_ALIAS,"classAliasList",new Array());
+                     aClassAlias[Base64.encode(className)] = sAlias;
+                     this.setData(JerakineConstants.DATASTORE_CLASS_ALIAS,"classAliasList",aClassAlias);
+                  }
+                  this._aRegisteredClassAlias[className] = true;
                }
-               if(deepClassScan)
+               else
                {
-                  if((oInstance is Dictionary) || (oInstance is Array) || (oInstance is Vector.<*>) || (oInstance is Vector.<uint>))
+                  return;
+               }
+            }
+            if(deepClassScan)
+            {
+               if((oInstance is Dictionary) || (oInstance is Array) || (oInstance is Vector.<*>) || (oInstance is Vector.<uint>))
+               {
+                  desc = oInstance;
+                  if(oInstance is Vector.<*>)
                   {
-                     desc = oInstance;
-                     if(oInstance is Vector.<*>)
-                     {
-                        tmp = getQualifiedClassName(oInstance);
-                        leftBracePos = tmp.indexOf("<");
-                        tmp = tmp.substr(leftBracePos + 1,tmp.lastIndexOf(">") - leftBracePos - 1);
-                        this.registerClass(new getDefinitionByName(tmp) as Class(),true,keepClassInSo);
-                     }
-                  }
-                  else
-                  {
-                     desc = this.scanType(oInstance);
-                  }
-                  for (key in desc)
-                  {
-                     if(this.isComplexType(oInstance[key]))
-                     {
-                        this.registerClass(oInstance[key],true);
-                     }
-                     if(desc === oInstance)
-                     {
-                        break;
-                     }
+                     tmp = getQualifiedClassName(oInstance);
+                     leftBracePos = tmp.indexOf("<");
+                     tmp = tmp.substr(leftBracePos + 1,tmp.lastIndexOf(">") - leftBracePos - 1);
+                     this.registerClass(new (getDefinitionByName(tmp) as Class)(),true,keepClassInSo);
                   }
                }
-               return;
+               else
+               {
+                  desc = this.scanType(oInstance);
+               }
+               for(key in desc)
+               {
+                  if(this.isComplexType(oInstance[key]))
+                  {
+                     this.registerClass(oInstance[key],true);
+                  }
+                  if(desc === oInstance)
+                  {
+                     break;
+                  }
+               }
             }
+            return;
          }
+         
       }
       
       public function getClass(item:Object) : void {
          var s:* = undefined;
          var description:XML = this._describeType(item);
          this.registerClass(item);
-         for (s in description..accessor)
+         for(s in description..accessor)
          {
             if(this.isComplexType(s))
             {
@@ -206,7 +203,7 @@ package com.ankamagames.jerakine.managers
          }
       }
       
-      public function setData(dataType:DataStoreType, sKey:String, oValue:*, deepClassScan:Boolean=false) : Boolean {
+      public function setData(dataType:DataStoreType, sKey:String, oValue:*, deepClassScan:Boolean = false) : Boolean {
          var so:CustomSharedObject = null;
          if(this._aData[dataType.category] == null)
          {
@@ -267,7 +264,7 @@ package com.ankamagames.jerakine.managers
          {
             return;
          }
-         for (s in this._aStoreSequence)
+         for(s in this._aStoreSequence)
          {
             dt = this._aStoreSequence[s];
             switch(dt.location)
@@ -276,6 +273,8 @@ package com.ankamagames.jerakine.managers
                   this.getSharedObject(dt.category).flush();
                   continue;
                case DataStoreEnum.LOCATION_SERVER:
+                  continue;
+               default:
                   continue;
             }
          }
@@ -291,7 +290,7 @@ package com.ankamagames.jerakine.managers
       
       public function reset() : void {
          var s:CustomSharedObject = null;
-         for each (s in this._aSharedObjectCache)
+         for each(s in this._aSharedObjectCache)
          {
             s.clear();
             try
@@ -313,7 +312,7 @@ package com.ankamagames.jerakine.managers
          {
             case DataStoreEnum.LOCATION_LOCAL:
                this._aSharedObjectCache[dataType.category].close();
-               delete this._aSharedObjectCache[[dataType.category]];
+               delete this._aSharedObjectCache[dataType.category];
                break;
          }
       }
@@ -341,6 +340,8 @@ package com.ankamagames.jerakine.managers
             case o == null:
             case o == undefined:
                return false;
+            default:
+               return true;
          }
       }
       
@@ -355,6 +356,13 @@ package com.ankamagames.jerakine.managers
             case "Array":
             case "String":
                return false;
+            default:
+               o = this._aRegisteredClassAlias[name];
+               if(this._aRegisteredClassAlias[name] === true)
+               {
+                  return false;
+               }
+               return true;
          }
       }
       
@@ -363,14 +371,14 @@ package com.ankamagames.jerakine.managers
          var variable:XML = null;
          var result:Object = new Object();
          var def:XML = this._describeType(obj);
-         for each (accessor in def..accessor)
+         for each(accessor in def..accessor)
          {
             if(this.isComplexTypeFromString(accessor.@type))
             {
                result[accessor.@name] = true;
             }
          }
-         for each (variable in def..variable)
+         for each(variable in def..variable)
          {
             if(this.isComplexTypeFromString(variable.@type))
             {

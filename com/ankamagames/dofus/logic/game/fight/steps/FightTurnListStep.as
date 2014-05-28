@@ -2,7 +2,6 @@ package com.ankamagames.dofus.logic.game.fight.steps
 {
    import com.ankamagames.jerakine.sequencer.AbstractSequencable;
    import com.ankamagames.jerakine.sequencer.ISequencer;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.fight.frames.FightBattleFrame;
    import com.ankamagames.berilia.managers.KernelEventsManager;

@@ -44,7 +44,7 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       private static const ACTION_TODISSOCIATE:uint = 3;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LivingObjectFrame));
+      protected static const _log:Logger;
       
       private var livingObjectUID:uint = 0;
       
@@ -122,17 +122,15 @@ package com.ankamagames.dofus.logic.game.common.frames
                         KernelEventsManager.getInstance().processCallback(LivingObjectHookList.LivingObjectDissociate,itemModified);
                         break;
                      case ACTION_TOSKIN:
+                     default:
                         KernelEventsManager.getInstance().processCallback(LivingObjectHookList.LivingObjectUpdate,itemModified);
-                        break;
                   }
                }
-               else
+               else if(itemModified.livingObjectId != 0)
                {
-                  if(itemModified.livingObjectId != 0)
-                  {
-                     KernelEventsManager.getInstance().processCallback(LivingObjectHookList.LivingObjectAssociate,itemModified);
-                  }
+                  KernelEventsManager.getInstance().processCallback(LivingObjectHookList.LivingObjectAssociate,itemModified);
                }
+               
                this.livingObjectUID = 0;
                return false;
             case msg is MimicryObjectFeedAndAssociateRequestAction:
@@ -193,6 +191,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                      case -15:
                         mimicryErrorText = I18n.getUiText("ui.popup.impossible_action");
                         break;
+                     default:
+                        mimicryErrorText = I18n.getUiText("ui.common.unknownFail");
                   }
                   if(moemsg.preview)
                   {
@@ -216,6 +216,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                moermsg.initMimicryObjectEraseRequestMessage(moera.hostUID,moera.hostPos);
                ConnectionsHandler.getConnection().send(moermsg);
                return true;
+            default:
+               return false;
          }
       }
       

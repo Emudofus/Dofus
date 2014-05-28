@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5993;
       }
       
-      public function initGameDataPaddockObjectRemoveMessage(cellId:uint=0) : GameDataPaddockObjectRemoveMessage {
+      public function initGameDataPaddockObjectRemoveMessage(cellId:uint = 0) : GameDataPaddockObjectRemoveMessage {
          this.cellId = cellId;
          this._isInitialized = true;
          return this;

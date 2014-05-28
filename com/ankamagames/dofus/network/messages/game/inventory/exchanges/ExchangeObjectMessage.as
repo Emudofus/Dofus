@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5515;
       }
       
-      public function initExchangeObjectMessage(remote:Boolean=false) : ExchangeObjectMessage {
+      public function initExchangeObjectMessage(remote:Boolean = false) : ExchangeObjectMessage {
          this.remote = remote;
          this._isInitialized = true;
          return this;

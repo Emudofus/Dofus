@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.types.game.context
          return 150;
       }
       
-      public function initGameContextActorInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null) : GameContextActorInformations {
+      public function initGameContextActorInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null) : GameContextActorInformations {
          this.contextualId = contextualId;
          this.look = look;
          this.disposition = disposition;

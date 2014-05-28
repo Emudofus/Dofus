@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6238;
       }
       
-      public function initExchangeObjectModifyPricedMessage(objectUID:uint=0, quantity:int=0, price:int=0) : ExchangeObjectModifyPricedMessage {
+      public function initExchangeObjectModifyPricedMessage(objectUID:uint = 0, quantity:int = 0, price:int = 0) : ExchangeObjectModifyPricedMessage {
          super.initExchangeObjectMovePricedMessage(objectUID,quantity,price);
          this._isInitialized = true;
          return this;

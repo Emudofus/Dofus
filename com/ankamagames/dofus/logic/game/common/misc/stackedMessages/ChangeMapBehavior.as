@@ -25,24 +25,20 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
             {
                sprite = EmbedAssets.getSprite("CHECKPOINT_CLIP_LEFT");
             }
+            else if(CellUtil.isRightCol(cellId))
+            {
+               sprite = EmbedAssets.getSprite("CHECKPOINT_CLIP_RIGHT");
+            }
+            else if(CellUtil.isBottomRow(cellId))
+            {
+               sprite = EmbedAssets.getSprite("CHECKPOINT_CLIP_BOTTOM");
+            }
             else
             {
-               if(CellUtil.isRightCol(cellId))
-               {
-                  sprite = EmbedAssets.getSprite("CHECKPOINT_CLIP_RIGHT");
-               }
-               else
-               {
-                  if(CellUtil.isBottomRow(cellId))
-                  {
-                     sprite = EmbedAssets.getSprite("CHECKPOINT_CLIP_BOTTOM");
-                  }
-                  else
-                  {
-                     sprite = EmbedAssets.getSprite("CHECKPOINT_CLIP_TOP");
-                  }
-               }
+               sprite = EmbedAssets.getSprite("CHECKPOINT_CLIP_TOP");
             }
+            
+            
             return true;
          }
          return false;

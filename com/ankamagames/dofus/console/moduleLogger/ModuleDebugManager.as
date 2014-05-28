@@ -12,7 +12,6 @@ package com.ankamagames.dofus.console.moduleLogger
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
    import com.ankamagames.dofus.console.moduleLUA.ConsoleLUA;
-   import __AS3__.vec.*;
    
    public final class ModuleDebugManager extends Object
    {
@@ -39,7 +38,7 @@ package com.ankamagames.dofus.console.moduleLogger
       
       private static var _offSetY:int;
       
-      private static var _valuesList:Vector.<int> = new Vector.<int>();
+      private static var _valuesList:Vector.<int>;
       
       private static var _lastValue:int = 0;
       
@@ -59,13 +58,11 @@ package com.ankamagames.dofus.console.moduleLogger
             StageShareManager.stage.addChild(_ui);
             StageShareManager.stage.addEventListener(Event.ENTER_FRAME,loop);
          }
-         else
+         else if((_ui) && (_ui.parent))
          {
-            if((_ui) && (_ui.parent))
-            {
-               _ui.parent.removeChild(_ui);
-            }
+            _ui.parent.removeChild(_ui);
          }
+         
       }
       
       private static function loop(e:Event) : void {

@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.communication
       
       public static const MODULE:String = "InfoMessages";
       
-      private static var _log:Logger = Log.getLogger(getQualifiedClassName(InfoMessage));
+      private static var _log:Logger;
       
       public static function getInfoMessageById(id:uint) : InfoMessage {
          var t:* = GameData.getObject(MODULE,id);

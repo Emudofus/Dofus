@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5952;
       }
       
-      public function initGuildPaddockBoughtMessage(paddockInfo:PaddockContentInformations=null) : GuildPaddockBoughtMessage {
+      public function initGuildPaddockBoughtMessage(paddockInfo:PaddockContentInformations = null) : GuildPaddockBoughtMessage {
          this.paddockInfo = paddockInfo;
          this._isInitialized = true;
          return this;

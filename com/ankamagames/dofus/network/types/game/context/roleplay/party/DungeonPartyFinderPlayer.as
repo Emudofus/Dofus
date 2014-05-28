@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
          return 373;
       }
       
-      public function initDungeonPartyFinderPlayer(playerId:uint=0, playerName:String="", breed:int=0, sex:Boolean=false, level:uint=0) : DungeonPartyFinderPlayer {
+      public function initDungeonPartyFinderPlayer(playerId:uint = 0, playerName:String = "", breed:int = 0, sex:Boolean = false, level:uint = 0) : DungeonPartyFinderPlayer {
          this.playerId = playerId;
          this.playerName = playerName;
          this.breed = breed;

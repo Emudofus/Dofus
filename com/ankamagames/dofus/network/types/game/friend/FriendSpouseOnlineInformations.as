@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.types.game.friend
          return 93;
       }
       
-      public function initFriendSpouseOnlineInformations(spouseAccountId:uint=0, spouseId:uint=0, spouseName:String="", spouseLevel:uint=0, breed:int=0, sex:int=0, spouseEntityLook:EntityLook=null, guildInfo:BasicGuildInformations=null, alignmentSide:int=0, mapId:uint=0, subAreaId:uint=0, inFight:Boolean=false, followSpouse:Boolean=false) : FriendSpouseOnlineInformations {
+      public function initFriendSpouseOnlineInformations(spouseAccountId:uint = 0, spouseId:uint = 0, spouseName:String = "", spouseLevel:uint = 0, breed:int = 0, sex:int = 0, spouseEntityLook:EntityLook = null, guildInfo:BasicGuildInformations = null, alignmentSide:int = 0, mapId:uint = 0, subAreaId:uint = 0, inFight:Boolean = false, followSpouse:Boolean = false) : FriendSpouseOnlineInformations {
          super.initFriendSpouseInformations(spouseAccountId,spouseId,spouseName,spouseLevel,breed,sex,spouseEntityLook,guildInfo,alignmentSide);
          this.mapId = mapId;
          this.subAreaId = subAreaId;

@@ -28,7 +28,7 @@ package com.ankamagames.berilia.components
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ColorPicker));
+      protected static const _log:Logger;
       
       private var _nWidth:uint;
       
@@ -405,6 +405,8 @@ package com.ankamagames.berilia.components
                      break;
                }
                return true;
+            default:
+               return false;
          }
       }
       

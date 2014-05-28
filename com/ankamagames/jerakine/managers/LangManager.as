@@ -55,7 +55,7 @@ package com.ankamagames.jerakine.managers
       
       private static var _self:LangManager;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LangManager));
+      protected static const _log:Logger;
       
       protected static const KEY_LANG_INDEX:String = "langIndex";
       
@@ -113,7 +113,7 @@ package com.ankamagames.jerakine.managers
          this._replaceErrorCallback = fct;
       }
       
-      public function loadFile(sUrl:String, parseReference:Boolean=true) : void {
+      public function loadFile(sUrl:String, parseReference:Boolean = true) : void {
          if(parseReference)
          {
             this._parseReference[new Uri(sUrl).uri] = parseReference;
@@ -121,7 +121,7 @@ package com.ankamagames.jerakine.managers
          this.loadMetaDataFile(sUrl);
       }
       
-      public function loadFromXml(xml:String, category:String, url:String, parseReference:Boolean=true) : void {
+      public function loadFromXml(xml:String, category:String, url:String, parseReference:Boolean = true) : void {
          var uri:Uri = new Uri(url);
          if(parseReference)
          {
@@ -165,7 +165,7 @@ package com.ankamagames.jerakine.managers
          return this.getUntypedEntry(sKey);
       }
       
-      public function setEntry(sKey:String, sValue:String, sType:String=null) : void {
+      public function setEntry(sKey:String, sValue:String, sType:String = null) : void {
          var c:Class = null;
          if(!sType)
          {
@@ -194,87 +194,30 @@ package com.ankamagames.jerakine.managers
                case "BOOLEAN":
                   this._aLang[sKey] = sValue.toLowerCase() == "true";
                   break;
+               default:
+                  c = getDefinitionByName(sType) as Class;
+                  this._aLang[sKey] = new c(sValue);
             }
          }
       }
       
       public function deleteEntry(sKey:String) : void {
-         delete this._aLang[[sKey]];
+         delete this._aLang[sKey];
       }
       
-      public function replaceKey(sTxt:String, bReplaceDynamicReference:Boolean=false) : String {
-         var aKey:Array = null;
-         var reg:RegExp = null;
-         var i:uint = 0;
-         var sNewVal:String = null;
-         var aFind:Array = null;
-         var sKey:String = null;
-         if((!(sTxt == null)) && (!(sTxt.indexOf("[") == -1)))
-         {
-            reg = new RegExp("(?<!\\\\)\\[([^\\]]*)\\]","g");
-            aKey = sTxt.match(reg);
-            if(sTxt.indexOf("\\["))
-            {
-               sTxt = sTxt.split("\\[").join("[");
-            }
-            i = 0;
-            for(;i < aKey.length;i++)
-            {
-               sKey = aKey[i].substr(1,aKey[i].length - 2);
-               if(sKey.charAt(0) == "#")
-               {
-                  if(!bReplaceDynamicReference)
-                  {
-                     continue;
-                  }
-                  sKey = sKey.substr(1);
-               }
-               sNewVal = this._aLang[sKey];
-               if(sNewVal == null)
-               {
-                  if(!isNaN(parseInt(sKey,10)))
-                  {
-                     sNewVal = I18n.getText(parseInt(sKey,10));
-                  }
-                  if(I18n.hasUiText(sKey))
-                  {
-                     sNewVal = I18n.getUiText(sKey);
-                  }
-                  else
-                  {
-                     if(sKey.charAt(0) == "~")
-                     {
-                        continue;
-                     }
-                     if(this._replaceErrorCallback != null)
-                     {
-                        sNewVal = this._replaceErrorCallback(sKey);
-                     }
-                     if(sNewVal == null)
-                     {
-                        sNewVal = "!" + sKey;
-                        aFind = this.findCategory(sKey);
-                        if(aFind.length)
-                        {
-                           _log.warn("Référence incorrect vers la clef [" + sKey + "] dans : " + sTxt + " (pourrait être " + aFind.join(" ou ") + ")");
-                        }
-                        else
-                        {
-                           _log.warn("Référence inconue vers la clef [" + sKey + "] dans : " + sTxt);
-                        }
-                     }
-                  }
-               }
-               sTxt = sTxt.split(aKey[i]).join(sNewVal);
-            }
-         }
-         return sTxt;
+      public function replaceKey(sTxt:String, bReplaceDynamicReference:Boolean = false) : String {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
-      public function getCategory(sCategory:String, matchSubCategories:Boolean=true) : Array {
+      public function getCategory(sCategory:String, matchSubCategories:Boolean = true) : Array {
          var key:String = null;
          var aResult:Array = new Array();
-         for (key in this._aLang)
+         for(key in this._aLang)
          {
             if(matchSubCategories)
             {
@@ -282,13 +225,11 @@ package com.ankamagames.jerakine.managers
                {
                   aResult[key] = this._aLang[key];
                }
-               else
+               else if(key.indexOf(sCategory) == 0)
                {
-                  if(key.indexOf(sCategory) == 0)
-                  {
-                     aResult[key] = this._aLang[key];
-                  }
+                  aResult[key] = this._aLang[key];
                }
+               
             }
          }
          return aResult;
@@ -298,14 +239,14 @@ package com.ankamagames.jerakine.managers
          var s:String = null;
          var sK:String = sKey.split(".")[0];
          var aCat:Array = new Array();
-         for (s in this._aCategory)
+         for(s in this._aCategory)
          {
             if(this._aLang[s + "." + sK] != null)
             {
                aCat.push(s + "." + sK);
             }
          }
-         for (s in this._aCategory)
+         for(s in this._aCategory)
          {
             if(this._aLang[s + "." + sKey] != null)
             {
@@ -324,17 +265,17 @@ package com.ankamagames.jerakine.managers
          return this._aVersion[sFileName] == sVersion;
       }
       
-      public function clear(sCategory:String=null) : void {
+      public function clear(sCategory:String = null) : void {
          var sCat:String = null;
          var s:String = null;
          if(sCategory)
          {
             sCat = sCategory + ".";
-            for (s in this._aLang)
+            for(s in this._aLang)
             {
                if(s.indexOf(sCat) == 0)
                {
-                  delete this._aLang[[s]];
+                  delete this._aLang[s];
                }
             }
          }
@@ -355,7 +296,7 @@ package com.ankamagames.jerakine.managers
       private function resolveImp(targetKey:String, configKey:String) : void {
          var key:String = null;
          var keyValue:* = this.getUntypedEntry(configKey);
-         for (key in this._aLang)
+         for(key in this._aLang)
          {
             if(String(this._aLang[key]).indexOf(targetKey) != -1)
             {
@@ -411,6 +352,8 @@ package com.ankamagames.jerakine.managers
                case "XML":
                   this._loader.load(uri);
                   return;
+               default:
+                  throw new FileTypeError(sUrl + " is not expected type (bad extension found (" + sExtension + "), support only .zip and .xml).");
             }
          }
       }
@@ -490,7 +433,7 @@ package com.ankamagames.jerakine.managers
             aFileList.push(zipFile.getEntry(zipFile.entries[fileIndex]));
             fileIndex++;
          }
-         for (s in metaData.clearFile)
+         for(s in metaData.clearFile)
          {
             if(!zipFile.getEntry(s))
             {

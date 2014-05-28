@@ -6,7 +6,6 @@ package com.ankamagames.jerakine.utils.display
    import flash.events.TimerEvent;
    import flash.events.Event;
    import flash.display.DisplayObjectContainer;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    
@@ -17,11 +16,11 @@ package com.ankamagames.jerakine.utils.display
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FpsControler));
+      protected static const _log:Logger;
       
       private static var ScriptedAnimation:Class;
       
-      private static var _clipList:Vector.<MovieClip> = new Vector.<MovieClip>();
+      private static var _clipList:Vector.<MovieClip>;
       
       private static var _garbageTimer:Timer;
       
@@ -51,7 +50,7 @@ package com.ankamagames.jerakine.utils.display
          }
       }
       
-      public static function controlFps(clip:MovieClip, framerate:uint, forbidRecursivity:Boolean=false) : MovieClip {
+      public static function controlFps(clip:MovieClip, framerate:uint, forbidRecursivity:Boolean = false) : MovieClip {
          if(!MovieClipUtils.isSingleFrame(clip))
          {
             _groupId++;
@@ -60,7 +59,7 @@ package com.ankamagames.jerakine.utils.display
          return clip;
       }
       
-      public static function uncontrolFps(displayObject:DisplayObjectContainer, group:Boolean=true) : void {
+      public static function uncontrolFps(displayObject:DisplayObjectContainer, group:Boolean = true) : void {
          var groupId:* = 0;
          var buffer:Vector.<MovieClip> = null;
          var num:* = 0;
@@ -104,7 +103,7 @@ package com.ankamagames.jerakine.utils.display
          }
       }
       
-      private static function controlSingleClip(clip:DisplayObjectContainer, id:int, framerate:uint, forbidRecursivity:Boolean=false, recursive:Boolean=false) : void {
+      private static function controlSingleClip(clip:DisplayObjectContainer, id:int, framerate:uint, forbidRecursivity:Boolean = false, recursive:Boolean = false) : void {
          var i:* = 0;
          var numChildren:* = 0;
          var child:DisplayObjectContainer = null;

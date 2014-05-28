@@ -35,7 +35,7 @@ package com.ankamagames.dofus.network.messages.game.approach
          return 6216;
       }
       
-      public function initAccountCapabilitiesMessage(accountId:int=0, tutorialAvailable:Boolean=false, breedsVisible:uint=0, breedsAvailable:uint=0, status:int=-1) : AccountCapabilitiesMessage {
+      public function initAccountCapabilitiesMessage(accountId:int = 0, tutorialAvailable:Boolean = false, breedsVisible:uint = 0, breedsAvailable:uint = 0, status:int = -1) : AccountCapabilitiesMessage {
          this.accountId = accountId;
          this.tutorialAvailable = tutorialAvailable;
          this.breedsVisible = breedsVisible;

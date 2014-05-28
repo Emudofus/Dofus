@@ -15,7 +15,7 @@ package com.ankamagames.berilia.types.tooltip
       public function processContent(params:Object) : String {
          var i:String = null;
          var content:String = this._content;
-         for (i in params)
+         for(i in params)
          {
             content = content.split("#" + i).join(params[i]);
          }

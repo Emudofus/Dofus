@@ -5,7 +5,7 @@ package com.ankamagames.atouin.types.events
    public class RenderMapEvent extends Event
    {
       
-      public function RenderMapEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false, mapId:uint=0, renderId:uint=0) {
+      public function RenderMapEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false, mapId:uint = 0, renderId:uint = 0) {
          super(type,bubbles,cancelable);
          this._mapId = mapId;
          this._renderId = renderId;

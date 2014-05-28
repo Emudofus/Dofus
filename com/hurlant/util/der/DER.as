@@ -11,7 +11,7 @@ package com.hurlant.util.der
       
       public static var indent:String = "";
       
-      public static function parse(der:ByteArray, structure:*=null) : IAsn1Type {
+      public static function parse(der:ByteArray, structure:* = null) : IAsn1Type {
          var type:* = 0;
          var len:* = 0;
          var b:ByteArray = null;
@@ -118,6 +118,33 @@ package com.hurlant.util.der
                der.readBytes(b,0,len);
                b.position = 0;
                return new ObjectIdentifier(type,len,b);
+            case 3:
+               trace("I DONT KNOW HOW TO HANDLE DER stuff of TYPE " + type);
+            case 4:
+               if(der[der.position] == 0)
+               {
+                  der.position++;
+                  len--;
+               }
+            case 5:
+               bs = new ByteString(type,len);
+               der.readBytes(bs,0,len);
+               return bs;
+            case 19:
+               return null;
+            case 34:
+               ps = new PrintableString(type,len);
+               ps.setString(der.readMultiByte(len,"US-ASCII"));
+               return ps;
+            case 20:
+            case 23:
+               ps = new PrintableString(type,len);
+               ps.setString(der.readMultiByte(len,"latin1"));
+               return ps;
+            default:
+               ut = new UTCTime(type,len);
+               ut.setUTCTime(der.readMultiByte(len,"US-ASCII"));
+               return ut;
          }
       }
       
@@ -154,41 +181,35 @@ package com.hurlant.util.der
          {
             d.writeByte(len);
          }
+         else if(len < 256)
+         {
+            d.writeByte(1 | 128);
+            d.writeByte(len);
+         }
+         else if(len < 65536)
+         {
+            d.writeByte(2 | 128);
+            d.writeByte(len >> 8);
+            d.writeByte(len);
+         }
+         else if(len < 65536 * 256)
+         {
+            d.writeByte(3 | 128);
+            d.writeByte(len >> 16);
+            d.writeByte(len >> 8);
+            d.writeByte(len);
+         }
          else
          {
-            if(len < 256)
-            {
-               d.writeByte(1 | 128);
-               d.writeByte(len);
-            }
-            else
-            {
-               if(len < 65536)
-               {
-                  d.writeByte(2 | 128);
-                  d.writeByte(len >> 8);
-                  d.writeByte(len);
-               }
-               else
-               {
-                  if(len < 65536 * 256)
-                  {
-                     d.writeByte(3 | 128);
-                     d.writeByte(len >> 16);
-                     d.writeByte(len >> 8);
-                     d.writeByte(len);
-                  }
-                  else
-                  {
-                     d.writeByte(4 | 128);
-                     d.writeByte(len >> 24);
-                     d.writeByte(len >> 16);
-                     d.writeByte(len >> 8);
-                     d.writeByte(len);
-                  }
-               }
-            }
+            d.writeByte(4 | 128);
+            d.writeByte(len >> 24);
+            d.writeByte(len >> 16);
+            d.writeByte(len >> 8);
+            d.writeByte(len);
          }
+         
+         
+         
          d.writeBytes(data);
          d.position = 0;
          return d;

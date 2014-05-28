@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6175;
       }
       
-      public function initPartyRestrictedMessage(partyId:uint=0, restricted:Boolean=false) : PartyRestrictedMessage {
+      public function initPartyRestrictedMessage(partyId:uint = 0, restricted:Boolean = false) : PartyRestrictedMessage {
          super.initAbstractPartyMessage(partyId);
          this.restricted = restricted;
          this._isInitialized = true;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.web.krosmaster
          return 6345;
       }
       
-      public function initKrosmasterAuthTokenErrorMessage(reason:uint=0) : KrosmasterAuthTokenErrorMessage {
+      public function initKrosmasterAuthTokenErrorMessage(reason:uint = 0) : KrosmasterAuthTokenErrorMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

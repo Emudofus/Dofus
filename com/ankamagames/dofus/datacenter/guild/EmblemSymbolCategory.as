@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.guild
       
       public static const MODULE:String = "EmblemSymbolCategories";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EmblemSymbolCategory));
+      protected static const _log:Logger;
       
       public static function getEmblemSymbolCategoryById(id:int) : EmblemSymbolCategory {
          return GameData.getObject(MODULE,id) as EmblemSymbolCategory;

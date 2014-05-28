@@ -90,6 +90,8 @@ package com.ankamagames.jerakine.network.utils
                   a = a & 255 - 128;
                }
                break;
+            default:
+               throw new Error("Bytebox overflow.");
          }
          return a;
       }
@@ -113,6 +115,8 @@ package com.ankamagames.jerakine.network.utils
                return !((a & 64) == 0);
             case 7:
                return !((a & 128) == 0);
+            default:
+               throw new Error("Bytebox overflow.");
          }
       }
    }

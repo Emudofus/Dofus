@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5556;
       }
       
-      public function initGuildInvitationAnswerMessage(accept:Boolean=false) : GuildInvitationAnswerMessage {
+      public function initGuildInvitationAnswerMessage(accept:Boolean = false) : GuildInvitationAnswerMessage {
          this.accept = accept;
          this._isInitialized = true;
          return this;

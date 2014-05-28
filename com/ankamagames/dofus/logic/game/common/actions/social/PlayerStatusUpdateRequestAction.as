@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.common.actions.social
          super();
       }
       
-      public static function create(statusNumber:uint, msg:String="") : PlayerStatusUpdateRequestAction {
+      public static function create(statusNumber:uint, msg:String = "") : PlayerStatusUpdateRequestAction {
          var a:PlayerStatusUpdateRequestAction = new PlayerStatusUpdateRequestAction();
          a.status = statusNumber;
          a.message = msg;

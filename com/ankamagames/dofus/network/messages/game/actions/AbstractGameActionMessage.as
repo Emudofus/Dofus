@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.actions
          return 1000;
       }
       
-      public function initAbstractGameActionMessage(actionId:uint=0, sourceId:int=0) : AbstractGameActionMessage {
+      public function initAbstractGameActionMessage(actionId:uint = 0, sourceId:int = 0) : AbstractGameActionMessage {
          this.actionId = actionId;
          this.sourceId = sourceId;
          this._isInitialized = true;

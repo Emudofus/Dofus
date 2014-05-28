@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.chat
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 862;
       }
       
-      public function initChatClientMultiWithObjectMessage(content:String="", channel:uint=0, objects:Vector.<ObjectItem>=null) : ChatClientMultiWithObjectMessage {
+      public function initChatClientMultiWithObjectMessage(content:String = "", channel:uint = 0, objects:Vector.<ObjectItem> = null) : ChatClientMultiWithObjectMessage {
          super.initChatClientMultiMessage(content,channel);
          this.objects = objects;
          this._isInitialized = true;

@@ -1,7 +1,5 @@
 package com.ankamagames.jerakine.types.zones
 {
-   import __AS3__.vec.Vector;
-   
    public interface IZone
    {
       
@@ -19,6 +17,6 @@ package com.ankamagames.jerakine.types.zones
       
       function set radius(param1:uint) : void;
       
-      function getCells(param1:uint=0) : Vector.<uint>;
+      function getCells(param1:uint = 0) : Vector.<uint>;
    }
 }

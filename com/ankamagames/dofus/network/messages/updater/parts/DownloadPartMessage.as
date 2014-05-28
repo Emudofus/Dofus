@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.updater.parts
          return 1503;
       }
       
-      public function initDownloadPartMessage(id:String="") : DownloadPartMessage {
+      public function initDownloadPartMessage(id:String = "") : DownloadPartMessage {
          this.id = id;
          this._isInitialized = true;
          return this;

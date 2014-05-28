@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.security
          return 6156;
       }
       
-      public function initCheckFileMessage(filenameHash:String="", type:uint=0, value:String="") : CheckFileMessage {
+      public function initCheckFileMessage(filenameHash:String = "", type:uint = 0, value:String = "") : CheckFileMessage {
          this.filenameHash = filenameHash;
          this.type = type;
          this.value = value;

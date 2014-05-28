@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.character.creation
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -38,7 +37,7 @@ package com.ankamagames.dofus.network.messages.game.character.creation
          return 160;
       }
       
-      public function initCharacterCreationRequestMessage(name:String="", breed:int=0, sex:Boolean=false, colors:Vector.<int>=null, cosmeticId:uint=0) : CharacterCreationRequestMessage {
+      public function initCharacterCreationRequestMessage(name:String = "", breed:int = 0, sex:Boolean = false, colors:Vector.<int> = null, cosmeticId:uint = 0) : CharacterCreationRequestMessage {
          this.name = name;
          this.breed = breed;
          this.sex = sex;

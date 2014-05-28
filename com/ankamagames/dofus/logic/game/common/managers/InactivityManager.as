@@ -29,7 +29,7 @@ package com.ankamagames.dofus.logic.game.common.managers
       
       private static var _self:InactivityManager;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(InactivityManager));
+      protected static const _log:Logger;
       
       public static function getInstance() : InactivityManager {
          if(!_self)
@@ -39,9 +39,9 @@ package com.ankamagames.dofus.logic.game.common.managers
          return _self;
       }
       
-      private static const SERVER_INACTIVITY_DELAY:int = 10 * 60 * 1000;
+      private static const SERVER_INACTIVITY_DELAY:int = 600000.0;
       
-      private static const INACTIVITY_DELAY:int = 20 * 60 * 1000;
+      private static const INACTIVITY_DELAY:int = 1200000.0;
       
       private static function serverNotification() : void {
          var msg:BasicPingMessage = null;

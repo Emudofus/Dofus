@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.dialog
          return 6012;
       }
       
-      public function initPauseDialogMessage(dialogType:uint=0) : PauseDialogMessage {
+      public function initPauseDialogMessage(dialogType:uint = 0) : PauseDialogMessage {
          this.dialogType = dialogType;
          this._isInitialized = true;
          return this;

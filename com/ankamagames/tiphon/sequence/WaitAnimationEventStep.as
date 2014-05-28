@@ -6,7 +6,7 @@ package com.ankamagames.tiphon.sequence
    public class WaitAnimationEventStep extends AbstractSequencable
    {
       
-      public function WaitAnimationEventStep(animStep:PlayAnimationStep, waitedEvent:String="animation_event_end") {
+      public function WaitAnimationEventStep(animStep:PlayAnimationStep, waitedEvent:String = "animation_event_end") {
          super();
          animStep.target.addEventListener(TiphonEvent.ANIMATION_EVENT,this.onEvent);
          this._waitedEvent = waitedEvent;

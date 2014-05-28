@@ -366,7 +366,7 @@ package com.ankamagames.dofus.uiApi
          SoundManager.getInstance().manager.playIntroMusic();
       }
       
-      public function switchIntroMusic(pFirstHarmonic:Boolean=true) : void {
+      public function switchIntroMusic(pFirstHarmonic:Boolean = true) : void {
          SoundManager.getInstance().manager.switchIntroMusic(pFirstHarmonic);
       }
       

@@ -16,12 +16,11 @@ package com.ankamagames.dofus.kernel.updaterv2
    import flash.errors.IOError;
    import com.ankamagames.jerakine.json.JSONDecoder;
    import com.ankamagames.dofus.kernel.updaterv2.messages.UpdaterMessageFactory;
-   import __AS3__.vec.*;
    
    public class UpdaterConnexionHelper extends Object
    {
       
-      public function UpdaterConnexionHelper(autoConnect:Boolean=true) {
+      public function UpdaterConnexionHelper(autoConnect:Boolean = true) {
          super();
          this._buffer = new Vector.<IUpdaterOutputMessage>();
          this._socket = new Socket();
@@ -34,7 +33,7 @@ package com.ankamagames.dofus.kernel.updaterv2
          }
       }
       
-      private static const logger:Logger = Log.getLogger(getQualifiedClassName(UpdaterConnexionHelper));
+      private static const logger:Logger;
       
       private static const LOCALHOST:String = "127.0.0.1";
       
@@ -205,13 +204,11 @@ package com.ankamagames.dofus.kernel.updaterv2
             {
                depth++;
             }
-            else
+            else if(c == "}")
             {
-               if(c == "}")
-               {
-                  depth--;
-               }
+               depth--;
             }
+            
             message = message + c;
             if(depth == 0)
             {

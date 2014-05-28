@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          return 5734;
       }
       
-      public function initHousePropertiesMessage(properties:HouseInformations=null) : HousePropertiesMessage {
+      public function initHousePropertiesMessage(properties:HouseInformations = null) : HousePropertiesMessage {
          this.properties = properties;
          this._isInitialized = true;
          return this;

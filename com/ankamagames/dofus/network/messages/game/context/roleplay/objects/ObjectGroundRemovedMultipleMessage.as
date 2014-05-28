@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.objects
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.objects
          return 5944;
       }
       
-      public function initObjectGroundRemovedMultipleMessage(cells:Vector.<uint>=null) : ObjectGroundRemovedMultipleMessage {
+      public function initObjectGroundRemovedMultipleMessage(cells:Vector.<uint> = null) : ObjectGroundRemovedMultipleMessage {
          this.cells = cells;
          this._isInitialized = true;
          return this;

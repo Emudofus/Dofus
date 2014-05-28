@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.connection
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.network.messages.connection
          return 3;
       }
       
-      public function initHelloConnectMessage(salt:String="", key:Vector.<int>=null) : HelloConnectMessage {
+      public function initHelloConnectMessage(salt:String = "", key:Vector.<int> = null) : HelloConnectMessage {
          this.salt = salt;
          this.key = key;
          this._isInitialized = true;

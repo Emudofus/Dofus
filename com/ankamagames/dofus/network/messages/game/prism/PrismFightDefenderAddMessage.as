@@ -34,7 +34,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 5895;
       }
       
-      public function initPrismFightDefenderAddMessage(subAreaId:uint=0, fightId:Number=0, defender:CharacterMinimalPlusLookInformations=null) : PrismFightDefenderAddMessage {
+      public function initPrismFightDefenderAddMessage(subAreaId:uint = 0, fightId:Number = 0, defender:CharacterMinimalPlusLookInformations = null) : PrismFightDefenderAddMessage {
          this.subAreaId = subAreaId;
          this.fightId = fightId;
          this.defender = defender;

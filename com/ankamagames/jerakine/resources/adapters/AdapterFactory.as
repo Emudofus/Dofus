@@ -13,7 +13,7 @@ package com.ankamagames.jerakine.resources.adapters
          super();
       }
       
-      private static var _customAdapters:Dictionary = new Dictionary();
+      private static var _customAdapters:Dictionary;
       
       public static function getAdapter(uri:Uri) : IAdapter {
          var ca:* = undefined;
@@ -45,6 +45,36 @@ package com.ankamagames.jerakine.resources.adapters
                return new ZipAdapter();
             case "mp3":
                return new MP3Adapter();
+            default:
+               if(uri.subPath)
+               {
+                  switch(FileUtils.getExtension(uri.path))
+                  {
+                     case "swf":
+                        return new AdvancedSwfAdapter();
+                  }
+               }
+               customAdapter = _customAdapters[uri.fileType] as Class;
+               if(customAdapter)
+               {
+                  ca = new customAdapter();
+                  if(!(ca is IAdapter))
+                  {
+                     throw new ResourceError("Registered custom adapter for extension " + uri.fileType + " isn\'t an IAdapter class.");
+                  }
+                  else
+                  {
+                     return ca;
+                  }
+               }
+               else
+               {
+                  if(uri.fileType.substr(-1) == "s")
+                  {
+                     return new SignedFileAdapter();
+                  }
+                  return new BinaryAdapter();
+               }
          }
       }
       
@@ -53,7 +83,7 @@ package com.ankamagames.jerakine.resources.adapters
       }
       
       public static function removeAdapter(extension:String) : void {
-         delete _customAdapters[[extension]];
+         delete _customAdapters[extension];
       }
       
       private var include_SimpleLoaderAdapter:SimpleLoaderAdapter = null;

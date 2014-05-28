@@ -12,7 +12,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ItemCriterionFactory));
+      protected static const _log:Logger;
       
       public static function create(pServerCriterionForm:String) : ItemCriterion {
          var criterion:ItemCriterion = null;
@@ -178,6 +178,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
             case "Sy":
                criterion = new CommunityItemCriterion(pServerCriterionForm);
                break;
+            default:
+               _log.warn("Criterion \'" + s + "\' unknow or unused (" + pServerCriterionForm + ")");
          }
          return criterion;
       }

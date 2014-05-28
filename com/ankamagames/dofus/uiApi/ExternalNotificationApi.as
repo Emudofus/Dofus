@@ -57,7 +57,7 @@ package com.ankamagames.dofus.uiApi
          return ExternalNotificationManager.getInstance().canAddExternalNotification(pExternalNotificationType);
       }
       
-      public function addExternalNotification(pNotificationType:int, pId:String, pUiName:String, pTitle:String, pMessage:String, pIconPath:String, pIconId:int, pIconBg:String, pCss:String="normal", pCssClass:String="p", pEntityContactData:Object=null, pSoundId:String="16011", pAlwaysShow:Boolean=false, pHookName:String=null, pHookParams:Array=null) : String {
+      public function addExternalNotification(pNotificationType:int, pId:String, pUiName:String, pTitle:String, pMessage:String, pIconPath:String, pIconId:int, pIconBg:String, pCss:String = "normal", pCssClass:String = "p", pEntityContactData:Object = null, pSoundId:String = "16011", pAlwaysShow:Boolean = false, pHookName:String = null, pHookParams:Array = null) : String {
          var displayData:Object = 
             {
                "title":pTitle,
@@ -74,7 +74,7 @@ package com.ankamagames.dofus.uiApi
          return req.instanceId;
       }
       
-      public function removeExternalNotification(pInstanceId:String, pActivateClientWindow:Boolean=false) : void {
+      public function removeExternalNotification(pInstanceId:String, pActivateClientWindow:Boolean = false) : void {
          var ids:Array = pInstanceId.split("#");
          ExternalNotificationManager.getInstance().closeExternalNotification(ids[0],ids[1],pActivateClientWindow);
       }
