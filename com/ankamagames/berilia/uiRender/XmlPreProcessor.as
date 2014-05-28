@@ -85,12 +85,69 @@ package com.ankamagames.berilia.uiRender
       }
       
       private function replaceTemplateCall(node:XMLNode) : Boolean {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var currNode:XMLNode = null;
+         var currVarNode:XMLNode = null;
+         var templateNode:XMLNode = null;
+         var insertedNode:XMLNode = null;
+         var j:uint = 0;
+         var s:String = null;
+         var n:uint = 0;
+         var aTmp:Array = null;
+         var sFileName:String = null;
+         var aTemplateVar:Array = null;
+         var replace:* = false;
+         var content:String = null;
+         var varNode:XMLNode = null;
+         var bRes:Boolean = false;
+         var i:uint = 0;
+         while(i < node.childNodes.length)
+         {
+            currNode = node.childNodes[i];
+            replace = false;
+            j = 0;
+            while(j < this._aImportFile.length)
+            {
+               aTmp = this._aImportFile[j].split("/");
+               sFileName = aTmp[aTmp.length - 1];
+               if(sFileName.toUpperCase() == (currNode.nodeName + ".xml").toUpperCase())
+               {
+                  aTemplateVar = new Array();
+                  for (s in currNode.attributes)
+                  {
+                     aTemplateVar[s] = new TemplateParam(s,currNode.attributes[s]);
+                  }
+                  n = 0;
+                  while(n < currNode.childNodes.length)
+                  {
+                     currVarNode = currNode.childNodes[n];
+                     content = "";
+                     for each (varNode in currVarNode.childNodes)
+                     {
+                        content = content + varNode;
+                     }
+                     aTemplateVar[currVarNode.nodeName] = new TemplateParam(currVarNode.nodeName,content);
+                     n++;
+                  }
+                  templateNode = TemplateManager.getInstance().getTemplate(sFileName).makeTemplate(aTemplateVar);
+                  n = 0;
+                  while(n < templateNode.firstChild.childNodes.length)
+                  {
+                     insertedNode = templateNode.firstChild.childNodes[n].cloneNode(true);
+                     currNode.parentNode.insertBefore(insertedNode,currNode);
+                     n++;
+                  }
+                  currNode.removeNode();
+                  bRes = replace = true;
+               }
+               j++;
+            }
+            if(!replace)
+            {
+               bRes = (this.replaceTemplateCall(currNode)) || (bRes);
+            }
+            i++;
+         }
+         return bRes;
       }
       
       private function onTemplateLoaded(e:TemplateLoadedEvent) : void {

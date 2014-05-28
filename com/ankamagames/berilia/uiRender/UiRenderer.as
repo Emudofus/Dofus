@@ -206,13 +206,206 @@ package com.ankamagames.berilia.uiRender
          this._scUi = ui;
       }
       
-      public function makeChilds(aChild:Array, gcContainer:GraphicContainer, preprocessLocation:Boolean = false) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      public function makeChilds(aChild:Array, gcContainer:GraphicContainer, preprocessLocation:Boolean=false) : void {
+         var ie:InstanceEvent = null;
+         var ge:GraphicElement = null;
+         var gc:GraphicContainer = null;
+         var be:BasicElement = null;
+         var aa:Array = null;
+         var j:int = 0;
+         var lastChild:String = null;
+         var i:int = 0;
+         var anchorsList:Array = null;
+         var stateContainer:StateContainerElement = null;
+         var stateData:Array = null;
+         var cpt:Array = null;
+         var prop:String = null;
+         var gridElem:ContainerElement = null;
+         var container:ContainerElement = null;
+         var component:ComponentElement = null;
+         var num:int = 0;
+         var anc:GraphicLocation = null;
+         var aChildLength:int = aChild.length;
+         i = 0;
+         while(i < aChildLength)
+         {
+            try
+            {
+               be = aChild[i];
+            }
+            catch(e:Error)
+            {
+               _log.error("Render error in " + _sName + " with " + (gcContainer?gcContainer.name:"Unknow") + ", elem " + (aChild[i]?aChild[i].name:"Unknow"));
+               i++;
+               continue;
+            }
+            if((be is StateContainerElement) || (be is ButtonElement))
+            {
+               if(be is ButtonElement)
+               {
+                  stateContainer = ButtonElement(be);
+               }
+               else
+               {
+                  stateContainer = StateContainerElement(be);
+               }
+               gc = gcContainer.getStrata(stateContainer.strata).addChild(this.makeContainer(stateContainer)) as StateContainer;
+               for each (stateData in stateContainer.stateChangingProperties)
+               {
+                  for each (cpt in stateData)
+                  {
+                     for (prop in cpt)
+                     {
+                        cpt[prop] = LangManager.getInstance().replaceKey(cpt[prop]);
+                     }
+                  }
+               }
+               StateContainer(gc).changingStateData = stateContainer.stateChangingProperties;
+               this.makeChilds(stateContainer.childs,gc,preprocessLocation);
+            }
+            else
+            {
+               if(be is GridElement)
+               {
+                  gridElem = ContainerElement(be);
+                  gc = gcContainer.getStrata(gridElem.strata).addChild(this.makeContainer(gridElem)) as GraphicContainer;
+               }
+               else
+               {
+                  if(be is ContainerElement)
+                  {
+                     container = ContainerElement(be);
+                     gc = gcContainer.getStrata(container.strata).addChild(this.makeContainer(container)) as GraphicContainer;
+                     if(container.name == "__modalContainer")
+                     {
+                        this._scUi.modalContainer = gc;
+                     }
+                     this.makeChilds(container.childs,gc,preprocessLocation);
+                  }
+                  else
+                  {
+                     if(be is ComponentElement)
+                     {
+                        component = ComponentElement(be);
+                        gc = gcContainer.getStrata(component.strata).addChild(this.makeComponent(component)) as GraphicContainer;
+                     }
+                  }
+               }
+            }
+            aa = null;
+            anchorsList = be.anchors;
+            if(anchorsList)
+            {
+               aa = new Array();
+               num = anchorsList.length;
+               j = 0;
+               while(j < num)
+               {
+                  aa.push(LocationELement(anchorsList[j]).toGraphicLocation());
+                  j++;
+               }
+            }
+            ge = new GraphicElement(gc,aa,be.name);
+            if(!be.name)
+            {
+               be.name = "elem_" + Math.floor(Math.random() * 10000000);
+            }
+            ge.name = be.name;
+            this._scUi.registerId(be.name,ge);
+            if(be.anchors)
+            {
+               for each (anc in ge.locations)
+               {
+                  if(anc.getRelativeTo() == GraphicLocation.REF_LAST)
+                  {
+                     if(lastChild)
+                     {
+                        anc.setRelativeTo(lastChild);
+                     }
+                     else
+                     {
+                        anc.setRelativeTo(GraphicLocation.REF_PARENT);
+                        anc.setRelativePoint("TOPLEFT");
+                     }
+                  }
+               }
+               this._scUi.addDynamicElement(ge);
+            }
+            else
+            {
+               gc.x = 0;
+               gc.y = 0;
+            }
+            lastChild = be.name;
+            if(be.size)
+            {
+               if((be.size.xUnit == GraphicSize.SIZE_PRC) && (!isNaN(be.size.x)) || (be.size.yUnit == GraphicSize.SIZE_PRC) && (!isNaN(be.size.y)))
+               {
+                  ge.size = be.size.toGraphicSize();
+                  this._scUi.addDynamicSizeElement(ge);
+               }
+               if((be.size.xUnit == GraphicSize.SIZE_PIXEL) && (!isNaN(be.size.x)))
+               {
+                  gc.width = be.size.x;
+               }
+               if((be.size.yUnit == GraphicSize.SIZE_PIXEL) && (!isNaN(be.size.y)))
+               {
+                  gc.height = be.size.y;
+               }
+            }
+            if(be.minSize)
+            {
+               gc.minSize = be.minSize.toGraphicSize();
+            }
+            if(be.maxSize)
+            {
+               gc.maxSize = be.maxSize.toGraphicSize();
+            }
+            if(be.event.length)
+            {
+               SecureCenter.secure(gc,this._scUi.uiModule.trusted);
+               ie = new InstanceEvent(gc,this._scUi.uiClass);
+               j = 0;
+               while(j < be.event.length)
+               {
+                  ie.events[be.event[j]] = be.event[j];
+                  j++;
+               }
+               UIEventManager.getInstance().registerInstance(ie);
+            }
+            if(be.properties["bgColor"] != null)
+            {
+               gc.bgColor = parseInt(LangManager.getInstance().replaceKey(be.properties["bgColor"]));
+            }
+            else
+            {
+               if((this._uiDef) && (this._uiDef.debug))
+               {
+                  gc.bgColor = Math.round(Math.random() * 16777215);
+               }
+            }
+            if((gc is Grid) || (gc is ComboBox))
+            {
+               this.makeChilds(Object(gc).renderModificator(Object(be).childs,SecureCenter.ACCESS_KEY),gc,preprocessLocation);
+            }
+            if(gc is FinalizableUIComponent)
+            {
+               this._scUi.addFinalizeElement(gc as FinalizableUIComponent);
+               if((be.size) && (be.size.xUnit == GraphicSize.SIZE_PRC || be.size.yUnit == GraphicSize.SIZE_PRC) || (be.anchors) && (be.anchors.length == 2))
+               {
+                  this._aFilnalizedLater.push(gc);
+               }
+               else
+               {
+                  gc["finalize"]();
+               }
+            }
+            if(preprocessLocation)
+            {
+               this._scUi.processLocation(ge);
+            }
+            i++;
+         }
       }
       
       private function makeContainer(ce:ContainerElement) : Sprite {

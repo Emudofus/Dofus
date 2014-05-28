@@ -638,12 +638,75 @@ package com.ankamagames.berilia.components
       }
       
       private function onRotateMountains(e:Event) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var ctr:GraphicContainer = null;
+         var angle:* = NaN;
+         var coef:* = NaN;
+         this._bMovingMountains = true;
+         if(this._nRotationStep == 0)
+         {
+            this.endRotationMountains();
+         }
+         if(Math.abs(this._nRotationPieceTrg - this._nRotation) < 0.01)
+         {
+            this._nRotation = this._nRotationPieceTrg;
+         }
+         else
+         {
+            this._nRotation = this._nRotation + (this._nRotationPieceTrg - this._nRotation) / 3;
+         }
+         var zOrder:Array = new Array();
+         var i:int = 0;
+         for each (ctr in this._aMountainsCtr)
+         {
+            angle = (this._nRotation + this._nRotationStep * i) % (2 * Math.PI);
+            coef = Math.abs(Math.PI - (angle < 0?angle + 2 * Math.PI:angle) % (2 * Math.PI)) / Math.PI;
+            zOrder.push(
+               {
+                  "ctr":ctr,
+                  "z":coef
+               });
+            ctr.x = this._nWidthEllipsis * Math.cos(angle + Math.PI / 2) + this._nXCenterEllipsis;
+            ctr.y = this._nHeightEllipsis * Math.sin(angle + Math.PI / 2) + this._nYCenterEllipsis;
+            if(this._nNbCharacters == 2)
+            {
+               if(ctr.y < 300)
+               {
+                  ctr.x = this._nWidthEllipsis * Math.cos(angle + Math.PI / 6 + Math.PI / 2) + this._nXCenterEllipsis;
+                  ctr.y = this._nHeightEllipsis * Math.sin(angle + Math.PI / 6 + Math.PI / 2) + this._nYCenterEllipsis;
+               }
+            }
+            if(this._nNbCharacters == 4)
+            {
+               if(ctr.y < 300)
+               {
+                  ctr.x = this._nWidthEllipsis * Math.cos(angle + Math.PI / 6 + Math.PI / 2) + this._nXCenterEllipsis;
+                  ctr.y = this._nHeightEllipsis * Math.sin(angle + Math.PI / 6 + Math.PI / 2) + this._nYCenterEllipsis;
+               }
+            }
+            ctr.scaleX = ctr.scaleY = Math.max(0.3,coef);
+            ctr.alpha = Math.max(0.3,coef);
+            if(ctr.numChildren == 3)
+            {
+               ctr.getChildAt(0).visible = ctr.getChildAt(1).visible = i == this._nSelectedChara;
+               ctr.getChildAt(2).visible = !(i == this._nSelectedChara);
+            }
+            i++;
+         }
+         zOrder.sortOn("z",Array.NUMERIC);
+         i = 0;
+         while(i < zOrder.length)
+         {
+            zOrder[i].ctr.parent.addChildAt(zOrder[i].ctr,this._ctrDepth[i]);
+            i++;
+         }
+         if(this._charaSelCtr)
+         {
+            this._charaSelCtr.setChildIndex(this._frontZCtr,this._charaSelCtr.numChildren - 1);
+         }
+         if(this._nRotationPieceTrg == this._nRotation)
+         {
+            this.endRotationMountains();
+         }
       }
    }
 }

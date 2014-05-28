@@ -143,21 +143,75 @@ package com.ankamagames.berilia.types.graphic
       }
       
       protected function makeSnapshot(currentState:*, target:GraphicContainer) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var property:String = null;
+         var propertyXml:XML = null;
+         if(!this._snapshot[currentState])
+         {
+            this._snapshot[currentState] = new Object();
+         }
+         if(!this._snapshot[currentState][target.name])
+         {
+            this._snapshot[currentState][target.name] = new Object();
+            def = this._describeType(target);
+            for each (propertyXml in def..accessor)
+            {
+               if(propertyXml.@access == "readwrite")
+               {
+                  property = propertyXml.@name;
+                  if(!(this._lockedProperties[property]))
+                  {
+                     switch(true)
+                     {
+                        case target[property] is Boolean:
+                        case target[property] is uint:
+                        case target[property] is int:
+                        case target[property] is Number:
+                        case target[property] is String:
+                        case target[property] == null:
+                           this._snapshot[currentState][target.name][property] = target[property];
+                           break;
+                     }
+                  }
+               }
+            }
+            return;
+         }
       }
       
       protected function restoreSnapshot(currentState:*) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var component:GraphicContainer = null;
+         var ui:UiRootContainer = null;
+         var target:String = null;
+         var property:String = null;
+         if(!this._snapshot)
+         {
+            return;
+         }
+         for (target in this._snapshot[currentState])
+         {
+            ui = getUi();
+            if(!ui)
+            {
+               break;
+            }
+            component = ui.getElement(target);
+            if(component)
+            {
+               for (property in this._snapshot[currentState][target])
+               {
+                  if(component[property] !== this._snapshot[currentState][target][property])
+                  {
+                     if((!(component is ButtonContainer)) || (!(property == "selected")))
+                     {
+                        if(!(this._lockedProperties[property]))
+                        {
+                           component[property] = this._snapshot[currentState][target][property];
+                        }
+                     }
+                  }
+               }
+            }
+         }
       }
    }
 }

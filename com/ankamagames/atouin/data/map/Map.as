@@ -381,12 +381,79 @@ package com.ankamagames.atouin.data.map
       }
       
       private function computeGfxList(skipBackground:Boolean = false) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+                  var l:* = 0;
+         var c:* = 0;
+         var e:* = 0;
+         var lsCell:Array = null;
+         var numCell:* = 0;
+         var lsElement:Array = null;
+         var numElement:* = 0;
+         var layer:Layer = null;
+         var cell:Cell = null;
+         var element:BasicElement = null;
+         var elementId:* = 0;
+         var elementData:GraphicalElementData = null;
+         var graphicalElementData:NormalGraphicalElementData = null;
+         var s:String = null;
+         var ele:Elements = Elements.getInstance();
+         var gfxList:Array = new Array();
+         this._gfxCount = new Array();
+         var numLayer:int = this.layers.length;
+         l = 0;
+         while(l < numLayer)
+         {
+            layer = this.layers[l];
+            if(!((skipBackground) && (l == 0)))
+            {
+               lsCell = layer.cells;
+               numCell = lsCell.length;
+               c = 0;
+               while(c < numCell)
+               {
+                  cell = lsCell[c];
+                  lsElement = cell.elements;
+                  numElement = lsElement.length;
+                  e = 0;
+                  while(e < numElement)
+                  {
+                     element = lsElement[e];
+                     if(element.elementType == ElementTypesEnum.GRAPHICAL)
+                     {
+                        elementId = GraphicalElement(element).elementId;
+                        elementData = ele.getElementData(elementId);
+                        if(elementData == null)
+                        {
+                           _log.error("Unknown graphical element ID " + elementId);
+                        }
+                        else
+                        {
+                           if(elementData is NormalGraphicalElementData)
+                           {
+                              graphicalElementData = elementData as NormalGraphicalElementData;
+                              gfxList[graphicalElementData.gfxId] = graphicalElementData;
+                              if(this._gfxCount[graphicalElementData.gfxId])
+                              {
+                                 this._gfxCount[graphicalElementData.gfxId]++;
+                              }
+                              else
+                              {
+                                 this._gfxCount[graphicalElementData.gfxId] = 1;
+                              }
+                           }
+                        }
+                     }
+                     e++;
+                  }
+                  c++;
+               }
+            }
+            l++;
+         }
+         this._gfxList = new Array();
+         for (s in gfxList)
+         {
+            this._gfxList.push(gfxList[s]);
+         }
       }
    }
 }

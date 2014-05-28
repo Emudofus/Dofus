@@ -253,13 +253,66 @@ package com.ankamagames.berilia.components
          return str2;
       }
       
-      private function onTimerFormatDelay(e:TimerEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
-      }
+		private function onTimerFormatDelay(e:TimerEvent) : void {
+		   var newStringWithSpaces:String = null;
+		   this._timerFormatDelay.removeEventListener(TimerEvent.TIMER,this.onTimerFormatDelay);
+		   var caret:int = caretIndex;
+		   var startText:String = _tText.text;
+		   var i:int = 0;
+		   this._nSelectionStart = _tText.selectionBeginIndex;
+		   this._nSelectionEnd = _tText.selectionEndIndex;
+		   i = 0;
+		   while(i < _tText.length - 1)
+		   {
+			  if((startText.charAt(i) == this._numberSeparator) || (startText.charAt(i) == " "))
+			  {
+				 if(i < caret)
+				 {
+					caret--;
+				 }
+				 if(i < this._nSelectionStart)
+				 {
+					this._nSelectionStart--;
+				 }
+				 if(i < this._nSelectionEnd)
+				 {
+					this._nSelectionEnd--;
+				 }
+			  }
+			  i++;
+		   }
+		   var tempString:String = this.removeSpace(startText);
+		   var toInt:Number = parseFloat(tempString);
+		   if((toInt) && (!isNaN(toInt)))
+		   {
+			  newStringWithSpaces = StringUtils.formateIntToString(toInt);
+			  i = 0;
+			  while(i < newStringWithSpaces.length - 1)
+			  {
+				 if(newStringWithSpaces.charAt(i) == this._numberSeparator)
+				 {
+					if(i < caret)
+					{
+					   caret++;
+					}
+					if(i < this._nSelectionStart)
+					{
+					   this._nSelectionStart++;
+					}
+					if(i < this._nSelectionEnd)
+					{
+					   this._nSelectionEnd++;
+					}
+				 }
+				 i++;
+			  }
+			  super.text = newStringWithSpaces;
+			  caretIndex = caret;
+		   }
+		   if(this._nSelectionStart != this._nSelectionEnd)
+		   {
+			  _tText.setSelection(this._nSelectionStart,this._nSelectionEnd);
+		   }
+		}
    }
 }

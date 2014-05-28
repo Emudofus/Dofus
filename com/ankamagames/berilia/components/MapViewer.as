@@ -504,12 +504,98 @@ package com.ankamagames.berilia.components
       }
       
       public function updateMapElements() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var ico:Object = null;
+         var elem:MapElement = null;
+         var sortedMapElements:Array = null;
+         var elems:Array = null;
+         var iconNum:uint = 0;
+         var group:MapGroupElement = null;
+         var icon:MapIconElement = null;
+         var mapAreaShape:MapAreaShape = null;
+         var container:Sprite = null;
+         var visibleIconCount:uint = 0;
+         var iconIndex:uint = 0;
+         this.updateIconSize();
+         for (ico in this._mapGroupElements)
+         {
+            delete this._mapGroupElements[[ico]];
+         }
+         this.clearLayer();
+         this.clearElementsGroups();
+         this.clearMapAreaShapes();
+         sortedMapElements = new Array();
+         for each (elem in this._mapElements)
+         {
+            if(!sortedMapElements[elem.x + "_" + elem.y])
+            {
+               sortedMapElements[elem.x + "_" + elem.y] = new Array();
+            }
+            sortedMapElements[elem.x + "_" + elem.y].push(elem);
+         }
+         for each (elems in sortedMapElements)
+         {
+            iconNum = 0;
+            group = null;
+            for each (elem in elems)
+            {
+               if(this._layers[elem.layer].visible)
+               {
+                  switch(true)
+                  {
+                     case elem is MapIconElement:
+                        icon = elem as MapIconElement;
+                        icon._texture.x = icon.x * this.mapWidth + this.origineX + this.mapWidth / 2;
+                        icon._texture.y = icon.y * this.mapHeight + this.origineY + this.mapHeight / 2;
+                        if((!(elems.length == 1)) && (icon.canBeGrouped))
+                        {
+                           if(!group)
+                           {
+                              group = new MapGroupElement(icon._texture.width * 1.5,icon._texture.height * 1.5);
+                              group.x = icon.x * this.mapWidth + this.origineX + this.mapWidth / 2;
+                              group.y = icon.y * this.mapHeight + this.origineY + this.mapHeight / 2;
+                              this._groupsContainer.addChild(group);
+                           }
+                           this._mapGroupElements[icon] = group;
+                           if(elem.layer != "layer_8")
+                           {
+                              visibleIconCount = elems.length;
+                              if(visibleIconCount > 2)
+                              {
+                                 visibleIconCount = 2;
+                              }
+                              iconIndex = Math.min(visibleIconCount,iconNum);
+                              icon._texture.x = 4 * iconIndex - visibleIconCount * 4 / 2;
+                              icon._texture.y = 4 * iconIndex - visibleIconCount * 4 / 2;
+                              group.addChild(icon._texture);
+                           }
+                           else
+                           {
+                              group.icons.push(icon._texture);
+                              this._layers[elem.layer].addChild(icon._texture);
+                           }
+                        }
+                        else
+                        {
+                           this._layers[elem.layer].addChild(icon._texture);
+                        }
+                        break;
+                     case elem is MapAreaShape:
+                        mapAreaShape = elem as MapAreaShape;
+                        container = this._layers[elem.layer];
+                        if(container.parent != this._areaShapesContainer)
+                        {
+                           this._areaShapesContainer.addChild(container);
+                        }
+                        container.addChild(mapAreaShape.shape);
+                        mapAreaShape.shape.x = mapAreaShape.x;
+                        mapAreaShape.shape.y = mapAreaShape.y;
+                        break;
+                  }
+                  iconNum++;
+               }
+            }
+         }
+         this.updateIcons();
       }
       
       public function showLayer(name:String, display:Boolean = true) : void {
@@ -1194,12 +1280,21 @@ package com.ankamagames.berilia.components
       }
       
       private function updateIconSize() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var mie:MapIconElement = null;
+         var me:MapElement = null;
+         if((!this.autoSizeIcon) || (this._lastScaleIconUpdate == this._mapContainer.scaleX))
+         {
+            return;
+         }
+         this._lastScaleIconUpdate = this._mapContainer.scaleX;
+         for each (me in this._mapElements)
+         {
+            mie = me as MapIconElement;
+            if(!((!mie) || (!mie.canBeAutoSize)))
+            {
+               mie._texture.scaleX = mie._texture.scaleY = 0.75 + 1 / this._mapContainer.scaleX;
+            }
+         }
       }
       
       private function forceMapRollOver() : void {

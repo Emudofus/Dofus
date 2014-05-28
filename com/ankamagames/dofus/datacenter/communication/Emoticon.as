@@ -76,12 +76,48 @@ package com.ankamagames.dofus.datacenter.communication
       }
       
       public function getAnimName(look:TiphonEntityLook) : String {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var animName:String = null;
+         var anim:String = null;
+         var animCase:Array = null;
+         var caseBoneId:uint = 0;
+         var caseSkins:Array = null;
+         var matchingSkin:uint = 0;
+         var skin:String = null;
+         var skinId:uint = 0;
+         var lookSkin:* = undefined;
+         if(look)
+         {
+            for each (anim in this.anims)
+            {
+               animCase = anim.split(";");
+               caseBoneId = parseInt(animCase[0]);
+               if((look) && (caseBoneId == look.getBone()))
+               {
+                  caseSkins = animCase[1].split(",");
+                  matchingSkin = 0;
+                  for each (skin in caseSkins)
+                  {
+                     skinId = parseInt(skin);
+                     for each (lookSkin in look.skins)
+                     {
+                        if(skinId == lookSkin)
+                        {
+                           matchingSkin++;
+                        }
+                     }
+                  }
+                  if(matchingSkin > 0)
+                  {
+                     animName = "AnimEmote" + animCase[2];
+                  }
+               }
+            }
+         }
+         if(!animName)
+         {
+            animName = "AnimEmote" + this.defaultAnim.charAt(0).toUpperCase() + this.defaultAnim.substr(1).toLowerCase() + "_0";
+         }
+         return animName;
       }
    }
 }

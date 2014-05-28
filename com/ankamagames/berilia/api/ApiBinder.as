@@ -131,12 +131,109 @@ package com.ankamagames.berilia.api
       }
       
       private static function getApiInstance(name:String, trusted:Boolean, sharedDefinition:ApplicationDomain) : Object {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var apiDesc:XML = null;
+         var api:Object = null;
+         var apiRef:* = undefined;
+         var instancied:Boolean = false;
+         var meta:XML = null;
+         var tag:String = null;
+         var help:String = null;
+         var boxing:Boolean = false;
+         var method:XML = null;
+         var accessor:XML = null;
+         var metaData:XML = null;
+         var metaData2:* = undefined;
+         if((_apiInstance[name]) && (_apiInstance[name][trusted]))
+         {
+            return _apiInstance[name][trusted];
+         }
+         if(_apiClass[name])
+         {
+            apiDesc = DescribeTypeCache.typeDescription(_apiClass[name]);
+            api = new sharedDefinition.getDefinition("d2api::" + name + "Api") as Class();
+            apiRef = _apiClass[name];
+            instancied = false;
+            for each (meta in apiDesc..metadata)
+            {
+               if(meta.@name == "InstanciedApi")
+               {
+                  apiRef = new _apiClass[name]();
+                  instancied = true;
+                  break;
+               }
+            }
+            for each (method in apiDesc..method)
+            {
+               boxing = true;
+               for each (metaData in method.metadata)
+               {
+                  if((metaData.@name == "Untrusted") || (metaData.@name == "Trusted") || (metaData.@name == "Deprecated"))
+                  {
+                     tag = metaData.@name;
+                     if(metaData.@name == "Deprecated")
+                     {
+                        help = metaData.arg.(@key == "help").@value;
+                     }
+                  }
+                  if(metaData.@name == "NoBoxing")
+                  {
+                     boxing = false;
+                  }
+               }
+               if((!(tag == "Untrusted")) && (!(tag == "Trusted")) && (!(tag == "Deprecated")))
+               {
+                  throw new ApiError("Missing tag [Untrusted / Trusted] before function \"" + method.@name + "\" in " + _apiClass[name]);
+               }
+               else
+               {
+                  if((tag == "Untrusted") || ((tag == "Trusted") || (tag == "Deprecated")) && (trusted))
+                  {
+                     if(tag == "Deprecated")
+                     {
+                        api[method.@name] = createDepreciatedMethod(apiRef[method.@name],method.@name,help);
+                     }
+                     else
+                     {
+                        if((boxing) && (!isComplexFct(method)))
+                        {
+                           api[method.@name] = SecureCenter.secure(apiRef[method.@name]);
+                        }
+                        else
+                        {
+                           api[method.@name] = apiRef[method.@name];
+                        }
+                     }
+                  }
+                  else
+                  {
+                     api[method.@name] = GenericApiFunction.getRestrictedFunctionAccess(apiRef[method.@name]);
+                  }
+                  continue;
+               }
+            }
+            for each (accessor in apiDesc..accessor)
+            {
+               for each (metaData2 in accessor.metadata)
+               {
+                  if(metaData2.@name == "ApiData")
+                  {
+                     apiRef[accessor.@name] = _apiData[metaData2.arg.@value];
+                     break;
+                  }
+               }
+            }
+            if(!instancied)
+            {
+               if(!_apiInstance[name])
+               {
+                  _apiInstance[name] = new Array();
+               }
+               _apiInstance[name][trusted] = api;
+            }
+            return api;
+         }
+         _log.error("Api [" + name + "] is not avaible");
+         return null;
       }
       
       private static function isComplexFct(methodDesc:XML) : Boolean {

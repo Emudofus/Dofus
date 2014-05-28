@@ -62,13 +62,105 @@ package com.ankamagames.berilia.types.tooltip
          return _anchors.concat();
       }
       
-      public static function place(tooltip:DisplayObject, target:IRectangle, point:uint = 6, relativePoint:uint = 0, offset:int = 3, alwaysDisplayed:Boolean = true) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      public static function place(tooltip:DisplayObject, target:IRectangle, point:uint=6, relativePoint:uint=0, offset:int=3, alwaysDisplayed:Boolean=true) : void {
+         var pTarget:Point = null;
+         var pTooltip:Point = null;
+         var hackIRectangle:Rectangle2 = null;
+         var offsetPt:Point = null;
+         var tooltipZone:Rectangle2 = null;
+         var hitZoneSize:* = 0;
+         var newPt:Object = null;
+         var smallerZone:Object = null;
+         var obj:Object = null;
+         var ok:Boolean = false;
+         var ttBounds:Rectangle = tooltip.getBounds(tooltip);
+         var truePoint:uint = point;
+         var trueRelativePoint:uint = relativePoint;
+         var lastTurn:Boolean = false;
+         var anchors:Array = getAnchors();
+         var hitZones:Array = new Array();
+         while(!ok)
+         {
+            pTarget = new Point(target.x,target.y);
+            pTooltip = new Point(tooltip.x,tooltip.y);
+            hackIRectangle = new Rectangle2(tooltip.x,tooltip.y,tooltip.width,tooltip.height);
+            processAnchor(pTooltip,hackIRectangle,point);
+            processAnchor(pTarget,target,relativePoint);
+            offsetPt = makeOffset(point,offset);
+            pTarget.x = pTarget.x - (pTooltip.x - offsetPt.x + ttBounds.left);
+            pTarget.y = pTarget.y - (pTooltip.y - offsetPt.y);
+            tooltipZone = new Rectangle2(pTarget.x,pTarget.y,hackIRectangle.width,hackIRectangle.height);
+            if(alwaysDisplayed)
+            {
+               if(tooltipZone.y < 0)
+               {
+                  tooltipZone.y = 0;
+               }
+               if(tooltipZone.x < 0)
+               {
+                  tooltipZone.x = 0;
+               }
+               if(tooltipZone.y + tooltipZone.height > StageShareManager.startHeight)
+               {
+                  tooltipZone.y = tooltipZone.y - (tooltipZone.height + tooltipZone.y - StageShareManager.startHeight);
+               }
+               if(tooltipZone.x + tooltipZone.width > StageShareManager.startWidth)
+               {
+                  tooltipZone.x = tooltipZone.x - (tooltipZone.width + tooltipZone.x - StageShareManager.startWidth);
+               }
+            }
+            if(!lastTurn)
+            {
+               hitZoneSize = hitTest(tooltipZone,target);
+               ok = hitZoneSize == 0;
+               if(!ok)
+               {
+                  newPt = anchors.shift();
+                  if(!newPt)
+                  {
+                     smallerZone = 
+                        {
+                           "size":target.width * target.height,
+                           "point":
+                              {
+                                 "p1":truePoint,
+                                 "p2":trueRelativePoint
+                              }
+                        };
+                     for each (obj in hitZones)
+                     {
+                        if(smallerZone.size > obj.size)
+                        {
+                           smallerZone = obj;
+                        }
+                     }
+                     lastTurn = true;
+                     point = smallerZone.point.p1;
+                     relativePoint = smallerZone.point.p2;
+                  }
+                  else
+                  {
+                     hitZones.push(
+                        {
+                           "size":hitZoneSize,
+                           "point":
+                              {
+                                 "p1":point,
+                                 "p2":relativePoint
+                              }
+                        });
+                     point = newPt.p1;
+                     relativePoint = newPt.p2;
+                  }
+               }
+            }
+            else
+            {
+               ok = true;
+            }
+         }
+         tooltip.x = tooltipZone.x;
+         tooltip.y = tooltipZone.y;
       }
       
       public static function placeWithArrow(tooltip:DisplayObject, target:IRectangle) : Object {

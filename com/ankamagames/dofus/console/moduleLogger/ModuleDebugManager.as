@@ -66,12 +66,38 @@ package com.ankamagames.dofus.console.moduleLogger
       }
       
       private static function loop(e:Event) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         if(!_ui.stage)
+         {
+            StageShareManager.stage.removeEventListener(Event.ENTER_FRAME,loop);
+            return;
+         }
+         var time:int = getTimer();
+         if(time - _lastSecond > 1000)
+         {
+            _textField.htmlText = "<font color=\'#7C87D1\'>fps : " + _numImages + "</font>\n<font color=\'#00BBBB\'>mem : " + int(System.totalMemory / 100000) / 10 + " mb</font>";
+            _numImages = 0;
+            _lastSecond = time;
+         }
+         else
+         {
+            _numImages++;
+         }
+         var newValue:int = time - _lastValue;
+         _valuesList.push(-newValue);
+         if(_valuesList.length > WIDTH)
+         {
+            _valuesList.shift();
+         }
+         _lastValue = time;
+         _fpsShape.graphics.clear();
+         _fpsShape.graphics.lineStyle(1,16777215,1,true);
+         _fpsShape.graphics.moveTo(0,_valuesList[0]);
+         var num:int = _valuesList.length;
+         var i:int = 0;
+         while(++i < num)
+         {
+            _fpsShape.graphics.lineTo(i,_valuesList[i]);
+         }
       }
       
       private static function createUI() : void {

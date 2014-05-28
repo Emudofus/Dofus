@@ -837,12 +837,131 @@ package com.ankamagames.berilia.components
       }
       
       private function initSlot() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var slot:DisplayObject = null;
+         var item:GridItem = null;
+         var totalSlot:uint = 0;
+         var i:* = 0;
+         var isSelected:* = false;
+         var dataPos:int = 0;
+         if((this._dataProvider.length) && (!this._autoPosition))
+         {
+            totalSlot = this._slotByCol * this._slotByRow;
+            while(this._pageYOffset >= 0)
+            {
+               while(this._pageXOffset >= 0)
+               {
+                  dataPos = this._pageXOffset * this._slotByCol + this._pageYOffset * this._slotByRow;
+                  if(dataPos <= this._dataProvider.length - totalSlot)
+                  {
+                     break;
+                  }
+                  this._pageXOffset--;
+               }
+               if(dataPos <= this._dataProvider.length - totalSlot)
+               {
+                  break;
+               }
+               this._pageXOffset = 0;
+               this._pageYOffset--;
+            }
+            if(this._pageYOffset < 0)
+            {
+               this._pageYOffset = 0;
+            }
+            if(this._pageXOffset < 0)
+            {
+               this._pageXOffset = 0;
+            }
+            if((this._scrollBarH) && (this._scrollBarH.visible))
+            {
+               this._scrollBarH.value = this._pageXOffset;
+            }
+            if((this._scrollBarV) && (this._scrollBarV.visible))
+            {
+               this._scrollBarV.value = this._pageYOffset;
+            }
+         }
+         var slotIndex:uint = 0;
+         var j:int = -this._hiddenRow;
+         while(j < this._slotByCol + this._hiddenRow)
+         {
+            i = -this._hiddenCol;
+            while(i < this._slotByRow + this._hiddenCol)
+            {
+               dataPos = i + this._pageXOffset * this._slotByCol + j * this._totalSlotByRow + this._pageYOffset * this._slotByRow;
+               item = this._items[slotIndex];
+               isSelected = (this._nSelectedIndex == dataPos) && (this._autoSelect > 0) && (this._dataProvider.length > 0) && (dataPos < this._dataProvider.length) && (!(this._dataProvider[dataPos] == null));
+               if(item)
+               {
+                  item.index = dataPos;
+                  slot = item.container;
+                  if(this._dataProvider.length > dataPos)
+                  {
+                     item.data = this._dataProvider[dataPos];
+                     this._renderer.update(this._dataProvider[dataPos],dataPos,item.container,isSelected);
+                  }
+                  else
+                  {
+                     item.data = null;
+                     this._renderer.update(null,dataPos,item.container,isSelected);
+                  }
+               }
+               else
+               {
+                  if(this._dataProvider.length > dataPos)
+                  {
+                     slot = this._renderer.render(this._dataProvider[dataPos],dataPos,isSelected);
+                  }
+                  else
+                  {
+                     slot = this._renderer.render(null,dataPos,isSelected);
+                  }
+                  if(dataPos < this._dataProvider.length)
+                  {
+                     this._items.push(new GridItem(dataPos,slot,this._dataProvider[dataPos]));
+                  }
+                  else
+                  {
+                     this._items.push(new GridItem(dataPos,slot,null));
+                  }
+               }
+               slot.x = i * this._slotWidth + i * (this._avaibleSpaceX - this._slotByRow * this._slotWidth) / this._slotByRow;
+               slot.y = j * this._slotHeight + j * (this._avaibleSpaceY - this._slotByCol * this._slotHeight) / this._slotByCol;
+               addChild(slot);
+               slotIndex++;
+               i++;
+            }
+            j++;
+         }
+         while(this._items[slotIndex])
+         {
+            this._renderer.remove(GridItem(this._items.pop()).container);
+         }
+         if(this._autoSelect == AUTOSELECT_BY_INDEX)
+         {
+            if((((this._nSelectedItem) && (this.itemExists(this._nSelectedItem.object))) && (this._verticalScroll)) && (this._scrollBarV) && (this._scrollBarV.value >= 0))
+            {
+               this.updateFromIndex(this._scrollBarV.value);
+            }
+            else
+            {
+               this.setSelectedIndex(Math.min(this._nSelectedIndex,this._dataProvider.length - 1),SelectMethodEnum.AUTO);
+            }
+         }
+         else
+         {
+            if(this._autoSelect == AUTOSELECT_BY_ITEM)
+            {
+               if(this._nSelectedItem)
+               {
+                  this.selectedItem = this._nSelectedItem.object;
+                  if(this.selectedItem != this._nSelectedItem.object)
+                  {
+                     this._nSelectedItem = null;
+                  }
+               }
+            }
+         }
       }
       
       private function updateFromIndex(newIndex:uint) : void {

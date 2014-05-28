@@ -89,12 +89,52 @@ package com.ankamagames.berilia.managers
       }
       
       public function init() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var uri:Uri = null;
+         var file:File = null;
+         var dtFile:File = null;
+         var len:* = 0;
+         var substr:String = null;
+         this._themes = new Array();
+         this._themeNames = new Array();
+         this._themeCount = 0;
+         this._dtFileToLoad = 0;
+         var themePath:String = File.applicationDirectory.nativePath + File.separator + LangManager.getInstance().getEntry("config.ui.common.themes").replace("file://","");
+         this._themesRoot = new File(themePath);
+         if(this._themesRoot.exists)
+         {
+            for each (file in this._themesRoot.getDirectoryListing())
+            {
+               if(!((!file.isDirectory) || (file.name.charAt(0) == ".")))
+               {
+                  dtFile = this.searchDtFile(file);
+                  if(dtFile)
+                  {
+                     this._dtFileToLoad++;
+                     if(dtFile.url.indexOf("app:/") == 0)
+                     {
+                        len = "app:/".length;
+                        substr = dtFile.url.substring(len,dtFile.url.length);
+                        uri = new Uri(StringUtils.convertLatinToUtf(substr));
+                     }
+                     else
+                     {
+                        uri = new Uri(dtFile.nativePath);
+                     }
+                     uri.tag = dtFile;
+                     this._loader.load(uri);
+                  }
+                  else
+                  {
+                     ErrorManager.addError("Impossible de trouver le fichier de description de thème dans le dossier " + file.nativePath);
+                     Berilia.getInstance().handler.process(new ThemeLoadErrorMessage(file.name));
+                  }
+               }
+            }
+         }
+         else
+         {
+            ErrorManager.addError("Le dossier des thèmes est introuvable (url:" + LangManager.getInstance().getEntry("config.ui.common.themes") + ")");
+         }
       }
       
       public function getThemes() : Array {

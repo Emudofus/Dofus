@@ -23,13 +23,85 @@ package com.ankamagames.atouin.renderers
       
       public var strata:uint;
       
-      public function render(cells:Vector.<uint>, oColor:Color, mapContainer:DataMapContainer, alpha:Boolean = false, updateStrata:Boolean = false) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      public function render(cells:Vector.<uint>, oColor:Color, mapContainer:DataMapContainer, alpha:Boolean=false, updateStrata:Boolean=false) : void {
+         var tzt:TrapZoneTile = null;
+         var daCellId:uint = 0;
+         var daPoint:MapPoint = null;
+         var zzTop:* = false;
+         var zzBottom:* = false;
+         var zzRight:* = false;
+         var zzLeft:* = false;
+         var cid:uint = 0;
+         var mp:MapPoint = null;
+         var j:int = 0;
+         while(j < cells.length)
+         {
+            if(!this._aZoneTile[j])
+            {
+               this._aZoneTile[j] = tzt = new TrapZoneTile();
+               tzt.mouseChildren = false;
+               tzt.mouseEnabled = false;
+               tzt.strata = this.strata;
+               tzt.filters = [new ColorMatrixFilter([0,0,0,0,oColor.red,0,0,0,0,oColor.green,0,0,0,0,oColor.blue,0,0,0,0.7,0])];
+            }
+            this._aCellTile[j] = cells[j];
+            daCellId = cells[j];
+            daPoint = MapPoint.fromCellId(daCellId);
+            TrapZoneTile(this._aZoneTile[j]).cellId = daCellId;
+            zzTop = false;
+            zzBottom = false;
+            zzRight = false;
+            zzLeft = false;
+            for each (cid in cells)
+            {
+               if(cid != daCellId)
+               {
+                  mp = MapPoint.fromCellId(cid);
+                  if(mp.x == daPoint.x)
+                  {
+                     if(mp.y == daPoint.y - 1)
+                     {
+                        zzTop = true;
+                     }
+                     else
+                     {
+                        if(mp.y == daPoint.y + 1)
+                        {
+                           zzBottom = true;
+                        }
+                     }
+                  }
+                  else
+                  {
+                     if(mp.y == daPoint.y)
+                     {
+                        if(mp.x == daPoint.x - 1)
+                        {
+                           zzRight = true;
+                        }
+                        else
+                        {
+                           if(mp.x == daPoint.x + 1)
+                           {
+                              zzLeft = true;
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+            TrapZoneTile(this._aZoneTile[j]).drawStroke(zzTop,zzRight,zzBottom,zzLeft);
+            TrapZoneTile(this._aZoneTile[j]).display(this.strata);
+            j++;
+         }
+         while(j < this._aZoneTile.length)
+         {
+            if(this._aZoneTile[j])
+            {
+               (this._aZoneTile[j] as TrapZoneTile).remove();
+            }
+            j++;
+         }
       }
       
       public function remove(cells:Vector.<uint>, mapContainer:DataMapContainer) : void {

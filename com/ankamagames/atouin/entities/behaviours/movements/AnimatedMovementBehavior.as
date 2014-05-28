@@ -87,13 +87,74 @@ package com.ankamagames.atouin.entities.behaviours.movements
          Atouin.getInstance().handler.process(new EntityMovementStartMessage(entity));
       }
       
-      public function synchroniseSubEntitiesPosition(entityRef:IMovable, subEntityContainer:DisplayObject = null) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      public function synchroniseSubEntitiesPosition(entityRef:IMovable, subEntityContainer:DisplayObject=null) : void {
+         var ts:TiphonSprite = null;
+         var carriedEntity:IMovable = null;
+         var subEntities:Array = null;
+         var subEntity:* = undefined;
+         var mount:TiphonSprite = null;
+         var subSubEntities:Array = null;
+         var subSubEntity:* = undefined;
+         if(entityRef is TiphonSprite)
+         {
+            ts = entityRef as TiphonSprite;
+            if((subEntityContainer) && (subEntityContainer is TiphonSprite))
+            {
+               ts = TiphonSprite(subEntityContainer);
+            }
+            if(ts.carriedEntity)
+            {
+               carriedEntity = ts.carriedEntity as IMovable;
+            }
+            else
+            {
+               mount = ts.getSubEntitySlot(2,0) as TiphonSprite;
+               if((mount) && (mount.carriedEntity))
+               {
+                  carriedEntity = mount.carriedEntity as IMovable;
+               }
+            }
+            while(carriedEntity)
+            {
+               if((carriedEntity.position) && (entityRef.position))
+               {
+                  carriedEntity.position.x = entityRef.position.x;
+                  carriedEntity.position.y = entityRef.position.y;
+                  carriedEntity.position.cellId = entityRef.position.cellId;
+               }
+               carriedEntity = (carriedEntity as TiphonSprite).carriedEntity as IMovable;
+            }
+            subEntities = ts.getSubEntitiesList();
+            for each (subEntity in subEntities)
+            {
+               if(subEntity is IMovable)
+               {
+                  if((subEntity.position) && (entityRef.position))
+                  {
+                     subEntity.position.x = entityRef.position.x;
+                     subEntity.position.y = entityRef.position.y;
+                  }
+                  if((subEntity.movementBehavior) && (!(subEntity == entityRef)))
+                  {
+                     subEntity.movementBehavior.synchroniseSubEntitiesPosition(subEntity);
+                  }
+               }
+               else
+               {
+                  if(subEntity is TiphonSprite)
+                  {
+                     subSubEntities = TiphonSprite(subEntity).getSubEntitiesList();
+                     for each (subSubEntity in subSubEntities)
+                     {
+                        if((subSubEntity is IMovable) && (subSubEntity.movementBehavior) && (!(subSubEntity == entityRef)))
+                        {
+                           IMovable(subSubEntity).movementBehavior.synchroniseSubEntitiesPosition(entityRef,subEntity);
+                        }
+                     }
+                  }
+               }
+            }
+         }
       }
       
       public function jump(entity:IMovable, newPosition:MapPoint) : void {
