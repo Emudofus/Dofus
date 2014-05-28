@@ -1,0 +1,62 @@
+package com.ankamagames.atouin.data.elements.subtypes
+{
+   import com.ankamagames.atouin.data.elements.GraphicalElementData;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.geom.Point;
+   import flash.utils.IDataInput;
+   import com.ankamagames.atouin.AtouinConstants;
+   
+   public class NormalGraphicalElementData extends GraphicalElementData
+   {
+      
+      public function NormalGraphicalElementData(elementId:int, elementType:int) {
+         super(elementId,elementType);
+         MEMORY_LOG[this] = 1;
+      }
+      
+      public static var MEMORY_LOG:Dictionary;
+      
+      protected static const _log:Logger;
+      
+      public var gfxId:int;
+      
+      public var height:uint;
+      
+      public var horizontalSymmetry:Boolean;
+      
+      public var origin:Point;
+      
+      public var size:Point;
+      
+      override public function fromRaw(raw:IDataInput, version:int) : void {
+         this.gfxId = raw.readInt();
+         if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
+         {
+            _log.debug("  (ElementData) Element gfx id : " + this.gfxId);
+         }
+         this.height = raw.readByte();
+         if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
+         {
+            _log.debug("  (ElementData) Element height : " + this.height);
+         }
+         this.horizontalSymmetry = raw.readBoolean();
+         if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
+         {
+            _log.debug("  (ElementData) Element horizontals symmetry : " + this.horizontalSymmetry);
+         }
+         this.origin = new Point(raw.readShort(),raw.readShort());
+         if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
+         {
+            _log.debug("  (ElementData) Origin : (" + this.origin.x + ";" + this.origin.y + ")");
+         }
+         this.size = new Point(raw.readShort(),raw.readShort());
+         if(AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
+         {
+            _log.debug("  (ElementData) Size : (" + this.size.x + ";" + this.size.y + ")");
+         }
+      }
+   }
+}
